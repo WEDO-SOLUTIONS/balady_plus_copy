@@ -1021,6 +1021,8 @@ enum FollowStateMessage {
   followDirection,
 }
 
+enum BetterRouteResponseMessage { accept, reject, timeout }
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1360,6 +1362,9 @@ abstract class MapApi {
 
   @async
   bool toggleHeatmap(WeatherMapMessage message);
+
+  @async
+  void betterRouteResponse(BetterRouteResponseMessage response);
 }
 
 @FlutterApi()

@@ -8,6 +8,7 @@ import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.Messages.BetterRouteResponseMessage
 import com.dgis.map.map_api.Messages.Result
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.ScreenSize
@@ -48,6 +49,7 @@ class NavigationHandler(
 
     private val stateClosable: AutoCloseable
     private val routeInfoCloseable: AutoCloseable
+    private val betterRouteCloseable: AutoCloseable
 
     private val locationSource: MyLocationMapObjectSource
     private var prevLocationSource: MyLocationMapObjectSource? = null
@@ -85,6 +87,7 @@ class NavigationHandler(
 
         stateClosable = navigationManager.uiModel.stateChannel.connect(::stateChannelListener)
         routeInfoCloseable = navigationManager.uiModel.routeChannel.connect(::routeInfoListener)
+        betterRouteCloseable = navigationManager.uiModel.betterRouteChannel.connect(::betterRouteListener)
 
         locationSource = MyLocationMapObjectSource(
             context = sdkContext,
@@ -136,6 +139,7 @@ class NavigationHandler(
         routeInfoCloseable.close()
         speedControlModel.close()
         maneuverControlModel.close()
+        betterRouteCloseable.close()
     }
 
     fun toggleSounds(enabled: Boolean) {
@@ -255,6 +259,25 @@ class NavigationHandler(
         )
     }
 
+    private fun betterRouteListener(routeInfo: BetterRouteInfo?) {
+        routeInfo?.let {
+            eventSink.success(
+                mapOf(
+                    "event" to Event.betterRouteEvent.name,
+                    "route" to RouteHandler.mapRouteInfo(routeInfo.trafficRoute)
+                )
+            )
+        }
+    }
+
+    fun betterRouteResponse(response: BetterRouteResponseMessage) {
+        when (response) {
+            BetterRouteResponseMessage.ACCEPT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.ACCEPT)
+            BetterRouteResponseMessage.REJECT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.REJECT)
+            BetterRouteResponseMessage.TIMEOUT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.TIMEOUT)
+        }
+    }
+
     fun calcPositionForRoute(
             options: Messages.CalcPositionOptionsMessage,
             result: Result<Messages.CameraPositionMessage>?
@@ -305,7 +328,8 @@ class NavigationHandler(
 private enum class Event {
     // event name
     navigationEvent,
-    routeOptionsEvent;
+    routeOptionsEvent,
+    betterRouteEvent;
 
     // event values
     companion object {

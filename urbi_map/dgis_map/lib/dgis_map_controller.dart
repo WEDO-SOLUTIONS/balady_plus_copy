@@ -51,6 +51,10 @@ class DgisMapController {
   Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
       _instance.routesInfoChangedEvents;
 
+  // Better route availability update.
+  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents =>
+      _instance.betterRouteInfoEvents;
+
   /// Events during navigation.
   Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
 
@@ -573,6 +577,9 @@ class DgisMapController {
   Future<void> installVoice(String id) => _instance.installVoice(id);
 
   Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
+
+  Future<void> betterRouteResponse(BetterRouteResponseMessage response) =>
+      _instance.betterRouteResponse(response);
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {

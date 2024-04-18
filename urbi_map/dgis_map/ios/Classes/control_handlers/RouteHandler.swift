@@ -196,12 +196,31 @@ class RouteHandler {
         ])
     }
     
-    private func getPedestrianRouteData(_ route: Route) -> (Int, Int, [Int]) {
+    private static func getPedestrianRouteData(_ route: Route) -> (Int, Int, [Int]) {
         return (
             route.roadSubtypes.entries.filter({ $0.value == .stairwayUp || $0.value == .stairwayDown }).count,
             route.obstacles.entries.count,
             route.altitudes.entries.map({ Int($0.value) })
         );
+    }
+    
+    static func mapRouteInfo(_ route: TrafficRoute) -> [String: Any] {
+        let distance = Double(route.route.geometry.last?.point.distance.millimeters ?? 0) / 1000.0
+        
+        var duration = 0
+        if let first = route.route.geometry.first {
+            duration = Int(route.traffic.durations.calculateDuration(routePoint: first.point).rounded())
+        }
+        
+        let (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
+        
+        return [
+            "distance": distance,
+            "duration": duration,
+            "stairwayCount": stairwayCount,
+            "gateCount": gateCount,
+            "altitudes" : altitudes
+        ]
     }
     
     private func onRoutesInfoChanged(_ routesInfo: RouteEditorRoutesInfo) {
@@ -228,24 +247,7 @@ class RouteHandler {
             position: position
         ).sink {_ in } failure: {_ in }
         
-        let mappedRoutes = routesInfo.routes.map { route in
-            let distance = Double(route.route.geometry.last?.point.distance.millimeters ?? 0) / 1000.0
-            
-            var duration = 0
-            if let first = route.route.geometry.first {
-                duration = Int(route.traffic.durations.calculateDuration(routePoint: first.point).rounded())
-            }
-            
-            let (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
-            
-            return [
-                "distance": distance,
-                "duration": duration,
-                "stairwayCount": stairwayCount,
-                "gateCount": gateCount,
-                "altitudes" : altitudes
-            ]
-        }
+        let mappedRoutes = routesInfo.routes.map(RouteHandler.mapRouteInfo)
         
         eventChannel.success([
             "event": Events.onRoutesInfoChanged,
