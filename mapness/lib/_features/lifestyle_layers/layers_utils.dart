@@ -1,3 +1,5 @@
+import 'package:dgis_map/library.dart';
+
 abstract class LayersSvgPaths {
   static const favourites =
       'packages/mapness/assets/icons/svg/layers/ic_fav_pin.svg';
@@ -16,4 +18,14 @@ abstract class LayersSvgPaths {
       'packages/mapness/assets/icons/svg/layers/ic_fancy_pin.svg';
   static const invest =
       'packages/mapness/assets/icons/svg/layers/ic_invest_pin.svg';
+}
+
+extension MarkerIconMessageExtension on String {
+  /// Returns a [MarkerIconMessage] with the given [width].
+  ///
+  /// WARNING: Use it only with SVG icons and String that represents the path to the icon.
+  MarkerIconMessage markerIcon({double width = 24}) => MarkerIconMessage(
+        path: this,
+        width: width,
+      );
 }

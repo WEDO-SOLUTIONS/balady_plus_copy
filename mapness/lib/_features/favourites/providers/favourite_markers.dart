@@ -88,7 +88,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           element,
-          LayersSvgPaths.favourites,
+          LayersSvgPaths.favourites.markerIcon(),
           router,
         ),
       );
@@ -99,7 +99,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.home!,
-          LayersSvgPaths.home,
+          LayersSvgPaths.home.markerIcon(),
           router,
         ),
       );
@@ -110,7 +110,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.work!,
-          LayersSvgPaths.work,
+          LayersSvgPaths.work.markerIcon(),
           router,
         ),
       );
