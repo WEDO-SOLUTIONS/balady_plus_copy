@@ -106,8 +106,10 @@ class LayersControls extends _$LayersControls {
           toggleInvestOpportunities();
         case LayerType.fencing:
           toggleWhiteLands();
+        case LayerType.parking:
+          toggleParking();
         case LayerType.joy:
-          toggleIwish(currentState, value);
+          toggleIwish();
       }
     });
 
@@ -244,9 +246,9 @@ class LayersControls extends _$LayersControls {
     tapSubject.add(value);
   }
 
-  Future<void> toggleIwish(LayerType? currentState, LayerType value) async {
+  Future<void> toggleIwish() async {
     final layers = ref.watch(layersControlsProvider.notifier);
-
+    final currentState = state.selectedType;
     await viewPortSubscription?.cancel();
 
     if (currentState == LayerType.joy) {
@@ -312,6 +314,27 @@ class LayersControls extends _$LayersControls {
     }
   }
 
+  Future<void> toggleParking() async {
+    final layers = ref.watch(layersControlsProvider.notifier);
+    final currentState = state.selectedType;
+    await viewPortSubscription?.cancel();
+
+    if (currentState == LayerType.parking) {
+      await ref
+          .read(mapObjectManagerProvider(
+            named: esriMapObjectSettings.name,
+            layerId: esriMapObjectSettings.layerId,
+          ).notifier)
+          .removeAllMarkers();
+      layers
+        ..setSelection()
+        ..update(isLoading: false);
+    } else {
+      setSelection(selectedType: LayerType.parking);
+      await _showParking();
+    }
+  }
+
   MapRequestParams _createParams(
     VisibleRect visibleRect,
     LayerType layer,
@@ -336,7 +359,7 @@ class LayersControls extends _$LayersControls {
       layerId: esriMapObjectSettings.layerId,
     ).notifier);
 
-    ///загрузка
+    /// Loading
     setSelection(selectedType: layerType);
     update(isLoading: true);
 
@@ -443,7 +466,7 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    ///завершаем API запросы
+    /// Cancel API calls
     cancelToken = CancelToken();
 
     viewPortSubscription = ref
@@ -583,6 +606,10 @@ class LayersControls extends _$LayersControls {
         .onError((error, stackTrace) => onError())
         .timeout(duration, onTimeout: onError);
     update(isLoading: false);
+  }
+
+  Future<void> _showParking() async {
+    // TODO: Implement parking in future tasks
   }
 
   void onError() {

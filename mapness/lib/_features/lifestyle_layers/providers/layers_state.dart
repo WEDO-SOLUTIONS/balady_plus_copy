@@ -1,7 +1,6 @@
 // todo: move to entities
 class LayersState {
-
-  LayersState({
+  const LayersState({
     required this.isLoading,
     required this.layersVisible,
     required this.selectedType,
@@ -26,6 +25,7 @@ enum LayerType {
   favourites,
   invest,
   buildings,
+  parking,
   fencing,
   joy,
 }
@@ -35,6 +35,7 @@ extension LayerTypeEx on LayerType {
         'favourites' => LayerType.favourites,
         'invest' => LayerType.invest,
         'buildings' => LayerType.buildings,
+        'parking' => LayerType.parking,
         'fencing' => LayerType.fencing,
         'joy' => LayerType.joy,
         _ => null,
