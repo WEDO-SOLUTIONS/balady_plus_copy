@@ -12,6 +12,7 @@ class RouteHandler {
     private let routeEditorSource: RouteEditorSource
     private var publicTransportHandler: PublicTransportHandler?
     private let trafficRouter: TrafficRouter
+    private let navigationHandler: NavigationHandler
     
     private let map: Map
     private let eventChannel: DgisStreamHandler
@@ -36,12 +37,14 @@ class RouteHandler {
         map: Map,
         sdk: Container,
         eventChannel: DgisStreamHandler,
+        navigationHandler: NavigationHandler,
         positioningService: PlatformPositioningServicesFactory
     ) {
         let context = try! sdk.context
         
         self.map = map
         self.eventChannel = eventChannel
+        self.navigationHandler = navigationHandler
         self.routeEditor = RouteEditor(context: context)
         self.routeEditorSource = RouteEditorSource(
             context: context, routeEditor: self.routeEditor
@@ -79,7 +82,11 @@ class RouteHandler {
     }
     
     func onRouteTap(_ route: RouteMapObject) {
-        self.routeEditor.setActiveRouteIndex(index: route.routeIndex)
+        if navigationHandler.isNavigating {
+            navigationHandler.onRouteTap(route)
+        } else {
+            self.routeEditor.setActiveRouteIndex(index: route.routeIndex)
+        }
     }
     
     func setRoutesVisible(_ visible: Bool) {

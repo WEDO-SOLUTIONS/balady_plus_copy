@@ -820,7 +820,7 @@ class DgisMapView(
         )
         map.addSource(mapSource)
 
-        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource)
+        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler)
         zoomControlHandler = ZoomControlHandler(map, eventSink)
         locationControlHandler = LocationControlHandler(map, eventSink)
         indoorControlHandler = IndoorControlHandler(map, eventSink)
