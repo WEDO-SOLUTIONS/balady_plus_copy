@@ -4292,5 +4292,18 @@
   "accept_ownership_transfer": "Accept ownership transfer",
   "reject_ownership_transfer": "Reject ownership transfer",
   "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning",
-  "create_request": "Submit the Request"
+  "create_request": "Submit the Request",
+  "pledges_condtions": "I acknowledge and pledge the accuracy of all data and attachments uploaded to the Application, and I assume full legal liability for false and malicious reports in accordance with the laws and instructions if otherwise found.",
+  "request_number": "You have submit request number",
+  "follow_request": "You can review the request and follow it through the requests page",
+  "exclude": "Note: Anyone who must collect waste and transport it to the landfills designated for that purpose, in accordance with municipal requirements, according to the license granted thereto, is excluded from the applicable waste collection fee.",
+  "new_owner_cr_number_error": "Please enter the commercial register number",
+  "new_owner_cr_number": "Commercial Register Number For New Owner",
+  "new_owner": "New Owner",
+  "transfer_all": "Transfer All",
+  "permit_warn": "Please select which permits you want to transfer",
+  "permit_info": "Permits Information",
+  "terms_error": "Please accept terms",
+  "tranfer_permit":"transfer permit",
+  "dont_tranfer_permit": "deselect permit"
 }

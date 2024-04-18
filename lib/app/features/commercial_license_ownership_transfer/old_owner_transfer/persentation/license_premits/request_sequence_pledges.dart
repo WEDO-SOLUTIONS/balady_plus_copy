@@ -114,19 +114,25 @@ class _RequestSequencePledgesScreenState
                                       isAgree = !isAgree;
                                     });
                                   }),
-                              Center(
-                                child: Text(
-                                  "cr_consent_conditions_check".tr(),
-                                  style: AppStyle
-                                      .personalInfoParameterValueTextStyle
-                                      .copyWith(fontSize: 12),
+
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    "cr_consent_conditions_check".tr(),
+                                    style: AppStyle
+                                        .personalInfoParameterValueTextStyle
+                                        .copyWith(fontSize: 12),
+                                  ),
                                 ),
                               ),
+
                             ],
                           ),
                           AppColor.grayLight,
                           const EdgeInsets.only(
                               left: 10, right: 10, bottom: 5, top: 5)),
+
+
                     ],
                   ),
                   AppColor.white,

@@ -7881,5 +7881,5 @@
     "accept_ownership_transfer":"قبول طلب نقل الملكية",
     "reject_ownership_transfer":"رفض طلب نقل الملكية",
     "respond_to_ownership_transfer_warning":"في حالة قبولكم لنقل ملكية الرخصة سيتم نقل الرخص بنفس الحالة الحالية وهي سارية وفي حالة وجود خدمات موقوفة سيتم نقل الرخصة بنفس الخدمات الموقوفة",
-  "create_request": "إنشاء طلب"
+    "create_request": "إنشاء طلب"
 }
