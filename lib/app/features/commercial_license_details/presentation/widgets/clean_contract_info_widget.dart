@@ -14,17 +14,13 @@ class CleanContractInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpandableCard(
-      title: 'license_owner_info'.tr(),
+      title: 'issue_commercial_clean_data'.tr(),
       icon: IconPath.editIcon,
       isExpandedByDefault: true,
       children: [
         CardParameter(
           title: 'cleanOptionName'.tr(),
           value: cleanContractInfo.cleanOptionName ?? '',
-        ),
-        CardParameter(
-          title: 'cleanOptionDesc'.tr(),
-          value: cleanContractInfo.cleanOptionDesc ?? '',
         ),
         CardParameter(
           title: 'contract_number'.tr(),
