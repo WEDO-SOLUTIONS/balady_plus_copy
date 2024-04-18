@@ -7894,8 +7894,11 @@
   "AGENT": "وكيل",
   "OWNER_MANAGER": "مدير / مالك منشأة",
   "ENGINEERING_OFFICE": "عن متوفي",
-  "DELEGATOR": "مفوض"
+  "DELEGATOR": "مفوض",
 
 
+  "cleanOptionName": "الآلية",
+  "cleanOptionDesc": "الرسوم",
+  "salamaBillNumber_2": "رقم شهادة تركيب أدوات الوقاية والحماية من الحريق"
 
 }

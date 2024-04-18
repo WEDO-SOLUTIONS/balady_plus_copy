@@ -18,9 +18,22 @@ class CleanContractInfoWidget extends StatelessWidget {
       icon: IconPath.editIcon,
       isExpandedByDefault: true,
       children: [
-
-
-
+        CardParameter(
+          title: 'cleanOptionName'.tr(),
+          value: cleanContractInfo.cleanOptionName ?? '',
+        ),
+        CardParameter(
+          title: 'cleanOptionDesc'.tr(),
+          value: cleanContractInfo.cleanOptionDesc ?? '',
+        ),
+        CardParameter(
+          title: 'contract_number'.tr(),
+          value: cleanContractInfo.contractNumber?.toString() ?? '',
+        ),
+        CardParameter(
+          title: 'contract_expiry_date'.tr(),
+          value: cleanContractInfo.cleanContractEndDate ?? '',
+        ),
       ],
     );
   }

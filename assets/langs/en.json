@@ -4307,8 +4307,10 @@
   "AGENT": "Agent",
   "OWNER_MANAGER": "OWNER / Manager",
   "ENGINEERING_OFFICE": "Engineering Office",
-  "DELEGATOR": "Delegator"
+  "DELEGATOR": "Delegator",
 
+  "cleanOptionName": "الآلية",
+  "cleanOptionDesc": "الرسوم"
 
 
 

@@ -190,9 +190,12 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
               ? ShopInfoWidget(shopInfo: commercialLicenceDetails.shopInfo!)
               : const SizedBox(),
           ///////////////  Clean Contract Info
-          commercialLicenceDetails.shopInfo?.cleanContractInfo != null ? CleanContractInfoWidget(
-            cleanContractInfo: commercialLicenceDetails.shopInfo!.cleanContractInfo!,
-          ) : const SizedBox(),
+          commercialLicenceDetails.shopInfo?.cleanContractInfo != null
+              ? CleanContractInfoWidget(
+                  cleanContractInfo:
+                      commercialLicenceDetails.shopInfo!.cleanContractInfo!,
+                )
+              : const SizedBox(),
           /////////////// Boards Info
           commercialLicenceDetails.shopInfo?.boardsInfo != null
               ? BoardsInfoWidget(
@@ -200,13 +203,15 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
                 )
               : const SizedBox(),
           ///////////////  owner Ship Info  -> بيانات اثبات الموقع
-          OwnerShipInfoWidget(
-            ownershipInfo: commercialLicenceDetails.ownershipInfo,
-          ),
+          commercialLicenceDetails.ownershipInfo != null ? OwnerShipInfoWidget(
+            ownershipInfo: commercialLicenceDetails.ownershipInfo!,
+          ) : const SizedBox(),
           ///////////////  Salama Details Info ->
-          SalamaDetailsInfoWidget(
-            salamaDetailsInfo: commercialLicenceDetails.salamaDetailsInfo,
-          ),
+          commercialLicenceDetails.salamaDetailsInfo != null
+              ? SalamaDetailsInfoWidget(
+                  salamaDetailsInfo: commercialLicenceDetails.salamaDetailsInfo!,
+                )
+              : const SizedBox(),
           /////////////// license_info
           // ExpandableCard(
           //   title: 'license_info'.tr(),

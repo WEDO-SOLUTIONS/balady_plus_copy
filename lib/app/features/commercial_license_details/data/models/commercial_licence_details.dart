@@ -1278,7 +1278,7 @@ class TenancyContractInfo {
 
   factory TenancyContractInfo.fromJson(Map<String, dynamic> json) =>
       TenancyContractInfo(
-        tenancyContractNumber: json['tenancyContractNumber'],
+        tenancyContractNumber: json['tenancyContractNumber'] ?? "",
         versionNumber: json['versionNumber'] ?? "",
         nationalId: json['nationalId'] ?? "",
         contractEndDate: json['contractEndDate'] ?? "",
