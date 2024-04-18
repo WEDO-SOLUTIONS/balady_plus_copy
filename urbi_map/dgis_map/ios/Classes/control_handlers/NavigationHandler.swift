@@ -6,6 +6,7 @@ class NavigationHandler {
         // event name
         static let navigationEvent = "navigationEvent"
         static let routeOptionsEvent = "routeOptionsEvent"
+        static let betterRouteEvent = "betterRouteEvent"
 
         // event values
         static let stateFinished = "finished"
@@ -77,6 +78,10 @@ class NavigationHandler {
         self.cancelable.append(
             self.navigationManager.uiModel.routeChannel.sink(receiveValue: routeInfoListener)
         )
+        
+        self.cancelable.append(
+            self.navigationManager.uiModel.betterRouteChannel.sink(receiveValue: betterRouteListener)
+        )
     }
     
     private func stateChannelListener(_ state: State) {
@@ -113,6 +118,29 @@ class NavigationHandler {
             "event": Events.routeOptionsEvent,
             "hasOptions": routeInfo.routeBuildOptions != nil
         ])
+    }
+    
+    
+    private func betterRouteListener(_ routeInfo: BetterRouteInfo?) {
+        guard let routeInfo else {
+            return
+        }
+        
+        self.eventChannel.success([
+            "event": Events.betterRouteEvent,
+            "route": RouteHandler.mapRouteInfo(routeInfo.trafficRoute)
+        ])
+    }
+    
+    func betterRouteResponse(response: BetterRouteResponseMessage) {
+        switch response {
+        case .accept:
+            self.navigationManager.uiModel.betterRouteResponse(response: .accept)
+        case .reject:
+            self.navigationManager.uiModel.betterRouteResponse(response: .reject)
+        case .timeout:
+            self.navigationManager.uiModel.betterRouteResponse(response: .timeout)
+        }
     }
 
     func cancel() {

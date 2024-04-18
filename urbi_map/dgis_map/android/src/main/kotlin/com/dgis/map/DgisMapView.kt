@@ -887,6 +887,11 @@ class DgisMapView(
         weatherHandler?.toggleHeatmap(message,result)
     }
 
+    override fun betterRouteResponse(response: BetterRouteResponseMessage, result: Messages.Result<Void>?) {
+        navigationHandler.betterRouteResponse(response)
+        result?.success(null)
+    }
+
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {
         packagesHandler.listPackages(result)
     }

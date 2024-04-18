@@ -1059,4 +1059,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion: @escaping (NSNumber?, FlutterError?) -> Void) {
         weatherHandler?.toggleHeatmap(message,completion: completion)
     }
+    
+    func betterRouteResponseResponse(_ response: BetterRouteResponseMessage, completion: @escaping (FlutterError?) -> Void) {
+        navigationHandler?.betterRouteResponse(response: response)
+        completion(nil)
+    }
 }

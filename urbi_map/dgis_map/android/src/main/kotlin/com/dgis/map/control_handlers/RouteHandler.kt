@@ -213,6 +213,35 @@ class RouteHandler(
         )
     }
 
+    companion object {
+        private fun getPedestrianRouteData(route: Route): Triple<Int, Int, List<Int>> {
+            return Triple(
+                    first = route.roadSubtypes.entries.filter { it.value == RoadSubtype.STAIRWAY_DOWN || it.value == RoadSubtype.STAIRWAY_UP }.size,
+                    second = route.obstacles.entries.size,
+                    third = route.altitudes.entries.map { it.value.toInt() }
+            )
+        }
+
+        fun mapRouteInfo(route: TrafficRoute): Map<String, Any> {
+            val (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
+
+            val distance = route.route.geometry.last?.point?.distance?.meters ?: 0.0
+            val duration = route.route.geometry.first?.point?.let {
+                route.traffic.durations.calculateDuration(
+                        it
+                ).inSeconds
+            } ?: 0
+
+            return mapOf(
+                    "distance" to distance,
+                    "duration" to duration,
+                    "stairwayCount" to stairwayCount,
+                    "gateCount" to gateCount,
+                    "altitudes" to altitudes
+            )
+        }
+    }
+
     private fun onRoutesInfoChanged(routesInfo: RouteEditorRoutesInfo) {
         if (routesInfo.routes.isNotEmpty()) {
             val geometries = routesInfo.routes
@@ -231,24 +260,7 @@ class RouteHandler(
                 this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
             }
 
-            val mappedRoutes = routesInfo.routes.map { route ->
-                val (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
-
-                val distance = route.route.geometry.last?.point?.distance?.meters ?: 0.0
-                val duration = route.route.geometry.first?.point?.let {
-                    route.traffic.durations.calculateDuration(
-                            it
-                    ).inSeconds
-                } ?: 0
-
-                mapOf(
-                    "distance" to distance,
-                    "duration" to duration,
-                    "stairwayCount" to stairwayCount,
-                    "gateCount" to gateCount,
-                    "altitudes" to altitudes
-                )
-            }
+            val mappedRoutes = routesInfo.routes.map(::mapRouteInfo)
 
             eventSink.success(
                 mapOf(
@@ -257,14 +269,6 @@ class RouteHandler(
                 )
             )
         }
-    }
-
-    private fun getPedestrianRouteData(route: Route): Triple<Int, Int, List<Int>> {
-        return Triple(
-            first = route.roadSubtypes.entries.filter { it.value == RoadSubtype.STAIRWAY_DOWN || it.value == RoadSubtype.STAIRWAY_UP }.size,
-            second = route.obstacles.entries.size,
-            third = route.altitudes.entries.map { it.value.toInt() }
-        )
     }
 
     fun getActivePublicTransportRoute(): TrafficRoute? {
