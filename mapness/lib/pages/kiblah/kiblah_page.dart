@@ -21,6 +21,7 @@ class KiblahPage extends ConsumerWidget {
     final isArabic = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(
+      backgroundColor: context.staticColor.surfaceOverlayModal.withOpacity(0.7),
       appBar: BaladyTopBar(
         onLeadingPressed: () {
           ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
@@ -45,7 +46,6 @@ class KiblahPage extends ConsumerWidget {
         title: isReady ? '$userBearing°' : context.l10n.calibrating,
         textStyle: context.textStyle.footNoteBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
       ),
-      backgroundColor: context.staticColor.surfaceOverlayModal.withOpacity(0.7),
       body: Stack(
         fit: StackFit.expand,
         children: [
