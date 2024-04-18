@@ -606,6 +606,7 @@ class LocationInfo {
   // String subMunicipalityId;
   // int regionId;
   String regionName;
+  String cityName;
 
   // dynamic vehiclePathDesc;
   // String krokiUrl;
@@ -626,6 +627,7 @@ class LocationInfo {
     // required this.subMunicipalityId,
     // required this.regionId,
     required this.regionName,
+    required this.cityName,
     // required this.vehiclePathDesc,
     // required this.krokiUrl,
   });
@@ -646,6 +648,7 @@ class LocationInfo {
         // subMunicipalityId: json["subMunicipalityId"],
         // regionId: json["regionId"],
         regionName: json["regionName"] ?? '',
+        cityName: json["cityName"] ?? '',
         // vehiclePathDesc: json["vehiclePathDesc"],
         // krokiUrl: json["krokiUrl"],
       );

@@ -22,6 +22,10 @@ class SalamaDetailsInfoWidget extends StatelessWidget {
           title: 'fire_approval_type'.tr(),
           value: salamaDetailsInfo.documentName ?? '',
         ),
+
+
+
+        
         CardParameter(
           title: 'status'.tr(),
           value: "تم اعتماد الطلب من قبل منصة الدفاع المدني",
