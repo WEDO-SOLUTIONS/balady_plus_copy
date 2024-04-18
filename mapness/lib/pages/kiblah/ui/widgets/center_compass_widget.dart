@@ -16,7 +16,7 @@ class CenterCompassWidget extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(55),
+          padding: const EdgeInsets.all(50),
           child: SvgPicture.asset(
             'assets/icons/svg/ic_arrow_compass.svg',
             package: PackageConfig.packageName,
