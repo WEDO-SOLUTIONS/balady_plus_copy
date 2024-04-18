@@ -1,4 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
+import 'package:balady_uikit/core/icons/app_icons.dart';
+import 'package:balady_uikit/core/icons/general_icons.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +10,7 @@ import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
+import 'package:mapness/_features/parking/domain/parking.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -127,6 +130,19 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                           final textColor = isSelected
                               ? context.color.textAndIconsStatusAccent
                               : context.color.textAndIconsBasePrimary;
+                          // TODO: Implement when Parking feature will be done
+                          const parkingMock = ParkingLot();
+                          final subtitle = value == LayerType.parking
+                              ? parkingMock.filter.subTitleLocale(context.l10n)
+                              : null;
+                          final trailingButton = value == LayerType.parking
+                              ? ui_kit.ContentRowActionOptions(
+                                  actionIcon: const InkWell(
+                                  child: AppIcons(
+                                    iconData: GeneralIcons.ellipsis,
+                                  ),
+                                ))
+                              : null;
                           return ui_kit.ContentRow(
                             onTap: () async {
                               ref
@@ -153,9 +169,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                               leadingIcon:
                                   value.iconData().icon(color: textColor),
                               title: value.titleLocale(context.l10n),
-                              titleStyle: context.textStyle.text.copyWith(
-                                color: textColor,
-                              ),
+                              titleStyle: context.textStyle.text
+                                  .copyWith(color: textColor),
+                              subtitle: subtitle,
+                              actionWidget: trailingButton,
                             ),
                           );
                         },
