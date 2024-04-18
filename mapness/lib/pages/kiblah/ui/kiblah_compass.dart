@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
@@ -19,6 +19,12 @@ class KiblahCompass extends ConsumerWidget {
 
   static double rad(double degree) => pi * degree / 180 - 0.5 * pi;
 
+  // Constants
+  static const double paddingSize = 50.0;
+  static const double strokeWidth = 2.0;
+  static const double compassBackgroundOpacity = 0.2;
+  static const double radarOpacity = 0.7;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final kaabaBearing = ref.watch(kaabaBearingProvider);
@@ -34,36 +40,36 @@ class KiblahCompass extends ConsumerWidget {
           alignment: Alignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.all(50),
+              padding: const EdgeInsets.all(paddingSize),
               child: CustomPaint(
                 painter: PainterStroke(
-                    color: correct ? context.color.surfaceStatusPositive : context.color.surfaceStatusAccent,
-                    strokeWidth: 2,
-                    borderRadius: 1000,
-                  ),
-                  size: Size.infinite,
-                  child: Padding(
-                    padding: const EdgeInsets.all(22),
-                    child: Stack(
-                      children: [
-                        RadarWidget(
-                          backgroundColor: Colors.transparent,
-                          radarColor: correct
-                              ? NonThemeColor.color3.withOpacity(0.7)
-                              : context.color.textAndIconsBasePrimary.withOpacity(0.9),
-                        ),
-                        CenterCompassWidget(
-                          backgroundColor: correct
-                              ? context.staticColor.surfaceStatusPositive.withOpacity(0.2)
-                              : context.staticColor.surfaceStatusAccent.withOpacity(0.2),
-                        ),
-                      ],
-                    ),
+                  color: correct ? context.color.surfaceStatusPositive : context.color.surfaceStatusAccent,
+                  strokeWidth: strokeWidth,
+                  borderRadius: NumericBase.max,
+                ),
+                size: Size.infinite,
+                child: Padding(
+                  padding: const EdgeInsets.all(paddingSize / 2),
+                  child: Stack(
+                    children: [
+                      RadarWidget(
+                        backgroundColor: Colors.transparent,
+                        radarColor: correct
+                            ? NonThemeColor.color3.withOpacity(radarOpacity)
+                            : context.color.textAndIconsBasePrimary.withOpacity(1.0 - radarOpacity),
+                      ),
+                      CenterCompassWidget(
+                        backgroundColor: correct
+                            ? context.staticColor.surfaceStatusPositive.withOpacity(compassBackgroundOpacity)
+                            : context.staticColor.surfaceStatusAccent.withOpacity(compassBackgroundOpacity),
+                      ),
+                    ],
                   ),
                 ),
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.all(36),
+              padding: const EdgeInsets.all(paddingSize * 0.72),
               child: isReady
                   ? Align(
                       alignment: Alignment(
@@ -78,13 +84,21 @@ class KiblahCompass extends ConsumerWidget {
             ),
             if (isReady) ...[
               BuildDirectionText(
-                  title: context.l10n.north, bearing: userBearing),
+                title: context.l10n.north,
+                bearing: userBearing,
+              ),
               BuildDirectionText(
-                  title: context.l10n.east, bearing: userBearing - 90),
+                title: context.l10n.east,
+                bearing: userBearing - 90,
+              ),
               BuildDirectionText(
-                  title: context.l10n.south, bearing: userBearing - 180),
+                title: context.l10n.south,
+                bearing: userBearing - 180,
+              ),
               BuildDirectionText(
-                  title: context.l10n.west, bearing: userBearing - 270),
+                title: context.l10n.west,
+                bearing: userBearing - 270,
+              ),
             ],
           ],
         ),

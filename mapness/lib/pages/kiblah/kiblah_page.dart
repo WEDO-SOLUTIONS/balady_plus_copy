@@ -35,7 +35,7 @@ class KiblahPage extends ConsumerWidget {
                 child: Row(
                   children: [
                     Icon(
-                      isArabic ? BaladyIcons.Arrow_Corner_Right_L : BaladyIcons.Arrow_Corner_Left_L,
+                      isArabic ? SystemIcons.arrowCornerRightL : SystemIcons.arrowCornerLeftL,
                       color: context.color.textAndIconsBaseInversePrimary,
                     ),
                     const SizedBox(width: NumericBase.$0_5x),
@@ -55,12 +55,9 @@ class KiblahPage extends ConsumerWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: Spacing.horizontalPaddingInsideWrapper,
-                  vertical: Spacing.horizontalPaddingInsideCell,
-                ),
+                margin: const EdgeInsets.all(Spacing.horizontalPaddingInsideWrapper),
                 child: AppButton(
-                  primaryIcon: BaladyIcons.Mosq2,
+                  primaryIcon: GeneralIcons.mosq2,
                   primaryLabel: context.l10n.mosquesNearYou,
                   buttonColorScheme: ButtonColorScheme.primary,
                   onTap: () {
