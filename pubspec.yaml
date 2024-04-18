@@ -296,14 +296,17 @@ flutter:
 
     - family: Frutiger
       fonts:
-        - asset: fonts/FrutigerLTArabic45Light.ttf
-          weight: 300
-        - asset: fonts/FrutigerLTArabic55Roman.ttf
+        - asset: assets/fonts/FrutigerLTArabic55Roman.ttf
           weight: 400
-        - asset: fonts/FrutigerLTArabic65Bold.ttf
+        - asset: assets/fonts/FrutigerLTArabic65Bold.ttf
           weight: 700
-        - asset: fonts/frutigerltarabic75black.ttf
-          weight: 900
+
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter/Inter-SemiBold.ttf
+          weight: 600
     - family: BaladyIcons.ttf
       fonts:
         - asset: assets/fonts/BaladyIcons.ttf
