@@ -75,9 +75,7 @@ class KiblahCompass extends ConsumerWidget {
                         cos(KiblahCompass.rad(kaabaBearing - userBearing)),
                         sin(KiblahCompass.rad(kaabaBearing - userBearing)),
                       ),
-                      child: KaabaIcon(
-                        isCorrect: correct,
-                      ),
+                      child: KaabaIcon(isCorrect: correct),
                     )
                   : const FakeKaabIcon(),
             ),
