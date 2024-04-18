@@ -118,7 +118,7 @@ class WalletItem {
 
   String getLicenseHeaderText() {
     if (getLicenseType() == LicenseTypes.health)
-      return Helpers.translatingWord("health_certificate");
+      return Helpers.translatingWord("digital_health_cert");
     else if (getLicenseType() == LicenseTypes.peddler)
       return Helpers.translatingWord("peddler_license");
     else

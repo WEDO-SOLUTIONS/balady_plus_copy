@@ -2287,7 +2287,7 @@
   "samba_bank": "سامبا المالية",
   "saudi_british_bank": "البنك السعودي البريطاني",
   "saudi_dutch_bank": "البنك السعودي الهولندي",
-  "saudi_france_bank": "البنك السعودي الفرنسي",
+  "saudi_france_bank": "البنك السعودي الفرنسي",  
   "anb_bank": "البنك العربي الوطني",
   "qr_opens": " . يفتح ",
   "qr_opens_tommorow": " . يفتح غداً ",
@@ -4018,6 +4018,12 @@
     "compliance_office_reply":"رد الامانة / البلدية", 
     "complinace_clause":"بند", 
     "notes_on_the_requests":"ملاحظات الطلب", 
-  "delete_all_notifications_confirmation": "هل أنت متأكد من حذف كافة الإشعارات ؟"
+  "delete_all_notifications_confirmation": "هل أنت متأكد من حذف كافة الإشعارات ؟", 
+  "digital_health_cert":"الشهادة الصحية الرقمية", 
+  "health_cert_h_date": "تاريخ إصدار الشهادة الصحية هجري",
+  "health_cert_h_end": "تاريخ نهاية الشهادة الصحية هجري",
+  "health_cert_g_date": "تاريخ إصدار الشهادة الصحية ميلادي",
+  "health_cert_g_end": "تاريخ نهاية الشهادة الصحية ميلادي"
+
 
 }
