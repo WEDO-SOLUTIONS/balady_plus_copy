@@ -266,8 +266,6 @@ class _ReuestSequencePremitsScreenState
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
-
                       CustomTextWidget(
                         ('data_not_have_permits').tr(),
                         fontSize: 14,
