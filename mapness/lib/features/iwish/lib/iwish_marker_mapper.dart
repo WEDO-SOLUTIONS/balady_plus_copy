@@ -8,38 +8,27 @@ extension IwishMarkerMapper on IwishMarker {
   Marker toMarker({
     required bool isSelected,
     required Function(IwishMarker) onMarkerTap,
-  }) =>
-      Marker(
-        id: '$iwishMarkerPrefix$id',
-        options: MarkerOptionsMessage(
-          position: GeoPointWithElevationMessage(
-            latitude: location.latitude,
-            longitude: location.longitude,
-            elevation: 0,
-          ),
-          icon: MarkerIconMessage(
-            // TODO(demezy): place here logic when backend will provide state
-            path: switch ((isSelected, state)) {
-              (true, _) =>
-                'packages/mapness/assets/icons/svg/ic_iwish_marker_selected.svg',
-              (_, IwishState.completed) => LayersSvgPaths.joyPark,
-              (_, _) =>
-                'packages/mapness/assets/icons/svg/ic_iwish_marker_planned.svg',
-            },
-            width: 24,
-          ),
-          // text: "JOY Parks",
-          // textStyle: MarkerTextStyleMessage(
-          //   color: NonThemeColor.color26.value,
-          //   strokeColor: Colors.white.value,
-          //   strokeWidth: 1,
-          //   fontSize: 14,
-          //   fontName: "Frutiger",
-          //   textPlacement: MarkerTextPlacementMessage(
-          //     placement: TextPlacementMessage.bottomCenter,
-          //   ),
-          // ),
+  }) {
+    // TODO(demezy): place here logic when backend will provide state
+    // and replace current `icon` with `MarkerIconMessage` with proper path
+    // ignore: unused_local_variable
+    final path = switch ((isSelected, state)) {
+      (true, _) =>
+        'packages/mapness/assets/icons/svg/ic_iwish_marker_selected.svg',
+      (_, IwishState.completed) => LayersSvgPaths.joyPark,
+      (_, _) => 'packages/mapness/assets/icons/svg/ic_iwish_marker_planned.svg',
+    };
+    return Marker(
+      id: '$iwishMarkerPrefix$id',
+      options: MarkerOptionsMessage(
+        position: GeoPointWithElevationMessage(
+          latitude: location.latitude,
+          longitude: location.longitude,
+          elevation: 0,
         ),
-        onTap: () => onMarkerTap(this),
-      );
+        icon: LayersSvgPaths.joyPark.markerIcon(),
+      ),
+      onTap: () => onMarkerTap(this),
+    );
+  }
 }

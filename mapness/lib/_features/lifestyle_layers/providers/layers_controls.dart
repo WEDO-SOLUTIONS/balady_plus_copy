@@ -520,10 +520,7 @@ class LayersControls extends _$LayersControls {
                     longitude: e.latLng?.longitude ?? 0,
                     elevation: 0,
                   ),
-                  icon: MarkerIconMessage(
-                    path: LayersSvgPaths.invest,
-                    width: 30,
-                  ),
+                  icon: LayersSvgPaths.invest.markerIcon(),
                   textStyle: MarkerTextStyleMessage(
                     color: NonThemeColor.color26.value,
                     strokeColor: Colors.white.value,
