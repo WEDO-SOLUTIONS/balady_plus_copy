@@ -42,7 +42,7 @@ class KiblahPage extends ConsumerWidget {
             ],
           ),
         ),
-        title: isReady ? '0°' : context.l10n.calibrating,
+        title: isReady ? '$userBearing°' : context.l10n.calibrating,
         textStyle: context.textStyle.footNoteBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
       ),
       backgroundColor: context.staticColor.surfaceOverlayModal.withOpacity(0.7),
