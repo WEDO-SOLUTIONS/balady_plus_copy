@@ -13,6 +13,7 @@ class PermitEntity {
   String? expirationDate;
   int? id;
   int? permitNumber;
+  int? requestId;
   String? permitName;
   bool? selected;
 
@@ -21,6 +22,7 @@ class PermitEntity {
     this.expirationDate,
     this.id,
     this.permitNumber,
+    this.requestId,
     this.permitName,
     this.selected,
   });

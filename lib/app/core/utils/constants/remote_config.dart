@@ -71,7 +71,7 @@ class _RemoteConfig {
     preVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     prodVal: "TU9NUkEgTW9iaWxlIFRlYW0gMjAyMg==",
     urbiPreVal:
-        "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
+    "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
   );
 
   static final apigeeURL = _initValues<String>(
@@ -270,7 +270,7 @@ class _RemoteConfig {
     preVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
     prodVal: "BIGipServerssoapp.balady.gov.sa.app~ssoapp.balady.gov.sa_pool",
     urbiPreVal:
-        "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
+    "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
   );
 
   static final MSRAllowedMuncipalites = _initValues<List<String>>(
@@ -384,7 +384,7 @@ class _RemoteConfig {
     },
     preVal: {
       "survey_report_inquery": {
-        "id": 11428,
+        "id": 11544,
         "Key_name": "license_query",
       },
       "inquiry_construction_license": {

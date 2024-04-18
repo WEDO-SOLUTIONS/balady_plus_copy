@@ -64,6 +64,7 @@ class _ReuestSequencePremitsScreenState
           );
         } else if (state.licencePermitsResponse != null) {
           final permitResponse = state.licencePermitsResponse!;
+
           return Padding(
             padding: const EdgeInsets.only(left: 15.0, right: 15, top: 0),
             child: Column(
@@ -76,217 +77,232 @@ class _ReuestSequencePremitsScreenState
                   maxLines: 4,
                 ),
                 permitResponse.permits != null &&
-                        permitResponse.permits!.isNotEmpty
+                    permitResponse.permits!.isNotEmpty
                     ? getCardView(
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            const DrawIconBasedTypeWidget(
-                              icon: IconPath.infoCircle,
-                              iconSize: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "permit_warn".tr(),
-                                style: AppStyle
-                                    .personalInfoParameterValueTextStyle
-                                    .copyWith(fontSize: 12),
-                              ),
-                            ),
-                          ],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        const DrawIconBasedTypeWidget(
+                          icon: IconPath.infoCircle,
+                          iconSize: 20,
                         ),
-                        AppColor.grayLight)
-                    : Container(),
-                permitResponse.permits != null &&
-                        permitResponse.permits!.isNotEmpty
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          CustomElevatedButtonWidget(
-                            btnColor: Colors.transparent,
-                            textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                              color: AppColor.blueSkyLight800,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                            ),
-                            btnPadding: EdgeInsets.all(8.0),
-                            btnHeight: 30,
-                            btnWidth: 20,
-                            text: "transfer_all".tr(),
-                            onPressed: () {
-                              for (var index = 0;
-                                  index < permitResponse.permits!.length;
-                                  index++) {
-                                permitResponse.permits![index].selected = true;
-                                if (lstPermits.contains(permitResponse
-                                        .permits![index].permitNumber!) ==
-                                    false) {
-                                  lstPermits.add(permitResponse
-                                      .permits![index].permitNumber!);
-                                }
-                              }
-                              setState(() {});
-                            },
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            "permit_warn".tr(),
+                            style: AppStyle
+                                .personalInfoParameterValueTextStyle
+                                .copyWith(fontSize: 12),
                           ),
-                        ],
-                      )
+                        ),
+                      ],
+                    ),
+                    AppColor.grayLight)
                     : Container(),
                 permitResponse.permits != null &&
-                        permitResponse.permits!.isNotEmpty
+                    permitResponse.permits!.isNotEmpty
+                    ? Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CustomElevatedButtonWidget(
+                      btnColor: Colors.transparent,
+                      textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                        color: AppColor.blueSkyLight800,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
+                      btnPadding: EdgeInsets.all(8.0),
+                      btnHeight: 30,
+                      btnWidth: 20,
+                      text: "transfer_all".tr(),
+                      onPressed: () {
+                        for (var index = 0;
+                        index < permitResponse.permits!.length;
+                        index++) {
+                          permitResponse.permits![index].selected = true;
+                          if (lstPermits.contains(permitResponse
+                              .permits![index].requestId!) ==
+                              false) {
+                            lstPermits.add(permitResponse
+                                .permits![index].requestId!);
+                          }
+                        }
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                )
+                    : Container(),
+                permitResponse.permits != null &&
+                    permitResponse.permits!.isNotEmpty
                     ? Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: const ScrollPhysics(),
-                          itemCount: permitResponse.permits!.length,
-                          itemBuilder: (_, index) {
-                            PermitEntity permit =
-                                permitResponse.permits![index];
-                            return Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const DrawIconBasedTypeWidget(
-                                          icon: IconPath.documentCopy,
-                                          iconSize: 24,
-                                        ),
-                                        CustomTextWidget(
-                                          '${permit.permitName}',
-                                          textStyle: AppStyle.dateTextStyle,
-                                        ),
-                                        const Spacer(),
-                                        CustomElevatedButtonWidget(
-                                          btnBorderColor:
-                                              permit.selected == false ||
-                                                      permit.selected == null
-                                                  ? AppColor.white
-                                                  : AppColor.blueSkyLight800,
-                                          btnColor: permit.selected == false ||
-                                                  permit.selected == null
-                                              ? AppColor.blueSkyLight800
-                                              : AppColor.white,
-                                          textStyle: AppStyle
-                                              .elevatedButtonStyle
-                                              .copyWith(
-                                            color: permit.selected == false ||
-                                                    permit.selected == null
-                                                ? AppColor.white
-                                                : AppColor.blueSkyLight800,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 12,
-                                          ),
-                                          btnPadding: EdgeInsets.all(8.0),
-                                          btnHeight: 30,
-                                          btnWidth: 20,
-                                          text: permit.selected == false ||
-                                                  permit.selected == null
-                                              ? "tranfer_permit".tr()
-                                              : "dont_tranfer_permit".tr(),
-                                          onPressed: () {
-                                            if (lstPermits.contains(
-                                                permit.permitNumber!)) {
-                                              lstPermits
-                                                  .remove(permit.permitNumber!);
-                                              setState(() {
-                                                permit.selected = false;
-                                              });
-                                            } else {
-                                              lstPermits
-                                                  .add(permit.permitNumber!);
-                                              setState(() {
-                                                permit.selected = true;
-                                              });
-                                            }
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(height: 30),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              CustomTextWidget(
-                                                "permit_24_permit_no".tr(),
-                                                textStyle:
-                                                    AppStyle.tagTextStyle,
-                                              ),
-                                              const SizedBox(height: 4),
-                                              CustomTextWidget(
-                                                "${permit.permitNumber}",
-                                                textStyle:
-                                                    AppStyle.costTitleTextStyle,
-                                                maxLines: 10,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              CustomTextWidget(
-                                                "expirationDate".tr(),
-                                                textStyle:
-                                                    AppStyle.tagTextStyle,
-                                              ),
-                                              const SizedBox(height: 4),
-                                              CustomTextWidget(
-                                                permit.expirationDate!,
-                                                textStyle:
-                                                    AppStyle.costTitleTextStyle,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    itemCount: permitResponse.permits!.length,
+                    itemBuilder: (_, index) {
+                      PermitEntity permit =
+                      permitResponse.permits![index];
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
                         ),
-                      )
-                    : const Spacer(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  const DrawIconBasedTypeWidget(
+                                    icon: IconPath.documentCopy,
+                                    iconSize: 24,
+                                  ),
+                                  CustomTextWidget(
+                                    '${permit.permitName}',
+                                    textStyle: AppStyle.dateTextStyle,
+                                  ),
+                                  const Spacer(),
+                                  CustomElevatedButtonWidget(
+                                    btnBorderColor:
+                                    permit.selected == false ||
+                                        permit.selected == null
+                                        ? AppColor.white
+                                        : AppColor.blueSkyLight800,
+                                    btnColor: permit.selected == false ||
+                                        permit.selected == null
+                                        ? AppColor.blueSkyLight800
+                                        : AppColor.white,
+                                    textStyle: AppStyle
+                                        .elevatedButtonStyle
+                                        .copyWith(
+                                      color: permit.selected == false ||
+                                          permit.selected == null
+                                          ? AppColor.white
+                                          : AppColor.blueSkyLight800,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12,
+                                    ),
+                                    btnPadding: EdgeInsets.all(8.0),
+                                    btnHeight: 30,
+                                    btnWidth: 20,
+                                    text: permit.selected == false ||
+                                        permit.selected == null
+                                        ? "tranfer_permit".tr()
+                                        : "dont_tranfer_permit".tr(),
+                                    onPressed: () {
+                                      if (lstPermits.contains(
+                                          permit.permitNumber!)) {
+                                        lstPermits
+                                            .remove(permit.permitNumber!);
+                                        setState(() {
+                                          permit.selected = false;
+                                        });
+                                      } else {
+                                        lstPermits
+                                            .add(permit.permitNumber!);
+                                        setState(() {
+                                          permit.selected = true;
+                                        });
+                                      }
+                                    },
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 30),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        CustomTextWidget(
+                                          "permit_24_permit_no".tr(),
+                                          textStyle:
+                                          AppStyle.tagTextStyle,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        CustomTextWidget(
+                                          "${permit.permitNumber}",
+                                          textStyle:
+                                          AppStyle.costTitleTextStyle,
+                                          maxLines: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        CustomTextWidget(
+                                          "expirationDate".tr(),
+                                          textStyle:
+                                          AppStyle.tagTextStyle,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        CustomTextWidget(
+                                          permit.expirationDate!,
+                                          textStyle:
+                                          AppStyle.costTitleTextStyle,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
+                    : Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+
+
+                      CustomTextWidget(
+                        ('data_not_have_permits').tr(),
+                        fontSize: 14,
+                        fontColor: AppColor.primary900Light,
+                        textAlign: TextAlign.center,
+                      ),
+
+                    ],),
+                ),
                 permitResponse.term != null
                     ? getCardView(
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Checkbox(
-                                value: isAgree,
-                                checkColor: AppColor.blueSkyLight800,
-                                activeColor: AppColor.white,
-                                onChanged: (value) {
-                                  setState(() {
-                                    isAgree = !isAgree;
-                                  });
-                                }),
-                            Expanded(
-                              child: Text(
-                                permitResponse.term ?? "",
-                                style: AppStyle
-                                    .personalInfoParameterValueTextStyle
-                                    .copyWith(fontSize: 12),
-                              ),
-                            ),
-                          ],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Checkbox(
+                            value: isAgree,
+                            checkColor: AppColor.blueSkyLight800,
+                            activeColor: AppColor.white,
+                            onChanged: (value) {
+                              setState(() {
+                                isAgree = !isAgree;
+                              });
+                            }),
+                        Expanded(
+                          child: Text(
+                            permitResponse.term ?? "",
+                            style: AppStyle
+                                .personalInfoParameterValueTextStyle
+                                .copyWith(fontSize: 12),
+                          ),
                         ),
-                        AppColor.grayLight)
+                      ],
+                    ),
+                    AppColor.grayLight)
                     : Container(),
                 const SizedBox(
                   height: 5,
@@ -299,7 +315,7 @@ class _ReuestSequencePremitsScreenState
                       ),
                       color: Colors.white),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                  const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
                   child: ElevatedButtonWidget.next(
                     onPressed: () {
                       if (isAgree || permitResponse.term == null) {
