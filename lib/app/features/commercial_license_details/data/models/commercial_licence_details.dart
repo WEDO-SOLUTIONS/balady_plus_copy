@@ -826,26 +826,25 @@ class SubmitterInfo {
 }
 
 class LocationInfo {
-  LocationInfo({
-    this.subMunicipalityGisCode,
-    this.districtCode,
-    this.streetCode,
-    this.latitude,
-    this.longitude,
-    this.mapNo,
-    this.landNo,
-    this.streetName,
-    this.districtName,
-    this.subMunicipalityName,
-    this.municipalityId,
-    this.municipalityName,
-    this.subMunicipalityId,
-    this.regionId,
-    this.regionName,
-    this.vehiclePathDesc,
-    this.krokiUrl,
-    this.cityName
-  });
+  LocationInfo(
+      {this.subMunicipalityGisCode,
+      this.districtCode,
+      this.streetCode,
+      this.latitude,
+      this.longitude,
+      this.mapNo,
+      this.landNo,
+      this.streetName,
+      this.districtName,
+      this.subMunicipalityName,
+      this.municipalityId,
+      this.municipalityName,
+      this.subMunicipalityId,
+      this.regionId,
+      this.regionName,
+      this.vehiclePathDesc,
+      this.krokiUrl,
+      this.cityName});
 
   LocationInfo.fromJson(dynamic json) {
     subMunicipalityGisCode = json['subMunicipalityGisCode'];
@@ -1227,8 +1226,8 @@ class SalamaDetailsInfo {
 class OwnershipInfo {
   final ContractType? contractType;
   final TenancyContractInfo? tenancyContractInfo;
-  final dynamic deedInfo;
-  final dynamic investmentContractInfo;
+  final DeedInfo? deedInfo;
+  final InvestmentContractInfo? investmentContractInfo;
 
   OwnershipInfo({
     required this.contractType,
@@ -1246,6 +1245,40 @@ class OwnershipInfo {
             : null,
         deedInfo: json['deedInfo'] ?? "",
         investmentContractInfo: json['investmentContractInfo'] ?? "",
+      );
+}
+
+class InvestmentContractInfo {
+  final String investmentContractNumber;
+  final String investContractName;
+  final ContractType? type;
+
+  InvestmentContractInfo({
+    required this.investmentContractNumber,
+    required this.investContractName,
+    required this.type,
+  });
+
+  factory InvestmentContractInfo.fromJson(Map<String, dynamic> json) =>
+      InvestmentContractInfo(
+        investmentContractNumber: json['investmentContractNumber'] ?? "",
+        investContractName: json['investContractName'] ?? "",
+        type: json['type'] != null ? ContractType.fromJson(json['type']) : null,
+      );
+}
+class DeedInfo {
+  final String deedNumber;
+  final String deedDate;
+
+  DeedInfo({
+    required this.deedNumber,
+    required this.deedDate,
+  });
+
+  factory DeedInfo.fromJson(Map<String, dynamic> json) =>
+      DeedInfo(
+        deedNumber: json['deedNumber'] ?? "",
+        deedDate: json['deedDate'] ?? "",
       );
 }
 

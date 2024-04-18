@@ -7891,5 +7891,7 @@
   "cleanOptionName": "الآلية",
   "cleanOptionDesc": "الرسوم",
   "salamaBillNumber_2": "رقم شهادة تركيب أدوات الوقاية والحماية من الحريق",
-  "create_request": "إنشاء طلب"
+  "create_request": "إنشاء طلب",
+
+  "name_contract": "مسمي العقد"
 }

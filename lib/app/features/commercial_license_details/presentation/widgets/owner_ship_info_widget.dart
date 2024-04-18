@@ -25,7 +25,7 @@ class OwnerShipInfoWidget extends StatelessWidget {
         ),
         CardParameter(
           title: getTitleByContractTypeId(ownershipInfo.contractType?.id).tr(),
-          value: ownershipInfo.tenancyContractInfo?.tenancyContractNumber ?? '',
+          value: getContractNumberByTypeId() ?? '',
         ),
         ///////////////////// For EJAR_SERVICE //////////////////////
         ownershipInfo.contractType?.id == "EJAR_SERVICE"
@@ -50,25 +50,29 @@ class OwnerShipInfoWidget extends StatelessWidget {
         ///////////////////// For INVEST_SERVICE //////////////////////
         ownershipInfo.contractType?.id == "INVEST_SERVICE"
             ? CardParameter(
-          title: 'issue_commercial_location_type_tenancy_ve'.tr(),
-          value: ownershipInfo.tenancyContractInfo?.versionNumber ?? '',
-        )
+                title: 'name_contract'.tr(),
+                value: ownershipInfo.investmentContractInfo?.type?.name ?? '',
+              )
             : const SizedBox(),
         ownershipInfo.contractType?.id == "INVEST_SERVICE"
             ? CardParameter(
-          title: 'issue_commercial_location_type_tenancy_rep'.tr(),
-          value: ownershipInfo.tenancyContractInfo?.nationalId ?? '',
-        )
+                title: 'issue_commercial_location_type_investment_type'.tr(),
+                value: ownershipInfo.investmentContractInfo?.type?.name ?? '',
+              )
             : const SizedBox(),
-
-
-
+        ///////////////////// For DEED_ATTACH //////////////////////
+        ownershipInfo.contractType?.id == "DEED_ATTACH"
+            ? CardParameter(
+                title: 'contractDate'.tr(),
+                value: ownershipInfo.tenancyContractInfo?.contractEndDate ?? '',
+              )
+            : const SizedBox(),
       ],
     );
   }
 
   String getTitleByContractTypeId(String? id) {
-    switch(id) {
+    switch (id) {
       case "EJAR_SERVICE":
       case "EJAR_ATTACH":
         return 'issue_commercial_location_type_tenancy_no';
@@ -80,5 +84,20 @@ class OwnerShipInfoWidget extends StatelessWidget {
         return 'issue_commercial_location_type_clean_no';
     }
     return 'issue_commercial_location_type_tenancy_no';
+  }
+
+  String? getContractNumberByTypeId() {
+    switch (ownershipInfo.contractType?.id) {
+      case "EJAR_SERVICE":
+      case "EJAR_ATTACH":
+        return ownershipInfo.tenancyContractInfo?.tenancyContractNumber;
+      case "INVEST_SERVICE":
+      case "INVEST_ATTACH":
+        return ownershipInfo.investmentContractInfo?.investmentContractNumber;
+      case "DEED_SERVICE":
+      case "DEED_ATTACH":
+        return ownershipInfo.deedInfo?.deedNumber;
+    }
+    return '';
   }
 }
