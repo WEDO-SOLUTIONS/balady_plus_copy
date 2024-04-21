@@ -4308,6 +4308,7 @@
   "new_owner": "New Owner",
   "transfer_all": "Transfer All",
   "permit_warn": "Please select which permits you want to transfer",
+  "permit_warn_license": "Dear beneficiary, Do you want to transfer valid permits on license to new owner ?",
   "permit_info": "Permits Information",
   "terms_error": "Please accept terms",
   "tranfer_permit": "transfer permit",
@@ -4316,7 +4317,8 @@
 
   "cr_Number_entity_number":"Commercial registry number/Establishment No",
   "show_request": "Show request",
-  "go_to_license": "Go back to license screen"
+  "go_to_license": "Go back to license screen",
+  "validate_shop_name": "Shop name can not contain any number"
 
 
 }

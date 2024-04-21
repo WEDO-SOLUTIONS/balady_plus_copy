@@ -90,7 +90,7 @@ class _ReuestSequencePremitsScreenState
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            "permit_warn".tr(),
+                            "permit_warn_license".tr(),
                             style: AppStyle
                                 .personalInfoParameterValueTextStyle
                                 .copyWith(fontSize: 12),
