@@ -145,8 +145,6 @@ class _RequestOwnershipTransferDetailsBodyState
                           activityInfo: commercialRequestDetails.activityInfo,
                           mainActivityArea:
                               commercialRequestDetails.mainActivityArea ?? 0.0,
-                          entityType: commercialRequestDetails
-                              .submitterInfo?.entityType,
                         )
                       : const SizedBox(),
 
