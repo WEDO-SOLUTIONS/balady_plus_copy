@@ -209,13 +209,18 @@ class _ApprovalSequenceShopLocationScreenState
                                     .read<RequestApprovalSequenceCubit>()
                                     .updateCRContractType(value!);
                               },
+
                             ),
                           if (state.crContractType == CRContractType.ejar &&
                               state.crSubmitterType ==
                                   CRSubmitterType.rental) ...[
                             NotesWidget(
-                              notes: ["ejar_note".tr()],
+                              notes: ["${"ejar_note".tr()}<br> ${"ejarAPP".tr()}"],
                             ),
+                            // NotesWidget(
+                            //   notes: ["ejarAPP".tr()],
+                            // ),
+
                             HorizontalRadioGroup<CRContractOption>(
                               groupName: "enter_contract_method".tr(),
                               currentItem: state.crContractOption,
@@ -345,12 +350,12 @@ class _ApprovalSequenceShopLocationScreenState
                                     .updateCRContractOption(value!);
                               },
                             ),
-                          if (state.crContractType == CRContractType.invest &&
-                              state.crSubmitterType == CRSubmitterType.rental &&
-                              state.crContractOption ==
-                                  CRContractOption.attach) ...[
-                            NotesWidget(notes: ["cr_contrct_type".tr()]),
-                          ],
+                          // if (state.crContractType == CRContractType.invest &&
+                          //     state.crSubmitterType == CRSubmitterType.rental &&
+                          //     state.crContractOption ==
+                          //         CRContractOption.attach) ...[
+                          //   NotesWidget(notes: ["cr_contrct_type".tr()]),
+                          // ],
                           if (state.crContractType == CRContractType.invest &&
                               state.crSubmitterType == CRSubmitterType.rental &&
                               state.crContractOption ==

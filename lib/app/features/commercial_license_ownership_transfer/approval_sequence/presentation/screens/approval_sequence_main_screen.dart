@@ -157,7 +157,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
                 ),
                 const SizedBox(height: 8),
                 CustomAutoSizeTextWidget(
-                  'cancellation_license_message'.tr(),
+                  '',
                   textStyle: AppStyle.profileSectionTitleTextStyle,
                   textAlign: TextAlign.center,
                   maxLines: 3,

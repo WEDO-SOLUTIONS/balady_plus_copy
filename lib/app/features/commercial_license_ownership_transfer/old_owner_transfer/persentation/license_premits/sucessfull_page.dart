@@ -66,7 +66,7 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "${"request_number".tr()} $requestId ${"follow_request".tr()}",
+                    'follow_request'.tr(),
                     style: AppStyle.personalInfoParameterValueTextStyle
                         .copyWith(fontSize: 12, height: 1.5),
                   ),
