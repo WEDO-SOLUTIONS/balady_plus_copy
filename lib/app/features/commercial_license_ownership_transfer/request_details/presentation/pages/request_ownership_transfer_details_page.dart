@@ -278,6 +278,11 @@ class _RequestOwnershipTransferDetailsPageState
                                                                                 arguments: bloc,
                                                                               )
                                                                             }
+                                                                          else
+                                                                            {
+
+                                                                             // state.status =  BlocRequestStatus.submissionUpdateFailure
+                                                                            }
                                                                         });
                                                           },
                                                         ),

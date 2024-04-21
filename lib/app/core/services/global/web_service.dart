@@ -131,7 +131,11 @@ class AppInterceptors extends Interceptor {
         options.uri.toString().toLowerCase().contains("transfer/shop-info") ||
         options.uri.toString().toLowerCase().contains("transfer/shop-ownership-info")||
        options.uri.toString().toLowerCase().contains("transfer/attachments")||
-        options.uri.toString().toLowerCase().contains("submit/by-new-owner")
+        options.uri.toString().toLowerCase().contains("submit/by-new-owner")||
+        options.uri.toString().toLowerCase().contains("accept/by-new-owner")||
+        options.uri.toString().toLowerCase().contains("reject/by-new-owner")
+
+
 
 
     ) {
