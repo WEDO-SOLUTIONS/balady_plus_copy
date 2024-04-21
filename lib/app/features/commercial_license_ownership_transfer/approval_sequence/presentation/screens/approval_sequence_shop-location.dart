@@ -216,6 +216,10 @@ class _ApprovalSequenceShopLocationScreenState
                             NotesWidget(
                               notes: ["ejar_note".tr()],
                             ),
+                            NotesWidget(
+                              notes: ["ejarAPP".tr()],
+                            ),
+
                             HorizontalRadioGroup<CRContractOption>(
                               groupName: "enter_contract_method".tr(),
                               currentItem: state.crContractOption,
@@ -345,12 +349,12 @@ class _ApprovalSequenceShopLocationScreenState
                                     .updateCRContractOption(value!);
                               },
                             ),
-                          if (state.crContractType == CRContractType.invest &&
-                              state.crSubmitterType == CRSubmitterType.rental &&
-                              state.crContractOption ==
-                                  CRContractOption.attach) ...[
-                            NotesWidget(notes: ["cr_contrct_type".tr()]),
-                          ],
+                          // if (state.crContractType == CRContractType.invest &&
+                          //     state.crSubmitterType == CRSubmitterType.rental &&
+                          //     state.crContractOption ==
+                          //         CRContractOption.attach) ...[
+                          //   NotesWidget(notes: ["cr_contrct_type".tr()]),
+                          // ],
                           if (state.crContractType == CRContractType.invest &&
                               state.crSubmitterType == CRSubmitterType.rental &&
                               state.crContractOption ==
