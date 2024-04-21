@@ -25,7 +25,7 @@ class SubmitterInfoWidget extends StatelessWidget {
         // need to confirm from backend and basins
         CardParameter(
           title: 'issue_commercial_conclusion_applicant_data_id'.tr(),
-          value: submitterInfo.crNumber ?? "",
+          value: submitterInfo.submitterIdNumber ?? "",
         ),
         CardParameter(
           title: 'issue_commercial_conclusion_applicant_data_type'.tr(),

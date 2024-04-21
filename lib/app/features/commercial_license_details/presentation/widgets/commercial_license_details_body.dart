@@ -90,8 +90,6 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
               ? ConclusionActivityInfoWidget(
                   activityInfo: commercialLicenceDetails.activityInfo,
                   mainActivityArea: commercialLicenceDetails.mainActivityArea ?? 0.0,
-                  entityType:
-                      commercialLicenceDetails.submitterInfo?.entityType,
                 )
               : const SizedBox(),
           /////////////// Additional Activities

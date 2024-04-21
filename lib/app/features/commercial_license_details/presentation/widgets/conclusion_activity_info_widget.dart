@@ -9,13 +9,11 @@ import '../../../commercial_license_details/data/models/commercial_licence_detai
 class ConclusionActivityInfoWidget extends StatelessWidget {
   final ActivityInfo? activityInfo;
   final double? mainActivityArea;
-  final String? entityType;
 
   const ConclusionActivityInfoWidget({
     super.key,
     required this.activityInfo,
     required this.mainActivityArea,
-    required this.entityType,
   });
 
   @override
@@ -43,11 +41,11 @@ class ConclusionActivityInfoWidget extends StatelessWidget {
         ),
         CardParameter(
           title: 'issue_commercial_conclusion_activity_data_marsom'.tr(),
-          value: mainActivityArea?.toString() ?? '',
+          value: activityInfo?.mainActivity?.area?.toString() ?? '',
         ),
         CardParameter(
           title: 'issue_commercial_conclusion_activity_facility'.tr(),
-          value: entityType?.tr() ?? '',
+          value: activityInfo?.mainActivity?.facilityName ?? '',
         ),
         CardParameter(
           title: 'issue_commercial_conclusion_activity_worker'.tr(),

@@ -14,6 +14,7 @@ import 'package:balady_plus/app/features/commercial_license_details/presentation
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/submitter_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/mvvm/selected_permits_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/widgets/ownership_transfer_license_info.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/widgets/selected_commercial_license_permits_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,7 @@ class _RequestOwnershipTransferDetailsBodyState
                   return CommercialLicenseAttachmentsViewModel(
                     webService: sl(),
                     licenseId: commercialRequestDetails.licenseInfo!.licenseId!,
+                    accessedRequestId: commercialRequestDetails.requestId,
                   );
                 },
               ),
@@ -120,6 +122,10 @@ class _RequestOwnershipTransferDetailsBodyState
                     ],
                   ),
 
+                  OwnershipTransferLicenseInfo(
+                    licenseInfo: commercialRequestDetails.licenseInfo,
+                    submitterInfo: commercialRequestDetails.submitterInfo,
+                  ),
                   ///////////////  Owner Info
                   commercialRequestDetails.submitterInfo != null
                       ? LicenseOwnerInfoWidget(
@@ -140,8 +146,6 @@ class _RequestOwnershipTransferDetailsBodyState
                           activityInfo: commercialRequestDetails.activityInfo,
                           mainActivityArea:
                               commercialRequestDetails.mainActivityArea ?? 0.0,
-                          entityType: commercialRequestDetails
-                              .submitterInfo?.entityType,
                         )
                       : const SizedBox(),
 
@@ -152,19 +156,9 @@ class _RequestOwnershipTransferDetailsBodyState
                               .activityInfo!.additionalActivities!)
                       : const SizedBox(),
 
-                  const SelectedCommercialLicensePermitsWidget(),
-
                   commercialRequestDetails.locationInfo != null
                       ? LocationInfoWidget(
                           locationInfo: commercialRequestDetails.locationInfo!,
-                        )
-                      : const SizedBox(),
-
-//TODO: بيانات النظافة
-                  commercialRequestDetails.shopInfo?.cleanContractInfo != null
-                      ? CleanContractInfoWidget(
-                          cleanContractInfo: commercialRequestDetails
-                              .shopInfo!.cleanContractInfo!,
                         )
                       : const SizedBox(),
 
@@ -174,7 +168,15 @@ class _RequestOwnershipTransferDetailsBodyState
                         )
                       : const SizedBox(),
 
-//TODO: بيانات الدفاع المدني
+                  commercialRequestDetails.shopInfo?.cleanContractInfo != null
+                      ? CleanContractInfoWidget(
+                          cleanContractInfo: commercialRequestDetails
+                              .shopInfo!.cleanContractInfo!,
+                        )
+                      : const SizedBox(),
+
+                  const SelectedCommercialLicensePermitsWidget(),
+
                   commercialRequestDetails.salamaInfo != null
                       ? SalamaDetailsInfoWidget(
                           salamaDetailsInfo:

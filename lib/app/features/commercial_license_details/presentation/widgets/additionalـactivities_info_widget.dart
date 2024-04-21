@@ -26,15 +26,15 @@ class AdditionalActivitiesInfoWidget extends StatelessWidget {
                     children: [
                       CardParameter(
                         title: 'isicActivityName_sub'.tr(),
-                        value: e.isicActivityName,
+                        value: e['isicActivityName'],
                       ),
                       CardParameter(
                         title: 'detailedActivityName'.tr(),
-                        value: e.detailedActivityName,
+                        value: e['detailedActivityName'],
                       ),
                       CardParameter(
                         title: 'isicActivity_area'.tr(),
-                        value: e.area.toString(),
+                        value: e['area'].toString(),
                       ),
                     ],
                   ),

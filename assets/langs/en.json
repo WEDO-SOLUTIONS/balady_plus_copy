@@ -3633,7 +3633,7 @@
   "pledges_submit_disclosure2": "is",
   "pledges_submit_disclosure3": "Saudi Riyal, which is the amount of the fee due",
   "pledges_submit_disclosure4": "Otherwise, the penalties stipulated in the law will be applied.",
-  "identityNumber": "Identity number",
+  "identityNumber": "Establishment No",
   "month1": "January",
   "month2": "February",
   "month3": "March",
@@ -4304,15 +4304,22 @@
   "follow_request": "Request was accepted and lisence ownership was transfered",
   "exclude": "Note: Anyone who must collect waste and transport it to the landfills designated for that purpose, in accordance with municipal requirements, according to the license granted thereto, is excluded from the applicable waste collection fee.",
   "new_owner_cr_number_error": "Please enter the commercial register number",
+  "shop_name_error": "Sorry can you please shop name",
   "new_owner_cr_number": "Commercial Register Number For New Owner",
   "new_owner": "New Owner",
   "transfer_all": "Transfer All",
   "permit_warn": "Please select which permits you want to transfer",
+  "permit_warn_license": "Dear beneficiary, Do you want to transfer valid permits on license to new owner ?",
   "permit_info": "Permits Information",
   "terms_error": "Please accept terms",
   "tranfer_permit": "transfer permit",
   "dont_tranfer_permit": "deselect permit",
   "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning",
+
+  "cr_Number_entity_number":"Commercial registry number/Establishment No",
   "show_request": "Show request",
-  "go_to_license": "Go back to license screen"
+  "go_to_license": "Go back to license screen",
+  "validate_shop_name": "Shop name can not contain any number"
+
+
 }

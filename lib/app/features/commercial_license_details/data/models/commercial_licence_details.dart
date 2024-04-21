@@ -294,16 +294,6 @@ class LicenseAllowedPermitsInfo {
   BaladyWorkFlow? baladyWorkFlow;
   bool? withFees;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = id;
-    map['name'] = name;
-    if (baladyWorkFlow != null) {
-      map['baladyWorkFlow'] = baladyWorkFlow?.toJson();
-    }
-    map['withFees'] = withFees;
-    return map;
-  }
 }
 
 class BaladyWorkFlow {
@@ -320,12 +310,6 @@ class BaladyWorkFlow {
   String? id;
   String? name;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = id;
-    map['name'] = name;
-    return map;
-  }
 }
 
 class BillsInfo {
@@ -356,17 +340,6 @@ class BillsInfo {
   bool? isSadadPaid;
   List<BillFees>? billFees;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['billNumber'] = billNumber;
-    map['billAmount'] = billAmount;
-    map['paymentDate'] = paymentDate;
-    map['isSadadPaid'] = isSadadPaid;
-    if (billFees != null) {
-      map['billFees'] = billFees?.map((v) => v.toJson()).toList();
-    }
-    return map;
-  }
 }
 
 class BillFees {
@@ -386,13 +359,6 @@ class BillFees {
   int? costItemTypeId;
   String? costItemDescription;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['costItemValue'] = costItemValue;
-    map['costItemTypeId'] = costItemTypeId;
-    map['costItemDescription'] = costItemDescription;
-    return map;
-  }
 }
 
 class ShopInfo {
@@ -534,57 +500,6 @@ class ShopInfo {
 
   CleanContractInfo? cleanContractInfo;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['shopName'] = shopName;
-    map['shopUnitNumber'] = shopUnitNumber;
-    map['holesCount'] = holesCount;
-    map['existInMall'] = existInMall;
-    map['floorNumber'] = floorNumber;
-    map['floorCount'] = floorCount;
-    map['hasElevator'] = hasElevator;
-    map['isCitizenPledgedToClean'] = isCitizenPledgedToClean;
-    map['cleanContractEndDate'] = cleanContractEndDate;
-    map['buildingLicenseDate'] = buildingLicenseDate;
-    map['buildingLicenseNo'] = buildingLicenseNo;
-    map['buildingOwnerIdno'] = buildingOwnerIdno;
-    map['buildingOwnerName'] = buildingOwnerName;
-    map['landNumber'] = landNumber;
-    map['planNumber'] = planNumber;
-    map['salamaBillNumber'] = salamaBillNumber;
-    if (boardsInfo != null) {
-      map['boardsInfo'] = boardsInfo?.map((v) => v.toJson()).toList();
-    }
-    if (contractInfoResponseDto != null) {
-      map['contractInfoResponseDto'] = contractInfoResponseDto?.toJson();
-    }
-    map['showShopOwnership'] = showShopOwnership;
-    map['slamaBillOptions'] = slamaBillOptions;
-    map['cameraBillOptions'] = cameraBillOptions;
-    map['endorsementText'] = endorsementText;
-    map['slamaReportOptions'] = slamaReportOptions;
-    map['slamaReportNumber'] = slamaReportNumber;
-    map['isFawryWithSalamaBill'] = isFawryWithSalamaBill;
-    map['isFawryWithSalamaReport'] = isFawryWithSalamaReport;
-    map['isSalamaPermitMandatory'] = isSalamaPermitMandatory;
-    map['cleanContractInfo'] = map["cleanContractInfo"] != null
-        ? CleanContractInfo.fromJson(map["cleanContractInfo"])
-        : cleanContractInfo;
-    if (cleanContractOptions != null) {
-      map['cleanContractOptions'] = cleanContractOptions?.toJson();
-    }
-    map['showActivityCancellationDate'] = showActivityCancellationDate;
-    map['activityCancellationDate'] = activityCancellationDate;
-    map['mallDto'] = mallDto;
-    map['blockNumber'] = blockNumber ?? "";
-    map['cancelReasonDto'] = cancelReasonDto;
-    map['brand'] = brand;
-    map['salamaPermitNumber'] = salamaPermitNumber;
-    map['licenseBrand'] = licenseBrand;
-    map['insidePetrolStation'] = insidePetrolStation;
-    map['noOfCameras'] = noOfCameras;
-    return map;
-  }
 }
 
 class CleanContractOptions {
@@ -601,12 +516,6 @@ class CleanContractOptions {
   String? cleanOption;
   String? contractOption;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['cleanOption'] = cleanOption;
-    map['contractOption'] = contractOption;
-    return map;
-  }
 }
 
 class ContractInfo {
@@ -644,20 +553,6 @@ class ContractInfo {
   ContractOptionsResponseDto? contractOptionsResponseDto;
   dynamic investmentContractNumber;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['contractType'] = contractType;
-    map['contractOption'] = contractOption;
-    map['tenancyContractInfo'] = tenancyContractInfo;
-    map['deedInfoResponse'] = deedInfoResponse;
-    map['contractDate'] = contractDate;
-    map['contractNumber'] = contractNumber;
-    if (contractOptionsResponseDto != null) {
-      map['contractOptionsResponseDto'] = contractOptionsResponseDto?.toJson();
-    }
-    map['investmentContractNumber'] = investmentContractNumber;
-    return map;
-  }
 
   String? getDisplayContractTypeName() {
     switch (contractType) {
@@ -715,13 +610,6 @@ class ContractOptionsResponseDto {
   List<String>? deedOptions;
   List<String>? investOptions;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['ejarOptions'] = ejarOptions;
-    map['deedOptions'] = deedOptions;
-    map['investOptions'] = investOptions;
-    return map;
-  }
 }
 
 class BoardsInfomation {
@@ -741,13 +629,6 @@ class BoardsInfomation {
   String? typeName;
   int? area;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['typeId'] = typeId;
-    map['typeName'] = typeName;
-    map['area'] = area;
-    return map;
-  }
 }
 
 class SubmitterInfo {
@@ -775,7 +656,7 @@ class SubmitterInfo {
     submitterType = json['submitterType'];
     crNumber = json['crNumber'];
     crType = json['crType'];
-    submitterIdNumber = json['submitterIdNumber'];
+    submitterIdNumber = json['submitterIdNumber']?.toString() ?? "";
     submitterBirthDate = json['submitterBirthDate'];
     mobile = json['mobile'];
     gender = json['gender'];
@@ -793,7 +674,7 @@ class SubmitterInfo {
   String? submitterType;
   String? crNumber;
   String? crType;
-  int? submitterIdNumber;
+  String? submitterIdNumber;
   String? submitterBirthDate;
   String? mobile;
   int? gender;
@@ -806,26 +687,6 @@ class SubmitterInfo {
   dynamic submitterIdType;
   int? crEntityType;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['entityType'] = entityType;
-    map['submitterType'] = submitterType;
-    map['crNumber'] = crNumber;
-    map['crType'] = crType;
-    map['submitterIdNumber'] = submitterIdNumber;
-    map['submitterBirthDate'] = submitterBirthDate;
-    map['mobile'] = mobile;
-    map['gender'] = gender;
-    map['crTypeId'] = crTypeId;
-    map['submitterName'] = submitterName;
-    map['entityName'] = entityName;
-    map['crIssueDate'] = crIssueDate;
-    map['crSource'] = crSource;
-    map['genderDesc'] = genderDesc;
-    map['submitterIdType'] = submitterIdType;
-    map['crEntityType'] = crEntityType;
-    return map;
-  }
 }
 
 class LocationInfo {
@@ -889,27 +750,6 @@ class LocationInfo {
   String? krokiUrl;
   String? cityName;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['subMunicipalityGisCode'] = subMunicipalityGisCode;
-    map['districtCode'] = districtCode;
-    map['streetCode'] = streetCode;
-    map['latitude'] = latitude;
-    map['longitude'] = longitude;
-    map['mapNo'] = mapNo;
-    map['landNo'] = landNo;
-    map['streetName'] = streetName;
-    map['districtName'] = districtName;
-    map['subMunicipalityName'] = subMunicipalityName;
-    map['municipalityId'] = municipalityId;
-    map['municipalityName'] = municipalityName;
-    map['subMunicipalityId'] = subMunicipalityId;
-    map['regionId'] = regionId;
-    map['regionName'] = regionName;
-    map['vehiclePathDesc'] = vehiclePathDesc;
-    map['krokiUrl'] = krokiUrl;
-    return map;
-  }
 }
 
 class ActivityInfo {
@@ -955,23 +795,6 @@ class ActivityInfo {
   dynamic inHomogenusActivities;
   dynamic salamaWorkflowWarningMessage;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    if (mainActivity != null) {
-      map['mainActivity'] = mainActivity?.toJson();
-    }
-    map['additionalActivities'] = additionalActivities;
-    map['foreignInvistor'] = foreignInvistor;
-    map['workerTypeId'] = workerTypeId;
-    map['workerTypeName'] = workerTypeName;
-    map['activityChangeReason'] = activityChangeReason;
-    map['showAtmFeesOption'] = showAtmFeesOption;
-    map['atmFeesPaid'] = atmFeesPaid;
-    map['atmActivity'] = atmActivity;
-    map['inHomogenusActivities'] = inHomogenusActivities;
-    map['salamaWorkflowWarningMessage'] = salamaWorkflowWarningMessage;
-    return map;
-  }
 }
 
 class MainActivity {
@@ -998,7 +821,7 @@ class MainActivity {
 
   MainActivity.fromJson(dynamic json) {
     detailedActivityId = json['detailedActivityId'];
-    area = json['area'];
+    area = (json['area'] ?? 0.0) + 0.0;
     unitCount = json['unitCount'];
     accommodationTypeId = json['accommodationTypeId'];
     accommodationTypeName = json['accommodationTypeName'];
@@ -1020,7 +843,7 @@ class MainActivity {
   }
 
   int? detailedActivityId;
-  int? area;
+  double? area;
   dynamic unitCount;
   dynamic accommodationTypeId;
   dynamic accommodationTypeName;
@@ -1038,30 +861,6 @@ class MainActivity {
   String? facilityName;
   String? salamaWorkflow;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['detailedActivityId'] = detailedActivityId;
-    map['area'] = area;
-    map['unitCount'] = unitCount;
-    map['accommodationTypeId'] = accommodationTypeId;
-    map['accommodationTypeName'] = accommodationTypeName;
-    map['detailedActivityName'] = detailedActivityName;
-    map['isicActivityId'] = isicActivityId;
-    map['mainActivityId'] = mainActivityId;
-    map['isicActivityName'] = isicActivityName;
-    map['minYears'] = minYears;
-    map['maxYears'] = maxYears;
-    map['removed'] = removed;
-    if (activitySettingDto != null) {
-      map['activitySettingDto'] = activitySettingDto?.toJson();
-    }
-    map['minArea'] = minArea;
-    map['maxArea'] = maxArea;
-    map['facilityId'] = facilityId;
-    map['facilityName'] = facilityName;
-    map['salamaWorkflow'] = salamaWorkflow;
-    return map;
-  }
 }
 
 class ActivitySettingDto {
@@ -1090,16 +889,6 @@ class ActivitySettingDto {
   dynamic ownershipType;
   dynamic requestFlow;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['entityType'] = entityType;
-    map['vehicleType'] = vehicleType;
-    map['pathType'] = pathType;
-    map['foodActivity'] = foodActivity;
-    map['ownershipType'] = ownershipType;
-    map['requestFlow'] = requestFlow;
-    return map;
-  }
 }
 
 class AdditionalActivities {
@@ -1147,16 +936,6 @@ class LicenceHoldInfoStatusResponseDto {
   dynamic holdedSevices;
   String? holdSource;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['hold'] = hold;
-    map['licenseId'] = licenseId;
-    map['holdReason'] = holdReason;
-    map['holdType'] = holdType;
-    map['holdedSevices'] = holdedSevices;
-    map['holdSource'] = holdSource;
-    return map;
-  }
 }
 
 class SalamaInfo {
@@ -1179,14 +958,6 @@ class SalamaInfo {
   dynamic salamaApprovedCenterId;
   dynamic salamaApprovedCenterName;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['salamaIssueDate'] = salamaIssueDate;
-    map['salamaIssueNo'] = salamaIssueNo;
-    map['salamaApprovedCenterId'] = salamaApprovedCenterId;
-    map['salamaApprovedCenterName'] = salamaApprovedCenterName;
-    return map;
-  }
 }
 
 class CleanContractInfo {
@@ -1395,31 +1166,5 @@ class LicenseInfo {
   int? qrRequestId;
   String? statusDesc;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['licenseEndDate'] = licenseEndDate;
-    map['licenseSadadEndDate'] = licenseSadadEndDate;
-    map['licensePeriod'] = licensePeriod;
-    map['sadadPeriod'] = sadadPeriod;
-    map['licenseId'] = licenseId;
-    map['statusId'] = statusId;
-    map['expireInDays'] = expireInDays;
-    map['oldLicenseNo'] = oldLicenseNo;
-    map['issueDate'] = issueDate;
-    map['expired'] = expired;
-    map['printUrl'] = printUrl;
-    map['qrCodeUrl'] = qrCodeUrl;
-    map['qrRequestId'] = qrRequestId;
-    map['statusDesc'] = statusDesc;
-    return map;
-  }
 }
 
-class Warnings {
-  String? partialHeldWarnings;
-  Warnings({this.partialHeldWarnings});
-  factory Warnings.fromJson(Map<String, dynamic> json) =>
-      Warnings(partialHeldWarnings: json["PARTIAL_HELD_WARNINGS"]);
-
-  Map<String, dynamic> toJson() => {};
-}
