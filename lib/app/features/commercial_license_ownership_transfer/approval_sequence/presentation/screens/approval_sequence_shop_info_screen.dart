@@ -74,8 +74,12 @@ class _ApprovalSequenceShopInfoScreenState
                             keyboardType: TextInputType.text,
                             fillColor: Colors.transparent,
                             onValidate: (text) {
+                              RegExp regex = RegExp("r'[a-zA-Zء-ي]");
                               if (text.toString().isEmpty) {
                                 return ("new_owner_cr_number_error").tr();
+                              } else if (!regex.hasMatch(text!)) {
+                                //TODO: add message
+// return();
                               }
                               return null;
                             },
