@@ -998,7 +998,7 @@ class MainActivity {
 
   MainActivity.fromJson(dynamic json) {
     detailedActivityId = json['detailedActivityId'];
-    area = json['area'];
+    area = (json['area'] ?? 0.0) + 0.0;
     unitCount = json['unitCount'];
     accommodationTypeId = json['accommodationTypeId'];
     accommodationTypeName = json['accommodationTypeName'];
@@ -1020,7 +1020,7 @@ class MainActivity {
   }
 
   int? detailedActivityId;
-  int? area;
+  double? area;
   dynamic unitCount;
   dynamic accommodationTypeId;
   dynamic accommodationTypeName;
@@ -1038,30 +1038,6 @@ class MainActivity {
   String? facilityName;
   String? salamaWorkflow;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['detailedActivityId'] = detailedActivityId;
-    map['area'] = area;
-    map['unitCount'] = unitCount;
-    map['accommodationTypeId'] = accommodationTypeId;
-    map['accommodationTypeName'] = accommodationTypeName;
-    map['detailedActivityName'] = detailedActivityName;
-    map['isicActivityId'] = isicActivityId;
-    map['mainActivityId'] = mainActivityId;
-    map['isicActivityName'] = isicActivityName;
-    map['minYears'] = minYears;
-    map['maxYears'] = maxYears;
-    map['removed'] = removed;
-    if (activitySettingDto != null) {
-      map['activitySettingDto'] = activitySettingDto?.toJson();
-    }
-    map['minArea'] = minArea;
-    map['maxArea'] = maxArea;
-    map['facilityId'] = facilityId;
-    map['facilityName'] = facilityName;
-    map['salamaWorkflow'] = salamaWorkflow;
-    return map;
-  }
 }
 
 class ActivitySettingDto {

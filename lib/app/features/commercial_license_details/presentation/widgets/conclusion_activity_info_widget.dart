@@ -41,7 +41,7 @@ class ConclusionActivityInfoWidget extends StatelessWidget {
         ),
         CardParameter(
           title: 'issue_commercial_conclusion_activity_data_marsom'.tr(),
-          value: mainActivityArea?.toString() ?? '',
+          value: activityInfo?.mainActivity?.area?.toString() ?? '',
         ),
         CardParameter(
           title: 'issue_commercial_conclusion_activity_facility'.tr(),
