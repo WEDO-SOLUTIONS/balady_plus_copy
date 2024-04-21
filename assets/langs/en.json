@@ -4314,5 +4314,8 @@
   "terms_error": "Please accept terms",
   "tranfer_permit":"transfer permit",
   "dont_tranfer_permit": "deselect permit",
-  "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning"
+  "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning",
+  "show_request": "Show request",
+  "go_to_license": "Go back to license screen"
+
 }
