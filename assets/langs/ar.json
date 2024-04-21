@@ -7893,5 +7893,8 @@
   "salamaBillNumber_2": "رقم شهادة تركيب أدوات الوقاية والحماية من الحريق",
   "create_request": "إنشاء طلب",
 
-  "name_contract": "مسمي العقد"
+  "name_contract": "مسمي العقد",
+
+
+  "cr_Number_entity_number": "رقم السجل التجاري/رقم المنشأة"
 }

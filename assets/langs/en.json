@@ -3633,7 +3633,7 @@
   "pledges_submit_disclosure2": "is",
   "pledges_submit_disclosure3": "Saudi Riyal, which is the amount of the fee due",
   "pledges_submit_disclosure4": "Otherwise, the penalties stipulated in the law will be applied.",
-  "identityNumber": "Identity number",
+  "identityNumber": "Establishment No",
   "month1": "January",
   "month2": "February",
   "month3": "March",
@@ -4314,5 +4314,7 @@
   "terms_error": "Please accept terms",
   "tranfer_permit":"transfer permit",
   "dont_tranfer_permit": "deselect permit",
-  "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning"
+  "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning",
+
+  "cr_Number_entity_number":"Commercial registry number/Establishment No"
 }

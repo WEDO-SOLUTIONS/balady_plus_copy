@@ -793,7 +793,7 @@ class SubmitterInfo {
   String? submitterType;
   String? crNumber;
   String? crType;
-  int? submitterIdNumber;
+  String submitterIdNumber;
   String? submitterBirthDate;
   String? mobile;
   int? gender;
@@ -812,7 +812,7 @@ class SubmitterInfo {
     map['submitterType'] = submitterType;
     map['crNumber'] = crNumber;
     map['crType'] = crType;
-    map['submitterIdNumber'] = submitterIdNumber;
+    map['submitterIdNumber'] = submitterIdNumber?.toString() ?? "";
     map['submitterBirthDate'] = submitterBirthDate;
     map['mobile'] = mobile;
     map['gender'] = gender;
