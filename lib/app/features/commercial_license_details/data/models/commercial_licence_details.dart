@@ -1265,8 +1265,12 @@ class OwnershipInfo {
         tenancyContractInfo: json['tenancyContractInfo'] != null
             ? TenancyContractInfo.fromJson(json['tenancyContractInfo'])
             : null,
-        deedInfo: json['deedInfo'] ?? "",
-        investmentContractInfo: json['investmentContractInfo'] ?? "",
+        deedInfo: json['deedInfo'] != null
+            ? DeedInfo.fromJson(json['deedInfo'])
+            : null,
+        investmentContractInfo: json['investmentContractInfo'] != null
+            ? InvestmentContractInfo.fromJson(json['investmentContractInfo'])
+            : null,
       );
 }
 
@@ -1298,8 +1302,7 @@ class DeedInfo {
     required this.deedDate,
   });
 
-  factory DeedInfo.fromJson(Map<String, dynamic> json) =>
-      DeedInfo(
+  factory DeedInfo.fromJson(Map<String, dynamic> json) => DeedInfo(
         deedNumber: json['deedNumber'] ?? "",
         deedDate: json['deedDate'] ?? "",
       );
