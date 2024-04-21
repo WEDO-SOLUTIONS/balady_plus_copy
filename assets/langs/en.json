@@ -4304,6 +4304,7 @@
   "follow_request": "Request was accepted and lisence ownership was transfered",
   "exclude": "Note: Anyone who must collect waste and transport it to the landfills designated for that purpose, in accordance with municipal requirements, according to the license granted thereto, is excluded from the applicable waste collection fee.",
   "new_owner_cr_number_error": "Please enter the commercial register number",
+  "shop_name_error": "Sorry can you please shop name",
   "new_owner_cr_number": "Commercial Register Number For New Owner",
   "new_owner": "New Owner",
   "transfer_all": "Transfer All",
