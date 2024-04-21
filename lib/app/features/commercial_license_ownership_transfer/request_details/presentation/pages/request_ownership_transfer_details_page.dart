@@ -107,12 +107,10 @@ class _RequestOwnershipTransferDetailsPageState
                 RequestOwnershipTransferDetailsState>(
               builder: (blocContext, state) {
                 return state.status == BlocRequestStatus.submissionGetSuccess
-                    ? (state.status as RequestOwnershipTransferDetailsState)
-                                    .commercialLicenceDetails!
+                    ? state.commercialLicenceDetails!
                                     .statusId ==
                                 10 ||
-                            (state.status
-                                        as RequestOwnershipTransferDetailsState)
+                            state
                                     .commercialLicenceDetails!
                                     .statusId ==
                                 37
