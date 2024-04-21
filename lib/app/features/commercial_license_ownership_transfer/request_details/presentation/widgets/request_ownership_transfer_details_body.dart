@@ -70,6 +70,7 @@ class _RequestOwnershipTransferDetailsBodyState
                   return CommercialLicenseAttachmentsViewModel(
                     webService: sl(),
                     licenseId: commercialRequestDetails.licenseInfo!.licenseId!,
+                    accessedRequestId: commercialRequestDetails.requestId,
                   );
                 },
               ),

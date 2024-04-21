@@ -656,7 +656,7 @@ class SubmitterInfo {
     submitterType = json['submitterType'];
     crNumber = json['crNumber'];
     crType = json['crType'];
-    submitterIdNumber = json['submitterIdNumber'] ?? "";
+    submitterIdNumber = json['submitterIdNumber']?.toString() ?? "";
     submitterBirthDate = json['submitterBirthDate'];
     mobile = json['mobile'];
     gender = json['gender'];
