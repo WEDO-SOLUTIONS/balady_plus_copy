@@ -267,12 +267,6 @@ class LicenseAllowedPermitsInfo {
         withFees: json["withFees"],
       );
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "baladyWorkFlow": baladyWorkFlow?.toJson(),
-        "withFees": withFees,
-      };
 }
 
 
@@ -992,3 +986,13 @@ class LicenseAllowedPermitsInfo {
 //
 //   Map<String, dynamic> toJson() => {};
 // }
+
+
+
+class Warnings {
+  String? partialHeldWarnings;
+  Warnings({this.partialHeldWarnings});
+  factory Warnings.fromJson(Map<String, dynamic> json) =>
+      Warnings(partialHeldWarnings: json["PARTIAL_HELD_WARNINGS"]);
+
+}
