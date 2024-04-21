@@ -8,7 +8,7 @@ class CommercialLicenceDetails {
 
   // String entityType;
   // int currentTabId;
-  // int statusId;
+  int statusId;
   String statusName;
 
   // int typeId;
@@ -83,7 +83,7 @@ class CommercialLicenceDetails {
     required this.creationDate,
     // required this.entityType,
     // required this.currentTabId,
-    // required this.statusId,
+    required this.statusId,
     required this.statusName,
     // required this.typeId,
     // required this.typeName,
@@ -155,7 +155,7 @@ class CommercialLicenceDetails {
             : null,
         // entityType: json["entityType"],
         // currentTabId: json["currentTabId"],
-        // statusId: json["statusId"],
+        statusId: json["statusId"] ?? -1,
         statusName: json["statusName"] ?? '',
         // typeId: json["typeId"],
         // typeName: json["typeName"],
