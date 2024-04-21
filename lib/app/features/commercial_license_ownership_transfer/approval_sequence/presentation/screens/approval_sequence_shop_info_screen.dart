@@ -78,8 +78,7 @@ class _ApprovalSequenceShopInfoScreenState
                               if (text.toString().isEmpty) {
                                 return ("new_owner_cr_number_error").tr();
                               } else if (!regex.hasMatch(text!)) {
-                                //TODO: add message
-// return();
+                                return ("validate_shop_name".tr());
                               }
                               return null;
                             },

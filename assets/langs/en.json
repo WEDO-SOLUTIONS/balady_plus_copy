@@ -4316,7 +4316,8 @@
 
   "cr_Number_entity_number":"Commercial registry number/Establishment No",
   "show_request": "Show request",
-  "go_to_license": "Go back to license screen"
+  "go_to_license": "Go back to license screen",
+  "validate_shop_name": "Shop name can not contain any number"
 
 
 }
