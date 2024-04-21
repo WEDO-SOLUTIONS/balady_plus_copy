@@ -3,7 +3,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CommercialLicenceDetails {
   int? requestId;
-  int? mainActivityArea;
+  double? mainActivityArea;
   DateTime? creationDate;
   String? entityType;
   int? currentTabId;
@@ -155,7 +155,7 @@ class CommercialLicenceDetails {
 
   CommercialLicenceDetails.fromJson(dynamic json) {
     requestId = json['requestId'];
-    mainActivityArea = json['mainActivityArea'];
+    mainActivityArea = (json['mainActivityArea'] ?? 0.0) + 0.0;
 
     creationDate = json["creationDate"] != null
         ? DateFormat("yyyy/MM/dd ").parse(json["creationDate"])
@@ -262,6 +262,9 @@ class CommercialLicenceDetails {
         : null;
     salamaInfo = json['salamaInfo'] != null
         ? SalamaInfo.fromJson(json['salamaInfo'])
+        : null;
+    salamaDetailsInfo = json['salamaDetailsInfo'] != null
+        ? SalamaDetailsInfo.fromJson(json['salamaDetailsInfo'])
         : null;
     ownershipInfo = json['ownershipInfo'] != null
         ? OwnershipInfo.fromJson(json['ownershipInfo'])
@@ -459,7 +462,7 @@ class ShopInfo {
       });
     }
     contractInfoResponseDto = json['contractInfoResponseDto'] != null
-        ? ContractInfoResponseDto.fromJson(json['contractInfoResponseDto'])
+        ? ContractInfo.fromJson(json['contractInfoResponseDto'])
         : null;
     showShopOwnership = json['showShopOwnership'];
     slamaBillOptions = json['slamaBillOptions'] != null
@@ -507,7 +510,7 @@ class ShopInfo {
   String? planNumber;
   dynamic salamaBillNumber;
   List<BoardsInfomation>? boardsInfo;
-  ContractInfoResponseDto? contractInfoResponseDto;
+  ContractInfo? contractInfoResponseDto;
   bool? showShopOwnership;
   List<String>? slamaBillOptions;
   String? cameraBillOptions;
@@ -606,8 +609,8 @@ class CleanContractOptions {
   }
 }
 
-class ContractInfoResponseDto {
-  ContractInfoResponseDto({
+class ContractInfo {
+  ContractInfo({
     this.contractType,
     this.contractOption,
     this.tenancyContractInfo,
@@ -618,7 +621,7 @@ class ContractInfoResponseDto {
     this.investmentContractNumber,
   });
 
-  ContractInfoResponseDto.fromJson(dynamic json) {
+  ContractInfo.fromJson(dynamic json) {
     contractType = json['contractType'];
     contractOption = json['contractOption'];
     tenancyContractInfo = json['tenancyContractInfo'];
@@ -1099,6 +1102,25 @@ class ActivitySettingDto {
   }
 }
 
+class AdditionalActivities {
+  String detailedActivityName;
+  double area;
+  String isicActivityName;
+
+  AdditionalActivities({
+    required this.detailedActivityName,
+    required this.area,
+    required this.isicActivityName,
+  });
+
+  factory AdditionalActivities.fromJson(Map<String, dynamic> json) =>
+      AdditionalActivities(
+        detailedActivityName: json["detailedActivityName"] ?? "",
+        area: (json["area"] ?? 0) + 0.0,
+        isicActivityName: json["isicActivityName"] ?? "",
+      );
+}
+
 class LicenceHoldInfoStatusResponseDto {
   LicenceHoldInfoStatusResponseDto({
     this.hold,
@@ -1214,7 +1236,7 @@ class SalamaDetailsInfo {
 
   factory SalamaDetailsInfo.fromJson(Map<String, dynamic> json) =>
       SalamaDetailsInfo(
-        workFlow: json['workFlow'],
+        workFlow: json['workFlow'] ?? "",
         salamaReportNumber: json['salamaReportNumber'] ?? "",
         salamaBillNumber: json['salamaBillNumber'] ?? "",
         salamaPermitNumber: json['salamaPermitNumber'] ?? "",
@@ -1266,6 +1288,7 @@ class InvestmentContractInfo {
         type: json['type'] != null ? ContractType.fromJson(json['type']) : null,
       );
 }
+
 class DeedInfo {
   final String deedNumber;
   final String deedDate;
@@ -1387,4 +1410,13 @@ class LicenseInfo {
     map['statusDesc'] = statusDesc;
     return map;
   }
+}
+
+class Warnings {
+  String? partialHeldWarnings;
+  Warnings({this.partialHeldWarnings});
+  factory Warnings.fromJson(Map<String, dynamic> json) =>
+      Warnings(partialHeldWarnings: json["PARTIAL_HELD_WARNINGS"]);
+
+  Map<String, dynamic> toJson() => {};
 }

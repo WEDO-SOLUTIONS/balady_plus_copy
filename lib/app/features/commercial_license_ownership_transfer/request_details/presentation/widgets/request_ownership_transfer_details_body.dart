@@ -3,16 +3,21 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/additional%D9%80activities_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/models/commercial_licence_details.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/clean_contract_info_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/conclusion_activity_info_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/license_owner_info_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/location_info_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/salama_details_info_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/shop_info_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/submitter_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/mvvm/selected_permits_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/widgets/selected_commercial_license_permits_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
@@ -63,7 +68,7 @@ class _RequestOwnershipTransferDetailsBodyState
                 create: (BuildContext context) {
                   return CommercialLicenseAttachmentsViewModel(
                     webService: sl(),
-                    licenseId: commercialRequestDetails.licenseInfo!.licenseId,
+                    licenseId: commercialRequestDetails.licenseInfo!.licenseId!,
                   );
                 },
               ),
@@ -105,7 +110,7 @@ class _RequestOwnershipTransferDetailsBodyState
                           child: Row(
                             children: [
                               CustomTextWidget(
-                                commercialRequestDetails.statusName ,
+                                commercialRequestDetails.statusName,
                                 textStyle: AppStyle.tagTextStyle,
                               ),
                             ],
@@ -114,426 +119,67 @@ class _RequestOwnershipTransferDetailsBodyState
                       ),
                     ],
                   ),
-                  ExpandableCard(
-                    title: 'license_owner_info'.tr(),
-                    icon: IconPath.editIcon,
-                    isExpandedByDefault: true,
-                    children: [
-                      CardParameter(
-                        title: 'facility_name'.tr(),
-                        value: commercialRequestDetails
-                                .submitterInfo?.entityName ??
-                            '',
-                      ),
-                      CardParameter(
-                        title: 'issue_commercial_conclusion_owner_data_cr'.tr(),
-                        value: commercialRequestDetails.submitterInfo?.crNumber ?? '',
-                      ),
-                    ],
-                  ),
-                  ExpandableCard(
-                    title: 'ApplicantInfo'.tr(),
-                    icon: IconPath.editIcon,
-                    isExpandedByDefault: true,
-                    children: [
-                      CardParameter(
-                        title: 'driver_card_applicant_name'.tr(),
-                        value: commercialRequestDetails
-                                .submitterInfo?.submitterName ??
-                            '',
-                      ),
-                      CardParameter(
-                        title: 'submitterIdNumber'.tr(),
-                        value: commercialRequestDetails
-                            .submitterInfo?.submitterIdNumber
-                            .toString() ?? '',
-                      ),
-                      CardParameter(
-                        title: 'applicantDesc'.tr(),
-                        value: commercialRequestDetails
-                            .submitterInfo?.submitterType ?? '',
-                      ),
-                    ],
-                  ),
-                  ExpandableCard(
-                    title: 'issue_commercial_conclusion_activity_data'.tr(),
-                    icon: IconPath.editIcon,
-                    isExpandedByDefault: true,
-                    children: [
-                      CardParameter(
-                        title: 'issue_commercial_conclusion_activity_data_isic'
-                            .tr(),
-                        value: commercialRequestDetails
-                                .activityInfo?.mainActivity?.isicActivityName ??
-                            '',
-                      ),
-                      CardParameter(
-                        title:
-                            'issue_commercial_conclusion_activity_data_detailed'
-                                .tr(),
-                        value: commercialRequestDetails.activityInfo
-                                ?.mainActivity?.detailedActivityName ??
-                            '',
-                      ),
-                      CardParameter(
-                        title: 'issue_commercial_conclusion_activity_data_area'
-                            .tr(),
-                        value: commercialRequestDetails
-                                .activityInfo?.mainActivity?.area
-                                .toString() ??
-                            '',
-                      ),
-                      CardParameter(
-                        title:
-                            'issue_commercial_conclusion_activity_data_main_area'
-                                .tr(),
-                        value: commercialRequestDetails.mainActivityArea
-                            ?.toString() ?? '',
-                      ),
-                      CardParameter(
-                        title:
-                            'issue_commercial_conclusion_activity_data_marsom'
-                                .tr(),
-                        value: commercialRequestDetails.mainActivityArea?.toString() ?? '',
-                      ),
-                      CardParameter(
-                        title: 'issue_commercial_conclusion_activity_facility'
-                            .tr(),
-                        value: commercialRequestDetails
-                                .submitterInfo?.entityType.toString() ?? '',
-                      ),
-                      CardParameter(
-                        title:
-                            'issue_commercial_conclusion_activity_worker'.tr(),
-                        value: commercialRequestDetails
-                                .activityInfo?.workerTypeName ??
-                            '',
-                      ),
-                    ],
-                  ),
 
-                  commercialRequestDetails.activityInfo!.additionalActivities !=
-                          null
-                      ? ExpandableCard(
-                          title: 'list_additional_activities'.tr(),
-                          icon: IconPath.editIcon,
-                          children: [
-                            Column(
-                              children: commercialRequestDetails
-                                  .activityInfo!.additionalActivities!
-                                  .map(
-                                    (e) => Card(
-                                      margin: const EdgeInsets.all(8),
-                                      child: Column(
-                                        children: [
-                                          CardParameter(
-                                            title: 'isicActivityName_sub'.tr(),
-                                            value: e.isicActivityName,
-                                          ),
-                                          CardParameter(
-                                            title: 'detailedActivityName'.tr(),
-                                            value: e.detailedActivityName,
-                                          ),
-                                          CardParameter(
-                                            title: 'isicActivityName'.tr(),
-                                            value: e.area.toString(),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ],
+                  ///////////////  Owner Info
+                  commercialRequestDetails.submitterInfo != null
+                      ? LicenseOwnerInfoWidget(
+                          submitterInfo:
+                              commercialRequestDetails.submitterInfo!,
                         )
+                      : const SizedBox(),
+                  ///////////////  Submitter Info
+                  commercialRequestDetails.submitterInfo != null
+                      ? SubmitterInfoWidget(
+                          submitterInfo:
+                              commercialRequestDetails.submitterInfo!,
+                        )
+                      : const SizedBox(),
+                  ////////////////    Activity Info
+                  commercialRequestDetails.activityInfo != null
+                      ? ConclusionActivityInfoWidget(
+                          activityInfo: commercialRequestDetails.activityInfo,
+                          mainActivityArea:
+                              commercialRequestDetails.mainActivityArea ?? 0.0,
+                          entityType: commercialRequestDetails
+                              .submitterInfo?.entityType,
+                        )
+                      : const SizedBox(),
+
+                  commercialRequestDetails.activityInfo?.additionalActivities !=
+                          null
+                      ? AdditionalActivitiesInfoWidget(
+                          additionalActivities: commercialRequestDetails
+                              .activityInfo!.additionalActivities!)
                       : const SizedBox(),
 
                   const SelectedCommercialLicensePermitsWidget(),
 
                   commercialRequestDetails.locationInfo != null
-                      ? ExpandableCard(
-                          title: 'locationInfo'.tr(),
-                          icon: IconPath.qrLocationIcon,
-                          children: [
-                            const SizedBox(height: 16),
-                            commercialRequestDetails.locationInfo!.latitude !=
-                                        null &&
-                                    commercialRequestDetails
-                                            .locationInfo!.longitude !=
-                                        null
-                                ? SizedBox(
-                                    height: 250,
-                                    child: GoogleMap(
-                                      initialCameraPosition: CameraPosition(
-                                          target: LatLng(
-                                            double.parse(
-                                                commercialRequestDetails
-                                                    .locationInfo!.latitude!),
-                                            double.parse(
-                                                commercialRequestDetails
-                                                    .locationInfo!.longitude!),
-                                          ),
-                                          zoom: 16),
-                                      markers: {
-                                        Marker(
-                                          markerId: const MarkerId('position'),
-                                          position: LatLng(
-                                            double.parse(
-                                                commercialRequestDetails
-                                                    .locationInfo!.latitude!),
-                                            double.parse(
-                                                commercialRequestDetails
-                                                    .locationInfo!.longitude!),
-                                          ),
-                                        )
-                                      },
-                                      zoomControlsEnabled: false,
-                                      zoomGesturesEnabled: false,
-                                      scrollGesturesEnabled: false,
-                                    ),
-                                  )
-                                : const SizedBox(),
-                            CardParameter(
-                              title: 'region'.tr(),
-                              value: commercialRequestDetails
-                                  .locationInfo!.regionName,
-                            ),
-                            CardParameter(
-                              // from whats
-                              title: 'municipalityName'.tr(),
-                              value: commercialRequestDetails
-                                  .locationInfo!.municipalityName,
-                            ),
-                            CardParameter(
-                              // from whats
-                              title: 'subMunicipalityName'.tr(),
-                              value: commercialRequestDetails
-                                  .locationInfo!.subMunicipalityName,
-                            ),
-                            CardParameter(
-                              title: 'district'.tr(),
-                              value: commercialRequestDetails
-                                  .locationInfo!.districtName,
-                            ),
-                            CardParameter(
-                              title: 'street'.tr(),
-                              value: commercialRequestDetails
-                                  .locationInfo!.streetName,
-                            ),
-                            CardParameter(
-                              title: 'latitude'.tr(),
-                              value: commercialRequestDetails
-                                      .locationInfo!.latitude ??
-                                  '',
-                            ),
-                            CardParameter(
-                              title: 'longitude'.tr(),
-                              value: commercialRequestDetails
-                                      .locationInfo!.longitude ??
-                                  '',
-                            ),
-                          ],
+                      ? LocationInfoWidget(
+                          locationInfo: commercialRequestDetails.locationInfo!,
                         )
                       : const SizedBox(),
 
 //TODO: بيانات النظافة
                   commercialRequestDetails.shopInfo?.cleanContractInfo != null
-                      ? ExpandableCard(
-                          title: "issue_commercial_clean_data".tr(),
-                          icon: IconPath.editIcon,
-                          children: [])
+                      ? CleanContractInfoWidget(
+                          cleanContractInfo: commercialRequestDetails
+                              .shopInfo!.cleanContractInfo!,
+                        )
                       : const SizedBox(),
 
                   commercialRequestDetails.shopInfo != null
-                      ? ExpandableCard(
-                          title: 'plaest_data_paintings'.tr(),
-                          icon: IconPath.editIcon,
-                          children: [
-                            CardParameter(
-                              title: 'shopName'.tr(),
-                              value:
-                                  commercialRequestDetails.shopInfo!.shopName ??
-                                      '',
-                            ),
-                            CardParameter(
-                              // from whats
-                              title: 'shopUnitNumber'.tr(),
-                              value: commercialRequestDetails
-                                  .shopInfo!.shopUnitNumber?.toString() ?? '',
-                            ),
-                            CardParameter(
-                              title: 'blockNumber'.tr(),
-                              value: commercialRequestDetails
-                                  .shopInfo!.blockNumber?.toString() ?? '',
-                            ),
-                            CardParameter(
-                              title: 'holesCount'.tr(),
-                              value: commercialRequestDetails
-                                  .shopInfo!.holesCount?.toString() ?? '',
-                            ),
-                            CardParameter(
-                              // from whats
-                              title: 'planNumber'.tr(),
-                              value: commercialRequestDetails
-                                      .shopInfo!.planNumber ??
-                                  '',
-                            ),
-                            //////////////////////////////////////////
-                            // CardParameter(
-                            //   title: 'رقم القطعة'.tr(),
-                            //   value: 'رقم القطعة',
-                            // ),
-                            //////////////////////////////////////////
-                            CardParameter(
-                              title: 'floorNumber'.tr(),
-                              value: commercialRequestDetails
-                                      .shopInfo!.floorNumber
-                                      ?.toString() ??
-                                  '',
-                            ),
-                            CardParameter(
-                              title: 'floorCount'.tr(),
-                              value: commercialRequestDetails
-                                  .shopInfo!.floorCount?.toString() ?? '',
-                            ),
-                            CardParameter(
-                              title: 'noOfCameras'.tr(),
-                              value: commercialRequestDetails
-                                  .shopInfo!.noOfCameras
-                                  .toString(),
-                            ),
-                            //////////////////////////////////////////
-                            commercialRequestDetails.shopInfo!.hasElevator !=
-                                    null
-                                ? CardParameter(
-                                    title: 'hasElevator'.tr(),
-                                    value: commercialRequestDetails
-                                            .shopInfo!.hasElevator!
-                                        ? 'yes'.tr()
-                                        : 'no'.tr(),
-                                  )
-                                : const SizedBox(),
-                            CardParameter(
-                              title: 'salamaIssueNo'.tr(),
-                              value: commercialRequestDetails
-                                      .salamaInfo?.salamaIssueNo ??
-                                  "",
-                            ),
-                            //////////////////////////////////////////
-                            CardParameter(
-                              title: 'slamaReportNumber'.tr(),
-                              value: commercialRequestDetails
-                                      .shopInfo!.slamaReportNumber
-                                      ?.toString() ??
-                                  '',
-                            ),
-                            commercialRequestDetails
-                                        .shopInfo!.contractInfoResponseDto !=
-                                    null
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      CardParameter(
-                                        title: 'contractType'.tr(),
-                                        value: commercialRequestDetails
-                                            .shopInfo!.contractInfoResponseDto?.getDisplayContractTypeName() ?? '',
-                                      ),
-                                      CardParameter(
-                                        title: 'contractNumber'.tr(),
-                                        value: commercialRequestDetails
-                                            .shopInfo!
-                                            .contractInfoResponseDto?.contractNumber ?? '',
-                                      ),
-                                      CardParameter(
-                                        title: 'contractOption'.tr(),
-                                        value: (commercialRequestDetails
-                                            .shopInfo!.contractInfoResponseDto?.getDisplayCleanContractName() ?? ''),
-                                      ),
-                                    ],
-                                  )
-                                : const SizedBox(),
-
-                            state.commercialLicenceDetails!.shopInfo
-                                        ?.boardsInfo !=
-                                    null
-                                ? ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: state.commercialLicenceDetails!
-                                        .shopInfo!.boardsInfo!.length,
-                                    itemBuilder: (_, index) {
-                                      BoardsInfo boardsInfo = state
-                                          .commercialLicenceDetails!
-                                          .shopInfo!
-                                          .boardsInfo![index];
-                                      return Card(
-                                        margin: const EdgeInsets.only(top: 16),
-                                        color: AppColor.primary100Light,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              CustomTextWidget(
-                                                '${'board'.tr()} ${++index}',
-                                                textStyle: AppStyle
-                                                    .signInFullTextStyle
-                                                    .copyWith(
-                                                  color:
-                                                      AppColor.primary700Light,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 16),
-                                              CustomTextWidget(
-                                                "boardTypeName".tr(),
-                                                textStyle:
-                                                    AppStyle.tagTextStyle,
-                                              ),
-                                              const SizedBox(height: 4),
-                                              CustomTextWidget(
-                                                boardsInfo.typeName,
-                                                textStyle: AppStyle
-                                                    .costTextStyle
-                                                    .copyWith(
-                                                  color:
-                                                      const Color(0xff52525B),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 16),
-                                              CustomTextWidget(
-                                                "boardArea".tr(),
-                                                textStyle:
-                                                    AppStyle.tagTextStyle,
-                                              ),
-                                              const SizedBox(height: 4),
-                                              CustomTextWidget(
-                                                boardsInfo.area.toString() +
-                                                    'm2'.tr(),
-                                                textStyle: AppStyle
-                                                    .costTextStyle
-                                                    .copyWith(
-                                                  color:
-                                                      const Color(0xff52525B),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  )
-                                : const SizedBox(),
-                          ],
+                      ? ShopInfoWidget(
+                          shopInfo: commercialRequestDetails.shopInfo!,
                         )
                       : const SizedBox(),
 
 //TODO: بيانات الدفاع المدني
                   commercialRequestDetails.salamaInfo != null
-                      ? ExpandableCard(
-                          title: 'issue_commercial_civil'.tr(), children: [])
+                      ? SalamaDetailsInfoWidget(
+                          salamaDetailsInfo:
+                              commercialRequestDetails.salamaDetailsInfo!,
+                        )
                       : const SizedBox(),
 
                   /////////////////////////////////////////////////

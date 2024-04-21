@@ -89,7 +89,7 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
           commercialLicenceDetails.activityInfo != null
               ? ConclusionActivityInfoWidget(
                   activityInfo: commercialLicenceDetails.activityInfo,
-                  mainActivityArea: commercialLicenceDetails.mainActivityArea,
+                  mainActivityArea: commercialLicenceDetails.mainActivityArea ?? 0.0,
                   entityType:
                       commercialLicenceDetails.submitterInfo?.entityType,
                 )

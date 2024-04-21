@@ -117,7 +117,7 @@ final class DTOState extends RequestApprovalSequenceState {
   final CRContractOption? crContractOption;
   final CRContractType? crContractType;
   final CRSubmitterType? crSubmitterType;
-  final ContractInfoDto? dto;
+  final ContractInfo? dto;
   final String? contractNumber;
   final String? contractDate;
   final DeedInfoRequest? deedInfoRequst;
@@ -155,7 +155,7 @@ final class DTOState extends RequestApprovalSequenceState {
       {CRContractOption? crContractOption,
       CRContractType? crContractType,
       CRSubmitterType? crSubmitterType,
-      ContractInfoDto? dto,
+      ContractInfo? dto,
       String? contractNumber,
       String? contractDate,
       DeedInfoRequest? deedInfoRequst,
