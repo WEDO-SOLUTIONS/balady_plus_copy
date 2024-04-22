@@ -16,6 +16,7 @@ import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -105,24 +106,32 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       return;
     }
 
-    final briefInfo = await dgisController.findBriefRouteInfos(
-      options: RouteSearchOptionsMessage.pedestrian,
-      finishPoint: finishPoint.routeSearchPointMessage,
-    );
+    double distance = 0;
+    double time = 0;
 
-    if (briefInfo.isEmpty) {
-      isNavTypeLoading.value = false;
-      return;
+    try {
+      final briefInfo = await dgisController.findBriefRouteInfos(
+        options: RouteSearchOptionsMessage.pedestrian,
+        finishPoint: finishPoint.routeSearchPointMessage,
+      );
+
+      if (briefInfo.isEmpty) {
+        isNavTypeLoading.value = false;
+        return;
+      }
+
+      // distance in meters, convert to km
+      distance = briefInfo.first!.extraInfo.distance.toDouble().toKilometers();
+      time = briefInfo.first!.duration.toMinutes();
+      // ignore: avoid_catches_without_on_clauses
+    } catch (_) {
+      distance = CommonFunctions.distance(
+        location.latitude,
+        location.longitude,
+        finishPoint.geoPoint.latitude,
+        finishPoint.geoPoint.longitude,
+      );
     }
-
-    final time = briefInfo.first!.duration / 60;
-
-    final distance = CommonFunctions.distance(
-      location.latitude,
-      location.longitude,
-      finishPoint.geoPoint.latitude,
-      finishPoint.geoPoint.longitude,
-    );
 
     // if distance is less than 0.7 km and time <= 7 min then use pedestrian just for in building navigation
     if (distance < 0.7 && time.floor() <= 7) {

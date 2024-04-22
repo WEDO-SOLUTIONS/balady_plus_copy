@@ -994,12 +994,19 @@ class PackageInfoMessage {
 
 enum PackageUpdateStatusMessage { notAvailable, inProgress, paused }
 
-enum BriefExtraRouteInfoMessage {
+enum BriefExtraRouteInfoTypeMessage {
   bicycle,
   car,
   pedestrian,
   publicTransport,
   scooter,
+}
+
+class BriefExtraRouteInfoMessage {
+  BriefExtraRouteInfoMessage(this.type, this.distance);
+
+  final BriefExtraRouteInfoTypeMessage type;
+  final int distance;
 }
 
 enum WeatherMapType {
