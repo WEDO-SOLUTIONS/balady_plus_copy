@@ -143,6 +143,9 @@ class _ApprovalSequenceShopLocationScreenState
                                     .updateContractNumber(value);
                               },
                             ),
+
+
+
                             HijriCalendarAddetionalField(
                               fieldName: "contractDate".tr(),
                               isMandatory: true,
