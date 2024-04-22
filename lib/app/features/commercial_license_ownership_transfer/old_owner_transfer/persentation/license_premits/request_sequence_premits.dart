@@ -120,6 +120,9 @@ class _ReuestSequencePremitsScreenState
                         for (var index = 0;
                         index < permitResponse.permits!.length;
                         index++) {
+
+
+                         // permitResponse.permits = [];
                           permitResponse.permits![index].selected = true;
                           if (lstPermits.contains(permitResponse
                               .permits![index].requestId!) ==
@@ -127,8 +130,13 @@ class _ReuestSequencePremitsScreenState
                             lstPermits.add(permitResponse
                                 .permits![index].requestId!);
                           }
+                          setState(() {
+
+
+                          });
+
                         }
-                        setState(() {});
+
                       },
                     ),
                   ],

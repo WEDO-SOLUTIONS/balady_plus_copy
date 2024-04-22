@@ -23,6 +23,7 @@ class PermitDataModel extends PermitEntity {
     super.expirationDate,
     super.id,
     super.permitNumber,
+    super.requestId,
     super.permitName,
     super.selected,
   });
@@ -32,6 +33,7 @@ class PermitDataModel extends PermitEntity {
     expirationDate = json['permitEndDate'];
     id = json['id'];
     permitNumber = json['permitNumber'];
+    requestId = json['requestId'];
     permitName = json['permitName'];
     selected = json['selected'];
   }

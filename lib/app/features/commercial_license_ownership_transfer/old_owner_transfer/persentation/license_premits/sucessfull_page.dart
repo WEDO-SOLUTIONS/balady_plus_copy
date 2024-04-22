@@ -160,8 +160,17 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
             padding: const EdgeInsetsDirectional.only(end: 10),
             child: InkWell(
               onTap: () {
-                Navigator.popUntil(
-                    context, ModalRoute.withName(RouteName.licenses));
+                if (isfromRequest == true) {
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(RouteName.licenses),
+                  );
+                } else {
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(RouteName.requests),
+                  );
+                }
               },
               child: CircleIcon(
                 icon: Icons.close,
