@@ -2287,7 +2287,7 @@
   "samba_bank": "سامبا المالية",
   "saudi_british_bank": "البنك السعودي البريطاني",
   "saudi_dutch_bank": "البنك السعودي الهولندي",
-  "saudi_france_bank": "البنك السعودي الفرنسي",
+  "saudi_france_bank": "البنك السعودي الفرنسي",  
   "anb_bank": "البنك العربي الوطني",
   "qr_opens": " . يفتح ",
   "qr_opens_tommorow": " . يفتح غداً ",
@@ -7901,8 +7901,40 @@
 
   "cr_Number_entity_number": "رقم السجل التجاري/رقم المنشأة",
   "ejarAPP": "عزيزي المستفيد.. يمكنك معرفة الوسطاء العقاريون المعتمدين في شبكة ايجار من خلال الرابط <a href=\"https://www.ejar.sa/ar/certified-offices\">اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون IOS أو Android",
-  "validate_shop_name": "إسم المحل لا يحتوي على أرقام"
+  "validate_shop_name": "إسم المحل لا يحتوي على أرقام",
 
+
+
+    "health_cert_riyadh_new":"عزيزي المستفيد لاصدار الشهادة الصحية", 
+    "health_cert_riyadh_renew":"عزيزي المستفيد لتجديد الشهادة الصحية", 
+    "health_cert_riyadh_agree":"اضغط هنا", 
+
+
+    "municipal_cert_riyadh_new":"عزيزي المستفيد لطلب خدمة بلدية", 
+    "municipal_cert_riyadh_agree":"اضغط هنا", 
+    "objection_download_commite_decision":"تحميل نسخة من قرار لجنة نظر الإعتراضات", 
+
+    "complaince_save_clause":"حفظ البند", 
+
+    "complaince_edit_clause":"تعديل البند", 
+    "compliance_cancel_request_msg":"المبني غير ملزم بإصدار شهادة امتثال المباني في هذه المرحلة، هل تريد استكمال الطلب او الإلغاء", 
+
+    "compliance_cancel_request_confirm":"استكمال الطلب ", 
+    "compliance_cancel_request_cancel":"الغاء", 
+    "compliance_show_prevoius_notes":"عرض الملاحظات السابقة", 
+    "compliance_claues_status":"حالة البند", 
+    "prevoius_notes":"الملاحظات السابقة", 
+    "note_source":"مصدر الملاحظة", 
+    "compliance_submitter_reply":"رد مقدم الطلب", 
+    "compliance_office_reply":"رد الامانة / البلدية", 
+    "complinace_clause":"بند", 
+    "notes_on_the_requests":"ملاحظات الطلب", 
+  "delete_all_notifications_confirmation": "هل أنت متأكد من حذف كافة الإشعارات ؟", 
+  "digital_health_cert":"الشهادة الصحية الرقمية", 
+  "health_cert_h_date": "تاريخ إصدار الشهادة الصحية هجري",
+  "health_cert_h_end": "تاريخ نهاية الشهادة الصحية هجري",
+  "health_cert_g_date": "تاريخ إصدار الشهادة الصحية ميلادي",
+  "health_cert_g_end": "تاريخ نهاية الشهادة الصحية ميلادي"
 
 
 }

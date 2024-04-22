@@ -4320,6 +4320,12 @@
   "show_request": "Show request",
   "go_to_license": "Go back to license screen",
   "validate_shop_name": "Shop name can not contain any number",
-  "go_to_request": "Go back to requests screen"
+  "go_to_request": "Go back to requests screen", 
+
+  "digital_health_cert":"Digital Health Certificate", 
+  "health_cert_h_date": "Hijri health certificate issuance date",
+  "health_cert_h_end": "Hijri health certificate end date",
+  "health_cert_g_date": "Gregorian health certificate issuance date",
+  "health_cert_g_end": "Gregorian health certificate end date"
 
 }
