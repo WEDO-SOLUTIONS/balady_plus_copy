@@ -272,7 +272,20 @@ class _ApprovalSequencePermitsScreenState
                           },
                         ),
                       )
-                    : const Spacer(),
+                    : Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomTextWidget(
+                        ('data_not_have_permits').tr(),
+                        fontSize: 14,
+                        fontColor: AppColor.primary900Light,
+                        textAlign: TextAlign.center,
+                      ),
+
+                    ],),
+                ),
                 permitsList.term != null
                     ? getCardView(
                         Row(

@@ -49,14 +49,18 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
         response: response,
         ex: exception,
       );
-      rethrow;
+      throw ServerException(exception.toString(),
+          exception: APIException(),
+          response: response);
     } catch (exception) {
       CommonFunctions.sendEvent(
         dioError: null,
         response: response,
         ex: Exception(exception.toString()),
       );
-      rethrow;
+      throw ServerException(exception.toString(),
+          exception: APIException(),
+          response: response);
     }
   }
 

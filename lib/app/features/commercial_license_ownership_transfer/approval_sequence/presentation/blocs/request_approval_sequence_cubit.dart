@@ -148,8 +148,8 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
       if (ST.crContractType == CRContractType.invest &&
           ST.crSubmitterType == CRSubmitterType.rental &&
           ST.crContractOption == CRContractOption.service) {
-        RequestOwnershipTransferDetailsCubit bloc = sl();
-        int requestId = int.parse(bloc.requestID!);
+      //  RequestOwnershipTransferDetailsCubit bloc = sl();
+        int requestId = int.parse(requestDetailsBloc!.requestID!);
         var CurrentState = state as DTOState;
         emit(CurrentState.copyWith(investmentListStatus: BlocStatus.loading));
         final response = await _getInvestmentContracts(
@@ -168,12 +168,13 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
   }
 
   void getDeedOwnerShipsTypes() async {
-    RequestOwnershipTransferDetailsCubit bloc = sl();
+   // RequestOwnershipTransferDetailsCubit bloc = sl();
     var ST = state as DTOState;
     emit(ST.copyWith(deedOptionsStatus: BlocStatus.loading));
-    final response = await _getDeedOptions(int.parse(bloc.requestID!));
+    final response = await _getDeedOptions(int.parse(requestDetailsBloc!.requestID!));
     response.fold(
-        (failure) => emit(ST.copyWith(
+        (failure) =>
+            emit(ST.copyWith(
               deedOptionsStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {

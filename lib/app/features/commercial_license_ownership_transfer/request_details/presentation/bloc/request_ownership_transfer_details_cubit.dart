@@ -34,10 +34,11 @@ class RequestOwnershipTransferDetailsCubit
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetFailure,
-            errorMessage: failure.toString(),
+            errorMessage: (failure as ServerFailure).errorMessage,
           ),
         );
       },
+
       (commercialLicenceDetails) {
         emit(
           state.copyWith(
