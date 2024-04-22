@@ -100,7 +100,7 @@ class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen>
                 }
               },
               onTapCloseAction: () => showBackDialog(),
-              requestNum: licenseNumber != null ? int.parse(licenseNumber!) : 0,
+              requestNum: null,
             ),
             body: PageView.builder(
               itemCount: pagesList!.length,
@@ -156,7 +156,7 @@ class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen>
                 ),
                 const SizedBox(height: 8),
                 CustomAutoSizeTextWidget(
-                  'cancellation_license_message'.tr(),
+                  '',
                   textStyle: AppStyle.profileSectionTitleTextStyle,
                   textAlign: TextAlign.center,
                   maxLines: 3,

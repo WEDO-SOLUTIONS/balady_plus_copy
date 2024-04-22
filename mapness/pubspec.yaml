@@ -103,7 +103,7 @@ dev_dependencies:
   random_string: ^2.3.1
   flutter_lints: ^2.0.3
   # a tool for running code generators
-  build_runner: 2.4.6
+  build_runner: ^2.4.9
   # the code generator
   riverpod_generator: 2.3.3
   # riverpod_lint makes it easier to work with Riverpod

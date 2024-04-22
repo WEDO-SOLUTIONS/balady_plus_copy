@@ -898,6 +898,12 @@ class ApiUrl {
   //! Patch
 
   static const getJoodShowStatus = 'v1/joodeskan-services/service-enabled';
+
+
+
+  static String commercialLicenseOwnershipServicesUploadAttachments(
+      int requestId, int attachTypeId) =>
+      'v1/superapp-commercial-ownership-services/transfer/upload-attachment/$attachTypeId/attachments/$requestId';
 }
 
 /// It has any header which used inside any API

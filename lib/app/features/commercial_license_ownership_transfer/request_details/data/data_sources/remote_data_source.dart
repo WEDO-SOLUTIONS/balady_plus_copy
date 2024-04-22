@@ -10,6 +10,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../../core/errors/exceptions.dart';
+import '../../../../../core/errors/failures.dart';
 
 abstract class RequestOwnershipTransferDetailsRemoteDataSource {
   Future<CommercialLicenceDetails> getRequestOwnershipTransferDetails(
@@ -48,14 +49,18 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
         response: response,
         ex: exception,
       );
-      rethrow;
+      throw ServerException(exception.toString(),
+          exception: APIException(),
+          response: response);
     } catch (exception) {
       CommonFunctions.sendEvent(
         dioError: null,
         response: response,
         ex: Exception(exception.toString()),
       );
-      rethrow;
+      throw ServerException(exception.toString(),
+          exception: APIException(),
+          response: response);
     }
   }
 
@@ -66,8 +71,7 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
     try {
       response = await webService.dio.post(
           ApiUrl.acceptCommercialRequestTransfer(
-              int.parse(commercialRequestId)),
-          options: Options(headers: {'x-submitter-relation': 'HIMSELF'}));
+              int.parse(commercialRequestId)));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).statusDetails!.code;
       if (result == 200) {
@@ -82,22 +86,23 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
         ex: exception,
       );
 
+      throw ServerException(exception.toString(),
+          exception: APIException(),
+          response: response);
 
-      throw ServerException(
-        "errors_server_error_2".tr(),
-        exception: APIException(
-          errorMessage: exception.errorMessage,
-        ),
-        response: response,
-      );
     } catch (exception) {
       CommonFunctions.sendEvent(
         dioError: null,
         response: response,
         ex: Exception(exception.toString()),
       );
-      CommonFunctions.showError(exception.toString());
-      rethrow;
+
+      throw ServerException(exception.toString(),
+          exception: APIException(),
+          response: response);
+
+
+
   }
 
 
@@ -110,8 +115,7 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
     try {
       response = await webService.dio.post(
           ApiUrl.rejectCommercialRequestTransfer(
-              int.parse(commercialRequestId)),
-          options: Options(headers: {'x-submitter-relation': 'HIMSELF'}));
+              int.parse(commercialRequestId)));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).statusDetails!.code;
       if (result == 200) {
@@ -125,14 +129,18 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
         response: response,
         ex: exception,
       );
-      rethrow;
+      throw ServerException(exception.toString(),
+          exception: APIException(),
+          response: response);
     } catch (exception) {
       CommonFunctions.sendEvent(
         dioError: null,
         response: response,
         ex: Exception(exception.toString()),
       );
-      rethrow;
+      throw ServerException(exception.toString(),
+          exception: APIException(),
+          response: response);
     }
   }
 

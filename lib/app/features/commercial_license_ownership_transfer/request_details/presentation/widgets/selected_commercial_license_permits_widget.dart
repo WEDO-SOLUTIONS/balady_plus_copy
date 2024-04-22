@@ -22,7 +22,7 @@ class SelectedCommercialLicensePermitsWidget extends StatelessWidget {
         return ExpandableCard(
           title: 'permits'.tr(),
           icon: IconPath.element_3Icon,
-          children: permits != null
+          children: permits != null && permits.isNotEmpty
               ? permits
                   .map((permit) => Card(
                         child: Padding(

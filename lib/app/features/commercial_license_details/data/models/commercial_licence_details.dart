@@ -1,10 +1,83 @@
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'package:intl/intl.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
-
 class CommercialLicenceDetails {
+  int? requestId;
+  double? mainActivityArea;
+  DateTime? creationDate;
+  String? entityType;
+  int? currentTabId;
+  int? statusId;
+  String? statusName;
+  int? typeId;
+  String? typeName;
+  int? licensePeriod;
+  int? originalLicensePeriod;
+  int? sadadPeriod;
+  int? entryMode;
+  String? cleanOptions;
+  bool? groceryActivity;
+  bool? municipalityApproval;
+  String? notes;
+  dynamic employeeNotes;
+  dynamic clientNotes;
+  dynamic objectionNotesInfo;
+  dynamic warningMessages;
+  dynamic warningInfo;
+  dynamic latestRequestId;
+  bool? isRejectedStatus;
+  bool? isSalamaStatus;
+  bool? isCanceledByObservationStatus;
+  dynamic renewMode;
+  bool? investmentSite;
+  String? billUrl;
+  bool? fawryWithSalama;
+  String? requestPathType;
+  dynamic engineeringOffice;
+  List<dynamic>? shopReviews;
+  dynamic transactionsList;
+  dynamic issuingMunicipalityId;
+  dynamic issuingMunicipalityName;
+  dynamic requestApprovals;
+  dynamic facilityChangeMsg;
+  dynamic period;
+  String? endorsementText;
+  dynamic refuseShopReviewsList;
+  dynamic etmamOrderInfo;
+  String? boardContractSetting;
+  String? selectedBoardContractOption;
+  dynamic boardContractNumber;
+  dynamic modificationReason;
+  dynamic warnings;
+  dynamic requestSource;
+  dynamic rejectionInfo;
+  dynamic showSalamaPermit;
+  dynamic requestNotesList;
+  dynamic notificationHubAllowed;
+  dynamic commercialOwnershipResponseDto;
+  dynamic commercialCleanContractResponseDto;
+  dynamic commercialSalamaResponseDto;
+  bool? craft;
+  dynamic craftMessage;
+  dynamic contactInfo;
+  bool? selectLicYears;
+  bool? showTillActive;
+  dynamic observationProviderType;
+  dynamic salamaDetails;
+  dynamic licenseCancellationInfo;
+
+  List<LicenseAllowedPermitsInfo>? licenseAllowedPermitsInfo;
+  ActivityInfo? activityInfo;
+  LocationInfo? locationInfo;
+  List<BillsInfo>? billsInfo;
+  LicenceHoldInfoStatusResponseDto? licenceHoldInfoStatusResponseDto;
+  LicenseInfo? licenseInfo;
+  SalamaInfo? salamaInfo;
+  SubmitterInfo? submitterInfo;
+  ShopInfo? shopInfo;
+  SalamaDetailsInfo? salamaDetailsInfo;
+  OwnershipInfo? ownershipInfo;
+
   CommercialLicenceDetails({
     this.requestId,
     this.mainActivityArea,
@@ -82,7 +155,7 @@ class CommercialLicenceDetails {
 
   CommercialLicenceDetails.fromJson(dynamic json) {
     requestId = json['requestId'];
-    mainActivityArea = json['mainActivityArea'];
+    mainActivityArea = (json['mainActivityArea'] ?? 0.0) + 0.0;
 
     creationDate = json["creationDate"] != null
         ? DateFormat("yyyy/MM/dd ").parse(json["creationDate"])
@@ -103,12 +176,6 @@ class CommercialLicenceDetails {
     notes = json['notes'];
     employeeNotes = json['employeeNotes'];
     clientNotes = json['clientNotes'];
-    licenseInfo = json['licenseInfo'] != null
-        ? LicenseInfo.fromJson(json['licenseInfo'])
-        : null;
-    salamaInfo = json['salamaInfo'] != null
-        ? SalamaInfo.fromJson(json['salamaInfo'])
-        : null;
     objectionNotesInfo = json['objectionNotesInfo'];
     warningMessages = json['warningMessages'];
     warningInfo = json['warningInfo'];
@@ -137,11 +204,6 @@ class CommercialLicenceDetails {
     endorsementText = json['endorsementText'];
     refuseShopReviewsList = json['refuseShopReviewsList'];
     etmamOrderInfo = json['etmamOrderInfo'];
-    licenceHoldInfoStatusResponseDto =
-        json['licenceHoldInfoStatusResponseDto'] != null
-            ? LicenceHoldInfoStatusResponseDto.fromJson(
-                json['licenceHoldInfoStatusResponseDto'])
-            : null;
     boardContractSetting = json['boardContractSetting'];
     selectedBoardContractOption = json['selectedBoardContractOption'];
     boardContractNumber = json['boardContractNumber'];
@@ -159,6 +221,18 @@ class CommercialLicenceDetails {
     craft = json['craft'];
     craftMessage = json['craftMessage'];
     contactInfo = json['contactInfo'];
+
+    selectLicYears = json['selectLicYears'];
+    showTillActive = json['showTillActive'];
+    observationProviderType = json['observationProviderType'];
+    salamaDetails = json['salamaDetails'];
+    licenseCancellationInfo = json['licenseCancellationInfo'];
+    if (json['licenseAllowedPermitsInfo'] != null) {
+      licenseAllowedPermitsInfo = [];
+      json['licenseAllowedPermitsInfo'].forEach((v) {
+        licenseAllowedPermitsInfo?.add(LicenseAllowedPermitsInfo.fromJson(v));
+      });
+    }
     activityInfo = json['activityInfo'] != null
         ? ActivityInfo.fromJson(json['activityInfo'])
         : null;
@@ -176,90 +250,26 @@ class CommercialLicenceDetails {
         billsInfo?.add(BillsInfo.fromJson(v));
       });
     }
-    selectLicYears = json['selectLicYears'];
-    showTillActive = json['showTillActive'];
-    observationProviderType = json['observationProviderType'];
-    salamaDetails = json['salamaDetails'];
-    licenseCancellationInfo = json['licenseCancellationInfo'];
-    if (json['licenseAllowedPermitsInfo'] != null) {
-      licenseAllowedPermitsInfo = [];
-      json['licenseAllowedPermitsInfo'].forEach((v) {
-        licenseAllowedPermitsInfo?.add(LicenseAllowedPermitsInfo.fromJson(v));
-      });
-    }
+
+    licenceHoldInfoStatusResponseDto =
+        json['licenceHoldInfoStatusResponseDto'] != null
+            ? LicenceHoldInfoStatusResponseDto.fromJson(
+                json['licenceHoldInfoStatusResponseDto'])
+            : null;
+
+    licenseInfo = json['licenseInfo'] != null
+        ? LicenseInfo.fromJson(json['licenseInfo'])
+        : null;
+    salamaInfo = json['salamaInfo'] != null
+        ? SalamaInfo.fromJson(json['salamaInfo'])
+        : null;
+    salamaDetailsInfo = json['salamaDetailsInfo'] != null
+        ? SalamaDetailsInfo.fromJson(json['salamaDetailsInfo'])
+        : null;
+    ownershipInfo = json['ownershipInfo'] != null
+        ? OwnershipInfo.fromJson(json['ownershipInfo'])
+        : null;
   }
-  int? requestId;
-  int? mainActivityArea;
-  DateTime? creationDate;
-  String? entityType;
-  int? currentTabId;
-  int? statusId;
-  String? statusName;
-  int? typeId;
-  String? typeName;
-  int? licensePeriod;
-  int? originalLicensePeriod;
-  int? sadadPeriod;
-  int? entryMode;
-  String? cleanOptions;
-  bool? groceryActivity;
-  bool? municipalityApproval;
-  String? notes;
-  dynamic employeeNotes;
-  dynamic clientNotes;
-  LicenseInfo? licenseInfo;
-  SalamaInfo? salamaInfo;
-  dynamic objectionNotesInfo;
-  dynamic warningMessages;
-  dynamic warningInfo;
-  dynamic latestRequestId;
-  bool? isRejectedStatus;
-  bool? isSalamaStatus;
-  bool? isCanceledByObservationStatus;
-  dynamic renewMode;
-  bool? investmentSite;
-  String? billUrl;
-  bool? fawryWithSalama;
-  String? requestPathType;
-  dynamic engineeringOffice;
-  List<dynamic>? shopReviews;
-  dynamic transactionsList;
-  dynamic issuingMunicipalityId;
-  dynamic issuingMunicipalityName;
-  dynamic requestApprovals;
-  dynamic facilityChangeMsg;
-  dynamic period;
-  String? endorsementText;
-  dynamic refuseShopReviewsList;
-  dynamic etmamOrderInfo;
-  LicenceHoldInfoStatusResponseDto? licenceHoldInfoStatusResponseDto;
-  String? boardContractSetting;
-  String? selectedBoardContractOption;
-  dynamic boardContractNumber;
-  dynamic modificationReason;
-  dynamic warnings;
-  dynamic requestSource;
-  dynamic rejectionInfo;
-  dynamic showSalamaPermit;
-  dynamic requestNotesList;
-  dynamic notificationHubAllowed;
-  dynamic commercialOwnershipResponseDto;
-  dynamic commercialCleanContractResponseDto;
-  dynamic commercialSalamaResponseDto;
-  bool? craft;
-  dynamic craftMessage;
-  dynamic contactInfo;
-  ActivityInfo? activityInfo;
-  LocationInfo? locationInfo;
-  SubmitterInfo? submitterInfo;
-  ShopInfo? shopInfo;
-  List<BillsInfo>? billsInfo;
-  bool? selectLicYears;
-  bool? showTillActive;
-  dynamic observationProviderType;
-  dynamic salamaDetails;
-  dynamic licenseCancellationInfo;
-  List<LicenseAllowedPermitsInfo>? licenseAllowedPermitsInfo;
 }
 
 class LicenseAllowedPermitsInfo {
@@ -278,21 +288,12 @@ class LicenseAllowedPermitsInfo {
         : null;
     withFees = json['withFees'];
   }
+
   int? id;
   String? name;
   BaladyWorkFlow? baladyWorkFlow;
   bool? withFees;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = id;
-    map['name'] = name;
-    if (baladyWorkFlow != null) {
-      map['baladyWorkFlow'] = baladyWorkFlow?.toJson();
-    }
-    map['withFees'] = withFees;
-    return map;
-  }
 }
 
 class BaladyWorkFlow {
@@ -305,15 +306,10 @@ class BaladyWorkFlow {
     id = json['id'];
     name = json['name'];
   }
+
   String? id;
   String? name;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = id;
-    map['name'] = name;
-    return map;
-  }
 }
 
 class BillsInfo {
@@ -337,23 +333,13 @@ class BillsInfo {
       });
     }
   }
+
   String? billNumber;
   int? billAmount;
   String? paymentDate;
   bool? isSadadPaid;
   List<BillFees>? billFees;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['billNumber'] = billNumber;
-    map['billAmount'] = billAmount;
-    map['paymentDate'] = paymentDate;
-    map['isSadadPaid'] = isSadadPaid;
-    if (billFees != null) {
-      map['billFees'] = billFees?.map((v) => v.toJson()).toList();
-    }
-    return map;
-  }
 }
 
 class BillFees {
@@ -368,17 +354,11 @@ class BillFees {
     costItemTypeId = json['costItemTypeId'];
     costItemDescription = json['costItemDescription'];
   }
+
   int? costItemValue;
   int? costItemTypeId;
   String? costItemDescription;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['costItemValue'] = costItemValue;
-    map['costItemTypeId'] = costItemTypeId;
-    map['costItemDescription'] = costItemDescription;
-    return map;
-  }
 }
 
 class ShopInfo {
@@ -431,7 +411,7 @@ class ShopInfo {
     existInMall = json['existInMall'];
     floorNumber = json['floorNumber'];
     floorCount = json['floorCount'];
-    hasElevator = json['hasElevator'];
+    hasElevator = json['hasElevator'] ?? false;
     isCitizenPledgedToClean = json['isCitizenPledgedToClean'];
     cleanContractEndDate = json['cleanContractEndDate'];
     buildingLicenseDate = json['buildingLicenseDate'];
@@ -448,7 +428,7 @@ class ShopInfo {
       });
     }
     contractInfoResponseDto = json['contractInfoResponseDto'] != null
-        ? ContractInfoResponseDto.fromJson(json['contractInfoResponseDto'])
+        ? ContractInfo.fromJson(json['contractInfoResponseDto'])
         : null;
     showShopOwnership = json['showShopOwnership'];
     slamaBillOptions = json['slamaBillOptions'] != null
@@ -475,9 +455,10 @@ class ShopInfo {
     brand = json['brand'];
     salamaPermitNumber = json['salamaPermitNumber'];
     licenseBrand = json['licenseBrand'];
-    insidePetrolStation = json['insidePetrolStation'];
+    insidePetrolStation = json['insidePetrolStation'] ?? false;
     noOfCameras = json['noOfCameras'];
   }
+
   String? shopName;
   int? shopUnitNumber;
   int? holesCount;
@@ -495,7 +476,7 @@ class ShopInfo {
   String? planNumber;
   dynamic salamaBillNumber;
   List<BoardsInfomation>? boardsInfo;
-  ContractInfoResponseDto? contractInfoResponseDto;
+  ContractInfo? contractInfoResponseDto;
   bool? showShopOwnership;
   List<String>? slamaBillOptions;
   String? cameraBillOptions;
@@ -505,7 +486,6 @@ class ShopInfo {
   dynamic isFawryWithSalamaBill;
   dynamic isFawryWithSalamaReport;
   dynamic isSalamaPermitMandatory;
-  dynamic cleanContractInfo;
   CleanContractOptions? cleanContractOptions;
   bool? showActivityCancellationDate;
   dynamic activityCancellationDate;
@@ -515,58 +495,11 @@ class ShopInfo {
   bool? brand;
   dynamic salamaPermitNumber;
   dynamic licenseBrand;
-  dynamic insidePetrolStation;
+  bool? insidePetrolStation;
   int? noOfCameras;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['shopName'] = shopName;
-    map['shopUnitNumber'] = shopUnitNumber;
-    map['holesCount'] = holesCount;
-    map['existInMall'] = existInMall;
-    map['floorNumber'] = floorNumber;
-    map['floorCount'] = floorCount;
-    map['hasElevator'] = hasElevator;
-    map['isCitizenPledgedToClean'] = isCitizenPledgedToClean;
-    map['cleanContractEndDate'] = cleanContractEndDate;
-    map['buildingLicenseDate'] = buildingLicenseDate;
-    map['buildingLicenseNo'] = buildingLicenseNo;
-    map['buildingOwnerIdno'] = buildingOwnerIdno;
-    map['buildingOwnerName'] = buildingOwnerName;
-    map['landNumber'] = landNumber;
-    map['planNumber'] = planNumber;
-    map['salamaBillNumber'] = salamaBillNumber;
-    if (boardsInfo != null) {
-      map['boardsInfo'] = boardsInfo?.map((v) => v.toJson()).toList();
-    }
-    if (contractInfoResponseDto != null) {
-      map['contractInfoResponseDto'] = contractInfoResponseDto?.toJson();
-    }
-    map['showShopOwnership'] = showShopOwnership;
-    map['slamaBillOptions'] = slamaBillOptions;
-    map['cameraBillOptions'] = cameraBillOptions;
-    map['endorsementText'] = endorsementText;
-    map['slamaReportOptions'] = slamaReportOptions;
-    map['slamaReportNumber'] = slamaReportNumber;
-    map['isFawryWithSalamaBill'] = isFawryWithSalamaBill;
-    map['isFawryWithSalamaReport'] = isFawryWithSalamaReport;
-    map['isSalamaPermitMandatory'] = isSalamaPermitMandatory;
-    map['cleanContractInfo'] = cleanContractInfo;
-    if (cleanContractOptions != null) {
-      map['cleanContractOptions'] = cleanContractOptions?.toJson();
-    }
-    map['showActivityCancellationDate'] = showActivityCancellationDate;
-    map['activityCancellationDate'] = activityCancellationDate;
-    map['mallDto'] = mallDto;
-    map['blockNumber'] = blockNumber;
-    map['cancelReasonDto'] = cancelReasonDto;
-    map['brand'] = brand;
-    map['salamaPermitNumber'] = salamaPermitNumber;
-    map['licenseBrand'] = licenseBrand;
-    map['insidePetrolStation'] = insidePetrolStation;
-    map['noOfCameras'] = noOfCameras;
-    return map;
-  }
+  CleanContractInfo? cleanContractInfo;
+
 }
 
 class CleanContractOptions {
@@ -579,19 +512,14 @@ class CleanContractOptions {
     cleanOption = json['cleanOption'];
     contractOption = json['contractOption'];
   }
+
   String? cleanOption;
   String? contractOption;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['cleanOption'] = cleanOption;
-    map['contractOption'] = contractOption;
-    return map;
-  }
 }
 
-class ContractInfoResponseDto {
-  ContractInfoResponseDto({
+class ContractInfo {
+  ContractInfo({
     this.contractType,
     this.contractOption,
     this.tenancyContractInfo,
@@ -602,7 +530,7 @@ class ContractInfoResponseDto {
     this.investmentContractNumber,
   });
 
-  ContractInfoResponseDto.fromJson(dynamic json) {
+  ContractInfo.fromJson(dynamic json) {
     contractType = json['contractType'];
     contractOption = json['contractOption'];
     tenancyContractInfo = json['tenancyContractInfo'];
@@ -615,6 +543,7 @@ class ContractInfoResponseDto {
         : null;
     investmentContractNumber = json['investmentContractNumber'];
   }
+
   String? contractType;
   String? contractOption;
   dynamic tenancyContractInfo;
@@ -624,20 +553,6 @@ class ContractInfoResponseDto {
   ContractOptionsResponseDto? contractOptionsResponseDto;
   dynamic investmentContractNumber;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['contractType'] = contractType;
-    map['contractOption'] = contractOption;
-    map['tenancyContractInfo'] = tenancyContractInfo;
-    map['deedInfoResponse'] = deedInfoResponse;
-    map['contractDate'] = contractDate;
-    map['contractNumber'] = contractNumber;
-    if (contractOptionsResponseDto != null) {
-      map['contractOptionsResponseDto'] = contractOptionsResponseDto?.toJson();
-    }
-    map['investmentContractNumber'] = investmentContractNumber;
-    return map;
-  }
 
   String? getDisplayContractTypeName() {
     switch (contractType) {
@@ -690,17 +605,11 @@ class ContractOptionsResponseDto {
         ? json['investOptions'].cast<String>()
         : [];
   }
+
   List<String>? ejarOptions;
   List<String>? deedOptions;
   List<String>? investOptions;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['ejarOptions'] = ejarOptions;
-    map['deedOptions'] = deedOptions;
-    map['investOptions'] = investOptions;
-    return map;
-  }
 }
 
 class BoardsInfomation {
@@ -715,17 +624,11 @@ class BoardsInfomation {
     typeName = json['typeName'];
     area = json['area'];
   }
+
   int? typeId;
   String? typeName;
   int? area;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['typeId'] = typeId;
-    map['typeName'] = typeName;
-    map['area'] = area;
-    return map;
-  }
 }
 
 class SubmitterInfo {
@@ -753,7 +656,7 @@ class SubmitterInfo {
     submitterType = json['submitterType'];
     crNumber = json['crNumber'];
     crType = json['crType'];
-    submitterIdNumber = json['submitterIdNumber'];
+    submitterIdNumber = json['submitterIdNumber']?.toString() ?? "";
     submitterBirthDate = json['submitterBirthDate'];
     mobile = json['mobile'];
     gender = json['gender'];
@@ -766,11 +669,12 @@ class SubmitterInfo {
     submitterIdType = json['submitterIdType'];
     crEntityType = json['crEntityType'];
   }
+
   String? entityType;
   String? submitterType;
   String? crNumber;
   String? crType;
-  int? submitterIdNumber;
+  String? submitterIdNumber;
   String? submitterBirthDate;
   String? mobile;
   int? gender;
@@ -783,48 +687,28 @@ class SubmitterInfo {
   dynamic submitterIdType;
   int? crEntityType;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['entityType'] = entityType;
-    map['submitterType'] = submitterType;
-    map['crNumber'] = crNumber;
-    map['crType'] = crType;
-    map['submitterIdNumber'] = submitterIdNumber;
-    map['submitterBirthDate'] = submitterBirthDate;
-    map['mobile'] = mobile;
-    map['gender'] = gender;
-    map['crTypeId'] = crTypeId;
-    map['submitterName'] = submitterName;
-    map['entityName'] = entityName;
-    map['crIssueDate'] = crIssueDate;
-    map['crSource'] = crSource;
-    map['genderDesc'] = genderDesc;
-    map['submitterIdType'] = submitterIdType;
-    map['crEntityType'] = crEntityType;
-    return map;
-  }
 }
 
 class LocationInfo {
-  LocationInfo({
-    this.subMunicipalityGisCode,
-    this.districtCode,
-    this.streetCode,
-    this.latitude,
-    this.longitude,
-    this.mapNo,
-    this.landNo,
-    this.streetName,
-    this.districtName,
-    this.subMunicipalityName,
-    this.municipalityId,
-    this.municipalityName,
-    this.subMunicipalityId,
-    this.regionId,
-    this.regionName,
-    this.vehiclePathDesc,
-    this.krokiUrl,
-  });
+  LocationInfo(
+      {this.subMunicipalityGisCode,
+      this.districtCode,
+      this.streetCode,
+      this.latitude,
+      this.longitude,
+      this.mapNo,
+      this.landNo,
+      this.streetName,
+      this.districtName,
+      this.subMunicipalityName,
+      this.municipalityId,
+      this.municipalityName,
+      this.subMunicipalityId,
+      this.regionId,
+      this.regionName,
+      this.vehiclePathDesc,
+      this.krokiUrl,
+      this.cityName});
 
   LocationInfo.fromJson(dynamic json) {
     subMunicipalityGisCode = json['subMunicipalityGisCode'];
@@ -844,7 +728,9 @@ class LocationInfo {
     regionName = json['regionName'];
     vehiclePathDesc = json['vehiclePathDesc'];
     krokiUrl = json['krokiUrl'];
+    cityName = json['cityName'];
   }
+
   String? subMunicipalityGisCode;
   int? districtCode;
   int? streetCode;
@@ -862,28 +748,8 @@ class LocationInfo {
   String? regionName;
   dynamic vehiclePathDesc;
   String? krokiUrl;
+  String? cityName;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['subMunicipalityGisCode'] = subMunicipalityGisCode;
-    map['districtCode'] = districtCode;
-    map['streetCode'] = streetCode;
-    map['latitude'] = latitude;
-    map['longitude'] = longitude;
-    map['mapNo'] = mapNo;
-    map['landNo'] = landNo;
-    map['streetName'] = streetName;
-    map['districtName'] = districtName;
-    map['subMunicipalityName'] = subMunicipalityName;
-    map['municipalityId'] = municipalityId;
-    map['municipalityName'] = municipalityName;
-    map['subMunicipalityId'] = subMunicipalityId;
-    map['regionId'] = regionId;
-    map['regionName'] = regionName;
-    map['vehiclePathDesc'] = vehiclePathDesc;
-    map['krokiUrl'] = krokiUrl;
-    return map;
-  }
 }
 
 class ActivityInfo {
@@ -916,6 +782,7 @@ class ActivityInfo {
     inHomogenusActivities = json['inHomogenusActivities'];
     salamaWorkflowWarningMessage = json['salamaWorkflowWarningMessage'];
   }
+
   MainActivity? mainActivity;
   dynamic additionalActivities;
   bool? foreignInvistor;
@@ -928,23 +795,6 @@ class ActivityInfo {
   dynamic inHomogenusActivities;
   dynamic salamaWorkflowWarningMessage;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    if (mainActivity != null) {
-      map['mainActivity'] = mainActivity?.toJson();
-    }
-    map['additionalActivities'] = additionalActivities;
-    map['foreignInvistor'] = foreignInvistor;
-    map['workerTypeId'] = workerTypeId;
-    map['workerTypeName'] = workerTypeName;
-    map['activityChangeReason'] = activityChangeReason;
-    map['showAtmFeesOption'] = showAtmFeesOption;
-    map['atmFeesPaid'] = atmFeesPaid;
-    map['atmActivity'] = atmActivity;
-    map['inHomogenusActivities'] = inHomogenusActivities;
-    map['salamaWorkflowWarningMessage'] = salamaWorkflowWarningMessage;
-    return map;
-  }
 }
 
 class MainActivity {
@@ -971,7 +821,7 @@ class MainActivity {
 
   MainActivity.fromJson(dynamic json) {
     detailedActivityId = json['detailedActivityId'];
-    area = json['area'];
+    area = (json['area'] ?? 0.0) + 0.0;
     unitCount = json['unitCount'];
     accommodationTypeId = json['accommodationTypeId'];
     accommodationTypeName = json['accommodationTypeName'];
@@ -991,8 +841,9 @@ class MainActivity {
     facilityName = json['facilityName'];
     salamaWorkflow = json['salamaWorkflow'];
   }
+
   int? detailedActivityId;
-  int? area;
+  double? area;
   dynamic unitCount;
   dynamic accommodationTypeId;
   dynamic accommodationTypeName;
@@ -1010,30 +861,6 @@ class MainActivity {
   String? facilityName;
   String? salamaWorkflow;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['detailedActivityId'] = detailedActivityId;
-    map['area'] = area;
-    map['unitCount'] = unitCount;
-    map['accommodationTypeId'] = accommodationTypeId;
-    map['accommodationTypeName'] = accommodationTypeName;
-    map['detailedActivityName'] = detailedActivityName;
-    map['isicActivityId'] = isicActivityId;
-    map['mainActivityId'] = mainActivityId;
-    map['isicActivityName'] = isicActivityName;
-    map['minYears'] = minYears;
-    map['maxYears'] = maxYears;
-    map['removed'] = removed;
-    if (activitySettingDto != null) {
-      map['activitySettingDto'] = activitySettingDto?.toJson();
-    }
-    map['minArea'] = minArea;
-    map['maxArea'] = maxArea;
-    map['facilityId'] = facilityId;
-    map['facilityName'] = facilityName;
-    map['salamaWorkflow'] = salamaWorkflow;
-    return map;
-  }
 }
 
 class ActivitySettingDto {
@@ -1054,6 +881,7 @@ class ActivitySettingDto {
     ownershipType = json['ownershipType'];
     requestFlow = json['requestFlow'];
   }
+
   int? entityType;
   dynamic vehicleType;
   dynamic pathType;
@@ -1061,16 +889,25 @@ class ActivitySettingDto {
   dynamic ownershipType;
   dynamic requestFlow;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['entityType'] = entityType;
-    map['vehicleType'] = vehicleType;
-    map['pathType'] = pathType;
-    map['foodActivity'] = foodActivity;
-    map['ownershipType'] = ownershipType;
-    map['requestFlow'] = requestFlow;
-    return map;
-  }
+}
+
+class AdditionalActivities {
+  String detailedActivityName;
+  double area;
+  String isicActivityName;
+
+  AdditionalActivities({
+    required this.detailedActivityName,
+    required this.area,
+    required this.isicActivityName,
+  });
+
+  factory AdditionalActivities.fromJson(Map<String, dynamic> json) =>
+      AdditionalActivities(
+        detailedActivityName: json["detailedActivityName"] ?? "",
+        area: (json["area"] ?? 0) + 0.0,
+        isicActivityName: json["isicActivityName"] ?? "",
+      );
 }
 
 class LicenceHoldInfoStatusResponseDto {
@@ -1091,6 +928,7 @@ class LicenceHoldInfoStatusResponseDto {
     holdedSevices = json['holdedSevices'];
     holdSource = json['holdSource'];
   }
+
   bool? hold;
   int? licenseId;
   dynamic holdReason;
@@ -1098,16 +936,6 @@ class LicenceHoldInfoStatusResponseDto {
   dynamic holdedSevices;
   String? holdSource;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['hold'] = hold;
-    map['licenseId'] = licenseId;
-    map['holdReason'] = holdReason;
-    map['holdType'] = holdType;
-    map['holdedSevices'] = holdedSevices;
-    map['holdSource'] = holdSource;
-    return map;
-  }
 }
 
 class SalamaInfo {
@@ -1124,19 +952,168 @@ class SalamaInfo {
     salamaApprovedCenterId = json['salamaApprovedCenterId'];
     salamaApprovedCenterName = json['salamaApprovedCenterName'];
   }
+
   dynamic salamaIssueDate;
   dynamic salamaIssueNo;
   dynamic salamaApprovedCenterId;
   dynamic salamaApprovedCenterName;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['salamaIssueDate'] = salamaIssueDate;
-    map['salamaIssueNo'] = salamaIssueNo;
-    map['salamaApprovedCenterId'] = salamaApprovedCenterId;
-    map['salamaApprovedCenterName'] = salamaApprovedCenterName;
-    return map;
-  }
+}
+
+class CleanContractInfo {
+  int? contractNumber;
+  String cleanOption;
+  String contractOption;
+  String cleanOptionName;
+  String cleanOptionDesc;
+  String? cleanContractEndDate;
+
+  CleanContractInfo({
+    this.contractNumber,
+    required this.cleanOption,
+    required this.contractOption,
+    required this.cleanOptionName,
+    required this.cleanOptionDesc,
+    required this.cleanContractEndDate,
+  });
+
+  factory CleanContractInfo.fromJson(Map<String, dynamic> json) =>
+      CleanContractInfo(
+        contractNumber: json['contractNumber'],
+        cleanOption: json['cleanOption'] ?? "",
+        contractOption: json['contractOption'] ?? "",
+        cleanOptionName: json['salamaApprovedCenterName'] ?? "",
+        cleanOptionDesc: json['cleanOptionDesc'] ?? "",
+        cleanContractEndDate: json['cleanContractEndDate'],
+      );
+}
+
+class SalamaDetailsInfo {
+  final String workFlow;
+  final dynamic salamaReportNumber;
+  final dynamic salamaBillNumber;
+  final dynamic salamaPermitNumber;
+  final String documentName;
+  final String documentDesc;
+
+  SalamaDetailsInfo({
+    required this.workFlow,
+    required this.salamaReportNumber,
+    required this.salamaBillNumber,
+    required this.salamaPermitNumber,
+    required this.documentName,
+    required this.documentDesc,
+  });
+
+  factory SalamaDetailsInfo.fromJson(Map<String, dynamic> json) =>
+      SalamaDetailsInfo(
+        workFlow: json['workFlow'] ?? "",
+        salamaReportNumber: json['salamaReportNumber'] ?? "",
+        salamaBillNumber: json['salamaBillNumber'] ?? "",
+        salamaPermitNumber: json['salamaPermitNumber'] ?? "",
+        documentName: json['documentName'] ?? "",
+        documentDesc: json['documentDesc'] ?? "",
+      );
+}
+
+class OwnershipInfo {
+  final ContractType? contractType;
+  final TenancyContractInfo? tenancyContractInfo;
+  final DeedInfo? deedInfo;
+  final InvestmentContractInfo? investmentContractInfo;
+
+  OwnershipInfo({
+    required this.contractType,
+    required this.tenancyContractInfo,
+    required this.deedInfo,
+    required this.investmentContractInfo,
+  });
+
+  factory OwnershipInfo.fromJson(Map<String, dynamic> json) => OwnershipInfo(
+        contractType: json['contractType'] != null
+            ? ContractType.fromJson(json['contractType'])
+            : null,
+        tenancyContractInfo: json['tenancyContractInfo'] != null
+            ? TenancyContractInfo.fromJson(json['tenancyContractInfo'])
+            : null,
+        deedInfo: json['deedInfo'] != null
+            ? DeedInfo.fromJson(json['deedInfo'])
+            : null,
+        investmentContractInfo: json['investmentContractInfo'] != null
+            ? InvestmentContractInfo.fromJson(json['investmentContractInfo'])
+            : null,
+      );
+}
+
+class InvestmentContractInfo {
+  final String investmentContractNumber;
+  final String investContractName;
+  final ContractType? type;
+
+  InvestmentContractInfo({
+    required this.investmentContractNumber,
+    required this.investContractName,
+    required this.type,
+  });
+
+  factory InvestmentContractInfo.fromJson(Map<String, dynamic> json) =>
+      InvestmentContractInfo(
+        investmentContractNumber: json['investmentContractNumber'] ?? "",
+        investContractName: json['investContractName'] ?? "",
+        type: json['type'] != null ? ContractType.fromJson(json['type']) : null,
+      );
+}
+
+class DeedInfo {
+  final String deedNumber;
+  final String deedDate;
+
+  DeedInfo({
+    required this.deedNumber,
+    required this.deedDate,
+  });
+
+  factory DeedInfo.fromJson(Map<String, dynamic> json) => DeedInfo(
+        deedNumber: json['deedNumber'] ?? "",
+        deedDate: json['deedDate'] ?? "",
+      );
+}
+
+class ContractType {
+  final String id;
+  final String name;
+
+  ContractType({
+    required this.id,
+    required this.name,
+  });
+
+  factory ContractType.fromJson(Map<String, dynamic> json) => ContractType(
+        id: json['id'],
+        name: json['name'] ?? "",
+      );
+}
+
+class TenancyContractInfo {
+  final String tenancyContractNumber;
+  final dynamic versionNumber;
+  final dynamic nationalId;
+  final String contractEndDate;
+
+  TenancyContractInfo({
+    required this.tenancyContractNumber,
+    required this.versionNumber,
+    required this.nationalId,
+    required this.contractEndDate,
+  });
+
+  factory TenancyContractInfo.fromJson(Map<String, dynamic> json) =>
+      TenancyContractInfo(
+        tenancyContractNumber: json['tenancyContractNumber'] ?? "",
+        versionNumber: json['versionNumber'] ?? "",
+        nationalId: json['nationalId'] ?? "",
+        contractEndDate: json['contractEndDate'] ?? "",
+      );
 }
 
 class LicenseInfo {
@@ -1173,6 +1150,7 @@ class LicenseInfo {
     qrRequestId = json['qrRequestId'];
     statusDesc = json['statusDesc'];
   }
+
   String? licenseEndDate;
   String? licenseSadadEndDate;
   dynamic licensePeriod;
@@ -1188,22 +1166,5 @@ class LicenseInfo {
   int? qrRequestId;
   String? statusDesc;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['licenseEndDate'] = licenseEndDate;
-    map['licenseSadadEndDate'] = licenseSadadEndDate;
-    map['licensePeriod'] = licensePeriod;
-    map['sadadPeriod'] = sadadPeriod;
-    map['licenseId'] = licenseId;
-    map['statusId'] = statusId;
-    map['expireInDays'] = expireInDays;
-    map['oldLicenseNo'] = oldLicenseNo;
-    map['issueDate'] = issueDate;
-    map['expired'] = expired;
-    map['printUrl'] = printUrl;
-    map['qrCodeUrl'] = qrCodeUrl;
-    map['qrRequestId'] = qrRequestId;
-    map['statusDesc'] = statusDesc;
-    return map;
-  }
 }
+

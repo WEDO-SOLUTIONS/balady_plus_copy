@@ -5,72 +5,72 @@ class RequestApprovalSequenceState extends Equatable {
   List<Object?> get props => throw UnimplementedError();
 }
 
-final class AttachmentState extends RequestApprovalSequenceState {
-  final BlocStatus status;
-  final BlocStatus attachmentStatus;
-  final BlocStatus credenceStatus;
-
-  final String? errorMessage;
-  final CrAttachmentResponse? attachmentResponse;
-  final List<AttachmentData>? attachments;
-  final String? notes;
-  final List<CredenceItem>? crdences;
-
-  AttachmentState(
-      {this.status = BlocStatus.initial,
-      this.attachmentStatus = BlocStatus.initial,
-      this.credenceStatus = BlocStatus.initial,
-      this.errorMessage,
-      this.attachmentResponse,
-      this.attachments,
-      this.notes,
-      this.crdences});
-
-  @override
-  List<Object?> get props {
-    return [
-      status,
-      attachmentStatus,
-      credenceStatus,
-      errorMessage,
-      attachmentResponse,
-      attachments,
-      notes,
-      crdences
-    ];
-  }
-
-  AttachmentState copyWith(
-      {BlocStatus? status,
-      String? errorMessage,
-      CrAttachmentResponse? attachmentResponse,
-      BlocStatus? attachmentStatus,
-      BlocStatus? credenceStatus,
-      List<AttachmentData>? attachments,
-      String? notes,
-      List<CredenceItem>? crdences}) {
-    return AttachmentState(
-        status: status ?? this.status,
-        attachmentStatus: attachmentStatus ?? this.attachmentStatus,
-        credenceStatus: credenceStatus ?? this.credenceStatus,
-        errorMessage: errorMessage ?? this.errorMessage,
-        attachments: attachments ?? this.attachments,
-        attachmentResponse: attachmentResponse ?? this.attachmentResponse,
-        notes: notes ?? this.notes,
-        crdences: crdences ?? this.crdences);
-  }
-
-  bool isFormValid() {
-    bool isValid = true;
-
-    attachments?.forEach((element) {
-      if (element.isUploaded == false && element.isRequired == true) {
-        isValid = false;
-      }
-    });
-    return isValid;
-  }
-}
+// final class AttachmentState extends RequestApprovalSequenceState {
+//   final BlocStatus status;
+//   final BlocStatus attachmentStatus;
+//   final BlocStatus credenceStatus;
+//
+//   final String? errorMessage;
+//   final CrAttachmentResponse? attachmentResponse;
+//   final List<AttachmentData>? attachments;
+//   final String? notes;
+//   final List<CredenceItem>? crdences;
+//
+//   AttachmentState(
+//       {this.status = BlocStatus.initial,
+//       this.attachmentStatus = BlocStatus.initial,
+//       this.credenceStatus = BlocStatus.initial,
+//       this.errorMessage,
+//       this.attachmentResponse,
+//       this.attachments,
+//       this.notes,
+//       this.crdences});
+//
+//   @override
+//   List<Object?> get props {
+//     return [
+//       status,
+//       attachmentStatus,
+//       credenceStatus,
+//       errorMessage,
+//       attachmentResponse,
+//       attachments,
+//       notes,
+//       crdences
+//     ];
+//   }
+//
+//   AttachmentState copyWith(
+//       {BlocStatus? status,
+//       String? errorMessage,
+//       CrAttachmentResponse? attachmentResponse,
+//       BlocStatus? attachmentStatus,
+//       BlocStatus? credenceStatus,
+//       List<AttachmentData>? attachments,
+//       String? notes,
+//       List<CredenceItem>? crdences}) {
+//     return AttachmentState(
+//         status: status ?? this.status,
+//         attachmentStatus: attachmentStatus ?? this.attachmentStatus,
+//         credenceStatus: credenceStatus ?? this.credenceStatus,
+//         errorMessage: errorMessage ?? this.errorMessage,
+//         attachments: attachments ?? this.attachments,
+//         attachmentResponse: attachmentResponse ?? this.attachmentResponse,
+//         notes: notes ?? this.notes,
+//         crdences: crdences ?? this.crdences);
+//   }
+//
+//   bool isFormValid() {
+//     bool isValid = true;
+//
+//     attachments?.forEach((element) {
+//       if (element.isUploaded == false && element.isRequired == true) {
+//         isValid = false;
+//       }
+//     });
+//     return isValid;
+//   }
+// }
 
 final class InitialState implements RequestApprovalSequenceState {
   @override
@@ -117,7 +117,7 @@ final class DTOState extends RequestApprovalSequenceState {
   final CRContractOption? crContractOption;
   final CRContractType? crContractType;
   final CRSubmitterType? crSubmitterType;
-  final ContractInfoDto? dto;
+  final ContractInfo? dto;
   final String? contractNumber;
   final String? contractDate;
   final DeedInfoRequest? deedInfoRequst;
@@ -155,7 +155,7 @@ final class DTOState extends RequestApprovalSequenceState {
       {CRContractOption? crContractOption,
       CRContractType? crContractType,
       CRSubmitterType? crSubmitterType,
-      ContractInfoDto? dto,
+      ContractInfo? dto,
       String? contractNumber,
       String? contractDate,
       DeedInfoRequest? deedInfoRequst,

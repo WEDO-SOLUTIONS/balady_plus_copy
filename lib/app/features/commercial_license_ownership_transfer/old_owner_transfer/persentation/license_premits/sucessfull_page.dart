@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
+import 'package:balady_plus/app/features/_shared_features/rating_feature/widgets/submit_rating_widget.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
@@ -10,7 +10,8 @@ import '../../../../_shared_feature_/balady_features/widgets/shared/circle_icon.
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import 'package:balady_plus/app/features/_shared_features/rating_feature/models/rating_request.dart';
 
 class SucessfullScreen extends StatefulWidget {
   SucessfullScreen({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class SucessfullScreen extends StatefulWidget {
 
 class _SucessfullScreenState extends State<SucessfullScreen> {
   String? requestId;
-  bool isfromRequest = true ;
+  bool isfromRequest = true;
 
   @override
   void initState() {
@@ -30,9 +31,9 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
 
   @override
   Widget build(BuildContext context) {
-     Map data  = ModalRoute.of(context)!.settings.arguments as Map;
+    Map data = ModalRoute.of(context)!.settings.arguments as Map;
     requestId = data['requestId'];
-     isfromRequest= data['isFromRequest'];
+    isfromRequest = data['isFromRequest'];
     return Scaffold(body: getBody());
   }
 
@@ -45,6 +46,7 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const DrawIconBasedTypeWidget(
                     icon: IconPath.successfullIcon,
@@ -53,6 +55,7 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                   CustomTextWidget(
                     "vd_request_submit".tr(),
                     textStyle: AppStyle.complianceTitleStyle,
+                    textAlign: TextAlign.center,
                     maxLines: 4,
                   ),
                 ],
@@ -64,7 +67,7 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "${"request_number".tr()} $requestId ${"follow_request".tr()}",
+                    'follow_request'.tr(),
                     style: AppStyle.personalInfoParameterValueTextStyle
                         .copyWith(fontSize: 12, height: 1.5),
                   ),
@@ -77,7 +80,21 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                     ),
                     btnHeight: 56,
                     text: "service_evaluation".tr(),
-                    onPressed: () {},
+                    onPressed: () {
+                      BottomSheetDialog.showSheet(
+                        context,
+                        child: SubmitRatingSheet(
+                          title: 'rating_chat_bot_title'.tr(),
+                          ratingRequest: RatingRequest(
+                            requestId: int.parse(requestId!),
+                          ),
+                        ),
+                        isFullHeight: false,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.white,
+                        height: MediaQuery.of(context).size.height * 0.6,
+                      );
+                    },
                   ),
                   Spacer(),
                   CustomElevatedButtonWidget(
@@ -111,17 +128,21 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                       fontSize: 16,
                     ),
                     btnHeight: 56,
-                    text: isfromRequest ?"go_to_license".tr():"go_to_request".tr(),
+                    text: isfromRequest
+                        ? "go_to_license".tr()
+                        : "go_to_request".tr(),
                     onPressed: () {
-                      if(isfromRequest == true) {
+                      if (isfromRequest == true) {
                         Navigator.popUntil(
-                            context, ModalRoute.withName(RouteName.licenses));
+                          context,
+                          ModalRoute.withName(RouteName.licenses),
+                        );
+                      } else {
+                        Navigator.popUntil(
+                          context,
+                          ModalRoute.withName(RouteName.requests),
+                        );
                       }
-                      else
-                        {
-                          Navigator.popUntil(
-                              context, ModalRoute.withName(RouteName.requests));
-                        }
                     },
                   ),
                   const SizedBox(
@@ -139,8 +160,17 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
             padding: const EdgeInsetsDirectional.only(end: 10),
             child: InkWell(
               onTap: () {
-                Navigator.popUntil(
-                    context, ModalRoute.withName(RouteName.licenses));
+                if (isfromRequest == true) {
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(RouteName.licenses),
+                  );
+                } else {
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(RouteName.requests),
+                  );
+                }
               },
               child: CircleIcon(
                 icon: Icons.close,
