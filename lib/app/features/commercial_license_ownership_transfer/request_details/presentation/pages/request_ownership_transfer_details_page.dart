@@ -107,10 +107,12 @@ class _RequestOwnershipTransferDetailsPageState
             BlocBuilder<RequestOwnershipTransferDetailsCubit,
                 RequestOwnershipTransferDetailsState>(
               builder: (blocContext, state) {
-                return state.status == BlocRequestStatus.submissionGetSuccess
-                    ? state.commercialLicenceDetails!.statusId == 10 ||
-                            state.commercialLicenceDetails!.statusId == 37
-                        ? SizedBox(
+
+                return state.commercialLicenceDetails != null ?
+                state.commercialLicenceDetails!.statusId == 10 ||
+                            state.commercialLicenceDetails!.statusId == 37 ?
+
+                SizedBox(
                             height: 200,
                             width: double.infinity,
                             child: Card(
@@ -309,11 +311,21 @@ class _RequestOwnershipTransferDetailsPageState
                                                       .rejectCommercialRequestTransfer(
                                                           requestNumber)
                                                       .then((value) =>
-                                                    showDialog(
+                                                      {
+
+
+                                                        if(value == true)
+                                                          {
+
+                                                            showDialog(
                                                               context: context,
                                                               builder: (_) =>
-                                                                  RejectionPopup(),
-                                                            ));
+                                                                  RejectionPopup(),)
+                                                          }
+                                                      });
+
+
+
                                                           },
                                                         ),
                                                       ),
@@ -337,7 +349,7 @@ class _RequestOwnershipTransferDetailsPageState
                               ),
                             ),
                           )
-                        : const SizedBox.shrink()
+                    : const SizedBox.shrink()
                     : const SizedBox.shrink();
               },
             )

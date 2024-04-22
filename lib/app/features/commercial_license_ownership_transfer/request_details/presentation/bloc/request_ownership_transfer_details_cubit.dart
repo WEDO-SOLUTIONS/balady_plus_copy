@@ -90,7 +90,9 @@ class RequestOwnershipTransferDetailsCubit
     return Message;
   }
 
-  Future<void> rejectCommercialRequestTransfer(String id) async {
+  Future<bool?> rejectCommercialRequestTransfer(String id) async {
+   bool? result;
+
     emit(state.copyWith(
       status: BlocRequestStatus.submissionUpdateLoading,
       errorMessage: null,
@@ -100,19 +102,25 @@ class RequestOwnershipTransferDetailsCubit
             .rejectCommercialRequestTransfer(id);
     failureOrSuccess.fold(
       (failure) {
+        result= false;
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetFailure,
-            errorMessage: failure.toString(),
+            errorMessage: (failure as ServerFailure).errorMessage,
           ),
         );
+
       },
       (statusCode) {
+        result= true;
         emit(state.copyWith(
           status: BlocRequestStatus.submissionUpdateSuccess,
           errorMessage: null,
         ));
+
       },
     );
+   return result;
   }
+
 }
