@@ -1,4 +1,6 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'dart:async';
+
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +16,7 @@ import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -45,6 +48,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late List<String> labels;
   late List<RouteSearchPointMessage?> searchPoints;
 
+  ValueNotifier<bool> isNavTypeLoading = ValueNotifier(true);
+
   @override
   void initState() {
     super.initState();
@@ -55,7 +60,10 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
           (e) => e?.routeSearchPointMessage,
         )
         .toList();
+
     _controller = DraggableScrollableController();
+
+    unawaited(_calculateNavigationType());
   }
 
   @override
@@ -82,6 +90,59 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   void deactivate() {
     ref.read(dgisControllerProvider).value?.hideRoutes();
     super.deactivate();
+  }
+
+  Future<void> _calculateNavigationType() async {
+    final location = ref.read(locationProvider);
+    final dgisController = ref.read(dgisControllerProvider).valueOrNull;
+    final finishPoint = points[1];
+
+    if (location == null ||
+        finishPoint == null ||
+        dgisController == null ||
+        finishPoint.dgisObjectId == null) {
+      isNavTypeLoading.value = false;
+      return;
+    }
+
+    final briefInfo = await dgisController.findBriefRouteInfos(
+      options: RouteSearchOptionsMessage.pedestrian,
+      finishPoint: finishPoint.routeSearchPointMessage,
+    );
+
+    if (briefInfo.isEmpty) {
+      isNavTypeLoading.value = false;
+      return;
+    }
+
+    final time = briefInfo.first!.duration / 60;
+
+    final distance = CommonFunctions.distance(
+      location.latitude,
+      location.longitude,
+      finishPoint.geoPoint.latitude,
+      finishPoint.geoPoint.longitude,
+    );
+
+    // if distance is less than 0.7 km and time <= 7 min then use pedestrian just for in building navigation
+    if (distance < 0.7 && time.floor() <= 7) {
+      // Check if finish point is in building, if we have building name then it's in building)
+      final objectInfo =
+          await dgisController.searchByObjectId(finishPoint.dgisObjectId!);
+      if (objectInfo.buildingInfo.buildingName != null) {
+        navType = RouteSearchOptionsMessage.pedestrian;
+        isNavTypeLoading.value = false;
+
+        return;
+      }
+    }
+
+    // if distance is less than 0.5 km and time <= 5 min then use pedestrian
+    if (distance < 0.5 && time.floor() <= 5) {
+      navType = RouteSearchOptionsMessage.pedestrian;
+    }
+
+    isNavTypeLoading.value = false;
   }
 
   @override
@@ -196,32 +257,47 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          height: 16,
-                        ),
                         Expanded(
-                          child: RoutesCarousel(
-                            points: points,
-                            startNavigation: () {
-                              PathNavRoute.open(
-                                ref.watch(goRouterProvider),
-                                navType,
-                              );
-                            },
-                            navType: navType,
+                          child: ValueListenableBuilder(
+                            valueListenable: isNavTypeLoading,
+                            builder: (context, isLoading, child) => isLoading
+                                ? Center(
+                                    child: Loading.large(),
+                                  )
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      Expanded(
+                                        child: RoutesCarousel(
+                                          points: points,
+                                          startNavigation: () {
+                                            PathNavRoute.open(
+                                              ref.watch(goRouterProvider),
+                                              navType,
+                                            );
+                                          },
+                                          navType: navType,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      _RouteTabBar(
+                                        active: navType,
+                                        onChanged: (e) {
+                                          setState(() {
+                                            navType = e;
+                                          });
+                                        },
+                                        points: points,
+                                      ),
+                                      const SizedBox(height: 16),
+                                    ],
+                                  ),
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        _RouteTabBar(
-                          active: navType,
-                          onChanged: (e) {
-                            setState(() {
-                              navType = e;
-                            });
-                          },
-                          points: points,
-                        ),
-                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
