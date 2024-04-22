@@ -17,6 +17,7 @@ import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../widgets/reject_request_transfer_popup.dart';
 
 class RequestOwnershipTransferDetailsPage extends StatefulWidget {
   const RequestOwnershipTransferDetailsPage({super.key});
@@ -107,13 +108,8 @@ class _RequestOwnershipTransferDetailsPageState
                 RequestOwnershipTransferDetailsState>(
               builder: (blocContext, state) {
                 return state.status == BlocRequestStatus.submissionGetSuccess
-                    ? state.commercialLicenceDetails!
-                                    .statusId ==
-                                10 ||
-                            state
-                                    .commercialLicenceDetails!
-                                    .statusId ==
-                                37
+                    ? state.commercialLicenceDetails!.statusId == 10 ||
+                            state.commercialLicenceDetails!.statusId == 37
                         ? SizedBox(
                             height: 200,
                             width: double.infinity,
@@ -309,12 +305,15 @@ class _RequestOwnershipTransferDetailsPageState
                                                               "reject_ownership_transfer"
                                                                   .tr(),
                                                           onPressed: () {
-                                                            bloc!
-                                                                .rejectCommercialRequestTransfer(
-                                                                    requestNumber)
-                                                                .then((value) =>
-                                                                    Navigator.pop(
-                                                                        context));
+                                                      bloc!
+                                                      .rejectCommercialRequestTransfer(
+                                                          requestNumber)
+                                                      .then((value) =>
+                                                    showDialog(
+                                                              context: context,
+                                                              builder: (_) =>
+                                                                  RejectionPopup(),
+                                                            ));
                                                           },
                                                         ),
                                                       ),
@@ -347,3 +346,5 @@ class _RequestOwnershipTransferDetailsPageState
     );
   }
 }
+
+

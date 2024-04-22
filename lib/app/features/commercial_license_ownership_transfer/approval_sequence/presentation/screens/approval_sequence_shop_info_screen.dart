@@ -74,7 +74,7 @@ class _ApprovalSequenceShopInfoScreenState
                             keyboardType: TextInputType.text,
                             fillColor: Colors.transparent,
                             onValidate: (text) {
-                              RegExp regex = RegExp('[a-zA-Zء-ي]');
+                              RegExp regex = RegExp(r"^[a-zء-ي ]+$");
                               if (text.toString().isEmpty) {
                                 return ("shop_name_error").tr();
                               } else if (!regex.hasMatch(text!)) {

@@ -12,7 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart' as http;
 
-class RequestAttachmentsViewModel extends BaseViewModel {
+class RequestTownerShipTransferAttachmentsViewModel extends BaseViewModel {
   final WebService webService;
 
   List<AttachmentModel> attachments = [];
@@ -20,26 +20,27 @@ class RequestAttachmentsViewModel extends BaseViewModel {
 
   bool fileDone = true;
 
-  RequestAttachmentsViewModel(
+  RequestTownerShipTransferAttachmentsViewModel(
       {required this.webService, required this.requestId}) {
-    getCommercialLicenseCancelAttachments(requestId);
+    getCommercialLicenseCancelAttachments();
   }
 
-  Future<void> getCommercialLicenseCancelAttachments(int requestId) async {
+  Future<void> getCommercialLicenseCancelAttachments() async {
     Response? response;
     try {
       isLoading = true;
       notifyListeners();
       response = await webService.dio.get(
-        ApiUrl.commercialLicenseCancelAttachments(requestId),
+        ApiUrl.transferRequestAttachments(requestId),
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
+      fileDone = true;
       attachments = result.map<AttachmentModel>((e) {
         AttachmentModel attachment =
             AttachmentModel.fromJson(e as Map<String, dynamic>);
         if ((attachment.isMandatory ?? false) &&
-            !(attachment.updatable ?? false)) {
+            !(attachment.attached ?? false)) {
           fileDone = false;
         }
         return attachment;
@@ -80,7 +81,7 @@ class RequestAttachmentsViewModel extends BaseViewModel {
         },
       );
       response = await webService.dio.post(
-        ApiUrl.commercialLicenseCancelUploadAttachments(
+        ApiUrl.commercialLicenseOwnershipServicesUploadAttachments(
           requestId,
           attachTypeId,
         ),
@@ -88,10 +89,12 @@ class RequestAttachmentsViewModel extends BaseViewModel {
         options: Options(
           headers: {
             "fileContentType": contentTyp,
+            "x-submitter-relation": "HIMSELF",
+            "x-channel-id": "mobile"
           },
         ),
       );
-      await getCommercialLicenseCancelAttachments(requestId);
+      await getCommercialLicenseCancelAttachments();
     } on Exception catch (exception) {
       CommonFunctions.sendEvent(
         dioError: exception is DioException ? exception : null,

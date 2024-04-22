@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/mvvm/request_ownership_transfer_attachments_view_model.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 import '../../../old_owner_transfer/persentation/interface/step_interface.dart';
 import '../../../request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
@@ -35,14 +37,11 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   String? requestNumber;
   RequestOwnershipTransferDetailsCubit? requestDetailsBloc;
 
-
   late List<Widget>? pagesList = [
-
     ApprovalSequencePermitsScreen(stepInterface: this),
     ApprovalSequenceShopInfoScreen(stepInterface: this),
     ApprovalSequenceShopLocationScreen(stepInterface: this),
     ApprovalSequenceAttachmentsScreen(stepInterface: this),
-
   ];
 
   @override
@@ -77,44 +76,51 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
           return (await showBackDialog());
         }
       },
-      child: BlocProvider(
-        create: (_) {
-          bloc = RequestApprovalSequenceCubit(
-              requestApprovalSequenceRepository: sl(), isChecked: false);
+      child:
+          ChangeNotifierProvider<RequestTownerShipTransferAttachmentsViewModel>(
+        create: (_) => RequestTownerShipTransferAttachmentsViewModel(
+          webService: sl(),
+          requestId: bloc!.requestNumber!,
+        ),
+        child: BlocProvider(
+          create: (_) {
+            bloc = RequestApprovalSequenceCubit(
+                requestApprovalSequenceRepository: sl(), isChecked: false);
 
-          return bloc!;
-        },
-        child: GestureDetector(
-          onTap: () => hideKeyboard(),
-          child: Scaffold(
-            appBar: DetailsAppBarTwo(
-              pageLength: pagesList!.length,
-              currentStep: currentPageValue + 1,
-              backOnPress: () {
-                if (currentPageValue > 0) {
-                  setState(() {
-                    currentPageValue--;
-                  });
-                  goToNewPage();
-                } else {
-                  showBackDialog();
-                }
-              },
-              onTapCloseAction: () => showBackDialog(),
-              requestNum: bloc?.requestNumber,
-            ),
-            body: PageView.builder(
-              itemCount: pagesList!.length,
-              scrollDirection: Axis.vertical,
-              physics: const NeverScrollableScrollPhysics(),
-              controller: controller,
-              itemBuilder: (context, position) {
-                return AnimatedContainer(
-                  curve: Curves.easeIn,
-                  duration: const Duration(milliseconds: 300),
-                  child: pagesList![position],
-                );
-              },
+            return bloc!;
+          },
+          child: GestureDetector(
+            onTap: () => hideKeyboard(),
+            child: Scaffold(
+              appBar: DetailsAppBarTwo(
+                pageLength: pagesList!.length,
+                currentStep: currentPageValue + 1,
+                backOnPress: () {
+                  if (currentPageValue > 0) {
+                    setState(() {
+                      currentPageValue--;
+                    });
+                    goToNewPage();
+                  } else {
+                    showBackDialog();
+                  }
+                },
+                onTapCloseAction: () => showBackDialog(),
+                requestNum: bloc?.requestNumber,
+              ),
+              body: PageView.builder(
+                itemCount: pagesList!.length,
+                scrollDirection: Axis.vertical,
+                physics: const NeverScrollableScrollPhysics(),
+                controller: controller,
+                itemBuilder: (context, position) {
+                  return AnimatedContainer(
+                    curve: Curves.easeIn,
+                    duration: const Duration(milliseconds: 300),
+                    child: pagesList![position],
+                  );
+                },
+              ),
             ),
           ),
         ),
