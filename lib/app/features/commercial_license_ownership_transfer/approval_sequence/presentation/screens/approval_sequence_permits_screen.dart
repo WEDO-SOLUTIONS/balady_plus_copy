@@ -112,28 +112,19 @@ class _ApprovalSequencePermitsScreenState
                             btnWidth: 20,
                             text: "transfer_all".tr(),
                             onPressed: () {
-                              // for (var index = 0;
-                              //     index < permitsList.permits!.length;
-                              //     index++) {
-                              //   if (lstPermits.contains(permitsList.permits![index].permitNumber!) ==
-                              //       false) {
-                              //     lstPermits.add(permitsList
-                              //         .permits![index].permitNumber!);
-                              //   }
-                              //   permitsList.permits![index].selected = true;
-                              // }
-                              // setState(() {});
+
 
 
                               for (var index = 0;
                               index < permitsList.permits!.length;
                               index++) {
+
                                 permitsList.permits![index].selected = true;
                                 if (lstPermits.contains(permitsList
-                                    .permits![index].permitNumber!) ==
+                                    .permits![index].requestId!) ==
                                     false) {
                                   lstPermits.add(permitsList
-                                      .permits![index].permitNumber!);
+                                      .permits![index].requestId!);
                                 }
                               }
                               setState(() {});

@@ -283,7 +283,6 @@ class RequestPermitsRemoteDataSourceImplementation
     print(ApiUrl.uploadCredences(params.requestId!, params.data!.id));
     bool state = body['state'];
     dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
 
     try {
       if (state == true) {

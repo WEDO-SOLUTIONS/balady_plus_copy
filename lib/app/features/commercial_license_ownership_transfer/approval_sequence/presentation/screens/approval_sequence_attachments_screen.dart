@@ -21,8 +21,8 @@ class ApprovalSequenceAttachmentsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    RequestTownerShipTransferAttachmentsViewModel viewModel =
-        context.watch<RequestTownerShipTransferAttachmentsViewModel>();
+    RequestOwnerShipTransferAttachmentsViewModel viewModel =
+        context.watch<RequestOwnerShipTransferAttachmentsViewModel>();
     RequestApprovalSequenceCubit bloc =
         context.read<RequestApprovalSequenceCubit>();
 
@@ -36,7 +36,7 @@ class ApprovalSequenceAttachmentsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 12),
-                  Consumer<RequestTownerShipTransferAttachmentsViewModel>(
+                  Consumer<RequestOwnerShipTransferAttachmentsViewModel>(
                     builder: (context, provider, child) {
                       return !provider.isLoading
                           ? Column(
@@ -65,7 +65,7 @@ class ApprovalSequenceAttachmentsScreen extends StatelessWidget {
                                               if ((file.sizeInMB * 1000) <=
                                                   (attachment.maxSize ?? 0)) {
                                                 provider
-                                                    .uploadCommercialLicenseCancelAttachments(
+                                                    .uploadCommercialLicenseTransferAttachments(
                                                   file,
                                                   attachment.id!,
                                                 );
@@ -138,7 +138,7 @@ class ApprovalSequenceAttachmentsScreen extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Selector<RequestTownerShipTransferAttachmentsViewModel, bool>(
+          child: Selector<RequestOwnerShipTransferAttachmentsViewModel, bool>(
             selector: (_, provider) => provider.isLoading,
             builder: (_, isLoading, child) {
               return EnhancedCustomElevatedButtonWidget(

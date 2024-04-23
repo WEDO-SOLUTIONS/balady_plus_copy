@@ -77,8 +77,8 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
         }
       },
       child:
-          ChangeNotifierProvider<RequestTownerShipTransferAttachmentsViewModel>(
-        create: (_) => RequestTownerShipTransferAttachmentsViewModel(
+          ChangeNotifierProvider<RequestOwnerShipTransferAttachmentsViewModel>(
+        create: (_) => RequestOwnerShipTransferAttachmentsViewModel(
           webService: sl(),
           requestId: bloc!.requestNumber!,
         ),

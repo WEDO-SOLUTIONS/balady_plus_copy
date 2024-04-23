@@ -12,7 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart' as http;
 
-class RequestTownerShipTransferAttachmentsViewModel extends BaseViewModel {
+class RequestOwnerShipTransferAttachmentsViewModel extends BaseViewModel {
   final WebService webService;
 
   List<AttachmentModel> attachments = [];
@@ -20,12 +20,12 @@ class RequestTownerShipTransferAttachmentsViewModel extends BaseViewModel {
 
   bool fileDone = true;
 
-  RequestTownerShipTransferAttachmentsViewModel(
+  RequestOwnerShipTransferAttachmentsViewModel(
       {required this.webService, required this.requestId}) {
-    getCommercialLicenseCancelAttachments();
+    getCommercialLicenseTransferAttachments();
   }
 
-  Future<void> getCommercialLicenseCancelAttachments() async {
+  Future<void> getCommercialLicenseTransferAttachments() async {
     Response? response;
     try {
       isLoading = true;
@@ -62,7 +62,7 @@ class RequestTownerShipTransferAttachmentsViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  Future<void> uploadCommercialLicenseCancelAttachments(
+  Future<void> uploadCommercialLicenseTransferAttachments(
     FileDataItem file,
     int attachTypeId,
   ) async {
@@ -89,12 +89,11 @@ class RequestTownerShipTransferAttachmentsViewModel extends BaseViewModel {
         options: Options(
           headers: {
             "fileContentType": contentTyp,
-            "x-submitter-relation": "HIMSELF",
             "x-channel-id": "mobile"
           },
         ),
       );
-      await getCommercialLicenseCancelAttachments();
+      await getCommercialLicenseTransferAttachments();
     } on Exception catch (exception) {
       CommonFunctions.sendEvent(
         dioError: exception is DioException ? exception : null,
