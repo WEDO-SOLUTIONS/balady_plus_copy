@@ -78,6 +78,7 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
             mainActivityArea: commercialLicenceDetails.mainActivityArea ?? 0.0,
           ),
           /////////////// Additional Activities
+
           AdditionalActivitiesInfoWidget(
             additionalActivities:
                 commercialLicenceDetails.activityInfo?.additionalActivities,
