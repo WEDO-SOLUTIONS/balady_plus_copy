@@ -806,6 +806,7 @@ class CommonFunctions {
             NavigationService.navigatorKey.currentContext!, error);
       } else {
         try {
+
           BotToast.showSimpleNotification(
               title: error,
               backgroundColor: const Color.fromARGB(255, 204, 51, 51),
@@ -820,6 +821,7 @@ class CommonFunctions {
       }
     }
   }
+
 
   static Future<bool> checkLocationSettings(BuildContext context) async {
     ServiceStatus serviceStatus = await Permission.location.serviceStatus;
