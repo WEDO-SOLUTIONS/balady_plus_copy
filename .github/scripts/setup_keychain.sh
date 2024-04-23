@@ -23,7 +23,7 @@ echo "$FILE_APPSTORE_KEY" | base64 --decode > $APPSTORE_KEY
 
 # Download profile
 gem install jwt --user-install
-curl -H "Authorization: Bearer $(ruby generate_token.rb $APPSTORE_KEY)" "https://api.appstoreconnect.apple.com/v1/profiles/Z2UHZ86Q35" | jq -r '.data.attributes.profileContent' | base64 --decode > $PROFILE
+curl -H "Authorization: Bearer $(ruby .github/scripts/generate_token.rb $APPSTORE_KEY)" "https://api.appstoreconnect.apple.com/v1/profiles/Z2UHZ86Q35" | jq -r '.data.attributes.profileContent' | base64 --decode > $PROFILE
 
 # Setup keychain
 security create-keychain -p $KC_PASS $KC

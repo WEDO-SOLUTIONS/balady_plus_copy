@@ -68,11 +68,9 @@ jobs:
           FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
+          FILE_APPSTORE_KEY: ${{ secrets.FILE_APPSTORE_KEY }}
         run: |
           zsh .github/scripts/setup_keychain.sh
-
-          cp /usr/bin/false ./MyTrue
-          codesign -s "iPhone Distribution: Development Smart Solutions APP LLC (A34FT8KT4H)" -f ./MyTrue || true
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
