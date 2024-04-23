@@ -127,60 +127,41 @@ class _RequestOwnershipTransferDetailsBodyState
                     submitterInfo: commercialRequestDetails.submitterInfo,
                   ),
                   ///////////////  Owner Info
-                  commercialRequestDetails.submitterInfo != null
-                      ? LicenseOwnerInfoWidget(
-                          submitterInfo:
-                              commercialRequestDetails.submitterInfo!,
-                        )
-                      : const SizedBox(),
+                  LicenseOwnerInfoWidget(
+                    submitterInfo: commercialRequestDetails.submitterInfo,
+                  ),
                   ///////////////  Submitter Info
-                  commercialRequestDetails.submitterInfo != null
-                      ? SubmitterInfoWidget(
-                          submitterInfo:
-                              commercialRequestDetails.submitterInfo!,
-                        )
-                      : const SizedBox(),
+                  SubmitterInfoWidget(
+                    submitterInfo: commercialRequestDetails.submitterInfo,
+                  ),
                   ////////////////    Activity Info
-                  commercialRequestDetails.activityInfo != null
-                      ? ConclusionActivityInfoWidget(
-                          activityInfo: commercialRequestDetails.activityInfo,
-                          mainActivityArea:
-                              commercialRequestDetails.mainActivityArea ?? 0.0,
-                        )
-                      : const SizedBox(),
-
-                  commercialRequestDetails.activityInfo?.additionalActivities !=
-                          null
-                      ? AdditionalActivitiesInfoWidget(
-                          additionalActivities: commercialRequestDetails
-                              .activityInfo!.additionalActivities!)
-                      : const SizedBox(),
-
-                  commercialRequestDetails.locationInfo != null
-                      ? LocationInfoWidget(
-                          locationInfo: commercialRequestDetails.locationInfo!,
-                        )
-                      : const SizedBox(),
-
-                  commercialRequestDetails.shopInfo != null
-                      ? ShopInfoWidget(
-                          shopInfo: commercialRequestDetails.shopInfo!,
-                        )
-                      : const SizedBox(),
+                  ConclusionActivityInfoWidget(
+                    activityInfo: commercialRequestDetails.activityInfo,
+                    mainActivityArea:
+                        commercialRequestDetails.mainActivityArea ?? 0.0,
+                  ),
+//////////////// //////////////// //////////////// ////////////////
+                  AdditionalActivitiesInfoWidget(
+                    additionalActivities: commercialRequestDetails
+                        .activityInfo?.additionalActivities,
+                  ),
+                  LocationInfoWidget(
+                    locationInfo: commercialRequestDetails.locationInfo,
+                  ),
+                  ShopInfoWidget(
+                    shopInfo: commercialRequestDetails.shopInfo,
+                  ),
 
                   CleanContractInfoWidget(
                     cleanContractInfo:
-                        commercialRequestDetails.shopInfo!.cleanContractInfo!,
+                        commercialRequestDetails.shopInfo?.cleanContractInfo,
                   ),
 
                   const SelectedCommercialLicensePermitsWidget(),
-
-                  commercialRequestDetails.salamaInfo != null
-                      ? SalamaDetailsInfoWidget(
-                          salamaDetailsInfo:
-                              commercialRequestDetails.salamaDetailsInfo!,
-                        )
-                      : const SizedBox(),
+                  SalamaDetailsInfoWidget(
+                    salamaDetailsInfo:
+                        commercialRequestDetails.salamaDetailsInfo,
+                  ),
 
                   /////////////////////////////////////////////////
                   Selector<CommercialLicenseAttachmentsViewModel,

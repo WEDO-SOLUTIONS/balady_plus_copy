@@ -7,7 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../commercial_license_details/data/models/commercial_licence_details.dart';
 
 class ShopInfoWidget extends StatelessWidget {
-  final ShopInfo shopInfo;
+  final ShopInfo? shopInfo;
 
   const ShopInfoWidget({super.key, required this.shopInfo});
 
@@ -19,92 +19,53 @@ class ShopInfoWidget extends StatelessWidget {
       children: [
         CardParameter(
           title: 'shopName'.tr(),
-          value: shopInfo.shopName ?? '',
+          value: shopInfo?.shopName ?? '',
         ),
         CardParameter(
           // from whats
           title: 'shopUnitNumber'.tr(),
-          value: shopInfo.shopUnitNumber?.toString() ?? "",
+          value: shopInfo?.shopUnitNumber?.toString() ?? "",
         ),
-        shopInfo.blockNumber != null
+        shopInfo?.blockNumber != null
             ? CardParameter(
                 title: 'blockNumber'.tr(),
-                value: shopInfo.blockNumber.toString(),
+                value: shopInfo?.blockNumber?.toString() ?? "",
               )
             : const SizedBox(),
         CardParameter(
           title: 'holesCount'.tr(),
-          value: shopInfo.holesCount.toString(),
+          value: shopInfo?.holesCount.toString() ?? "",
         ),
         CardParameter(
           title: 'floorCount'.tr(),
-          value: shopInfo.floorCount.toString(),
+          value: shopInfo?.floorCount.toString() ?? "",
         ),
         CardParameter(
           title: 'noOfCameras'.tr(),
-          value: shopInfo.noOfCameras.toString(),
+          value: shopInfo?.noOfCameras.toString() ?? "",
         ),
-        shopInfo.hasElevator != null
+        shopInfo?.hasElevator != null
             ? CardParameter(
                 title: 'hasElevator'.tr(),
-                value: shopInfo.hasElevator! ? 'yes'.tr() : 'no'.tr(),
+                value:
+                    (shopInfo?.hasElevator ?? false) ? 'yes'.tr() : 'no'.tr(),
               )
             : const SizedBox(),
-        shopInfo.insidePetrolStation != null
+        shopInfo?.insidePetrolStation != null
             ? CardParameter(
                 title: 'issue_commercial_shop_inside_petrol'.tr(),
-                value: shopInfo.insidePetrolStation! ? 'yes'.tr() : 'no'.tr(),
+                value: (shopInfo?.insidePetrolStation ?? false)
+                    ? 'yes'.tr()
+                    : 'no'.tr(),
               )
             : const SizedBox(),
-        shopInfo.existInMall != null
+        shopInfo?.existInMall != null
             ? CardParameter(
                 title: 'issue_commercial_shop_inside_mall'.tr(),
-                value: shopInfo.existInMall! ? 'yes'.tr() : 'no'.tr(),
+                value:
+                    (shopInfo?.existInMall ?? false) ? 'yes'.tr() : 'no'.tr(),
               )
             : const SizedBox(),
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-        // CardParameter(
-        //   title: 'floorNumber'.tr(),
-        //   value: shopInfo.floorNumber?.toString() ?? '',
-        // ),
-        // //////////////////////////////////////////
-        // CardParameter(
-        //   title: 'salamaIssueNo'.tr(),
-        //   value: salamaInfo?.salamaIssueNo ?? "",
-        // ),
-        // //////////////////////////////////////////
-        // CardParameter(
-        //   title: 'slamaReportNumber'.tr(),
-        //   value: shopInfo.slamaReportNumber?.toString() ?? '',
-        // ),
-        // shopInfo.contractInfoResponseDto != null
-        //     ? Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           CardParameter(
-        //             title: 'contractType'.tr(),
-        //             value: shopInfo.contractInfoResponseDto!
-        //                     .getDisplayContractTypeName() ??
-        //                 "",
-        //           ),
-        //           CardParameter(
-        //             title: 'contractNumber'.tr(),
-        //             value:
-        //                 shopInfo.contractInfoResponseDto!.contractNumber ?? "",
-        //           ),
-        //           CardParameter(
-        //             title: 'contractOption'.tr(),
-        //             value: (shopInfo.contractInfoResponseDto!
-        //                     .getDisplayCleanContractName() ??
-        //                 ""),
-        //           ),
-        //         ],
-        //       )
-        //     : const SizedBox(),
       ],
     );
   }
