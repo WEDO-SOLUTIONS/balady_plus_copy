@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/favourites.dart';
 import 'package:mapness/_features/favourites/favourites_picker.dart';
 import 'package:mapness/_features/favourites/favourites_search.dart';
 import 'package:mapness/_features/favourites/widgets/delete_all/delete_all_content.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/pages/favourites/favourites_page.dart';
 
 part 'favourites.g.dart';
 
@@ -30,7 +30,7 @@ class FavouritesRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const Favourites();
+  Widget build(BuildContext context, GoRouterState state) => const FavouritesPage();
 }
 
 class FavouritesSearchRoute extends GoRouteData {
@@ -70,6 +70,7 @@ class FavouritesDeleteAllRoute extends GoRouteData {
 
   Future<bool?> push(BuildContext context) => context.push<bool>(location);
 }
+
 
 class FavouritesPickerRoute extends GoRouteData {
   const FavouritesPickerRoute();
