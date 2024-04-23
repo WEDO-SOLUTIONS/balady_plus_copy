@@ -16,7 +16,6 @@ class SalamaDetailsInfoWidget extends StatelessWidget {
     return ExpandableCard(
       title: 'issue_commercial_civil'.tr(),
       icon: IconPath.editIcon,
-      isExpandedByDefault: true,
       children: [
         CardParameter(
           title: 'fire_approval_type'.tr(),
@@ -26,7 +25,7 @@ class SalamaDetailsInfoWidget extends StatelessWidget {
         salamaDetailsInfo.documentDesc.toString().isNotEmpty
             ? CardParameter(
                 title: '',
-                value: salamaDetailsInfo.documentDesc,
+                value: salamaDetailsInfo.documentDesc ?? "",
               )
             : const SizedBox.shrink(),
         salamaDetailsInfo.salamaBillNumber != null

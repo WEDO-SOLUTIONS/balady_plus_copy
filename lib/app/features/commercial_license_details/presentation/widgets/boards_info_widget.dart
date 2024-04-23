@@ -15,9 +15,8 @@ class BoardsInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpandableCard(
-      title: 'license_owner_info'.tr(),
+      title: 'issue_commercial_board_data'.tr(),
       icon: IconPath.editIcon,
-      isExpandedByDefault: true,
       children: [
         ListView.builder(
           shrinkWrap: true,

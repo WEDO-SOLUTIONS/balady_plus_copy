@@ -24,23 +24,18 @@ class ShopInfoWidget extends StatelessWidget {
         CardParameter(
           // from whats
           title: 'shopUnitNumber'.tr(),
-          value: shopInfo.shopUnitNumber.toString(),
+          value: shopInfo.shopUnitNumber?.toString() ?? "",
         ),
-        CardParameter(
-          title: 'blockNumber'.tr(),
-          value: shopInfo.blockNumber.toString(),
-        ),
+        shopInfo.blockNumber != null
+            ? CardParameter(
+                title: 'blockNumber'.tr(),
+                value: shopInfo.blockNumber.toString(),
+              )
+            : const SizedBox(),
         CardParameter(
           title: 'holesCount'.tr(),
           value: shopInfo.holesCount.toString(),
         ),
-
-        // Not Fund In Doc
-        // CardParameter(
-        //   // from whats
-        //   title: 'planNumber'.tr(),
-        //   value: shopInfo.planNumber ?? '',
-        // ),
         CardParameter(
           title: 'floorCount'.tr(),
           value: shopInfo.floorCount.toString(),
@@ -71,9 +66,6 @@ class ShopInfoWidget extends StatelessWidget {
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
         // CardParameter(
         //   title: 'floorNumber'.tr(),
@@ -113,7 +105,6 @@ class ShopInfoWidget extends StatelessWidget {
         //         ],
         //       )
         //     : const SizedBox(),
-
       ],
     );
   }

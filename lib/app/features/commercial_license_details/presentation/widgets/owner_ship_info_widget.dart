@@ -17,7 +17,6 @@ class OwnerShipInfoWidget extends StatelessWidget {
     return ExpandableCard(
       title: 'issue_commercial_location'.tr(),
       icon: IconPath.editIcon,
-      isExpandedByDefault: true,
       children: [
         CardParameter(
           title: 'issue_commercial_location_type'.tr(),

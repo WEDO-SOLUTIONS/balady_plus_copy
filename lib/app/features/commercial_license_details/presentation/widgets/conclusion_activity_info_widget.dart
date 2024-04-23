@@ -16,12 +16,12 @@ class ConclusionActivityInfoWidget extends StatelessWidget {
     required this.mainActivityArea,
   });
 
+
   @override
   Widget build(BuildContext context) {
     return ExpandableCard(
       title: 'issue_commercial_conclusion_activity_data'.tr(),
       icon: IconPath.editIcon,
-      isExpandedByDefault: true,
       children: [
         CardParameter(
           title: 'issue_commercial_conclusion_activity_data_isic'.tr(),
@@ -41,7 +41,7 @@ class ConclusionActivityInfoWidget extends StatelessWidget {
         ),
         CardParameter(
           title: 'issue_commercial_conclusion_activity_data_marsom'.tr(),
-          value: activityInfo?.mainActivity?.area?.toString() ?? '',
+          value: activityInfo?.mainActivity?.mainActivityName?.toString() ?? '',
         ),
         CardParameter(
           title: 'issue_commercial_conclusion_activity_facility'.tr(),

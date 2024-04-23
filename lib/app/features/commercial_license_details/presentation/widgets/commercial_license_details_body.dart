@@ -10,6 +10,7 @@ import 'package:balady_plus/app/features/commercial_license_details/presentation
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/conclusion_activity_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/license_owner_info_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/location_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/owner_ship_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/salama_details_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/shop_info_widget.dart';
@@ -89,11 +90,14 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
           commercialLicenceDetails.activityInfo != null
               ? ConclusionActivityInfoWidget(
                   activityInfo: commercialLicenceDetails.activityInfo,
-                  mainActivityArea: commercialLicenceDetails.mainActivityArea ?? 0.0,
+                  mainActivityArea:
+                      commercialLicenceDetails.mainActivityArea ?? 0.0,
                 )
               : const SizedBox(),
           /////////////// Additional Activities
-          commercialLicenceDetails.activityInfo!.additionalActivities != null
+          commercialLicenceDetails.activityInfo != null &&
+                  commercialLicenceDetails.activityInfo!.additionalActivities !=
+                      null
               ? AdditionalActivitiesInfoWidget(
                   additionalActivities: commercialLicenceDetails
                       .activityInfo!.additionalActivities,
@@ -103,84 +107,8 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
           const CommercialLicensePermitsWidget(),
           /////////////// locationInfo
           commercialLicenceDetails.locationInfo != null
-              ? ExpandableCard(
-                  title: 'locationInfo'.tr(),
-                  icon: IconPath.qrLocationIcon,
-                  children: [
-                    const SizedBox(height: 16),
-                    commercialLicenceDetails.locationInfo!.latitude != null &&
-                            commercialLicenceDetails.locationInfo!.longitude !=
-                                null
-                        ? SizedBox(
-                            height: 250,
-                            child: GoogleMap(
-                              initialCameraPosition: CameraPosition(
-                                  target: LatLng(
-                                    double.parse(commercialLicenceDetails
-                                        .locationInfo!.latitude!),
-                                    double.parse(commercialLicenceDetails
-                                        .locationInfo!.longitude!),
-                                  ),
-                                  zoom: 16),
-                              markers: {
-                                Marker(
-                                  markerId: const MarkerId('position'),
-                                  position: LatLng(
-                                    double.parse(commercialLicenceDetails
-                                        .locationInfo!.latitude!),
-                                    double.parse(commercialLicenceDetails
-                                        .locationInfo!.longitude!),
-                                  ),
-                                )
-                              },
-                              zoomControlsEnabled: false,
-                              zoomGesturesEnabled: false,
-                              scrollGesturesEnabled: false,
-                            ),
-                          )
-                        : const SizedBox(),
-                    CardParameter(
-                      title: 'region'.tr(),
-                      value:
-                          commercialLicenceDetails.locationInfo!.regionName ??
-                              "",
-                    ),
-                    CardParameter(
-                        // from whats
-                        title: 'municipalityName'.tr(),
-                        value: commercialLicenceDetails
-                                .locationInfo!.municipalityName ??
-                            ""),
-                    CardParameter(
-                      // from whats
-                      title: 'subMunicipalityName'.tr(),
-                      value: commercialLicenceDetails
-                              .locationInfo!.subMunicipalityName ??
-                          "",
-                    ),
-                    CardParameter(
-                      title: 'district'.tr(),
-                      value:
-                          commercialLicenceDetails.locationInfo!.districtName ??
-                              "",
-                    ),
-                    CardParameter(
-                      title: 'street'.tr(),
-                      value:
-                          commercialLicenceDetails.locationInfo!.streetName ??
-                              "",
-                    ),
-                    CardParameter(
-                      title: 'latitude'.tr(),
-                      value:
-                          commercialLicenceDetails.locationInfo!.latitude ?? '',
-                    ),
-                    CardParameter(
-                      title: 'longitude'.tr(),
-                      value: commercialLicenceDetails.locationInfo!.longitude ??
-                          '',
-                    ),
-                  ],
+              ? LocationInfoWidget(
+                  locationInfo: commercialLicenceDetails.locationInfo!,
                 )
               : const SizedBox(),
           /////////////// shopInfo
@@ -201,13 +129,16 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
                 )
               : const SizedBox(),
           ///////////////  owner Ship Info  -> بيانات اثبات الموقع
-          commercialLicenceDetails.ownershipInfo != null ? OwnerShipInfoWidget(
-            ownershipInfo: commercialLicenceDetails.ownershipInfo!,
-          ) : const SizedBox(),
+          commercialLicenceDetails.ownershipInfo != null
+              ? OwnerShipInfoWidget(
+                  ownershipInfo: commercialLicenceDetails.ownershipInfo!,
+                )
+              : const SizedBox(),
           ///////////////  Salama Details Info ->
           commercialLicenceDetails.salamaDetailsInfo != null
               ? SalamaDetailsInfoWidget(
-                  salamaDetailsInfo: commercialLicenceDetails.salamaDetailsInfo!,
+                  salamaDetailsInfo:
+                      commercialLicenceDetails.salamaDetailsInfo!,
                 )
               : const SizedBox(),
           /////////////// license_info

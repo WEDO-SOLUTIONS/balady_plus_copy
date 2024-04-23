@@ -828,6 +828,7 @@ class MainActivity {
     detailedActivityName = json['detailedActivityName'];
     isicActivityId = json['isicActivityId'];
     mainActivityId = json['mainActivityId'];
+    mainActivityName = json['mainActivityName'];
     isicActivityName = json['isicActivityName'];
     minYears = json['minYears'];
     maxYears = json['maxYears'];
@@ -851,6 +852,7 @@ class MainActivity {
   int? isicActivityId;
   int? mainActivityId;
   String? isicActivityName;
+  String? mainActivityName;
   int? minYears;
   int? maxYears;
   bool? removed;
@@ -993,8 +995,8 @@ class SalamaDetailsInfo {
   final dynamic salamaReportNumber;
   final dynamic salamaBillNumber;
   final dynamic salamaPermitNumber;
-  final String documentName;
-  final String documentDesc;
+  final String? documentName;
+  final String? documentDesc;
 
   SalamaDetailsInfo({
     required this.workFlow,
@@ -1008,9 +1010,9 @@ class SalamaDetailsInfo {
   factory SalamaDetailsInfo.fromJson(Map<String, dynamic> json) =>
       SalamaDetailsInfo(
         workFlow: json['workFlow'] ?? "",
-        salamaReportNumber: json['salamaReportNumber'] ?? "",
-        salamaBillNumber: json['salamaBillNumber'] ?? "",
-        salamaPermitNumber: json['salamaPermitNumber'] ?? "",
+        salamaReportNumber: json['salamaReportNumber'],
+        salamaBillNumber: json['salamaBillNumber'],
+        salamaPermitNumber: json['salamaPermitNumber'] ,
         documentName: json['documentName'] ?? "",
         documentDesc: json['documentDesc'] ?? "",
       );
