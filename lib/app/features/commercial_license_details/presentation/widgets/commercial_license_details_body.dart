@@ -116,12 +116,10 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
               ? ShopInfoWidget(shopInfo: commercialLicenceDetails.shopInfo!)
               : const SizedBox(),
           ///////////////  Clean Contract Info
-          commercialLicenceDetails.shopInfo?.cleanContractInfo != null
-              ? CleanContractInfoWidget(
-                  cleanContractInfo:
-                      commercialLicenceDetails.shopInfo!.cleanContractInfo!,
-                )
-              : const SizedBox(),
+          CleanContractInfoWidget(
+            cleanContractInfo:
+                commercialLicenceDetails.shopInfo!.cleanContractInfo!,
+          ),
           /////////////// Boards Info
           commercialLicenceDetails.shopInfo?.boardsInfo != null
               ? BoardsInfoWidget(

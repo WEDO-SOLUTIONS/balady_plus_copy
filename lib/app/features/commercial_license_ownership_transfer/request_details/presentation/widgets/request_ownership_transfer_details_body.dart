@@ -168,12 +168,10 @@ class _RequestOwnershipTransferDetailsBodyState
                         )
                       : const SizedBox(),
 
-                  commercialRequestDetails.shopInfo?.cleanContractInfo != null
-                      ? CleanContractInfoWidget(
-                          cleanContractInfo: commercialRequestDetails
-                              .shopInfo!.cleanContractInfo!,
-                        )
-                      : const SizedBox(),
+                  CleanContractInfoWidget(
+                    cleanContractInfo:
+                        commercialRequestDetails.shopInfo!.cleanContractInfo!,
+                  ),
 
                   const SelectedCommercialLicensePermitsWidget(),
 
