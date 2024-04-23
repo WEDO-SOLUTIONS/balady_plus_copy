@@ -7886,7 +7886,7 @@
     "respond_to_ownership_transfer": "الرد على طلب نقل الملكية",
     "accept_ownership_transfer":"قبول طلب نقل الملكية",
     "reject_ownership_transfer":"رفض طلب نقل الملكية",
-    "respond_to_ownership_transfer_warning":"في حالة قبولكم لنقل ملكية الرخصة سيتم نقل الرخص بنفس الحالة الحالية وهي سارية وفي حالة وجود خدمات موقوفة سيتم نقل الرخصة بنفس الخدمات الموقوفة",
+    "respond_to_ownership_transfer_warning":"في حالة قبولكم لنقل ملكية الرخصة سيتم نقل الرخص بنفس الحالة الحالية وفي حالة وجود خدمات موقوفة سيتم نقل الرخصة بنفس الخدمات الموقوفة",
   "isicActivity_area": "مساحة النشاط",
   "permitName": "اسم التصريح",
   "HIMSELF": "عن نفسي",
