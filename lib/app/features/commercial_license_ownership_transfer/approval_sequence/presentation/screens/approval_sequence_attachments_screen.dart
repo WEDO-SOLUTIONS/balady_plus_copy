@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_dat
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/blocs/request_approval_sequence_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/mvvm/request_ownership_transfer_attachments_view_model.dart';
+import 'package:balady_plus/app/features/objectable_transactions/presentation/widgets/create_objection_page/objection_reason_attachment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -110,6 +111,16 @@ class ApprovalSequenceAttachmentsScreen extends StatelessWidget {
                                             ),
                                           ),
                                         ),
+                                        const SizedBox(height: 6),
+                                        attachment.fileName != null
+                                            ? ObjectionReasonAttachment(
+                                          fileName:
+                                          attachment.fileName ?? "",
+                                          filePath: attachment.attachUrl ?? "",
+                                          showDelete: false,
+                                          onDelete: () {},
+                                        )
+                                            : const SizedBox(),
                                         const SizedBox(height: 6),
                                         CustomTextWidget(
                                           '${'attachment_message_typ'.tr()} ${attachment.allowedFilesExtension ?? ''} ${'attachment_message_size'.tr()} ${(attachment.maxSize ?? 0) ~/ 1000} MB',
