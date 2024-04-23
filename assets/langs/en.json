@@ -4319,8 +4319,7 @@
   "terms_error": "Please accept terms",
   "tranfer_permit": "transfer permit",
   "dont_tranfer_permit": "deselect permit",
-  "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning",
-
+  "respond_to_ownership_transfer_warning": "If you accept the transfer of license ownership, and if the license has  a suspended services, the license will be transferred in the same condition as the suspended services.",
   "cr_Number_entity_number":"Commercial registry number/Establishment No",
   "show_request": "Show request",
   "go_to_license": "Go back to license screen",
