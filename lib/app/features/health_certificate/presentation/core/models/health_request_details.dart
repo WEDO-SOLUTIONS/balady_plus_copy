@@ -521,11 +521,15 @@ class HealthCertificateInfo {
       this.statusId,
       this.statusName,
       this.notes,
-      this.certificateUuid});
+      this.certificateUuid,
+      this.expiryDateG,
+      this.issueDateG});
 
   int? certificateId;
-  dynamic issueDate;
-  dynamic expiryDate;
+  String? issueDate;
+  String? expiryDate;
+  String? issueDateG;
+  String? expiryDateG;
   int? statusId;
   String? statusName;
   dynamic notes;
@@ -535,6 +539,8 @@ class HealthCertificateInfo {
       HealthCertificateInfo(
           certificateId: json["certificateId"],
           issueDate: json["issueDate"],
+          issueDateG: json["issueDateG"],
+          expiryDateG: json["expiryDateG"],
           expiryDate: json["expiryDate"],
           statusId: json["statusId"],
           statusName: json["statusName"],
