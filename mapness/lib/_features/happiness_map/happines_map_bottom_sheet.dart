@@ -19,18 +19,21 @@ import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 import 'package:mapness/shared/ui/sheets/thanks_sheet.dart';
 
 class HappinessBottomSheet extends ConsumerStatefulWidget {
-  const HappinessBottomSheet({
-    required this.isOpenedInitially,
-    required this.onHeightChange,
-    required this.onClose,
-    required this.biggestHeight,
-    super.key,
-  });
   final bool isOpenedInitially;
   final void Function(double height) onHeightChange;
 
   final VoidCallback onClose;
+  final VoidCallback onFeedbackSend;
   final double biggestHeight;
+
+  const HappinessBottomSheet({
+    required this.isOpenedInitially,
+    required this.onHeightChange,
+    required this.onClose,
+    required this.onFeedbackSend,
+    required this.biggestHeight,
+    super.key,
+  });
 
   @override
   ConsumerState<HappinessBottomSheet> createState() => _DashboardState();
@@ -98,6 +101,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
     }
 
     if (requestState.requireValue) {
+      widget.onFeedbackSend();
       Future.delayed(const Duration(seconds: 5), () => widget.onClose());
       return const Align(
         alignment: Alignment.bottomCenter,
@@ -168,8 +172,8 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                         .extension<ThemeTextStyles>()!
                                         .heading1
                                         .copyWith(
-                                          color: context.color
-                                              .textAndIconsBasePrimary,
+                                          color: context
+                                              .color.textAndIconsBasePrimary,
                                         ),
                                   ),
                                 ),
@@ -222,8 +226,8 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                           .extension<ThemeTextStyles>()!
                                           .text
                                           .copyWith(
-                                            color: context.color
-                                                .textAndIconsBasePrimary,
+                                            color: context
+                                                .color.textAndIconsBasePrimary,
                                           ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
