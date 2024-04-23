@@ -283,6 +283,7 @@ class _ReuestSequencePremitsScreenState
 
                     ],),
                 ),
+
                 permitResponse.term != null
                     ? getCardView(
                     Row(

@@ -47,7 +47,7 @@ class LocationInfoWidget extends StatelessWidget {
         CardParameter(
           // from whats
           title: 'municipalityName'.tr(),
-          value: locationInfo!.municipalityName ?? "",
+          value: locationInfo?.municipalityName ?? "",
         ),
         CardParameter(
           // from whats
