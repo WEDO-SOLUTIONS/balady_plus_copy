@@ -34,15 +34,15 @@ class ShopInfoWidget extends StatelessWidget {
             : const SizedBox(),
         CardParameter(
           title: 'holesCount'.tr(),
-          value: shopInfo?.holesCount.toString() ?? "",
+          value: shopInfo?.holesCount?.toString() ?? "",
         ),
         CardParameter(
           title: 'floorCount'.tr(),
-          value: shopInfo?.floorCount.toString() ?? "",
+          value: shopInfo?.floorCount?.toString() ?? "",
         ),
         CardParameter(
           title: 'noOfCameras'.tr(),
-          value: shopInfo?.noOfCameras.toString() ?? "",
+          value: shopInfo?.noOfCameras?.toString() ?? "",
         ),
         shopInfo?.hasElevator != null
             ? CardParameter(

@@ -19,7 +19,7 @@ class AdditionalActivitiesInfoWidget extends StatelessWidget {
       children: [
         Column(
           children: additionalActivities
-              .map(
+              ?.map(
                 (e) => Card(
                   margin: const EdgeInsets.all(8),
                   child: Column(
@@ -40,7 +40,7 @@ class AdditionalActivitiesInfoWidget extends StatelessWidget {
                   ),
                 ),
               )
-              .toList(),
+              .toList() ?? [],
         ),
       ],
     );
