@@ -13,6 +13,7 @@ class SalamaDetailsInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return ExpandableCard(
       title: 'issue_commercial_civil'.tr(),
       icon: IconPath.editIcon,
@@ -36,7 +37,7 @@ class SalamaDetailsInfoWidget extends StatelessWidget {
             : const SizedBox(),
         salamaDetailsInfo?.salamaPermitNumber != null
             ? CardParameter(
-                title: 'map_digging_permit_number'.tr(),
+                title: 'issue_commercial_civil_permit'.tr(),
                 value: salamaDetailsInfo?.salamaPermitNumber.toString() ?? '',
               )
             : const SizedBox(),
