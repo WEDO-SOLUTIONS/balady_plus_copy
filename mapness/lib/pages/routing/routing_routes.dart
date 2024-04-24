@@ -2,6 +2,7 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/router.dart';
@@ -185,7 +186,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                                     case '/poi-map':
                                     case '/iwish':
                                     case '/landing':
-                                      const LandingRoute().go(context);
+                                      context.pop();
                                       break;
                                     default:
                                       const RoutingRoute().go(context);

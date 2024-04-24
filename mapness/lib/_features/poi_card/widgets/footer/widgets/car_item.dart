@@ -26,7 +26,7 @@ class _CarItem extends ConsumerWidget {
             getRoute(
               objectMessage_,
               context.l10n.myLocation,
-            ).pushReplacement(context);
+            ).push(context);
           },
           finishPoint: finishPoint,
         ),
