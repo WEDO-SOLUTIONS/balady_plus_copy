@@ -22,7 +22,7 @@ class RequestOwnerShipTransferAttachmentsViewModel extends BaseViewModel {
 
   RequestOwnerShipTransferAttachmentsViewModel(
       {required this.webService, required this.requestId}) {
-    // getCommercialLicenseTransferAttachments();
+    getCommercialLicenseTransferAttachments();
   }
 
   Future<void> getCommercialLicenseTransferAttachments() async {
