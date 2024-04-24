@@ -6,6 +6,8 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/pages/routing/ui/routing_search_content.dart';
 import 'package:mapness/pages/routing/ui/routing_search_header_delegate.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 const _searchScope = 'RoutingSearch';
@@ -50,6 +52,8 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
         curve: Curves.easeInOut,
       );
     });
+
+    ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
     if (widget.initialQuery != null) {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) {
