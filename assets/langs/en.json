@@ -4332,6 +4332,7 @@
   "health_cert_g_date": "Gregorian health certificate issuance date",
   "health_cert_g_end": "Gregorian health certificate end date",
 
-  "name_contract": "Name contract"
-
+  "name_contract": "Name contract",
+  "salamaBillNumber_2": "Fire Prevention and Protection Equipment Installation Certificate Number",
+  "ejarAPP": "Dear beneficiary, you can find out about the accredited real estate brokers in the Ejari network through the link  <a href=\"https://www.ejar.sa/ar/certified-offices\">click here</a>   or download the Real Estate Brokers app for iOS or Android."
 }
