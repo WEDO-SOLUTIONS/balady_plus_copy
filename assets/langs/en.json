@@ -4330,6 +4330,8 @@
   "health_cert_h_date": "Hijri health certificate issuance date",
   "health_cert_h_end": "Hijri health certificate end date",
   "health_cert_g_date": "Gregorian health certificate issuance date",
-  "health_cert_g_end": "Gregorian health certificate end date"
+  "health_cert_g_end": "Gregorian health certificate end date",
+
+  "name_contract": "Name contract"
 
 }

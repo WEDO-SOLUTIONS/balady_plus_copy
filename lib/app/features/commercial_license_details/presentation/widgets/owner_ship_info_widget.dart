@@ -21,10 +21,13 @@ class OwnerShipInfoWidget extends StatelessWidget {
           title: 'issue_commercial_location_type'.tr(),
           value: ownershipInfo?.contractType?.name ?? '',
         ),
-        CardParameter(
-          title: getTitleByContractTypeId(ownershipInfo?.contractType?.id).tr(),
-          value: getContractNumberByTypeId() ?? '',
-        ),
+        ownershipInfo?.contractType?.id != "INVEST_ATTACH"
+            ? CardParameter(
+                title: getTitleByContractTypeId(ownershipInfo?.contractType?.id)
+                    .tr(),
+                value: getContractNumberByTypeId() ?? '',
+              )
+            : const SizedBox(),
         ///////////////////// For EJAR_SERVICE //////////////////////
         ownershipInfo?.contractType?.id == "EJAR_SERVICE"
             ? CardParameter(
@@ -42,7 +45,8 @@ class OwnerShipInfoWidget extends StatelessWidget {
         ownershipInfo?.contractType?.id == "EJAR_ATTACH"
             ? CardParameter(
                 title: 'issue_commercial_location_type_tenancy_date'.tr(),
-                value: ownershipInfo?.tenancyContractInfo?.contractEndDate ?? '',
+                value:
+                    ownershipInfo?.tenancyContractInfo?.contractEndDate ?? '',
               )
             : const SizedBox(),
         ///////////////////// For INVEST_SERVICE //////////////////////
