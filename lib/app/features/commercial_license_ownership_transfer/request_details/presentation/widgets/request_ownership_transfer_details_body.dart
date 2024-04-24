@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/additional%D9%80activities_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/boards_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/clean_contract_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/conclusion_activity_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/license_owner_info_widget.dart';
@@ -139,6 +140,10 @@ class _RequestOwnershipTransferDetailsBodyState
                     activityInfo: commercialRequestDetails.activityInfo,
                     mainActivityArea:
                         commercialRequestDetails.mainActivityArea ?? 0.0,
+                  ),
+                  /////////////// Boards Info
+                  BoardsInfoWidget(
+                    boardsInfo: commercialRequestDetails.shopInfo?.boardsInfo,
                   ),
 //////////////// //////////////// //////////////// ////////////////
                   AdditionalActivitiesInfoWidget(

@@ -76,11 +76,11 @@ class LocationInfoWidget extends StatelessWidget {
           value: locationInfo?.landNo ?? "",
         ),
         CardParameter(
-          title: 'latitude'.tr(),
+          title: 'issue_commercial_conclusion_license_x'.tr(),
           value: locationInfo?.latitude ?? '',
         ),
         CardParameter(
-          title: 'longitude'.tr(),
+          title: 'issue_commercial_conclusion_license_y'.tr(),
           value: locationInfo?.longitude ?? '',
         ),
       ],
