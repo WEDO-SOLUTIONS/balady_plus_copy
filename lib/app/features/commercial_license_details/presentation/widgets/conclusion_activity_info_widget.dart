@@ -64,7 +64,7 @@ class ConclusionActivityInfoWidget extends StatelessWidget {
             ? CardParameter(
                 title:
                     'issue_commercial_conclusion_activity_accomadate_unit'.tr(),
-                value: activityInfo?.mainActivity!.unitCount ?? '',
+                value: activityInfo?.mainActivity!.unitCount.toString() ?? '',
               )
             : const SizedBox(),
       ],
