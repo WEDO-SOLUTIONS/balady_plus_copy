@@ -17,17 +17,18 @@ class CleanContractInfoWidget extends StatelessWidget {
       title: 'issue_commercial_clean_data'.tr(),
       icon: IconPath.editIcon,
       children: [
+
         CardParameter(
           title: 'cleanOptionName'.tr(),
           value: cleanContractInfo?.cleanOptionName ?? "",
         ),
-        cleanContractInfo?.contractNumber == "SERVICE"
+        cleanContractInfo?.cleanOption == "SERVICE"
             ? CardParameter(
                 title: 'contract_number'.tr(),
                 value: cleanContractInfo?.contractNumber?.toString() ?? '',
               )
             : const SizedBox(),
-        cleanContractInfo?.contractOption != "BALADIA_SADAD"
+        cleanContractInfo?.cleanOption != "BALADIA_SADAD"
             ? CardParameter(
                 title: 'contract_expiry_date'.tr(),
                 value: cleanContractInfo?.cleanContractEndDate ?? '',
