@@ -22,7 +22,7 @@ class CleanContractInfoWidget extends StatelessWidget {
           title: 'cleanOptionName'.tr(),
           value: cleanContractInfo?.cleanOptionName ?? "",
         ),
-        cleanContractInfo?.cleanOption == "SERVICE"
+        cleanContractInfo?.contractOption == "SERVICE"
             ? CardParameter(
                 title: 'contract_number'.tr(),
                 value: cleanContractInfo?.contractNumber?.toString() ?? '',
