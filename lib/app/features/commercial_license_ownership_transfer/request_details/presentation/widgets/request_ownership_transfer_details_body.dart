@@ -154,7 +154,7 @@ class _RequestOwnershipTransferDetailsBodyState
 
                   CleanContractInfoWidget(
                     cleanContractInfo:
-                        commercialRequestDetails.shopInfo?.cleanContractInfo,
+                        commercialRequestDetails.cleanContractInfo,
                   ),
 
                   const SelectedCommercialLicensePermitsWidget(),

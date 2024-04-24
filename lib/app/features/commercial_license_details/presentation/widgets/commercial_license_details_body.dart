@@ -96,7 +96,7 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
           ///////////////  Clean Contract Info
           CleanContractInfoWidget(
             cleanContractInfo:
-                commercialLicenceDetails.shopInfo?.cleanContractInfo,
+                commercialLicenceDetails.cleanContractInfo,
           ),
           /////////////// Boards Info
           BoardsInfoWidget(
