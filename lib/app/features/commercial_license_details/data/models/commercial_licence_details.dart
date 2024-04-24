@@ -966,12 +966,13 @@ class CleanContractInfo {
     required this.cleanContractEndDate,
   });
 
+
   factory CleanContractInfo.fromJson(Map<String, dynamic> json) =>
       CleanContractInfo(
         contractNumber: json['contractNumber'],
         cleanOption: json['cleanOption'] ?? "",
         contractOption: json['contractOption'] ?? "",
-        cleanOptionName: json['salamaApprovedCenterName'] ?? "",
+        cleanOptionName: json['cleanOptionName'] ?? "",
         cleanOptionDesc: json['cleanOptionDesc'] ?? "",
         cleanContractEndDate: json['cleanContractEndDate'],
       );
