@@ -8,6 +8,7 @@ import '../../../commercial_license_details/data/models/commercial_licence_detai
 
 class CleanContractInfoWidget extends StatelessWidget {
   final CleanContractInfo? cleanContractInfo;
+
   const CleanContractInfoWidget({super.key, required this.cleanContractInfo});
 
   @override
@@ -15,22 +16,24 @@ class CleanContractInfoWidget extends StatelessWidget {
     return ExpandableCard(
       title: 'issue_commercial_clean_data'.tr(),
       icon: IconPath.editIcon,
-      isExpandedByDefault: true,
       children: [
         CardParameter(
           title: 'cleanOptionName'.tr(),
           value: cleanContractInfo?.cleanOptionName ?? "",
         ),
-        CardParameter(
-          title: 'contract_number'.tr(),
-          value: cleanContractInfo?.contractNumber?.toString() ?? '',
-        ),
-        CardParameter(
-          title: 'contract_expiry_date'.tr(),
-          value: cleanContractInfo?.cleanContractEndDate ?? '',
-        ),
+        cleanContractInfo?.contractNumber == "SERVICE"
+            ? CardParameter(
+                title: 'contract_number'.tr(),
+                value: cleanContractInfo?.contractNumber?.toString() ?? '',
+              )
+            : const SizedBox(),
+        cleanContractInfo?.contractOption != "BALADIA_SADAD"
+            ? CardParameter(
+                title: 'contract_expiry_date'.tr(),
+                value: cleanContractInfo?.cleanContractEndDate ?? '',
+              )
+            : const SizedBox(),
       ],
     );
   }
 }
-
