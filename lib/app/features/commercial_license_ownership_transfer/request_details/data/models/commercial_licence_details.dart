@@ -180,8 +180,8 @@ class CommercialLicenceDetails {
         ownershipInfo: json["ownershipInfo"] != null
             ? OwnershipInfo.fromJson(json["ownershipInfo"])
             : null,
-        salamaDetailsInfo: json["ownershipInfo"] != null
-            ? SalamaDetailsInfo.fromJson(json["ownershipInfo"])
+        salamaDetailsInfo: json["salamaDetailsInfo"] != null
+            ? SalamaDetailsInfo.fromJson(json["salamaDetailsInfo"])
             : null,
         // objectionNotesInfo: json["objectionNotesInfo"],
         // warningMessages: json["warningMessages"],
