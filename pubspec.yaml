@@ -307,6 +307,3 @@ flutter:
           weight: 400
         - asset: assets/fonts/inter/Inter-SemiBold.ttf
           weight: 600
-    - family: BaladyIcons.ttf
-      fonts:
-        - asset: assets/fonts/BaladyIcons.ttf
