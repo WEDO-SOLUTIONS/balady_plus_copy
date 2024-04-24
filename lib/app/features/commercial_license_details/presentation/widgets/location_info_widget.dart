@@ -51,6 +51,11 @@ class LocationInfoWidget extends StatelessWidget {
         ),
         CardParameter(
           // from whats
+          title: 'city'.tr(),
+          value: locationInfo?.cityName ?? "",
+        ),
+        CardParameter(
+          // from whats
           title: 'subMunicipalityName'.tr(),
           value: locationInfo?.subMunicipalityName ?? "",
         ),
