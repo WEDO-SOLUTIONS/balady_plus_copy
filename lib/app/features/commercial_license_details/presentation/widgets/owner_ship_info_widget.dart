@@ -62,7 +62,7 @@ class OwnerShipInfoWidget extends StatelessWidget {
         ownershipInfo?.contractType?.id == "DEED_ATTACH"
             ? CardParameter(
                 title: 'contractDate'.tr(),
-                value: ownershipInfo?.tenancyContractInfo?.contractEndDate ?? '',
+                value: ownershipInfo?.deedInfo?.deedDate ?? '',
               )
             : const SizedBox(),
       ],
