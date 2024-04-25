@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/kiblah/providers/fake_compass.dart';
-import 'package:mapness/pages/kiblah/ui/kiblah_compass.dart';
 import 'package:mapness/pages/kiblah/ui/widgets/kaaba_icon.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 
 class FakeKaabIcon extends ConsumerWidget {
   const FakeKaabIcon({super.key});
@@ -15,12 +15,10 @@ class FakeKaabIcon extends ConsumerWidget {
 
     return Align(
       alignment: Alignment(
-        cos(KiblahCompass.rad(0 - fakeUserBearing)),
-        sin(KiblahCompass.rad(0 - fakeUserBearing)),
+        cos(CommonFunctions.rad(0 - fakeUserBearing)),
+        sin(CommonFunctions.rad(0 - fakeUserBearing)),
       ),
-      child: const KaabaIcon(
-        isCorrect: false,
-      ),
+      child: const KaabaIcon(isCorrect: false),
     );
   }
 }

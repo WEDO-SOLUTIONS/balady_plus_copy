@@ -43,7 +43,7 @@ Mixpanel? mixpanel;
 
 class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
   static final MapnessRouteObserver _instance =
-  MapnessRouteObserver._internal();
+      MapnessRouteObserver._internal();
 
   factory MapnessRouteObserver() => _instance;
 
@@ -60,29 +60,29 @@ class MapnessProviderScope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ProviderScope(
-    child: EagerInitWidget(
-      child: Consumer(
-        builder: (context, ref, child) {
-          final goRouter = ref.watch(goRouterProvider);
-          final language = ref.watch(appLanguageProvider);
-          final localizations = language == Language.arabic
-              ? AppLocalizationsAr()
-              : AppLocalizationsEn();
+        child: EagerInitWidget(
+          child: Consumer(
+            builder: (context, ref, child) {
+              final goRouter = ref.watch(goRouterProvider);
+              final language = ref.watch(appLanguageProvider);
+              final localizations = language == Language.arabic
+                  ? AppLocalizationsAr()
+                  : AppLocalizationsEn();
 
-          return provider.MultiProvider(
-            providers: [
-              provider.Provider<GoRouter>.value(value: goRouter),
-              provider.Provider<AppLocalizations>.value(
-                value: localizations,
-              ),
-            ],
+              return provider.MultiProvider(
+                providers: [
+                  provider.Provider<GoRouter>.value(value: goRouter),
+                  provider.Provider<AppLocalizations>.value(
+                    value: localizations,
+                  ),
+                ],
+                child: child,
+              );
+            },
             child: child,
-          );
-        },
-        child: child,
-      ),
-    ),
-  );
+          ),
+        ),
+      );
 }
 
 class MapnessEntryPoint extends ConsumerStatefulWidget {
@@ -178,7 +178,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                     ThemeTextStyles.arabic(),
                     ThemeTextStyles.english(),
                     AppColorsThemeExt.palette(colorScheme, isDark: false),
-                    AppStaticColorsThemeExt.palette(colorScheme, isDark: false)
+                    AppStaticColorsThemeExt.palette(colorScheme)
                   ],
                 ),
                 locale: language.locale,
