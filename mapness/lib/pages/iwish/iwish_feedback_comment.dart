@@ -8,7 +8,6 @@ import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_text_editing_field.dart';
 
 class IwishFeedbackComment extends ConsumerStatefulWidget {
-
   const IwishFeedbackComment({required this.iwishId, super.key});
   final String iwishId;
 
@@ -41,6 +40,7 @@ class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackComment> {
 
     /// screen is not available when provider is not ready
     final state = ref.read(iwishFeedbackProvider(widget.iwishId)).requireValue;
+    comment = state.comment ?? '';
 
     return LabeledDraggableSheet(
       onClose: onClose,
@@ -51,7 +51,7 @@ class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackComment> {
         children: [
           IwishTextEditingField(
             onChanged: (text) => comment = text,
-            initialValue: state.comment,
+            initialValue: comment,
           ),
           const SizedBox(height: 16),
           LabeledElevatedButton(
