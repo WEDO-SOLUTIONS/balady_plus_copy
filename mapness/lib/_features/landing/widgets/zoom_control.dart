@@ -1,5 +1,5 @@
 import 'package:balady_uikit/core/icons/app_icons.dart';
-import 'package:balady_uikit/core/icons/baladi_icons.dart';
+import 'package:balady_uikit/core/icons/general_icons.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +28,7 @@ class ZoomControl extends ConsumerWidget {
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           ),
-          child: const AppIcons(iconData: BaladyIcons.Zoom_Plus),
+          child: const AppIcons(iconData: GeneralIcons.zoomPlus),
         ),
         MapButton(
           onTapUp: (_) {
@@ -44,7 +44,7 @@ class ZoomControl extends ConsumerWidget {
             bottomLeft: Radius.circular(10),
             bottomRight: Radius.circular(10),
           ),
-          child: const AppIcons(iconData: BaladyIcons.Zoom_Minus),
+          child: const AppIcons(iconData: GeneralIcons.zoomMinus),
         ),
       ],
     );

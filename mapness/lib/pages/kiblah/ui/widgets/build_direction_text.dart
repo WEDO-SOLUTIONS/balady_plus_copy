@@ -1,8 +1,9 @@
 import 'dart:math';
 
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/pages/kiblah/ui/kiblah_compass.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 
 class BuildDirectionText extends StatelessWidget {
   final String title;
@@ -15,16 +16,17 @@ class BuildDirectionText extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) =>
-      Padding(padding: EdgeInsets.all(12),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(NumericBase.$3x),
         child: Align(
-        alignment: Alignment(
-            cos(KiblahCompass.rad(bearing)),
-            sin(KiblahCompass.rad(bearing)),
+          alignment: Alignment(
+            cos(CommonFunctions.rad(bearing)),
+            sin(CommonFunctions.rad(bearing)),
           ),
           child: Text(
             title,
             style: context.textStyle.caption.copyWith(color: Colors.white),
           ),
-      ),);
+        ),
+      );
 }

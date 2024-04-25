@@ -1,5 +1,5 @@
 import 'package:balady_uikit/core/icons/app_icons.dart';
-import 'package:balady_uikit/core/icons/baladi_icons.dart';
+import 'package:balady_uikit/core/icons/general_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/esri_layers.dart';
@@ -12,5 +12,6 @@ class LayersControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => MapButton(
-      onTap: () => EsriLayersRoute.open(context), child: const AppIcons(iconData: BaladyIcons.Layers));
+      onTap: () => EsriLayersRoute.open(context),
+      child: const AppIcons(iconData: GeneralIcons.layers));
 }
