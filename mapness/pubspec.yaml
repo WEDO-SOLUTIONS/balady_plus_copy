@@ -41,7 +41,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.1.1
+    version: ^1.2.1
 
   google_fonts: ^6.1.0
   collection: ^1.17.1

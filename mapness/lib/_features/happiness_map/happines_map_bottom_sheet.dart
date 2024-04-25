@@ -15,22 +15,24 @@ import 'package:mapness/app/routes/happines_map.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
-import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
-import 'package:mapness/shared/ui/sheets/thanks_sheet.dart';
+import 'package:mapness/shared/ui/sheets/loading_thanks_sheet.dart';
 
 class HappinessBottomSheet extends ConsumerStatefulWidget {
-  const HappinessBottomSheet({
-    required this.isOpenedInitially,
-    required this.onHeightChange,
-    required this.onClose,
-    required this.biggestHeight,
-    super.key,
-  });
   final bool isOpenedInitially;
   final void Function(double height) onHeightChange;
 
   final VoidCallback onClose;
+  final VoidCallback onFeedbackSent;
   final double biggestHeight;
+
+  const HappinessBottomSheet({
+    required this.isOpenedInitially,
+    required this.onHeightChange,
+    required this.onClose,
+    required this.onFeedbackSent,
+    required this.biggestHeight,
+    super.key,
+  });
 
   @override
   ConsumerState<HappinessBottomSheet> createState() => _DashboardState();
@@ -78,13 +80,6 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
     final isCollapsed = state.feedback == null;
     final directionality = ref.watch(uiDirectionProvider);
 
-    if (requestState is AsyncLoading) {
-      return Align(
-        alignment: Alignment.bottomCenter,
-        child: LoadingSheet(text: context.l10n.sending),
-      );
-    }
-
     if (requestState is AsyncError) {
       return Align(
         alignment: Alignment.bottomCenter,
@@ -97,11 +92,18 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
       );
     }
 
-    if (requestState.requireValue) {
-      Future.delayed(const Duration(seconds: 5), () => widget.onClose());
-      return const Align(
+    if (requestState is AsyncLoading || requestState.requireValue) {
+      return Align(
         alignment: Alignment.bottomCenter,
-        child: ThanksSheet(),
+        child: Padding(
+          padding: const EdgeInsets.only(
+              top: 16.0, bottom: 24.0, left: 16.0, right: 16.0),
+          child: LoadingThanksSheet(
+            isLoading: requestState is AsyncLoading,
+            onComplete: widget.onFeedbackSent,
+            onClose: widget.onClose,
+          ),
+        ),
       );
     }
 
@@ -168,8 +170,8 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                         .extension<ThemeTextStyles>()!
                                         .heading1
                                         .copyWith(
-                                          color: context.color
-                                              .textAndIconsBasePrimary,
+                                          color: context
+                                              .color.textAndIconsBasePrimary,
                                         ),
                                   ),
                                 ),
@@ -222,8 +224,8 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                           .extension<ThemeTextStyles>()!
                                           .text
                                           .copyWith(
-                                            color: context.color
-                                                .textAndIconsBasePrimary,
+                                            color: context
+                                                .color.textAndIconsBasePrimary,
                                           ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
