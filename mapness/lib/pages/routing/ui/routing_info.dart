@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,7 +92,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         return;
       }
 
-      // distance in meters, convert to km
       distance = briefInfo.first!.extraInfo.distance.toDouble().toKilometers();
       time = briefInfo.first!.duration.toMinutes();
       // ignore: avoid_catches_without_on_clauses
@@ -133,9 +133,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
               builder: (context, navigatingType, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(
-                        height: 16,
-                      ),
+                      Spacing.verticalPaddingInsideWrapper.heightBox,
                       Expanded(
                         child: RoutesCarousel(
                           points: widget.points,
@@ -148,7 +146,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                           navType: navigatingType,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      Spacing.verticalPaddingInsideWrapper.heightBox,
                       _RouteTabBar(
                         active: navigatingType,
                         onChanged: (e) {
@@ -156,7 +154,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                         },
                         points: widget.points,
                       ),
-                      const SizedBox(height: 16),
+                      Spacing.verticalPaddingInsideWrapper.heightBox,
                     ],
                   )),
         },
@@ -190,7 +188,8 @@ class _RouteTabBar extends ConsumerWidget {
     final routeDuration = routes.isEmpty ? null : routes[activeRoute].duration;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.verticalPaddingInsideWrapper),
       child: Row(
         children: [
           RouteSearchOptionsMessage.pedestrian,

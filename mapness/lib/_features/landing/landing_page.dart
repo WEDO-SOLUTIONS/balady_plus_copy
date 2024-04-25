@@ -100,11 +100,11 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(locationProvider);
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
       ..watch(layersControlsProvider)
+      ..watch(locationProvider.select((_) => null))
       ..watch(favouriteMarkersProvider.select((value) => null))
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
