@@ -12,14 +12,19 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
-import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
-import 'package:mapness/shared/ui/sheets/thanks_sheet.dart';
+import 'package:mapness/shared/ui/sheets/loading_thanks_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_feedback_mood.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_feedback_tags.dart';
 
 class IwishFeedback extends ConsumerStatefulWidget {
-  const IwishFeedback({required this.iwishId, super.key});
   final String iwishId;
+  final VoidCallback onFeedbackSent;
+
+  const IwishFeedback({
+    required this.iwishId,
+    required this.onFeedbackSent,
+    super.key,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _IwishFeedbackState();
@@ -36,9 +41,6 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
         ref.watch(iwishFeedbackProvider(widget.iwishId).notifier);
     final feedbackState = ref.watch(iwishFeedbackProvider(widget.iwishId));
 
-    if (entityState.isLoading || feedbackState.isLoading) {
-      return LoadingSheet(text: context.l10n.sending);
-    }
     if (entityState.hasError || feedbackState.hasError) {
       return ErrorSheet(
         onRetry: feedbackNotifier.submitFeedback,
@@ -47,23 +49,34 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
       );
     }
 
+    final bool hasFeedback =
+        entityState.hasValue && entityState.requireValue.feedbackSent;
+
+    if (entityState.isLoading || feedbackState.isLoading || hasFeedback) {
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(
+              top: 16.0, bottom: 24.0, left: 16.0, right: 16.0),
+          child: LoadingThanksSheet(
+            isLoading: entityState.isLoading || feedbackState.isLoading,
+            onComplete: widget.onFeedbackSent,
+            showValuableOpinionMessage: true,
+            onClose: () {
+              if (mounted) {
+                IwishCardRoute(iwishId: widget.iwishId).replace(context);
+              }
+            },
+          ),
+        ),
+      );
+    }
+
     final entity = entityState.requireValue;
     final feedback = feedbackState.requireValue;
     final isCompleted = entity.state == IwishState.completed;
     final isPlanned = entity.state == IwishState.planned;
     final tags = iwishTags(context.l10n, entity.parkSize);
-
-    if (entity.feedbackSent) {
-      Future.delayed(
-        const Duration(seconds: 5),
-        () {
-          if (mounted) {
-            IwishCardRoute(iwishId: widget.iwishId).replace(context);
-          }
-        },
-      );
-      return const ThanksSheet();
-    }
 
     final title = isCompleted
         ? context.l10n.shareYourFeelingsAboutPark
