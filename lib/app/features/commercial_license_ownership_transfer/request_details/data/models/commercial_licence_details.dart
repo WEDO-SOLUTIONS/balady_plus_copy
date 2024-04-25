@@ -77,11 +77,16 @@ class CommercialLicenceDetails {
   final List<LicenseAllowedPermitsInfo>? licenseAllowedPermitsInfo;
   CleanContractInfo? cleanContractInfo;
 
+  String currentCrName ;
+  String currentCrNumber ;
+
   CommercialLicenceDetails({
     required this.requestId,
     this.licenseAllowedPermitsInfo,
     required this.mainActivityArea,
     required this.creationDate,
+    required this.currentCrName,
+    required this.currentCrNumber,
     // required this.entityType,
     // required this.currentTabId,
     required this.statusId,
@@ -159,6 +164,8 @@ class CommercialLicenceDetails {
         // currentTabId: json["currentTabId"],
         statusId: json["statusId"] ?? -1,
         statusName: json["statusName"] ?? '',
+        currentCrNumber: json["currentCrNumber"] ?? '',
+        currentCrName: json["currentCrName"] ?? '',
         // typeId: json["typeId"],
         // typeName: json["typeName"],
         // licensePeriod: json["licensePeriod"],

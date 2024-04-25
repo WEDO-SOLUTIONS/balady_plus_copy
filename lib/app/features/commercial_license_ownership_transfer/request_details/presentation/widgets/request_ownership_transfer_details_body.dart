@@ -125,11 +125,12 @@ class _RequestOwnershipTransferDetailsBodyState
 
                   OwnershipTransferLicenseInfo(
                     licenseInfo: commercialRequestDetails.licenseInfo,
-                    submitterInfo: commercialRequestDetails.submitterInfo,
+                    crNumber: commercialRequestDetails.currentCrNumber,
                   ),
                   ///////////////  Owner Info
                   LicenseOwnerInfoWidget(
-                    submitterInfo: commercialRequestDetails.submitterInfo,
+                    currentCrName: commercialRequestDetails.currentCrName,
+                    currentCrNumber: commercialRequestDetails.currentCrNumber,
                   ),
                   ///////////////  Submitter Info
                   SubmitterInfoWidget(
