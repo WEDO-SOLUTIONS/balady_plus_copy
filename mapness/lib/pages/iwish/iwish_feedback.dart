@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -110,37 +110,11 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
                 onTagToggled: _toggleTag,
               ),
               const SizedBox(height: 16),
-              Material(
-                color: context.color.surfaceBasePrimary,
-                borderRadius: BorderRadius.circular(8),
-                child: InkWell(
-                  onTap: () =>
-                      IwishFeedbackCommentRoute(iwishId: widget.iwishId)
-                          .replace(context),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 16,
-                    ),
-                    child: Builder(builder: (context) {
-                      final textStyle =
-                          Theme.of(context).extension<ThemeTextStyles>()!.text;
-                      final color =
-                          feedback.comment == null || feedback.comment!.isEmpty
-                              ? context.color.textAndIconsBaseTertiary
-                              : context.color.textAndIconsBasePrimary;
-                      final style = textStyle.copyWith(color: color);
-                      final text =
-                          feedback.comment ?? context.l10n.shareYourFeedback;
-
-                      return Text(
-                        text,
-                        style: style,
-                        overflow: TextOverflow.ellipsis,
-                      );
-                    }),
-                  ),
-                ),
+              BaladyInput(
+                hintText: context.l10n.shareYourFeedback,
+                initialValue: feedback.comment,
+                onTap: () => IwishFeedbackCommentRoute(iwishId: widget.iwishId)
+                    .replace(context),
               ),
               const SizedBox(height: 16),
               LabeledElevatedButton(
