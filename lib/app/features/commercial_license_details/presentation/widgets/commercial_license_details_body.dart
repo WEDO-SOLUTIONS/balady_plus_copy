@@ -66,7 +66,8 @@ class CommercialLicenseDetailsBody extends StatelessWidget {
           ),
           ///////////////  Owner Info
           LicenseOwnerInfoWidget(
-            submitterInfo: commercialLicenceDetails.submitterInfo,
+            currentCrName: commercialLicenceDetails.submitterInfo?.entityName ?? "",
+            currentCrNumber: commercialLicenceDetails.submitterInfo?.crNumber ?? "",
           ),
           ///////////////  Submitter Info
           SubmitterInfoWidget(
