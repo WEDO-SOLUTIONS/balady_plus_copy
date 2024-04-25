@@ -3,6 +3,7 @@ package com.dgis.map.extensions
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.BearingMessage
 import com.dgis.map.map_api.Messages.BriefExtraRouteInfoMessage
+import com.dgis.map.map_api.Messages.BriefExtraRouteInfoTypeMessage
 import com.dgis.map.map_api.Messages.BriefRouteInfoMessage
 import com.dgis.map.map_api.Messages.DgisObjectIdMessage
 import com.dgis.map.map_api.Messages.LevelIdMessage
@@ -56,14 +57,28 @@ fun RouteSearchPointMessage.toRouteSearchPoint(): RouteSearchPoint {
 }
 
 fun BriefExtraRouteInfo.toBriefExtraRouteInfoMessage(): BriefExtraRouteInfoMessage {
-    return when {
-        isCar -> BriefExtraRouteInfoMessage.CAR
-        isBicycle -> BriefExtraRouteInfoMessage.BICYCLE
-        isScooter -> BriefExtraRouteInfoMessage.SCOOTER
-        isPedestrian -> BriefExtraRouteInfoMessage.PEDESTRIAN
-        isPublicTransport -> BriefExtraRouteInfoMessage.PUBLIC_TRANSPORT
-        else -> BriefExtraRouteInfoMessage.CAR
+    val distanceValue = when {
+        isCar -> asCar?.length?.millimeters ?: 0
+        isBicycle -> asBicycle?.length?.millimeters ?: 0
+        isScooter -> asScooter?.length?.millimeters ?: 0
+        isPedestrian -> asPedestrian?.length?.millimeters ?: 0
+        isPublicTransport -> 0 // Для общественного транспорта длина не определена
+        else -> asCar?.length?.millimeters ?: 0
     }
+
+    val routeType = when {
+        isCar -> BriefExtraRouteInfoTypeMessage.CAR
+        isBicycle -> BriefExtraRouteInfoTypeMessage.BICYCLE
+        isScooter -> BriefExtraRouteInfoTypeMessage.SCOOTER
+        isPedestrian -> BriefExtraRouteInfoTypeMessage.PEDESTRIAN
+        isPublicTransport -> BriefExtraRouteInfoTypeMessage.PUBLIC_TRANSPORT
+        else -> BriefExtraRouteInfoTypeMessage.CAR
+    }
+
+    return BriefExtraRouteInfoMessage.Builder()
+        .setType(routeType)
+        .setDistance(distanceValue)
+        .build()
 }
 
 fun BriefRouteInfo.toBriefRouteInfoMessage(): BriefRouteInfoMessage {
