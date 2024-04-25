@@ -1,9 +1,13 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/features/routing/ui/search_field.dart';
+import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/providers/search_history.dart';
 
-import 'package:mapness/shared/ui/buttons/nav_button.dart';
+import 'package:provider/provider.dart';
 
 class RoutingSearchBar extends ConsumerStatefulWidget {
   const RoutingSearchBar({
@@ -21,11 +25,13 @@ class RoutingSearchBar extends ConsumerStatefulWidget {
 
 class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
   late FocusNode _focusNode;
+  late TextEditingController _controller;
   final ValueNotifier<bool> _focused = ValueNotifier(false);
 
   @override
   void initState() {
     super.initState();
+    _controller = TextEditingController();
     _focusNode = FocusNode()
       ..addListener(() {
         if (_focusNode.hasFocus) {
@@ -36,30 +42,41 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
   }
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          Expanded(
-            child: SearchField(
-              placeholder: widget.placeholder,
-              focusNode: _focusNode,
-            ),
-          ),
-          ValueListenableBuilder(
-            valueListenable: _focused,
-            builder: (context, value, child) => value
-                ? Padding(
-                    padding: const EdgeInsetsDirectional.only(
-                      start: 12,
-                    ),
-                    child: NavButton(
-                      onTap: () {
-                        context.pop();
-                      },
-                      icon: 'assets/icons/svg/ic_search_close.svg',
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
-        ],
-      );
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = context.watch<SearchScope>();
+    ref.listen(searchQueryProvider(scope.value), (previous, next) {
+      if (next != _controller.text) {
+        _controller
+          ..text = next
+          ..selection =
+              TextSelection.collapsed(offset: _controller.text.length);
+      }
+    });
+    return BaladySearchWithBackButton(
+      searchInput: BaladyInput.search(
+        focusNode: _focusNode,
+        onChanged: (query) {
+          ref.read(searchQueryProvider(scope.value).notifier).update(query);
+        },
+        onSubmitted: (query) {
+          ref.read(searchProvider(scope.value).notifier).searchByText(query);
+          if (query.isNotEmpty) {
+            ref.read(searchHistoryProvider(scope.value).notifier).put(
+                  SearchHistoryItem.fromQuery(query: query),
+                );
+          }
+        },
+        controller: _controller,
+        hintText: widget.placeholder,
+      ),
+      onBackButtonPressed: context.pop,
+    );
+  }
 }
