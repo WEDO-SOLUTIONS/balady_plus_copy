@@ -151,7 +151,8 @@ class IwishPlaceCard extends ConsumerWidget {
                                               const EdgeInsetsDirectional.only(
                                             start: 8,
                                           ),
-                                          foreground: context.color.textAndIconsBasePrimary,
+                                          foreground: context
+                                              .color.textAndIconsBasePrimary,
                                           background: NonThemeColor.color60,
                                           finishPoint: RouteSearchPointMessage(
                                             coordinates: GeoPointMessage(
