@@ -195,7 +195,7 @@ class _RequestOwnershipTransferDetailsBodyState
                                         : const SizedBox();
                                   },
                                 )
-                              : Text("municipalAdvisorNoAdditionalActivities".tr()),
+                              : Text("no_attachments".tr()),
                         ],
                       );
                     },
