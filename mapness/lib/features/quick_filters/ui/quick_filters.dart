@@ -60,7 +60,6 @@ class QuickFilters extends ConsumerWidget {
               return;
             }
 
-            /// navigation to fav item when pressed
             _showRouting(naviFeature, point, context);
           },
         ),
@@ -77,8 +76,6 @@ class QuickFilters extends ConsumerWidget {
             } else {
               return;
             }
-
-            /// navigation to fav item when pressed
             _showRouting(naviFeature, point, context);
           },
         ),

@@ -177,7 +177,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   extensions: <ThemeExtension<dynamic>>[
                     ThemeTextStyles.arabic(),
                     AppColorsThemeExt.palette(colorScheme, isDark: false),
-                    AppStaticColorsThemeExt.palette(colorScheme, isDark: false)
+                    AppStaticColorsThemeExt.palette(colorScheme)
                   ],
                 ),
                 locale: language.locale,
