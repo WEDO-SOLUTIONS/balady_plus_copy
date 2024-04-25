@@ -219,25 +219,11 @@ enum ParkingPurposeMessage {
   scooter,
 }
 
-enum ParkingAccessMessage {
-  public,
-  handicappedOnly,
-  customersOnly,
-  residentsOnly,
-  taxiOnly
-}
+enum ParkingAccessMessage { public, handicappedOnly, customersOnly, residentsOnly, taxiOnly }
 
 enum ParkingPavingTypeMessage { asphalt, concrete, gravel, unpaved, none }
 
-enum SpecialSpaceTypeMessage {
-  bicycle,
-  motorbike,
-  family,
-  handicapped,
-  babyCarriage,
-  truck,
-  scooter
-}
+enum SpecialSpaceTypeMessage { bicycle, motorbike, family, handicapped, babyCarriage, truck, scooter }
 
 class SpecialSpaceMessage {
   SpecialSpaceMessage(this.type, this.name, this.count);
@@ -459,15 +445,7 @@ class MarkerOptionsMessageOld {
   final double iconWidth;
 }
 
-enum RouteSearchOptionsMessage {
-  car,
-  publicTransport,
-  bicycle,
-  pedestrian,
-  scooter,
-  truck,
-  taxi
-}
+enum RouteSearchOptionsMessage { car, publicTransport, bicycle, pedestrian, scooter, truck, taxi }
 
 class RouteEditorRoutePointMessage {
   RouteEditorRoutePointMessage(
@@ -614,8 +592,7 @@ class MarkerTextStyleMessage {
 }
 
 class MarkerIconMessage {
-  MarkerIconMessage(
-      this.path, this.width, this.iconMapDirection, this.iconOpacity);
+  MarkerIconMessage(this.path, this.width, this.iconMapDirection, this.iconOpacity);
 
   final String path;
   final double width;
@@ -737,8 +714,7 @@ class FlagFilterMessage {
 }
 
 class RangeFilterMessage {
-  RangeFilterMessage(
-      this.tagName, this.displayName, this.minValue, this.maxValue);
+  RangeFilterMessage(this.tagName, this.displayName, this.minValue, this.maxValue);
 
   final String tagName;
   final String displayName;
@@ -947,8 +923,7 @@ class LogOptionsMessage {
 }
 
 class RouteSearchPointMessage {
-  RouteSearchPointMessage(
-      this.coordinates, this.course, this.objectId, this.levelId);
+  RouteSearchPointMessage(this.coordinates, this.course, this.objectId, this.levelId);
   final GeoPointMessage coordinates;
   final BearingMessage? course;
   final DgisObjectIdMessage objectId;
@@ -980,8 +955,8 @@ class PackageMessage {
 }
 
 class PackageInfoMessage {
-  PackageInfoMessage(this.name, this.installed, this.incomplete,
-      this.preinstalled, this.compatible, this.hasUpdate, this.updateStatus);
+  PackageInfoMessage(this.name, this.installed, this.incomplete, this.preinstalled, this.compatible, this.hasUpdate,
+      this.updateStatus);
 
   final String name;
   final bool installed;
@@ -1003,7 +978,7 @@ enum BriefExtraRouteInfoTypeMessage {
 }
 
 class BriefExtraRouteInfoMessage {
-  BriefExtraRouteInfoMessage(this.type, this.distance);
+  const BriefExtraRouteInfoMessage(this.type, this.distance);
 
   final BriefExtraRouteInfoTypeMessage type;
   final int distance;
@@ -1051,8 +1026,7 @@ enum FollowStateMessage {
     dartOut: 'lib/src/pigeons/messages.g.dart',
     objcHeaderOut: '../dgis_map/ios/Classes/messages.h',
     objcSourceOut: '../dgis_map/ios/Classes/messages.m',
-    javaOut:
-        '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.java',
+    javaOut: '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.java',
     javaOptions: JavaOptions(
       package: 'com.dgis.map.map_api',
     ),
@@ -1127,8 +1101,7 @@ abstract class MapApi {
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async
-  List<DistanceResponseMessage> getDistanceTo(
-      List<DistanceRequestMessage> points);
+  List<DistanceResponseMessage> getDistanceTo(List<DistanceRequestMessage> points);
 
   @async
   SearchResultMessage search(
@@ -1400,6 +1373,5 @@ abstract class FlutterMapApi {
 @HostApi()
 abstract class PluginApi {
   @async
-  void initialize(
-      LogOptionsMessage? message, VendorConfigMessage? configMessage);
+  void initialize(LogOptionsMessage? message, VendorConfigMessage? configMessage);
 }

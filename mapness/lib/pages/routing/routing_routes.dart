@@ -80,14 +80,13 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(locationProvider);
-
     //TODO(Someone): Fix layers lifecicle
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
 
     ref
       ..watch(layersControlsProvider)
+      ..watch(locationProvider.select((_) => null))
       ..watch(favouriteMarkersProvider.select((value) => null))
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
