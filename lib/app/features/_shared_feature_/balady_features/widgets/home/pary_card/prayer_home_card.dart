@@ -138,7 +138,7 @@ class PrayerHomeCard extends StatelessWidget {
                                                     PackageConfig.packageName,
                                                 colorFilter: ColorFilter.mode(
                                                   isNotificationDisabled ? const Color(0x99FFFFFF) : Colors.white,
-                                                  BlendMode.color,
+                                                  BlendMode.srcIn,
                                                 ),
                                                 width: 24,
                                                 height: 24,
