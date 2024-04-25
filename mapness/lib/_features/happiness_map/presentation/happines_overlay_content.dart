@@ -65,10 +65,6 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
         final maxHeight = constraints.biggest.height;
         return Stack(
           children: [
-            ConfettiAnimation(
-              animationController: confettiController,
-              config: ConfettiGeneratorConfig.confetti(),
-            ),
             ValueListenableBuilder(
               valueListenable: height,
               builder: (context, height, child) => Positioned.fill(
@@ -86,6 +82,10 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
                   ),
                 ),
               ),
+            ),
+            ConfettiAnimation(
+              animationController: confettiController,
+              config: ConfettiGeneratorConfig.confetti(),
             ),
             HappinessBottomSheet(
               isOpenedInitially: widget.isBottomSheetOpened,
@@ -117,7 +117,7 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
                 // widget.onClose();
                 context.pop();
               },
-              onFeedbackSend: () {
+              onFeedbackSent: () {
                 if (!confettiController.isAnimating) {
                   playConfettiAnimation();
                 }
