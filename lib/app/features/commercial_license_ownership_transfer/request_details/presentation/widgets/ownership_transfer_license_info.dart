@@ -36,7 +36,7 @@ class OwnershipTransferLicenseInfo extends StatelessWidget {
           value: licenseInfo?.licenseEndDate ?? "",
         ),
         CardParameter(
-          title: 'cr_Number_entity_number'.tr(),
+          title: 'issue_commercial_conclusion_owner_data_cr'.tr(),
           value: crNumber ?? "",
         ),
       ],
