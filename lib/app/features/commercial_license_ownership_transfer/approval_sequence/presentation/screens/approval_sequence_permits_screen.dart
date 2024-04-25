@@ -17,6 +17,7 @@ import '../blocs/request_approval_sequence_cubit.dart';
 
 class ApprovalSequencePermitsScreen extends StatefulWidget {
   StepInterface stepInterface;
+
   ApprovalSequencePermitsScreen({Key? key, required this.stepInterface})
       : super(key: key);
 
@@ -112,27 +113,18 @@ class _ApprovalSequencePermitsScreenState
                             btnWidth: 20,
                             text: "transfer_all".tr(),
                             onPressed: () {
-
-
-
                               for (var index = 0;
-                              index < permitsList.permits!.length;
-                              index++) {
-
+                                  index < permitsList.permits!.length;
+                                  index++) {
                                 permitsList.permits![index].selected = true;
                                 if (lstPermits.contains(permitsList
-                                    .permits![index].requestId!) ==
+                                        .permits![index].requestId!) ==
                                     false) {
-                                  lstPermits.add(permitsList
-                                      .permits![index].requestId!);
+                                  lstPermits.add(
+                                      permitsList.permits![index].requestId!);
                                 }
                               }
                               setState(() {});
-
-
-
-
-
                             },
                           ),
                         ],
@@ -167,19 +159,19 @@ class _ApprovalSequencePermitsScreenState
                                         const Spacer(),
                                         CustomElevatedButtonWidget(
                                           btnBorderColor:
-                                          permit.selected == false ||
-                                              permit.selected == null
-                                              ? AppColor.white
-                                              : AppColor.blueSkyLight800,
+                                              permit.selected == false ||
+                                                      permit.selected == null
+                                                  ? AppColor.white
+                                                  : AppColor.blueSkyLight800,
                                           btnColor: permit.selected == false ||
-                                              permit.selected == null
+                                                  permit.selected == null
                                               ? AppColor.blueSkyLight800
                                               : AppColor.white,
                                           textStyle: AppStyle
                                               .elevatedButtonStyle
                                               .copyWith(
                                             color: permit.selected == false ||
-                                                permit.selected == null
+                                                    permit.selected == null
                                                 ? AppColor.white
                                                 : AppColor.blueSkyLight800,
                                             fontWeight: FontWeight.w700,
@@ -189,7 +181,7 @@ class _ApprovalSequencePermitsScreenState
                                           btnHeight: 30,
                                           btnWidth: 20,
                                           text: permit.selected == false ||
-                                              permit.selected == null
+                                                  permit.selected == null
                                               ? "tranfer_permit".tr()
                                               : "dont_tranfer_permit".tr(),
                                           onPressed: () {
@@ -264,19 +256,22 @@ class _ApprovalSequencePermitsScreenState
                         ),
                       )
                     : Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomTextWidget(
-                        ('data_not_have_permits').tr(),
-                        fontSize: 14,
-                        fontColor: AppColor.primary900Light,
-                        textAlign: TextAlign.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(14.0),
+                              child: CustomTextWidget(
+                                ('data_not_have_permits').tr(),
+                                fontSize: 14,
+                                fontColor: AppColor.primary900Light,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-
-                    ],),
-                ),
                 permitsList.term != null
                     ? getCardView(
                         Row(
@@ -292,12 +287,16 @@ class _ApprovalSequencePermitsScreenState
                                     isAgree = !isAgree;
                                   });
                                 }),
+
                             Expanded(
                               child: Text(
                                 permitsList.term ?? "",
                                 style: AppStyle
                                     .personalInfoParameterValueTextStyle
-                                    .copyWith(fontSize: 12),
+                                    .copyWith(
+                                  fontSize: 12,
+                                  height: 1.3,
+                                ),
                               ),
                             ),
                           ],
