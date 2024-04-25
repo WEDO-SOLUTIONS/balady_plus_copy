@@ -1,11 +1,3 @@
 {
-  "cmake.sourceDirectory": "C:/Users/danag/OneDrive/Desktop/Baladi/balady-plus/balady-plus/linux",
-  "dart.flutterSdkPath": ".fvm/versions/3.10.3",
-  "editor.rulers": [
-    120
-  ],
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
-  }
+  "cmake.sourceDirectory": "C:/Users/danag/OneDrive/Desktop/Baladi/balady-plus/balady-plus/linux"
 }
