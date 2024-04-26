@@ -77,8 +77,10 @@ class KiblahCompass extends ConsumerWidget {
               child: isReady
                   ? Align(
                       alignment: Alignment(
-                        cos(CommonFunctions.rad(kaabaBearing - userBearing)),
-                        sin(CommonFunctions.rad(kaabaBearing - userBearing)),
+                        cos(CommonFunctions.convertDegreesToRadiansAndShift(
+                            kaabaBearing - userBearing)),
+                        sin(CommonFunctions.convertDegreesToRadiansAndShift(
+                            kaabaBearing - userBearing)),
                       ),
                       child: KaabaIcon(isCorrect: correct),
                     )

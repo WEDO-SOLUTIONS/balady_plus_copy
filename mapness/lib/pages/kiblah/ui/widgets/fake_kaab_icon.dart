@@ -15,8 +15,10 @@ class FakeKaabIcon extends ConsumerWidget {
 
     return Align(
       alignment: Alignment(
-        cos(CommonFunctions.rad(0 - fakeUserBearing)),
-        sin(CommonFunctions.rad(0 - fakeUserBearing)),
+        cos(CommonFunctions.convertDegreesToRadiansAndShift(
+            0 - fakeUserBearing)),
+        sin(CommonFunctions.convertDegreesToRadiansAndShift(
+            0 - fakeUserBearing)),
       ),
       child: const KaabaIcon(isCorrect: false),
     );
