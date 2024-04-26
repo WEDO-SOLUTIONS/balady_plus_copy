@@ -45,7 +45,7 @@ class _BaladyServicesPageState extends State<BaladyServicesPage> {
         ),
 
 // Opprtunity Map Card
-        OpprtunityMapCard(onClose: () {}, type: ""),
+        OpportunityMapCard(onClose: () {}, type: ""),
 
         const SizedBox(
           height: 32,
