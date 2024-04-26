@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -70,63 +71,60 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Stack(
-        children: [
-          const RoutingMapControls(bottomExtent: 136),
-          LayoutBuilder(
-            builder: (context, constraints) => DgisBottomSheet(
-              initialExpansion: Expansion.middle,
-              availableExpansions: const {
-                Expansion.hidden,
-                Expansion.middle,
-                Expansion.expanded,
-              },
-              onExpansionChanged: (expansion, {byUser = false}) {
-                if (expansion == Expansion.hidden && context.mounted) {
-                  context.pop();
-                }
-              },
-              middleHeight: constraints.maxHeight * 0.7,
-              scrollableBody: (context, scrollController) => Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF4F4F5),
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16),
-                  ),
+    return Stack(
+      children: [
+        const RoutingMapControls(bottomExtent: 136),
+        LayoutBuilder(
+          builder: (context, constraints) => DgisBottomSheet(
+            initialExpansion: Expansion.middle,
+            availableExpansions: const {
+              Expansion.hidden,
+              Expansion.middle,
+              Expansion.expanded,
+            },
+            onExpansionChanged: (expansion, {byUser = false}) {
+              if (expansion == Expansion.hidden && context.mounted) {
+                context.pop();
+              }
+            },
+            middleHeight: constraints.maxHeight * 0.7,
+            scrollableBody: (context, scrollController) => Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFF4F4F5),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(CornerRadius.baseContainer),
+                  topLeft: Radius.circular(CornerRadius.baseContainer),
                 ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: SearchScope(
-                    named: _searchScope,
-                    child: CustomScrollView(
-                      controller: scrollController,
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      physics: const ClampingScrollPhysics(),
-                      slivers: [
-                        SliverPersistentHeader(
-                          delegate: RoutingSearchHeaderDelegate(
-                            placeholder: widget.placeholder,
-                            draggableScrollableController: _controller,
-                          ),
-                          pinned: true,
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: SearchScope(
+                  named: _searchScope,
+                  child: CustomScrollView(
+                    controller: scrollController,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    physics: const ClampingScrollPhysics(),
+                    slivers: [
+                      SliverPersistentHeader(
+                        delegate: RoutingSearchHeaderDelegate(
+                          placeholder: widget.placeholder,
+                          draggableScrollableController: _controller,
                         ),
-                        RoutingSearchContent(
-                          showMyLocation: widget.showMyLocation,
-                          scrollController: scrollController,
-                        ),
-                      ],
-                    ),
+                        pinned: true,
+                      ),
+                      RoutingSearchContent(
+                        showMyLocation: widget.showMyLocation,
+                        scrollController: scrollController,
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

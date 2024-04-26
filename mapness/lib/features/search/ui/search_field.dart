@@ -1,10 +1,11 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
-import 'package:mapness/widgets/search/ui/search_field.dart' as widgets;
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart';
 
 class SearchField extends ConsumerStatefulWidget {
@@ -39,9 +40,7 @@ class _SearchFieldState extends ConsumerState<SearchField> {
               TextSelection.collapsed(offset: _controller.text.length);
       }
     });
-
-    return widgets.SearchField(
-      controller: _controller,
+    return BaladyInput.search(
       focusNode: widget.focusNode,
       onChanged: (query) {
         ref.read(searchQueryProvider(scope.value).notifier).update(query);
@@ -59,6 +58,8 @@ class _SearchFieldState extends ConsumerState<SearchField> {
               );
         }
       },
+      controller: _controller,
+      hintText: context.l10n.search,
     );
   }
 }

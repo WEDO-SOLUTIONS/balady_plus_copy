@@ -222,7 +222,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
           return ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Material(
-              color: const Color(0xFFF4F4F5),
+              color: Colors.white,
               child: SearchScope(
                 named: searchScope,
                 child: CustomScrollView(
