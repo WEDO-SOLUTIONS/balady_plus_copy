@@ -20,8 +20,8 @@ class DirectionText extends StatelessWidget {
         padding: const EdgeInsets.all(NumericBase.$3x),
         child: Align(
           alignment: Alignment(
-            cos(CommonFunctions.rad(bearing)),
-            sin(CommonFunctions.rad(bearing)),
+            cos(CommonFunctions.convertDegreesToRadiansAndShift(bearing)),
+            sin(CommonFunctions.convertDegreesToRadiansAndShift(bearing)),
           ),
           child: Text(
             title,
