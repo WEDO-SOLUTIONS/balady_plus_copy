@@ -1,17 +1,14 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
-import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
-import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
-import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
+import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -19,9 +16,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/nav_button.dart';
-import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui/route_timeline.dart';
-import 'package:mapness/widgets/routing/ui/route_type_switch.dart';
 
 class RoutingRoutesPage extends ConsumerStatefulWidget {
   const RoutingRoutesPage({
@@ -39,7 +34,6 @@ class RoutingRoutesPage extends ConsumerStatefulWidget {
 
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late DraggableScrollableController _controller;
-  RouteSearchOptionsMessage navType = RouteSearchOptionsMessage.car;
 
   late List<RouteParamsPoint?> points;
   late List<String> labels;
@@ -55,6 +49,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
           (e) => e?.routeSearchPointMessage,
         )
         .toList();
+
     _controller = DraggableScrollableController();
   }
 
@@ -86,14 +81,13 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(locationProvider);
-
     //TODO(Someone): Fix layers lifecicle
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
 
     ref
       ..watch(layersControlsProvider)
+      ..watch(locationProvider.select((_) => null))
       ..watch(favouriteMarkersProvider.select((value) => null))
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
@@ -185,7 +179,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                                     case '/poi-map':
                                     case '/iwish':
                                     case '/landing':
-                                      const LandingRoute().go(context);
+                                      context.pop();
                                       break;
                                     default:
                                       const RoutingRoute().go(context);
@@ -196,32 +190,11 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          height: 16,
-                        ),
                         Expanded(
-                          child: RoutesCarousel(
+                          child: RoutingInfo(
                             points: points,
-                            startNavigation: () {
-                              PathNavRoute.open(
-                                ref.watch(goRouterProvider),
-                                navType,
-                              );
-                            },
-                            navType: navType,
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        _RouteTabBar(
-                          active: navType,
-                          onChanged: (e) {
-                            setState(() {
-                              navType = e;
-                            });
-                          },
-                          points: points,
-                        ),
-                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -230,55 +203,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _RouteTabBar extends ConsumerWidget {
-  const _RouteTabBar({
-    required this.onChanged,
-    required this.active,
-    required this.points,
-  });
-  final void Function(RouteSearchOptionsMessage) onChanged;
-  final RouteSearchOptionsMessage active;
-  final List<RouteParamsPoint?> points;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final routes = ref
-            .watch(
-              routesProvider(
-                startPoint: points[0],
-                finishPoint: points[1],
-                navType: active,
-              ),
-            )
-            .unwrapPrevious()
-            .valueOrNull ??
-        [];
-    final activeRoute = ref.watch(activeRouteProvider);
-    final routeDuration = routes.isEmpty ? null : routes[activeRoute].duration;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          RouteSearchOptionsMessage.pedestrian,
-          RouteSearchOptionsMessage.car,
-        ]
-            .map(
-              (e) => RouteTypeSwitch(
-                iconAsset: e.icon,
-                title: active == e
-                    ? routeDuration?.formatDuration(context.l10n)
-                    : null,
-                onPressed: () => onChanged(e),
-                isChoosed: active == e,
-              ),
-            )
-            .toList(),
       ),
     );
   }

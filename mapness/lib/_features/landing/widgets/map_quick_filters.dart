@@ -96,6 +96,12 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
           }
         });
       },
+      onFavouritesTap: () {
+        _debouncer.run(() {
+          ref.read(searchByRubricsQueryProvider.notifier).update(null);
+          searchObjectManager.removeAllMarkers();
+        });
+      },
       selectedIndex: selectedFilter?.$2,
       itemBackground: widget.forMap ? Colors.white : NonThemeColor.color11,
       customFilters: widget.customFilters,

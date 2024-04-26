@@ -75,9 +75,7 @@ class RadarWidgetState extends State<RadarWidget>
                 child: Container(),
               );
             } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ),
