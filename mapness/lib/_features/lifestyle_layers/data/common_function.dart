@@ -1,4 +1,4 @@
-import 'dart:convert' show base64Decode, base64Encode, utf8;
+import 'dart:convert' show base64Encode, utf8;
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart';
@@ -14,8 +14,12 @@ String hashRequest(
   var message = '';
   message = url + method;
 
-  if (corelationId != null) message += corelationId;
-  if (authorization) message += 'Bearer ${CommonProperties.token}';
+  if (corelationId != null) {
+    message += corelationId;
+  }
+  if (authorization) {
+    message += 'Bearer ${CommonProperties.token}';
+  }
 
   if (body != null) {
     message += body.replaceAll(RegExp(r'^/\\n/g'), '');

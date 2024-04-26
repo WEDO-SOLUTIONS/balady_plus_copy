@@ -38,10 +38,10 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                             color: Colors.transparent,
                             type: MaterialType.transparency,
                             child: WhiteLandMapCard(
-                              municipality: selectedPoint?.MUNNAME,
-                              streetName: selectedPoint?.STREETNAME,
-                              parcelNo: selectedPoint?.PARCELCODE,
-                              stageNo: selectedPoint?.PHASE,
+                              municipality: selectedPoint?.munname,
+                              streetName: selectedPoint?.streetName,
+                              parcelNo: selectedPoint?.parcelCode,
+                              stageNo: selectedPoint?.phase,
                               onClose: () => context.pop(),
                             ),
                           );
@@ -49,19 +49,18 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                           return Material(
                             color: Colors.transparent,
                             type: MaterialType.transparency,
-                            child: OpprtunityMapCard(
-                              area: '${selectedPoint?.SITEAREA}',
+                            child: OpportunityMapCard(
+                              area: '${selectedPoint?.siteArea}',
                               description: selectedPoint?.description,
-                              type: selectedPoint?.TYPE ?? '',
-                              bidEndDate: selectedPoint?.BIDENDDATE,
-                              dailyCost: '${selectedPoint?.DAILYLEASECOST}',
-                              documentValue: '${selectedPoint?.DOCUMENTVALUE}',
-                              id: selectedPoint?.ID,
-                              opprtunityNumber:
-                                  selectedPoint?.OPPORTUNITYNUMBER,
-                              subMunicipality:
-                                  selectedPoint?.SUBMUNICIPALITY_ID,
-                              mainActivcity: selectedPoint?.MAIN_ACTIVITY_NAME,
+                              type: selectedPoint?.objectType ?? '',
+                              bidEndDate: selectedPoint?.bidendDate,
+                              dailyCost: '${selectedPoint?.dailyEaseCost}',
+                              documentValue: '${selectedPoint?.documentValue}',
+                              id: selectedPoint?.objectId,
+                              opportunityNumber:
+                                  selectedPoint?.opportunityNumber,
+                              subMunicipality: selectedPoint?.subMunicipalityId,
+                              mainActivity: selectedPoint?.mainActivityName,
                               onClose: () => context.pop(),
                             ),
                           );
@@ -70,11 +69,11 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                             color: Colors.transparent,
                             type: MaterialType.transparency,
                             child: ComplainceMapCard(
-                              amana: selectedPoint?.AMANANAME,
+                              amana: selectedPoint?.amananme,
                               targetBuildingType:
-                                  selectedPoint?.TARGETBUILDINGTYPE,
-                              streetName: selectedPoint?.STREETNAME,
-                              stageNo: selectedPoint?.STAGENO,
+                                  selectedPoint?.targetBuildingType,
+                              streetName: selectedPoint?.streetName,
+                              stageNo: selectedPoint?.stageno,
                               onClose: () => context.pop(),
                             ),
                           );

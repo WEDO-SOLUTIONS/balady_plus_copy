@@ -1,34 +1,37 @@
-// ignore_for_file: argument_type_not_assignable
-// ignore_for_file: avoid_dynamic_calls
-// ignore_for_file: not_assigned_potentially_non_nullable_local_variable
 import 'package:dgis_map/library.dart';
 
 class SuggestHistory {
-  SuggestHistory({
+  final GeoPointWithElevationMessage markerPosition;
+  final DgisObjectIdMessage id;
+  final String title;
+  final String subtitle;
+
+  const SuggestHistory({
     required this.markerPosition,
     required this.id,
     required this.title,
     required this.subtitle,
   });
 
-  factory SuggestHistory.fromJson(Map<String, dynamic> json) => SuggestHistory(
-        markerPosition: GeoPointWithElevationMessage(
-          longitude: json['markerPosition']['latitude'],
-          latitude: json['markerPosition']['latitude'],
-          elevation: json['markerPosition']['elevation'],
-        ),
-        id: DgisObjectIdMessage(
-          objectId: json['id']['objectId'],
-          entranceId: json['id']['objectId'],
-        ),
-        title: json['title'] ?? '',
-        subtitle: json['subtitle'] ?? '',
-      );
-  GeoPointWithElevationMessage markerPosition;
-  DgisObjectIdMessage id;
+  factory SuggestHistory.fromJson(Map<String, dynamic> json) {
+    final markerPosition = json['markerPosition'] as Map<String, dynamic>;
+    // ignore: avoid_dynamic_calls
+    final objectId = json['id']['objectId'] as int;
 
-  String title;
-  String subtitle;
+    return SuggestHistory(
+      markerPosition: GeoPointWithElevationMessage(
+        longitude: markerPosition['latitude'],
+        latitude: markerPosition['latitude'],
+        elevation: markerPosition['elevation'],
+      ),
+      id: DgisObjectIdMessage(
+        objectId: objectId,
+        entranceId: objectId,
+      ),
+      title: json['title'] ?? '',
+      subtitle: json['subtitle'] ?? '',
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'markerPosition': {
