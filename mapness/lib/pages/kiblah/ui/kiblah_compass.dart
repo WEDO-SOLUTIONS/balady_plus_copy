@@ -6,14 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_haptics.dart';
 import 'package:mapness/pages/kiblah/ui/radar_widget.dart';
-import 'package:mapness/pages/kiblah/ui/widgets/build_direction_text.dart';
 import 'package:mapness/pages/kiblah/ui/widgets/center_compass_widget.dart';
+import 'package:mapness/pages/kiblah/ui/widgets/direction_text.dart';
 import 'package:mapness/pages/kiblah/ui/widgets/fake_kaab_icon.dart';
 import 'package:mapness/pages/kiblah/ui/widgets/kaaba_icon.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/compass.dart';
-import 'package:mapness/shared/ui/painter_stroke.dart';
 
 class KiblahCompass extends ConsumerWidget {
   const KiblahCompass({Key? key}) : super(key: key);
@@ -38,15 +37,18 @@ class KiblahCompass extends ConsumerWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(50),
-              child: CustomPaint(
-                painter: PainterStroke(
-                  color: correct
-                      ? context.color.surfaceStatusPositive
-                      : context.color.surfaceStatusAccent,
-                  strokeWidth: strokeWidth,
-                  borderRadius: NumericBase.max,
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: correct
+                        ? context.color.surfaceStatusPositive
+                        : context.color.surfaceStatusAccent,
+                    width: strokeWidth,
+                  ),
                 ),
-                size: Size.infinite,
                 child: Padding(
                   padding: const EdgeInsets.all(22),
                   child: Stack(
@@ -83,13 +85,12 @@ class KiblahCompass extends ConsumerWidget {
                   : const FakeKaabIcon(),
             ),
             if (isReady) ...[
-              BuildDirectionText(
-                  title: context.l10n.north, bearing: userBearing),
-              BuildDirectionText(
+              DirectionText(title: context.l10n.north, bearing: userBearing),
+              DirectionText(
                   title: context.l10n.east, bearing: userBearing - 90),
-              BuildDirectionText(
+              DirectionText(
                   title: context.l10n.south, bearing: userBearing - 180),
-              BuildDirectionText(
+              DirectionText(
                   title: context.l10n.west, bearing: userBearing - 270),
             ],
           ],

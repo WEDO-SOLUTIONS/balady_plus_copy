@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mapness/pages/kiblah/ui/radar_painter.dart';
@@ -19,7 +18,8 @@ class RadarWidget extends StatefulWidget {
   State<StatefulWidget> createState() => RadarWidgetState();
 }
 
-class RadarWidgetState extends State<RadarWidget> with TickerProviderStateMixin {
+class RadarWidgetState extends State<RadarWidget>
+    with TickerProviderStateMixin {
   double updateTime = 0;
 
   Ticker? _ticker;
@@ -32,7 +32,7 @@ class RadarWidgetState extends State<RadarWidget> with TickerProviderStateMixin 
     }
     _ticker = createTicker(
       (elapsed) {
-        updateTime = elapsed.inMilliseconds / NumericBase.max;
+        updateTime = elapsed.inMilliseconds / 1000;
         setState(() {});
       },
     )..start();

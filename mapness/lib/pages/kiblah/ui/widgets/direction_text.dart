@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 
-class BuildDirectionText extends StatelessWidget {
+class DirectionText extends StatelessWidget {
   final String title;
   final double bearing;
 
-  const BuildDirectionText({
+  const DirectionText({
     required this.title,
     required this.bearing,
     super.key,
