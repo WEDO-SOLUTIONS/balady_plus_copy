@@ -87,13 +87,13 @@ class KiblahCompass extends ConsumerWidget {
                   : const FakeKaabIcon(),
             ),
             if (isReady) ...[
-              DirectionText(title: context.l10n.north, bearing: userBearing),
+              DirectionText(title: context.l10n.north, bearing: -userBearing),
               DirectionText(
-                  title: context.l10n.east, bearing: userBearing - 90),
+                  title: context.l10n.east, bearing: 90 - userBearing),
               DirectionText(
-                  title: context.l10n.south, bearing: userBearing - 180),
+                  title: context.l10n.south, bearing: 180 - userBearing),
               DirectionText(
-                  title: context.l10n.west, bearing: userBearing - 270),
+                  title: context.l10n.west, bearing: 270 - userBearing),
             ],
           ],
         ),
