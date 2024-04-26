@@ -1,34 +1,32 @@
 import 'dart:math';
 
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/pages/kiblah/providers/fake_compass.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_haptics.dart';
 import 'package:mapness/pages/kiblah/ui/radar_widget.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/pages/kiblah/ui/widgets/center_compass_widget.dart';
+import 'package:mapness/pages/kiblah/ui/widgets/direction_text.dart';
+import 'package:mapness/pages/kiblah/ui/widgets/fake_kaab_icon.dart';
+import 'package:mapness/pages/kiblah/ui/widgets/kaaba_icon.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/compass.dart';
-import 'package:mapness/shared/ui/gradient_stroke.dart';
 
 class KiblahCompass extends ConsumerWidget {
-  const KiblahCompass({
-    super.key,
-  });
-
-  static double rad(double degree) => pi * degree / 180 - 0.5 * pi;
+  const KiblahCompass({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const double strokeWidth = 2.0;
+    const double compassBackgroundOpacity = 0.2;
+    const double radarOpacity = 0.7;
+
     final kaabaBearing = ref.watch(kaabaBearingProvider);
     final userBearing = ref.watch(compassProvider);
     final isKaabaDirection = ref.watch(kaabaHapticsProvider);
-
     final isReady = kaabaBearing != null && userBearing != null;
-
     final correct = isReady && isKaabaDirection;
 
     return Center(
@@ -38,178 +36,67 @@ class KiblahCompass extends ConsumerWidget {
           alignment: Alignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.all(37),
-              child: CustomPaint(
-                painter: GradientStroke(
-                  gradient: LinearGradient(
-                    begin: const Alignment(1.1, 0.06),
-                    end: const Alignment(-0.12, 1),
-                    //TODO(someone): move colors to constants
-                    colors: correct
-                        ? const [
-                            NonThemeColor.color3,
-                            NonThemeColor.color3,
-                            NonThemeColor.color3,
-                          ]
-                        : [
-                            context.color.strokeAccent,
-                            NonThemeColor.color67,
-                            context.color.strokeAccent,
-                          ],
-                    stops: const [0, 0.48, 1],
+              padding: const EdgeInsets.all(50),
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: correct
+                        ? context.color.surfaceStatusPositive
+                        : context.color.surfaceStatusAccent,
+                    width: strokeWidth,
                   ),
-                  strokeWidth: 2,
-                  borderRadius: 1000,
                 ),
-                size: Size.infinite,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(67),
-              child: Center(
-                child: RadarWidget(
-                  backgroundColor: correct
-                      ? NonThemeColor.color3.withOpacity(0.2)
-                      : context.color.textAndIconsBasePrimary
-                          .withOpacity(0.2),
-                  radarColor: correct
-                      ? NonThemeColor.color3.withOpacity(0.7)
-                      : context.color.textAndIconsBasePrimary
-                          .withOpacity(0.7),
+                child: Padding(
+                  padding: const EdgeInsets.all(22),
+                  child: Stack(
+                    children: [
+                      RadarWidget(
+                        backgroundColor: Colors.transparent,
+                        radarColor: correct
+                            ? NonThemeColor.color3.withOpacity(radarOpacity)
+                            : context.color.textAndIconsBasePrimary
+                                .withOpacity(0.9),
+                      ),
+                      CenterCompassWidget(
+                        backgroundColor: correct
+                            ? context.staticColor.surfaceStatusPositive
+                                .withOpacity(compassBackgroundOpacity)
+                            : context.staticColor.surfaceStatusAccent
+                                .withOpacity(compassBackgroundOpacity),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(121),
-              child: Image.asset(
-                'assets/images/kiblah_arrow.png',
-                height: 132,
-                width: 132,
-                package: PackageConfig.packageName,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(22.5),
+              padding: const EdgeInsets.all(36),
               child: isReady
                   ? Align(
                       alignment: Alignment(
-                        cos(rad(kaabaBearing - userBearing)),
-                        sin(rad(kaabaBearing - userBearing)),
+                        cos(CommonFunctions.convertDegreesToRadiansAndShift(
+                            kaabaBearing - userBearing)),
+                        sin(CommonFunctions.convertDegreesToRadiansAndShift(
+                            kaabaBearing - userBearing)),
                       ),
-                      child: _KaabaIcon(
-                        isCorrect: correct,
-                      ),
+                      child: KaabaIcon(isCorrect: correct),
                     )
-                  : _FakeKaabIcon(),
+                  : const FakeKaabIcon(),
             ),
             if (isReady) ...[
-              Padding(
-                padding: const EdgeInsets.all(7),
-                child: Align(
-                  alignment: Alignment(
-                    cos(rad(-userBearing)),
-                    sin(rad(-userBearing)),
-                  ),
-                  child: Text(
-                    context.l10n.north,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .caption
-                        .copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(7),
-                child: Align(
-                  alignment: Alignment(
-                    cos(rad(90 - userBearing)),
-                    sin(rad(90 - userBearing)),
-                  ),
-                  child: Text(
-                    context.l10n.east,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .caption
-                        .copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(7),
-                child: Align(
-                  alignment: Alignment(
-                    cos(rad(180 - userBearing)),
-                    sin(rad(180 - userBearing)),
-                  ),
-                  child: Text(
-                    context.l10n.south,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .caption
-                        .copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(7),
-                child: Align(
-                  alignment: Alignment(
-                    cos(rad(270 - userBearing)),
-                    sin(rad(270 - userBearing)),
-                  ),
-                  child: Text(
-                    context.l10n.west,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .caption
-                        .copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
+              DirectionText(title: context.l10n.north, bearing: -userBearing),
+              DirectionText(
+                  title: context.l10n.east, bearing: 90 - userBearing),
+              DirectionText(
+                  title: context.l10n.south, bearing: 180 - userBearing),
+              DirectionText(
+                  title: context.l10n.west, bearing: 270 - userBearing),
             ],
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _KaabaIcon extends StatelessWidget {
-  const _KaabaIcon({required this.isCorrect});
-  final bool isCorrect;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: isCorrect ? NonThemeColor.color3 : context.color.strokeAccent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        width: 32,
-        height: 32,
-        child: Center(
-          child: SvgPicture.asset(
-            'assets/icons/svg/ic_kiblah.svg',
-            height: 16,
-            width: 16,
-            package: PackageConfig.packageName,
-          ),
-        ),
-      );
-}
-
-class _FakeKaabIcon extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final fakeUserBearing = ref.watch(fakeCompassProvider);
-
-    return Align(
-      alignment: Alignment(
-        cos(KiblahCompass.rad(0 - fakeUserBearing)),
-        sin(KiblahCompass.rad(0 - fakeUserBearing)),
-      ),
-      child: const _KaabaIcon(
-        isCorrect: false,
       ),
     );
   }
