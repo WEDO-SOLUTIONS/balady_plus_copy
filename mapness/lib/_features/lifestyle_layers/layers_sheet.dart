@@ -1,6 +1,4 @@
 import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
-import 'package:balady_uikit/core/icons/app_icons.dart';
-import 'package:balady_uikit/core/icons/general_icons.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,12 +8,10 @@ import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
-import 'package:mapness/_features/parking/domain/parking.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -56,16 +52,18 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     final state = ref.watch(layersControlsProvider);
     final lang = ref.watch(appLanguageProvider);
 
+    final headerStyle =
+        Theme.of(context).extension<ui_kit.ThemeTextStyles>()!.heading2;
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
         const MapControls(),
         DraggableScrollableSheet(
           controller: _draggableScrollableController,
-          initialChildSize: .6,
           minChildSize: 0,
-          maxChildSize: .6,
-          snapSizes: const [.0, .3, .6],
+          maxChildSize: .5,
+          snapSizes: const [.0, .3, .5],
           snap: true,
           builder: (context, scrollController) => Directionality(
             textDirection: switch (lang) {
@@ -73,7 +71,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
               Language.arabic => TextDirection.rtl,
             },
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(
@@ -85,6 +83,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                   CustomScrollView(
                     controller: scrollController,
                     primary: false,
+                    shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
                     slivers: [
                       SliverToBoxAdapter(
@@ -92,57 +91,43 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                           color: Colors.transparent,
                           child: Column(
                             children: [
+                              const SizedBox(height: 6),
                               Container(
                                 height: 4,
                                 width: 40,
                                 decoration: BoxDecoration(
-                                  color: context.color.surfaceBasePrimary,
+                                  color: context.color.surfaceContrastMid,
                                   borderRadius: const BorderRadius.all(
-                                      Radius.circular(24)),
+                                      Radius.circular(99)),
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 6),
                               Row(
                                 children: [
-                                  Text(
-                                    context.l10n.layersOnTheMap,
-                                    style: Theme.of(context)
-                                        .extension<ui_kit.ThemeTextStyles>()!
-                                        .heading1,
-                                  ),
+                                  Text(context.l10n.layersOnTheMap,
+                                      style: headerStyle),
                                   const Spacer(),
-                                  CustomCloseButton(
-                                    onClose: () => context.pop(),
+                                  ui_kit.AppButton.close(
+                                    onTap: context.pop,
+                                    padding: EdgeInsets.zero,
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 8),
                             ],
                           ),
                         ),
                       ),
                       SliverList.separated(
                         separatorBuilder: (_, __) => const SizedBox(height: 4),
-                        itemCount: LayerType.values.length,
+                        itemCount: LayerType.withoutParking.length,
                         itemBuilder: (_, index) {
-                          final value = LayerType.values[index];
+                          final value = LayerType.withoutParking[index];
                           final isSelected = state.selectedType == value;
                           final textColor = isSelected
                               ? context.color.textAndIconsStatusAccent
                               : context.color.textAndIconsBasePrimary;
-                          // TODO: Implement when Parking feature will be done
-                          const parkingMock = ParkingLot();
-                          final subtitle = value == LayerType.parking
-                              ? parkingMock.filter.subTitleLocale(context.l10n)
-                              : null;
-                          final trailingButton = value == LayerType.parking
-                              ? ui_kit.ContentRowActionOptions(
-                                  actionIcon: const InkWell(
-                                  child: AppIcons(
-                                    iconData: GeneralIcons.ellipsis,
-                                  ),
-                                ))
-                              : null;
+
                           return ui_kit.ContentRow(
                             onTap: () async {
                               ref
@@ -171,8 +156,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                               title: value.titleLocale(context.l10n),
                               titleStyle: context.textStyle.text
                                   .copyWith(color: textColor),
-                              subtitle: subtitle,
-                              actionWidget: trailingButton,
                             ),
                           );
                         },
