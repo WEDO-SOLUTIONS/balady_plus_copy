@@ -62,6 +62,9 @@ class CommonFunctions {
     return 2 * r * asin(sqrt(a));
   }
 
+  static double convertDegreesToRadiansAndShift(double degree) =>
+      pi * degree / 180 - 0.5 * pi;
+
   static gb.Polygon getPolygonFromRect(VisibleRect rect) {
     final box = gb.Box.create(
       minX: rect.southWestLon,

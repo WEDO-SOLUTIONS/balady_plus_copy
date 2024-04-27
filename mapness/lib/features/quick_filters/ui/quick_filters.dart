@@ -15,6 +15,7 @@ import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
 class QuickFilters extends ConsumerWidget {
   const QuickFilters({
     required this.onFilterTap,
+    required this.onFavouritesTap,
     required this.onFavouritesBookmarkTap,
     super.key,
     this.selectedIndex,
@@ -29,6 +30,7 @@ class QuickFilters extends ConsumerWidget {
   final int? selectedIndex;
   final List<FilterItem>? customFilters;
   final void Function(models.QuickFilter, int index) onFilterTap;
+  final void Function() onFavouritesTap;
   final void Function() onFavouritesBookmarkTap;
   final void Function(FilterItem)? onCustomTap;
   final EdgeInsets padding;
@@ -60,6 +62,7 @@ class QuickFilters extends ConsumerWidget {
               return;
             }
 
+            onFavouritesTap();
             _showRouting(naviFeature, point, context);
           },
         ),
@@ -76,6 +79,8 @@ class QuickFilters extends ConsumerWidget {
             } else {
               return;
             }
+
+            onFavouritesTap();
             _showRouting(naviFeature, point, context);
           },
         ),
