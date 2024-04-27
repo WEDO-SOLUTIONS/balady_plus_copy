@@ -100,60 +100,53 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Directionality(
-        textDirection: Directionality.of(context),
-        child: Ink(
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              /// controls and driver info
-              Positioned.fill(
-                bottom: 68,
-                child: SafeArea(
-                  child: PathNavMapControlls(
-                    navType: widget.navType,
-                  ),
-                ),
+  Widget build(BuildContext context) => Stack(
+        children: [
+          /// controls and driver info
+          Positioned.fill(
+            bottom: 68,
+            child: SafeArea(
+              child: PathNavMapControlls(
+                navType: widget.navType,
               ),
-              ValueListenableBuilder(
-                  valueListenable: navigationState,
-                  builder: (context, state, child) {
-                    if (state == PathNavState.running) {
-                      return Align(
-                        alignment: Alignment.bottomCenter,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) => EtaSheet(
-                            onEndTripPressed: _endTrip,
-                            onRoutePressed: () async {
-                              _setNavigationState(PathNavState.paused);
-                              await ref
-                                  .read(cameraPositionProvider.notifier)
-                                  .animateToRoute();
-                            },
-                          ),
-                        ),
-                      );
-                    } else if (state == PathNavState.paused) {
-                      return EtaContinue(
-                        onTap: () async {
-                          _setNavigationState(PathNavState.running);
-                          final dgisController =
-                              await ref.read(dgisControllerProvider.future);
-
-                          await _moveCameraToUser();
-
-                          await dgisController.followNavigation();
-                        },
-                      );
-                    } else if (state == PathNavState.finished) {
-                      return EtaFinished(
-                        onEndTripPressed: _endTrip,
-                      );
-                    }
-                    return const SizedBox();
-                  }),
-            ],
+            ),
           ),
-        ),
+          ValueListenableBuilder(
+              valueListenable: navigationState,
+              builder: (context, state, child) {
+                state = PathNavState.finished;
+                switch (state) {
+                  case PathNavState.running:
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) => EtaSheet(
+                          onEndTripPressed: _endTrip,
+                          onRoutePressed: () async {
+                            _setNavigationState(PathNavState.paused);
+                            await ref
+                                .read(cameraPositionProvider.notifier)
+                                .animateToRoute();
+                          },
+                        ),
+                      ),
+                    );
+                  case PathNavState.paused:
+                    return EtaContinue(
+                      onTap: () async {
+                        _setNavigationState(PathNavState.running);
+                        final dgisController =
+                            await ref.read(dgisControllerProvider.future);
+
+                        await _moveCameraToUser();
+
+                        await dgisController.followNavigation();
+                      },
+                    );
+                  case PathNavState.finished:
+                    return EtaFinished(onEndTripPressed: _endTrip);
+                }
+              }),
+        ],
       );
 }
