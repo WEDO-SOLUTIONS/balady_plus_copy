@@ -27,7 +27,15 @@ enum LayerType {
   buildings,
   parking,
   fencing,
-  joy,
+  joy;
+
+  static List<LayerType> get withoutParking => [
+        LayerType.favourites,
+        LayerType.invest,
+        LayerType.buildings,
+        LayerType.fencing,
+        LayerType.joy,
+      ];
 }
 
 extension LayerTypeEx on LayerType {

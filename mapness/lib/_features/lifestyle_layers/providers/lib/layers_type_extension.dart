@@ -1,9 +1,8 @@
 import 'package:balady_uikit/core/icons/general_icons.dart';
-import 'package:balady_uikit/core/icons/transport_icons_icons.dart';
+import 'package:balady_uikit/core/icons/transport_icons.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/_features/parking/domain/parking.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension LayerTypeExt on LayerType {
@@ -32,18 +31,5 @@ extension LayerTypeExt on LayerType {
         LayerType.fencing => l10n.fencingVacantLands,
         LayerType.joy => l10n.joyParks,
         LayerType.parking => l10n.parking,
-      };
-}
-
-extension ParkingLotExt on ParkingLotFilter {
-  String subTitleLocale(AppLocalizations l10n) => switch (this) {
-        ParkingLotFilter.all => l10n.parkingLotFilterAll,
-        ParkingLotFilter.free => l10n.parkingLotFilterFree,
-        ParkingLotFilter.paid => l10n.parkingLotFilterPaid,
-        ParkingLotFilter.forTaxi => l10n.parkingLotFilterForTaxi,
-        ParkingLotFilter.forDisabledPersons =>
-          l10n.parkingLotFilterForDisabledPersons,
-        ParkingLotFilter.forElectricVehicles =>
-          l10n.parkingLotFilterForElectricVehicles,
       };
 }
