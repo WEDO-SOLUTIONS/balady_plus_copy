@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaFinished extends ConsumerStatefulWidget {
@@ -18,19 +17,37 @@ class EtaFinished extends ConsumerStatefulWidget {
 class _EtaFinishedState extends ConsumerState<EtaFinished> {
   bool _isExpanded = false;
   @override
-  Widget build(BuildContext context) => EtaSheetWrapper(
-        isExpanded: _isExpanded,
-        onBgTap: toggle,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Spacer(),
-            BaseRoadPanel(
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        GestureDetector(
+          onTap: _isExpanded ? toggle : null,
+          child: AnimatedContainer(
+            duration: BaseRoadPanel.animationDuration,
+            height: media.size.height,
+            width: media.size.width,
+            curve: BaseRoadPanel.animationCurve,
+            color: Colors.black.withOpacity(_isExpanded ? 0.7 : 0.0),
+          ),
+        ),
+        Material(
+          color: _isExpanded ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          child: AnimatedPadding(
+            padding: EdgeInsets.only(
+              left: _isExpanded ? 0 : 16,
+              right: _isExpanded ? 0 : 16,
+              bottom: media.padding.bottom,
+            ),
+            duration: BaseRoadPanel.animationDuration,
+            curve: BaseRoadPanel.animationCurve,
+            child: BaseRoadPanel(
               roadPanelModel: RoadPanelModelArrived(
                 enabledHeader: _isExpanded,
                 title: context.l10n.youArrived,
                 onTapBurger: toggle,
-                onTapRoute: () {},
                 buttons: [
                   AppButton(
                     padding:
@@ -42,9 +59,11 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
                 ],
               ),
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    );
+  }
 
   void toggle() {
     setState(() {

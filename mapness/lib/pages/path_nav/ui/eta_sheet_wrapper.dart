@@ -1,11 +1,12 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 
 class EtaSheetWrapper extends StatelessWidget {
   final Widget child;
   final bool isExpanded;
   final VoidCallback onBgTap;
-  static const curve = Curves.fastOutSlowIn;
-  static const duration = Duration(milliseconds: 500);
+  static const curve = BaseRoadPanel.animationCurve;
+  static const duration = BaseRoadPanel.animationDuration;
 
   const EtaSheetWrapper({
     required this.child,
@@ -23,11 +24,12 @@ class EtaSheetWrapper extends StatelessWidget {
         GestureDetector(
           onTap: isExpanded ? onBgTap : null,
           child: AnimatedContainer(
-              duration: duration,
-              height: media.size.height,
-              width: media.size.width,
-              curve: curve,
-              color: Colors.black.withOpacity(isExpanded ? 0.7 : 0.0)),
+            duration: duration,
+            height: media.size.height,
+            width: media.size.width,
+            curve: curve,
+            color: Colors.black.withOpacity(isExpanded ? 0.7 : 0.0),
+          ),
         ),
         Material(
           color: isExpanded ? Colors.white : Colors.transparent,
