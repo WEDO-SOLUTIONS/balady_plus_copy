@@ -1,15 +1,9 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 
 class PointLayersData {
-  PointLayersData({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.type,
-    required this.layerType,
-    this.latLng,
-  });
   final String id;
   final String name;
   final String description;
@@ -17,16 +11,15 @@ class PointLayersData {
 
   final GeoPointWithElevationMessage? latLng;
   final GISMapLayers layerType;
-}
 
-enum LayersType {
-  layersOne,
-  layersTow,
-  layersThree,
-  layersFourth, //الحفريات
-  layersFifth,
-  layersSixth,
-  layersSeventh,
+  const PointLayersData({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.type,
+    required this.layerType,
+    this.latLng,
+  });
 }
 
 List<GeoPointMessage> getList(List list) {
