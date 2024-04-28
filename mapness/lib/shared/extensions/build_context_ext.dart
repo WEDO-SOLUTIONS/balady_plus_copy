@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_colors_theme.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
@@ -13,5 +14,6 @@ extension BuildContextExt on BuildContext {
 
   AppColorsThemeExt get color => Theme.of(this).extension<AppColorsThemeExt>()!;
 
-  AppStaticColorsThemeExt get staticColor => Theme.of(this).extension<AppStaticColorsThemeExt>()!;
+  AppStaticColorsThemeExt get staticColor =>
+      Theme.of(this).extension<AppStaticColorsThemeExt>()!;
 }
