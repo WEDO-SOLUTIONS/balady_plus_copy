@@ -83,6 +83,7 @@ jobs:
         # uses: rlespinasse/github-slug-action@v4
         run: |
           echo "CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')" >> ${GITHUB_ENV}
+          export CI_DATE=$(date '+%Y-%m-%d-%H-%M-%S')
           export CI_GIT_BRANCH=${GITHUB_REF_NAME}
           export CI_IS_PR=""
           if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]; then
@@ -91,8 +92,15 @@ jobs:
           fi
           echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
           CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr --complement --squeeze-repeats '[:alnum:]' '-')
-          echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}" >> ${GITHUB_ENV}
+          echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
+
+      - name: Setup requirements
+        env: # Set the secret as an environment variable
+          BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
+        run: |
+          echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
+          chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
 
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
@@ -140,7 +148,12 @@ jobs:
           mv sdk-full-10.2.1.aar android/_delete_me_/sdk-full-latest.aar
 
       - name: 🤖🔨 Development setup mapness
+        env:
+          GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
         run: |
+          eval $(ssh-agent -s)
+          ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
+
           cd mapness
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs

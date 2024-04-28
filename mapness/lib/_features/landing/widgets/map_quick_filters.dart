@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/core/utils/debouncer.dart';
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,8 +12,6 @@ import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
-
-const _objectManager = 'QuickFilters';
 
 class MapQuickFilters extends ConsumerStatefulWidget {
   const MapQuickFilters({
@@ -35,8 +33,6 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
   bool isZoomInteracted = false;
   bool isCoordComputed = false;
 
-  bool _isFilterSelected = false;
-
   late final Debouncer _debouncer = Debouncer(milliseconds: 400);
 
   @override
@@ -56,10 +52,11 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
   @override
   Widget build(BuildContext context) {
     final selectedFilter = ref.watch(searchByRubricsQueryProvider);
-
+    final settings = MapObjectManagerSettings.quickFilter();
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
-        named: _objectManager,
+        named: settings.name,
+        layerId: settings.layerId,
       ).notifier,
     );
     ref.listen(searchByRubricsProvider, (previous, next) async {
@@ -89,16 +86,20 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       onFilterTap: (filter, index) {
         _debouncer.run(() {
           if (selectedFilter?.$1 == filter) {
-            _isFilterSelected = false;
             ref.read(searchByRubricsQueryProvider.notifier).update(null);
             searchObjectManager.removeAllMarkers();
           } else {
-            _isFilterSelected = true;
             ref.read(layersControlsProvider.notifier).disable();
             ref
                 .read(searchByRubricsQueryProvider.notifier)
                 .update((filter, index));
           }
+        });
+      },
+      onFavouritesTap: () {
+        _debouncer.run(() {
+          ref.read(searchByRubricsQueryProvider.notifier).update(null);
+          searchObjectManager.removeAllMarkers();
         });
       },
       selectedIndex: selectedFilter?.$2,
@@ -146,14 +147,14 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       return;
     }
 
-    await ref
-        .read(cameraPositionProvider.notifier)
-        .animateTo(CameraPositionMessage(
-          point: cameraPosition!.point,
-          tilt: cameraPosition.tilt,
-          bearing: cameraPosition.bearing,
-          zoom: zoom,
-        ),);
+    await ref.read(cameraPositionProvider.notifier).animateTo(
+          CameraPositionMessage(
+            point: cameraPosition!.point,
+            tilt: cameraPosition.tilt,
+            bearing: cameraPosition.bearing,
+            zoom: zoom,
+          ),
+        );
 
     isZoomInteracted = true;
   }

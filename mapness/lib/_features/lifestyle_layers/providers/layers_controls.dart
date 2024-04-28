@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
@@ -31,8 +31,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'layers_controls.g.dart';
-
-const mapLayerName = 'esri_markers';
 
 @riverpod
 class SelectedLayer extends _$SelectedLayer {
@@ -70,6 +68,8 @@ class LayersControls extends _$LayersControls {
   static const duration = Duration(milliseconds: 250);
   StreamSubscription? viewPortSubscription;
   CancelToken? cancelToken;
+
+  final esriMapObjectSettings = MapObjectManagerSettings.esri();
 
   final tapSubject = PublishSubject<LayerType>();
   StreamSubscription? tapSubscription;
@@ -225,8 +225,9 @@ class LayersControls extends _$LayersControls {
       _removeLayersState();
     }
 
-    final read = ref.read(favouriteToggleProvider.notifier);
-    read.ref.invalidateSelf();
+    ref
+      ..invalidate(favouriteToggleProvider)
+      ..invalidate(favouriteMarkersProvider);
 
     state = LayersState(
       investmentsMarkers: state.investmentsMarkers,
@@ -249,7 +250,10 @@ class LayersControls extends _$LayersControls {
 
     if (currentState == LayerType.joy) {
       await ref
-          .read(mapObjectManagerProvider(named: mapLayerName).notifier)
+          .read(mapObjectManagerProvider(
+            named: esriMapObjectSettings.name,
+            layerId: esriMapObjectSettings.layerId,
+          ).notifier)
           .removeAllMarkers();
       layers
         ..setSelection()
@@ -325,8 +329,11 @@ class LayersControls extends _$LayersControls {
   Future<void> _showInvestmentOpportunities(LayerType layerType) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
-    final map =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+
+    final map = ref.watch(mapObjectManagerProvider(
+      named: esriMapObjectSettings.name,
+      layerId: esriMapObjectSettings.layerId,
+    ).notifier);
 
     ///загрузка
     setSelection(selectedType: layerType);
@@ -371,8 +378,11 @@ class LayersControls extends _$LayersControls {
   Future<void> _showWhiteLands() async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
-    final mapManager =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+
+    final mapManager = ref.watch(mapObjectManagerProvider(
+      named: esriMapObjectSettings.name,
+      layerId: esriMapObjectSettings.layerId,
+    ).notifier);
 
     setSelection(selectedType: LayerType.fencing);
     update(
@@ -424,8 +434,11 @@ class LayersControls extends _$LayersControls {
   Future<void> _showBuildingCompliance() async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
-    final mapObjectManager =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+
+    final mapObjectManager = ref.watch(mapObjectManagerProvider(
+      named: esriMapObjectSettings.name,
+      layerId: esriMapObjectSettings.layerId,
+    ).notifier);
 
     await _removeAll();
 
@@ -565,7 +578,10 @@ class LayersControls extends _$LayersControls {
     );
     await _removeAll();
     await ref
-        .read(mapObjectManagerProvider(named: mapLayerName).notifier)
+        .read(mapObjectManagerProvider(
+          named: esriMapObjectSettings.name,
+          layerId: esriMapObjectSettings.layerId,
+        ).notifier)
         .addMarkers(markers)
         .onError((error, stackTrace) => onError())
         .timeout(duration, onTimeout: onError);
@@ -584,8 +600,10 @@ class LayersControls extends _$LayersControls {
 
   Future<void> _removeAll() async {
     update(polylines: {}, polygons: {}, investmentsMarkers: {});
-    final map =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+    final map = ref.watch(mapObjectManagerProvider(
+      named: esriMapObjectSettings.name,
+      layerId: esriMapObjectSettings.layerId,
+    ).notifier);
     await map.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();

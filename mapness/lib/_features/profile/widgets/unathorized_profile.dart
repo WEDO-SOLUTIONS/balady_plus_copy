@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/app_color_scheme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -49,7 +49,7 @@ class UnautorizedProfile extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .textM
+                    .text
                     .copyWith(color: Colors.white),
               ),
             ),
@@ -73,10 +73,10 @@ class UnautorizedProfile extends ConsumerWidget {
                           context.l10n.connectToMomrah,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .accentM
+                              .callout
                               .copyWith(
                                   color: context
-                                      .color.text_and_icons_status_accent,),
+                                      .color.textAndIconsStatusAccent,),
                         ),
                       ],
                     ),

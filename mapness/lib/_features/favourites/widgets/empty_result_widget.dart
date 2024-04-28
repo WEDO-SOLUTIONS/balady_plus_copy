@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -22,8 +22,8 @@ class EmptyResultWidget extends StatelessWidget {
           text,
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center,
-          style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(
-                color: context.color.text_and_icons_base_primary,
+          style: Theme.of(context).extension<ThemeTextStyles>()!.heading2.copyWith(
+                color: context.color.textAndIconsBasePrimary,
               ),
         ),
       ],

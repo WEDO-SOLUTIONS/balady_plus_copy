@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
@@ -20,7 +20,7 @@ class FavoriteCard extends StatelessWidget {
             height: 24,
             width: 24,
             colorFilter: ColorFilter.mode(
-              context.color.stroke_accent,
+              context.color.strokeAccent,
               BlendMode.srcATop,
             ),
           ),
@@ -31,8 +31,8 @@ class FavoriteCard extends StatelessWidget {
             context.l10n.favourites,
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
-                .textM
-                .copyWith(color: context.color.text_and_icons_base_primary),
+                .text
+                .copyWith(color: context.color.textAndIconsBasePrimary),
           ),
           const Spacer(),
           SvgPicture.asset(
@@ -41,7 +41,7 @@ class FavoriteCard extends StatelessWidget {
             height: 24,
             width: 24,
             colorFilter: ColorFilter.mode(
-              context.color.text_and_icons_base_primary,
+              context.color.textAndIconsBasePrimary,
               BlendMode.srcATop,
             ),
           ),

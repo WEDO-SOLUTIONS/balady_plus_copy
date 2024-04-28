@@ -6,8 +6,9 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/colors/app_colors_theme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/app_colors_theme.dart';
+import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -169,13 +170,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                       900: Color(0xFF89cfbe),
                     },
                   ),
-                  // unselectedWidgetColor: context.color.text_and_icons_base_primary,
+                  // unselectedWidgetColor: context.color.textAndIconsBasePrimary,
                   scaffoldBackgroundColor: Colors.transparent,
                   dividerColor: Colors.grey[400],
                   useMaterial3: false,
                   extensions: <ThemeExtension<dynamic>>[
-                    ThemeTextStyles.arabic(isDark: false),
-                    AppColorsThemeExt.palette(colorScheme, isDark: false)
+                    ThemeTextStyles.arabic(),
+                    ThemeTextStyles.english(),
+                    AppColorsThemeExt.palette(colorScheme, isDark: false),
+                    AppStaticColorsThemeExt.palette(colorScheme)
                   ],
                 ),
                 locale: language.locale,
@@ -267,6 +270,20 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     );
     final data = geocoderResponse.data as Map<String, dynamic>;
 
+    // In case of 404 error, open map with the provided coordinates
+    if (data.containsKey('meta') &&
+        data['meta'] is Map<String, dynamic> &&
+        (data['meta'] as Map<String, dynamic>).containsKey('code') &&
+        (data['meta'] as Map<String, dynamic>)['code'] == 404) {
+      // Dgis object id -2 is used to open map with provided coordinates not with poi id
+      PoiMapRoute.open(
+        ref.read(goRouterProvider),
+        -2,
+        latLng: LatLng(latitude: latitude, longitude: longitude),
+        zoom: 17,
+      );
+    }
+
     if (!data.containsKey('result')) return;
 
     final result = data['result'] as Map<String, dynamic>;
@@ -284,6 +301,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     PoiMapRoute.open(
       ref.read(goRouterProvider),
       dgisId,
+      zoom: 17,
     );
   }
 
@@ -333,13 +351,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     PoiMapRoute.open(
       ref.read(goRouterProvider),
       dgisId,
+      zoom: 17,
     );
   }
 }
 
 Future<void> setupMapness(EnvType envType) async {
   final vendorConfig = switch (envType) {
-    EnvType.stg => VendorConfigMessage.momrahProd,
+    EnvType.stg => VendorConfigMessage.momrahStg,
     EnvType.pre || EnvType.prod => VendorConfigMessage.momrahProd,
     EnvType.urbiPre || EnvType.dev => VendorConfigMessage.urbiPreProd,
   };

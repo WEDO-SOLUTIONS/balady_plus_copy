@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,18 +54,18 @@ class JobCard extends ConsumerWidget {
                 jobModel.name ?? '',
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .accentM
+                    .callout
                     .copyWith(
-                      color: context.color.text_and_icons_base_primary,
+                      color: context.color.textAndIconsBasePrimary,
                     ),
               ),
               Text(
                 jobModel.provider?.name ?? '',
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .textS
+                    .footNote
                     .copyWith(
-                      color: context.color.text_and_icons_base_primary.withOpacity(.5),
+                      color: context.color.textAndIconsBasePrimary.withOpacity(.5),
                     ),
               ),
               if (jobModel.description != null)
@@ -75,9 +75,9 @@ class JobCard extends ConsumerWidget {
                     jobModel.description ?? '',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textS
+                        .footNote
                         .copyWith(
-                          color: context.color.text_and_icons_base_primary,
+                          color: context.color.textAndIconsBasePrimary,
                         ),
                   ),
                 ),

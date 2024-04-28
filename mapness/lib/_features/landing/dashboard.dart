@@ -141,7 +141,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                   SliverList.list(
                     children: [
                       Container(
-                        color: context.color.surface_base_primary,
+                        color: context.color.surfaceBasePrimary,
                         padding: const EdgeInsets.only(
                           top: 16,
                         ),

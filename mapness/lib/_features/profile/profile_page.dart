@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -141,7 +141,7 @@ class ProfilePage extends ConsumerWidget {
         builder: (context) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Container(
-            color: context.color.surface_base_secondary,
+            color: context.color.surfaceBaseSecondary,
             child: Padding(
               padding: const EdgeInsets.only(
                 right: 52,
@@ -150,7 +150,7 @@ class ProfilePage extends ConsumerWidget {
               child: Divider(
                 height: 1,
                 color:
-                    context.color.text_and_icons_base_primary.withOpacity(0.2),
+                    context.color.textAndIconsBasePrimary.withOpacity(0.2),
               ),
             ),
           ),
@@ -170,7 +170,7 @@ class ProfilePage extends ConsumerWidget {
             height: 52,
             child: Material(
               borderRadius: BorderRadius.circular(12),
-              color: context.color.surface_base_secondary,
+              color: context.color.surfaceBaseSecondary,
               child: InkWell(
                 onTap: onTap,
                 borderRadius: BorderRadius.circular(12),
@@ -187,7 +187,7 @@ class ProfilePage extends ConsumerWidget {
                         width: 24,
                         package: PackageConfig.packageName,
                         colorFilter: ColorFilter.mode(
-                          context.color.text_and_icons_status_accent,
+                          context.color.textAndIconsStatusAccent,
                           BlendMode.srcIn,
                         ),
                       ),
@@ -201,10 +201,10 @@ class ProfilePage extends ConsumerWidget {
                           textDirection: direction,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textM
+                              .text
                               .copyWith(
                                   color: context
-                                      .color.text_and_icons_base_primary),
+                                      .color.textAndIconsBasePrimary),
                         ),
                       ),
                       const SizedBox(
@@ -218,7 +218,7 @@ class ProfilePage extends ConsumerWidget {
                         width: 24,
                         package: PackageConfig.packageName,
                         colorFilter: ColorFilter.mode(
-                          context.color.text_and_icons_base_primary,
+                          context.color.textAndIconsBasePrimary,
                           BlendMode.srcIn,
                         ),
                       ),
@@ -246,7 +246,7 @@ class AuthorizedRow extends ConsumerWidget {
 
     return Material(
       borderRadius: BorderRadius.circular(12),
-      color: context.color.surface_base_secondary,
+      color: context.color.surfaceBaseSecondary,
       child: InkWell(
         onTap: () {
           const ProfileInfoPageRoute().push(context);
@@ -273,17 +273,17 @@ class AuthorizedRow extends ConsumerWidget {
                       userData.getLocalizedFirstAndLastName(language),
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textM
+                          .text
                           .copyWith(
-                              color: context.color.text_and_icons_base_primary),
+                              color: context.color.textAndIconsBasePrimary),
                     ),
                     Text(
                       userData.idNo ?? '',
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textS
+                          .footNote
                           .copyWith(
-                              color: context.color.text_and_icons_base_primary),
+                              color: context.color.textAndIconsBasePrimary),
                     ),
                   ],
                 ),
@@ -297,7 +297,7 @@ class AuthorizedRow extends ConsumerWidget {
                   width: 24,
                   package: PackageConfig.packageName,
                   colorFilter: ColorFilter.mode(
-                    context.color.text_and_icons_base_primary,
+                    context.color.textAndIconsBasePrimary,
                     BlendMode.srcIn,
                   ),
                 ),

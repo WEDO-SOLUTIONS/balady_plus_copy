@@ -102,7 +102,7 @@ class _PathNavBottomSheetState extends State<PathNavBottomSheet>
               curve: curve,
               decoration: BoxDecoration(
                 color: showColor
-                    ? context.color.surface_base_primary
+                    ? context.color.surfaceBasePrimary
                     : Colors.transparent,
                 borderRadius: BorderRadius.vertical(
                   top: const Radius.circular(16),
@@ -139,7 +139,7 @@ class _PathNavBottomSheetState extends State<PathNavBottomSheet>
                         children: [
                           /// handle
                           Container(
-                            color: context.color.surface_base_primary,
+                            color: context.color.surfaceBasePrimary,
                             height: 4,
                             width: 40,
                           ),

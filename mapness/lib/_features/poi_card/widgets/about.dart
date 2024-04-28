@@ -28,8 +28,8 @@ class _AboutState extends State<About> {
           children: [
             Text(
               widget.title,
-              style: context.textStyle.textM
-                  .copyWith(color: context.color.text_and_icons_base_primary),
+              style: context.textStyle.text
+                  .copyWith(color: context.color.textAndIconsBasePrimary),
               overflow: TextOverflow.ellipsis,
               maxLines: 5,
               textAlign: TextAlign.start,
@@ -38,7 +38,7 @@ class _AboutState extends State<About> {
             if (widget.exits != null && widget.exits != 0) ...[
               const SizedBox(height: 8),
               Material(
-                color: context.color.text_and_icons_base_primary.withAlpha(10),
+                color: context.color.textAndIconsBasePrimary.withAlpha(10),
                 borderRadius: borderRadius,
                 child: InkWell(
                   onTap: widget.onEntranceTap,
@@ -47,8 +47,8 @@ class _AboutState extends State<About> {
                     decoration: boxDecoration(),
                     child: Text(
                       '${context.l10n.exits} ${widget.exits ?? ''}',
-                      style: context.textStyle.accentS.copyWith(
-                          color: context.color.text_and_icons_base_primary),
+                      style: context.textStyle.footNoteBold.copyWith(
+                          color: context.color.textAndIconsBasePrimary),
                     ),
                   ),
                 ),

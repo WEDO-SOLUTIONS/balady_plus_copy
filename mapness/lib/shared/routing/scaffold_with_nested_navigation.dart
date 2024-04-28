@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_positional_boolean_parameters
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -124,12 +124,12 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                   elevation: 0,
                   type: BottomNavigationBarType.fixed,
                   selectedLabelStyle: TextStyle(
-                    color: context.color.stroke_accent,
+                    color: context.color.strokeAccent,
                     fontSize: 0,
                     height: 0,
                   ),
                   unselectedLabelStyle: TextStyle(
-                    color: context.color.text_and_icons_base_primary,
+                    color: context.color.textAndIconsBasePrimary,
                     fontSize: 0,
                     height: 0,
                   ),
@@ -140,7 +140,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                         iconBuilder: (context, selected) => ProfileImageWidget(
                           dimension: 24,
                           color: selected
-                              ? context.color.stroke_accent
+                              ? context.color.strokeAccent
                               : _unselectedColor,
                         ),
                         label: context.l10n.nav_profile,
@@ -170,10 +170,10 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                                     '${context.l10n.nav_route} ',
                                     style: Theme.of(context)
                                         .extension<ThemeTextStyles>()!
-                                        .textXS
+                                        .caption
                                         .copyWith(
                                           color: selected
-                                              ? context.color.stroke_accent
+                                              ? context.color.strokeAccent
                                               : _unselectedColor,
                                         ),
                                   ),
@@ -264,7 +264,7 @@ class _DefaultIcon extends StatelessWidget {
         width: 24,
         package: 'mapness',
         colorFilter: ColorFilter.mode(
-          selected ? context.color.stroke_accent : _unselectedColor,
+          selected ? context.color.strokeAccent : _unselectedColor,
           BlendMode.srcIn,
         ),
       );
@@ -282,8 +282,8 @@ class _DefaultLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
         label,
-        style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(
-              color: selected ? context.color.stroke_accent : _unselectedColor,
+        style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(
+              color: selected ? context.color.strokeAccent : _unselectedColor,
             ),
       );
 }

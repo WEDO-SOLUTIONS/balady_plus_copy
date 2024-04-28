@@ -371,38 +371,55 @@ class DgisMapController {
 
   /// Remove all markers, polygons, polylines
   /// that were added with [addMarker], [addPolygons], [addPolyline].
-  Future<void> removeAll() async {
-    await _instance.removeAllMarkers(null);
-    await _instance.removeAllPolygons();
-    await _instance.removeAllPolylines();
+  Future<void> removeAll({MapObjectManagerMessage? fromManager}) async {
+    await _instance.removeAllMarkers(fromManager);
+    await _instance.removeAllPolygons(fromManager);
+    await _instance.removeAllPolylines(fromManager);
   }
 
   /// Add polygon to map.
-  Future<void> addPolygon(Polygon polygon) => _instance.addPolygon(polygon);
+  Future<void> addPolygon(Polygon polygon,
+          {MapObjectManagerMessage? toManager}) =>
+      _instance.addPolygon(polygon, toManager);
 
   /// Add several polygons to map.
-  Future<void> addPolygons(List<Polygon> polygons) =>
-      _instance.addPolygons(polygons);
+  Future<void> addPolygons(List<Polygon> polygons,
+          {MapObjectManagerMessage? toManager}) =>
+      _instance.addPolygons(polygons, toManager);
 
   /// Remove polygon by id.
-  Future<void> removePolygon(String id) => _instance.removePolygon(id);
+  Future<void> removePolygon(String id,
+          {MapObjectManagerMessage? fromManager}) =>
+      _instance.removePolygon(id, fromManager);
 
   /// Remove all polygons added with [addPolygon].
-  Future<void> removeAllPolygons() => _instance.removeAllPolygons();
+  Future<void> removeAllPolygons({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllPolygons(fromManager);
 
   /// Add polyline to map.
-  Future<void> addPolyline(Polyline polyline) =>
-      _instance.addPolyline(polyline);
+  Future<void> addPolyline(
+    Polyline polyline, {
+    MapObjectManagerMessage? toManager,
+  }) =>
+      _instance.addPolyline(polyline, toManager);
 
   /// Add several polylines to map.
-  Future<void> addPolylines(List<Polyline> polyline) =>
-      _instance.addPolylines(polyline);
+  Future<void> addPolylines(
+    List<Polyline> polyline, {
+    MapObjectManagerMessage? toManager,
+  }) =>
+      _instance.addPolylines(polyline, toManager);
 
   /// Remove polyline by id.
-  Future<void> removePolyline(String id) => _instance.removePolyline(id);
+  Future<void> removePolyline(
+    String id, {
+    MapObjectManagerMessage? fromManager,
+  }) =>
+      _instance.removePolyline(id, fromManager);
 
   /// Remove all polyline added with [addPolyline].
-  Future<void> removeAllPolylines() => _instance.removeAllPolylines();
+  Future<void> removeAllPolylines({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllPolylines(fromManager);
 
   /// Hightlighs objects by it's id.
   Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds) =>

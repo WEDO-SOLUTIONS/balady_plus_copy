@@ -25,7 +25,7 @@ class CloseButton extends StatelessWidget {
                 Radius.circular(8),
               ),
               // color: Colors.white,
-              color: context.color.surface_base_primary,
+              color: context.color.surfaceBasePrimary,
             ),
             padding: const EdgeInsets.all(8),
             child: SvgPicture.asset(
@@ -33,7 +33,7 @@ class CloseButton extends StatelessWidget {
               semanticsLabel: 'MinApps Screen',
               package: 'mapness',
               colorFilter: ColorFilter.mode(
-                context.color.text_and_icons_base_primary.withOpacity(0.7),
+                context.color.textAndIconsBasePrimary.withOpacity(0.7),
                 BlendMode.srcIn,
               ),
             ),

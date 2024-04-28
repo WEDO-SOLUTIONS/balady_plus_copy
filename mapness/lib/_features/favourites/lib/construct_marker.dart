@@ -11,7 +11,7 @@ Marker constructMarker(FavouriteItem item, String iconAsset, GoRouter router) =>
         position: GeoPointWithElevationMessage(
           latitude: item.coordinates.latitude,
           longitude: item.coordinates.longitude,
-          elevation: 0,
+          elevation: 1,
         ),
         icon: MarkerIconMessage(
           path: iconAsset,

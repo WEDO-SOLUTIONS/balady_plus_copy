@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -53,7 +53,7 @@ class SigninScreen extends ConsumerWidget {
               Text(context.l10n.signInToUnlock,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .textM
+                      .text
                       .apply(color: Colors.white),),
               const SizedBox(height: 16),
               Padding(
@@ -67,7 +67,7 @@ class SigninScreen extends ConsumerWidget {
                       context.pop();
                     },
                     label: context.l10n.signIn,
-                    textColor: context.color.stroke_accent,
+                    textColor: context.color.strokeAccent,
                     backgroundColor: Colors.white,
                   ),
                 ),
@@ -93,7 +93,7 @@ class SigninScreen extends ConsumerWidget {
               borderRadius: const BorderRadius.all(
                 Radius.circular(8),
               ),
-              color: context.color.text_and_icons_base_primary.withOpacity(0.05),
+              color: context.color.textAndIconsBasePrimary.withOpacity(0.05),
             ),
             padding: const EdgeInsets.all(8),
             child: SvgPicture.asset(

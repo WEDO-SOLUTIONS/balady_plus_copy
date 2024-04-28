@@ -9,8 +9,7 @@ part 'search_history.g.dart';
 
 @HiveType(typeId: 1)
 class SearchHistoryItem {
-
-  SearchHistoryItem({
+  const SearchHistoryItem({
     required this.title,
     required this.address,
     required this.objectId,
@@ -25,6 +24,16 @@ class SearchHistoryItem {
         address: object.makeAddress(),
         objectId: object.id?.objectId.toString(),
         entranceId: object.id?.entranceId.toString(),
+      );
+
+  factory SearchHistoryItem.fromQuery({
+    required String query,
+  }) =>
+      SearchHistoryItem(
+        title: query,
+        address: '',
+        objectId: null,
+        entranceId: null,
       );
   @HiveField(0)
   final String title;

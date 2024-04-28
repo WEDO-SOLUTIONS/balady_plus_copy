@@ -1,5 +1,5 @@
 
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 
 class MapButton extends StatefulWidget {
