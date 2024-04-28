@@ -191,7 +191,9 @@ class _ApprovalSequenceShopLocationScreenState
                                 DTOState state = context
                                     .read<RequestApprovalSequenceCubit>()
                                     .state as DTOState;
-                                if (state.deedInfoRequst?.ownershipType?.isNotEmpty ?? false) {
+                                if (state.deedInfoRequst?.ownershipType
+                                        ?.isNotEmpty ??
+                                    false) {
                                   if (state.deedInfoRequst?.deedNumber
                                           ?.isNotEmpty ??
                                       false) {
@@ -424,14 +426,18 @@ class _ApprovalSequenceShopLocationScreenState
                       color: Colors.white),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
-                  child: ElevatedButtonWidget.next(
-                    onPressed: () {
-                      //  if (!state.isFormValid()) {
-                      context
-                          .read<RequestApprovalSequenceCubit>()
-                          .saveData(widget.stepInterface);
-                    },
-                  ),
+                  child: state is LoadingState ||
+                          ((state is DTOState) &&
+                              (state as DTOState).status == BlocStatus.loading)
+                      ? const CustomCircularLoadingWidget()
+                      : ElevatedButtonWidget.next(
+                          onPressed: () {
+                            //  if (!state.isFormValid()) {
+                            context
+                                .read<RequestApprovalSequenceCubit>()
+                                .saveData(widget.stepInterface);
+                          },
+                        ),
                 ),
               ],
             ),
