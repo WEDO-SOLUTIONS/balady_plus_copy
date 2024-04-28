@@ -7,7 +7,7 @@ import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
-import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
+import 'package:mapness/widgets/profile/profile_image_widget.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
