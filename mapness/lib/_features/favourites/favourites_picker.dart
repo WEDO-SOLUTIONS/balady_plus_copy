@@ -17,7 +17,6 @@ class FavouritesPicker extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncState = ref.watch(favouriteCacheProvider);
-
     if (asyncState.isLoading) {
       return Material(
         color: context.color.surfaceBasePrimary,
@@ -61,8 +60,7 @@ class FavouritesPicker extends ConsumerWidget {
                               .extension<ThemeTextStyles>()!
                               .footNoteBold
                               .copyWith(
-                                color:
-                                    context.color.textAndIconsBasePrimary,
+                                color: context.color.textAndIconsBasePrimary,
                               ),
                         ),
                       ),

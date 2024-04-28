@@ -7,8 +7,8 @@ import 'package:mapness/_features/profile/pages/help_center_page.dart';
 import 'package:mapness/_features/profile/pages/image_editor_page.dart';
 import 'package:mapness/_features/profile/pages/momra_website_page.dart';
 import 'package:mapness/_features/profile/pages/profile_info_page.dart';
+import 'package:mapness/_features/profile/pages/profile_page.dart';
 import 'package:mapness/_features/profile/pages/settings_page.dart';
-import 'package:mapness/_features/profile/profile_page.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 
