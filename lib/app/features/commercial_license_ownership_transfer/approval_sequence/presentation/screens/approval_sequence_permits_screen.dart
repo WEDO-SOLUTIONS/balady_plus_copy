@@ -50,8 +50,20 @@ class _ApprovalSequencePermitsScreenState
   }
 
   Widget getBody() {
-    return BlocBuilder<RequestApprovalSequenceCubit,
+    return BlocConsumer<RequestApprovalSequenceCubit,
         RequestApprovalSequenceState>(
+      listener: (bC,states) {
+        if (states is GetPermitsSucceedState) {
+          final permitsList = states.permitsList;
+          for (var index = 0; index < permitsList.permits!.length; index++) {
+            permitsList.permits![index].selected = true;
+            if (lstPermits.contains(permitsList.permits![index].requestId!) == false) {
+              lstPermits.add(permitsList.permits![index].requestId!);
+            }
+          }
+          setState(() {});
+        }
+      },
       builder: (blocContext, state) {
         if (state is LoadingState) {
           return ListView.builder(
