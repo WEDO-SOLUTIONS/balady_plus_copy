@@ -96,7 +96,7 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
         }
       },
       (success) {
-        // emit(SucceedState());
+        emit(SucceedState());
         stepInterface.nextPage();
       },
     );
