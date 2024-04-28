@@ -13,6 +13,7 @@ import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../notifications/data/repositories/notification_repository_implementation.dart';
 import '../../../notifications/domain/entities/set_notifications_profile_params.dart';
 import '../bloc/notifications_setting_cubit.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class NotificationsSettingCell extends StatefulWidget {
   const NotificationsSettingCell({super.key});
@@ -140,10 +141,11 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                               'enable_disable_notifications'.tr(),
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
-                                  .text
+                                  .caption
                                   .copyWith(
-                                      color: const Color(0xFF1E2A36)
-                                          .withOpacity(0.36)),
+                                    color: context.color.textAndIconsBasePrimary
+                                        .withOpacity(0.36),
+                                  ),
                             ),
                           ],
                         ),
@@ -177,7 +179,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                     Text(
                                       'manage_notification'.tr(),
                                       style: Theme.of(context)
-                                    .extension<ThemeTextStyles>()!
+                                          .extension<ThemeTextStyles>()!
                                           .text
                                           .copyWith(color: Colors.red),
                                     ),
