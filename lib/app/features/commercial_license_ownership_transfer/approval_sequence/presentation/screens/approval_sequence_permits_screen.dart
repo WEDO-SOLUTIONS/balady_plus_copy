@@ -186,16 +186,13 @@ class _ApprovalSequencePermitsScreenState
                                               ? "tranfer_permit".tr()
                                               : "dont_tranfer_permit".tr(),
                                           onPressed: () {
-                                            if (lstPermits.contains(
-                                                permit.permitNumber!)) {
-                                              lstPermits
-                                                  .remove(permit.permitNumber!);
+                                            if (lstPermits.contains(permit.requestId!)) {
+                                              lstPermits.remove(permit.requestId!);
                                               setState(() {
                                                 permit.selected = false;
                                               });
                                             } else {
-                                              lstPermits
-                                                  .add(permit.permitNumber!);
+                                              lstPermits.add(permit.requestId!);
                                               setState(() {
                                                 permit.selected = true;
                                               });
