@@ -1,20 +1,18 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
 import 'package:mapness/_features/lifestyle_layers/data/common_function.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 
 class MapRequestParams {
-  GISMapLayers? layer;
-  int? objectId;
-  double? southWestLongitude;
-  double? southWestLatitude;
-  double? northEastLongitude;
-  double? northEastLatitude;
-  String? proxy;
-  String domain;
-  bool? pointsDetails;
+  final GISMapLayers? layer;
+  final int? objectId;
+  final double? southWestLongitude;
+  final double? southWestLatitude;
+  final double? northEastLongitude;
+  final double? northEastLatitude;
+  final String? proxy;
+  final String domain;
+  final bool? pointsDetails;
 
-  MapRequestParams({
+  const MapRequestParams({
     required this.domain,
     this.layer,
     this.southWestLongitude,
@@ -56,13 +54,14 @@ class MapRequestParams {
   }
 
   String? getVerifyingKey() {
-    String verifyingKey;
-
+    if (layer?.layerId == null) {
+      return null;
+    }
     const gisLayers = 'v1/gis-urbi-services/layers';
 
     final params = toMap();
-    final layerId = layer?.layerId ?? 0;
-    var hashedUrl;
+    final int layerId = layer!.layerId;
+    String hashedUrl;
 
     if (proxy != null) {
       const domain = 'https://apiservicesstg.balady.gov.sa';
@@ -75,24 +74,29 @@ class MapRequestParams {
 
     params.forEach((key, value) => hashedUrl += '$key=$value&');
     hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
-    verifyingKey = hashRequest(hashedUrl as String, 'GET');
-    return verifyingKey;
+    return hashRequest(hashedUrl, 'GET');
   }
 
-  Map<String, dynamic> toMap() => {
-      'outFields': (layer != null && pointsDetails == true)
-          ? layer?.outFieldsLong.join(',')
-          : layer?.outFieldsShort.join(','),
-      // : "OBJECTID,STATUS",
-      // "where": "1=1",
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{
       'f': 'json',
       'geometryType': 'esriGeometryEnvelope',
-      if (pointsDetails == true && objectId != null) 'objectIds': objectId,
-      if (pointsDetails != true && objectId == null)
-        'geometry': '${southWestLongitude?.toStringAsFixed(3)},'
-            '${southWestLatitude?.toStringAsFixed(3)},'
-            '${northEastLongitude?.toStringAsFixed(3)},'
-            '${northEastLatitude?.toStringAsFixed(3)}',
       'resultRecordCount': layer?.resultRecordCount ?? 0,
     };
+    if (layer != null && pointsDetails == true) {
+      map['outFields'] = layer?.outFieldsLong.join(',');
+    } else {
+      map['outFields'] = layer?.outFieldsShort.join(',');
+    }
+
+    if (pointsDetails == true && objectId != null) {
+      map['objectIds'] = objectId;
+    } else if (pointsDetails != true && objectId == null) {
+      map['geometry'] = '${southWestLongitude?.toStringAsFixed(3)},'
+          '${southWestLatitude?.toStringAsFixed(3)},'
+          '${northEastLongitude?.toStringAsFixed(3)},'
+          '${northEastLatitude?.toStringAsFixed(3)}';
+    }
+    return map;
+  }
 }
