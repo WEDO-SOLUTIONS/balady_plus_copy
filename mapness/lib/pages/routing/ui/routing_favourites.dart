@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -47,8 +47,7 @@ class RoutingFavourites extends ConsumerWidget {
         title: context.l10n.home,
         icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
         onTap: () async {
-          final favouritesState =
-              await ref.read(favouriteRepositoryProvider.future);
+          final favouritesState = await ref.read(favouriteCacheProvider.future);
           final home = favouritesState.home;
           if (home == null) {
             await CommonFunctions.authOrOpen(
@@ -59,7 +58,7 @@ class RoutingFavourites extends ConsumerWidget {
                 ).push(context);
 
                 final favouritesState =
-                    await ref.read(favouriteRepositoryProvider.future);
+                    await ref.read(favouriteCacheProvider.future);
 
                 onFavouriteTap(favouritesState.home!);
               },
@@ -74,8 +73,7 @@ class RoutingFavourites extends ConsumerWidget {
         title: context.l10n.work,
         icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
         onTap: () async {
-          final favouritesState =
-              await ref.read(favouriteRepositoryProvider.future);
+          final favouritesState = await ref.read(favouriteCacheProvider.future);
           final work = favouritesState.work;
           if (work == null) {
             await CommonFunctions.authOrOpen(
@@ -86,7 +84,7 @@ class RoutingFavourites extends ConsumerWidget {
                 ).push(context);
 
                 final favouritesState =
-                    await ref.read(favouriteRepositoryProvider.future);
+                    await ref.read(favouriteCacheProvider.future);
 
                 onFavouriteTap(
                   favouritesState.work!,

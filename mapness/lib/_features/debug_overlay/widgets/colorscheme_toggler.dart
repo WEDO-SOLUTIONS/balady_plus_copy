@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';

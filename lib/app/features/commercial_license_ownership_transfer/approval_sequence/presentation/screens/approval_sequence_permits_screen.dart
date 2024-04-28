@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -17,6 +18,7 @@ import '../blocs/request_approval_sequence_cubit.dart';
 
 class ApprovalSequencePermitsScreen extends StatefulWidget {
   StepInterface stepInterface;
+
   ApprovalSequencePermitsScreen({Key? key, required this.stepInterface})
       : super(key: key);
 
@@ -48,8 +50,20 @@ class _ApprovalSequencePermitsScreenState
   }
 
   Widget getBody() {
-    return BlocBuilder<RequestApprovalSequenceCubit,
+    return BlocConsumer<RequestApprovalSequenceCubit,
         RequestApprovalSequenceState>(
+      listener: (bC,states) {
+        if (states is GetPermitsSucceedState) {
+          final permitsList = states.permitsList;
+          for (var index = 0; index < permitsList.permits!.length; index++) {
+            permitsList.permits![index].selected = true;
+            if (lstPermits.contains(permitsList.permits![index].requestId!) == false) {
+              lstPermits.add(permitsList.permits![index].requestId!);
+            }
+          }
+          setState(() {});
+        }
+      },
       builder: (blocContext, state) {
         if (state is LoadingState) {
           return ListView.builder(
@@ -112,36 +126,18 @@ class _ApprovalSequencePermitsScreenState
                             btnWidth: 20,
                             text: "transfer_all".tr(),
                             onPressed: () {
-                              // for (var index = 0;
-                              //     index < permitsList.permits!.length;
-                              //     index++) {
-                              //   if (lstPermits.contains(permitsList.permits![index].permitNumber!) ==
-                              //       false) {
-                              //     lstPermits.add(permitsList
-                              //         .permits![index].permitNumber!);
-                              //   }
-                              //   permitsList.permits![index].selected = true;
-                              // }
-                              // setState(() {});
-
-
                               for (var index = 0;
-                              index < permitsList.permits!.length;
-                              index++) {
+                                  index < permitsList.permits!.length;
+                                  index++) {
                                 permitsList.permits![index].selected = true;
                                 if (lstPermits.contains(permitsList
-                                    .permits![index].permitNumber!) ==
+                                        .permits![index].requestId!) ==
                                     false) {
-                                  lstPermits.add(permitsList
-                                      .permits![index].permitNumber!);
+                                  lstPermits.add(
+                                      permitsList.permits![index].requestId!);
                                 }
                               }
                               setState(() {});
-
-
-
-
-
                             },
                           ),
                         ],
@@ -176,19 +172,19 @@ class _ApprovalSequencePermitsScreenState
                                         const Spacer(),
                                         CustomElevatedButtonWidget(
                                           btnBorderColor:
-                                          permit.selected == false ||
-                                              permit.selected == null
-                                              ? AppColor.white
-                                              : AppColor.blueSkyLight800,
+                                              permit.selected == false ||
+                                                      permit.selected == null
+                                                  ? AppColor.white
+                                                  : AppColor.blueSkyLight800,
                                           btnColor: permit.selected == false ||
-                                              permit.selected == null
+                                                  permit.selected == null
                                               ? AppColor.blueSkyLight800
                                               : AppColor.white,
                                           textStyle: AppStyle
                                               .elevatedButtonStyle
                                               .copyWith(
                                             color: permit.selected == false ||
-                                                permit.selected == null
+                                                    permit.selected == null
                                                 ? AppColor.white
                                                 : AppColor.blueSkyLight800,
                                             fontWeight: FontWeight.w700,
@@ -198,20 +194,17 @@ class _ApprovalSequencePermitsScreenState
                                           btnHeight: 30,
                                           btnWidth: 20,
                                           text: permit.selected == false ||
-                                              permit.selected == null
+                                                  permit.selected == null
                                               ? "tranfer_permit".tr()
                                               : "dont_tranfer_permit".tr(),
                                           onPressed: () {
-                                            if (lstPermits.contains(
-                                                permit.permitNumber!)) {
-                                              lstPermits
-                                                  .remove(permit.permitNumber!);
+                                            if (lstPermits.contains(permit.requestId!)) {
+                                              lstPermits.remove(permit.requestId!);
                                               setState(() {
                                                 permit.selected = false;
                                               });
                                             } else {
-                                              lstPermits
-                                                  .add(permit.permitNumber!);
+                                              lstPermits.add(permit.requestId!);
                                               setState(() {
                                                 permit.selected = true;
                                               });
@@ -273,19 +266,22 @@ class _ApprovalSequencePermitsScreenState
                         ),
                       )
                     : Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomTextWidget(
-                        ('data_not_have_permits').tr(),
-                        fontSize: 14,
-                        fontColor: AppColor.primary900Light,
-                        textAlign: TextAlign.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(14.0),
+                              child: CustomTextWidget(
+                                ('data_not_have_permits').tr(),
+                                fontSize: 14,
+                                fontColor: AppColor.primary900Light,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-
-                    ],),
-                ),
                 permitsList.term != null
                     ? getCardView(
                         Row(
@@ -306,7 +302,10 @@ class _ApprovalSequencePermitsScreenState
                                 permitsList.term ?? "",
                                 style: AppStyle
                                     .personalInfoParameterValueTextStyle
-                                    .copyWith(fontSize: 12),
+                                    .copyWith(
+                                  fontSize: 12,
+                                  height: 1.3,
+                                ),
                               ),
                             ),
                           ],
@@ -325,21 +324,23 @@ class _ApprovalSequencePermitsScreenState
                       color: Colors.white),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
-                  child: ElevatedButtonWidget.next(
-                    onPressed: () {
-                      if (isAgree || permitsList.term == null) {
-                        bloc?.saveSelectedRequestsPermitsRequest
-                            .selectedPermits = lstPermits;
+                  child: state is LoadingState
+                      ? const CustomCircularLoadingWidget()
+                      : ElevatedButtonWidget.next(
+                          onPressed: () {
+                            if (isAgree || permitsList.term == null) {
+                              bloc?.saveSelectedRequestsPermitsRequest
+                                  .selectedPermits = lstPermits;
 
-                        bloc?.saveSelectedRequestPermits(
-                            bloc!.requestNumber!,
-                            bloc!.saveSelectedRequestsPermitsRequest,
-                            widget.stepInterface);
-                      } else {
-                        CommonFunctions.showError("terms_error".tr());
-                      }
-                    },
-                  ),
+                              bloc?.saveSelectedRequestPermits(
+                                  bloc!.requestNumber!,
+                                  bloc!.saveSelectedRequestsPermitsRequest,
+                                  widget.stepInterface);
+                            } else {
+                              CommonFunctions.showError("terms_error".tr());
+                            }
+                          },
+                        ),
                 ),
               ],
             ),

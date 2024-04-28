@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -157,18 +157,18 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                                   context.l10n.pointToMap,
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()!
-                                      .accentL
+                                      .heading2
                                       .copyWith(
-                                        color: context.color.text_and_icons_base_primary,
+                                        color: context.color.textAndIconsBasePrimary,
                                       ),
                                 ),
                                 Text(
                                   context.l10n.moveMap,
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()!
-                                      .textS
+                                      .footNote
                                       .copyWith(
-                                        color: context.color.text_and_icons_base_tertiary,
+                                        color: context.color.textAndIconsBaseTertiary,
                                       ),
                                 ),
                               ],
@@ -248,7 +248,7 @@ class _NearestObject extends StatelessWidget {
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: context.color.text_and_icons_base_primary,
+                  color: context.color.textAndIconsBasePrimary,
                 ),
               ),
               loading: () => SizedBox(
@@ -256,7 +256,7 @@ class _NearestObject extends StatelessWidget {
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: context.color.text_and_icons_base_primary,
+                  color: context.color.textAndIconsBasePrimary,
                 ),
               ),
             ),
@@ -270,9 +270,9 @@ class _NearestObject extends StatelessWidget {
                 _buildTitle(object),
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .textM
+                    .text
                     .copyWith(
-                      color: context.color.text_and_icons_base_primary,
+                      color: context.color.textAndIconsBasePrimary,
                     ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -280,9 +280,9 @@ class _NearestObject extends StatelessWidget {
                 context.l10n.moveMap,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .textM
+                    .text
                     .copyWith(
-                      color: context.color.text_and_icons_base_primary,
+                      color: context.color.textAndIconsBasePrimary,
                     ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -290,9 +290,9 @@ class _NearestObject extends StatelessWidget {
                 context.l10n.moveMap,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .textM
+                    .text
                     .copyWith(
-                      color: context.color.text_and_icons_base_primary,
+                      color: context.color.textAndIconsBasePrimary,
                     ),
                 overflow: TextOverflow.ellipsis,
               ),

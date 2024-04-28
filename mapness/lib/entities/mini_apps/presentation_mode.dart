@@ -1,0 +1,1 @@
+enum MiniAppPresentation { fullScreen, bottomSheet }

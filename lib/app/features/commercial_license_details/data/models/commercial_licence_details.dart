@@ -71,12 +71,14 @@ class CommercialLicenceDetails {
   LocationInfo? locationInfo;
   List<BillsInfo>? billsInfo;
   LicenceHoldInfoStatusResponseDto? licenceHoldInfoStatusResponseDto;
+
   LicenseInfo? licenseInfo;
   SalamaInfo? salamaInfo;
   SubmitterInfo? submitterInfo;
   ShopInfo? shopInfo;
   SalamaDetailsInfo? salamaDetailsInfo;
   OwnershipInfo? ownershipInfo;
+  CleanContractInfo? cleanContractInfo;
 
   CommercialLicenceDetails({
     this.requestId,
@@ -165,6 +167,7 @@ class CommercialLicenceDetails {
     statusId = json['statusId'];
     statusName = json['statusName'];
     typeId = json['typeId'];
+
     typeName = json['typeName'];
     licensePeriod = json['licensePeriod'];
     originalLicensePeriod = json['originalLicensePeriod'];
@@ -269,6 +272,10 @@ class CommercialLicenceDetails {
     ownershipInfo = json['ownershipInfo'] != null
         ? OwnershipInfo.fromJson(json['ownershipInfo'])
         : null;
+
+    cleanContractInfo = json['cleaningInfo'] != null
+        ? CleanContractInfo.fromJson(json['cleaningInfo'])
+        : null;
   }
 }
 
@@ -293,7 +300,6 @@ class LicenseAllowedPermitsInfo {
   String? name;
   BaladyWorkFlow? baladyWorkFlow;
   bool? withFees;
-
 }
 
 class BaladyWorkFlow {
@@ -309,7 +315,6 @@ class BaladyWorkFlow {
 
   String? id;
   String? name;
-
 }
 
 class BillsInfo {
@@ -339,7 +344,6 @@ class BillsInfo {
   String? paymentDate;
   bool? isSadadPaid;
   List<BillFees>? billFees;
-
 }
 
 class BillFees {
@@ -358,7 +362,6 @@ class BillFees {
   int? costItemValue;
   int? costItemTypeId;
   String? costItemDescription;
-
 }
 
 class ShopInfo {
@@ -390,7 +393,6 @@ class ShopInfo {
     this.isFawryWithSalamaBill,
     this.isFawryWithSalamaReport,
     this.isSalamaPermitMandatory,
-    this.cleanContractInfo,
     this.cleanContractOptions,
     this.showActivityCancellationDate,
     this.activityCancellationDate,
@@ -443,7 +445,6 @@ class ShopInfo {
     isFawryWithSalamaBill = json['isFawryWithSalamaBill'];
     isFawryWithSalamaReport = json['isFawryWithSalamaReport'];
     isSalamaPermitMandatory = json['isSalamaPermitMandatory'];
-    cleanContractInfo = json['cleanContractInfo'];
     cleanContractOptions = json['cleanContractOptions'] != null
         ? CleanContractOptions.fromJson(json['cleanContractOptions'])
         : null;
@@ -497,9 +498,6 @@ class ShopInfo {
   dynamic licenseBrand;
   bool? insidePetrolStation;
   int? noOfCameras;
-
-  CleanContractInfo? cleanContractInfo;
-
 }
 
 class CleanContractOptions {
@@ -515,7 +513,6 @@ class CleanContractOptions {
 
   String? cleanOption;
   String? contractOption;
-
 }
 
 class ContractInfo {
@@ -552,7 +549,6 @@ class ContractInfo {
   String? contractNumber;
   ContractOptionsResponseDto? contractOptionsResponseDto;
   dynamic investmentContractNumber;
-
 
   String? getDisplayContractTypeName() {
     switch (contractType) {
@@ -609,7 +605,6 @@ class ContractOptionsResponseDto {
   List<String>? ejarOptions;
   List<String>? deedOptions;
   List<String>? investOptions;
-
 }
 
 class BoardsInfomation {
@@ -628,7 +623,6 @@ class BoardsInfomation {
   int? typeId;
   String? typeName;
   int? area;
-
 }
 
 class SubmitterInfo {
@@ -686,7 +680,6 @@ class SubmitterInfo {
   String? genderDesc;
   dynamic submitterIdType;
   int? crEntityType;
-
 }
 
 class LocationInfo {
@@ -749,7 +742,6 @@ class LocationInfo {
   dynamic vehiclePathDesc;
   String? krokiUrl;
   String? cityName;
-
 }
 
 class ActivityInfo {
@@ -794,7 +786,6 @@ class ActivityInfo {
   bool? atmActivity;
   dynamic inHomogenusActivities;
   dynamic salamaWorkflowWarningMessage;
-
 }
 
 class MainActivity {
@@ -828,6 +819,7 @@ class MainActivity {
     detailedActivityName = json['detailedActivityName'];
     isicActivityId = json['isicActivityId'];
     mainActivityId = json['mainActivityId'];
+    mainActivityName = json['mainActivityName'];
     isicActivityName = json['isicActivityName'];
     minYears = json['minYears'];
     maxYears = json['maxYears'];
@@ -851,6 +843,7 @@ class MainActivity {
   int? isicActivityId;
   int? mainActivityId;
   String? isicActivityName;
+  String? mainActivityName;
   int? minYears;
   int? maxYears;
   bool? removed;
@@ -860,7 +853,6 @@ class MainActivity {
   int? facilityId;
   String? facilityName;
   String? salamaWorkflow;
-
 }
 
 class ActivitySettingDto {
@@ -888,7 +880,6 @@ class ActivitySettingDto {
   bool? foodActivity;
   dynamic ownershipType;
   dynamic requestFlow;
-
 }
 
 class AdditionalActivities {
@@ -935,7 +926,6 @@ class LicenceHoldInfoStatusResponseDto {
   dynamic holdType;
   dynamic holdedSevices;
   String? holdSource;
-
 }
 
 class SalamaInfo {
@@ -957,7 +947,6 @@ class SalamaInfo {
   dynamic salamaIssueNo;
   dynamic salamaApprovedCenterId;
   dynamic salamaApprovedCenterName;
-
 }
 
 class CleanContractInfo {
@@ -977,12 +966,13 @@ class CleanContractInfo {
     required this.cleanContractEndDate,
   });
 
+
   factory CleanContractInfo.fromJson(Map<String, dynamic> json) =>
       CleanContractInfo(
         contractNumber: json['contractNumber'],
         cleanOption: json['cleanOption'] ?? "",
         contractOption: json['contractOption'] ?? "",
-        cleanOptionName: json['salamaApprovedCenterName'] ?? "",
+        cleanOptionName: json['cleanOptionName'] ?? "",
         cleanOptionDesc: json['cleanOptionDesc'] ?? "",
         cleanContractEndDate: json['cleanContractEndDate'],
       );
@@ -993,8 +983,8 @@ class SalamaDetailsInfo {
   final dynamic salamaReportNumber;
   final dynamic salamaBillNumber;
   final dynamic salamaPermitNumber;
-  final String documentName;
-  final String documentDesc;
+  final String? documentName;
+  final String? documentDesc;
 
   SalamaDetailsInfo({
     required this.workFlow,
@@ -1008,9 +998,9 @@ class SalamaDetailsInfo {
   factory SalamaDetailsInfo.fromJson(Map<String, dynamic> json) =>
       SalamaDetailsInfo(
         workFlow: json['workFlow'] ?? "",
-        salamaReportNumber: json['salamaReportNumber'] ?? "",
-        salamaBillNumber: json['salamaBillNumber'] ?? "",
-        salamaPermitNumber: json['salamaPermitNumber'] ?? "",
+        salamaReportNumber: json['salamaReportNumber'],
+        salamaBillNumber: json['salamaBillNumber'],
+        salamaPermitNumber: json['salamaPermitNumber'],
         documentName: json['documentName'] ?? "",
         documentDesc: json['documentDesc'] ?? "",
       );
@@ -1165,6 +1155,4 @@ class LicenseInfo {
   String? qrCodeUrl;
   int? qrRequestId;
   String? statusDesc;
-
 }
-

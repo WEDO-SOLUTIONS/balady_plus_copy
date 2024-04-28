@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -36,8 +36,8 @@ class ErrorSheet extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Theme.of(context)
               .extension<ThemeTextStyles>()!
-              .textL
-              .copyWith(color: context.color.text_and_icons_base_primary),
+              .heading2
+              .copyWith(color: context.color.textAndIconsBasePrimary),
         );
 
     return Material(

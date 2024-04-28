@@ -13,7 +13,6 @@ part 'point_of_interest.g.dart';
 const poiPinId = 'poi_pin_id';
 
 class PoiModel {
-
   PoiModel({
     required this.directoryObjectMessage,
   });
@@ -35,7 +34,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         GeoPointWithElevationMessage(
           latitude: closestPoint.latitude,
           longitude: closestPoint.longitude,
-          elevation: 0,
+          elevation: 1,
         ),
         id: poiPinId,
       ),

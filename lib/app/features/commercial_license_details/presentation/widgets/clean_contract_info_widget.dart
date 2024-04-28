@@ -7,7 +7,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../commercial_license_details/data/models/commercial_licence_details.dart';
 
 class CleanContractInfoWidget extends StatelessWidget {
-  final CleanContractInfo cleanContractInfo;
+  final CleanContractInfo? cleanContractInfo;
+
   const CleanContractInfoWidget({super.key, required this.cleanContractInfo});
 
   @override
@@ -15,22 +16,25 @@ class CleanContractInfoWidget extends StatelessWidget {
     return ExpandableCard(
       title: 'issue_commercial_clean_data'.tr(),
       icon: IconPath.editIcon,
-      isExpandedByDefault: true,
       children: [
+
         CardParameter(
           title: 'cleanOptionName'.tr(),
-          value: cleanContractInfo.cleanOptionName,
+          value: cleanContractInfo?.cleanOptionName ?? "",
         ),
-        CardParameter(
-          title: 'contract_number'.tr(),
-          value: cleanContractInfo.contractNumber?.toString() ?? '',
-        ),
-        CardParameter(
-          title: 'contract_expiry_date'.tr(),
-          value: cleanContractInfo.cleanContractEndDate ?? '',
-        ),
+        cleanContractInfo?.contractOption == "SERVICE"
+            ? CardParameter(
+                title: 'contract_number'.tr(),
+                value: cleanContractInfo?.contractNumber?.toString() ?? '',
+              )
+            : const SizedBox(),
+        cleanContractInfo?.cleanOption != "BALADIA_SADAD"
+            ? CardParameter(
+                title: 'contract_expiry_date'.tr(),
+                value: cleanContractInfo?.cleanContractEndDate ?? '',
+              )
+            : const SizedBox(),
       ],
     );
   }
 }
-

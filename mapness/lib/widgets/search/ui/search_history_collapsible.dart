@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -65,7 +65,7 @@ class _MapSearchHistoryCollapsibleState
                           context.l10n.delete,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textS
+                              .footNote
                               .copyWith(color: Colors.white),
                         ),
                       ),
@@ -108,7 +108,7 @@ class _MapSearchHistoryCollapsibleState
                   child: Divider(
                     thickness: 1,
                     height: 2,
-                    color: context.color.surface_base_primary,
+                    color: context.color.surfaceBasePrimary,
                   ),
                 ),
               ),
@@ -121,7 +121,7 @@ class _MapSearchHistoryCollapsibleState
                   child: Divider(
                     thickness: 1,
                     height: 2,
-                    color: context.color.surface_base_primary,
+                    color: context.color.surfaceBasePrimary,
                   ),
                 ),
               ),
@@ -166,7 +166,7 @@ class _MapSearchHistoryCollapsibleState
                         context.l10n.deleteHistory,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .textM
+                            .text
                             .copyWith(color: Colors.white),
                       ),
                     ),
@@ -201,8 +201,8 @@ class _ShowMore extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .textM
-                  .copyWith(color: context.color.text_and_icons_base_primary),
+                  .text
+                  .copyWith(color: context.color.textAndIconsBasePrimary),
             ),
           ],
         ),

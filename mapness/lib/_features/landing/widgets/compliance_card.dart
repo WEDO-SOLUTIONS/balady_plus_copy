@@ -1,8 +1,8 @@
-import 'dart:math' as math; // import this
+import 'dart:math' as math;
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/colors/app_color_scheme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,7 +66,7 @@ class ComplianceCard extends ConsumerWidget {
                                   context.l10n.complianceCardTitle,
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()!
-                                      .accentS
+                                      .footNoteBold
                                       .copyWith(
                                         color: Colors.white,
                                       ),
@@ -75,7 +75,7 @@ class ComplianceCard extends ConsumerWidget {
                                   context.l10n.complianceCardDescription,
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()!
-                                      .textXS
+                                      .caption
                                       .copyWith(
                                         color: Colors.white.withOpacity(0.8),
                                       ),
@@ -109,7 +109,7 @@ class ComplianceCard extends ConsumerWidget {
                                 height: 24,
                                 package: PackageConfig.packageName,
                                 colorFilter: ColorFilter.mode(
-                                  context.color.text_and_icons_status_accent,
+                                  context.color.textAndIconsStatusAccent,
                                   BlendMode.srcATop,
                                 ),
                               ),
@@ -141,9 +141,9 @@ class ComplianceCard extends ConsumerWidget {
                               context.l10n.createCompliance,
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()
-                                  ?.accentM
+                                  ?.callout
                                   .copyWith(
-                                    color: context.color.stroke_accent,
+                                    color: context.color.strokeAccent,
                                   ),
                             ),
                           ),
@@ -169,7 +169,7 @@ class ComplianceCard extends ConsumerWidget {
                               context.l10n.ratingBuilding,
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()
-                                  ?.textS
+                                  ?.footNote
                                   .copyWith(
                                     color: Colors.white,
                                   ),
@@ -194,9 +194,9 @@ class ComplianceCard extends ConsumerWidget {
                                 text: context.l10n.complianceToKnow,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
-                                    ?.textS
+                                    ?.footNote
                                     .copyWith(
-                                      color: context.color.stroke_accent
+                                      color: context.color.strokeAccent
                                           .withOpacity(0.7),
                                       fontSize: 11,
                                     ),
@@ -205,9 +205,9 @@ class ComplianceCard extends ConsumerWidget {
                                 text: ' ',
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
-                                    ?.textS
+                                    ?.footNote
                                     .copyWith(
-                                      color: context.color.stroke_accent
+                                      color: context.color.strokeAccent
                                           .withOpacity(0.7),
                                       fontSize: 11,
                                     ),
@@ -218,9 +218,9 @@ class ComplianceCard extends ConsumerWidget {
                                   ..onTap = CommonFunctions.openComplianceFaq,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
-                                    ?.textS
+                                    ?.footNote
                                     .copyWith(
-                                      color: context.color.stroke_accent,
+                                      color: context.color.strokeAccent,
                                       fontSize: 12,
                                     ),
                               ),
@@ -228,9 +228,9 @@ class ComplianceCard extends ConsumerWidget {
                                 text: ' ',
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
-                                    ?.textS
+                                    ?.footNote
                                     .copyWith(
-                                      color: context.color.stroke_accent
+                                      color: context.color.strokeAccent
                                           .withOpacity(0.7),
                                       fontSize: 11,
                                     ),
@@ -239,9 +239,9 @@ class ComplianceCard extends ConsumerWidget {
                                 text: context.l10n.complianceOr,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
-                                    ?.textS
+                                    ?.footNote
                                     .copyWith(
-                                      color: context.color.stroke_accent
+                                      color: context.color.strokeAccent
                                           .withOpacity(0.7),
                                       fontSize: 11,
                                     ),
@@ -250,9 +250,9 @@ class ComplianceCard extends ConsumerWidget {
                                 text: ' ',
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
-                                    ?.textS
+                                    ?.footNote
                                     .copyWith(
-                                      color: context.color.stroke_accent
+                                      color: context.color.strokeAccent
                                           .withOpacity(0.7),
                                       fontSize: 11,
                                     ),
@@ -263,9 +263,9 @@ class ComplianceCard extends ConsumerWidget {
                                   ..onTap = CommonFunctions.openComplianceTerms,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
-                                    ?.textS
+                                    ?.footNote
                                     .copyWith(
-                                      color: context.color.stroke_accent,
+                                      color: context.color.strokeAccent,
                                       fontSize: 12,
                                     ),
                               ),

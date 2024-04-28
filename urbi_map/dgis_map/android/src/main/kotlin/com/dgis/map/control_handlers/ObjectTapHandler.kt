@@ -59,9 +59,9 @@ class ObjectTapHandler(
     private data class PolygonId(val id: String);
     private data class PolylineId(val id: String);
 
-    private var markers = mutableMapOf<String, Pair<Marker, String?>>();
-    private val polygons = mutableMapOf<String, Polygon>();
-    private val polylines = mutableMapOf<String, Polyline>();
+    private val markers = mutableMapOf<String, Pair<Marker, String?>>();
+    private val polygons = mutableMapOf<String, Pair<Polygon, String?>>();
+    private val polylines = mutableMapOf<String, Pair<Polyline, String?>>();
     private val clusters = mutableMapOf<String, SimpleClusterObject>();
     private val ioLayerMarkers = mutableListOf<Marker>();
     private val managers = mutableMapOf<String, MapObjectManager>()
@@ -170,6 +170,35 @@ class ObjectTapHandler(
         }
     }
 
+    /// --- HELPERS ---
+    private fun getManager(managerId: String?): MapObjectManager {
+        if (managerId != null && managers[managerId] != null) {
+            return managers[managerId]!!
+        }
+        return this.mapObjectManager
+    }
+
+    private fun <T: SimpleMapObject>getObjectsFromPair(objects: MutableMap<String, Pair<T, String?>>):  List<SimpleMapObject> {
+        return objects.values.map { it.first }.toList()
+    }
+
+    private fun <T>removeAllObjects(managerId: String?, objects: MutableMap<String, Pair<T, String?>>, result: Result<Void>?) {
+        mapObjectsExecutorService.submit {
+            getManager(managerId).removeAll()
+            val filtered = objects.filter {
+                if (managerId != null)
+                    it.value.second == managerId
+                else
+                    false
+            }.toMutableMap()
+            objects.clear()
+            objects.putAll(filtered)
+            result?.success(null)
+        }
+    }
+
+    // --- MARKER ---
+
     private fun mapMarker(marker: MarkerMessage, result: Result<Void>?): Marker? {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
@@ -214,51 +243,44 @@ class ObjectTapHandler(
         return Marker(options)
     }
 
-    fun addMarker(marker: MarkerMessage, manager: MapObjectManagerMessage?, result: Result<Void>?) {
+    fun addMarker(marker: MarkerMessage, managerId: String?, result: Result<Void>?) {
         val markerObject = mapMarker(marker, result) ?: return
 
         mapObjectsExecutorService.submit {
-            markers[marker.id] = Pair(markerObject, manager?.id)
-            if (manager != null && managers[manager.id] != null) {
-                managers[manager.id]!!.addObject(markerObject)
-            } else {
-                mapObjectManager.addObject(markerObject)
-            }
+            markers[marker.id] = Pair(markerObject, managerId)
+            getManager(managerId).addObject(markerObject)
             result?.success(null)
         }
     }
 
-    fun addMarkers(markers: List<MarkerMessage>, manager: MapObjectManagerMessage?, result: Result<Void>?) {
+    fun addMarkers(markers: List<MarkerMessage>, managerId: String?, result: Result<Void>?) {
         val markerObjects = mutableMapOf<String, Pair<Marker, String?>>()
         for (marker in markers) {
             val markerObject = mapMarker(marker, result) ?: return
-            markerObjects[marker.id] = Pair(markerObject, manager?.id)
+            markerObjects[marker.id] = Pair(markerObject, managerId)
         }
 
         mapObjectsExecutorService.submit {
             this.markers.putAll(markerObjects)
-            if (manager != null && managers[manager.id] != null) {
-                managers[manager.id]!!.addObjects(markerObjects.values.map { it.first }.toList())
-            } else {
-                mapObjectManager.addObjects(markerObjects.values.map { it.first }.toList())
-            }
+            getManager(managerId).addObjects(getObjectsFromPair(markerObjects))
             result?.success(null)
         }
     }
 
-    fun removeMarker(id: String, manager: MapObjectManagerMessage?, result: Result<Void>?) {
+    fun removeMarker(id: String, managerId: String?, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
             markers.remove(id)?.also {
-                if (manager != null && managers[manager.id] != null) {
-                    managers[manager.id]!!.removeObject(it.first)
-                } else {
-                    mapObjectManager.removeObject(it.first)
-                }
+                getManager(managerId).removeObject(it.first)
             }
             result?.success(null)
         }
     }
 
+    fun removeAllMarkers(managerId: String?, result: Result<Void>?) {
+        removeAllObjects(managerId, markers, result)
+    }
+
+    /// --- MAP OBJECT ---
     fun createClusteringMapObjectManager(
         message: ClusteringMapObjectManagerOptionsMessage,
         layerId: String?,
@@ -307,13 +329,22 @@ class ObjectTapHandler(
         }
     }
 
-    fun removeMapObjectManager(message: MapObjectManagerMessage, result: Result<Void>?) {
+    fun removeMapObjectManager(manager: MapObjectManagerMessage, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
-            this.managers.remove(message.id).also {
+            this.managers.remove(manager.id).also {
                 result?.success(null)
             }
         }
     }
+
+    fun setMapObjectManagerIsVisible(
+        isVisible: Boolean,
+        manager: MapObjectManagerMessage?,
+    ) {
+        getManager(manager?.id).isVisible = isVisible
+    }
+
+    /// --- CLUSTER ---
 
     fun setClusterIcon(icon: String, clusterId: String, result: Result<Void>?) {
         val cluster = this.clusters[clusterId];
@@ -348,16 +379,7 @@ class ObjectTapHandler(
         this.clusters.remove(clusterId)
     }
 
-    fun setMapObjectManagerIsVisible(
-        isVisible: Boolean,
-        manager: MapObjectManagerMessage?,
-    ) {
-        if (manager != null) {
-            this.managers[manager.id]?.isVisible = isVisible
-        } else {
-            this.mapObjectManager.isVisible = isVisible
-        }
-    }
+    /// --- POLYGON ---
 
     private fun mapPolygon(polygon: PolygonMessage): Polygon {
         val options = PolygonOptions(
@@ -381,38 +403,45 @@ class ObjectTapHandler(
         return Polygon(options)
     }
 
-    fun addPolygon(polygon: PolygonMessage, result: Result<Void>?) {
+    fun addPolygon(polygon: PolygonMessage, manager: String?, result: Result<Void>?) {
         val polygonObject = mapPolygon(polygon)
 
         mapObjectsExecutorService.submit {
-            polygons[polygon.id] = polygonObject
-            mapObjectManager.addObject(polygonObject)
+            polygons[polygon.id] = Pair(polygonObject, manager)
+            getManager(manager).addObject(polygonObject)
             result?.success(null)
         }
     }
 
-    fun addPolygons(polygons: List<PolygonMessage>, result: Result<Void>?) {
-        val polygonObjects = polygons.associateBy({
-             it.id
-        }, {
-            mapPolygon(it)
-        })
+    fun addPolygons(polygons: List<PolygonMessage>, managerId: String?, result: Result<Void>?) {
+        val polygonObjects = mutableMapOf<String, Pair<Polygon, String?>>()
+        for (polygon in polygons) {
+            val polygonObject = mapPolygon(polygon) ?: return
+            polygonObjects[polygon.id] = Pair(polygonObject, managerId)
+        }
 
         mapObjectsExecutorService.submit {
             this.polygons.putAll(polygonObjects)
-            mapObjectManager.addObjects(polygonObjects.values.toList())
+            getManager(managerId).addObjects(getObjectsFromPair(polygonObjects))
             result?.success(null)
         }
     }
 
-    fun removePolygon(id: String, result: Result<Void>?) {
+    fun removePolygon(id: String, managerId: String?, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
             polygons.remove(id)?.also {
-                mapObjectManager.removeObject(it)
+                getManager(managerId).removeObject(it.first)
             }
             result?.success(null)
         }
     }
+
+    fun removeAllPolygons(managerId: String?, result: Result<Void>?) {
+        removeAllObjects(managerId, polygons, result)
+    }
+
+    /// --- POLYLINE ---
+
     private fun mapPolyline(polyline: PolylineMessage): Polyline {
         val options = PolylineOptions(
             points = polyline.options.points.map {
@@ -430,38 +459,44 @@ class ObjectTapHandler(
         return Polyline(options)
     }
 
-    fun addPolyline(polyline: PolylineMessage, result: Result<Void>?) {
-        val polylineObject = mapPolyline(polyline)
+    fun addPolyline(polyline: PolylineMessage, managerId: String?, result: Result<Void>?) {
+        val polylineObject = mapPolyline(polyline) ?: return
 
         mapObjectsExecutorService.submit {
-            polylines[polyline.id] = polylineObject
-            mapObjectManager.addObject(polylineObject)
+            polylines[polyline.id] = Pair(polylineObject, managerId)
+            getManager(managerId).addObject(polylineObject)
             result?.success(null)
         }
     }
 
-    fun addPolylines(polylines: List<PolylineMessage>, result: Result<Void>?) {
-        val polylineObjects = polylines.associateBy({
-            it.id
-        }, {
-            mapPolyline(it)
-        })
+    fun addPolylines(polylines: List<PolylineMessage>, managerId: String?, result: Result<Void>?) {
+        val polylineObjects = mutableMapOf<String, Pair<Polyline, String?>>()
+        for (polyline in polylines) {
+            val polylineObject = mapPolyline(polyline)
+            polylineObjects[polyline.id] = Pair(polylineObject, managerId)
+        }
 
         mapObjectsExecutorService.submit {
             this.polylines.putAll(polylineObjects)
-            mapObjectManager.addObjects(polylineObjects.values.toList())
+            getManager(managerId).addObjects(getObjectsFromPair(polylineObjects))
             result?.success(null)
         }
     }
 
-    fun removePolyline(id: String, result: Result<Void>?) {
+    fun removePolyline(id: String, managerId: String?, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
             polylines.remove(id)?.also {
-                mapObjectManager.removeObject(it)
+                getManager(managerId).removeObject(it.first)
             }
             result?.success(null)
         }
     }
+
+    fun removeAllPolylines(managerId: String?, result: Result<Void>? ) {
+        removeAllObjects(managerId, polylines, result)
+    }
+
+    /// --- OTHER ---
 
     fun addIoMarkers(message: AddLayerPointObjectsMessage, result: Result<Void>?) {
         val markerImage = markerImage
@@ -494,30 +529,10 @@ class ObjectTapHandler(
         }
     }
 
-    fun removeAllMarkers(manager: MapObjectManagerMessage?) {
-        mapObjectsExecutorService.submit {
-            if (manager != null && managers[manager.id] != null) {
-                managers[manager.id]!!.removeAll()
-                markers = markers.filter { it.value.second == manager.id }.toMutableMap()
-            } else {
-                mapObjectManager.removeAll()
-                markers.clear()
-            }
-        }
-    }
 
-    fun removeAllPolygons() {
-        mapObjectsExecutorService.submit {
-            mapObjectManager.removeObjects(polygons.values.toList())
-            polygons.clear()
-        }
-    }
-    fun removeAllPolylines() {
-        mapObjectsExecutorService.submit {
-            mapObjectManager.removeObjects(polylines.values.toList())
-            polylines.clear()
-        }
-    }
+
+
+
 
     fun showLastSearchMarker() {
         lastTappedSearchMarker?.iconOpacity = Opacity(1.0f)
@@ -644,7 +659,7 @@ class ObjectTapHandler(
         result: Result<CameraPositionMessage>?
     ) {
         calcPositionForObjects(
-            objects =  polygons.mapNotNull { this.polygons[it] },
+            objects =  polygons.mapNotNull { this.polygons[it]?.first },
             options = options,
             result = result
         )
@@ -656,7 +671,7 @@ class ObjectTapHandler(
         result: Result<CameraPositionMessage>?
     ) {
         calcPositionForObjects(
-            objects =  polylines.mapNotNull { this.polylines[it] },
+            objects =  polylines.mapNotNull { this.polylines[it]?.first },
             options = options,
             result = result
         )

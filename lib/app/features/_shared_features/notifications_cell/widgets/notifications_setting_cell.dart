@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_settings/notifications_settings.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +13,7 @@ import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../notifications/data/repositories/notification_repository_implementation.dart';
 import '../../../notifications/domain/entities/set_notifications_profile_params.dart';
 import '../bloc/notifications_setting_cubit.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class NotificationsSettingCell extends StatefulWidget {
   const NotificationsSettingCell({super.key});
@@ -55,18 +56,16 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                   );
                 }
                 if (state is SucceedEventsNotificationState) {
-                  if (manageNotificationClicked)
-                   {
-                          manageNotificationClicked = false;
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => NotificationsSettings(
-                                        notificationsList: cubit
-                                            .notificationsSettingsList
-                                            .categories!)));    
-                                  });                                                       
-                   }
-                 
+                  if (manageNotificationClicked) {
+                    manageNotificationClicked = false;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => NotificationsSettings(
+                              notificationsList: cubit
+                                  .notificationsSettingsList.categories!)));
+                    });
+                  }
+
                   return Column(
                     children: [
                       Padding(
@@ -112,7 +111,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                         'notifications'.tr(),
                                         style: Theme.of(context)
                                             .extension<ThemeTextStyles>()!
-                                            .textM
+                                            .text
                                             .copyWith(
                                                 color: const Color(0xFF1E2A36)),
                                       ),
@@ -142,10 +141,11 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                               'enable_disable_notifications'.tr(),
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
-                                  .textXS
+                                  .caption
                                   .copyWith(
-                                      color: const Color(0xFF1E2A36)
-                                          .withOpacity(0.36)),
+                                    color: context.color.textAndIconsBasePrimary
+                                        .withOpacity(0.36),
+                                  ),
                             ),
                           ],
                         ),
@@ -157,8 +157,9 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           ? GestureDetector(
                               onTap: () {
                                 manageNotificationClicked = true;
-                                cubit.getNotificationSetting(cubit.notificationId);
-                               /* Navigator.of(context).push(MaterialPageRoute(
+                                cubit.getNotificationSetting(
+                                    cubit.notificationId);
+                                /* Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => NotificationsSettings(
                                         notificationsList: cubit
                                             .notificationsSettingsList
@@ -179,7 +180,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                       'manage_notification'.tr(),
                                       style: Theme.of(context)
                                           .extension<ThemeTextStyles>()!
-                                          .textXS
+                                          .text
                                           .copyWith(color: Colors.red),
                                     ),
                                   ],

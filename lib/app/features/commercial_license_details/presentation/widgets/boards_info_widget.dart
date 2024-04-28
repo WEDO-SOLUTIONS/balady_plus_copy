@@ -8,23 +8,23 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../commercial_license_details/data/models/commercial_licence_details.dart';
 
 class BoardsInfoWidget extends StatelessWidget {
-  final List<BoardsInfomation> boardsInfo;
+  final List<BoardsInfomation>? boardsInfo;
 
   const BoardsInfoWidget({super.key, required this.boardsInfo});
 
   @override
   Widget build(BuildContext context) {
     return ExpandableCard(
-      title: 'license_owner_info'.tr(),
+      title: 'issue_commercial_board_data'.tr(),
       icon: IconPath.editIcon,
-      isExpandedByDefault: true,
       children: [
+        boardsInfo != null ?
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: boardsInfo.length,
+          itemCount: boardsInfo!.length,
           itemBuilder: (_, index) {
-            BoardsInfomation boardInfo = boardsInfo[index];
+            BoardsInfomation boardInfo = boardsInfo![index];
             return Card(
               margin: const EdgeInsets.only(top: 16),
               color: AppColor.primary100Light,
@@ -68,7 +68,7 @@ class BoardsInfoWidget extends StatelessWidget {
               ),
             );
           },
-        )
+        ) : const SizedBox(),
       ],
     );
   }

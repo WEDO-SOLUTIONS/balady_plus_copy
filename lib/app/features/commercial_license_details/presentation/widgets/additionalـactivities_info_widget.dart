@@ -4,9 +4,8 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/cards/exp
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 class AdditionalActivitiesInfoWidget extends StatelessWidget {
-  final additionalActivities;
+  final List? additionalActivities;
 
   const AdditionalActivitiesInfoWidget(
       {super.key, required this.additionalActivities});
@@ -19,28 +18,29 @@ class AdditionalActivitiesInfoWidget extends StatelessWidget {
       children: [
         Column(
           children: additionalActivities
-              .map(
-                (e) => Card(
-                  margin: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      CardParameter(
-                        title: 'isicActivityName_sub'.tr(),
-                        value: e['isicActivityName'],
+                  ?.map(
+                    (e) => Card(
+                      margin: const EdgeInsets.all(8),
+                      child: Column(
+                        children: [
+                          CardParameter(
+                            title: 'isicActivityName_sub'.tr(),
+                            value: e['isicActivityName'],
+                          ),
+                          CardParameter(
+                            title: 'detailedActivityName'.tr(),
+                            value: e['detailedActivityName'],
+                          ),
+                          CardParameter(
+                            title: 'isicActivity_area'.tr(),
+                            value: e['area'].toString(),
+                          ),
+                        ],
                       ),
-                      CardParameter(
-                        title: 'detailedActivityName'.tr(),
-                        value: e['detailedActivityName'],
-                      ),
-                      CardParameter(
-                        title: 'isicActivity_area'.tr(),
-                        value: e['area'].toString(),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-              .toList(),
+                    ),
+                  )
+                  .toList() ??
+              [Text("municipalAdvisorNoAdditionalActivities".tr())],
         ),
       ],
     );

@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -23,12 +23,12 @@ class ContactInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Container(
-              color: context.color.surface_base_secondary,
+              color: context.color.surfaceBaseSecondary,
               child: Padding(
                 padding: const EdgeInsets.only(right: 52),
                 child: Divider(
                   height: 1,
-                  color: context.color.text_and_icons_base_primary
+                  color: context.color.textAndIconsBasePrimary
                       .withOpacity(0.2),
                 ),
               ),
@@ -43,12 +43,12 @@ class ContactInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Container(
-              color: context.color.surface_base_secondary,
+              color: context.color.surfaceBaseSecondary,
               child: Padding(
                 padding: const EdgeInsets.only(right: 52),
                 child: Divider(
                   height: 1,
-                  color: context.color.text_and_icons_base_primary
+                  color: context.color.textAndIconsBasePrimary
                       .withOpacity(0.2),
                 ),
               ),
@@ -80,7 +80,7 @@ class ContactRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: context.color.surface_base_secondary,
+        color: context.color.surfaceBaseSecondary,
         borderRadius: BorderRadius.only(
           bottomLeft:
               border ? const Radius.circular(12) : const Radius.circular(0),
@@ -110,18 +110,18 @@ class ContactRow extends StatelessWidget {
                       textDirection: TextDirection.ltr,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textM
+                          .text
                           .copyWith(
-                            color: context.color.text_and_icons_base_primary,
+                            color: context.color.textAndIconsBasePrimary,
                           ),
                     ),
                     Text(
                       subtitle,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textS
+                          .footNote
                           .copyWith(
-                            color: context.color.text_and_icons_base_primary
+                            color: context.color.textAndIconsBasePrimary
                                 .withOpacity(0.36),
                           ),
                     ),

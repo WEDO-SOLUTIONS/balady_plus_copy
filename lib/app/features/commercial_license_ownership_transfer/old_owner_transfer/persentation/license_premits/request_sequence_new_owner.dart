@@ -94,6 +94,7 @@ class _RquestSequenceNewOwnerInfoScreenState
                             }
                             return null;
                           },
+                          
                           textInputAction: TextInputAction.done,
                           spacerSize: 10,
                         ),

@@ -1,62 +1,49 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
 import 'package:mapness/_features/stories/presentation/story_localizations.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class StoryFrameContent extends StatelessWidget {
-
   const StoryFrameContent({
-    required this.frame, super.key,
+    required this.frame,
+    super.key,
   });
   final StoryFrameData frame;
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  frame.titleOrFailback(StoryLocalizations.of(context)!.locale),
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .headingL
-                      .copyWith(
-                        color: frame.titleStyle?.color ?? Colors.white,
-                      ),
-                ),
-                if (frame.subtitle != null)
-                  Text(
-                    frame.subtitle!,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .headingL
-                        .copyWith(
-                          color: frame.titleStyle?.color ?? Colors.white,
-                        ),
-                  ),
-                const SizedBox(height: 21),
-                if (frame.description != null)
-                  Text(
-                    frame.descriptionOrFailback(
-                            StoryLocalizations.of(context)!.locale,) ??
-                        '',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .textM
-                        .copyWith(
-                          color: frame.descriptionStyle?.color ?? Colors.white,
-                        ),
-                  ),
-              ],
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = StoryLocalizations.of(context)!.locale;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          frame.titleOrFailback(l10n),
+          style: context.textStyle.heading1.copyWith(
+            color: frame.titleStyle?.color ??
+                context.color.textAndIconsBaseInversePrimary,
+          ),
+        ),
+        if (frame.subtitle != null)
+          Text(
+            frame.subtitle!,
+            style: context.textStyle.heading2.copyWith(
+              color: frame.titleStyle?.color ??
+                  context.color.textAndIconsBaseInversePrimary,
             ),
           ),
-        ],
-      ),
+        const SizedBox(height: 12),
+        if (frame.description != null)
+          Text(
+            frame.descriptionOrFailback(l10n) ?? '',
+            style: context.textStyle.footNote.copyWith(
+              color: frame.descriptionStyle?.color ??
+                  context.color.textAndIconsBaseInversePrimary,
+            ),
+          ),
+      ],
     );
+  }
 }

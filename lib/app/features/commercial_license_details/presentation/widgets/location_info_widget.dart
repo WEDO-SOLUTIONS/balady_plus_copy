@@ -8,7 +8,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../commercial_license_details/data/models/commercial_licence_details.dart';
 
 class LocationInfoWidget extends StatelessWidget {
-  final LocationInfo locationInfo;
+  final LocationInfo? locationInfo;
+
   const LocationInfoWidget({super.key, required this.locationInfo});
 
   @override
@@ -18,7 +19,7 @@ class LocationInfoWidget extends StatelessWidget {
       icon: IconPath.qrLocationIcon,
       children: [
         const SizedBox(height: 16),
-        locationInfo!.latitude != null && locationInfo!.longitude != null
+        locationInfo?.latitude != null && locationInfo?.longitude != null
             ? SizedBox(
                 height: 250,
                 child: GoogleMap(
@@ -43,45 +44,44 @@ class LocationInfoWidget extends StatelessWidget {
                 ),
               )
             : const SizedBox(),
-
         CardParameter(
-            // from whats
-            title: 'municipalityName'.tr(),
-            value: locationInfo!.municipalityName ?? ""),
-            //TODO: map on city
-        // CardParameter(
-        //     // from whats
-        //     title: 'city'.tr(),
-        //     value: locationInfo.municipalityName ?? ""),
+          // from whats
+          title: 'municipalityName'.tr(),
+          value: locationInfo?.municipalityName ?? "",
+        ),
+        CardParameter(
+          // from whats
+          title: 'city'.tr(),
+          value: locationInfo?.cityName ?? "",
+        ),
         CardParameter(
           // from whats
           title: 'subMunicipalityName'.tr(),
-          value: locationInfo.subMunicipalityName ?? "",
+          value: locationInfo?.subMunicipalityName ?? "",
         ),
         CardParameter(
           title: 'district'.tr(),
-          value: locationInfo.districtName ?? "",
+          value: locationInfo?.districtName ?? "",
         ),
         CardParameter(
           title: 'street'.tr(),
-          value: locationInfo.streetName ?? "",
+          value: locationInfo?.streetName ?? "",
         ),
         CardParameter(
           title: 'planNumber'.tr(),
-          value: locationInfo.mapNo ?? "",
+          value: locationInfo?.mapNo ?? "",
         ),
         CardParameter(
           title: 'parcel_number'.tr(),
-          value: locationInfo.landNo ?? "",
+          value: locationInfo?.landNo ?? "",
         ),
-
         CardParameter(
           title: 'latitude'.tr(),
-          value: locationInfo.latitude ?? '',
+          value: locationInfo?.latitude ?? '',
         ),
         CardParameter(
           title: 'longitude'.tr(),
-          value: locationInfo.longitude ?? '',
+          value: locationInfo?.longitude ?? '',
         ),
       ],
     );

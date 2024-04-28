@@ -67,7 +67,9 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'follow_request'.tr(),
+                    isfromRequest == true
+                        ? "${"request_number".tr()} $requestId ${"follow_request".tr()}"
+                        : 'transfer_Complete'.tr(),
                     style: AppStyle.personalInfoParameterValueTextStyle
                         .copyWith(fontSize: 12, height: 1.5),
                   ),
@@ -77,6 +79,7 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                       color: AppColor.blueSkyLight800,
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
+                      decoration: TextDecoration.underline,
                     ),
                     btnHeight: 56,
                     text: "service_evaluation".tr(),
@@ -84,7 +87,7 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                       BottomSheetDialog.showSheet(
                         context,
                         child: SubmitRatingSheet(
-                          title: 'rating_chat_bot_title'.tr(),
+                          title: 'service_evaluation'.tr(),
                           ratingRequest: RatingRequest(
                             requestId: int.parse(requestId!),
                           ),
@@ -96,7 +99,7 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                       );
                     },
                   ),
-                  Spacer(),
+                  const Spacer(),
                   CustomElevatedButtonWidget(
                     btnColor: Colors.transparent,
                     textStyle: AppStyle.elevatedButtonStyle.copyWith(

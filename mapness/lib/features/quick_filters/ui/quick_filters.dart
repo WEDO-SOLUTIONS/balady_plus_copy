@@ -1,9 +1,9 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
 import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
@@ -15,6 +15,7 @@ import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
 class QuickFilters extends ConsumerWidget {
   const QuickFilters({
     required this.onFilterTap,
+    required this.onFavouritesTap,
     required this.onFavouritesBookmarkTap,
     super.key,
     this.selectedIndex,
@@ -29,6 +30,7 @@ class QuickFilters extends ConsumerWidget {
   final int? selectedIndex;
   final List<FilterItem>? customFilters;
   final void Function(models.QuickFilter, int index) onFilterTap;
+  final void Function() onFavouritesTap;
   final void Function() onFavouritesBookmarkTap;
   final void Function(FilterItem)? onCustomTap;
   final EdgeInsets padding;
@@ -37,7 +39,7 @@ class QuickFilters extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quickFilters = ref.watch(quickFiltersProvider);
-    final favouritesState = ref.watch(favouriteRepositoryProvider);
+    final favouritesState = ref.watch(favouriteCacheProvider);
     final naviFeature = ref.watch(appFeaturesProvider);
 
     final favourites = <FilterItem>[
@@ -60,7 +62,7 @@ class QuickFilters extends ConsumerWidget {
               return;
             }
 
-            /// navigation to fav item when pressed
+            onFavouritesTap();
             _showRouting(naviFeature, point, context);
           },
         ),
@@ -78,7 +80,7 @@ class QuickFilters extends ConsumerWidget {
               return;
             }
 
-            /// navigation to fav item when pressed
+            onFavouritesTap();
             _showRouting(naviFeature, point, context);
           },
         ),

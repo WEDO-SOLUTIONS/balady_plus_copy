@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/additional%D9%80activities_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/boards_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/clean_contract_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/conclusion_activity_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/license_owner_info_widget.dart';
@@ -124,65 +125,49 @@ class _RequestOwnershipTransferDetailsBodyState
 
                   OwnershipTransferLicenseInfo(
                     licenseInfo: commercialRequestDetails.licenseInfo,
-                    submitterInfo: commercialRequestDetails.submitterInfo,
+                    crNumber: commercialRequestDetails.currentCrNumber,
                   ),
                   ///////////////  Owner Info
-                  commercialRequestDetails.submitterInfo != null
-                      ? LicenseOwnerInfoWidget(
-                          submitterInfo:
-                              commercialRequestDetails.submitterInfo!,
-                        )
-                      : const SizedBox(),
+                  LicenseOwnerInfoWidget(
+                    currentCrName: commercialRequestDetails.currentCrName,
+                    currentCrNumber: commercialRequestDetails.currentCrNumber,
+                  ),
                   ///////////////  Submitter Info
-                  commercialRequestDetails.submitterInfo != null
-                      ? SubmitterInfoWidget(
-                          submitterInfo:
-                              commercialRequestDetails.submitterInfo!,
-                        )
-                      : const SizedBox(),
+                  SubmitterInfoWidget(
+                    submitterInfo: commercialRequestDetails.submitterInfo,
+                  ),
                   ////////////////    Activity Info
-                  commercialRequestDetails.activityInfo != null
-                      ? ConclusionActivityInfoWidget(
-                          activityInfo: commercialRequestDetails.activityInfo,
-                          mainActivityArea:
-                              commercialRequestDetails.mainActivityArea ?? 0.0,
-                        )
-                      : const SizedBox(),
+                  ConclusionActivityInfoWidget(
+                    activityInfo: commercialRequestDetails.activityInfo,
+                    mainActivityArea:
+                        commercialRequestDetails.mainActivityArea ?? 0.0,
+                  ),
+                  /////////////// Boards Info
+                  BoardsInfoWidget(
+                    boardsInfo: commercialRequestDetails.shopInfo?.boardsInfo,
+                  ),
+//////////////// //////////////// //////////////// ////////////////
+                  AdditionalActivitiesInfoWidget(
+                    additionalActivities: commercialRequestDetails
+                        .activityInfo?.additionalActivities,
+                  ),
+                  LocationInfoWidget(
+                    locationInfo: commercialRequestDetails.locationInfo,
+                  ),
+                  ShopInfoWidget(
+                    shopInfo: commercialRequestDetails.shopInfo,
+                  ),
 
-                  commercialRequestDetails.activityInfo?.additionalActivities !=
-                          null
-                      ? AdditionalActivitiesInfoWidget(
-                          additionalActivities: commercialRequestDetails
-                              .activityInfo!.additionalActivities!)
-                      : const SizedBox(),
-
-                  commercialRequestDetails.locationInfo != null
-                      ? LocationInfoWidget(
-                          locationInfo: commercialRequestDetails.locationInfo!,
-                        )
-                      : const SizedBox(),
-
-                  commercialRequestDetails.shopInfo != null
-                      ? ShopInfoWidget(
-                          shopInfo: commercialRequestDetails.shopInfo!,
-                        )
-                      : const SizedBox(),
-
-                  commercialRequestDetails.shopInfo?.cleanContractInfo != null
-                      ? CleanContractInfoWidget(
-                          cleanContractInfo: commercialRequestDetails
-                              .shopInfo!.cleanContractInfo!,
-                        )
-                      : const SizedBox(),
+                  CleanContractInfoWidget(
+                    cleanContractInfo:
+                        commercialRequestDetails.cleanContractInfo,
+                  ),
 
                   const SelectedCommercialLicensePermitsWidget(),
-
-                  commercialRequestDetails.salamaInfo != null
-                      ? SalamaDetailsInfoWidget(
-                          salamaDetailsInfo:
-                              commercialRequestDetails.salamaDetailsInfo!,
-                        )
-                      : const SizedBox(),
+                  SalamaDetailsInfoWidget(
+                    salamaDetailsInfo:
+                        commercialRequestDetails.salamaDetailsInfo,
+                  ),
 
                   /////////////////////////////////////////////////
                   Selector<CommercialLicenseAttachmentsViewModel,
@@ -210,7 +195,7 @@ class _RequestOwnershipTransferDetailsBodyState
                                         : const SizedBox();
                                   },
                                 )
-                              : const SizedBox(),
+                              : Text("no_attachments".tr()),
                         ],
                       );
                     },

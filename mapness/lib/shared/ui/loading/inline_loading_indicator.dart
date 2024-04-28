@@ -24,15 +24,15 @@ class InlineLoadingIndicator extends StatelessWidget {
               children: [
                 Text(
                   title ?? context.l10n.loading,
-                  style: context.textStyle.headingS.copyWith(
+                  style: context.textStyle.heading1.copyWith(
                     fontSize: 16,
-                    color: context.color.text_and_icons_base_primary,
+                    color: context.color.textAndIconsBasePrimary,
                   ),
                 ),
                 Text(
                   context.l10n.loading_in_progress,
-                  style: context.textStyle.textS.copyWith(
-                    color: context.color.text_and_icons_base_primary,
+                  style: context.textStyle.footNote.copyWith(
+                    color: context.color.textAndIconsBasePrimary,
                   ),
                 ),
               ],

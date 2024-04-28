@@ -1,12 +1,11 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:mapness/_features/landing/providers/interesting_places.dart';
-import 'package:mapness/_features/landing/widgets/poi_card.dart';
+import 'package:mapness/_features/landing/widgets/ui_kit_template/place_card.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class PlacesHorizontalList extends StatelessWidget {
-  const PlacesHorizontalList({
+class PlacesList extends StatelessWidget {
+  const PlacesList({
     required this.onItemTap,
     required this.title,
     required this.places,
@@ -23,22 +22,17 @@ class PlacesHorizontalList extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 20,
-            ),
             Padding(
               padding: const EdgeInsets.only(
+                top: 20,
                 right: 16,
                 left: 16,
               ),
               child: Text(
                 title,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .accentL
-                    .copyWith(
-                      color: context.color.text_and_icons_base_primary,
-                    ),
+                style: context.textStyle.heading2.copyWith(
+                  color: context.color.textAndIconsBasePrimary,
+                ),
               ),
             ),
             const SizedBox(
@@ -56,10 +50,8 @@ class PlacesHorizontalList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final place = places[index];
 
-                  return PoiCard(
-                    onTap: () {
-                      onItemTap(index);
-                    },
+                  return PlaceCard(
+                    onTap: () => onItemTap(index),
                     title: place.titleOrFallback(locale: context.l10n),
                     subtitle: '',
                     image: place.preview.image.url,

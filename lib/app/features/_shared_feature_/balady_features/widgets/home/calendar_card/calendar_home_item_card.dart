@@ -1,14 +1,14 @@
-import 'package:balady_uikit/colors/app_color_scheme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
+import 'package:balady_plus/app/features/calendar/domain/entities/search_calendar/search_calendar_item.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import '../../../../../../core/utils/common_functions.dart';
-import '../../../../../../core/utils/constants/ux_cam_events.dart';
-import '../../../../../calendar/domain/entities/search_calendar/search_calendar_item.dart';
 
 class CalendarHomeItemCard extends StatelessWidget {
   final SearchCalendarItem item;
@@ -75,7 +75,7 @@ class CalendarHomeItemCard extends StatelessWidget {
                 maxLines: 2,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()
-                    ?.textS
+                    ?.footNote
                     .copyWith(
                       color: Colors.white,
                       height: 1.5,
@@ -117,7 +117,7 @@ class SaudiDay extends StatelessWidget {
     return Text(
       name,
       maxLines: 2,
-      style: Theme.of(context).extension<ThemeTextStyles>()?.accentL.copyWith(
+      style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(
             color: Colors.white,
             height: 1.5,
           ),
@@ -153,7 +153,7 @@ class SaudiContainer extends StatelessWidget {
                 maxLines: 4,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()
-                    ?.accentL
+                    ?.heading2
                     .copyWith(
                       color: Colors.white,
                       height: 1.5,
@@ -164,7 +164,7 @@ class SaudiContainer extends StatelessWidget {
               timer,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()
-                  ?.textS
+                  ?.footNote
                   .copyWith(
                     color: Colors.white,
                     height: 1.5,
@@ -188,9 +188,9 @@ class SaudiContainer extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()
-                    ?.accentM
+                    ?.callout
                     .copyWith(
-                      color: context.color.text_and_icons_status_accent,
+                      color: context.color.textAndIconsStatusAccent,
                       height: 1.5,
                     ),
               ),

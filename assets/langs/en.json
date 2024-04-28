@@ -4301,11 +4301,16 @@
   "create_request": "Submit the Request",
   "pledges_condtions": "I acknowledge and pledge the accuracy of all data and attachments uploaded to the Application, and I assume full legal liability for false and malicious reports in accordance with the laws and instructions if otherwise found.",
   "request_number": "You have submit request number",
-  "follow_request": "Request was accepted and lisence ownership was transfered",
+
+  "transfer_Complete": "Request was accepted and lisence ownership was transfered",
+  "follow_request": " you can follow request from request page or from service page",
+
+
+
   "exclude": "Note: Anyone who must collect waste and transport it to the landfills designated for that purpose, in accordance with municipal requirements, according to the license granted thereto, is excluded from the applicable waste collection fee.",
-  "new_owner_cr_number_error": "Please enter the commercial register number",
-  "shop_name_error": "Sorry can you please shop name",
-  "new_owner_cr_number": "Commercial Register Number For New Owner",
+  "new_owner_cr_number_error": "Please enter the CR number for new owner",
+  "shop_name_error": "Sorry can you please enter shop name",
+  "new_owner_cr_number": "CR Number For New Owner",
   "new_owner": "New Owner",
   "transfer_all": "Transfer All",
   "permit_warn": "Please select which permits you want to transfer",
@@ -4314,8 +4319,7 @@
   "terms_error": "Please accept terms",
   "tranfer_permit": "transfer permit",
   "dont_tranfer_permit": "deselect permit",
-  "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning",
-
+  "respond_to_ownership_transfer_warning": "If you accept the transfer of license ownership, and if the license has  a suspended services, the license will be transferred in the same condition as the suspended services.",
   "cr_Number_entity_number":"Commercial registry number/Establishment No",
   "show_request": "Show request",
   "go_to_license": "Go back to license screen",
@@ -4326,6 +4330,18 @@
   "health_cert_h_date": "Hijri health certificate issuance date",
   "health_cert_h_end": "Hijri health certificate end date",
   "health_cert_g_date": "Gregorian health certificate issuance date",
-  "health_cert_g_end": "Gregorian health certificate end date"
+  "health_cert_g_end": "Gregorian health certificate end date",
+
+  "name_contract": "Name contract",
+  "salamaBillNumber_2": "Fire Prevention and Protection Equipment Installation Certificate Number",
+  "ejarAPP": "Dear beneficiary, you can find out about the accredited real estate brokers in the Ejari network through the link  <a href=\"https://www.ejar.sa/ar/certified-offices\">click here</a>   or download the Real Estate Brokers app for iOS or Android.",
+
+  "no_attachments": "No Attachments",
+
+  "required_field_must_number_12_digits": "Sorry, the deed number must contain 12 digits.",
+  "most_selected_ownershipType": "Please enter the ownership deed data"
+
+
+
 
 }

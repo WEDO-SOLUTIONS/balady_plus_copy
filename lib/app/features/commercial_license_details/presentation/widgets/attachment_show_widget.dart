@@ -35,42 +35,55 @@ class AttachmentShowWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         color: const Color(0x80E6EFEF),
       ),
-      child: InkWell(
-        onTap: () => CommonFunctions.showApigeeFile(filePath, fileName),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ((fileName.split(".").last.toLowerCase().contains("pdf")))
-                      ? const CustomSvgIconWidget(IconPath.pdf)
-                      : filePath.startsWith("http")
-                          ? Container()
-                          : Image.file(
-                              File(filePath),
-                              width: 24,
-                              height: 28,
-                            ),
-                  const CustomHorizontalSpace(width: 8),
-                  Flexible(
-                    child: CustomTextWidget(
-                      fileName.isNotEmpty ? fileName : name,
-                      fontColor: AppColor.blackModern700Light,
-                      fontSize: 12,
-                      maxLines: 1,
-                      fontWeight: AppFontWeight.semiBold,
-                    ),
-                  ),
-                ],
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            name,
+            style: AppStyle.profileTypeTextStyle.copyWith(
+              color: Colors.black,
             ),
-            fileName.isNotEmpty
-                ? const DrawIconBasedTypeWidget(icon: IconPath.download)
-                : const SizedBox(),
-          ],
-        ),
+            maxLines: 2,
+          ),
+          const SizedBox(height: 6),
+          InkWell(
+            onTap: () => CommonFunctions.showApigeeFile(filePath, fileName),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ((fileName.split(".").last.toLowerCase().contains("pdf")))
+                          ? const CustomSvgIconWidget(IconPath.pdf)
+                          : filePath.startsWith("http")
+                              ? Container()
+                              : Image.file(
+                                  File(filePath),
+                                  width: 24,
+                                  height: 28,
+                                ),
+                      const CustomHorizontalSpace(width: 8),
+                      Flexible(
+                        child: CustomTextWidget(
+                          fileName.isNotEmpty ? fileName : name,
+                          fontColor: AppColor.blackModern700Light,
+                          fontSize: 12,
+                          maxLines: 1,
+                          fontWeight: AppFontWeight.semiBold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                fileName.isNotEmpty
+                    ? const DrawIconBasedTypeWidget(icon: IconPath.download)
+                    : const SizedBox(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

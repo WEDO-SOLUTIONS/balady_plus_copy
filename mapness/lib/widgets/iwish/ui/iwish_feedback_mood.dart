@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -21,7 +21,7 @@ class IwishFeedbackMood extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 color: e == selectedMood
                     ? NonThemeColor.color3
-                    : context.color.surface_base_primary,
+                    : context.color.surfaceBasePrimary,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(10),
                   onTap: () => onMoodSelected(e),

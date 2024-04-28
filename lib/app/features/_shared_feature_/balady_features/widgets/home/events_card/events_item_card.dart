@@ -1,14 +1,13 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/colors/app_color_scheme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_network_icon_widget.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
-
-import '../../../../../events/domain/entities/search_events/search_events_item.dart';
-import '../../../../presentation/widgets/custom_spaces_widgets.dart';
-import '../../../../presentation/widgets/custom_svg_icon_widget.dart';
 
 class EventItemCard extends StatelessWidget {
   final SearchEventsItem item;
@@ -97,7 +96,7 @@ class EventItemCard extends StatelessWidget {
                           maxLines: 2,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()
-                              ?.accentL
+                              ?.heading2
                               .copyWith(color: Colors.white, height: 1.5),
                         ),
                       ),
@@ -145,8 +144,13 @@ class IconName extends StatelessWidget {
   final String name;
   final String icon;
   final Color color;
-  const IconName(
-      {super.key, required this.name, required this.icon, required this.color});
+
+  const IconName({
+    super.key,
+    required this.name,
+    required this.icon,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -155,14 +159,14 @@ class IconName extends StatelessWidget {
         SvgPicture.asset(
           icon,
           width: 12,
-          color: const Color(0xCCFFFFFF),
+          colorFilter: const ColorFilter.mode(Color(0xCCFFFFFF), BlendMode.srcIn),
         ),
         const SizedBox(
           width: 4,
         ),
         Text(
           name,
-          style: Theme.of(context).extension<ThemeTextStyles>()?.textS.copyWith(
+          style: Theme.of(context).extension<ThemeTextStyles>()?.footNote.copyWith(
                 color: const Color(0xCCFFFFFF),
               ),
         ),
@@ -178,8 +182,8 @@ class Date extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      "$text",
-      style: Theme.of(context).extension<ThemeTextStyles>()?.textS.copyWith(
+      text,
+      style: Theme.of(context).extension<ThemeTextStyles>()?.footNote.copyWith(
             color: const Color(0xCCFFFFFF),
           ),
     );

@@ -1,10 +1,10 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/favourites/widgets/empty_result_widget.dart';
 import 'package:mapness/_features/favourites/widgets/screen/favourite_item_widget.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -16,14 +16,14 @@ class FavouritesPicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncState = ref.watch(favouriteRepositoryProvider);
+    final asyncState = ref.watch(favouriteCacheProvider);
 
     if (asyncState.isLoading) {
       return Material(
-        color: context.color.surface_base_primary,
+        color: context.color.surfaceBasePrimary,
         child: Center(
           child: CircularProgressIndicator(
-            color: context.color.text_and_icons_status_accent,
+            color: context.color.textAndIconsStatusAccent,
           ),
         ),
       );
@@ -32,9 +32,7 @@ class FavouritesPicker extends ConsumerWidget {
       return ErrorSheet(
         buttonLabel: 'Reload',
         onClose: () => context.pop(),
-        onRetry: () {
-          ref.invalidate(favouriteRepositoryProvider);
-        },
+        onRetry: () => ref.invalidate(favouriteCacheProvider),
       );
     }
     final state = asyncState.requireValue;
@@ -61,10 +59,10 @@ class FavouritesPicker extends ConsumerWidget {
                           context.l10n.favourites,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .accentM
+                              .footNoteBold
                               .copyWith(
                                 color:
-                                    context.color.text_and_icons_base_primary,
+                                    context.color.textAndIconsBasePrimary,
                               ),
                         ),
                       ),
@@ -85,7 +83,7 @@ class FavouritesPicker extends ConsumerWidget {
                             width: 24,
                             package: PackageConfig.packageName,
                             colorFilter: ColorFilter.mode(
-                              context.color.text_and_icons_base_primary,
+                              context.color.textAndIconsBasePrimary,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -100,7 +98,7 @@ class FavouritesPicker extends ConsumerWidget {
           Expanded(
             child: Material(
               child: Container(
-                color: context.color.surface_base_primary,
+                color: context.color.surfaceBasePrimary,
                 child: state.items.isEmpty
                     ? Padding(
                         padding: const EdgeInsets.only(

@@ -53,6 +53,7 @@ class CommercialLicenceDetails {
   // dynamic boardContractNumber;
   // dynamic modificationReason;
   Warnings warnings;
+
   // dynamic requestSource;
   // dynamic rejectionInfo;
   // bool craft;
@@ -65,7 +66,6 @@ class CommercialLicenceDetails {
   // dynamic observationProviderType;
   // List<Activity> activities;
 
-
   SalamaDetailsInfo? salamaDetailsInfo;
   OwnershipInfo? ownershipInfo;
   LicenseInfo? licenseInfo;
@@ -75,12 +75,18 @@ class CommercialLicenceDetails {
   SubmitterInfo? submitterInfo;
   ShopInfo? shopInfo;
   final List<LicenseAllowedPermitsInfo>? licenseAllowedPermitsInfo;
+  CleanContractInfo? cleanContractInfo;
+
+  String currentCrName ;
+  String currentCrNumber ;
 
   CommercialLicenceDetails({
     required this.requestId,
     this.licenseAllowedPermitsInfo,
     required this.mainActivityArea,
     required this.creationDate,
+    required this.currentCrName,
+    required this.currentCrNumber,
     // required this.entityType,
     // required this.currentTabId,
     required this.statusId,
@@ -135,6 +141,7 @@ class CommercialLicenceDetails {
     // required this.craft,
     // required this.craftMessage,
     // required this.contactInfo,
+    required this.cleanContractInfo,
     required this.activityInfo,
     required this.locationInfo,
     required this.submitterInfo,
@@ -157,6 +164,8 @@ class CommercialLicenceDetails {
         // currentTabId: json["currentTabId"],
         statusId: json["statusId"] ?? -1,
         statusName: json["statusName"] ?? '',
+        currentCrNumber: json["currentCrNumber"] ?? '',
+        currentCrName: json["currentCrName"] ?? '',
         // typeId: json["typeId"],
         // typeName: json["typeName"],
         // licensePeriod: json["licensePeriod"],
@@ -178,8 +187,8 @@ class CommercialLicenceDetails {
         ownershipInfo: json["ownershipInfo"] != null
             ? OwnershipInfo.fromJson(json["ownershipInfo"])
             : null,
-        salamaDetailsInfo: json["ownershipInfo"] != null
-            ? SalamaDetailsInfo.fromJson(json["ownershipInfo"])
+        salamaDetailsInfo: json["salamaDetailsInfo"] != null
+            ? SalamaDetailsInfo.fromJson(json["salamaDetailsInfo"])
             : null,
         // objectionNotesInfo: json["objectionNotesInfo"],
         // warningMessages: json["warningMessages"],
@@ -234,7 +243,9 @@ class CommercialLicenceDetails {
                 json["licenseAllowedPermitsInfo"]!
                     .map((x) => LicenseAllowedPermitsInfo.fromJson(x))),
 
-
+        cleanContractInfo: json['cleaningInfo'] != null
+            ? CleanContractInfo.fromJson(json['cleaningInfo'])
+            : null,
         // billsInfo: List<BillsInfo>.from(json["billsInfo"].map((x) => BillsInfo.fromJson(x))),
         // selectLicYears: json["selectLicYears"],
         // showTillActive: json["showTillActive"],
@@ -242,7 +253,6 @@ class CommercialLicenceDetails {
         // activities: List<Activity>.from(json["activities"].map((x) => Activity.fromJson(x))),
       );
 }
-
 
 class LicenseAllowedPermitsInfo {
   final int? id;
@@ -266,9 +276,7 @@ class LicenseAllowedPermitsInfo {
             : BaladyWorkFlow.fromJson(json["baladyWorkFlow"]),
         withFees: json["withFees"],
       );
-
 }
-
 
 // class Activity {
 //   String isicCode;
@@ -296,7 +304,6 @@ class LicenseAllowedPermitsInfo {
 //     message: json["message"],
 //   );
 // }
-
 
 // class BaladyWorkFlow {
 //   final String? id;
@@ -987,12 +994,11 @@ class LicenseAllowedPermitsInfo {
 //   Map<String, dynamic> toJson() => {};
 // }
 
-
-
 class Warnings {
   String? partialHeldWarnings;
+
   Warnings({this.partialHeldWarnings});
+
   factory Warnings.fromJson(Map<String, dynamic> json) =>
       Warnings(partialHeldWarnings: json["PARTIAL_HELD_WARNINGS"]);
-
 }

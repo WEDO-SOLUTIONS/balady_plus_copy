@@ -58,21 +58,28 @@ extension RouteSearchPointMessage {
 extension BriefExtraRouteInfo {
     func toBriefExtraRouteInfoMessage() -> BriefExtraRouteInfoMessage {
         switch self {
-        case .car(_):
-            return BriefExtraRouteInfoMessage.car
-        case .bicycle(_):
-            return BriefExtraRouteInfoMessage.bicycle
-        case .pedestrian(_):
-            return BriefExtraRouteInfoMessage.pedestrian
-        case .publicTransport(_):
-            return BriefExtraRouteInfoMessage.publicTransport
-        case .scooter(_):
-            return BriefExtraRouteInfoMessage.scooter
+        case let .car(carBriefRouteInfo):
+            let distance = NSNumber(value: carBriefRouteInfo.length.millimeters)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.car, distance: distance)
+        case let .bicycle(bicycleBriefRouteInfo):
+            let distance = NSNumber(value: bicycleBriefRouteInfo.length.millimeters)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.bicycle, distance: distance)
+        case let .pedestrian(pedestrianBriefRouteInfo):
+            let distance = NSNumber(value: pedestrianBriefRouteInfo.length.millimeters)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.pedestrian, distance: distance)
+        case .publicTransport:
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.publicTransport, distance: NSNumber(value: 0.0))
+        case let .scooter(scooterBriefRouteInfo):
+            let distance = NSNumber(value: scooterBriefRouteInfo.length.millimeters)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.scooter, distance: distance)
         @unknown default:
-            return BriefExtraRouteInfoMessage.car
+            let carBriefRouteInfo = self as? CarBriefRouteInfo
+            let distance = NSNumber(value: carBriefRouteInfo?.length.millimeters ?? 0)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.car, distance: distance)
         }
     }
 }
+
 
 extension BriefRouteInfo {
     func toBriefRouteInfoMessage() -> BriefRouteInfoMessage {

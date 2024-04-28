@@ -36,6 +36,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   RequestApprovalSequenceCubit? bloc;
   String? requestNumber;
   RequestOwnershipTransferDetailsCubit? requestDetailsBloc;
+  RequestOwnerShipTransferAttachmentsViewModel? attachmentsViewModel;
 
   late List<Widget>? pagesList = [
     ApprovalSequencePermitsScreen(stepInterface: this),
@@ -59,6 +60,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
 
       bloc?.requestNumber = int.parse(requestNumber!);
       bloc?.requestDetailsBloc = requestDetailsBloc;
+
     });
   }
 
@@ -77,11 +79,14 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
         }
       },
       child:
-          ChangeNotifierProvider<RequestTownerShipTransferAttachmentsViewModel>(
-        create: (_) => RequestTownerShipTransferAttachmentsViewModel(
-          webService: sl(),
-          requestId: bloc!.requestNumber!,
-        ),
+          ChangeNotifierProvider<RequestOwnerShipTransferAttachmentsViewModel>(
+        create: (_) {
+          attachmentsViewModel =  RequestOwnerShipTransferAttachmentsViewModel(
+            webService: sl(),
+            requestId: bloc!.requestNumber!,
+          );
+          return attachmentsViewModel!;
+        },
         child: BlocProvider(
           create: (_) {
             bloc = RequestApprovalSequenceCubit(
@@ -138,6 +143,9 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeIn,
     );
+    if(currentPageValue == 3){
+      attachmentsViewModel?.getCommercialLicenseTransferAttachments();
+    }
   }
 
   Future<bool> showBackDialog() async {

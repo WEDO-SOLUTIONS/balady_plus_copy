@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/stories/data/story_service.dart';
+import 'package:mapness/_features/stories/presentation/stories_row.dart';
 import 'package:mapness/_features/stories/presentation/story_refresh_button.dart';
-import 'package:mapness/_features/stories/presentation/story_thumbnails.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -52,9 +52,9 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
     return Directionality(
       textDirection: Directionality.of(context),
       child: thumbnails.maybeWhen(
-        data: (data) => StoryThumbnails(
+        data: (data) => StoriesRow(
           onThumbnailPressed: (id) => openStory(context, id),
-          stories: data.toList(),
+          stories: data,
         ),
         orElse: () => const SizedBox.shrink(),
         error: (_, __) => StoryRefreshButton(

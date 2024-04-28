@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:dgis_map_platform_interface/library.dart';
 import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
 
-typedef void OnObjectTap();
-typedef SimpleClusterOptionsMessage ClusterRenderer(int objectCount);
-typedef Future<void> OnClusterTap(SimpleClusterObject clusterObject);
+typedef OnObjectTap = void Function();
+typedef ClusterRenderer = SimpleClusterOptionsMessage Function(int objectCount);
+typedef OnClusterTap = Future<void> Function(SimpleClusterObject clusterObject);
 
 class TapIdPair {
   TapIdPair(this.tap, this.id);
@@ -22,19 +22,12 @@ class ObjectTapEventHandler {
   final _objectTapController = StreamController<TapEvent>.broadcast();
 
   final Map<String, TapIdPair> markerHandlers = {};
-  final Map<String, OnObjectTap> polygonHandlers = {};
-  final Map<String, OnObjectTap> polylineHandlers = {};
+  final Map<String, TapIdPair> polygonHandlers = {};
+  final Map<String, TapIdPair> polylineHandlers = {};
   final Map<String, ClusterRenderer> clusterRenderers = {};
   final Map<String, OnClusterTap> clusterHandlers = {};
 
-  void addMarkerHandler(String id, OnObjectTap onTap, String? managerId) {
-    markerHandlers[id] = TapIdPair(onTap, managerId);
-  }
-
-  void removeMarkerHandler(String id) {
-    markerHandlers.remove(id);
-  }
-
+  /// --- CLUSTER ---
   void addClusterHandler(String id, OnClusterTap onTap) {
     clusterHandlers[id] = onTap;
   }
@@ -55,13 +48,16 @@ class ObjectTapEventHandler {
     final id = map["id"] as String;
     final cluster = map["cluster"];
 
+    final textStyle = cluster["textStyle"];
+    final position = cluster["position"];
+
     final clusterObject = SimpleClusterObject(
       api,
       cluster["id"],
       GeoPointWithElevationMessage(
-        latitude: cluster["position"]["latitude"],
-        longitude: cluster["position"]["longitude"],
-        elevation: cluster["position"]["elevation"],
+        latitude: position["latitude"],
+        longitude: position["longitude"],
+        elevation: position["elevation"],
       ),
       cluster["objectCount"],
       (cluster["objects"] as List<Object?>).map((x) => x as String).toList(),
@@ -71,16 +67,15 @@ class ObjectTapEventHandler {
       ),
       cluster["iconOpacity"],
       MarkerTextStyleMessage(
-        fontSize: cluster["textStyle"]["fontSize"],
-        color: cluster["textStyle"]["color"],
-        strokeWidth: cluster["textStyle"]["strokeWidth"],
-        strokeColor: cluster["textStyle"]["strokeColor"],
+        fontSize: textStyle["fontSize"],
+        color: textStyle["color"],
+        strokeWidth: textStyle["strokeWidth"],
+        strokeColor: textStyle["strokeColor"],
         textPlacement: MarkerTextPlacementMessage(
-          placement: TextPlacementMessage
-              .values[cluster["textStyle"]["textPlacement"]],
+          placement: TextPlacementMessage.values[textStyle["textPlacement"]],
         ),
-        textOffset: cluster["textStyle"]["textOffset"],
-        fontName: cluster["textStyle"]["fontName"],
+        textOffset: textStyle["textOffset"],
+        fontName: textStyle["fontName"],
       ),
       cluster["iconWidth"],
       cluster["iconMapDirection"] != null
@@ -91,6 +86,15 @@ class ObjectTapEventHandler {
     await clusterHandlers[id]?.call(clusterObject);
   }
 
+  /// --- MARKER ---
+  void addMarkerHandler(String id, OnObjectTap onTap, String? managerId) {
+    markerHandlers[id] = TapIdPair(onTap, managerId);
+  }
+
+  void removeMarkerHandler(String id) {
+    markerHandlers.remove(id);
+  }
+
   void removeAllMarkerHandlers(String? managerId) {
     markerHandlers.removeWhere((key, value) => value.id == managerId);
   }
@@ -99,8 +103,9 @@ class ObjectTapEventHandler {
     markerHandlers[map["id"]]?.tap.call();
   }
 
-  void addPolygonHandler(String id, OnObjectTap onTap) {
-    polygonHandlers[id] = onTap;
+  /// --- POLYGON ---
+  void addPolygonHandler(String id, OnObjectTap onTap, String? managerId) {
+    polygonHandlers[id] = TapIdPair(onTap, managerId);
   }
 
   void removePolygonHandler(String id) {
@@ -112,11 +117,12 @@ class ObjectTapEventHandler {
   }
 
   void polygonTapEvent(Map<dynamic, dynamic> map) {
-    polygonHandlers[map["id"]]?.call();
+    polygonHandlers[map["id"]]?.tap.call();
   }
 
-  void addPolylineHandler(String id, OnObjectTap onTap) {
-    polylineHandlers[id] = onTap;
+  /// --- POLYLINE ---
+  void addPolylineHandler(String id, OnObjectTap onTap, String? managerId) {
+    polylineHandlers[id] = TapIdPair(onTap, managerId);
   }
 
   void removePolylineHandler(String id) {
@@ -128,9 +134,10 @@ class ObjectTapEventHandler {
   }
 
   void polylineTapEvent(Map<dynamic, dynamic> map) {
-    polylineHandlers[map["id"]]?.call();
+    polylineHandlers[map["id"]]?.tap.call();
   }
 
+  /// --- TAP EVENTS ---
   void objectTapEvent(Map<dynamic, dynamic> map) {
     final dgisObjectMap = map["dgisObjectId"];
     final latLngMap = map["latlng"];

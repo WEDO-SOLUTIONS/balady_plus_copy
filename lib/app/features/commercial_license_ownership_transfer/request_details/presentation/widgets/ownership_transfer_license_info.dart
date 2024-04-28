@@ -8,12 +8,12 @@ import '../../../../commercial_license_details/data/models/commercial_licence_de
 
 class OwnershipTransferLicenseInfo extends StatelessWidget {
   final LicenseInfo? licenseInfo;
-  final SubmitterInfo? submitterInfo;
+  final String crNumber;
 
   const OwnershipTransferLicenseInfo({
     super.key,
     required this.licenseInfo,
-    required this.submitterInfo,
+    required this.crNumber,
   });
 
   @override
@@ -36,8 +36,8 @@ class OwnershipTransferLicenseInfo extends StatelessWidget {
           value: licenseInfo?.licenseEndDate ?? "",
         ),
         CardParameter(
-          title: 'cr_Number_entity_number'.tr(),
-          value: submitterInfo?.crNumber ?? "",
+          title: 'issue_commercial_conclusion_owner_data_cr'.tr(),
+          value: crNumber ?? "",
         ),
       ],
     );
