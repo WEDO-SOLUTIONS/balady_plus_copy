@@ -5,7 +5,9 @@ import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 
 extension FavouriteItemPlaceMapper on proto.FavouriteItemPlace {
   FavouriteItem? toDomain() {
-    if (entity.id == '') return null;
+    if (entity.id == '') {
+      return null;
+    }
 
     return FavouriteItem(
       id: entity.id,
@@ -16,11 +18,12 @@ extension FavouriteItemPlaceMapper on proto.FavouriteItemPlace {
     );
   }
 
-  static proto.FavouriteItemPlace fromDomain(FavouriteItem item) => proto.FavouriteItemPlace(
-      title: item.title,
-      subtitle: item.subtitle,
-      entity: item.entity == null
-          ? null
-          : FavouriteItemPlaceEntityMapper.fromDomain(item.entity!),
-    );
+  static proto.FavouriteItemPlace fromDomain(FavouriteItem item) =>
+      proto.FavouriteItemPlace(
+        title: item.title,
+        subtitle: item.subtitle,
+        entity: item.entity == null
+            ? null
+            : FavouriteItemPlaceEntityMapper.fromDomain(item.entity!),
+      );
 }

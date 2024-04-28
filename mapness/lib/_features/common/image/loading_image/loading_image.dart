@@ -7,7 +7,7 @@ import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-enum ImageState { loading, loaded, error }
+enum ImageState { loading, loaded, error, start }
 
 class LoadingImage extends ConsumerStatefulWidget {
   const LoadingImage({
@@ -31,7 +31,7 @@ class LoadingImage extends ConsumerStatefulWidget {
 }
 
 class _LoadingImageState extends ConsumerState<LoadingImage> {
-  ImageState state = ImageState.loading;
+  ImageState state = ImageState.start;
   late String imageUrl;
 
   @override
@@ -43,7 +43,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (imageUrl != widget.imageUrl || state == ImageState.loading) {
+    if (imageUrl != widget.imageUrl || state == ImageState.start) {
       imageUrl = widget.imageUrl;
       unawaited(loadImage(context));
     }
@@ -51,8 +51,18 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
 
   Future<void> loadImage(BuildContext context) async {
     /// await for image to be ready
-    var failed = false;
+    bool failed = false;
     if (widget.isAssetImg == false) {
+      // wait for 100ms before showing loading widget maybe image is already cached
+      final timer = Timer(const Duration(milliseconds: 100), () {
+        if (state == ImageState.start) {
+          if (context.mounted) {
+            setState(() {
+              state = ImageState.loading;
+            });
+          }
+        }
+      });
       await precacheImage(
         NetworkImage(widget.imageUrl),
         context,
@@ -63,6 +73,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
           });
         },
       );
+      timer.cancel();
     }
 
     if (context.mounted && !failed) {
@@ -85,10 +96,11 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
     );
 
     return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 350),
+        switchOutCurve: Curves.easeOut,
         child: switch (state) {
           ImageState.error => Container(
-              color: context.color.surface_base_primary,
+              color: context.color.surfaceBasePrimary,
               child: Center(
                 child: StoryRefreshButton(
                   onPressed: () {
@@ -116,6 +128,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
               ),
             ),
           ImageState.loading => widget.loadingWidget,
+          _ => const SizedBox.shrink(),
         });
   }
 }

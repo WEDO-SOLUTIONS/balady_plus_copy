@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -12,7 +12,7 @@ class AppCloseButton extends StatelessWidget {
   Widget build(BuildContext context) => Material(
       child: Ink(
         decoration: BoxDecoration(
-          color: context.color.surface_base_primary,
+          color: context.color.surfaceBasePrimary,
           borderRadius: BorderRadius.circular(8),
         ),
         child: InkWell(
@@ -53,14 +53,14 @@ class CustomCloseButton extends StatelessWidget {
               borderRadius: const BorderRadius.all(
                 Radius.circular(8),
               ),
-              color: context.color.text_and_icons_base_primary.withAlpha(10),
+              color: context.color.textAndIconsBasePrimary.withAlpha(10),
             ),
             padding: const EdgeInsets.all(8),
             child: SvgPicture.asset(
               'assets/icons/svg/ic_search_close.svg',
               semanticsLabel: 'MinApps Screen',
               package: 'mapness',
-              color: context.color.text_and_icons_base_primary.withOpacity(0.7),
+              color: context.color.textAndIconsBasePrimary.withOpacity(0.7),
             ),
           ),
         ),

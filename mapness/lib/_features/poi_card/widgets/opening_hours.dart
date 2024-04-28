@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mapness/_features/poi_card/domain/model/opening_hours_model.dart';
@@ -42,8 +42,8 @@ class _OpeningHoursState extends State<OpeningHours> {
 
       final textStyle = Theme.of(context)
           .extension<ThemeTextStyles>()!
-          .textM
-          .copyWith(color: context.color.text_and_icons_base_primary);
+          .text
+          .copyWith(color: context.color.textAndIconsBasePrimary);
       return Row(
         children: [
           Expanded(
@@ -77,8 +77,8 @@ class _OpeningHoursState extends State<OpeningHours> {
 
     final fontStyle = Theme.of(context)
         .extension<ThemeTextStyles>()!
-        .textM
-        .copyWith(color: context.color.text_and_icons_base_primary);
+        .text
+        .copyWith(color: context.color.textAndIconsBasePrimary);
     final widgets = convertWeekTimeInterval(context, openingHours);
 
     return is24x7 || isOpenSameTime
@@ -109,8 +109,8 @@ class _OpeningHoursState extends State<OpeningHours> {
   Widget _buildTitle() {
     final style = Theme.of(context)
         .extension<ThemeTextStyles>()!
-        .textM
-        .copyWith(color: context.color.text_and_icons_base_primary);
+        .text
+        .copyWith(color: context.color.textAndIconsBasePrimary);
 
     final openHours = widget.model?.openingHours?.first;
 

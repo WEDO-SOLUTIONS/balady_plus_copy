@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

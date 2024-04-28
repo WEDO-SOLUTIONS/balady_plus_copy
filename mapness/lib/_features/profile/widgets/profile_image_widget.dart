@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -51,15 +51,9 @@ class ProfileImageWidget extends ConsumerWidget {
       onTap: editable ? () => _onEdit(ref) : null,
       child: Builder(
         builder: (context) {
-          final defaultImage = SvgPicture.asset(
-            'assets/icons/svg/ic_nav_profile.svg',
-            height: dimension,
-            width: dimension,
-            package: PackageConfig.packageName,
-            colorFilter: ColorFilter.mode(
-              color ?? NonThemeColor.color40,
-              BlendMode.srcIn,
-            ),
+          final defaultImage = DefaultProfileImageWidget(
+            dimension: dimension,
+            color: color,
           );
 
           final imageWidget = profileImage.when(
@@ -102,7 +96,7 @@ class ProfileImageWidget extends ConsumerWidget {
               //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               //       child: const Icon(
               //         Icons.edit,
-              //         color: context.color.text_and_icons_status_accent,
+              //         color: context.color.textAndIconsStatusAccent,
               //       ),
               //     ),
               //   ),
@@ -113,4 +107,26 @@ class ProfileImageWidget extends ConsumerWidget {
       ),
     );
   }
+}
+
+class DefaultProfileImageWidget extends StatelessWidget {
+  final double dimension;
+  final Color? color;
+  const DefaultProfileImageWidget({
+    required this.dimension,
+    super.key,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) => SvgPicture.asset(
+        'assets/icons/svg/ic_nav_profile.svg',
+        height: dimension,
+        width: dimension,
+        package: PackageConfig.packageName,
+        colorFilter: ColorFilter.mode(
+          color ?? NonThemeColor.color40,
+          BlendMode.srcIn,
+        ),
+      );
 }

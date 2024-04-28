@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/jobs/providers/jobs_statistic_provider.dart';
@@ -88,14 +88,14 @@ class JobHeader extends ConsumerWidget {
                 Text(
                   context.l10n.jobs,
                   style:
-                      Theme.of(context).extension<ThemeTextStyles>()!.accentL,
+                      Theme.of(context).extension<ThemeTextStyles>()!.heading2,
                 ),
                 Text(
                   '${data?.jobsCount ?? 0} ${context.l10n.vacancies}',
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .textS
-                      .apply(color: context.color.text_and_icons_base_primary.withOpacity(.5)),
+                      .footNote
+                      .apply(color: context.color.textAndIconsBasePrimary.withOpacity(.5)),
                 ),
               ],
             ),

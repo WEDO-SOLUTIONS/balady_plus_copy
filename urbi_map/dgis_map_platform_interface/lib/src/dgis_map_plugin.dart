@@ -520,6 +520,7 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.setMapObjectManagerIsVisible(isVisible, manager);
   }
 
+  @override
   SimpleClusterOptionsMessage renderCluster(
     MapObjectManagerMessage manager,
     int objectCount,
@@ -527,23 +528,35 @@ class DgisMapPlugin extends FlutterMapApi {
     return _objectTapEventHandler.clusterRenderers[manager.id]!(objectCount);
   }
 
+  /// --- POYGON ---
   Future<void> addPolygon(
     Polygon polygon,
+    MapObjectManagerMessage? manager,
   ) {
     if (polygon.onTap != null) {
-      _objectTapEventHandler.addPolygonHandler(polygon.id, polygon.onTap!);
+      _objectTapEventHandler.addPolygonHandler(
+        polygon.id,
+        polygon.onTap!,
+        manager?.id,
+      );
     }
     return _api.addPolygon(
       PolygonMessage(id: polygon.id, options: polygon.options),
+      manager,
     );
   }
 
   Future<void> addPolygons(
     List<Polygon> polygons,
+    MapObjectManagerMessage? manager,
   ) {
     for (var polygon in polygons) {
       if (polygon.onTap != null) {
-        _objectTapEventHandler.addPolygonHandler(polygon.id, polygon.onTap!);
+        _objectTapEventHandler.addPolygonHandler(
+          polygon.id,
+          polygon.onTap!,
+          manager?.id,
+        );
       }
     }
     return _api.addPolygons(
@@ -553,38 +566,46 @@ class DgisMapPlugin extends FlutterMapApi {
                 PolygonMessage(id: polygon.id, options: polygon.options),
           )
           .toList(),
+      manager,
     );
   }
 
   Future<void> removePolygon(
     String id,
+    MapObjectManagerMessage? manager,
   ) {
     _objectTapEventHandler.removePolygonHandler(id);
-    return _api.removePolygon(id);
+    return _api.removePolygon(id, manager);
   }
 
-  Future<void> removeAllPolygons() {
+  Future<void> removeAllPolygons(MapObjectManagerMessage? manager) {
     _objectTapEventHandler.removeAllPolygonHandlers();
-    return _api.removeAllPolygons();
+    return _api.removeAllPolygons(manager);
   }
 
+  /// --- POLYLINE ---
   Future<void> addPolyline(
     Polyline polyline,
+    MapObjectManagerMessage? manager,
   ) {
     if (polyline.onTap != null) {
-      _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!);
+      _objectTapEventHandler.addPolylineHandler(
+          polyline.id, polyline.onTap!, manager?.id);
     }
     return _api.addPolyline(
       PolylineMessage(id: polyline.id, options: polyline.options),
+      manager,
     );
   }
 
   Future<void> addPolylines(
     List<Polyline> polylines,
+    MapObjectManagerMessage? manager,
   ) {
     for (var polyline in polylines) {
       if (polyline.onTap != null) {
-        _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!);
+        _objectTapEventHandler.addPolylineHandler(
+            polyline.id, polyline.onTap!, manager?.id);
       }
     }
     return _api.addPolylines(
@@ -594,19 +615,21 @@ class DgisMapPlugin extends FlutterMapApi {
                 PolylineMessage(id: polyline.id, options: polyline.options),
           )
           .toList(),
+      manager,
     );
   }
 
   Future<void> removePolyline(
     String id,
+    MapObjectManagerMessage? manager,
   ) {
     _objectTapEventHandler.removePolylineHandler(id);
-    return _api.removePolyline(id);
+    return _api.removePolyline(id, manager);
   }
 
-  Future<void> removeAllPolylines() {
+  Future<void> removeAllPolylines(MapObjectManagerMessage? manager) {
     _objectTapEventHandler.removeAllPolylineHandlers();
-    return _api.removeAllPolylines();
+    return _api.removeAllPolylines(manager);
   }
 
   Future<void> showEsriIOLayer(AddLayerPointObjectsMessage message) {

@@ -61,7 +61,13 @@ class _MapPageState extends ConsumerState<MapPage>
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
     ref.watch(selectedMarkerProvider);
-    ref.watch(mapObjectManagerProvider(named: selectedMarkerManagerId));
+    final settings = MapObjectManagerSettings.selectedMarker();
+    ref.watch(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
+    );
 
     return DgisMap(
       key: ValueKey(_keyIndex),

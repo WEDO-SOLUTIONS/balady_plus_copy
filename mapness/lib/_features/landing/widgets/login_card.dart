@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mapness/shared/config/package_config.dart';
@@ -35,11 +35,11 @@ class LoginCard extends StatelessWidget {
                         const Spacer(),
                         Text(
                           context.l10n.signIn,
-                          style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: Colors.white),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.heading2.copyWith(color: Colors.white),
                         ),
                         Text(
                           context.l10n.inNovember,
-                          style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.footNote.copyWith(color: Colors.white.withOpacity(0.8)),
                         ),
                         const SizedBox(
                           height: 13,
@@ -57,7 +57,7 @@ class LoginCard extends StatelessWidget {
                       child: Text(
                         context.l10n.signIn,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: context.color.stroke_accent),
+                        style: Theme.of(context).extension<ThemeTextStyles>()!.callout.copyWith(color: context.color.strokeAccent),
                       ),
                     ),
                   ],

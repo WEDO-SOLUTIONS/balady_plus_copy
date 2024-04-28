@@ -1,0 +1,166 @@
+# yamllint disable rule:line-length
+---
+name: Build iOS
+
+permissions: write-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - "urbi"
+      - "urbi-release-*"
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
+    branches:
+      - "urbi"
+      - "urbi-release-*"
+    paths-ignore:
+      - "**.md"
+      - "doc/**"
+      - ".git/"
+      - ".vscode/"
+
+jobs:
+  build:
+    name: Build iOS
+    if: github.event.pull_request.draft == false
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 60
+    env:
+      LANG: en_US.UTF-8
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v4
+
+      # GITHUB_REF_SLUG
+      - name: Inject git variables
+        run: |
+          echo "CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')" >> ${GITHUB_ENV}
+          export CI_GIT_BRANCH=${GITHUB_REF_NAME}
+          export CI_IS_PR=""
+          if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]; then
+            export CI_GIT_BRANCH=${GITHUB_HEAD_REF}
+            export CI_IS_PR="pr-"
+          fi
+          echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
+          CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr -c -s '[:alnum:]' '-')
+          echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}" >> ${GITHUB_ENV}
+          echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
+          echo "PATH=${PATH}:/opt/homebrew/bin" >> ${GITHUB_ENV}
+
+      - name: Setup requirements
+        env: # Set the secret as an environment variable
+          BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
+        run: |
+          echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
+          chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
+
+      - name: Setup keychain
+        env:
+          FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
+          FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
+          FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
+          FILE_APPSTORE_KEY: ${{ secrets.FILE_APPSTORE_KEY }}
+        run: |
+          zsh .github/scripts/setup_keychain.sh
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.10.3"
+          channel: "stable"
+          cache: true
+
+      - name: "Setup just"
+        uses: extractions/setup-just@v2
+        with:
+          just-version: "1.25.2"
+
+      - name: "Prebuild"
+        env:
+          GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
+        run: |
+          eval $(ssh-agent -s)
+          ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
+
+          just ios_setup
+          just prebuild
+
+      - name: Build app
+        run: |
+          KC="$HOME/Library/Keychains/build.keychain"
+          KC_PASS='build-pass'
+
+          momrahBundle='momra.balady.ios'
+          urbiBundle='ae.urbi.balady'
+
+          momrahTeam='9VKA788PDD'
+          urbiTeam='A34FT8KT4H'
+
+          codeSignAutomatic='CODE_SIGN_STYLE = Automatic;'
+          codeSignManual='CODE_SIGN_STYLE = Manual;'
+
+          codeSignIdentityDevelopment='CODE_SIGN_IDENTITY = "Apple Development";'
+          codeSignIdentityDistribution='CODE_SIGN_IDENTITY = "iPhone Distribution";'
+
+          provisionProfileNone='PROVISIONING_PROFILE_SPECIFIER = "";'
+          provisionProfileAdHoc='PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";'
+
+          appDisplayNameProd='$(APP_DISPLAY_NAME)';
+          appDisplayNameDev='Balady Dev';
+
+          sed -i '' "s/$momrahBundle/$urbiBundle/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$momrahTeam/$urbiTeam/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$codeSignAutomatic/$codeSignManual/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$codeSignIdentityDevelopment/$codeSignIdentityDistribution/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$provisionProfileNone/$provisionProfileAdHoc/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
+          git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
+          git apply mapness/scripts/icon.patch || print_style '' 'red' 'could not apply ios icon patch'
+
+          # Build
+          security unlock-keychain -p $KC_PASS $KC
+          security find-identity -p codesigning
+
+          fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_prod.dart --flavor prod
+          BUILD_URL=$(curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/momrah-${CI_ARTIFACT_SUFFIX}  | jq -r '.install_link')
+          echo "BUILD_URL=${BUILD_URL}" >> ${GITHUB_ENV}
+
+      - name: Send notification to mattermost channel
+        env: # Set the secret as an environment variable
+          MM_CHANNEL_ID: ${{ secrets.MM_CHANNEL_ID }}
+          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
+          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
+        run: |
+          is_pr=""
+          if [ -n "${CI_IS_PR}" ]; then
+            PR_ID=$(echo -n $GITHUB_REF_NAME | tr --complement --squeeze-repeats '[:alnum:]' '-' | sed 's/-merge//')
+            is_pr="**Pull Request**: [${{ github.event.pull_request.title }}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${PR_ID})\n"
+          fi
+          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
+            \"channel_id\": \"${MM_CHANNEL_ID}\", \
+            \"message\": \"\
+          ${is_pr}\
+          **Branch**: [${CI_GIT_BRANCH}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${CI_GIT_BRANCH})\n\
+          **Author**: ${GITHUB_ACTOR}\n\
+          **iOS**: [Build](${BUILD_URL})\" \
+          }"
+
+      - name: Cleanup keychain
+        if: ${{ always() }}
+        run: |
+          LKC="${HOME}/Library/Keychains/login.keychain"
+          KC="${HOME}/Library/Keychains/build.keychain"
+          security list-keychains -s $LKC
+          security default-keychain -s $LKC
+          security delete-keychain $KC
+
+          rm -rf ~/Library/MobileDevice/Provisioning\ Profiles/

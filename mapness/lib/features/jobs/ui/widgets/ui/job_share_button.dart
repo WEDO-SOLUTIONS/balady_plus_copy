@@ -23,8 +23,8 @@ class JobShareButton extends ConsumerWidget {
         data: (data) => JobButton(
               label: context.l10n.share,
               asset: 'assets/icons/svg/ic_share.svg',
-              backgroundColor: context.color.text_and_icons_base_primary.withOpacity(0.05),
-              textColor: context.color.text_and_icons_base_primary.withOpacity(.5),
+              backgroundColor: context.color.textAndIconsBasePrimary.withOpacity(0.05),
+              textColor: context.color.textAndIconsBasePrimary.withOpacity(.5),
               onPressed: () {
                 final object = data?.id?.objectId;
                 if (object == null) {

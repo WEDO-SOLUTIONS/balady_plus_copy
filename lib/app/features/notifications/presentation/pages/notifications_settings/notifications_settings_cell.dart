@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_settings/notifications_list_settings_cubit.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,7 +98,7 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
                                         widget.category.products![index].name!,
                                         style: Theme.of(context)
                                             .extension<ThemeTextStyles>()!
-                                            .textM
+                                            .text
                                             .copyWith(
                                                 color: const Color(0xFF1E2A36)),
                                       ),

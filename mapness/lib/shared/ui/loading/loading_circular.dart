@@ -12,8 +12,8 @@ class LoadingCircular extends StatelessWidget {
         width: size ?? 64,
         child: CircularProgressIndicator(
           valueColor:
-              AlwaysStoppedAnimation<Color>(context.color.stroke_accent),
-          backgroundColor: context.color.stroke_primary,
+              AlwaysStoppedAnimation<Color>(context.color.strokeAccent),
+          backgroundColor: context.color.strokePrimary,
         ),
       );
 }

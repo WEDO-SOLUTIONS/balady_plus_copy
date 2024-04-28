@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,13 +19,27 @@ class HappinesOverlayContent extends ConsumerStatefulWidget {
       _HapinessOverlayContentState();
 }
 
-class _HapinessOverlayContentState
-    extends ConsumerState<HappinesOverlayContent> {
+class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
+    with TickerProviderStateMixin {
   final ValueNotifier<double> height = ValueNotifier(100);
+
+  late final AnimationController confettiController;
+
+  final ConfettiGeneratorConfig config = ConfettiGeneratorConfig.confetti();
+
+  void playConfettiAnimation() => confettiController.animateTo(1,
+      duration: config.animationDuration, curve: config.animationCurve);
+
+  @override
+  void initState() {
+    super.initState();
+    confettiController = AnimationController(vsync: this);
+  }
 
   @override
   void dispose() {
     height.dispose();
+    confettiController.dispose();
     super.dispose();
   }
 
@@ -68,6 +83,10 @@ class _HapinessOverlayContentState
                 ),
               ),
             ),
+            ConfettiAnimation(
+              animationController: confettiController,
+              config: ConfettiGeneratorConfig.confetti(),
+            ),
             HappinessBottomSheet(
               isOpenedInitially: widget.isBottomSheetOpened,
               onHeightChange: (height) {
@@ -97,6 +116,11 @@ class _HapinessOverlayContentState
                 //     .update(MapControlsStateIdle());
                 // widget.onClose();
                 context.pop();
+              },
+              onFeedbackSent: () {
+                if (!confettiController.isAnimating) {
+                  playConfettiAnimation();
+                }
               },
             ),
           ],
