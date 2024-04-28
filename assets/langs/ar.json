@@ -7938,7 +7938,10 @@
   "health_cert_h_end": "تاريخ نهاية الشهادة الصحية هجري",
   "health_cert_g_date": "تاريخ إصدار الشهادة الصحية ميلادي",
   "health_cert_g_end": "تاريخ نهاية الشهادة الصحية ميلادي",
-  "no_attachments": "لا يوجد مرفقات"
+  "no_attachments": "لا يوجد مرفقات",
+
+  "required_field_must_number_12_digits": "عفوا رقم الصك يجب أن يحتوى 12 رقما.",
+  "most_selected_ownershipType": "برجاء إدخال بيانات الصك"
 
 
 

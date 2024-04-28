@@ -20,6 +20,7 @@ import '../blocs/request_approval_sequence_cubit.dart';
 
 class ApprovalSequenceShopLocationScreen extends StatefulWidget {
   StepInterface stepInterface;
+
   ApprovalSequenceShopLocationScreen({Key? key, required this.stepInterface})
       : super(key: key);
 
@@ -31,6 +32,7 @@ class ApprovalSequenceShopLocationScreen extends StatefulWidget {
 class _ApprovalSequenceShopLocationScreenState
     extends State<ApprovalSequenceShopLocationScreen> {
   TextEditingController _deedServiceController = TextEditingController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -143,9 +145,6 @@ class _ApprovalSequenceShopLocationScreenState
                                     .updateContractNumber(value);
                               },
                             ),
-
-
-
                             HijriCalendarAddetionalField(
                               fieldName: "contractDate".tr(),
                               isMandatory: true,
@@ -178,15 +177,32 @@ class _ApprovalSequenceShopLocationScreenState
                             TextWithCheckBtn(
                               title: "deed_owner_no".tr(),
                               hint: "deed_owner_no".tr(),
-                              validate: (String? t) {},
+                              validate: (String? t) => //&& t!.length > 11
+                                  ((t?.isNotEmpty ?? false))
+                                      ? null
+                                      : "required_field_must_number".tr(),
                               controller: _deedServiceController,
                               isValidate: state.deedVerified ?? false,
                               currentValue: state.contractNumber,
                               verify: () {
                                 //check contract number
-                                context
+                                RequestApprovalSequenceCubit bloc = context
+                                    .read<RequestApprovalSequenceCubit>();
+                                DTOState state = context
                                     .read<RequestApprovalSequenceCubit>()
-                                    .getDeedInfoHandler();
+                                    .state as DTOState;
+                                if (state.deedInfoRequst?.ownershipType?.isNotEmpty ?? false) {
+                                  if (state.deedInfoRequst?.deedNumber
+                                          ?.isNotEmpty ??
+                                      false) {
+                                    bloc.getDeedInfoHandler();
+                                  }
+                                } else {
+                                  //
+                                  CommonFunctions.showError(
+                                    "most_selected_ownershipType".tr(),
+                                  );
+                                }
                               },
                               onTextChanged: (value) {
                                 context
@@ -212,13 +228,14 @@ class _ApprovalSequenceShopLocationScreenState
                                     .read<RequestApprovalSequenceCubit>()
                                     .updateCRContractType(value!);
                               },
-
                             ),
                           if (state.crContractType == CRContractType.ejar &&
                               state.crSubmitterType ==
                                   CRSubmitterType.rental) ...[
                             NotesWidget(
-                              notes: ["${"ejar_note".tr()}<br> ${"ejarAPP".tr()}"],
+                              notes: [
+                                "${"ejar_note".tr()}<br> ${"ejarAPP".tr()}"
+                              ],
                             ),
                             // NotesWidget(
                             //   notes: ["ejarAPP".tr()],
@@ -390,7 +407,6 @@ class _ApprovalSequenceShopLocationScreenState
                                   }),
                             ),
                           ],
-
                         ],
                       ),
                     ),
@@ -411,8 +427,9 @@ class _ApprovalSequenceShopLocationScreenState
                   child: ElevatedButtonWidget.next(
                     onPressed: () {
                       //  if (!state.isFormValid()) {
-                      context.read<RequestApprovalSequenceCubit>().saveData( widget.stepInterface);
-
+                      context
+                          .read<RequestApprovalSequenceCubit>()
+                          .saveData(widget.stepInterface);
                     },
                   ),
                 ),

@@ -4336,6 +4336,12 @@
   "salamaBillNumber_2": "Fire Prevention and Protection Equipment Installation Certificate Number",
   "ejarAPP": "Dear beneficiary, you can find out about the accredited real estate brokers in the Ejari network through the link  <a href=\"https://www.ejar.sa/ar/certified-offices\">click here</a>   or download the Real Estate Brokers app for iOS or Android.",
 
-  "no_attachments": "No Attachments"
+  "no_attachments": "No Attachments",
+
+  "required_field_must_number_12_digits": "Sorry, the deed number must contain 12 digits.",
+  "most_selected_ownershipType": "Please enter the ownership deed data"
+
+
+
 
 }
