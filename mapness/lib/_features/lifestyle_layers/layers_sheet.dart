@@ -1,8 +1,7 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
@@ -13,7 +12,6 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -35,15 +33,17 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
       }
     });
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _draggableScrollableController.isAttached
-          ? _draggableScrollableController.animateTo(
-              .6,
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.linear,
-            )
-          : null;
-    });
+    SchedulerBinding.instance.addPostFrameCallback(
+      (_) {
+        if (_draggableScrollableController.isAttached) {
+          _draggableScrollableController.animateTo(
+            .6,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -52,16 +52,18 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     final state = ref.watch(layersControlsProvider);
     final lang = ref.watch(appLanguageProvider);
 
+    final headerStyle =
+        Theme.of(context).extension<ui_kit.ThemeTextStyles>()!.heading2;
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
         const MapControls(),
         DraggableScrollableSheet(
           controller: _draggableScrollableController,
-          initialChildSize: .6,
           minChildSize: 0,
-          maxChildSize: .6,
-          snapSizes: const [.0, .3, .6],
+          maxChildSize: .5,
+          snapSizes: const [.0, .3, .5],
           snap: true,
           builder: (context, scrollController) => Directionality(
             textDirection: switch (lang) {
@@ -69,7 +71,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
               Language.arabic => TextDirection.rtl,
             },
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(
@@ -81,52 +83,52 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                   CustomScrollView(
                     controller: scrollController,
                     primary: false,
+                    shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
                     slivers: [
                       SliverToBoxAdapter(
                         child: Material(
                           color: Colors.transparent,
-                          child: Column(children: [
-                            Container(
-                              height: 4,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: context.color.surfaceBasePrimary,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(24)),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 6),
+                              Container(
+                                height: 4,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  color: context.color.surfaceContrastMid,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(99)),
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  context.l10n.layersOnTheMap,
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()!
-                                      .heading1,
-                                ),
-                                const Spacer(),
-                                CustomCloseButton(
-                                  onClose: () => context.pop(),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                          ],),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  Text(context.l10n.layersOnTheMap,
+                                      style: headerStyle),
+                                  const Spacer(),
+                                  ui_kit.AppButton.close(
+                                    onTap: context.pop,
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
                         ),
                       ),
                       SliverList.separated(
-                        separatorBuilder: (_, __) => const SizedBox(height: 16),
-                        itemCount: LayerType.values.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 4),
+                        itemCount: LayerType.withoutParking.length,
                         itemBuilder: (_, index) {
-                          final value = LayerType.values[index];
+                          final value = LayerType.withoutParking[index];
+                          final isSelected = state.selectedType == value;
+                          final textColor = isSelected
+                              ? context.color.textAndIconsStatusAccent
+                              : context.color.textAndIconsBasePrimary;
 
-                          return FilterRow(
-                            value: value,
+                          return ui_kit.ContentRow(
                             onTap: () async {
                               ref
                                   .read(searchByRubricsQueryProvider.notifier)
@@ -143,7 +145,18 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                                 watch.handleTap(value);
                               }
                             },
-                            isSelected: state.selectedType == value,
+                            options: ui_kit.ContentRowOptions(
+                              wrapperEnabled: true,
+                              wrapperColor: isSelected
+                                  ? context.color.surfaceStatusContrastAccent
+                                      .withOpacity(0.12)
+                                  : Colors.transparent,
+                              leadingIcon:
+                                  value.iconData().icon(color: textColor),
+                              title: value.titleLocale(context.l10n),
+                              titleStyle: context.textStyle.text
+                                  .copyWith(color: textColor),
+                            ),
                           );
                         },
                       ),
@@ -151,67 +164,16 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                   ),
                   if (state.isLoading)
                     Center(
-                        child: CircularProgressIndicator(
-                      color: context.color.textAndIconsStatusAccent,
-                    ),),
+                      child: CircularProgressIndicator(
+                        color: context.color.textAndIconsStatusAccent,
+                      ),
+                    ),
                 ],
               ),
             ),
           ),
         ),
       ],
-    );
-  }
-}
-
-class FilterRow extends StatelessWidget {
-
-  const FilterRow({
-    required this.value, required this.onTap, required this.isSelected, super.key,
-  });
-  final LayerType value;
-  final Function() onTap;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    const borderRadius = BorderRadius.all(
-      Radius.circular(8),
-    );
-
-    final textM = Theme.of(context).extension<ThemeTextStyles>()!.text;
-
-    return Material(
-      color: Colors.white,
-      borderRadius: borderRadius,
-      child: InkWell(
-        borderRadius: borderRadius,
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                value.iconPath(),
-                semanticsLabel: 'MinApps Screen',
-                package: 'mapness',
-                color: isSelected
-                    ? context.color.strokeAccent
-                    : const Color.fromRGBO(30, 42, 54, 0.5),
-              ),
-              const SizedBox(
-                width: 14,
-              ),
-              Text(
-                value.titleLocale(context.l10n),
-                style: textM.copyWith(
-                  color: isSelected ? context.color.strokeAccent : textM.color,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
