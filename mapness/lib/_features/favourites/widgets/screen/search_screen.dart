@@ -7,7 +7,6 @@ import 'package:mapness/features/search/ui/search_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchScreen extends ConsumerWidget {
-
   const SearchScreen({
     required this.itemBuilder,
     required this.itemCount,
@@ -24,7 +23,7 @@ class SearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-        backgroundColor: context.color.surfaceBasePrimary,
+        backgroundColor: context.color.surfaceBaseSecondary,
         body: Column(
           children: [
             Container(
