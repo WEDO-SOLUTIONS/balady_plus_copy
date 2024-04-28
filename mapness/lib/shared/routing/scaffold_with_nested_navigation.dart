@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/route_onboarding.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
+import 'package:mapness/widgets/profile/profile_image_widget.dart';
 import 'package:mapness/_features/stories/domain/story_types.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
