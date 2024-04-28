@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,8 +19,10 @@ import '../blocs/request_approval_sequence_cubit.dart';
 
 class ApprovalSequenceShopInfoScreen extends StatefulWidget {
   StepInterface stepInterface;
+
   ApprovalSequenceShopInfoScreen({Key? key, required this.stepInterface})
       : super(key: key);
+
   @override
   State<ApprovalSequenceShopInfoScreen> createState() =>
       _ApprovalSequenceShopInfoScreenState();
@@ -110,18 +113,20 @@ class _ApprovalSequenceShopInfoScreenState
                 ),
                 color: Colors.white),
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
-            child: ElevatedButtonWidget.next(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  bloc?.saveShopInfo(
-                      bloc!.requestNumber!,
-                      SaveShopInfoRequest(
-                          shopName: _crNumberController.text,
-                          hasBrand: brandChecked),
-                      widget.stepInterface);
-                }
-              },
-            ),
+            child: state is LoadingState
+                ? const CustomCircularLoadingWidget()
+                : ElevatedButtonWidget.next(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        bloc?.saveShopInfo(
+                            bloc!.requestNumber!,
+                            SaveShopInfoRequest(
+                                shopName: _crNumberController.text,
+                                hasBrand: brandChecked),
+                            widget.stepInterface);
+                      }
+                    },
+                  ),
           )
         ],
       );
