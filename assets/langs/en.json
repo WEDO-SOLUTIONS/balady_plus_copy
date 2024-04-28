@@ -4308,9 +4308,9 @@
 
 
   "exclude": "Note: Anyone who must collect waste and transport it to the landfills designated for that purpose, in accordance with municipal requirements, according to the license granted thereto, is excluded from the applicable waste collection fee.",
-  "new_owner_cr_number_error": "Please enter the commercial register number",
+  "new_owner_cr_number_error": "Please enter the CR number for new owner",
   "shop_name_error": "Sorry can you please enter shop name",
-  "new_owner_cr_number": "Commercial Register Number For New Owner",
+  "new_owner_cr_number": "CR Number For New Owner",
   "new_owner": "New Owner",
   "transfer_all": "Transfer All",
   "permit_warn": "Please select which permits you want to transfer",
