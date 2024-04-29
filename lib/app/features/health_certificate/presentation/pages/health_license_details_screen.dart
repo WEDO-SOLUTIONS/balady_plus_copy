@@ -86,18 +86,14 @@ class _HealthLicenseDetailsScreenState
                                   RouteName.healthLicenseDetailsScreen,
                               child: ConfirmCancelLicenseDialog(
                             onCancel: () {
-                              HealthRequestDetailsViewModel model =
-                                  Provider.of<HealthRequestDetailsViewModel>(
-                                      context,
-                                      listen: false);
-                              int? certicateId = model
+                              int? certicateId = provider
                                   .requestDetails
                                   ?.data
                                   ?.result
                                   ?.healthCertificateInfo
                                   ?.certificateId;
                               if (certicateId != null) {
-                                model.cancelHealthCertificate(certicateId);
+                                provider.cancelHealthCertificate(certicateId);
                               }
                             },
                           ));
