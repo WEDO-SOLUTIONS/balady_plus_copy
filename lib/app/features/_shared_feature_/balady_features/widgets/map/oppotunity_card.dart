@@ -13,7 +13,7 @@ import '../../../../../core/utils/constants/app_style.dart';
 import '../../services/services.dart';
 import '../shared/circle_icon.dart';
 
-class OpprtunityMapCard extends StatelessWidget {
+class OpportunityMapCard extends StatelessWidget {
   final String type;
   final String? documentValue;
   final String? dailyCost;
@@ -24,34 +24,32 @@ class OpprtunityMapCard extends StatelessWidget {
   final String? bidEndDate;
   final String? location;
   final bool isFree;
-  final String? mainActivcity;
+  final String? mainActivity;
   final String? id;
-  final String? opprtunityNumber;
+  final String? opportunityNumber;
 
   final Function onClose;
 
-  const OpprtunityMapCard(
+  const OpportunityMapCard(
       {super.key,
       this.description,
       this.area,
       required this.type,
       this.subMunicipality,
-      this.mainActivcity,
+      this.mainActivity,
       this.documentValue,
       this.dailyCost,
       this.isSeasonal = false,
       this.bidEndDate,
       this.location,
-      this.opprtunityNumber,
+      this.opportunityNumber,
       this.isFree = false,
       this.id,
       required this.onClose});
 
   @override
   Widget build(BuildContext context) {
-    String price = (documentValue != null && documentValue!.isNotEmpty)
-        ? documentValue!
-        : (dailyCost ?? "");
+    String price = (documentValue != null && documentValue!.isNotEmpty) ? documentValue! : (dailyCost ?? "");
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () async {
@@ -61,11 +59,10 @@ class OpprtunityMapCard extends StatelessWidget {
 
           await sl<BaladyServices>().getTempRentalDetails(id!, "TempRental");
         } else if (type == "Dirct Rental") {
-          await sl<BaladyServices>().getDirectRentalDetails(opprtunityNumber!);
+          await sl<BaladyServices>().getDirectRentalDetails(opportunityNumber!);
         } else {
           //"01-22-003709-21394"
-          await sl<BaladyServices>()
-              .getInvestmentDetails(opprtunityNumber!, "Investment");
+          await sl<BaladyServices>().getInvestmentDetails(opportunityNumber!, "Investment");
         }
       },
       child: Container(
@@ -74,13 +71,7 @@ class OpprtunityMapCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 2),
         decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            boxShadow: [
-              BoxShadow(
-                  color: Color(0x14000000),
-                  offset: Offset(0, 2),
-                  blurRadius: 24,
-                  spreadRadius: 0)
-            ],
+            boxShadow: [BoxShadow(color: Color(0x14000000), offset: Offset(0, 2), blurRadius: 24, spreadRadius: 0)],
             color: AppColor.white),
         child: Container(
           margin: const EdgeInsets.only(top: 10, right: 10, left: 10),
@@ -112,10 +103,8 @@ class OpprtunityMapCard extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 description ?? "",
-                                style: AppStyle.cardTitleTextStle.copyWith(
-                                    fontSize: 13,
-                                    color: AppColor.black,
-                                    height: 1.3),
+                                style: AppStyle.cardTitleTextStle
+                                    .copyWith(fontSize: 13, color: AppColor.black, height: 1.3),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -131,8 +120,7 @@ class OpprtunityMapCard extends StatelessWidget {
                                 icon: Icons.close,
                                 circleSize: 24,
                                 iconColor: AppColor.primary600Light,
-                                backgroundColor:
-                                    AppColor.geyser.withOpacity(0.4),
+                                backgroundColor: AppColor.geyser.withOpacity(0.4),
                                 iconSize: 12,
                               ),
                             ),
@@ -150,13 +138,10 @@ class OpprtunityMapCard extends StatelessWidget {
                         ),*/
                         RentOrInvestWidget(type: type),
                         const CustomVerticalSpace(height: 4),
-                        if (mainActivcity?.isNotEmpty ?? false)
+                        if (mainActivity?.isNotEmpty ?? false)
                           Text(
-                            "activity_type"
-                                .tr()
-                                .replaceAll("{}", mainActivcity ?? ""),
-                            style: AppStyle.cardTitleTextStle
-                                .copyWith(fontSize: 13, color: AppColor.black),
+                            "activity_type".tr().replaceAll("{}", mainActivity ?? ""),
+                            style: AppStyle.cardTitleTextStle.copyWith(fontSize: 13, color: AppColor.black),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -181,8 +166,7 @@ class OpprtunityMapCard extends StatelessWidget {
                                   Text(
                                     area != null ? ("${area!} م٢ ") : "",
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppStyle.cardTitleTextStle.copyWith(
-                                        color: AppColor.kGray115, fontSize: 12),
+                                    style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 12),
                                   ),
                                 ],
                               ),
@@ -227,8 +211,7 @@ class OpprtunityMapCard extends StatelessWidget {
                       Text(
                         "${"bid_end_date".tr()} ${getBidEndDate(bidEndDate ?? "")}",
                         overflow: TextOverflow.ellipsis,
-                        style: AppStyle.cardTitleTextStle
-                            .copyWith(color: AppColor.kGray115, fontSize: 12),
+                        style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 12),
                       ),
                     ],
                   ),
@@ -305,8 +288,7 @@ String getActivityId(String? activityId) {
 String getBidEndDate(String bidEndDate) {
   String date = "";
   try {
-    date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
-        .format(DateTime.parse(bidEndDate!));
+    date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(DateTime.parse(bidEndDate));
   } catch (ex) {}
   if (CommonFunctions.isAppAR) {
     date = CommonFunctions.replaceArabicNumberWithEnglish(date);
@@ -323,14 +305,9 @@ class RentOrInvestWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(7),
       child: Text(
-        type == "Investment" || type == "Dirct Rental"
-            ? ('investment').tr()
-            : ('rent').tr(),
+        type == "Investment" || type == "Dirct Rental" ? ('investment').tr() : ('rent').tr(),
         style: AppStyle.cardTitleTextStle.copyWith(
-            fontSize: 12,
-            color: type == "Investment"
-                ? AppColor.secondary900Light
-                : AppColor.secondary900Light),
+            fontSize: 12, color: type == "Investment" ? AppColor.secondary900Light : AppColor.secondary900Light),
       ),
     );
   }
@@ -364,13 +341,11 @@ class PriceWidget extends StatelessWidget {
         if (!isInvestment && !isOrder && !isSeasonal && !isDirectRental)
           TextSpan(
             text: "${("start_from").tr()}  ",
-            style: AppStyle.cardTitleTextStle
-                .copyWith(color: AppColor.primary900Light, fontSize: 16),
+            style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.primary900Light, fontSize: 16),
           ),
         TextSpan(
             text: isFree && !isDirectRental ? ("free").tr() : "$price  ",
-            style: AppStyle.cardTitleTextStle
-              ..copyWith(color: AppColor.primary900Light, fontSize: fontSize)),
+            style: AppStyle.cardTitleTextStle..copyWith(color: AppColor.primary900Light, fontSize: fontSize)),
         if (!isFree)
           TextSpan(
               text: isDirectRental
@@ -380,9 +355,7 @@ class PriceWidget extends StatelessWidget {
                       : isOrder
                           ? ("price_per_period").tr()
                           : ("sar_per_meter").tr(),
-              style: AppStyle.cardTitleTextStle
-                ..copyWith(
-                    color: AppColor.primary900Light, fontSize: fontSize)),
+              style: AppStyle.cardTitleTextStle..copyWith(color: AppColor.primary900Light, fontSize: fontSize)),
       ]),
       maxLines: 1,
       maxFontSize: fontSize,
