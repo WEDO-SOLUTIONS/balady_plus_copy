@@ -1129,7 +1129,7 @@ class CommonFunctions {
       });
 
 // UX Cam Events
-      if (sl<EnvType>().isProd) {
+      if (RemoteConfig.uxCamKey.isNotEmpty) {
         Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ??
                 response?.requestOptions.headers) ??
             {};
