@@ -73,6 +73,7 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
 
   void init({bool isRenew = false}) {
     dataModel.init(isRenew: isRenew);
+    isFormValid = false;
     address = StreamController<String?>.broadcast();
   }
 
