@@ -14,6 +14,7 @@ import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart'
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/router.dart';
@@ -105,8 +106,10 @@ class LayersControls extends _$LayersControls {
           toggleInvestOpportunities();
         case LayerType.fencing:
           toggleWhiteLands();
+        case LayerType.parking:
+          toggleParking();
         case LayerType.joy:
-          toggleIwish(currentState, value);
+          toggleIwish();
       }
     });
 
@@ -243,9 +246,9 @@ class LayersControls extends _$LayersControls {
     tapSubject.add(value);
   }
 
-  Future<void> toggleIwish(LayerType? currentState, LayerType value) async {
+  Future<void> toggleIwish() async {
     final layers = ref.watch(layersControlsProvider.notifier);
-
+    final currentState = state.selectedType;
     await viewPortSubscription?.cancel();
 
     if (currentState == LayerType.joy) {
@@ -311,6 +314,27 @@ class LayersControls extends _$LayersControls {
     }
   }
 
+  Future<void> toggleParking() async {
+    final layers = ref.watch(layersControlsProvider.notifier);
+    final currentState = state.selectedType;
+    await viewPortSubscription?.cancel();
+
+    if (currentState == LayerType.parking) {
+      await ref
+          .read(mapObjectManagerProvider(
+            named: esriMapObjectSettings.name,
+            layerId: esriMapObjectSettings.layerId,
+          ).notifier)
+          .removeAllMarkers();
+      layers
+        ..setSelection()
+        ..update(isLoading: false);
+    } else {
+      setSelection(selectedType: LayerType.parking);
+      await _showParking();
+    }
+  }
+
   MapRequestParams _createParams(
     VisibleRect visibleRect,
     LayerType layer,
@@ -335,7 +359,7 @@ class LayersControls extends _$LayersControls {
       layerId: esriMapObjectSettings.layerId,
     ).notifier);
 
-    ///загрузка
+    /// Loading
     setSelection(selectedType: layerType);
     update(isLoading: true);
 
@@ -442,7 +466,7 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    ///завершаем API запросы
+    /// Cancel API calls
     cancelToken = CancelToken();
 
     viewPortSubscription = ref
@@ -519,11 +543,7 @@ class LayersControls extends _$LayersControls {
                     longitude: e.latLng?.longitude ?? 0,
                     elevation: 0,
                   ),
-                  icon: MarkerIconMessage(
-                    path:
-                        'packages/mapness/assets/icons/svg/layers/investment_opportunities.svg',
-                    width: 30,
-                  ),
+                  icon: LayersSvgPaths.invest.markerIcon(),
                   textStyle: MarkerTextStyleMessage(
                     color: NonThemeColor.color26.value,
                     strokeColor: Colors.white.value,
@@ -586,6 +606,10 @@ class LayersControls extends _$LayersControls {
         .onError((error, stackTrace) => onError())
         .timeout(duration, onTimeout: onError);
     update(isLoading: false);
+  }
+
+  Future<void> _showParking() async {
+    // TODO: Implement parking in future tasks
   }
 
   void onError() {
