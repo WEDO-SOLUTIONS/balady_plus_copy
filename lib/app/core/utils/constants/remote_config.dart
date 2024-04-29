@@ -54,6 +54,8 @@ class RemoteConfig {
       _RemoteConfig.municipal_services_IDS[env]!;
 
   static String get ewaaUrl => _RemoteConfig.ewaaUrl[env]!;
+
+  static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
 }
 
 //! First solution
@@ -65,13 +67,21 @@ class _RemoteConfig {
     prodVal: "https://gisapps.momra.gov.sa",
     urbiPreVal: "https://gisappstg.momra.gov.sa",
   );
+
+  static final uxCamKey = _initValues<String>(
+    devVal: "",
+    stgVal: "",
+    preVal: "3i45abbyrbljp32",
+    prodVal: "2w1otnta9bvvhzo",
+    urbiPreVal: "",
+  );
   static final hmCode = _initValues<String>(
     devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     preVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     prodVal: "TU9NUkEgTW9iaWxlIFRlYW0gMjAyMg==",
     urbiPreVal:
-    "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
+        "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
   );
 
   static final apigeeURL = _initValues<String>(
@@ -270,7 +280,7 @@ class _RemoteConfig {
     preVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
     prodVal: "BIGipServerssoapp.balady.gov.sa.app~ssoapp.balady.gov.sa_pool",
     urbiPreVal:
-    "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
+        "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
   );
 
   static final MSRAllowedMuncipalites = _initValues<List<String>>(
