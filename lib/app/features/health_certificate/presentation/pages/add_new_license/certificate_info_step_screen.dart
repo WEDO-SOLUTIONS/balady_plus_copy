@@ -28,6 +28,7 @@ import '../../core/models/license_for_health_information_response.dart';
 import '../../core/models/licesnse_type.dart';
 import '../../core/models/list_response.dart';
 import '../../core/services/view_models/new_details_health_license_view_model.dart';
+import '../../core/services/view_models/new_health_license_view_model.dart';
 import '../../core/services/view_models/new_terms_health_license_view_model.dart';
 import '../../widgets/new_health_certificate_widgets/previous_next_buttons.dart';
 
@@ -91,10 +92,14 @@ class _CertificateInfoStepScreenState extends State<CertificateInfoStepScreen> {
 
                         PreviousNextButtons(
                           isFormValid: model.isFormValid,
-                          onConfirm: () {
+                          onConfirm: () async {
+                            final model = locator<HealthLicenseViewModel>();
+
+                            List<String>? terms = await model.getTerms();
+                            print("terms $terms");
+                            if (terms == null) return;
                             model.hideKeyboard();
-                            if (!isLastPage &&
-                                pledgeModel.getTerms().isNotEmpty) {
+                            if (!isLastPage && terms.isNotEmpty) {
                               context
                                   .read<NewHealthCertificateBloc>()
                                   .add(GoToNextPageEvent());
