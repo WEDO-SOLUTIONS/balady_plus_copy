@@ -48,7 +48,7 @@ class _HealthLicenseDetailsScreenState
         return Scaffold(
           backgroundColor: AppColor.white2,
           appBar: DetailsHeader(
-            title: ("").tr(),
+            title: (""),
             onPrint: (provider.requestDetails?.data?.result?.printable ?? false)
                 ? () {
                     provider.checkHealthCertificatePhoto();
