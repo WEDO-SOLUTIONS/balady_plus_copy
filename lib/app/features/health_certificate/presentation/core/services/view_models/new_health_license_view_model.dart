@@ -117,6 +117,8 @@ class HealthLicenseViewModel extends BaseViewModel {
 
   Future<List<String>?> getTerms() async {
     try {
+      print("getTerms");
+
       String userId = CommonProperties.userInfo?.idNo ?? "";
       String idType = CommonProperties.userInfo?.getIdType() ?? "";
       String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";

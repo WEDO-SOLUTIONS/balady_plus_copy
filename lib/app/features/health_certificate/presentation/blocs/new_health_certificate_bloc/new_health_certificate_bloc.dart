@@ -61,14 +61,6 @@ class NewHealthCertificateBloc
       GoToNextPageEvent e, Emitter emitter) async {
     if (isLastPage()) {
     } else {
-      if (state.currentPageValue == 0) {
-        final model = locator<HealthLicenseViewModel>();
-
-        List<String>? terms = await model.getTerms();
-        print("terms $terms");
-        if (terms == null) return;
-      }
-
       if (state.status == BlocStatus.performing) return;
       int nextPage = state.currentPageValue + 1;
 
