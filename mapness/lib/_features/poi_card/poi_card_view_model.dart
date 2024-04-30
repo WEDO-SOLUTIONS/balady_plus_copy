@@ -31,10 +31,15 @@ class PoiCardViewModel {
     }
   }
 
-  void share({required int? objectId}) {
+  void share({required int? objectId, LatLng? center}) {
     if (objectId != null) {
-      Share.share(
-          'https://apps.balady.gov.sa/#/poi-map?dgis-object-id=$objectId');
+      String url =
+          'https://apps.balady.gov.sa/#/poi-map?dgis-object-id=$objectId';
+      if (center != null) {
+        url += '&lat=${center.latitude}&lng=${center.longitude}';
+      }
+
+      Share.share(url);
     } else {
       onError();
     }
