@@ -232,12 +232,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final lat = url.queryParameters['lat'];
     final lon = url.queryParameters['lon'];
     final type = url.queryParameters['type'];
+    final objectId = url.queryParameters['dgis-object-id'];
 
-    if (lat != null && lon != null) {
+    if (objectId != null) {
+      final id = int.tryParse(objectId);
+      if (id != null) {
+        await _poiDeeplinkById(
+            id, double.tryParse(lat ?? ''), double.tryParse(lon ?? ''));
+      }
+    } else if (lat != null && lon != null) {
       if (type != null && type == 'my-location') {
         await _myLocationDeepLinkHandler(double.parse(lat), double.parse(lon));
       } else {
-        await _poiDeepLinkHandler(double.parse(lat), double.parse(lon));
+        await _poiDeepLinkByCoords(double.parse(lat), double.parse(lon));
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
@@ -246,7 +253,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  Future<void> _poiDeepLinkHandler(double latitude, double longitude) async {
+  Future<void> _poiDeeplinkById(int dgisObjectId,
+      [double? latitude, double? longitude]) async {
+    PoiMapRoute.open(
+      ref.read(goRouterProvider),
+      dgisObjectId,
+      latLng: (latitude == null || longitude == null)
+          ? null
+          : LatLng(latitude: latitude, longitude: longitude),
+      zoom: 17,
+    );
+  }
+
+  Future<void> _poiDeepLinkByCoords(double latitude, double longitude) async {
     const vendorConfigKey =
         'dgis/native-sdk/keys/user_web_api_key_for_on_premise';
     const catalogKey = 'Modules/directory/webapi_url';
