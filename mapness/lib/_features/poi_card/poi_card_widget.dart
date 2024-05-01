@@ -38,15 +38,16 @@ import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 class PoiCardWidget extends StatelessWidget {
+  final DgisObjectIdMessage objectId;
+  final LatLng? closestPoint;
+  final PoiCameraConfig? cameraConfig;
+
   const PoiCardWidget({
     required this.objectId,
     required this.closestPoint,
-    super.key,
     this.cameraConfig,
+    super.key,
   });
-  final DgisObjectIdMessage objectId;
-  final PoiCameraConfig? cameraConfig;
-  final LatLng? closestPoint;
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -123,6 +124,7 @@ class _ContentState extends ConsumerState<_Content>
   void dispose() {
     _tabController.dispose();
     _tabType.dispose();
+    _bottomSheetController.dispose();
     super.dispose();
   }
 
@@ -267,7 +269,7 @@ class _ContentState extends ConsumerState<_Content>
           data: data,
           share: () => viewModel.share(
             objectId: objectId,
-            center: widget.closestPoint,
+            markerCoords: widget.closestPoint,
           ),
           callPhone: () => viewModel.callPhone(data: data),
           onEntranceTap: () => showEntrance(data),

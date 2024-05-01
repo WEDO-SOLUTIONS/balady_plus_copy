@@ -43,6 +43,7 @@ class ContentMyLocation extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final locale = context.l10n;
     final viewModel = PoiCardViewModel(ref: ref);
     final language = ref.watch(appLanguageProvider);
     _cameraAnimation(ref);
@@ -103,8 +104,8 @@ class ContentMyLocation extends ConsumerWidget {
                           onGo: () {
                             viewModel
                                 .goRoute(
-                                  startLabel: context.l10n.myLocation,
-                                  finishLabel: context.l10n.pointToMap,
+                                  startLabel: locale.myLocation,
+                                  finishLabel: locale.pointToMap,
                                   finishLocation: closestPoint!,
                                 )
                                 .pushReplacement(context);
