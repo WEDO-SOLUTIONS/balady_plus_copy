@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -208,9 +209,10 @@ class ProfilePage extends ConsumerWidget {
                               color: const Color(0xFF1E2A36).withOpacity(0.36),
                             ),
                           ),
-                          const SizedBox(
-                            height: 24,
+                const SizedBox(
+                            height: Spacing.verticalGapBetweenChips,
                           ),
+                          const NotificationsSettingCell()
                         ],
                       ),
                     ),
