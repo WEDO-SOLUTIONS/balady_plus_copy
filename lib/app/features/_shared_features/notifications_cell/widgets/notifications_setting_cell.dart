@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/reload_widget.dart';
-import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../core/utils/constants/paths/icon_paths.dart' as iconPath;
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../notifications/data/repositories/notification_repository_implementation.dart';
 import '../../../notifications/domain/entities/set_notifications_profile_params.dart';
@@ -74,11 +74,16 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                         children: [
                           ContentRow(
                             options: ContentRowOptions(
-                                leadingIcon: AppIcons(
-                                  iconData: GeneralIcons.darkMode,
-                                  color: context.color.textAndIconsStatusAccent,
-                                  size: 24,
-                                ),
+                                leadingIcon:            
+                                     SvgPicture.asset(
+                                      iconPath.IconPath.notificationIc2,
+                                      height: 24,
+                                      width: 24,
+                                      colorFilter: const ColorFilter.mode(
+                                        AppColor.primary900Light,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
                                 title: 'notifications'.tr(),
                                 actionWidget: ContentRowActionOptions(
                                   enabledToggle: true,
