@@ -746,21 +746,21 @@ class CommonFunctions {
       {String? adminMunicipalityId,
       String? municipalityName,
       bool? isVDExcepted}) {
-    if (adminMunicipalityId == "003" && municipalityName == "العلا") {
+    /* if (adminMunicipalityId == "003" && municipalityName == "العلا") {
       try {
         String error = ("ola_incident_error").tr(); //MMTr;
         showError(error);
       } catch (ex) {}
 
       return true;
-    } else {
-      if (isVDExcepted ?? false) {
-        String error = ("inc_vd_excepted").tr();
+    } else {*/
+    if (isVDExcepted ?? false) {
+      String error = ("inc_vd_excepted").tr();
 
-        showError(error);
-        return true;
-      }
+      showError(error);
+      return true;
     }
+    // }
 
     return false;
   }
@@ -806,7 +806,6 @@ class CommonFunctions {
             NavigationService.navigatorKey.currentContext!, error);
       } else {
         try {
-
           BotToast.showSimpleNotification(
               title: error,
               backgroundColor: const Color.fromARGB(255, 204, 51, 51),
@@ -821,7 +820,6 @@ class CommonFunctions {
       }
     }
   }
-
 
   static Future<bool> checkLocationSettings(BuildContext context) async {
     ServiceStatus serviceStatus = await Permission.location.serviceStatus;
