@@ -59,6 +59,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
 
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
+  final settings = MapObjectManagerSettings.search();
 
   double get _headerExtent => 88;
 
@@ -108,7 +109,6 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   }
 
   Future<void> _drawSearchMarkers(SearchState searchState) async {
-    final settings = MapObjectManagerSettings.search();
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
         named: settings.name,
@@ -180,6 +180,13 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   @override
   Widget build(BuildContext context) {
     ref
+      ..watch(
+        mapObjectManagerProvider(
+          named: settings.name,
+          layerId: settings.layerId,
+          clustering: _clustering,
+        ).notifier,
+      )
       ..listen(
         searchProvider(searchScope),
         (previous, next) => _drawSearchMarkers(next),
