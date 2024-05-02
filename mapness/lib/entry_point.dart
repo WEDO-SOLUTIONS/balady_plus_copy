@@ -28,6 +28,7 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/shared/lib/deeplink_functionds.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
@@ -228,11 +229,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> openAppLink(Uri uri) async {
     final url = Uri.parse(uri.fragment);
-    final momrahId = url.queryParameters['momrah-id'];
-    final lat = url.queryParameters['lat'];
-    final lon = url.queryParameters['lon'];
-    final type = url.queryParameters['type'];
-    final objectId = url.queryParameters['dgis-object-id'];
+    final momrahId = url.queryParameters[BaldayDeeplink.momrahIdKey];
+    final lat = url.queryParameters[BaldayDeeplink.latitudeKey];
+    final lon = url.queryParameters[BaldayDeeplink.longitudeKey];
+    final type = url.queryParameters[BaldayDeeplink.typeKey];
+    final objectId = url.queryParameters[BaldayDeeplink.dgisObjectIdKey];
 
     if (objectId != null) {
       final id = int.tryParse(objectId);
@@ -241,7 +242,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             id, double.tryParse(lat ?? ''), double.tryParse(lon ?? ''));
       }
     } else if (lat != null && lon != null) {
-      if (type != null && type == 'my-location') {
+      if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
         await _myLocationDeepLinkHandler(double.parse(lat), double.parse(lon));
       } else {
         await _poiDeepLinkByCoords(double.parse(lat), double.parse(lon));
@@ -266,25 +267,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _poiDeepLinkByCoords(double latitude, double longitude) async {
-    const vendorConfigKey =
-        'dgis/native-sdk/keys/user_web_api_key_for_on_premise';
-    const catalogKey = 'Modules/directory/webapi_url';
-
     final vendorConfig = await ref.read(vendorConfigProvider.future);
     final dio = ref.read(baseDioProvider);
 
-    final catalogApi = vendorConfig[catalogKey];
-    final key = vendorConfig[vendorConfigKey];
+    final catalogApi = vendorConfig[BaldayDeeplink.catalogKey];
+    final key = vendorConfig[BaldayDeeplink.vendorConfigKey];
 
-    final geocodeUrl = '$catalogApi/3.0/items/geocode';
+    final geocodeUrl = BaldayDeeplink.geocodeUrl(catalogApi);
 
     final geocoderResponse = await dio.get(
       geocodeUrl,
       queryParameters: {
-        'lon': longitude,
-        'lat': latitude,
-        'fields': 'items.point',
-        'key': key,
+        BaldayDeeplink.longitudeKey: longitude,
+        BaldayDeeplink.latitudeKey: latitude,
+        BaldayDeeplink.fieldsKey: BaldayDeeplink.fieldsValuePoints,
+        BaldayDeeplink.keyKey: key,
       },
     );
     final data = geocoderResponse.data as Map<String, dynamic>;
@@ -338,12 +335,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final env = await ref.read(dgisEnvironmentProvider.future);
     final dio = ref.read(baseDioProvider);
 
-    final twinsUrl = '${env.twinsApi}/twins/search/partners';
+    final twinsUrl = BaldayDeeplink.twinsUrl(env.twinsApi);
 
     final twinsResponse = await dio.get(twinsUrl, queryParameters: {
-      'key': 'dfdd94df-49f9-45df-84ec-e8870ebdb9a0',
-      'partner_code': 'momrah',
-      'partner_id': momrahId,
+      BaldayDeeplink.keyKey: BaldayDeeplink.momrahTwinsKey,
+      BaldayDeeplink.momrahPartnerCodeKey:
+          BaldayDeeplink.momrahPartnerCodeValue,
+      BaldayDeeplink.momrahPartnerCodeId: momrahId,
     });
     final data = twinsResponse.data as Map<String, dynamic>;
 

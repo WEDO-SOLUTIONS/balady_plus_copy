@@ -6,6 +6,7 @@ import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/shared/lib/deeplink_functionds.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,11 +17,8 @@ class PoiCardViewModel {
   });
   final WidgetRef ref;
 
-  void onError() => Future(
-        () => ref
-            .read(mapControlsProvider.notifier)
-            .update(MapControlsStateIdle()),
-      );
+  void onError() => Future(() =>
+      ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()));
 
   Future<void> onEntranceTap(DirectoryObjectMessage? objectMessage) async {
     final controller = await ref.read(dgisControllerProvider.future);
@@ -32,21 +30,30 @@ class PoiCardViewModel {
   }
 
   void share({required int? objectId, LatLng? markerCoords}) {
+    final baseUri = BaldayDeeplink.basePoiUri;
+    final query = <String, String>{};
     if (objectId != null) {
-      String url =
-          'https://apps.balady.gov.sa/#/poi-map?dgis-object-id=$objectId';
+      query[BaldayDeeplink.dgisObjectIdKey] = objectId.toString();
+
       if (markerCoords != null) {
-        url += '&lat=${markerCoords.latitude}&lon=${markerCoords.longitude}';
+        query[BaldayDeeplink.latitudeKey] = markerCoords.latitude.toString();
+        query[BaldayDeeplink.longitudeKey] = markerCoords.longitude.toString();
       }
 
-      Share.share(url);
+      Share.share(BaldayDeeplink.urlWithQuery(baseUri, query));
     } else {
       onError();
     }
   }
 
-  String _myLocationDeeplink(LatLng location) =>
-      'https://apps.balady.gov.sa/#/poi-map?lat=${location.latitude}&lon=${location.longitude}&type=my-location';
+  String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(
+        BaldayDeeplink.basePoiUri,
+        {
+          BaldayDeeplink.latitudeKey: location.latitude.toString(),
+          BaldayDeeplink.longitudeKey: location.longitude.toString(),
+          BaldayDeeplink.typeKey: BaldayDeeplink.typeValueMyLocation,
+        },
+      );
 
   void shareMyLocation(LatLng? location) {
     if (location != null) {
