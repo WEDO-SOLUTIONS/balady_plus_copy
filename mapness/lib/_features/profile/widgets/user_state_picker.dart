@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -56,7 +57,8 @@ class UserStateRow extends ConsumerWidget {
               const Spacer(),
               Text(
                 userState.name,
-                style: context.textStyle
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
                     .text
                     .copyWith(
                       color: context.color.textAndIconsBasePrimary,
