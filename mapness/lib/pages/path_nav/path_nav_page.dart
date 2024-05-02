@@ -114,7 +114,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
           ValueListenableBuilder(
               valueListenable: navigationState,
               builder: (context, state, child) {
-                state = PathNavState.finished;
                 switch (state) {
                   case PathNavState.running:
                     return Align(
