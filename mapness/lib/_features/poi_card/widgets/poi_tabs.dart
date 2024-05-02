@@ -95,22 +95,23 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
             isActive: widget.tabController.index == 1,
           ),
         ),
-        if (inBuildingCount > 0)
-          Tab(
-            iconMargin: EdgeInsets.zero,
-            child: _PoiTabItem(
-              title: context.l10n.organisations,
-              count: inBuildingCount,
-              onTap: () {
-                if (count == 0) {
-                  widget.tabController.index = widget.tabController.previousIndex;
-                  return;
-                }
-                widget.tabController.animateTo(2);
-              },
-              isActive: widget.tabController.index == 2,
-            ),
-          ),
+        Tab(
+          iconMargin: EdgeInsets.zero,
+          child: inBuildingCount > 0
+              ? _PoiTabItem(
+                  title: context.l10n.organisations,
+                  count: inBuildingCount,
+                  onTap: () {
+                    if (count == 0) {
+                      widget.tabController.index = widget.tabController.previousIndex;
+                      return;
+                    }
+                    widget.tabController.animateTo(2);
+                  },
+                  isActive: widget.tabController.index == 2,
+                )
+              : const SizedBox.shrink(),
+        ),
       ],
     );
   }
@@ -162,14 +163,11 @@ class _PoiTabItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: context.textStyle
-                          .footNoteBold
-                          .copyWith(
-                            color: isActive ?? false
-                                ? context.color.textAndIconsBasePrimary
-                                : context.color.textAndIconsBasePrimary
-                                    .withOpacity(0.5),
-                          ),
+                      style: context.textStyle.footNoteBold.copyWith(
+                        color: isActive ?? false
+                            ? context.color.textAndIconsBasePrimary
+                            : context.color.textAndIconsBasePrimary.withOpacity(0.5),
+                      ),
                     ),
                     if (count != null)
                       Padding(
@@ -183,22 +181,16 @@ class _PoiTabItem extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             // Fix shape for big numbers
-                            borderRadius:
-                                count! < 100 ? null : BorderRadius.circular(50),
-                            shape: count! < 100
-                                ? BoxShape.circle
-                                : BoxShape.rectangle,
-                            color: isActive ?? false
-                                ? context.color.strokeAccent
-                                : NonThemeColor.color72.withOpacity(0.3),
+                            borderRadius: count! < 100 ? null : BorderRadius.circular(50),
+                            shape: count! < 100 ? BoxShape.circle : BoxShape.rectangle,
+                            color:
+                                isActive ?? false ? context.color.strokeAccent : NonThemeColor.color72.withOpacity(0.3),
                           ),
                           child: Text(
                             '$count',
-                            style: context.textStyle
-                                .caption
-                                .copyWith(
-                                  color: Colors.white,
-                                ),
+                            style: context.textStyle.caption.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
