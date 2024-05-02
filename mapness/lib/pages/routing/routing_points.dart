@@ -36,6 +36,7 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
     required this.collapseInitially,
     super.key,
   });
+
   final double biggestHeight;
   final bool collapseInitially;
 
@@ -44,10 +45,21 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 }
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
+
   List<RoutePoint> points = [
     RoutePointMyLocation(),
     RoutePointDirectoryObject(null),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+  }
 
   @override
   // ignore: prefer_expression_function_bodies
