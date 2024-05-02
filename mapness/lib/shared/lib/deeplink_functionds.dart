@@ -30,19 +30,9 @@ class BaldayDeeplink {
   static const String momrahPartnerCodeId = 'partner_id';
 
   // POI
-
-  /// Here we do not allow to use String to manipulate with deeplink uri
-  /// because we want to make it robust
-  /// If you want to add new query parameters you need to add it
-  ///
-  /// `final newUri = BaldayDeeplink.baseUri.replace(queryParameters: newQueryParameters);`
-  ///
-  /// If you want to add new path to it:
-  ///
-  /// `final newUri = BaldayDeeplink.baseUri.replace(path: '/#/poi-map/');`
-
   static String get basePoiUri => '$baseAuthorityWithScheme/#/poi-map';
 
+  // Helper
   static String urlWithQuery(String baseUrl, Map<String, dynamic> map) {
     final pairs = <String>[];
     map.forEach((key, value) {
