@@ -1,4 +1,5 @@
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,8 +8,8 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class UnautorizedProfile extends ConsumerWidget {
-  const UnautorizedProfile({super.key, this.onConnect});
 
+  const UnautorizedProfile({super.key, this.onConnect});
   final VoidCallback? onConnect;
 
   @override
@@ -46,7 +47,8 @@ class UnautorizedProfile extends ConsumerWidget {
               child: Text(
                 context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
                 textAlign: TextAlign.center,
-                style: context.textStyle
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
                     .text
                     .copyWith(color: Colors.white),
               ),
@@ -54,18 +56,33 @@ class UnautorizedProfile extends ConsumerWidget {
             const SizedBox(
               height: 16,
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    primaryLabel: context.l10n.connectToMomrah,
-                    buttonColorScheme: ButtonColorScheme.onColor,
-                    onTap: onConnect,
-                    textColor: context.color.textAndIconsStatusAccent,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Material(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                child: InkWell(
+                  onTap: onConnect,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          context.l10n.connectToMomrah,
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .callout
+                              .copyWith(
+                                  color: context
+                                      .color.textAndIconsStatusAccent,),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
             const SizedBox(
               height: 16,
