@@ -27,10 +27,13 @@ class LanguagePicker extends StatelessWidget {
 }
 
 class LanguageRow extends ConsumerWidget {
+  // According to task BALADY-416 to hide flags we temporary hide it with boolean flag
+  // We don't delete it because this goes against the design of this feature
+  static const showFlags = false;
   const LanguageRow({
-    super.key,
     required this.language,
     required this.border,
+    super.key,
   });
 
   final Language language;
@@ -60,21 +63,13 @@ class LanguageRow extends ConsumerWidget {
           },
           child: ContentRow(
             options: ContentRowOptions(
-              leadingIcon: SvgPicture.asset(
-                switch (language) {
-                  Language.arabic => 'assets/icons/svg/sa_flag.svg',
-                  Language.english => 'assets/icons/svg/uk_flag.svg',
-                },
-
-                // language == Language.arabic ? 'assets/icons/svg/sa_flag.svg' : 'assets/icons/svg/uk_flag.svg',
-                height: 16,
-                width: 22,
-                package: PackageConfig.packageName,
-              ),
+              leadingIcon: leadingIcon,
               title: language.title,
               actionWidget: ContentRowActionOptions(
                 actionIcon: AppIcons(
-                  iconData: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
+                  iconData: currentLanguage == language
+                      ? GeneralIcons.bulletCircleSolid
+                      : GeneralIcons.circleNull,
                   size: 24,
                   color: currentLanguage == language
                       ? context.color.textAndIconsStatusAccent
@@ -87,4 +82,16 @@ class LanguageRow extends ConsumerWidget {
       ),
     );
   }
+
+  Widget? get leadingIcon => showFlags
+      ? SvgPicture.asset(
+          switch (language) {
+            Language.arabic => 'assets/icons/svg/sa_flag.svg',
+            Language.english => 'assets/icons/svg/uk_flag.svg',
+          },
+          height: 16,
+          width: 22,
+          package: PackageConfig.packageName,
+        )
+      : null;
 }
