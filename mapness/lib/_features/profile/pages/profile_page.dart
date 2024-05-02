@@ -20,6 +20,10 @@ import 'package:mapness/widgets/profile/unathorized_profile.dart';
 final InAppReview inAppReview = InAppReview.instance;
 
 class ProfilePage extends ConsumerWidget {
+  // According to task to hide flags we temporary hide it with boolean flag
+  // We don't delete it because this goes against the design of this feature
+  static const showFlags = false;
+
   const ProfilePage({super.key});
 
   @override
@@ -97,11 +101,13 @@ class ProfilePage extends ConsumerWidget {
                                   ),
                                   leadingIcon: Icon(
                                     GeneralIcons.questionCircleLTR,
-                                    color: context.color.textAndIconsStatusAccent,
+                                    color:
+                                        context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.helpCenter,
                                 ),
-                                onTap: () => const HelpCenterRoute().push(context),
+                                onTap: () =>
+                                    const HelpCenterRoute().push(context),
                               ),
                               ContentRow(
                                 options: ContentRowOptions(
@@ -110,7 +116,8 @@ class ProfilePage extends ConsumerWidget {
                                   ),
                                   leadingIcon: Icon(
                                     GeneralIcons.infoCircleFill,
-                                    color: context.color.textAndIconsStatusAccent,
+                                    color:
+                                        context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.aboutApp,
                                 ),
@@ -125,7 +132,8 @@ class ProfilePage extends ConsumerWidget {
                                   ),
                                   leadingIcon: Icon(
                                     GeneralIcons.starSolid,
-                                    color: context.color.textAndIconsStatusAccent,
+                                    color:
+                                        context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.rateBaladyApp,
                                 ),
@@ -150,17 +158,11 @@ class ProfilePage extends ConsumerWidget {
                                     options: ContentRowOptions(
                                       title: context.l10n.language,
                                       subtitle: language.title,
-                                      leadingIcon: SvgPicture.asset(
-                                        language == Language.arabic
-                                            ? 'assets/icons/svg/sa_flag.svg'
-                                            : 'assets/icons/svg/uk_flag.svg',
-                                        height: 16,
-                                        width: 22,
-                                        package: PackageConfig.packageName,
-                                      ),
+                                      leadingIcon: leadingIcon(language),
                                     ),
                                     content: const LanguagePicker(),
-                                    expandIconColor: context.color.textAndIconsBaseSecondary,
+                                    expandIconColor:
+                                        context.color.textAndIconsBaseSecondary,
                                   ),
                                 ],
                               );
@@ -185,13 +187,15 @@ class ProfilePage extends ConsumerWidget {
                                 options: ContentRowOptions(
                                     leadingIcon: AppIcons(
                                       iconData: GeneralIcons.darkMode,
-                                      color: context.color.textAndIconsStatusAccent,
+                                      color: context
+                                          .color.textAndIconsStatusAccent,
                                       size: 24,
                                     ),
                                     title: context.l10n.darkMap,
                                     actionWidget: ContentRowActionOptions(
                                       enabledToggle: true,
-                                      toggleInitialValue: ref.watch(darkModeProvider),
+                                      toggleInitialValue:
+                                          ref.watch(darkModeProvider),
                                     )),
                                 onToggle: (_) {
                                   ref.read(darkModeProvider.notifier).toggle();
@@ -223,4 +227,16 @@ class ProfilePage extends ConsumerWidget {
       ),
     );
   }
+
+  Widget? leadingIcon(Language language) => showFlags
+      ? SvgPicture.asset(
+          switch (language) {
+            Language.arabic => 'assets/icons/svg/sa_flag.svg',
+            Language.english => 'assets/icons/svg/uk_flag.svg',
+          },
+          height: 16,
+          width: 22,
+          package: PackageConfig.packageName,
+        )
+      : null;
 }
