@@ -7,12 +7,14 @@ class LoadingThanksSheet extends StatelessWidget {
   final VoidCallback onClose;
   final bool isLoading;
   final bool showValuableOpinionMessage;
+  final bool triggerOnComplete;
 
   const LoadingThanksSheet({
     required this.isLoading,
     required this.onComplete,
     required this.onClose,
     this.showValuableOpinionMessage = false,
+    this.triggerOnComplete = true,
     super.key,
   });
 
@@ -34,7 +36,9 @@ class LoadingThanksSheet extends StatelessWidget {
                     isLoading: isLoading,
                     color: context.color.textAndIconsStatusAccent,
                     onComplete: () {
-                      onComplete();
+                      if (triggerOnComplete) {
+                        onComplete();
+                      }
                       if (!showValuableOpinionMessage) {
                         Future.delayed(const Duration(seconds: 3), onClose);
                       }
