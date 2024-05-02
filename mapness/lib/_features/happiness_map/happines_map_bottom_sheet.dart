@@ -15,6 +15,7 @@ import 'package:mapness/app/routes/happines_map.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
+import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_thanks_sheet.dart';
 
 class HappinessBottomSheet extends ConsumerStatefulWidget {
@@ -92,6 +93,13 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
       );
     }
 
+    if (requestState is AsyncLoading && state.feedback == null) {
+      return const Align(
+        alignment: Alignment.bottomCenter,
+        child: LoadingSheet(),
+      );
+    }
+
     if (requestState is AsyncLoading || requestState.requireValue) {
       return Align(
         alignment: Alignment.bottomCenter,
@@ -102,6 +110,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
             isLoading: requestState is AsyncLoading,
             onComplete: widget.onFeedbackSent,
             onClose: widget.onClose,
+            triggerOnComplete: state.feedback == HappinessFeedback.like,
           ),
         ),
       );
