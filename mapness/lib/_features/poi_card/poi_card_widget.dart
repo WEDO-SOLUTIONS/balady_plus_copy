@@ -121,6 +121,7 @@ class _ContentState extends ConsumerState<_Content>
 
   @override
   void dispose() {
+    resetPadding();
     _tabController.dispose();
     _tabType.dispose();
     super.dispose();
@@ -238,6 +239,13 @@ class _ContentState extends ConsumerState<_Content>
     /// if [availableExpansions] contains [Expansion.middle] and [Expansion.collapsed]
     final middleHeight = math.max(heightOfScreen / 3, collapsedHeight + 1);
 
+    setPaddingToCamera(switch (_expansion.value) {
+      Expansion.collapsed => collapsedHeight,
+      Expansion.expanded => heightOfScreen / 2,
+      Expansion.hidden => hiddenHeight,
+      Expansion.middle => middleHeight,
+    });
+
     return Directionality(
       textDirection: switch (language) {
         Language.arabic => TextDirection.rtl,
@@ -257,8 +265,9 @@ class _ContentState extends ConsumerState<_Content>
           scrollController: scrollController,
           biggestHeight: biggestHeight,
         ),
-        onExpansionChanged: (expansion, {byUser = false}) =>
-            _expansion.value = expansion,
+        onExpansionChanged: (expansion, {byUser = false}) => setState(() {
+          _expansion.value = expansion;
+        }),
         scrollHeader: PoiPhotosHeader(
           objectId: objectId,
           expansion: _expansion,
@@ -380,5 +389,30 @@ class _ContentState extends ConsumerState<_Content>
         bearing: cameraPosition?.tilt ?? 0,
       ),
     );
+  }
+
+  void setPaddingToCamera(double size) {
+    final pixelSize = MediaQuery.of(context).devicePixelRatio;
+    final navbarSize = MediaQuery.of(context).viewPadding.bottom;
+
+    ref.watch(cameraPositionProvider.notifier).setPadding(
+          CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: 0,
+            rightPadding: 0,
+            bottomPadding: (size * pixelSize - navbarSize * pixelSize).floor(),
+          ),
+        );
+  }
+
+  void resetPadding() {
+    ref.watch(cameraPositionProvider.notifier).setPadding(
+          CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: 0,
+            rightPadding: 0,
+            bottomPadding: 0,
+          ),
+        );
   }
 }
