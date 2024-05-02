@@ -158,10 +158,15 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       EventsRoute.open(context, event);
     } else if (event is MyLocationTapEvent) {
       if (context.mounted) {
+        final userLocation = ref.read(locationProvider);
         PoiMapRoute.open(
           ref.read(goRouterProvider),
           -1,
-          latLng: event.latLng,
+          latLng: userLocation != null
+              ? LatLng(
+                  latitude: userLocation.latitude,
+                  longitude: userLocation.longitude)
+              : event.latLng,
           zoom: 17,
           bearing: 0,
           tilt: 0,
