@@ -12,6 +12,7 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
+import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_thanks_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_feedback_mood.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_feedback_tags.dart';
@@ -41,7 +42,8 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
         ref.watch(iwishFeedbackProvider(widget.iwishId).notifier);
     final feedbackState = ref.watch(iwishFeedbackProvider(widget.iwishId));
 
-    if (entityState.hasError || feedbackState.hasError) {
+    final hasError = entityState.hasError || feedbackState.hasError;
+    if (hasError) {
       return ErrorSheet(
         onRetry: feedbackNotifier.submitFeedback,
         buttonLabel: context.l10n.reload,
@@ -49,10 +51,22 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
       );
     }
 
-    final bool hasFeedback =
+    final isLoading = entityState.isLoading || feedbackState.isLoading;
+    final didSentFeedback = entityState.value?.feedbackSent ?? false;
+    final isFeedbackComplited =
+        entityState.value?.state == IwishState.completed;
+    final isSetMood = feedbackState.valueOrNull?.mood != null;
+    final hasFeedback =
         entityState.hasValue && entityState.requireValue.feedbackSent;
 
-    if (entityState.isLoading || feedbackState.isLoading || hasFeedback) {
+    if (isLoading && (!didSentFeedback || !isSetMood) && !isFeedbackComplited) {
+      return const Align(
+        alignment: Alignment.bottomCenter,
+        child: LoadingSheet(),
+      );
+    }
+
+    if (feedbackState.isLoading || hasFeedback) {
       return Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
@@ -62,6 +76,8 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
             isLoading: entityState.isLoading || feedbackState.isLoading,
             onComplete: widget.onFeedbackSent,
             showValuableOpinionMessage: true,
+            triggerOnComplete:
+                feedbackState.valueOrNull?.mood == IwishFeedbackMoodType.happy,
             onClose: () {
               if (mounted) {
                 IwishCardRoute(iwishId: widget.iwishId).replace(context);
