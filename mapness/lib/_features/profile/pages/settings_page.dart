@@ -1,17 +1,18 @@
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/_features/profile/widgets/dark_mode_cell.dart';
+import 'package:mapness/_features/profile/widgets/expandable_cell.dart';
+import 'package:mapness/_features/profile/widgets/language_picker.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
-import 'package:mapness/widgets/profile/dark_mode_cell.dart';
-import 'package:mapness/widgets/profile/expandable_cell.dart';
-import 'package:mapness/widgets/profile/language_picker.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -83,8 +84,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           },
                           child: Text(
                             context.l10n.settings,
-                            style: context.textStyle.accent.copyWith(
-                                color: context.color.textAndIconsBasePrimary),
+                            style: Theme.of(context)
+                                .extension<ThemeTextStyles>()!
+                                .callout
+                                .copyWith(
+                                    color: context
+                                        .color.textAndIconsBasePrimary),
                           ),
                         ),
                         const Spacer(),
@@ -101,6 +106,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 Consumer(
                   builder: (context, ref, child) {
                     final language = ref.watch(appLanguageProvider);
+
                     return ExpandableCell(
                       title: context.l10n.language,
                       subtitle: language.title,
@@ -118,10 +124,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     children: [
                       Text(
                         context.l10n.chooseTheLanguageOfAll,
-                        style: context.textStyle.caption.copyWith(
-                          color: context.color.textAndIconsBasePrimary
-                              .withOpacity(0.36),
-                        ),
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .caption
+                            .copyWith(
+                              color: context.color.textAndIconsBasePrimary
+                                  .withOpacity(0.36),
+                            ),
                       ),
                     ],
                   ),
@@ -139,10 +148,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     children: [
                       Text(
                         context.l10n.changeTheColorSchemeOfAnApp,
-                        style: context.textStyle.caption.copyWith(
-                          color: context.color.textAndIconsBasePrimary
-                              .withOpacity(0.36),
-                        ),
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .caption
+                            .copyWith(
+                              color: context.color.textAndIconsBasePrimary
+                                  .withOpacity(0.36),
+                            ),
                       ),
                     ],
                   ),

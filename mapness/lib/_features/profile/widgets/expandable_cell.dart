@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -77,7 +77,8 @@ class ExpandableCell extends StatelessWidget {
                             ),
                             Text(
                               subtitle!,
-                              style: context.textStyle
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
                                   .caption
                                   .copyWith(color: context.color.textAndIconsBasePrimary),
                             ),

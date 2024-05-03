@@ -265,7 +265,10 @@ class _ContentState extends ConsumerState<_Content>
         ),
         actions: PoiCardFooter2(
           data: data,
-          share: () => viewModel.share(objectId: objectId),
+          share: () => viewModel.share(
+            objectId: objectId,
+            center: widget.closestPoint,
+          ),
           callPhone: () => viewModel.callPhone(data: data),
           onEntranceTap: () => showEntrance(data),
         ),

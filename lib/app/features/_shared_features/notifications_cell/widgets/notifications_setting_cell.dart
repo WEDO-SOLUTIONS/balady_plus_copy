@@ -8,13 +8,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/reload_widget.dart';
-import '../../../../core/utils/constants/paths/icon_paths.dart' as iconPath;
+import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../notifications/data/repositories/notification_repository_implementation.dart';
 import '../../../notifications/domain/entities/set_notifications_profile_params.dart';
 import '../bloc/notifications_setting_cubit.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:balady_uikit/balady_uikit.dart';
 
 class NotificationsSettingCell extends StatefulWidget {
   const NotificationsSettingCell({super.key});
@@ -66,30 +65,18 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                   .notificationsSettingsList.categories!)));
                     });
                   }
+
                   return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ContentWrapper(
-                        color: context.color.surfaceBaseSecondary,
-                        children: [
-                          ContentRow(
-                            options: ContentRowOptions(
-                                leadingIcon:            
-                                     SvgPicture.asset(
-                                      iconPath.IconPath.notificationIc2,
-                                      height: 24,
-                                      width: 24,
-                                      colorFilter: const ColorFilter.mode(
-                                        AppColor.primary900Light,
-                                        BlendMode.srcIn,
-                                      ),
-                                    ),
-                                title: 'notifications'.tr(),
-                                actionWidget: ContentRowActionOptions(
-                                  enabledToggle: true,
-                                  toggleInitialValue: state.isChecked,
-                                )),
-                            onToggle: (_) {
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
+                        child: Material(
+                          borderRadius: BorderRadius.circular(8),
+                          color: const Color(0xFFF5F7FA),
+                          child: InkWell(
+                            onTap: () {
                               cubit.setNotificationsProfile(
                                   SetNotificationsProfileParams(
                                       enabled: !state.isChecked,
@@ -97,20 +84,74 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                       applicationId: 'super-app'),
                                   !state.isChecked);
                             },
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: Spacing.verticalGapBetweenChips,
-                      ),
-                      Text(
-                        'enable_disable_notifications'.tr(),
-                        style: context.textStyle.caption.copyWith(
-                          color: const Color(0xFF1E2A36).withOpacity(0.36),
+                            borderRadius: BorderRadius.circular(8),
+                            child: SizedBox(
+                              height: 48,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      IconPath.notificationIc2,
+                                      height: 24,
+                                      width: 24,
+                                      colorFilter: const ColorFilter.mode(
+                                        AppColor.primary900Light,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 12,
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 2.0),
+                                      child: Text(
+                                        'notifications'.tr(),
+                                        style: Theme.of(context)
+                                            .extension<ThemeTextStyles>()!
+                                            .text
+                                            .copyWith(
+                                                color: const Color(0xFF1E2A36)),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    IgnorePointer(
+                                      child: CupertinoSwitch(
+                                        onChanged: (bool value) {},
+                                        value: state.isChecked,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(
-                        height: Spacing.verticalGapBetweenChips,
+                        height: 8,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              'enable_disable_notifications'.tr(),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .caption
+                                  .copyWith(
+                                    color: context.color.textAndIconsBasePrimary
+                                        .withOpacity(0.36),
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
                       ),
                       state.isChecked
                           ? GestureDetector(
