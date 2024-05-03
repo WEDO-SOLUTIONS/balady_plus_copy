@@ -90,7 +90,6 @@ class _ContentState extends ConsumerState<_Content>
   bool showEntrances = false;
 
   final _expansion = ValueNotifier(Expansion.middle);
-  bool _initialsEntrances = false;
 
   late final TabController _tabController;
   late final ValueNotifier<PoiTabsType> _tabType;
@@ -145,6 +144,12 @@ class _ContentState extends ConsumerState<_Content>
     final data = poiCardState?.gisObjectIdMessage;
     final objectId = data?.id?.objectId;
 
+    ref.listen(viewModelProvider, (previous, next) {
+      if (next.value != null && next.value?.gisObjectIdMessage != null) {
+        _displayEntrance(next.value!.gisObjectIdMessage!);
+      }
+    });
+
     /// loading progress indicator
     if (state.isLoading) {
       return Align(
@@ -195,13 +200,6 @@ class _ContentState extends ConsumerState<_Content>
     final name = data.buildingInfo.buildingName;
     if (name != null) {
       data.title = name;
-    }
-
-    if (!_initialsEntrances) {
-      _initialsEntrances = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _displayEntrance(data);
-      });
     }
 
     // TODO(scroollocker): move it to widget
