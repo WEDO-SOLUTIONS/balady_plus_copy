@@ -30,20 +30,20 @@ class PoiCardViewModel {
   }
 
   void share({required int? objectId, LatLng? markerCoords}) {
+    if (objectId == null) {
+      return onError();
+    }
     final baseUri = BaldayDeeplink.basePoiUri;
     final query = <String, String>{};
-    if (objectId != null) {
-      query[BaldayDeeplink.dgisObjectIdKey] = objectId.toString();
 
-      if (markerCoords != null) {
-        query[BaldayDeeplink.latitudeKey] = markerCoords.latitude.toString();
-        query[BaldayDeeplink.longitudeKey] = markerCoords.longitude.toString();
-      }
+    query[BaldayDeeplink.dgisObjectIdKey] = objectId.toString();
 
-      Share.share(BaldayDeeplink.urlWithQuery(baseUri, query));
-    } else {
-      onError();
+    if (markerCoords != null) {
+      query[BaldayDeeplink.latitudeKey] = markerCoords.latitude.toString();
+      query[BaldayDeeplink.longitudeKey] = markerCoords.longitude.toString();
     }
+
+    Share.share(BaldayDeeplink.urlWithQuery(baseUri, query));
   }
 
   String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(
