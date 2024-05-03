@@ -90,6 +90,8 @@ class _ContentState extends ConsumerState<_Content>
   bool showEntrances = false;
 
   final _expansion = ValueNotifier(Expansion.middle);
+  bool _initialsEntrances = false;
+
   late final TabController _tabController;
   late final ValueNotifier<PoiTabsType> _tabType;
 
@@ -195,6 +197,13 @@ class _ContentState extends ConsumerState<_Content>
       data.title = name;
     }
 
+    if (!_initialsEntrances) {
+      _initialsEntrances = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _displayEntrance(data);
+      });
+    }
+
     // TODO(scroollocker): move it to widget
     final infoBody = Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -205,7 +214,12 @@ class _ContentState extends ConsumerState<_Content>
           About(
             title: data.address?.buildingName ?? data.title,
             exits: data.entrances.length,
-            onEntranceTap: () => showEntrance(data),
+            onEntranceTap: () {
+              setState(() {
+                showEntrances = !showEntrances;
+              });
+              showEntrance(data);
+            },
           ),
           if (about.isNotEmpty)
             Description(
@@ -280,7 +294,12 @@ class _ContentState extends ConsumerState<_Content>
             markerCoords: widget.closestPoint,
           ),
           callPhone: () => viewModel.callPhone(data: data),
-          onEntranceTap: () => showEntrance(data),
+          onEntranceTap: () {
+            setState(() {
+              showEntrances = !showEntrances;
+            });
+            showEntrance(data);
+          },
         ),
         scrollableBody: (context, controller) =>
             DgisBottomSheetScrollableContent(
@@ -315,10 +334,6 @@ class _ContentState extends ConsumerState<_Content>
   }
 
   Future<void> showEntrance(DirectoryObjectMessage data) async {
-    setState(() {
-      showEntrances = !showEntrances;
-    });
-
     final highlightController = ref.read(highlightProvider.notifier);
 
     if (showEntrances) {
@@ -341,6 +356,22 @@ class _ContentState extends ConsumerState<_Content>
         await highlightController.removeHighlight(entrance!.id);
       }
     }
+  }
+
+  Future<void> _displayEntrance(DirectoryObjectMessage data) async {
+    final highlightController = ref.read(highlightProvider.notifier);
+
+    for (final entrance in data.entrances) {
+      await highlightController.addHighlight(entrance!.id);
+    }
+
+    await _animateToEntrance([
+      ...data.entrances
+          .map((e) => e?.geometry?.entrancePoints ?? [])
+          .toList()
+          .expand((element) => element)
+          .toList()
+    ]);
   }
 
   Future<void> _animateToEntrance(List<GeoPointMessage?> data) async {
