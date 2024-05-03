@@ -230,22 +230,26 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> openAppLink(Uri uri) async {
     final url = Uri.parse(uri.fragment);
     final momrahId = url.queryParameters[BaldayDeeplink.momrahIdKey];
-    final lat = url.queryParameters[BaldayDeeplink.latitudeKey];
-    final lon = url.queryParameters[BaldayDeeplink.longitudeKey];
+    final latString = url.queryParameters[BaldayDeeplink.latitudeKey];
+    final latitude = double.tryParse(latString ?? '');
+    final lonString = url.queryParameters[BaldayDeeplink.longitudeKey];
+    final longitude = double.tryParse(lonString ?? '');
     final type = url.queryParameters[BaldayDeeplink.typeKey];
     final objectId = url.queryParameters[BaldayDeeplink.dgisObjectIdKey];
 
     if (objectId != null) {
       final id = int.tryParse(objectId);
       if (id != null) {
-        await _poiDeeplinkById(
-            id, double.tryParse(lat ?? ''), double.tryParse(lon ?? ''));
+        final location = (latitude == null || longitude == null)
+            ? null
+            : LatLng(latitude: latitude, longitude: longitude);
+        await _poiDeeplinkById(id, location);
       }
-    } else if (lat != null && lon != null) {
+    } else if (latitude != null && longitude != null) {
       if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
-        await _myLocationDeepLinkHandler(double.parse(lat), double.parse(lon));
+        await _myLocationDeepLinkHandler(latitude, longitude);
       } else {
-        await _poiDeepLinkByCoords(double.parse(lat), double.parse(lon));
+        await _poiDeepLinkByCoords(latitude, longitude);
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
@@ -254,14 +258,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  Future<void> _poiDeeplinkById(int dgisObjectId,
-      [double? latitude, double? longitude]) async {
+  Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
     PoiMapRoute.open(
       ref.read(goRouterProvider),
       dgisObjectId,
-      latLng: (latitude == null || longitude == null)
-          ? null
-          : LatLng(latitude: latitude, longitude: longitude),
+      latLng: location,
       zoom: 17,
     );
   }

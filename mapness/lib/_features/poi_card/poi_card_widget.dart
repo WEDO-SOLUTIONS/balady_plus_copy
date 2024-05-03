@@ -130,7 +130,6 @@ class _ContentState extends ConsumerState<_Content>
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.l10n;
     final viewModel = PoiCardViewModel(ref: ref);
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId,
@@ -163,9 +162,9 @@ class _ContentState extends ConsumerState<_Content>
           children: [
             const Spacer(flex: 3),
             ErrorSheetV2(
-              errorTitle: locale.poiObjectNotFoundTitle,
-              errorContent: locale.poiObjectNotFoundContent,
-              buttonLabel: locale.poiObjectNotFoundButtonLabel,
+              errorTitle: context.l10n.poiObjectNotFoundTitle,
+              errorContent: context.l10n.poiObjectNotFoundContent,
+              buttonLabel: context.l10n.poiObjectNotFoundButtonLabel,
               assetImage: 'assets/images_svg/happy_face.svg',
               package: PackageConfig.packageName,
               onRetry: () => context.pop(),
