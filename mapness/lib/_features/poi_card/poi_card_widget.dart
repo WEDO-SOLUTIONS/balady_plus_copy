@@ -38,15 +38,16 @@ import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 class PoiCardWidget extends StatelessWidget {
+  final DgisObjectIdMessage objectId;
+  final LatLng? closestPoint;
+  final PoiCameraConfig? cameraConfig;
+
   const PoiCardWidget({
     required this.objectId,
     required this.closestPoint,
-    super.key,
     this.cameraConfig,
+    super.key,
   });
-  final DgisObjectIdMessage objectId;
-  final PoiCameraConfig? cameraConfig;
-  final LatLng? closestPoint;
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -124,12 +125,12 @@ class _ContentState extends ConsumerState<_Content>
     resetPadding();
     _tabController.dispose();
     _tabType.dispose();
+    _bottomSheetController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.l10n;
     final viewModel = PoiCardViewModel(ref: ref);
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId,
@@ -162,9 +163,9 @@ class _ContentState extends ConsumerState<_Content>
           children: [
             const Spacer(flex: 3),
             ErrorSheetV2(
-              errorTitle: locale.poiObjectNotFoundTitle,
-              errorContent: locale.poiObjectNotFoundContent,
-              buttonLabel: locale.poiObjectNotFoundButtonLabel,
+              errorTitle: context.l10n.poiObjectNotFoundTitle,
+              errorContent: context.l10n.poiObjectNotFoundContent,
+              buttonLabel: context.l10n.poiObjectNotFoundButtonLabel,
               assetImage: 'assets/images_svg/happy_face.svg',
               package: PackageConfig.packageName,
               onRetry: () => context.pop(),
@@ -276,7 +277,7 @@ class _ContentState extends ConsumerState<_Content>
           data: data,
           share: () => viewModel.share(
             objectId: objectId,
-            center: widget.closestPoint,
+            markerCoords: widget.closestPoint,
           ),
           callPhone: () => viewModel.callPhone(data: data),
           onEntranceTap: () => showEntrance(data),

@@ -1,0 +1,43 @@
+class BaldayDeeplink {
+  // General keys
+  static const String momrahIdKey = 'momrah-id';
+  static const String latitudeKey = 'lat';
+  static const String longitudeKey = 'lon';
+  static const String fieldsKey = 'fields';
+  static const String keyKey = 'key';
+  static const String typeKey = 'type';
+  static const String dgisObjectIdKey = 'dgis-object-id';
+  static const String baseAuthority = 'apps.balady.gov.sa';
+  static String get baseAuthorityWithScheme => 'https://$baseAuthority';
+
+  // My location
+  static const String typeValueMyLocation = 'my-location';
+
+  // By coordinates
+  static const vendorConfigKey =
+      'dgis/native-sdk/keys/user_web_api_key_for_on_premise';
+  static const catalogKey = 'Modules/directory/webapi_url';
+  static String geocodeUrl(String catalogApi) =>
+      '$catalogApi/3.0/items/geocode';
+
+  static const String fieldsValuePoints = 'items.point';
+
+  // Momrah
+  static String twinsUrl(String twinsApi) => '$twinsApi/twins/search/partners';
+  static const String momrahTwinsKey = 'dfdd94df-49f9-45df-84ec-e8870ebdb9a0';
+  static const String momrahPartnerCodeKey = 'partner_code';
+  static const String momrahPartnerCodeValue = 'momrah';
+  static const String momrahPartnerCodeId = 'partner_id';
+
+  // POI
+  static String get basePoiUri => '$baseAuthorityWithScheme/#/poi-map';
+
+  // Helper
+  static String urlWithQuery(String baseUrl, Map<String, dynamic> map) {
+    final pairs = <String>[];
+    map.forEach((key, value) {
+      pairs.add('$key=$value');
+    });
+    return '$baseUrl?${pairs.join('&')}';
+  }
+}
