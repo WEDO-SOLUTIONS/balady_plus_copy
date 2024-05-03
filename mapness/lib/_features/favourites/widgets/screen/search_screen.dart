@@ -55,12 +55,13 @@ class SearchScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            SearchHistory(
-              skipEmptyObjects: true,
-              onTap: (item) {
-                onHistoryItemTap?.call(item);
-              },
-            ),
+            if (itemCount == 0)
+              SearchHistory(
+                skipEmptyObjects: true,
+                onTap: (item) {
+                  onHistoryItemTap?.call(item);
+                },
+              ),
             Expanded(
               child: ListView.separated(
                 padding:
