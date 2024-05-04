@@ -14,6 +14,7 @@ import 'package:mapness/pages/path_nav/ui/path_nav_map_controlls.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -74,6 +75,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
       const RoutingRoute(collapseInitially: true).go(context);
     }
 
+    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
   }
 
@@ -114,7 +116,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
           ValueListenableBuilder(
               valueListenable: navigationState,
               builder: (context, state, child) {
-                state = PathNavState.finished;
                 switch (state) {
                   case PathNavState.running:
                     return Align(
