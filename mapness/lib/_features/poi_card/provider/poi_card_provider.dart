@@ -9,34 +9,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'poi_card_provider.g.dart';
 
 class PoiCardState {
-
-  PoiCardState({
+  const PoiCardState({
     required this.showEntrances,
-    required this.isLoading,
     required this.gisObjectIdMessage,
     this.qrTradeLicense,
     this.tradeLicense,
   });
-  bool isLoading;
-  bool showEntrances;
+
+  final bool showEntrances;
   final DirectoryObjectMessage? gisObjectIdMessage;
   final TradeLicenseMessage? tradeLicense;
   final QrLicenseMessage? qrTradeLicense;
-
-  PoiCardState copy({
-    bool? showEntrances,
-    bool? isLoading,
-    DirectoryObjectMessage? gisObjectIdMessage,
-    TradeLicenseMessage? tradeLicense,
-    QrLicenseMessage? qrTradeLicense,
-  }) =>
-      PoiCardState(
-        tradeLicense: tradeLicense ?? this.tradeLicense,
-        showEntrances: showEntrances ?? this.showEntrances,
-        isLoading: isLoading ?? this.isLoading,
-        gisObjectIdMessage: gisObjectIdMessage ?? this.gisObjectIdMessage,
-        qrTradeLicense: qrTradeLicense,
-      );
 }
 
 @riverpod
@@ -83,7 +66,6 @@ class PoiCardProvider extends _$PoiCardProvider {
     }
 
     return poiCardState = PoiCardState(
-      isLoading: true,
       showEntrances: false,
       gisObjectIdMessage: result,
       tradeLicense: tradeLicense,
