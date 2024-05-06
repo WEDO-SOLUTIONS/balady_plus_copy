@@ -19,9 +19,7 @@ enum Language {
         'english' => Language.english,
         'arabic' => Language.arabic,
         // default is arabic
-        _ => Platform.localeName.toLowerCase().contains('en')
-            ? Language.english
-            : Language.arabic,
+        _ => Platform.localeName.toLowerCase().contains('en') ? Language.english : Language.arabic,
       };
 }
 
@@ -51,6 +49,8 @@ extension LanguageData on Language {
         Language.english => 'en',
         Language.arabic => 'ar',
       };
+
+  String get languageCode => this == Language.arabic ? 'ar_SA' : 'en_SA';
 }
 
 @Riverpod(keepAlive: true)
