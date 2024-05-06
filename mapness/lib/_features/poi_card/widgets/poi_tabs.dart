@@ -1,7 +1,7 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -9,13 +9,16 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 class PoiTabs extends ConsumerStatefulWidget {
+  final PoiCardState? poiCardState;
+  final PoiModel model;
+  final TabController tabController;
+
   const PoiTabs({
     required this.tabController,
     required this.model,
     super.key,
+    this.poiCardState,
   });
-  final PoiModel model;
-  final TabController tabController;
 
   @override
   ConsumerState<PoiTabs> createState() => _PoiTabsState();
@@ -46,6 +49,7 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
         ) ??
         0;
 
+    final inBuildingCount = widget.poiCardState?.organizations?.total ?? 0;
     return TabBar(
       padding: EdgeInsets.zero,
       controller: widget.tabController,
@@ -91,22 +95,39 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
             isActive: widget.tabController.index == 1,
           ),
         ),
+        if (inBuildingCount > 0)
+          Tab(
+            iconMargin: EdgeInsets.zero,
+            child: _PoiTabItem(
+              title: context.l10n.organisations,
+              count: inBuildingCount,
+              onTap: () {
+                if (count == 0) {
+                  widget.tabController.index = widget.tabController.previousIndex;
+                  return;
+                }
+                widget.tabController.animateTo(2);
+              },
+              isActive: widget.tabController.index == 2,
+            ),
+          ),
       ],
     );
   }
 }
 
 class _PoiTabItem extends StatelessWidget {
+  final bool? isActive;
+  final VoidCallback? onTap;
+  final String title;
+  final int? count;
+
   const _PoiTabItem({
     required this.title,
     this.isActive,
     this.onTap,
     this.count,
   });
-  final bool? isActive;
-  final VoidCallback? onTap;
-  final String title;
-  final int? count;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -141,8 +162,7 @@ class _PoiTabItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
+                      style: context.textStyle
                           .footNoteBold
                           .copyWith(
                             color: isActive ?? false
@@ -174,8 +194,7 @@ class _PoiTabItem extends StatelessWidget {
                           ),
                           child: Text(
                             '$count',
-                            style: Theme.of(context)
-                                .extension<ThemeTextStyles>()!
+                            style: context.textStyle
                                 .caption
                                 .copyWith(
                                   color: Colors.white,
