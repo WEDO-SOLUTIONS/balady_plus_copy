@@ -412,7 +412,8 @@ class RenewCommercialLicenseBloc
         salamaPermitNumber: state.salamaPermitNumber,
         salamaReportNumber: state.salamaReportNumber,
         insidePetrolStation: state.insidePetrolStation,
-        salamaPermitExist: state.salamaExists == true || state.isOnlyPermit()));
+        salamaPermitExist:
+            state.salamaExists == true /*|| state.isOnlyPermit()*/));
     response.fold((failure) {
       print(failure);
       emit(
