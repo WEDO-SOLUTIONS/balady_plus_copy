@@ -50,20 +50,16 @@ class PoiCardWidget extends StatelessWidget {
   });
 
   @override
-  // ignore: prefer_expression_function_bodies
-  Widget build(BuildContext context) {
-    // ref.read(poiCardProviderProvider.notifier).getDgisObject(objectId);
-    return LayoutBuilder(
-      builder: (context, constraints) => _Content(
-        objectId: objectId,
-        cameraConfig: cameraConfig,
-        biggestHeight: constraints.biggest.height,
-        biggestWidth: constraints.biggest.width,
-        closestPoint: closestPoint,
-        // directoryObject: result,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) => _Content(
+          objectId: objectId,
+          cameraConfig: cameraConfig,
+          biggestHeight: constraints.biggest.height,
+          biggestWidth: constraints.biggest.width,
+          closestPoint: closestPoint,
+          // directoryObject: result,
+        ),
+      );
 }
 
 class _Content extends ConsumerStatefulWidget {
@@ -144,7 +140,7 @@ class _ContentState extends ConsumerState<_Content>
     final data = poiCardState?.gisObjectIdMessage;
     final objectId = data?.id?.objectId;
 
-    ref.listen(viewModelProvider, (previous, next) {
+    ref.listen(viewModelProvider, (_, next) {
       if (next.value != null && next.value?.gisObjectIdMessage != null) {
         _displayEntrance(next.value!.gisObjectIdMessage!);
       }
@@ -212,12 +208,7 @@ class _ContentState extends ConsumerState<_Content>
           About(
             title: data.address?.buildingName ?? data.title,
             exits: data.entrances.length,
-            onEntranceTap: () {
-              setState(() {
-                showEntrances = !showEntrances;
-              });
-              showEntrance(data);
-            },
+            onEntranceTap: () => showEntrance(data),
           ),
           if (about.isNotEmpty)
             Description(
@@ -292,12 +283,7 @@ class _ContentState extends ConsumerState<_Content>
             markerCoords: widget.closestPoint,
           ),
           callPhone: () => viewModel.callPhone(data: data),
-          onEntranceTap: () {
-            setState(() {
-              showEntrances = !showEntrances;
-            });
-            showEntrance(data);
-          },
+          onEntranceTap: () => showEntrance(data),
         ),
         scrollableBody: (context, controller) =>
             DgisBottomSheetScrollableContent(
@@ -332,6 +318,10 @@ class _ContentState extends ConsumerState<_Content>
   }
 
   Future<void> showEntrance(DirectoryObjectMessage data) async {
+    setState(() {
+      showEntrances = !showEntrances;
+    });
+
     final highlightController = ref.read(highlightProvider.notifier);
 
     if (showEntrances) {
