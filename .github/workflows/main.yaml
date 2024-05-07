@@ -210,8 +210,7 @@ jobs:
         run: |
           is_pr=""
           if [ -n "${CI_IS_PR}" ]; then
-            PR_ID=$(echo -n $GITHUB_REF_NAME | tr --complement --squeeze-repeats '[:alnum:]' '-' | sed 's/-merge//')
-            is_pr="**Pull Request**: [${{ github.event.pull_request.title }}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${PR_ID})\n"
+            is_pr="**Pull Request**: [${{ github.event.pull_request.title }}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${{ github.event.pull_request.number }})\n"
           fi
           curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
             \"channel_id\": \"${MM_CHANNEL_ID}\", \
