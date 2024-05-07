@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -66,10 +66,10 @@ class ExpandableWidget extends StatelessWidget {
                               subtitle!,
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
-                                  .textXS
+                                  .caption
                                   .copyWith(
                                     color: context
-                                        .color.text_and_icons_base_primary,
+                                        .color.textAndIconsBasePrimary,
                                   ),
                             ),
                           ],

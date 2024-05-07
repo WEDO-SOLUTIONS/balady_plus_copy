@@ -2,7 +2,6 @@ import 'dart:async' show StreamController;
 
 import '../../../bottom_navigation_exports.dart' show BottomNavigationModel;
 
-
 class BottomNavigationStreamService {
   late StreamController<BottomNavigationModel> _bottomNavigationController;
   late BottomNavigationModel defaultItem;

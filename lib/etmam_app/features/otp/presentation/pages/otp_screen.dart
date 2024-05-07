@@ -40,7 +40,8 @@ class _EtmamOtpScreenState extends State<EtmamOtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-   OTPPageParams? args = ModalRoute.of(context)!.settings.arguments as OTPPageParams;
+    OTPPageParams? args =
+        ModalRoute.of(context)!.settings.arguments as OTPPageParams;
 
     return Directionality(
       textDirection: (TextDirection.rtl),

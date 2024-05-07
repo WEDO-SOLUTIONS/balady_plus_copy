@@ -37,30 +37,10 @@ class CommercialLicensePermitsWidget extends StatelessWidget {
                                     'permit'.tr(),
                                     textStyle: AppStyle.cardTitleTextStle,
                                   ),
-                                  const SizedBox(width: 2),
+                                  const Spacer(),
                                   CustomTextWidget(
                                     '# ${permit.permitNumber}',
                                     textStyle: AppStyle.dateTextStyle,
-                                  ),
-                                  const Spacer(),
-                                  Container(
-                                    height: 24,
-                                    decoration: BoxDecoration(
-                                      color: AppColor.primary800Light,
-                                      borderRadius: BorderRadius.circular(40),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: Row(
-                                        children: [
-                                          CustomTextWidget(
-                                            'ACTIVE'.tr(),
-                                            textStyle: AppStyle.riyalEventStyle,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
                                   ),
                                 ],
                               ),
@@ -73,7 +53,7 @@ class CommercialLicensePermitsWidget extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         CustomTextWidget(
-                                          "permitType".tr(),
+                                          "permitName".tr(),
                                           textStyle: AppStyle.tagTextStyle,
                                         ),
                                         const SizedBox(height: 4),

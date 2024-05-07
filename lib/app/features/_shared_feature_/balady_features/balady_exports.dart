@@ -93,8 +93,7 @@ export 'widgets/map/event_card.dart';
 
  */
 
-
-// Layers Calls 
+// Layers Calls
 
 //? (Opportunities Layer)
 /**
@@ -138,9 +137,7 @@ https://apiservicesstg.balady.gov.sa/v1/gis-urbi-services/layers/2/query?outFiel
         "STREETWIDTH"
  */
 
-
 //? (BSWhiteParcelS Layer)
-
 
 // https://apiservicesstg.balady.gov.sa/v1/gis-urbi-services/layers/8/query?outFields=OBJECTID%2CAMANANAME%2CMUNNAME%2CPARCELCODE%2CSTATUS%2CSTREETNAME%2CPARCELAREA%2CCITYNAME%2CPARCELNO%2CPARCELLENGTH%2CPHASE&geometryType=esriGeometryEnvelope&geometry=46.684081591665745%2C24.703509105619972%2C46.75789598375559%2C24.833192973933365&spatialRel=esriSpatialRelIntersects
 

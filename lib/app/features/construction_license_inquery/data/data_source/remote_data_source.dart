@@ -6,7 +6,6 @@ import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_license_details_model.dart';
 import 'package:dio/dio.dart' show DioError;
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -14,12 +13,12 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import '../model/construction_license_inquery_data_model.dart';
 
 abstract class ConstructionLicenseInqueryRemoteDataSource {
-  Future< ResponseBodyModel<ConstructionLicenseDataModel>> getLicenseData(
-      int licenseNumber,String date
-      );
+  Future<ResponseBodyModel<ConstructionLicenseDataModel>> getLicenseData(
+      int licenseNumber, String date);
 }
 
-class ConstructionLicenseInqueryRemoteDataSourceImplementation implements ConstructionLicenseInqueryRemoteDataSource {
+class ConstructionLicenseInqueryRemoteDataSourceImplementation
+    implements ConstructionLicenseInqueryRemoteDataSource {
   final WebService webService;
 
   ConstructionLicenseInqueryRemoteDataSourceImplementation(
@@ -27,23 +26,22 @@ class ConstructionLicenseInqueryRemoteDataSourceImplementation implements Constr
 
   @override
   Future<ResponseBodyModel<ConstructionLicenseDataModel>> getLicenseData(
-      int licenseNumber,String date) async {
+      int licenseNumber, String date) async {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getConstructionLicenseData(licenseNumber,date),
+        ApiUrl.getConstructionLicenseData(licenseNumber, date),
       );
       final data = response.data;
 
-
-      var parsedResult = data != null ? ConstructionLicenseDataModel.fromJson(data["data"]["result"]) : null;
-      final decodedResponse = ResponseBodyModel<ConstructionLicenseDataModel>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
+      var parsedResult = data != null
+          ? ConstructionLicenseDataModel.fromJson(data["data"]["result"])
+          : null;
+      final decodedResponse =
+          ResponseBodyModel<ConstructionLicenseDataModel>.fromMap(response.data,
+              parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-
-
 
       // final result = ResponseBodyModel.fromMap(data).data?.result;
       // CommercialLicenseDataModel commercialLicencedata = CommercialLicenseDataModel.fromJson(result!);
@@ -61,7 +59,6 @@ class ConstructionLicenseInqueryRemoteDataSourceImplementation implements Constr
     } catch (ex) {
       // "Catched $ex".errorLog();
 
-
       if (ex is ServerException) {
         rethrow;
       } else {
@@ -75,8 +72,4 @@ class ConstructionLicenseInqueryRemoteDataSourceImplementation implements Constr
       }
     }
   }
-
-
-
-
 }

@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -39,9 +39,9 @@ class ErrorSheetV2 extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: (isTitle
-                  ? Theme.of(context).extension<ThemeTextStyles>()?.headingS
-                  : Theme.of(context).extension<ThemeTextStyles>()?.textM)
-              ?.copyWith(color: context.color.text_and_icons_base_primary),
+                  ? Theme.of(context).extension<ThemeTextStyles>()?.heading1
+                  : Theme.of(context).extension<ThemeTextStyles>()?.text)
+              ?.copyWith(color: context.color.textAndIconsBasePrimary),
         );
 
     final isLtr = Directionality.of(context) == TextDirection.ltr;

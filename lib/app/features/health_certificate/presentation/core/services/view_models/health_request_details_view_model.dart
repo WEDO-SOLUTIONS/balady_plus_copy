@@ -50,7 +50,6 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
       requestDetails = await model.getHealthRequestDetails(
         int.parse(requestNumber),
       );
-
     } on Exception catch (exception) {
       CommonFunctions.sendEvent(
         dioError: exception is DioException ? exception : null,

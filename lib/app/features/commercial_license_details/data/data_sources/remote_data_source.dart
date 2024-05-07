@@ -1,11 +1,10 @@
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
+
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_license_details_model.dart';
-import 'package:dio/dio.dart' show DioError, DioException;
+import 'package:dio/dio.dart';
 import 'package:dio/src/response.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
@@ -34,22 +33,46 @@ class CommercialLicenseDetailsRemoteDataSourceImplementation
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return CommercialLicenceDetails.fromJson(result!);
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on DioError catch (error) {
+      // "DioError $error".errorLog();
+      // if (error is NoDataFoundException) {
+      //   rethrow;
+      // }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
       );
-      rethrow;
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
+    } catch (ex) {
+      throw ServerException(
+        "errors_server_error_2".tr(),
+        exception: APIException(
+          errorMessage: ex.toString(),
+        ),
         response: response,
-        ex: Exception(exception.toString()),
       );
-      rethrow;
     }
   }
+}
+
+// on Exception catch (exception) {
+//   CommonFunctions.sendEvent(
+//     dioError: exception is DioException ? exception : null,
+//     response: response,
+//     ex: exception,
+//   );
+//
+//   throw ServerException(exception.toString());
+//
+// } catch (exception) {
+//   CommonFunctions.sendEvent(
+//     dioError: null,
+//     response: response,
+//     ex: Exception(exception.toString()),
+//   );
+//   throw ServerException(exception.toString());
+// }
+//}
 
 // @override
 // Future<List<CommercialLicenseDetailsModel>> getInvoiceStatuses() async {
@@ -92,4 +115,3 @@ class CommercialLicenseDetailsRemoteDataSourceImplementation
 //     }
 //   }
 // }
-}

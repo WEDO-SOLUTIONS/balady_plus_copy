@@ -76,7 +76,7 @@ class ActionShowFilterWidget extends StatelessWidget {
         "x-owner-actor-id-value": selectedDelegator.unifiedNationalNumber,
         "x-owner-actor-id-source-id": "mci",
       };
-    } else if (auth.state.userInfo != null){
+    } else if (auth.state.userInfo != null) {
       cubit.params.persoana = {
         "x-owner-actor-type-id": "person",
         "x-owner-actor-id-type-id": "identity-number",

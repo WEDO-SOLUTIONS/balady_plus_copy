@@ -18,7 +18,6 @@ import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 const searchScope = 'MapSearch';
-const searchManagerName = 'mapSearchManager';
 
 class MapSearchSheet extends StatelessWidget {
   const MapSearchSheet({
@@ -60,6 +59,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
 
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
+  final settings = MapObjectManagerSettings.search();
 
   double get _headerExtent => 88;
 
@@ -111,7 +111,8 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   Future<void> _drawSearchMarkers(SearchState searchState) async {
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
-        named: searchManagerName,
+        named: settings.name,
+        layerId: settings.layerId,
         clustering: _clustering,
       ).notifier,
     );
@@ -126,7 +127,9 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
                 context.l10n.invalid,
             onTap: () {
               PoiMapRoute.open(
-                  ref.read(goRouterProvider), markerInfo.objectId!.objectId,);
+                ref.read(goRouterProvider),
+                markerInfo.objectId!.objectId,
+              );
             },
             options: MarkerOptionsMessage(
               position: markerInfo!.geoPoint,
@@ -177,14 +180,23 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   @override
   Widget build(BuildContext context) {
     ref
+      ..watch(
+        mapObjectManagerProvider(
+          named: settings.name,
+          layerId: settings.layerId,
+          clustering: _clustering,
+        ).notifier,
+      )
       ..listen(
         searchProvider(searchScope),
         (previous, next) => _drawSearchMarkers(next),
       )
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
-    final closable = ref.watch(searchProvider(searchScope)
-            .select((value) => value is! SearchStateResults),) ||
+    final closable = ref.watch(
+          searchProvider(searchScope)
+              .select((value) => value is! SearchStateResults),
+        ) ||
         closing;
 
     return Directionality(
@@ -217,7 +229,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
           return ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Material(
-              color: const Color(0xFFF4F4F5),
+              color: Colors.white,
               child: SearchScope(
                 named: searchScope,
                 child: CustomScrollView(

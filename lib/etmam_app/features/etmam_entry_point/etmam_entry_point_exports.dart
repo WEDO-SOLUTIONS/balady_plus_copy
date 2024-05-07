@@ -34,9 +34,6 @@ export 'domain/use_cases/add_device_token.dart';
 export 'domain/use_cases/update_device_token.dart';
 export 'domain/use_cases/get_force_version.dart';
 
-
-
-
 //! presentation
 /// presentation -> blocs
 

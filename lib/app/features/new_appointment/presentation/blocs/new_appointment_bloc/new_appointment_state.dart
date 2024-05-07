@@ -23,21 +23,23 @@ class NewAppointmentState extends Equatable {
       {final BlocStatus? status,
       final String? errorMessage,
       int? currentPageValue,
-      bool? withPreviousTransaction, 
-       AppointmentItemInfo? editedItemInfo
-      
-      }) {
+      bool? withPreviousTransaction,
+      AppointmentItemInfo? editedItemInfo}) {
     return NewAppointmentState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
         currentPageValue: currentPageValue ?? this.currentPageValue,
-        editedItemInfo: editedItemInfo ?? this.editedItemInfo, 
+        editedItemInfo: editedItemInfo ?? this.editedItemInfo,
         withPreviousTransaction:
             withPreviousTransaction ?? this.withPreviousTransaction);
   }
 
   @override
-  List<Object?> get props =>
-      [status, currentPageValue, withPreviousTransaction, errorMessage, editedItemInfo
+  List<Object?> get props => [
+        status,
+        currentPageValue,
+        withPreviousTransaction,
+        errorMessage,
+        editedItemInfo
       ];
 }

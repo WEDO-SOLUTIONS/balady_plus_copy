@@ -15,25 +15,25 @@ class JodDonationViewModel extends BaseViewModel {
   double? amount;
   TextEditingController textController = TextEditingController();
 
-  List<Regions>? regions ;
-  Regions? region ;
+  List<Regions>? regions;
+  Regions? region;
 
   JodDonationViewModel(this.repository) {
     getRegions();
   }
 
-  Future getJoodEskanServicesGenerateDonationUrl () async {
+  Future getJoodEskanServicesGenerateDonationUrl() async {
     isLoading = true;
     notifyListeners();
     Response? response;
     try {
-      Map<String,dynamic> queryParameters = {
+      Map<String, dynamic> queryParameters = {
         "amount": amount?.toInt(),
         "locale": "ar",
         "region": region!.code,
         "agentId": 1,
       };
-      if(CommonProperties.userInfo != null) {
+      if (CommonProperties.userInfo != null) {
         queryParameters['mobile'] = CommonProperties.userInfo!.phone!;
       }
       response = await repository.dio.get(
@@ -45,7 +45,7 @@ class JodDonationViewModel extends BaseViewModel {
       isLoading = false;
       notifyListeners();
       return result['url'];
-    }  on Exception catch (exception) {
+    } on Exception catch (exception) {
       CommonFunctions.sendEvent(
         dioError: exception is DioException ? exception : null,
         response: response,
@@ -64,7 +64,7 @@ class JodDonationViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  Future getRegions () async {
+  Future getRegions() async {
     isLoading = true;
     notifyListeners();
     Response? response;
@@ -75,7 +75,7 @@ class JodDonationViewModel extends BaseViewModel {
       regions = result.map((e) => Regions.fromMap(e)).toList();
       isLoading = false;
       notifyListeners();
-    }  on Exception catch (exception) {
+    } on Exception catch (exception) {
       CommonFunctions.sendEvent(
         dioError: exception is DioException ? exception : null,
         response: response,

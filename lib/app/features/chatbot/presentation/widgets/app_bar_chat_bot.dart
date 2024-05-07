@@ -18,7 +18,7 @@ class AppBarChatBot extends StatelessWidget {
     ChatBotProvider provider = context.watch<ChatBotProvider>();
     return WillPopScope(
       onWillPop: () async {
-        closeScreen(context,provider);
+        closeScreen(context, provider);
         return false;
       },
       child: Container(
@@ -107,7 +107,7 @@ class AppBarChatBot extends StatelessWidget {
                                 ),
                         ),
                         IconButton(
-                          onPressed: () => closeScreen(context,provider),
+                          onPressed: () => closeScreen(context, provider),
                           icon: const Icon(Icons.close),
                         ),
                       ],
@@ -122,14 +122,14 @@ class AppBarChatBot extends StatelessWidget {
     );
   }
 
-  void closeScreen(BuildContext context,ChatBotProvider provider) {
+  void closeScreen(BuildContext context, ChatBotProvider provider) {
     showDialog(
       context: context,
       builder: (_) => const CloseChatBotPopup(),
     ).then((value) {
-      if(value == true) {
+      if (value == true) {
         Navigator.of(context).popUntil((route) => route.isFirst);
-        if(provider.chatBotMessage.value.isNotEmpty) {
+        if (provider.chatBotMessage.value.isNotEmpty) {
           BottomSheetDialog.showSheet(
             context,
             child: SubmitRatingSheet(

@@ -7,7 +7,6 @@ import 'package:mapness/features/search/ui/search_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchScreen extends ConsumerWidget {
-
   const SearchScreen({
     required this.itemBuilder,
     required this.itemCount,
@@ -24,11 +23,11 @@ class SearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-        backgroundColor: context.color.surface_base_primary,
+        backgroundColor: context.color.surfaceBaseSecondary,
         body: Column(
           children: [
             Container(
-              color: context.color.surface_base_primary,
+              color: context.color.surfaceBasePrimary,
               padding: EdgeInsets.only(
                 left: 16,
                 right: 16,
@@ -56,12 +55,13 @@ class SearchScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            SearchHistory(
-              skipEmptyObjects: true,
-              onTap: (item) {
-                onHistoryItemTap?.call(item);
-              },
-            ),
+            if (itemCount == 0)
+              SearchHistory(
+                skipEmptyObjects: true,
+                onTap: (item) {
+                  onHistoryItemTap?.call(item);
+                },
+              ),
             Expanded(
               child: ListView.separated(
                 padding:

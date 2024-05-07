@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,7 +47,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           width: 40,
                           child: Material(
                             borderRadius: BorderRadius.circular(8),
-                            color: context.color.surface_base_secondary,
+                            color: context.color.surfaceBaseSecondary,
                             child: InkWell(
                               onTap: () {
                                 context.pop();
@@ -64,7 +64,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                   width: 24,
                                   package: PackageConfig.packageName,
                                   colorFilter: ColorFilter.mode(
-                                    context.color.text_and_icons_base_primary,
+                                    context.color.textAndIconsBasePrimary,
                                     BlendMode.srcIn,
                                   ),
                                 ),
@@ -86,10 +86,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             context.l10n.settings,
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
-                                .accentM
+                                .callout
                                 .copyWith(
                                     color: context
-                                        .color.text_and_icons_base_primary),
+                                        .color.textAndIconsBasePrimary),
                           ),
                         ),
                         const Spacer(),
@@ -126,9 +126,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         context.l10n.chooseTheLanguageOfAll,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .textXS
+                            .caption
                             .copyWith(
-                              color: context.color.text_and_icons_base_primary
+                              color: context.color.textAndIconsBasePrimary
                                   .withOpacity(0.36),
                             ),
                       ),
@@ -150,9 +150,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         context.l10n.changeTheColorSchemeOfAnApp,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .textXS
+                            .caption
                             .copyWith(
-                              color: context.color.text_and_icons_base_primary
+                              color: context.color.textAndIconsBasePrimary
                                   .withOpacity(0.36),
                             ),
                       ),
@@ -164,7 +164,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ),
 
                //hamed hide nofication settings
-               // const NotificationsSettingCell()
+                const NotificationsSettingCell()
               ],
             ),
           ),

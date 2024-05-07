@@ -6,7 +6,7 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(LayoutBuilder(builder: (context, constraints) {
       return Container(
-        decoration: BoxDecoration(borderRadius: BorderRadiusGeometry()),
+        decoration: const BoxDecoration(),
         height: 1000,
         width: 300,
       );

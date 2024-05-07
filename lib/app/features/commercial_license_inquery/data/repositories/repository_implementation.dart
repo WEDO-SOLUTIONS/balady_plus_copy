@@ -6,18 +6,21 @@ import '../../domain/entity/commercial_license_data_entity.dart';
 import '../../domain/repository/repository.dart';
 import '../data_source/remote_data_source.dart';
 
-
-class CommercialLicenseQueryRepositoryImplementation implements CommercialLicenseQueryRepository {
+class CommercialLicenseQueryRepositoryImplementation
+    implements CommercialLicenseQueryRepository {
   final CommercialLicenseQueryRemoteDataSource remoteDataSource;
 
   CommercialLicenseQueryRepositoryImplementation({
     required this.remoteDataSource,
   });
-  
+
   @override
-  Future<Either<Failure, ResponseBodyModel<CommercialLicenseData>>> getCommercialLicenseData( int licenseNumber,int unifiedFacilityNumber) async {
+  Future<Either<Failure, ResponseBodyModel<CommercialLicenseData>>>
+      getCommercialLicenseData(
+          int licenseNumber, int unifiedFacilityNumber) async {
     try {
-      final data = await remoteDataSource.getCommercialLicenseData(  licenseNumber, unifiedFacilityNumber);
+      final data = await remoteDataSource.getCommercialLicenseData(
+          licenseNumber, unifiedFacilityNumber);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -25,7 +28,4 @@ class CommercialLicenseQueryRepositoryImplementation implements CommercialLicens
       return Left(ServerFailure(error.errorMessage));
     }
   }
-
-
-
 }

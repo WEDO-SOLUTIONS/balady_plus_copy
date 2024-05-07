@@ -1,4 +1,3 @@
-
 class RatingRequest {
   // he is benificiary or engineering office send duflte value is BENIFICIARY
   String origin;
@@ -18,20 +17,19 @@ class RatingRequest {
   });
 
   factory RatingRequest.fromJson(Map<dynamic, dynamic> json) => RatingRequest(
-    origin: json['origin'],
-    value: json['value'],
-    remarks: json['remarks'],
-    servicesTypeId: json['servicesTypeId'],
-    requestId: json['requestId'],
-    engOfficeId: json['engOfficeId'],
-  );
+        origin: json['origin'],
+        value: json['value'],
+        remarks: json['remarks'],
+        servicesTypeId: json['servicesTypeId'],
+        requestId: json['requestId'],
+        engOfficeId: json['engOfficeId'],
+      );
 
-
-  Map<String, dynamic>  toJson() => {
-    "origin": origin,
-    "value": value,
-    "remarks": remarks,
-    "requestId": requestId,
-    "engOfficeId": engOfficeId,
-  };
+  Map<String, dynamic> toJson() => {
+        "origin": origin,
+        "value": value,
+        "remarks": remarks,
+        "requestId": requestId,
+        "engOfficeId": engOfficeId,
+      };
 }

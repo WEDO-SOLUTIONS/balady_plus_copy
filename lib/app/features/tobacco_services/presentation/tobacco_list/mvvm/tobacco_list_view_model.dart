@@ -31,7 +31,7 @@ class TobaccoListViewModel extends BaseViewModel {
       var response = await repository.getUserFacilities();
       response.fold(
         (failure) {
-            errorMessage = failure.toString();
+          errorMessage = failure.toString();
         },
         (facilities) {
           this.facilities = facilities;

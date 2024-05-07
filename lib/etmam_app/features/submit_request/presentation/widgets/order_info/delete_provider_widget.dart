@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, IconPath;
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
-    show CustomHorizontalSpace, CustomIconButtonWidget, CustomSvgIconWidget, CustomTextWidget, EtmamProviderLogoIcon, EtmamRatingEvaluationWidget, ProviderLogoIcon, RatingEvaluationWidget;
+    show
+        CustomHorizontalSpace,
+        CustomIconButtonWidget,
+        CustomSvgIconWidget,
+        CustomTextWidget,
+        EtmamProviderLogoIcon,
+        EtmamRatingEvaluationWidget,
+        ProviderLogoIcon,
+        RatingEvaluationWidget;
 
 class DeleteProviderWidget extends StatelessWidget {
   const DeleteProviderWidget(
@@ -27,7 +35,10 @@ class DeleteProviderWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           children: [
-            EtmamProviderLogoIcon(imageUrl: providerLogoUrl??"", imageSize: 38,),
+            EtmamProviderLogoIcon(
+              imageUrl: providerLogoUrl ?? "",
+              imageSize: 38,
+            ),
             const CustomHorizontalSpace(width: 13),
             Expanded(
                 child: Column(
@@ -112,14 +123,15 @@ class GreyContainerWidget extends StatelessWidget {
 class EtmamBorderContainerWidget extends StatelessWidget {
   final Widget child;
 
-  const EtmamBorderContainerWidget({Key? key, required this.child}) : super(key: key);
+  const EtmamBorderContainerWidget({Key? key, required this.child})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
         height: 87,
         decoration: BoxDecoration(
-         //   color: AppColor.lightGrey,
+            //   color: AppColor.lightGrey,
             borderRadius: const BorderRadius.all(Radius.circular(4)),
             border: Border.all(
               width: 1,

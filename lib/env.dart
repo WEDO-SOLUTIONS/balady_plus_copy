@@ -29,8 +29,6 @@ abstract class AppEnv {
     ///  await _deleteAppDir();
     // await _deleteCacheDir();
 
-
-
     WidgetsFlutterBinding.ensureInitialized();
 
     /// force app to be only portrait
@@ -38,8 +36,6 @@ abstract class AppEnv {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-
-
 
     MapUtils.loadMarkers();
     sharedPrefs.init();
@@ -53,7 +49,6 @@ abstract class AppEnv {
     //final cameras = await CommonFunctions.getAvailableCameras();
 
     // initialize somethings before start app, e.g. device details, lang
-
 
     // Initialize hive and open all needed boxes
     await HiveManager.initializeHive();

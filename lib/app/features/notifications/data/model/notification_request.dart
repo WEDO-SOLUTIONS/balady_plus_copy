@@ -3,8 +3,8 @@ class NotificationRequest {
     this.device,
     this.appId,
     this.appVersion,
-    this.fcmToken,});
-
+    this.fcmToken,
+  });
 
   Device? device;
   String? appId;
@@ -21,7 +21,6 @@ class NotificationRequest {
     map['fcmToken'] = fcmToken;
     return map;
   }
-
 }
 
 class Device {
@@ -32,7 +31,8 @@ class Device {
     this.isRooted,
     this.ip,
     this.location,
-    this.metaData,});
+    this.metaData,
+  });
 
   Device.fromJson(dynamic json) {
     id = json['id'];
@@ -40,8 +40,10 @@ class Device {
     osTypeId = json['osTypeId'];
     isRooted = json['isRooted'];
     ip = json['ip'];
-    location = json['location'] != null ? Location.fromJson(json['location']) : null;
-    metaData = json['metaData'] != null ? MetaData.fromJson(json['metaData']) : null;
+    location =
+        json['location'] != null ? Location.fromJson(json['location']) : null;
+    metaData =
+        json['metaData'] != null ? MetaData.fromJson(json['metaData']) : null;
   }
   String? id;
   String? typeId;
@@ -66,14 +68,14 @@ class Device {
     }
     return map;
   }
-
 }
 
 class MetaData {
   MetaData({
     this.additionalProp1,
     this.additionalProp2,
-    this.additionalProp3,});
+    this.additionalProp3,
+  });
 
   MetaData.fromJson(dynamic json) {
     additionalProp1 = json['additionalProp1'];
@@ -91,13 +93,13 @@ class MetaData {
     map['additionalProp3'] = additionalProp3;
     return map;
   }
-
 }
 
 class Location {
   Location({
     this.latitude,
-    this.longitude,});
+    this.longitude,
+  });
 
   Location.fromJson(dynamic json) {
     latitude = json['latitude'];
@@ -112,5 +114,4 @@ class Location {
     map['longitude'] = longitude;
     return map;
   }
-
 }

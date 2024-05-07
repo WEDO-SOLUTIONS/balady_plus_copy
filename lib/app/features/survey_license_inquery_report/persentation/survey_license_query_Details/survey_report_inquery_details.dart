@@ -31,13 +31,11 @@ class _SurveyReportInqueryDetailsState
   void initState() {
     super.initState();
 
-
     Future.microtask(() {
       setState(() {
         licenseNumber = "${bloc!.commercialLicenseNumber}#";
       });
-      bloc!.getLicenseQueryDetails(
-          bloc!.commercialLicenseNumber,bloc!.date);
+      bloc!.getLicenseQueryDetails(bloc!.commercialLicenseNumber, bloc!.date);
     });
   }
 
@@ -63,8 +61,7 @@ class _SurveyReportInqueryDetailsState
                   width: 10,
                 )),
                 TextSpan(
-                    text: licenseNumber,
-                    style: AppStyle.listTitleTextStyle),
+                    text: licenseNumber, style: AppStyle.listTitleTextStyle),
               ],
             ),
           ),
@@ -97,12 +94,10 @@ class _SurveyReportInqueryDetailsState
             ),
           );
         } else if (state.licenceQueryDetails != null) {
-          final licenceQueryDetails =
-              state.licenceQueryDetails!;
+          final licenceQueryDetails = state.licenceQueryDetails!;
           return SingleChildScrollView(
             child: Column(
               children: [
-
                 ExpandableCard(
                   title: 'survey_inquery_details'.tr(),
                   icon: IconPath.editIcon,
@@ -110,29 +105,25 @@ class _SurveyReportInqueryDetailsState
                   children: [
                     CardParameter(
                       title: 'survey_number'.tr(),
-                      value: licenceQueryDetails.licenseId
-                              .toString() ??
-                          '',
+                      value: licenceQueryDetails.licenseId.toString() ?? '',
                       bgColor: AppColor.mystic,
                     ),
-                    licenceQueryDetails.oldLicenseId != null?
-                    CardParameter(
-                      title: 'old_survey_number'.tr(),
-                      value: licenceQueryDetails.oldLicenseId ?? '',
-                      bgColor: AppColor.mystic,
-                    ):Container(),
+                    licenceQueryDetails.oldLicenseId != null
+                        ? CardParameter(
+                            title: 'old_survey_number'.tr(),
+                            value: licenceQueryDetails.oldLicenseId ?? '',
+                            bgColor: AppColor.mystic,
+                          )
+                        : Container(),
                     CardParameter(
                       title: 'survey_date'.tr(),
                       value: licenceQueryDetails.licenseIssueDateDesc ?? "",
                       bgColor: AppColor.mystic,
                     ),
-
-
                     licenceQueryDetails.purposeName != null
                         ? CardParameter(
                             title: 'survey_propose'.tr(),
-                            value:
-                                licenceQueryDetails.purposeName ?? '',
+                            value: licenceQueryDetails.purposeName ?? '',
                             bgColor: AppColor.mystic,
                           )
                         : Container(),
@@ -141,9 +132,7 @@ class _SurveyReportInqueryDetailsState
                       value: licenceQueryDetails.source ?? '',
                       bgColor: AppColor.mystic,
                     ),
-
-
-                 ],
+                  ],
                 ),
              ExpandableCard(
                         title: 'step3Title'.tr(),
@@ -195,19 +184,16 @@ class _SurveyReportInqueryDetailsState
                           CardParameter(
                             // from whats
                             title: 'compliance_main_usage'.tr(),
-                            value: licenceQueryDetails
-                                .mainBuildingClassName
+                            value: licenceQueryDetails.mainBuildingClassName
                                 .toString(),
                             bgColor: AppColor.mystic,
-                          ):Container(),
-
-                          licenceQueryDetails
-                              .subBuildingClassName != null?
-                          CardParameter(
+                          )
+                        : Container(),
+                    licenceQueryDetails.subBuildingClassName != null
+                        ? CardParameter(
                             // from whats
                             title: 'compliance_sub_usage'.tr(),
-                            value: licenceQueryDetails
-                                .subBuildingClassName
+                            value: licenceQueryDetails.subBuildingClassName
                                 .toString(),
                             bgColor: AppColor.mystic,
                           ):Container(),
@@ -357,14 +343,13 @@ class _SurveyReportInqueryDetailsState
             errorMessage: "no_data_found".tr(),
             onTab: () {
               bloc!.getLicenseQueryDetails(
-                  bloc!.commercialLicenseNumber,bloc!.date);
+                  bloc!.commercialLicenseNumber, bloc!.date);
             },
           ),
         );
       },
     );
   }
-
 
   static Future<void> navigateTo(double lat, double lng) async {
     String url = '';

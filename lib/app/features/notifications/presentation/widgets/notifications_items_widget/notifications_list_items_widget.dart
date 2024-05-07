@@ -67,7 +67,8 @@ class ListItemsEventsWidget extends StatelessWidget {
           return ListView.builder(
             padding: const EdgeInsets.all(12.0),
             itemBuilder: (BuildContext context, int index) {
-              return NotificationsItemWidget(message:state.listMessages[index]);
+              return NotificationsItemWidget(
+                  message: state.listMessages[index]);
             },
             itemCount: state.listMessages.length,
           );

@@ -23,10 +23,10 @@ class SubmitRatingViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      String apiUrl = ApiUrl.submitRating ;
+      String apiUrl = ApiUrl.submitRating;
       // Check if send servicesTypeId add this to url to call other API
       // First API depend on requestId, second depend on servicesTypeId
-      if(ratingRequest.servicesTypeId != null) {
+      if (ratingRequest.servicesTypeId != null) {
         apiUrl = "$apiUrl/${ratingRequest.servicesTypeId}";
       }
       response = await webService.dio.post(
@@ -55,5 +55,4 @@ class SubmitRatingViewModel extends BaseViewModel {
     notifyListeners();
     return null;
   }
-
 }

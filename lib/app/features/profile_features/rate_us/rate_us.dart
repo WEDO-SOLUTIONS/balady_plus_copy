@@ -2,7 +2,6 @@ import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 
-
 class RateUs extends StatefulWidget {
   const RateUs({Key? key}) : super(key: key);
 
@@ -11,7 +10,6 @@ class RateUs extends StatefulWidget {
 }
 
 class _RateUsState extends State<RateUs> {
-
   @override
   void initState() {
     LaunchReview.launch(

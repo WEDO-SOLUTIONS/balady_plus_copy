@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
@@ -21,7 +21,7 @@ class PersonalData extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         decoration: BoxDecoration(
-          color: context.color.surface_base_secondary,
+          color: context.color.surfaceBaseSecondary,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -36,7 +36,7 @@ class PersonalData extends ConsumerWidget {
               child: Divider(
                 height: 1,
                 color:
-                    context.color.text_and_icons_base_primary.withOpacity(0.2),
+                    context.color.textAndIconsBasePrimary.withOpacity(0.2),
               ),
             ),
             PersonalDataRow(
@@ -48,7 +48,7 @@ class PersonalData extends ConsumerWidget {
               child: Divider(
                 height: 1,
                 color:
-                    context.color.text_and_icons_base_primary.withOpacity(0.2),
+                    context.color.textAndIconsBasePrimary.withOpacity(0.2),
               ),
             ),
             PersonalDataRow(
@@ -60,7 +60,7 @@ class PersonalData extends ConsumerWidget {
               child: Divider(
                 height: 1,
                 color:
-                    context.color.text_and_icons_base_primary.withOpacity(0.2),
+                    context.color.textAndIconsBasePrimary.withOpacity(0.2),
               ),
             ),
             PersonalDataRow(
@@ -72,7 +72,7 @@ class PersonalData extends ConsumerWidget {
               child: Divider(
                 height: 1,
                 color:
-                    context.color.text_and_icons_base_primary.withOpacity(0.2),
+                    context.color.textAndIconsBasePrimary.withOpacity(0.2),
               ),
             ),
             PersonalDataRow(
@@ -84,7 +84,7 @@ class PersonalData extends ConsumerWidget {
               child: Divider(
                 height: 1,
                 color:
-                    context.color.text_and_icons_base_primary.withOpacity(0.2),
+                    context.color.textAndIconsBasePrimary.withOpacity(0.2),
               ),
             ),
             PersonalDataRow(
@@ -96,7 +96,7 @@ class PersonalData extends ConsumerWidget {
               child: Divider(
                 height: 1,
                 color:
-                    context.color.text_and_icons_base_primary.withOpacity(0.2),
+                    context.color.textAndIconsBasePrimary.withOpacity(0.2),
               ),
             ),
             PersonalDataRow(
@@ -129,16 +129,16 @@ class PersonalDataRow extends StatelessWidget {
               title,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .textM
-                  .copyWith(color: context.color.text_and_icons_base_primary),
+                  .text
+                  .copyWith(color: context.color.textAndIconsBasePrimary),
             ),
             Text(
               subtitle,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .textS
+                  .footNote
                   .copyWith(
-                    color: context.color.text_and_icons_base_tertiary,
+                    color: context.color.textAndIconsBaseTertiary,
                   ),
             ),
           ],

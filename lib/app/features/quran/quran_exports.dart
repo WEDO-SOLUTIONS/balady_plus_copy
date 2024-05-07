@@ -26,6 +26,5 @@ export 'data/models/quran_sura_info_model.dart';
 /// presentation -> pages
 export 'presentation/pages/quran_page.dart';
 
-
 /// presentation -> widgets
 //export 'presentation/widgets/vd_header_desc_widget.dart';

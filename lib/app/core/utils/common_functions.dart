@@ -184,8 +184,6 @@ Map<String, String> carEnPlateLetters = {
 
 class CommonFunctions {
   static void updateNotificationSettings(String fcm) async {
-
-    return;
     NotificationManager manager = sl();
 
     DeviceDetails details = sl();
@@ -748,21 +746,21 @@ class CommonFunctions {
       {String? adminMunicipalityId,
       String? municipalityName,
       bool? isVDExcepted}) {
-    if (adminMunicipalityId == "003" && municipalityName == "العلا") {
+    /* if (adminMunicipalityId == "003" && municipalityName == "العلا") {
       try {
         String error = ("ola_incident_error").tr(); //MMTr;
         showError(error);
       } catch (ex) {}
 
       return true;
-    } else {
-      if (isVDExcepted ?? false) {
-        String error = ("inc_vd_excepted").tr();
+    } else {*/
+    if (isVDExcepted ?? false) {
+      String error = ("inc_vd_excepted").tr();
 
-        showError(error);
-        return true;
-      }
+      showError(error);
+      return true;
     }
+    // }
 
     return false;
   }
@@ -1129,7 +1127,7 @@ class CommonFunctions {
       });
 
 // UX Cam Events
-      if (sl<EnvType>().isProd) {
+      if (RemoteConfig.uxCamKey.isNotEmpty) {
         Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ??
                 response?.requestOptions.headers) ??
             {};

@@ -93,7 +93,7 @@ class InvoicesListItem extends StatelessWidget {
                 context.pushNamedRoute(
                   RouteName.invoiceDetails,
                   arguments: {
-                    "invoiceId":invoice.id,
+                    "invoiceId": invoice.id,
                   },
                 );
                 return;

@@ -25,42 +25,31 @@ enum VisualDistortion {
     cardImg: ImagePath.abandonedBuildings,
     label: "abandonedBuildings",
     badAppearanceImg: ImagePath.buildingFacadesBad,
-    badAppearanceDesc:
-        "abandonedBuildings_badAppearanceDesc1",
-    badAppearanceDesc2:
-        "abandonedBuildings_badAppearanceDesc2",
+    badAppearanceDesc: "abandonedBuildings_badAppearanceDesc1",
+    badAppearanceDesc2: "abandonedBuildings_badAppearanceDesc2",
     goodAppearanceImg: ImagePath.buildingFacadesGood,
-    goodAppearanceDesc:
-        "abandonedBuildings_goodAppearanceDesc",
-    goodAppearanceDesc2:
-        "abandonedBuildings_goodAppearanceDesc2",
+    goodAppearanceDesc: "abandonedBuildings_goodAppearanceDesc",
+    goodAppearanceDesc2: "abandonedBuildings_goodAppearanceDesc2",
   ),
   coveringPorches(
     cardImg: ImagePath.coveringPorches,
     label: "coveringPorches",
     badAppearanceImg: ImagePath.buildingFacadesBad,
-    badAppearanceDesc:
-        "coveringPorches_badAppearanceDesc",
-    badAppearanceDesc2:"coveringPorches_badAppearanceDesc2",
+    badAppearanceDesc: "coveringPorches_badAppearanceDesc",
+    badAppearanceDesc2: "coveringPorches_badAppearanceDesc2",
     goodAppearanceImg: ImagePath.buildingFacadesGood,
-    goodAppearanceDesc:
-        "coveringPorches_goodAppearanceDesc",
-    goodAppearanceDesc2:
-       "coveringPorches_goodAppearanceDesc2",
+    goodAppearanceDesc: "coveringPorches_goodAppearanceDesc",
+    goodAppearanceDesc2: "coveringPorches_goodAppearanceDesc2",
   ),
   buildingFacades(
     cardImg: ImagePath.buildingFacades,
     label: "buildingFacades",
     badAppearanceImg: ImagePath.buildingFacadesBad,
-    badAppearanceDesc:
-        "buildingFacades_badAppearanceDesc",
-    badAppearanceDesc2:
-        "buildingFacades_badAppearanceDesc2",
+    badAppearanceDesc: "buildingFacades_badAppearanceDesc",
+    badAppearanceDesc2: "buildingFacades_badAppearanceDesc2",
     goodAppearanceImg: ImagePath.buildingFacadesGood,
-    goodAppearanceDesc:
-        "buildingFacades_goodAppearanceDesc",
-    goodAppearanceDesc2:
-        "buildingFacades_goodAppearanceDesc2",
+    goodAppearanceDesc: "buildingFacades_goodAppearanceDesc",
+    goodAppearanceDesc2: "buildingFacades_goodAppearanceDesc2",
   );
 
   const VisualDistortion({

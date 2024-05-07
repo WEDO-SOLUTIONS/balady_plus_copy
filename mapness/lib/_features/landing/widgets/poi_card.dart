@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/app_color_scheme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
@@ -56,7 +56,7 @@ class PoiCard extends ConsumerWidget {
                           title,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .accentM
+                              .callout
                               .copyWith(color: Colors.white),
                         ),
                         const SizedBox(
@@ -66,7 +66,7 @@ class PoiCard extends ConsumerWidget {
                           subtitle,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textS
+                              .footNote
                               .copyWith(color: Colors.white.withOpacity(0.8)),
                         ),
                       ],

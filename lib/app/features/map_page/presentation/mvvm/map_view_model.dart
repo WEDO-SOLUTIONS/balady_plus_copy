@@ -3,17 +3,13 @@ import 'package:async/async.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:collection/collection.dart';
-import 'dart:math' show abs;
-import 'package:geolocator/geolocator.dart' as geoLocator;
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/features/map_page/data/model/states.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
@@ -41,8 +37,6 @@ import '../../data/model/requests/map_requests_params.dart';
 import '../../data/model/resturant_model.dart';
 import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
-import 'layers_gis_view_model.dart';
-import 'map_view_model.dart';
 
 const int mil = 300;
 TextEditingController searchController = TextEditingController();
@@ -246,18 +240,21 @@ class MapViewModel extends BaseViewModel {
             _lastHandledEvent?.visibleRect.northEastLon,
             _lastHandledEvent?.visibleRect.southWestLat,
             _lastHandledEvent?.visibleRect.southWestLon);
-        if (center != null)
+        if (center != null) {
           await controller.moveCamera(
-              CameraPositionMessage(
-                  point: GeoPointMessage(
-                    latitude: center.$1,
-                    longitude: center.$2,
-                  ),
-                  zoom: 13,
-                  tilt: 0,
-                  bearing: 0),
-              1,
-              CameraAnimationTypeMessage.linear);
+            CameraPositionMessage(
+              point: GeoPointMessage(
+                latitude: center.$1,
+                longitude: center.$2,
+              ),
+              zoom: 13,
+              tilt: 0,
+              bearing: 0,
+            ),
+            1,
+            CameraAnimationTypeMessage.linear,
+          );
+        }
       }
       searchController.text = selectedCategory.value != null
           ? selectedCategory.value!.displayName()
@@ -306,7 +303,6 @@ class MapViewModel extends BaseViewModel {
           CameraAnimationTypeMessage.linear,
         );
       }
-      // searchOnCameraMove = true;
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -314,8 +310,6 @@ class MapViewModel extends BaseViewModel {
         final iconPath = selectedCategory.value != null
             ? selectedCategory.value!.markerIconName()
             : "assets/maps/icons/ic_marker.svg";
-
-        //  await controller.removeAllMarkers(fromManager: mapObjectManager);
 
         for (final markerInfo in data.itemMarkerInfos!) {
           final markerCategory = selectedCategory.value;
@@ -331,15 +325,18 @@ class MapViewModel extends BaseViewModel {
             onTap: () async {
               refreshMap = false;
               await controller.moveCamera(
-                  CameraPositionMessage(
-                      point: GeoPointMessage(
-                          latitude: markerInfo.geoPoint.latitude,
-                          longitude: markerInfo.geoPoint.longitude),
-                      zoom: 17,
-                      tilt: 0,
-                      bearing: 0),
-                  1,
-                  CameraAnimationTypeMessage.linear);
+                CameraPositionMessage(
+                  point: GeoPointMessage(
+                    latitude: markerInfo.geoPoint.latitude,
+                    longitude: markerInfo.geoPoint.longitude,
+                  ),
+                  zoom: 17,
+                  tilt: 0,
+                  bearing: 0,
+                ),
+                1,
+                CameraAnimationTypeMessage.linear,
+              );
 
               refreshView();
               selectedPointId.value = markerInfo.objectId;
@@ -363,7 +360,7 @@ class MapViewModel extends BaseViewModel {
         await controller.addMarkers(markers);
       }
       if (data.firstPage?.items != null) {
-        final responseDistance = await controller.getDistanceTo(
+        await controller.getDistanceTo(
           _mapToDistanceRequest(
             data.firstPage!.items
                 .map((e) => e as DirectoryObjectMessage)
@@ -374,7 +371,7 @@ class MapViewModel extends BaseViewModel {
       if (data.firstPage != null) {
         await controller.releasePage(data.firstPage!);
       }
-    } catch (e) {}
+    } catch (_) {}
   }
 
   List<DistanceRequestMessage> _mapToDistanceRequest(
@@ -689,7 +686,7 @@ class MapViewModel extends BaseViewModel {
   void getLocationAndMoveCamera() async {
     var latlng = await Helpers.getMapLocation();
 
-    if (latlng != null)
+    if (latlng != null) {
       await controller.setCameraPosition(
         CameraPositionMessage(
           zoom: 20,
@@ -701,6 +698,7 @@ class MapViewModel extends BaseViewModel {
           ),
         ),
       );
+    }
   }
 
   callSearch() async {
@@ -710,7 +708,7 @@ class MapViewModel extends BaseViewModel {
       String? query = selectedCategory.value != null
           ? selectedCategory.value!.displayName()
           : searchController.text;
-      if (query != null && query.isNotEmpty) {
+      if (query.isNotEmpty) {
         // showLoading1();
 
         await performSearch(
@@ -733,9 +731,9 @@ class MapViewModel extends BaseViewModel {
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
       (element) => element.layerId == layerSelected.value!.id,
     );
-    if (gisLayer == GISMapLayers.cityPlaces)
+    if (gisLayer == GISMapLayers.cityPlaces) {
       return;
-    else {
+    } else {
       callGISLayersSearch();
     }
   }
@@ -792,7 +790,7 @@ class MapViewModel extends BaseViewModel {
         final markers = r.items
             ?.map(
               (element) {
-                if (element.getLocation() != null)
+                if (element.getLocation() != null) {
                   return Marker(
                     id: element.id.toString(),
                     options: MarkerOptionsMessage(
@@ -820,6 +818,7 @@ class MapViewModel extends BaseViewModel {
                       refreshMap = true;
                     },
                   );
+                }
                 return null;
               },
             )
@@ -869,7 +868,7 @@ class MapViewModel extends BaseViewModel {
 
     List? pointList = await layersRepositories.getPointDetailsInLayers(
         params: MapRequestParams(
-      layer: gisSelectedLayer!,
+      layer: gisSelectedLayer,
       objectId: objectId,
       northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
       northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
@@ -892,9 +891,10 @@ class MapViewModel extends BaseViewModel {
         await layersRepositories.getInvetmentDetails(id, type);
 
     hideLoading1();
-    if (data != null)
+    if (data != null) {
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.investmentPage, arguments: data);
+    }
 
     return data;
   }
@@ -907,9 +907,10 @@ class MapViewModel extends BaseViewModel {
         await layersRepositories.getTempRentalDetails(id, type);
 
     hideLoading1();
-    if (data != null)
+    if (data != null) {
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.tempRentalPage, arguments: data);
+    }
 
     return data;
   }
@@ -1084,7 +1085,7 @@ class MapViewModel extends BaseViewModel {
       for (var element in pointList) {
         for (List<GeoPointMessage> i in element.pathsGoogle) {
           int id = int.parse(element.id);
-          String idPolyline = "${id.toString()}+${i}";
+          String idPolyline = "${id.toString()}+$i";
           polylines.add(
             Polyline(
               id: idPolyline,
@@ -1128,10 +1129,8 @@ class MapViewModel extends BaseViewModel {
             id: element.id.toString(),
             options: PolygonOptionsMessage(
               strokeWidth: 2,
-              strokeColor: element.strokeColor != null
-                  ? element.strokeColor
-                  : 0x26000000,
-              color: element.color != null ? element.color : 0xFF000000,
+              strokeColor: element.strokeColor ?? 0x26000000,
+              color: element.color ?? 0xFF000000,
               contours: [element.paths],
             ),
             onTap: () {
@@ -1209,7 +1208,7 @@ class MapViewModel extends BaseViewModel {
 
   void goToLocation() async {
     Duration duration = CommonProperties.userLocationGIS == null
-        ? Duration(seconds: 3)
+        ? const Duration(seconds: 3)
         : Duration.zero;
     Timer(duration, () async {
       if (CommonProperties.userLocation == null) {
@@ -1252,9 +1251,9 @@ class MapViewModel extends BaseViewModel {
   (double, double)? calculatePositionCenter(
       double? x1, double? y1, double? x2, double? y2) {
     if (x1 == null || x2 == null || y1 == null || y2 == null) return null;
-    double center_x = (x1 + x2) / 2;
-    double center_y = (y1 + y2) / 2;
-    return (center_x, center_y);
+    double centerX = (x1 + x2) / 2;
+    double centerY = (y1 + y2) / 2;
+    return (centerX, centerY);
   }
 
   void navigateToImtethal() async {
@@ -1283,7 +1282,7 @@ class MapViewModel extends BaseViewModel {
           _lastHandledEvent?.visibleRect.northEastLon,
           _lastHandledEvent?.visibleRect.southWestLat,
           _lastHandledEvent?.visibleRect.southWestLon);
-      if (center != null)
+      if (center != null) {
         await controller.moveCamera(
             CameraPositionMessage(
                 point: GeoPointMessage(
@@ -1295,6 +1294,7 @@ class MapViewModel extends BaseViewModel {
                 bearing: 0),
             1,
             CameraAnimationTypeMessage.linear);
+      }
     });
 
     bottomSheetSize.value = 0;
@@ -1456,8 +1456,9 @@ class MapViewModel extends BaseViewModel {
   }
 
   void retreiveMapState() {
-    if (_lastCameraPosition != null)
+    if (_lastCameraPosition != null) {
       controller.setCameraPosition(_lastCameraPosition!);
+    }
     refreshMap = true;
     oldZoom = _lastCameraPosition!.zoom;
     callSearch();

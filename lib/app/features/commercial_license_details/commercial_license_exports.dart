@@ -6,14 +6,12 @@
 
 // Widgets
 
-
 /// Domain
 // Entities
 
 // repo
 
 // use cases
-
 
 /// Data
 // data sources

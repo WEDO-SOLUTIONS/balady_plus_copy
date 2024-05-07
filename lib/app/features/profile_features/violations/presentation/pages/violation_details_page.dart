@@ -28,7 +28,8 @@ class _ViolationsDetailsPageState extends State<ViolationsDetailsPage> {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
 
     return BlocProvider(
-      create: (context) => ViolationDetailsBloc()..add(
+      create: (context) => ViolationDetailsBloc()
+        ..add(
           GetViolationDetailsEvent(
               id: data['hashingViolationNumber']?.toString() ?? '',
               applicationId: data['applicationId']?.toString() ?? ''),

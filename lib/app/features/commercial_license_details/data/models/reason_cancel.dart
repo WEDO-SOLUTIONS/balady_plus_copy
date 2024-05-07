@@ -1,5 +1,3 @@
-
-
 List<ReasonCancel> allowedActionsListFromJson(List list) =>
     List<ReasonCancel>.from(
       list.map(
@@ -35,5 +33,3 @@ class ReasonCancel {
     return text;
   }
 }
-
-

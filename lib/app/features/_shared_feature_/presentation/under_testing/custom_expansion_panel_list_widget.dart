@@ -277,8 +277,7 @@
 //   Color get iconColor => expanded ? AppColor.black : AppColor.gray;
 // }
 
-
-// /* 
+// /*
 
 // BlocProvider<_ExpansionPanelCubit>(
 //       create: (_) => _ExpansionPanelCubit(initialState: -1),
@@ -368,7 +367,6 @@
 //         },
 //       ),
 //     )
-
 
 // // return Accordion(
 //     //   maxOpenSections: 1,

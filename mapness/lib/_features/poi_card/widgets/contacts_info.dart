@@ -75,7 +75,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                   package: PackageConfig.packageName,
                   height: 16,
                   width: 16,
-                  color: context.color.stroke_accent,
+                  color: context.color.strokeAccent,
                 ),
                 const SizedBox(
                   width: 12,
@@ -90,7 +90,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                           text: displayText,
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          color: context.color.text_and_icons_base_primary,
+                          color: context.color.textAndIconsBasePrimary,
                           maxLines: 1,
                         ),
                       ),
@@ -101,7 +101,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                           text: contactsModel.comment,
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
-                          color: context.color.text_and_icons_base_primary
+                          color: context.color.textAndIconsBasePrimary
                               .withOpacity(.5),
                         ),
                       ),

@@ -17,11 +17,11 @@ class MessageChatBotProvider extends BaseViewModel {
 
   MessageChatBotProvider({
     required this.repository,
-    required this.message, required this.scrollController,
+    required this.message,
+    required this.scrollController,
   }) {
     sendQuestion(message.value.question);
   }
-
 
   Future sendQuestion(String question) async {
     isLoading = true;
@@ -36,7 +36,9 @@ class MessageChatBotProvider extends BaseViewModel {
       response.fold(
         (error) {
           message.value = message.value.copyWith(
-            answer: error is ServerFailure ? error.errorMessage : 'error_please_try_again_later'.tr(),
+            answer: error is ServerFailure
+                ? error.errorMessage
+                : 'error_please_try_again_later'.tr(),
             haveError: true,
             timeStampReceived: DateTime.now(),
           );
@@ -46,10 +48,11 @@ class MessageChatBotProvider extends BaseViewModel {
           scrollControllerAction();
         },
         (stream) {
-          if(!isClose) {
+          if (!isClose) {
             listen = stream.listen((messageType) {
+              String editMessage = messageType.replaceAll("\\n", "\n");
               message.value = message.value.copyWith(
-                answer: "${message.value.answer}$messageType",
+                answer: "${message.value.answer}$editMessage",
                 // answer: message.value.answer + [messageType]
               );
               message.notifyListeners();
@@ -76,7 +79,8 @@ class MessageChatBotProvider extends BaseViewModel {
               listen!.cancel();
               scrollControllerAction();
             });
-            message.value = message.value.copyWith(timeStampReceived: DateTime.now());
+            message.value =
+                message.value.copyWith(timeStampReceived: DateTime.now());
             message.notifyListeners();
             notifyListeners();
           }
@@ -90,7 +94,7 @@ class MessageChatBotProvider extends BaseViewModel {
         ex: Exception(exception.toString()),
       );
       message.value = message.value.copyWith(
-        answer:  'error_please_try_again_later'.tr(),
+        answer: 'error_please_try_again_later'.tr(),
         haveError: true,
         timeStampReceived: DateTime.now(),
       );
@@ -106,17 +110,16 @@ class MessageChatBotProvider extends BaseViewModel {
     if (listen != null) {
       listen!.cancel();
     }
-    message.value = message.value.copyWith(answer:  ''.tr());
+    message.value = message.value.copyWith(answer: ''.tr());
     isLoading = false;
     isClose = true;
     notifyListeners();
   }
 
-
-  void scrollControllerAction () {
-    if (scrollController.position.maxScrollExtent > scrollController.offset ) {
+  void scrollControllerAction() {
+    if (scrollController.position.maxScrollExtent > scrollController.offset) {
       scrollController.animateTo(
-        scrollController.position.maxScrollExtent + 100 ,
+        scrollController.position.maxScrollExtent + 100,
         curve: Curves.linear,
         duration: const Duration(milliseconds: 550),
       );

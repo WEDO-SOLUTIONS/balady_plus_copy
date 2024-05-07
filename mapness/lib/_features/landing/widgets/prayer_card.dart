@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
 
@@ -34,20 +34,20 @@ class PrayerCard extends StatelessWidget {
                       children: [
                         Text(
                           context.l10n.presentTime,
-                          style: Theme.of(context).extension<ThemeTextStyles>()!.accentXS.copyWith(color: Colors.white),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(color: Colors.white),
                         ),
                         Text(
                           '05:18 pm',
-                          style: Theme.of(context).extension<ThemeTextStyles>()!.headingS.copyWith(color: Colors.white),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.heading1.copyWith(color: Colors.white),
                         ),
                         const Spacer(),
                         Text(
                           context.l10n.remainingTimeForPrayer,
-                          style: Theme.of(context).extension<ThemeTextStyles>()!.accentXS.copyWith(color: Colors.white),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(color: Colors.white),
                         ),
                         Text(
                           '01:26:04',
-                          style: Theme.of(context).extension<ThemeTextStyles>()!.headingM.copyWith(color: Colors.white),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.heading1.copyWith(color: Colors.white),
                         ),
                       ],
                     ),

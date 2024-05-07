@@ -1,4 +1,3 @@
-
 /*
 class GetReleation
     extends UseCase<ApigeeResponse<RelationResponse>, RelationParams> {

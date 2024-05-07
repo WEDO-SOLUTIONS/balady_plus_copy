@@ -3,17 +3,19 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
-import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
+import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
+import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
 import 'package:mapness/pages/path_nav/ui/path_nav_map_controlls.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
-import 'package:mapness/widgets/path_nav/ui/path_nav_continue_trip.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class PathNavPage extends ConsumerStatefulWidget {
@@ -33,12 +35,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   late StreamSubscription? _naviEventsListener;
 
-  final ValueNotifier<double> _bgOpacity = ValueNotifier(0);
-
   void _setNavigationState(PathNavState value) {
     setState(() {
       navigationState.value = value;
-      _bgOpacity.value = 0;
     });
   }
 
@@ -75,6 +74,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
       _setNavigationState(PathNavState.finished);
       const RoutingRoute(collapseInitially: true).go(context);
     }
+
+    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
+    ref.read(layersControlsProvider.notifier).updateLayerInfo();
   }
 
   void _naviEvent(NavigationEvent event) {
@@ -100,78 +102,39 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-    return Directionality(
-      textDirection: Directionality.of(context),
-      child: Ink(
-        width: MediaQuery.of(context).size.width,
-        child: Stack(
-          children: [
-            /// controls and driver info
-            Positioned.fill(
-              bottom: 68,
-              child: SafeArea(
-                child: PathNavMapControlls(
-                  navType: widget.navType,
-                ),
+  Widget build(BuildContext context) => Stack(
+        children: [
+          /// controls and driver info
+          Positioned.fill(
+            bottom: 68,
+            child: SafeArea(
+              child: PathNavMapControlls(
+                navType: widget.navType,
               ),
             ),
-
-            /// shadow bg + tap observer
-            Positioned.fill(
-              child: ValueListenableBuilder(
-                valueListenable: _bgOpacity,
-                builder: (context, value, child) {
-                  if (value <= 0.03) {
-                    return const SizedBox.shrink();
-                  }
-                  return Container(
-                    color: Colors.black.withOpacity(0.8 * value),
-                  );
-                },
-              ),
-            ),
-
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final maxExtent = 812 / constraints.maxHeight * 0.4;
-                  final minExtent =
-                      (75 + bottomPadding) / constraints.maxHeight;
-                  return EtaSheet(
-                    onEndTripPressed: _endTrip,
-                    onRoutePressed: () async {
-                      _setNavigationState(PathNavState.paused);
-                      await ref
-                          .read(cameraPositionProvider.notifier)
-                          .animateToRoute();
-                    },
-                    onBgOpacityChanged: (opacity) => _bgOpacity.value = opacity,
-                    maxExtent: maxExtent,
-                    minExtent: minExtent,
-                    navigationState: navigationState,
-                  );
-                },
-              ),
-            ),
-
-            ValueListenableBuilder(
+          ),
+          ValueListenableBuilder(
               valueListenable: navigationState,
-              builder: (context, state, child) => state == PathNavState.paused
-                  ? child!
-                  : const SizedBox.shrink(),
-              child: Positioned(
-                bottom: 20 + MediaQuery.of(context).padding.bottom,
-                left: 8,
-                right: 8,
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final eta = ref.watch(pathNavEtaProvider);
-                    return PathNavContinueTrip(
-                      onPressed: () async {
+              builder: (context, state, child) {
+                switch (state) {
+                  case PathNavState.running:
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) => EtaSheet(
+                          onEndTripPressed: _endTrip,
+                          onRoutePressed: () async {
+                            _setNavigationState(PathNavState.paused);
+                            await ref
+                                .read(cameraPositionProvider.notifier)
+                                .animateToRoute();
+                          },
+                        ),
+                      ),
+                    );
+                  case PathNavState.paused:
+                    return EtaContinue(
+                      onTap: () async {
                         _setNavigationState(PathNavState.running);
                         final dgisController =
                             await ref.read(dgisControllerProvider.future);
@@ -180,15 +143,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
                         await dgisController.followNavigation();
                       },
-                      eta: eta,
                     );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+                  case PathNavState.finished:
+                    return EtaFinished(onEndTripPressed: _endTrip);
+                }
+              }),
+        ],
+      );
 }

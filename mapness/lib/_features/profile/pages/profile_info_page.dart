@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,7 +45,7 @@ class ProfileInfoPage extends ConsumerWidget {
                         width: 40,
                         child: Material(
                           borderRadius: BorderRadius.circular(8),
-                          color: context.color.surface_base_secondary,
+                          color: context.color.surfaceBaseSecondary,
                           child: InkWell(
                             onTap: () {
                               context.pop();
@@ -61,7 +61,7 @@ class ProfileInfoPage extends ConsumerWidget {
                                 width: 24,
                                 package: PackageConfig.packageName,
                                 colorFilter: ColorFilter.mode(
-                                  context.color.text_and_icons_base_primary,
+                                  context.color.textAndIconsBasePrimary,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -74,8 +74,8 @@ class ProfileInfoPage extends ConsumerWidget {
                         context.l10n.profileSettings,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .accentM
-                            .copyWith(color: context.color.text_and_icons_base_primary),
+                            .callout
+                            .copyWith(color: context.color.textAndIconsBasePrimary),
                       ),
                       const Spacer(),
                       const SizedBox(
@@ -99,8 +99,8 @@ class ProfileInfoPage extends ConsumerWidget {
                       userData.getLocalizedFirstAndLastName(language),
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .headingS
-                          .copyWith(color: context.color.text_and_icons_base_primary),
+                          .heading1
+                          .copyWith(color: context.color.textAndIconsBasePrimary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
@@ -109,9 +109,7 @@ class ProfileInfoPage extends ConsumerWidget {
                     Text(
                       userData.idNo ?? '',
                       style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .textS
-                          .copyWith(
+                          .extension<ThemeTextStyles>()!.footNote.copyWith(
                             color: NonThemeColor.color39,
                           ),
                       textAlign: TextAlign.center,
@@ -141,11 +139,9 @@ class ProfileInfoPage extends ConsumerWidget {
                         children: [
                           Text(context.l10n.logOut,
                               style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .textS
-                                  .copyWith(
-                                    color: context.color.text_and_icons_status_negative,
-                                  ),),
+                                  .extension<ThemeTextStyles>()!.footNote.copyWith(
+                                  color: context.color.textAndIconsStatusNegative,
+                                ),),
                           SvgPicture.asset(
                             'assets/icons/svg/ic_profile_logout.svg',
                             height: 24,

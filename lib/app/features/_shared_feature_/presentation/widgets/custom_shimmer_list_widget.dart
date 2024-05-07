@@ -62,8 +62,6 @@ class CustomShimmerWidget extends StatelessWidget {
   }
 }
 
-
-
 class CustomShimmerGridViewWidget extends StatelessWidget {
   final double width;
   final double height;
