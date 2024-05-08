@@ -83,7 +83,7 @@ class _Content extends ConsumerStatefulWidget {
 
 class _ContentState extends ConsumerState<_Content>
     with SingleTickerProviderStateMixin {
-  bool showEntrances = false;
+  bool showEntrances = true;
 
   final _expansion = ValueNotifier(Expansion.middle);
 
@@ -142,7 +142,7 @@ class _ContentState extends ConsumerState<_Content>
 
     ref.listen(viewModelProvider, (_, next) {
       if (next.value != null && next.value?.gisObjectIdMessage != null) {
-        _displayEntrance(next.value!.gisObjectIdMessage!);
+        _toggleEntrance(next.value!.gisObjectIdMessage!, displayEntrance: true);
       }
     });
 
@@ -208,7 +208,7 @@ class _ContentState extends ConsumerState<_Content>
           About(
             title: data.address?.buildingName ?? data.title,
             exits: data.entrances.length,
-            onEntranceTap: () => showEntrance(data),
+            onEntranceTap: () => _toggleEntrance(data, displayEntrance: false),
           ),
           if (about.isNotEmpty)
             Description(
@@ -283,7 +283,7 @@ class _ContentState extends ConsumerState<_Content>
             markerCoords: widget.closestPoint,
           ),
           callPhone: () => viewModel.callPhone(data: data),
-          onEntranceTap: () => showEntrance(data),
+          onEntranceTap: () => _toggleEntrance(data, displayEntrance: false),
         ),
         scrollableBody: (context, controller) =>
             DgisBottomSheetScrollableContent(
@@ -317,37 +317,26 @@ class _ContentState extends ConsumerState<_Content>
     );
   }
 
-  Future<void> showEntrance(DirectoryObjectMessage data) async {
-    setState(() {
-      showEntrances = !showEntrances;
-    });
-
+  Future<void> _toggleEntrance(DirectoryObjectMessage data,
+      {required bool displayEntrance}) async {
     final highlightController = ref.read(highlightProvider.notifier);
 
-    if (showEntrances) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _bottomSheetController.animateTo(Expansion.collapsed);
+    if (displayEntrance == false) {
+      setState(() {
+        showEntrances = !showEntrances;
       });
-      for (final entrance in data.entrances) {
-        await highlightController.addHighlight(entrance!.id);
-      }
 
-      await _animateToEntrance([
-        ...data.entrances
-            .map((e) => e?.geometry?.entrancePoints ?? [])
-            .toList()
-            .expand((element) => element)
-            .toList()
-      ]);
-    } else {
-      for (final entrance in data.entrances) {
-        await highlightController.removeHighlight(entrance!.id);
+      if (showEntrances) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _bottomSheetController.animateTo(Expansion.collapsed);
+        });
+      } else {
+        for (final entrance in data.entrances) {
+          await highlightController.removeHighlight(entrance!.id);
+        }
+        return;
       }
     }
-  }
-
-  Future<void> _displayEntrance(DirectoryObjectMessage data) async {
-    final highlightController = ref.read(highlightProvider.notifier);
 
     for (final entrance in data.entrances) {
       await highlightController.addHighlight(entrance!.id);
