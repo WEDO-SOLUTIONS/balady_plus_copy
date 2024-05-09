@@ -123,6 +123,7 @@ jobs:
       - name: Add Android ABI filter
         run: |
           git apply .github/workflows/abi_filter.patch
+          git apply mapness/scripts/disable-force-update.patch
 
       - name: 🤖🔨 Development setup dgis_map_platform_interface
         run: |
