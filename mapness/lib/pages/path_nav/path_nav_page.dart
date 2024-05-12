@@ -18,6 +18,7 @@ import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -116,8 +117,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                           : null,
                       message: message != null
                           ? uikit.ManeuverMessageModel(
-                              comment: message.comment,
-                              state: message.state.toUIKit(),
+                              comment: message.toMessage(context.l10n),
+                              state: message.toUIKit(),
                             )
                           : null,
                     );
