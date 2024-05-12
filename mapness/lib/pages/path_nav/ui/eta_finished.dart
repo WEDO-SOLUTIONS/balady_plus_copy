@@ -4,12 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
+import 'layout_size_wrapper.dart';
+
 class EtaFinished extends ConsumerStatefulWidget {
   final VoidCallback onEndTripPressed;
   final VoidCallback onBuildAnotherRoutePressed;
+  final OnWidgetSizeChange onSizeChanged;
   const EtaFinished({
     required this.onEndTripPressed,
     required this.onBuildAnotherRoutePressed,
+    required this.onSizeChanged,
     super.key,
   });
 
@@ -23,6 +27,7 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
   Widget build(BuildContext context) => EtaSheetWrapper(
         isExpanded: _isExpanded,
         onBgTap: toggle,
+        onSizeChanged: widget.onSizeChanged,
         child: BaseRoadPanel(
           roadPanelModel: RoadPanelModelArrived(
             enabledHeader: _isExpanded,

@@ -34,6 +34,7 @@ class PathNavPage extends ConsumerStatefulWidget {
 class PathNavPageState extends ConsumerState<PathNavPage> {
   ValueNotifier<PathNavState> navigationState =
       ValueNotifier(PathNavState.running);
+  double heightOfEta = 90.0;
 
   late StreamSubscription? _naviEventsListener;
 
@@ -114,13 +115,22 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     }
   }
 
+  void _onSizeChanged(Size size) {
+    setState(() {
+      heightOfEta = size.height;
+    });
+  }
+
   @override
   Widget build(BuildContext context) => Stack(
         children: [
           /// controls and driver info
           Positioned.fill(
-            bottom: 78,
+            bottom: heightOfEta,
             child: SafeArea(
+              // We include safe area bottom height in [heightOfEta] variable during calculation of sheet height
+              // It means that we have to make padding above sheet and this is all what we need to know
+              bottom: false,
               child: PathNavMapControls(
                 navType: widget.navType,
               ),
@@ -134,16 +144,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                   case PathNavState.running:
                     return Align(
                       alignment: Alignment.bottomCenter,
-                      child: LayoutBuilder(
-                        builder: (context, constraints) => EtaSheet(
-                          onEndTripPressed: _endTripAndShowHome,
-                          onRoutePressed: () async {
-                            _setNavigationState(PathNavState.paused);
-                            await ref
-                                .read(cameraPositionProvider.notifier)
-                                .animateToRoute();
-                          },
-                        ),
+                      child: EtaSheet(
+                        onEndTripPressed: _endTripAndShowHome,
+                        onRoutePressed: () async {
+                          _setNavigationState(PathNavState.paused);
+                          await ref
+                              .read(cameraPositionProvider.notifier)
+                              .animateToRoute();
+                        },
+                        onSizeChanged: _onSizeChanged,
                       ),
                     );
                   case PathNavState.paused:
@@ -157,11 +166,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
                         await dgisController.followNavigation();
                       },
+                      onSizeChanged: _onSizeChanged,
                     );
                   case PathNavState.finished:
                     return EtaFinished(
                       onEndTripPressed: _endTripAndShowHome,
                       onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                      onSizeChanged: _onSizeChanged,
                     );
                 }
               }),

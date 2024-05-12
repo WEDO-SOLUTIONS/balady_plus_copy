@@ -8,14 +8,18 @@ import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 
+import 'layout_size_wrapper.dart';
+
 class EtaSheet extends ConsumerStatefulWidget {
   const EtaSheet({
     required this.onEndTripPressed,
     required this.onRoutePressed,
+    required this.onSizeChanged,
     super.key,
   });
   final VoidCallback onEndTripPressed;
   final VoidCallback onRoutePressed;
+  final OnWidgetSizeChange onSizeChanged;
 
   @override
   ConsumerState<EtaSheet> createState() => _EtaSheetState();
@@ -34,6 +38,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
       onBgTap: toggle,
+      onSizeChanged: widget.onSizeChanged,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           enabledHeader: _isExpanded,
