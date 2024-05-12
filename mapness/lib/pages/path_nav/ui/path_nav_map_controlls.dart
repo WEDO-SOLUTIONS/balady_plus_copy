@@ -33,7 +33,7 @@ class PathNavMapControlls extends ConsumerWidget {
         children: [
           const SizedBox(height: 6),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -74,9 +74,9 @@ class PathNavMapControlls extends ConsumerWidget {
               textDirection: TextDirection.ltr,
               child: Padding(
                 padding: const EdgeInsets.only(
-                  left: 16,
+                  left: 12,
                   top: 12,
-                  right: 16,
+                  right: 12,
                   bottom: 16,
                 ),
                 child: Row(
@@ -112,7 +112,9 @@ class PathNavMapControlls extends ConsumerWidget {
                         const ZoomControl(),
                         const Spacer(),
                         const CompassControl(),
-                        const SizedBox(height: 8),
+                        const SizedBox(
+                          height: 8,
+                        ),
                         const PathNavFollowControl(),
                       ],
                     ),
