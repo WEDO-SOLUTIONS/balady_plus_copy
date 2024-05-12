@@ -59,6 +59,12 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
       });
   }
 
+  @override
+  void dispose() {
+    _draggableScrollableController.dispose();
+    super.dispose();
+  }
+
   void onButtonTap(HappinessFeedback feedback) {
     ref.read(happinessManagerProvider.notifier).onFeedbackPressed(feedback);
 
@@ -212,7 +218,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                             if (isCollapsed) const SizedBox(height: 24),
                             if (!isCollapsed) ...[
                               const SizedBox(height: 20),
-                              HappinessTagsGrid(),
+                              const HappinessTagsGrid(),
                               const SizedBox(height: 20),
                               Material(
                                 color: context.color.surfaceBasePrimary,
