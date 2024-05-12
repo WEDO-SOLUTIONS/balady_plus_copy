@@ -6,10 +6,14 @@ import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
+import 'layout_size_wrapper.dart';
+
 class EtaContinue extends ConsumerWidget {
   final VoidCallback onTap;
+  final OnWidgetSizeChange onSizeChanged;
   const EtaContinue({
     required this.onTap,
+    required this.onSizeChanged,
     super.key,
   });
 
@@ -21,6 +25,7 @@ class EtaContinue extends ConsumerWidget {
     }
     return EtaSheetWrapper(
       isExpanded: false,
+      onSizeChanged: onSizeChanged,
       onBgTap: () {},
       child: GestureDetector(
         onTap: onTap,
