@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_expression_function_bodies
+
 import 'dart:async';
 
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
@@ -40,21 +42,17 @@ class PathNavPage extends ConsumerStatefulWidget {
 }
 
 class PathNavPageState extends ConsumerState<PathNavPage> {
+  static const padding = EdgeInsets.symmetric(horizontal: 12);
+
+  late StreamSubscription? _naviEventsListener;
   ValueNotifier<PathNavState> navigationState =
       ValueNotifier(PathNavState.running);
   double heightOfEta = 90.0;
 
-  late StreamSubscription? _naviEventsListener;
-
-  void _setNavigationState(PathNavState value) {
-    setState(() {
-      navigationState.value = value;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
+    _setPaddingToCamera(heightOfEta);
     ref.read(dgisControllerProvider).value?.setNavigatorVoice(
           ref.read(navigatorVoiceProvider),
         );
@@ -75,105 +73,23 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     super.dispose();
   }
 
-  Future<void> _endTrip(VoidCallback action) async {
-    if (navigationState.value != PathNavState.finished) {
-      ref.read(pathNavMessageProvider.notifier).stopNavigation();
-      await ref.read(dgisControllerProvider).value?.stopNavigation();
-      _setNavigationState(PathNavState.finished);
-    }
-    _setPaddingToCamera(0.0);
-    action();
-    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-    ref.read(layersControlsProvider.notifier).updateLayerInfo();
-  }
-
-  Future<void> _endTripAndBuildAnotherRoute() async {
-    await _endTrip(() {
-      if (context.mounted) {
-        const RoutingRoute(collapseInitially: true).go(context);
-      }
-    });
-  }
-
-  Future<void> _endTripAndShowHome() async {
-    await _endTrip(() {
-      if (context.mounted) {
-        const LandingRoute().go(context);
-      }
-    });
-  }
-
-  Future<void> _onPausedPressed() async {
-    _setNavigationState(PathNavState.paused);
-    await ref.read(cameraPositionProvider.notifier).animateToRoute();
-  }
-
-  Future<void> _onContinuePressed() async {
-    _setNavigationState(PathNavState.running);
-    final dgisController = await ref.read(dgisControllerProvider.future);
-
-    await _moveCameraToUser();
-
-    await dgisController.followNavigation();
-  }
-
-  void _naviEvent(NavigationEvent event) {
-    if (event == NavigationEvent.finished) {
-      _setNavigationState(PathNavState.finished);
-    }
-  }
-
-  Future<void> _moveCameraToUser() async {
-    final position = ref.read(locationProvider);
-    final cameraProvider = ref.read(cameraPositionProvider.notifier);
-
-    if (position != null) {
-      await cameraProvider.animateTo(
-        CameraPositionMessage(
-          point: position,
-          zoom: 17.5,
-          tilt: 0,
-          bearing: 0,
-        ),
-      );
-    }
-  }
-
-  void _onSizeChanged(Size size) {
-    setState(() {
-      heightOfEta = size.height;
-    });
-
-    _setPaddingToCamera(heightOfEta);
-  }
-
-  void _setPaddingToCamera(double padding) {
-    final pixelSize = MediaQuery.of(context).devicePixelRatio;
-    ref.watch(cameraPositionProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: (pixelSize * padding).floor(),
-          ),
-        );
-  }
-
-  static const padding = EdgeInsets.symmetric(horizontal: 12);
-
   @override
-  Widget build(BuildContext context) => Directionality(
-        textDirection: TextDirection.ltr,
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const SizedBox(
-                height: 6,
-                width: double.maxFinite,
-              ),
-              Directionality(
+  Widget build(BuildContext context) {
+    // We use the Directionality widget to set the text direction to ltr.
+    // This is necessary for LayersControl to be at the right side of the screen.
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            const SizedBox(height: 6, width: double.maxFinite),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: uikit.Spacing.verticalBaseToTopSafezone),
+              child: Directionality(
+                // Here we set the text direction according to the current locale to display the correct direction of the widget.
                 textDirection: Directionality.of(context),
                 child: Consumer(
                   builder: (context, ref, child) {
@@ -182,6 +98,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                     final isPedestrian =
                         widget.navType == RouteSearchOptionsMessage.pedestrian;
                     final info = ref.watch(pathNavSpeedInfoProvider);
+
                     return uikit.BaladyManeuverAndLimit(
                       isPedestrian: isPedestrian,
                       speedInfo: uikit.LimitsModel(
@@ -207,70 +124,173 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: padding,
-                child: Consumer(
-                  builder: (context, ref, _) {
-                    final navi = ref.watch(appFeaturesProvider);
-                    return Visibility(
-                      visible: navi.naviEnabled,
-                      replacement: const SizedBox.square(
-                        dimension: 28,
-                      ),
-                      child: const TrafficControl(),
-                    );
-                  },
-                ),
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: padding,
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final navi = ref.watch(appFeaturesProvider);
+                  return Visibility(
+                    visible: navi.naviEnabled,
+                    replacement: const SizedBox.square(
+                      dimension: 28,
+                    ),
+                    child: const TrafficControl(),
+                  );
+                },
               ),
-              const Spacer(),
-              const Padding(
-                padding: padding,
-                child: ZoomControl(),
-              ),
-              const Spacer(),
-              const Padding(
-                padding: padding,
-                child: CompassControl(),
-              ),
-              const SizedBox(height: 8),
-              const Padding(
-                padding: padding,
-                child: PathNavFollowControl(),
-              ),
-              const SizedBox(height: 12),
-              Directionality(
-                textDirection: Directionality.of(context),
-                child: ValueListenableBuilder(
-                    valueListenable: navigationState,
-                    builder: (context, state, child) {
-                      switch (state) {
-                        case PathNavState.running:
-                          return Align(
-                            alignment: Alignment.bottomCenter,
-                            child: EtaSheet(
-                              onEndTripPressed: _endTripAndShowHome,
-                              onRoutePressed: _onPausedPressed,
-                              onSizeChanged: _onSizeChanged,
-                            ),
-                          );
-                        case PathNavState.paused:
-                          return EtaContinue(
-                            onTap: _onContinuePressed,
-                            onSizeChanged: _onSizeChanged,
-                          );
-                        case PathNavState.finished:
-                          return EtaFinished(
+            ),
+            const Spacer(),
+            const Padding(
+              padding: padding,
+              child: ZoomControl(),
+            ),
+            const Spacer(),
+            const Padding(
+              padding: padding,
+              child: CompassControl(),
+            ),
+            const SizedBox(height: 8),
+            const Padding(
+              padding: padding,
+              child: PathNavFollowControl(),
+            ),
+            const SizedBox(height: 12),
+            Directionality(
+              // Here we set the text direction according to the current locale to display the correct direction of the widget.
+              textDirection: Directionality.of(context),
+              child: ValueListenableBuilder(
+                  valueListenable: navigationState,
+                  builder: (context, state, child) {
+                    switch (state) {
+                      case PathNavState.running:
+                        return Align(
+                          alignment: Alignment.bottomCenter,
+                          child: EtaSheet(
                             onEndTripPressed: _endTripAndShowHome,
-                            onBuildAnotherRoutePressed:
-                                _endTripAndBuildAnotherRoute,
+                            onRoutePressed: _onPausedPressed,
                             onSizeChanged: _onSizeChanged,
-                          );
-                      }
-                    }),
-              ),
-            ],
-          ),
+                          ),
+                        );
+                      case PathNavState.paused:
+                        return EtaContinue(
+                          onTap: _onContinuePressed,
+                          onSizeChanged: _onSizeChanged,
+                        );
+                      case PathNavState.finished:
+                        return EtaFinished(
+                          onEndTripPressed: _endTripAndShowHome,
+                          onBuildAnotherRoutePressed:
+                              _endTripAndBuildAnotherRoute,
+                          onSizeChanged: _onSizeChanged,
+                        );
+                    }
+                  }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _setNavigationState(PathNavState value) {
+    setState(() {
+      navigationState.value = value;
+    });
+  }
+
+  // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
+  // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
+  Future<void> _endTrip(VoidCallback action) async {
+    if (navigationState.value != PathNavState.finished) {
+      ref.read(pathNavMessageProvider.notifier).stopNavigation();
+      await ref.read(dgisControllerProvider).value?.stopNavigation();
+      _setNavigationState(PathNavState.finished);
+    }
+    _setPaddingToCamera(0.0);
+    action();
+    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
+    ref.read(layersControlsProvider.notifier).updateLayerInfo();
+  }
+
+  // Show the route page after the trip is finished
+  Future<void> _endTripAndBuildAnotherRoute() async {
+    await _endTrip(() {
+      if (context.mounted) {
+        const RoutingRoute(collapseInitially: true).go(context);
+      }
+    });
+  }
+
+  // Show the home page after the trip is finished
+  Future<void> _endTripAndShowHome() async {
+    await _endTrip(() {
+      if (context.mounted) {
+        const LandingRoute().go(context);
+      }
+    });
+  }
+
+  // Show the pause state
+  Future<void> _onPausedPressed() async {
+    _setNavigationState(PathNavState.paused);
+    await ref.read(cameraPositionProvider.notifier).animateToRoute();
+  }
+
+  // Continue the trip after the pause state
+  Future<void> _onContinuePressed() async {
+    _setNavigationState(PathNavState.running);
+    final dgisController = await ref.read(dgisControllerProvider.future);
+
+    await _moveCameraToUser();
+
+    await dgisController.followNavigation();
+  }
+
+  // Notify the listeners about the end of the trip
+  void _naviEvent(NavigationEvent event) {
+    if (event == NavigationEvent.finished) {
+      _setNavigationState(PathNavState.finished);
+    }
+  }
+
+  Future<void> _moveCameraToUser() async {
+    final position = ref.read(locationProvider);
+    final cameraProvider = ref.read(cameraPositionProvider.notifier);
+
+    if (position != null) {
+      await cameraProvider.animateTo(
+        CameraPositionMessage(
+          point: position,
+          zoom: 17.5,
+          tilt: 0,
+          bearing: 0,
         ),
       );
+    }
+  }
+
+  // Set padding to the camera to avoid the sheet overlaying the map
+  // Pass this method to the onSizeChanged callback of the sheet to calculate the padding
+  void _onSizeChanged(Size size) {
+    setState(() {
+      heightOfEta = size.height;
+    });
+
+    _setPaddingToCamera(heightOfEta);
+  }
+
+  // Set padding to the camera to avoid the sheet overlaying the map
+  void _setPaddingToCamera(double padding) {
+    final pixelSize = MediaQuery.of(context).devicePixelRatio;
+    ref.watch(cameraPositionProvider.notifier).setPadding(
+          CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: 0,
+            rightPadding: 0,
+            bottomPadding: (pixelSize * padding).floor(),
+          ),
+        );
+  }
 }
