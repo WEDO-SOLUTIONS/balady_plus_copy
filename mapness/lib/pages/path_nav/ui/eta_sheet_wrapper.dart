@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +20,10 @@ class EtaSheetWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
+    double bottomPadding = media.padding.bottom;
+    if (Platform.isAndroid) {
+      bottomPadding += Spacing.verticalBaseToBottomSafezone;
+    }
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -44,8 +50,7 @@ class EtaSheetWrapper extends StatelessWidget {
             padding: EdgeInsets.only(
               left: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
               right: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
-              bottom:
-                  media.padding.bottom + Spacing.verticalBaseToBottomSafezone,
+              bottom: bottomPadding,
             ),
             duration: duration,
             curve: curve,
