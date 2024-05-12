@@ -7,7 +7,6 @@ import 'package:mapness/shared/ui/measure_size.dart';
 class EtaSheetWrapper extends StatelessWidget {
   final Widget child;
   final bool isExpanded;
-  final VoidCallback onBgTap;
   final OnWidgetSizeChange? onSizeChanged;
   static const curve = BaseRoadPanel.animationCurve;
   static const duration = BaseRoadPanel.animationDuration;
@@ -15,7 +14,6 @@ class EtaSheetWrapper extends StatelessWidget {
   const EtaSheetWrapper({
     required this.child,
     required this.isExpanded,
-    required this.onBgTap,
     this.onSizeChanged,
     super.key,
   });

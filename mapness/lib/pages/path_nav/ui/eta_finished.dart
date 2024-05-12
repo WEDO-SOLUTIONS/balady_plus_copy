@@ -26,7 +26,6 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
   @override
   Widget build(BuildContext context) => EtaSheetWrapper(
         isExpanded: _isExpanded,
-        onBgTap: toggle,
         onSizeChanged: widget.onSizeChanged,
         child: BaseRoadPanel(
           roadPanelModel: RoadPanelModelArrived(
