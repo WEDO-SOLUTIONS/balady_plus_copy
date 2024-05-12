@@ -93,6 +93,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     });
   }
 
+  Future<void> _onPausedPressed() async {
+    _setNavigationState(PathNavState.paused);
+    await ref.read(cameraPositionProvider.notifier).animateToRoute();
+  }
+
+  Future<void> _onContinuePressed() async {
+    _setNavigationState(PathNavState.running);
+    final dgisController = await ref.read(dgisControllerProvider.future);
+
+    await _moveCameraToUser();
+
+    await dgisController.followNavigation();
+  }
+
   void _naviEvent(NavigationEvent event) {
     if (event == NavigationEvent.finished) {
       _setNavigationState(PathNavState.finished);
@@ -146,26 +160,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                       alignment: Alignment.bottomCenter,
                       child: EtaSheet(
                         onEndTripPressed: _endTripAndShowHome,
-                        onRoutePressed: () async {
-                          _setNavigationState(PathNavState.paused);
-                          await ref
-                              .read(cameraPositionProvider.notifier)
-                              .animateToRoute();
-                        },
+                        onRoutePressed: _onPausedPressed,
                         onSizeChanged: _onSizeChanged,
                       ),
                     );
                   case PathNavState.paused:
                     return EtaContinue(
-                      onTap: () async {
-                        _setNavigationState(PathNavState.running);
-                        final dgisController =
-                            await ref.read(dgisControllerProvider.future);
-
-                        await _moveCameraToUser();
-
-                        await dgisController.followNavigation();
-                      },
+                      onTap: _onContinuePressed,
                       onSizeChanged: _onSizeChanged,
                     );
                   case PathNavState.finished:
