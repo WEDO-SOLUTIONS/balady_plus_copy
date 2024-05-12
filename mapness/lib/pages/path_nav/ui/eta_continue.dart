@@ -26,7 +26,6 @@ class EtaContinue extends ConsumerWidget {
     return EtaSheetWrapper(
       isExpanded: false,
       onSizeChanged: onSizeChanged,
-      onBgTap: () {},
       child: GestureDetector(
         onTap: onTap,
         child: BaseRoadPanel(

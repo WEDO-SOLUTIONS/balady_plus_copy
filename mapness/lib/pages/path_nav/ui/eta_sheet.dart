@@ -37,7 +37,6 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     }
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
-      onBgTap: toggle,
       onSizeChanged: widget.onSizeChanged,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
