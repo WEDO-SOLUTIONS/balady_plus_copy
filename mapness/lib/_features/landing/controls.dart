@@ -86,8 +86,7 @@ class MapControls extends ConsumerWidget {
                                         .checkLocationPermission()
                                         .then((allowed) {
                                       if (allowed) {
-                                        const KiblahRoute()
-                                            .pushReplacement(context);
+                                        const KiblahRoute().push(context);
                                       }
                                     });
                                   },
