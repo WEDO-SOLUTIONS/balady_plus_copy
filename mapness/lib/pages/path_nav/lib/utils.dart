@@ -1,13 +1,18 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
-
-class PathNavUtils {}
+import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension ToUIKitMessage on NaviMessageEventState {
   ManeuverMessageState toUIKit() => switch (this) {
         NaviMessageEventState.gpsLost => ManeuverMessageState.error,
         NaviMessageEventState.routeResearch => ManeuverMessageState.reroute,
         NaviMessageEventState.none => ManeuverMessageState.reroute,
+      };
+
+  String toMessage(AppLocalizations l10n) => switch (this) {
+        NaviMessageEventState.gpsLost => l10n.gpsLost,
+        NaviMessageEventState.routeResearch => l10n.routeResearch,
+        _ => l10n.loading,
       };
 }
 
