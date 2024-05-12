@@ -22,14 +22,17 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        GestureDetector(
-          onTap: _isExpanded ? toggle : null,
-          child: AnimatedContainer(
-            duration: BaseRoadPanel.animationDuration,
-            height: media.size.height,
-            width: media.size.width,
-            curve: BaseRoadPanel.animationCurve,
-            color: Colors.black.withOpacity(_isExpanded ? 0.7 : 0.0),
+        IgnorePointer(
+          ignoring: !_isExpanded,
+          child: GestureDetector(
+            onTap: _isExpanded ? toggle : null,
+            child: AnimatedContainer(
+              duration: BaseRoadPanel.animationDuration,
+              height: media.size.height,
+              width: media.size.width,
+              curve: BaseRoadPanel.animationCurve,
+              color: Colors.black.withOpacity(_isExpanded ? 0.7 : 0.0),
+            ),
           ),
         ),
         Material(
