@@ -21,14 +21,17 @@ class EtaSheetWrapper extends StatelessWidget {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        GestureDetector(
-          onTap: isExpanded ? onBgTap : null,
-          child: AnimatedContainer(
-            duration: duration,
-            height: media.size.height,
-            width: media.size.width,
-            curve: curve,
-            color: Colors.black.withOpacity(isExpanded ? 0.7 : 0.0),
+        IgnorePointer(
+          ignoring: !isExpanded,
+          child: GestureDetector(
+            onTap: isExpanded ? onBgTap : null,
+            child: AnimatedContainer(
+              duration: duration,
+              height: media.size.height,
+              width: media.size.width,
+              curve: curve,
+              color: Colors.black.withOpacity(isExpanded ? 0.7 : 0.0),
+            ),
           ),
         ),
         Material(
@@ -38,7 +41,7 @@ class EtaSheetWrapper extends StatelessWidget {
             padding: EdgeInsets.only(
               left: isExpanded ? 0 : 16,
               right: isExpanded ? 0 : 16,
-              bottom: media.padding.bottom,
+              bottom: media.padding.bottom + 16,
             ),
             duration: duration,
             curve: curve,
