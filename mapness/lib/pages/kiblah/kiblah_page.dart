@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/landing_page.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
@@ -26,7 +27,7 @@ class KiblahPage extends ConsumerWidget {
           ref
               .read(mapControlsProvider.notifier)
               .update(MapControlsStateDashboard());
-          const LandingRoute().go(context);
+          context.pop();
         },
         leading: Padding(
           padding: const EdgeInsets.only(

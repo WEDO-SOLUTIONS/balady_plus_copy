@@ -47,7 +47,8 @@ class MapControls extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         WeatherControl(
-                            onTap: () => const WeatherRoute().push(context),),
+                          onTap: () => const WeatherRoute().push(context),
+                        ),
                         const SizedBox(height: 8),
                         const HappinesControl(),
                         const Spacer(),
@@ -67,7 +68,7 @@ class MapControls extends ConsumerWidget {
                                 .checkLocationPermission()
                                 .then((allowed) {
                               if (allowed) {
-                                const KiblahRoute().pushReplacement(context);
+                                const KiblahRoute().push(context);
                               }
                             });
                           },
