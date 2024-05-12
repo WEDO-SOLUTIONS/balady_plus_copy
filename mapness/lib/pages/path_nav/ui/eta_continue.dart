@@ -31,8 +31,8 @@ class EtaContinue extends ConsumerWidget {
               description: eta.distanceEtaUnits.getDescription(context),
             ),
             drivingChild: NaviChildModel(
-              title: eta.timeEtaUnits.getDescription(context),
-              description: eta.timeEta,
+              title: eta.timeEta,
+              description: eta.timeEtaUnits.getDescription(context),
             ),
             title: context.l10n.continueTrip,
           ),
