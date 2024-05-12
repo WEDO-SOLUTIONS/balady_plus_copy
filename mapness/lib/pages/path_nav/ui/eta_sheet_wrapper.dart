@@ -36,7 +36,10 @@ class EtaSheetWrapper extends StatelessWidget {
         ),
         Material(
           color: isExpanded ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
           child: AnimatedPadding(
             padding: EdgeInsets.only(
               left: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
