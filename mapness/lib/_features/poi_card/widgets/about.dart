@@ -44,7 +44,9 @@ class _AboutState extends State<About> {
                   onTap: widget.onEntranceTap,
                   child: Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: boxDecoration(),
+                    decoration: const BoxDecoration(
+                      borderRadius: borderRadius,
+                    ),
                     child: Text(
                       '${context.l10n.exits} ${widget.exits ?? ''}',
                       style: context.textStyle.footNoteBold.copyWith(

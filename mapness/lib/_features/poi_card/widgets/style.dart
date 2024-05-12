@@ -1,10 +1,7 @@
-
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 const colorShadow = NonThemeColor.color71;
 const colorIconPositive = NonThemeColor.color3;
@@ -14,93 +11,51 @@ const headerHeight = 124.0;
 const footerHeight = 50.0;
 const gapHeight = 16.0;
 
-Widget buildText({
-  required double fontSize, required FontWeight fontWeight, required Color color, String? text,
-  int? maxLines,
-}) => text == null
-      ? const SizedBox.shrink()
-      : Text(
-          text,
-          style: PackageFonts.frutigerArabic(
-            color: color,
-            fontSize: fontSize,
-            fontWeight: fontWeight,
-          ),
-          overflow: TextOverflow.ellipsis,
-          maxLines: maxLines ?? 5,
-          textAlign: TextAlign.start,
-          // textDirection: TextDirection.ltr,
-        );
+class StyleText extends StatelessWidget {
+  final double fontSize;
+  final FontWeight fontWeight;
+  final Color color;
+  final String? text;
+  final int maxLines;
+  const StyleText({
+    required this.fontSize,
+    required this.fontWeight,
+    required this.color,
+    super.key,
+    this.text,
+    this.maxLines = 5,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (text == null) {
+      return const SizedBox.shrink();
+    }
+    return Text(
+      text!,
+      style: TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontFamily: 'Frutiger',
+      ),
+      overflow: TextOverflow.ellipsis,
+      maxLines: maxLines,
+      textAlign: TextAlign.start,
+    );
+  }
+}
 
 const borderRadius = BorderRadius.all(
   Radius.circular(8),
 );
-
-BoxDecoration boxDecoration() => const BoxDecoration(
-      borderRadius: borderRadius,
-    );
-
-Widget buildIconButton({
-  required String assetName,
-  Widget? desc,
-  Function()? onTap,
-  Color? colorIcon,
-  Color? colorButton,
-  int flex = 1,
-}) => Builder(
-    builder: (context) => Flexible(
-        flex: flex,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Material(
-            color: colorButton ?? context.color.textAndIconsBasePrimary.withOpacity(0.05),
-            borderRadius: borderRadius,
-            child: InkWell(
-              borderRadius: borderRadius,
-              onTap: onTap,
-              child: Container(
-                constraints: const BoxConstraints(
-                  minHeight: 40,
-                  maxHeight: 40,
-                  minWidth: 52,
-                ),
-                decoration: boxDecoration(),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        key: ValueKey(assetName),
-                        assetName,
-                        height: 24,
-                        width: 24,
-                        color: colorIcon,
-                        package: PackageConfig.packageName,
-                        matchTextDirection: true,
-                      ),
-                      if (desc != null) ...[
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Flexible(child: desc),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-  );
 
 SvgPicture timeIcon(Color color) => SvgPicture.asset(
       'assets/icons/svg/ic_time.svg',
       package: PackageConfig.packageName,
       height: 24,
       width: 24,
-      color: color,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
     );
 
 SvgPicture parkingIcon = SvgPicture.asset(
