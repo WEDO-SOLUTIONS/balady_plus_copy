@@ -39,9 +39,10 @@ class EtaSheetWrapper extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           child: AnimatedPadding(
             padding: EdgeInsets.only(
-              left: isExpanded ? 0 : 16,
-              right: isExpanded ? 0 : 16,
-              bottom: media.padding.bottom + 16,
+              left: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
+              right: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
+              bottom:
+                  media.padding.bottom + Spacing.verticalBaseToBottomSafezone,
             ),
             duration: duration,
             curve: curve,
