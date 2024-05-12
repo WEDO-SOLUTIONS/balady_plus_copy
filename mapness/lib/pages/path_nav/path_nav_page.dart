@@ -106,7 +106,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
         children: [
           /// controls and driver info
           Positioned.fill(
-            bottom: 68,
+            bottom: 78,
             child: SafeArea(
               child: PathNavMapControlls(
                 navType: widget.navType,
@@ -116,6 +116,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
           ValueListenableBuilder(
               valueListenable: navigationState,
               builder: (context, state, child) {
+                state = PathNavState.finished;
                 switch (state) {
                   case PathNavState.running:
                     return Align(
