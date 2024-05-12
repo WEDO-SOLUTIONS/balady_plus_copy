@@ -52,7 +52,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   @override
   void initState() {
     super.initState();
-    _setPaddingToCamera(heightOfEta);
+
     ref.read(dgisControllerProvider).value?.setNavigatorVoice(
           ref.read(navigatorVoiceProvider),
         );
