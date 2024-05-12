@@ -4120,12 +4120,9 @@
   "no_events": "Sorry, there are no events now",
   "calendar_type_appmt": "Appointment",
   "calendar_type_invoice": "Invoice not paid",
-
   "rating_chat_bot_title": "How do you evaluate the smart assistant?",
   "chat_bot_not_working_title": "Sorry, the service is currently unavailable",
   "chat_bot_not_working_message": "We apologize for the inconvenience. The current service is experiencing technical difficulties, and we are working diligently to resolve the issue. Please try again later. Thank you for your understanding.",
-  "calendar_type_invoice": "Invoice not paid",
-
   "": "No Data Found",
   "commercial_licenseـquery_title": "Insert the following",
   "enable_disable_notifications": "You can enable or disable notifications from here",
@@ -4138,27 +4135,13 @@
   "notification_unread": "unread",
   "submitter_compliance_text": "Compliance status of the Submitter: ",
   "emp_compliance_text": "Compliance status of the Employee: ",
-  "commercial_licenseـquery_title": "Insert the following",
-  "submitter_compliance_text": "Compliance status of the Submitter: ",
-  "emp_compliance_text": "Compliance status of the Employee: ",
-
   "issue_commercial_conclusion_owner_data": "License Owner Data",
   "issue_commercial_conclusion_owner_data_name": "Establishment name",
   "issue_commercial_conclusion_owner_data_cr": "Unified establishment number (commercial register/number 700)",
-  "enable_disable_notifications": "You can enable or disable notifications from here",
-  "manage_notification": "Manage notifications for services",
-
-  "make_all_read": "Mark all as read",
-  "delete_all": "Delete all",
-  "locale": "en",
-  "no_notifications": "",
-
   "issue_commercial_conclusion_applicant_data": "Submitter Data",
-
   "issue_commercial_conclusion_applicant_data_name": "Submitter Name",
   "issue_commercial_conclusion_applicant_data_id": "Submitter ID",
   "issue_commercial_conclusion_applicant_data_type": "Submitter Type",
-
   "issue_commercial_conclusion_activity_data": "Shop activities data",
   "issue_commercial_conclusion_activity_data_isic": "ISIC Activity Name",
   "issue_commercial_conclusion_activity_data_detailed": "Detailed Activity Name",
@@ -4166,19 +4149,15 @@
   "issue_commercial_conclusion_activity_data_main_area": "Main activity area",
   "issue_commercial_conclusion_activity_data_marsom": "The Royal Decree",
   "issue_commercial_conclusion_activity_facility": "Establishment Type",
-
   "issue_commercial_conclusion_activity_worker": "Worker Type",
   "issue_commercial_conclusion_activity_accomadate_type": "Accommodation Type",
   "issue_commercial_conclusion_activity_accomadate_unit": "Number of units",
-
   "issue_commercial_conclusion_addetinlal_activity": "Detailed list of activities",
-
   "issue_commercial_conclusion_addetinlal_activity_name": "Additional ISIC Activity Name",
   "issue_commercial_conclusion_addetinlal_activity_code": "Additional ISIC Activity Code",
   "issue_commercial_conclusion_addetinlal_activity_detailed_name": "Additional Detailed Activity Name",
   "issue_commercial_conclusion_addetinlal_activity_detailed_code": "Additional Detailed Activity Code",
   "issue_commercial_conclusion_addetinlal_activity_area": "Activity Area",
-
   "issue_commercial_conclusion_license_location": "License Location",
   "issue_commercial_conclusion_license_municipality": "Municipality",
   "issue_commercial_conclusion_license_city": "City",
@@ -4207,27 +4186,21 @@
   "issue_commercial_board_area": "Board Area",
   "issue_commercial_location": "Proof location data",
   "issue_commercial_location_type": "Location proof type",
-
   "issue_commercial_location_type_deed_name": "Number of ownership contract",
   "issue_commercial_location_type_deed_number": "Date of ownership contract",
-
   "issue_commercial_location_type_investment_number": "Contract Number in the Municipality",
   "issue_commercial_location_type_investment_name": "Contract Name",
   "issue_commercial_location_type_investment_type": "Contract Type",
-
   "issue_commercial_location_type_tenancy_no": "Contract Number",
   "issue_commercial_location_type_tenancy_ve": "Version No",
   "issue_commercial_location_type_tenancy_rep": "Representative ID No.",
   "issue_commercial_location_type_tenancy_date": "Contract Expiry Date",
-
   "issue_commercial_location_type_clean_no": "Contract Number",
   "issue_commercial_location_type_clean_date": "Contract Expiry Date",
-
   "issue_commercial_civil": "Civil Defense Data",
   "issue_commercial_civil_bill": "Salama Bill",
   "issue_commercial_civil_report": "Salama Report",
   "issue_commercial_civil_permit": "Salama Permit",
-
   "issue_commercial_approvals": "Government Approvals",
   "issue_commercial_general_security": "Public Security",
   "issue_commercial_attachment": "Attachment",
@@ -4236,7 +4209,6 @@
   "issue_commercial_print": "Print",
   "OWNER_MANAGER": "OWNER/MANAGER",
   "DELEGATOR": "DELEGATOR",
-
   "city_region": "City/Region",
   "select_region": "please select city/region",
   "no_data_found": "No Data Found",
@@ -4262,29 +4234,19 @@
   "license_details": "License Details",
   "license_number_municipality": "License Number Municipality",
   "building_type": "Building Type",
-
   "issue_commercial_conclusion_request_draft": "License Draft",
-
   "realEstateRequestId": "Real Estate Request Id",
   "realEstateSurveyId": "Real Estate Survey Id",
   "realEstateId": "Real Estate Id",
   "realEstateRequestIdNote": "Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered.",
   "objection_enquiry_none": "Sorry, there are no Enquiry Requests from the Objections and Complaints Review Committee",
-
   "health_cert_riyadh_new": "Dear beneficiary, to issue a health certificate.",
   "health_cert_riyadh_renew": "Dear beneficiary, to renew the health certificate",
   "health_cert_riyadh_agree": "Click here",
-
   "municipal_cert_riyadh_new": "Dear beneficiary, to request a municipal service",
   "municipal_cert_riyadh_agree": "Click here",
   "objection_download_commite_decision": "Download a copy of the decision of the Objections Review Committee",
   "delete_all_notifications_confirmation": "Are you sure that you want delete all notifications ?",
-  "building_type": "Building Type",
-  "issue_commercial_conclusion_request_draft": "License Draft",
-  "realEstateRequestId": "Real Estate Request Id",
-  "realEstateSurveyId": "Real Estate Survey Id",
-  "realEstateId": "Real Estate Id",
-  "realEstateRequestIdNote": "Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered.",
   "license_owner_info": "License owner info",
   "respond_to_ownership_transfer": "Respond to ownership transfer",
   "accept_ownership_transfer": "Accept ownership transfer",
@@ -4293,20 +4255,14 @@
   "permitName": "Permit Name",
   "HIMSELF": "Himself",
   "AGENT": "Agent",
-  "OWNER_MANAGER": "OWNER / Manager",
   "ENGINEERING_OFFICE": "Engineering Office",
-  "DELEGATOR": "Delegator",
   "cleanOptionName": "Clean Option Name",
   "cleanOptionDesc": "Clean Option Desc",
   "create_request": "Submit the Request",
   "pledges_condtions": "I acknowledge and pledge the accuracy of all data and attachments uploaded to the Application, and I assume full legal liability for false and malicious reports in accordance with the laws and instructions if otherwise found.",
   "request_number": "You have submit request number",
-
   "transfer_Complete": "Request was accepted and lisence ownership was transfered",
   "follow_request": " you can follow request from request page or from service page",
-
-
-
   "exclude": "Note: Anyone who must collect waste and transport it to the landfills designated for that purpose, in accordance with municipal requirements, according to the license granted thereto, is excluded from the applicable waste collection fee.",
   "new_owner_cr_number_error": "Please enter the CR number for new owner",
   "shop_name_error": "Sorry can you please enter shop name",
@@ -4325,23 +4281,15 @@
   "go_to_license": "Go back to license screen",
   "validate_shop_name": "Shop name can not contain any number",
   "go_to_request": "Go back to requests screen", 
-
   "digital_health_cert":"Digital Health Certificate", 
   "health_cert_h_date": "Hijri health certificate issuance date",
   "health_cert_h_end": "Hijri health certificate end date",
   "health_cert_g_date": "Gregorian health certificate issuance date",
   "health_cert_g_end": "Gregorian health certificate end date",
-
   "name_contract": "Name contract",
   "salamaBillNumber_2": "Fire Prevention and Protection Equipment Installation Certificate Number",
   "ejarAPP": "Dear beneficiary, you can find out about the accredited real estate brokers in the Ejari network through the link  <a href=\"https://www.ejar.sa/ar/certified-offices\">click here</a>   or download the Real Estate Brokers app for iOS or Android.",
-
   "no_attachments": "No Attachments",
-
   "required_field_must_number_12_digits": "Sorry, the deed number must contain 12 digits.",
   "most_selected_ownershipType": "Please enter the ownership deed data"
-
-
-
-
 }
