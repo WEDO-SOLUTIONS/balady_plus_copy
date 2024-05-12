@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
-import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
@@ -12,6 +12,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
+import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
@@ -23,9 +24,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
-import 'package:mapness/widgets/path_nav/ui/path_nav_maneuver_widget.dart';
-import 'package:mapness/widgets/path_nav/ui/path_nav_message_widget.dart';
-import 'package:mapness/widgets/path_nav/ui/path_nav_speed_info_widget.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 /// We don't show black background under the opened sheet. The meaning of this is that the user have to control the map even if he opened the sheet.
@@ -175,50 +173,39 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                 height: 6,
                 width: double.maxFinite,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Directionality(
-                  textDirection: Directionality.of(context),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      /// maneuver or message
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final message = ref.watch(pathNavMessageProvider);
-                          final maneuver = ref.watch(pathNavManeuverProvider);
-                          if (message != null) {
-                            return PathNavMessageWidget(message: message);
-                          }
-                          if (maneuver == null) {
-                            return const SizedBox.shrink();
-                          }
-                          return PathNavManeuverWidget(
-                            maneuver: maneuver,
-                          );
-                        },
+              Directionality(
+                textDirection: Directionality.of(context),
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final message = ref.watch(pathNavMessageProvider);
+                    final maneuver = ref.watch(pathNavManeuverProvider);
+                    final isPedestrian =
+                        widget.navType == RouteSearchOptionsMessage.pedestrian;
+                    final info = ref.watch(pathNavSpeedInfoProvider);
+                    return uikit.BaladyManeuverAndLimit(
+                      isPedestrian: isPedestrian,
+                      speedInfo: uikit.LimitsModel(
+                        speed: info.speed,
+                        speedExceed: info.speedExceed,
+                        speedLimit: info.speedLimit,
                       ),
-
-                      /// speed info
-                      if (widget.navType ==
-                          RouteSearchOptionsMessage.pedestrian)
-                        const Spacer(),
-                      if (widget.navType !=
-                          RouteSearchOptionsMessage.pedestrian)
-                        Consumer(
-                          builder: (context, ref, child) {
-                            final info = ref.watch(pathNavSpeedInfoProvider);
-                            return PathNavSpeedInfoWidget(info: info);
-                          },
-                        ),
-                    ],
-                  ),
+                      maneuver: maneuver != null
+                          ? uikit.BaladyManeuverModel(
+                              distance: maneuver.distance,
+                              instruction: maneuver.instruction?.toUIKit(),
+                              roadName: maneuver.roadName,
+                              unit: maneuver.unit,
+                            )
+                          : null,
+                      message: message != null
+                          ? uikit.ManeuverMessageModel(
+                              comment: message.comment,
+                              state: message.state.toUIKit(),
+                            )
+                          : null,
+                    );
+                  },
                 ),
-              ),
-              const SizedBox(height: 8),
-              const Padding(
-                padding: padding,
-                child: LayersControl(),
               ),
               const SizedBox(height: 8),
               Padding(

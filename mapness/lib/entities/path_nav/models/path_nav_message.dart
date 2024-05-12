@@ -1,11 +1,11 @@
-import 'package:mapness/widgets/path_nav/ui/path_nav_message_widget.dart';
+import 'package:dgis_map/library.dart';
 
 class PathNavMessage {
+  final NaviMessageEventState state;
+  final String comment;
 
   const PathNavMessage({
     required this.state,
     required this.comment,
   });
-  final PathNavManeuverState state;
-  final String comment;
 }
