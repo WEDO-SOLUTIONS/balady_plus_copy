@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/entities/path_nav/models/path_nav_message.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/widgets/path_nav/ui/path_nav_message_widget.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'path_nav_message.g.dart';
@@ -13,24 +11,15 @@ class _PathNavMessage extends _$PathNavMessage {
   StreamSubscription<NaviMessageEvent>? subscription;
 
   @override
-  PathNavMessage? build() {
+  NaviMessageEventState? build() {
     final mapController = ref.watch(dgisControllerProvider);
 
     subscription =
         mapController.value?.naviMessageController.events.listen((event) {
-      switch (event.state) {
-        case NaviMessageEventState.gpsLost:
-          state = const PathNavMessage(
-            state: PathNavManeuverState.error,
-            comment: 'GPS Signal lost',
-          );
-        case NaviMessageEventState.routeResearch:
-          state = const PathNavMessage(
-            state: PathNavManeuverState.reroute,
-            comment: 'rerouting',
-          );
-        case NaviMessageEventState.none:
-          state = null;
+      if (state == NaviMessageEventState.none) {
+        state = null;
+      } else {
+        state = event.state;
       }
     });
     ref.onDispose(() {

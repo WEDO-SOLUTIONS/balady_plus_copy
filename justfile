@@ -15,7 +15,8 @@ import 'justscripts/release.just'
 # local overrides feel free to add any there
 import? 'justscripts/local.just'
 
-prebuild: pubget locale_gen build_pigeon download-sdk codegen
+# prebuild: pubget locale_gen build_pigeon download-sdk codegen
+prebuild: pubget locale_gen build_pigeon codegen
 
 pubget:
     #!/bin/bash
