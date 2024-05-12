@@ -61,6 +61,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   @override
   void dispose() {
+    _setPaddingToCamera(0.0);
     _naviEventsListener?.cancel();
     WakelockPlus.disable();
     super.dispose();
@@ -72,6 +73,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
       await ref.read(dgisControllerProvider).value?.stopNavigation();
       _setNavigationState(PathNavState.finished);
     }
+    _setPaddingToCamera(0.0);
     action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
@@ -133,6 +135,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     setState(() {
       heightOfEta = size.height;
     });
+
+    _setPaddingToCamera(heightOfEta);
+  }
+
+  void _setPaddingToCamera(double padding) {
+    final pixelSize = MediaQuery.of(context).devicePixelRatio;
+    ref.watch(cameraPositionProvider.notifier).setPadding(
+          CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: 0,
+            rightPadding: 0,
+            bottomPadding: (pixelSize * padding).floor(),
+          ),
+        );
   }
 
   @override
