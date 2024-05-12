@@ -24,40 +24,22 @@ class EtaSheetWrapper extends StatelessWidget {
     if (Platform.isAndroid) {
       bottomPadding += Spacing.verticalBaseToBottomSafezone;
     }
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        IgnorePointer(
-          ignoring: !isExpanded,
-          child: GestureDetector(
-            onTap: isExpanded ? onBgTap : null,
-            child: AnimatedContainer(
-              duration: duration,
-              height: media.size.height,
-              width: media.size.width,
-              curve: curve,
-              color: Colors.black.withOpacity(isExpanded ? 0.7 : 0.0),
-            ),
-          ),
+    return Material(
+      color: isExpanded ? Colors.white : Colors.transparent,
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+      ),
+      child: AnimatedPadding(
+        padding: EdgeInsets.only(
+          left: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
+          right: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
+          bottom: bottomPadding,
         ),
-        Material(
-          color: isExpanded ? Colors.white : Colors.transparent,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-          ),
-          child: AnimatedPadding(
-            padding: EdgeInsets.only(
-              left: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
-              right: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
-              bottom: bottomPadding,
-            ),
-            duration: duration,
-            curve: curve,
-            child: child,
-          ),
-        ),
-      ],
+        duration: duration,
+        curve: curve,
+        child: child,
+      ),
     );
   }
 }

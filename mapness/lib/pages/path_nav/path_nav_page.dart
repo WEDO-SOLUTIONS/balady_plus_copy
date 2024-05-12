@@ -18,6 +18,8 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+/// We don't show black background under the opened sheet. The meaning of this is that the user have to control the map even if he opened the sheet.
+/// You don't need to add black background to make the app similar to the other app
 class PathNavPage extends ConsumerStatefulWidget {
   const PathNavPage({
     required this.navType,
@@ -63,20 +65,31 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     super.dispose();
   }
 
-  Future<void> _endTrip() async {
-    if (navigationState.value == PathNavState.finished) {
-      if (context.mounted) {
-        const RoutingRoute(collapseInitially: true).go(context);
-      }
-    } else {
+  Future<void> _endTrip(VoidCallback action) async {
+    if (navigationState.value != PathNavState.finished) {
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
       _setNavigationState(PathNavState.finished);
-      const RoutingRoute(collapseInitially: true).go(context);
     }
-
+    action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
+  }
+
+  Future<void> _endTripAndBuildAnotherRoute() async {
+    await _endTrip(() {
+      if (context.mounted) {
+        const RoutingRoute(collapseInitially: true).go(context);
+      }
+    });
+  }
+
+  Future<void> _endTripAndShowHome() async {
+    await _endTrip(() {
+      if (context.mounted) {
+        const LandingRoute().go(context);
+      }
+    });
   }
 
   void _naviEvent(NavigationEvent event) {
@@ -108,11 +121,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
           Positioned.fill(
             bottom: 78,
             child: SafeArea(
-              child: PathNavMapControlls(
+              child: PathNavMapControls(
                 navType: widget.navType,
               ),
             ),
           ),
+
           ValueListenableBuilder(
               valueListenable: navigationState,
               builder: (context, state, child) {
@@ -122,7 +136,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                       alignment: Alignment.bottomCenter,
                       child: LayoutBuilder(
                         builder: (context, constraints) => EtaSheet(
-                          onEndTripPressed: _endTrip,
+                          onEndTripPressed: _endTripAndShowHome,
                           onRoutePressed: () async {
                             _setNavigationState(PathNavState.paused);
                             await ref
@@ -145,7 +159,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                       },
                     );
                   case PathNavState.finished:
-                    return EtaFinished(onEndTripPressed: _endTrip);
+                    return EtaFinished(
+                      onEndTripPressed: _endTripAndShowHome,
+                      onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                    );
                 }
               }),
         ],

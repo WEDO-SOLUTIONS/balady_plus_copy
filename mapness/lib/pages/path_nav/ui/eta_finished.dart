@@ -6,8 +6,10 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaFinished extends ConsumerStatefulWidget {
   final VoidCallback onEndTripPressed;
+  final VoidCallback onBuildAnotherRoutePressed;
   const EtaFinished({
     required this.onEndTripPressed,
+    required this.onBuildAnotherRoutePressed,
     super.key,
   });
 
@@ -33,6 +35,13 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
                 buttonColorScheme: ButtonColorScheme.primary,
                 primaryLabel: context.l10n.endTrip,
                 onTap: widget.onEndTripPressed,
+              ),
+              AppButton(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: NumericBase.$4x),
+                buttonColorScheme: ButtonColorScheme.tertiary,
+                primaryLabel: context.l10n.buildAnotherRoute,
+                onTap: widget.onBuildAnotherRoutePressed,
               ),
             ],
           ),
