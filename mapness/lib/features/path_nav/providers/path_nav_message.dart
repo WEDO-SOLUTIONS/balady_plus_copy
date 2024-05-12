@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/widgets/path_nav/ui/path_nav_message_widget.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'path_nav_message.g.dart';
@@ -21,12 +20,12 @@ class _PathNavMessage extends _$PathNavMessage {
       switch (event.state) {
         case NaviMessageEventState.gpsLost:
           state = const PathNavMessage(
-            state: PathNavManeuverState.error,
+            state: NaviMessageEventState.gpsLost,
             comment: 'GPS Signal lost',
           );
         case NaviMessageEventState.routeResearch:
           state = const PathNavMessage(
-            state: PathNavManeuverState.reroute,
+            state: NaviMessageEventState.routeResearch,
             comment: 'rerouting',
           );
         case NaviMessageEventState.none:
