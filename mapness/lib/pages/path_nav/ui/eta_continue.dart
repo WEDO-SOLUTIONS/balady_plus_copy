@@ -6,10 +6,14 @@ import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
+import 'layout_size_wrapper.dart';
+
 class EtaContinue extends ConsumerWidget {
   final VoidCallback onTap;
+  final OnWidgetSizeChange onSizeChanged;
   const EtaContinue({
     required this.onTap,
+    required this.onSizeChanged,
     super.key,
   });
 
@@ -21,7 +25,7 @@ class EtaContinue extends ConsumerWidget {
     }
     return EtaSheetWrapper(
       isExpanded: false,
-      onBgTap: () {},
+      onSizeChanged: onSizeChanged,
       child: GestureDetector(
         onTap: onTap,
         child: BaseRoadPanel(
@@ -31,8 +35,8 @@ class EtaContinue extends ConsumerWidget {
               description: eta.distanceEtaUnits.getDescription(context),
             ),
             drivingChild: NaviChildModel(
-              title: eta.timeEtaUnits.getDescription(context),
-              description: eta.timeEta,
+              title: eta.timeEta,
+              description: eta.timeEtaUnits.getDescription(context),
             ),
             title: context.l10n.continueTrip,
           ),

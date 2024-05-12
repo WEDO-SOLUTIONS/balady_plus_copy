@@ -1,4 +1,3 @@
-import 'package:dgis_map/extensions/maneuver_icon.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_maneuver.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -15,9 +14,11 @@ class _PathNavManeuver extends _$PathNavManeuver {
     final subscription = mapController
         .value?.naviManeuverController.maneuverEvents
         .listen((event) {
-      if (event is ManeuverEventHidden) state = null;
+      if (event is ManeuverEventHidden) {
+        state = null;
+      }
       state = PathNavManeuver(
-        iconPath: event.instruction.iconPath,
+        instruction: event.instruction,
         roadName: event.roadName,
         distance: event.distance,
         unit: event.unit,
