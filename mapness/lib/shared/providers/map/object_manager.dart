@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -72,7 +73,14 @@ class MapObjectManager extends _$MapObjectManager {
     ClusteringMapObjectManager? clustering,
   }) async {
     final dgisController = await ref.watch(dgisControllerProvider.future);
-
+    await dgisController.setMarkerOptions(
+      MarkerOptionsMessageOld(
+        svgAsset: LayersSvgPaths.basicMarker,
+        width: 24.0,
+        height: 24.0,
+        iconWidth: 16,
+      ),
+    );
     final manager = clustering != null
         ? await dgisController.createMapObjectManagerWithClustering(
             clustering,

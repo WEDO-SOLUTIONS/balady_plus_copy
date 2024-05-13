@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -65,7 +66,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
 
   bool closing = false;
 
-  late ClusteringMapObjectManager _clustering;
+  ClusteringMapObjectManager? _clustering;
 
   void close() {
     setState(() {
@@ -79,16 +80,21 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   @override
   void initState() {
     super.initState();
-    _clustering = ClusteringMapObjectManager(
+
+    _keyboardVisible =
+        kbVisibilityController.onChange.listen(_onKeyboardToggle);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _clustering ??= ClusteringMapObjectManager(
       options: ClusteringMapObjectManagerOptionsMessage(
-        logicalPixel: 40,
+        logicalPixel: MediaQuery.of(context).devicePixelRatio,
         maxZoom: 16,
       ),
       renderCluster: _renderCluster,
     );
-
-    _keyboardVisible =
-        kbVisibilityController.onChange.listen(_onKeyboardToggle);
   }
 
   void _onKeyboardToggle(bool kbState) {
@@ -133,10 +139,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
             },
             options: MarkerOptionsMessage(
               position: markerInfo!.geoPoint,
-              icon: MarkerIconMessage(
-                path: 'packages/mapness/assets/icons/svg/ic_marker.svg',
-                width: 24,
-              ),
+              icon: LayersSvgPaths.basicMarker.markerIcon(size: 16),
             ),
           ),
         );
@@ -158,10 +161,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) =>
       SimpleClusterOptionsMessage(
-        icon: MarkerIconMessage(
-          path: 'packages/mapness/assets/icons/svg/ic_marker.svg',
-          width: 24,
-        ),
+        icon: LayersSvgPaths.basicMarker.markerIcon(),
         text: '$objectCount',
         textStyle: MarkerTextStyleMessage(
           textPlacement: MarkerTextPlacementMessage(
