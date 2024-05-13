@@ -528,7 +528,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       ]),
                     if (state.showSalmaExists())
                       YesNoRadioGroupWidget(
-                        groupName: "step4groupName4".tr(),
+                        groupName: "renew_salama_permit_question".tr(),
                         currentValue: state.salamaExists,
                         onChanged: (value) {
                           context
