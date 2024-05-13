@@ -18,14 +18,17 @@ abstract class LayersSvgPaths {
       'packages/mapness/assets/icons/svg/layers/ic_fancy_pin.svg';
   static const invest =
       'packages/mapness/assets/icons/svg/layers/ic_invest_pin.svg';
+
+  static const basicMarker =
+      'packages/mapness/assets/icons/svg/ic_marker_m.svg';
 }
 
 extension MarkerIconMessageExtension on String {
-  /// Returns a [MarkerIconMessage] with the given [width].
+  /// Returns a [MarkerIconMessage] with the given [size].
   ///
   /// WARNING: Use it only with SVG icons and String that represents the path to the icon.
-  MarkerIconMessage markerIcon({double width = 24}) => MarkerIconMessage(
+  MarkerIconMessage markerIcon({double size = 24}) => MarkerIconMessage(
         path: this,
-        width: width,
+        width: size,
       );
 }

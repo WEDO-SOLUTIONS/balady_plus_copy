@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -90,11 +91,7 @@ class Search extends _$Search {
           },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,
-            icon: icon ??
-                MarkerIconMessage(
-                  path: 'packages/mapness/assets/icons/svg/ic_marker.svg',
-                  width: 24,
-                ),
+            icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(),
           ),
         ),
       );
