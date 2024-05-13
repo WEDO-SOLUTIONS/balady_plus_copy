@@ -208,7 +208,11 @@ class _ContentState extends ConsumerState<_Content>
           About(
             title: data.address?.buildingName ?? data.title,
             exits: data.entrances.length,
-            onEntranceTap: () => _toggleEntrance(data, displayEntrance: false),
+            onEntranceTap: () {
+              setState(() {
+                _toggleEntrance(data, displayEntrance: false);
+              });
+            },
           ),
           if (about.isNotEmpty)
             Description(
@@ -283,7 +287,11 @@ class _ContentState extends ConsumerState<_Content>
             markerCoords: widget.closestPoint,
           ),
           callPhone: () => viewModel.callPhone(data: data),
-          onEntranceTap: () => _toggleEntrance(data, displayEntrance: false),
+          onEntranceTap: () {
+            setState(() {
+              _toggleEntrance(data, displayEntrance: false);
+            });
+          },
         ),
         scrollableBody: (context, controller) =>
             DgisBottomSheetScrollableContent(
@@ -322,9 +330,7 @@ class _ContentState extends ConsumerState<_Content>
     final highlightController = ref.read(highlightProvider.notifier);
 
     if (displayEntrance == false) {
-      setState(() {
-        showEntrances = !showEntrances;
-      });
+      showEntrances = !showEntrances;
 
       if (showEntrances) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
