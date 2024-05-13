@@ -463,7 +463,8 @@ class RenewCommercialLicenseState extends Equatable {
   }
 
   bool showSalmaExists() {
-    return showSalamaPermit() && (showSalamaReport() || showSalamaBill());
+    return showSalamaPermit() ||
+        (showSalamaPermit() && (showSalamaReport() || showSalamaBill()));
   }
 
   bool isFormValid() {
