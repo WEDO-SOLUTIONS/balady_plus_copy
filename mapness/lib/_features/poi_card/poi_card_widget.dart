@@ -28,6 +28,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -178,7 +179,7 @@ class _ContentState extends ConsumerState<_Content>
           const Spacer(flex: 3),
           ErrorSheet(
             onRetry: () => ref.invalidate(
-              pointOfInterestProvider(widget.objectId),
+              directoryObjectFromDgisIdProvider(widget.objectId),
             ),
           ),
         ],
