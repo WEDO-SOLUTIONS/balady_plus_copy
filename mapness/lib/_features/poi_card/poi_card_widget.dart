@@ -142,7 +142,8 @@ class _ContentState extends ConsumerState<_Content>
 
     ref.listen(viewModelProvider, (_, next) {
       if (next.value != null && next.value?.gisObjectIdMessage != null) {
-        _toggleEntrance(next.value!.gisObjectIdMessage!, displayEntrance: true);
+        _toggleEntrances(next.value!.gisObjectIdMessage!,
+            displayEntrance: true);
       }
     });
 
@@ -210,7 +211,8 @@ class _ContentState extends ConsumerState<_Content>
             exits: data.entrances.length,
             onEntranceTap: () {
               setState(() {
-                _toggleEntrance(data, displayEntrance: false);
+                showEntrances = !showEntrances;
+                _toggleEntrances(data, displayEntrance: showEntrances);
               });
             },
           ),
@@ -289,7 +291,8 @@ class _ContentState extends ConsumerState<_Content>
           callPhone: () => viewModel.callPhone(data: data),
           onEntranceTap: () {
             setState(() {
-              _toggleEntrance(data, displayEntrance: false);
+              showEntrances = !showEntrances;
+              _toggleEntrances(data, displayEntrance: showEntrances);
             });
           },
         ),
@@ -325,36 +328,30 @@ class _ContentState extends ConsumerState<_Content>
     );
   }
 
-  Future<void> _toggleEntrance(DirectoryObjectMessage data,
+  Future<void> _toggleEntrances(DirectoryObjectMessage data,
       {required bool displayEntrance}) async {
     final highlightController = ref.read(highlightProvider.notifier);
 
-    if (displayEntrance == false) {
-      showEntrances = !showEntrances;
+    if (displayEntrance) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _bottomSheetController.animateTo(Expansion.collapsed);
+      });
+      for (final entrance in data.entrances) {
+        await highlightController.addHighlight(entrance!.id);
+      }
 
-      if (showEntrances) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _bottomSheetController.animateTo(Expansion.collapsed);
-        });
-      } else {
-        for (final entrance in data.entrances) {
-          await highlightController.removeHighlight(entrance!.id);
-        }
-        return;
+      await _animateToEntrance([
+        ...data.entrances
+            .map((e) => e?.geometry?.entrancePoints ?? [])
+            .toList()
+            .expand((element) => element)
+            .toList()
+      ]);
+    } else {
+      for (final entrance in data.entrances) {
+        await highlightController.removeHighlight(entrance!.id);
       }
     }
-
-    for (final entrance in data.entrances) {
-      await highlightController.addHighlight(entrance!.id);
-    }
-
-    await _animateToEntrance([
-      ...data.entrances
-          .map((e) => e?.geometry?.entrancePoints ?? [])
-          .toList()
-          .expand((element) => element)
-          .toList()
-    ]);
   }
 
   Future<void> _animateToEntrance(List<GeoPointMessage?> data) async {
