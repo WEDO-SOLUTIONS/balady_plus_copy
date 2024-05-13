@@ -182,12 +182,11 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.2.1
+    version: ^1.2.3
 
   mapness:
     path: mapness
 
-  google_fonts: ^6.0.0
   wakelock_plus: ^1.1.3
   provider: ^6.0.5
   flutter_compass: ^0.8.0
@@ -303,13 +302,17 @@ flutter:
     - family: sura_juza_names
       fonts:
         - asset: assets/fonts/sura_juza_names.ttf
-
+     
     - family: Frutiger
       fonts:
-        - asset: assets/fonts/FrutigerLTArabic55Roman.ttf
+        - asset: fonts/FrutigerLTArabic45Light.ttf
+          weight: 300
+        - asset: fonts/FrutigerLTArabic55Roman.ttf
           weight: 400
-        - asset: assets/fonts/FrutigerLTArabic65Bold.ttf
+        - asset: fonts/FrutigerLTArabic65Bold.ttf
           weight: 700
+        - asset: fonts/frutigerltarabic75black.ttf
+          weight: 900   
 
     - family: Inter
       fonts:

@@ -56,13 +56,12 @@ class _ContactsInfoState extends State<ContactsInfo> {
           onTap: () {
             final value = contactsModel.value;
             if (value != null) {
-              switch (contactsModel.type) {
-                case ContactsInfoType.phone:
-                  widget.viewModel.callPhone(data: widget.data);
-                case ContactsInfoType.email:
-                  widget.viewModel.sendEmail(value);
-                default:
-                  widget.viewModel.launch(value);
+              if (contactsModel.type == ContactsInfoType.phone) {
+                widget.viewModel.callPhone(data: widget.data);
+              } else if (contactsModel.type == ContactsInfoType.email) {
+                widget.viewModel.sendEmail(value);
+              } else {
+                widget.viewModel.launch(value);
               }
             }
           },
@@ -75,7 +74,8 @@ class _ContactsInfoState extends State<ContactsInfo> {
                   package: PackageConfig.packageName,
                   height: 16,
                   width: 16,
-                  color: context.color.strokeAccent,
+                  colorFilter: ColorFilter.mode(
+                      context.color.strokeAccent, BlendMode.srcIn),
                 ),
                 const SizedBox(
                   width: 12,
@@ -86,7 +86,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                     children: [
                       Directionality(
                         textDirection: TextDirection.ltr,
-                        child: buildText(
+                        child: StyleText(
                           text: displayText,
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
@@ -96,7 +96,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                       ),
                       Directionality(
                         textDirection: TextDirection.ltr,
-                        child: buildText(
+                        child: StyleText(
                           maxLines: 1,
                           text: contactsModel.comment,
                           fontSize: 14,

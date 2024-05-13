@@ -3,9 +3,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 class CenterCompassWidget extends StatelessWidget {
-  const CenterCompassWidget({required this.backgroundColor, super.key});
-
   final Color backgroundColor;
+
+  const CenterCompassWidget({
+    required this.backgroundColor,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => Container(

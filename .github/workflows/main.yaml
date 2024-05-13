@@ -123,6 +123,7 @@ jobs:
       - name: Add Android ABI filter
         run: |
           git apply .github/workflows/abi_filter.patch
+          git apply mapness/scripts/disable-force-update.patch
 
       - name: 🤖🔨 Development setup dgis_map_platform_interface
         run: |
@@ -139,13 +140,6 @@ jobs:
           cd urbi_map/dgis_map
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
-          mkdir -p android/_delete_me_ ios/_DELETE_ME_
-          curl -u "balady-developers:${BALADY_DEVELOPERS_PASS}" -O https://artifactory.2gis.dev/vendor-ios-release/10.2.1/Release/DGisFullSDK.zip
-          rm -rf ios/_DELETE_ME_/DGis.xcframework
-          unzip DGisFullSDK.zip -d ios/_DELETE_ME_
-          rm DGisFullSDK.zip
-          curl -u "balady-developers:${BALADY_DEVELOPERS_PASS}" -O https://artifactory.2gis.dev/vendor-maven-release/ru/dgis/sdk/sdk-full/10.2.1/sdk-full-10.2.1.aar
-          mv sdk-full-10.2.1.aar android/_delete_me_/sdk-full-latest.aar
 
       - name: 🤖🔨 Development setup mapness
         env:
@@ -210,8 +204,7 @@ jobs:
         run: |
           is_pr=""
           if [ -n "${CI_IS_PR}" ]; then
-            PR_ID=$(echo -n $GITHUB_REF_NAME | tr --complement --squeeze-repeats '[:alnum:]' '-' | sed 's/-merge//')
-            is_pr="**Pull Request**: [${{ github.event.pull_request.title }}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${PR_ID})\n"
+            is_pr="**Pull Request**: [${{ github.event.pull_request.title }}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${{ github.event.pull_request.number }})\n"
           fi
           curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
             \"channel_id\": \"${MM_CHANNEL_ID}\", \
