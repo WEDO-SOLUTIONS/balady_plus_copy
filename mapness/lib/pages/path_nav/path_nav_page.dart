@@ -100,27 +100,31 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                         widget.navType == RouteSearchOptionsMessage.pedestrian;
                     final info = ref.watch(pathNavSpeedInfoProvider);
 
-                    return uikit.BaladyManeuverAndLimit(
-                      isPedestrian: isPedestrian,
-                      speedInfo: uikit.LimitsModel(
-                        speed: info.speed,
-                        speedExceed: info.speedExceed,
-                        speedLimit: info.speedLimit,
+                    // This made to remove yellow lines under the text
+                    return DefaultTextStyle(
+                      style: context.textStyle.heading1,
+                      child: uikit.BaladyManeuverAndLimit(
+                        isPedestrian: isPedestrian,
+                        speedInfo: uikit.LimitsModel(
+                          speed: info.speed,
+                          speedExceed: info.speedExceed,
+                          speedLimit: info.speedLimit,
+                        ),
+                        maneuver: maneuver != null
+                            ? uikit.BaladyManeuverModel(
+                                distance: maneuver.distance,
+                                instruction: maneuver.instruction?.toUIKit(),
+                                roadName: maneuver.roadName,
+                                unit: maneuver.unit,
+                              )
+                            : null,
+                        message: message != null
+                            ? uikit.ManeuverMessageModel(
+                                comment: message.state.toMessage(context.l10n),
+                                state: message.state.toUIKit(),
+                              )
+                            : null,
                       ),
-                      maneuver: maneuver != null
-                          ? uikit.BaladyManeuverModel(
-                              distance: maneuver.distance,
-                              instruction: maneuver.instruction?.toUIKit(),
-                              roadName: maneuver.roadName,
-                              unit: maneuver.unit,
-                            )
-                          : null,
-                      message: message != null
-                          ? uikit.ManeuverMessageModel(
-                              comment: message.toMessage(context.l10n),
-                              state: message.toUIKit(),
-                            )
-                          : null,
                     );
                   },
                 ),
