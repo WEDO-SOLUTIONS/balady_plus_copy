@@ -129,7 +129,7 @@ class DgisController extends _$DgisController {
       CameraPositionMessage(
         point: _kingdomTower,
         zoom: 17,
-        tilt: 45,
+        tilt: 0,
         bearing: 0,
       ),
     );
