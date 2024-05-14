@@ -88,9 +88,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
           buttons: [
             AppButton(
               padding: const EdgeInsets.only(
-                left: NumericBase.$4x,
-                right: NumericBase.$4x,
-                bottom: NumericBase.$3x,
+                left: NumericBase.$2x,
+                right: NumericBase.$2x,
+                bottom: NumericBase.$2x,
               ),
               buttonColorScheme: ButtonColorScheme.warning,
               primaryLabel: context.l10n.endTrip,
