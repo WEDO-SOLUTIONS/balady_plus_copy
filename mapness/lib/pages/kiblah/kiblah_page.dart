@@ -1,10 +1,10 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/landing/landing_page.dart';
-import 'package:mapness/_features/landing/providers/map_controls.dart';
-import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/ui/kiblah_compass.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -24,9 +24,6 @@ class KiblahPage extends ConsumerWidget {
       backgroundColor: context.staticColor.surfaceOverlayModal.withOpacity(0.7),
       appBar: BaladyTopBar(
         onLeadingPressed: () {
-          ref
-              .read(mapControlsProvider.notifier)
-              .update(MapControlsStateDashboard());
           context.pop();
         },
         leading: Padding(
@@ -68,11 +65,15 @@ class KiblahPage extends ConsumerWidget {
                 primaryLabel: context.l10n.mosquesNearYou,
                 buttonColorScheme: ButtonColorScheme.primary,
                 onTap: () {
-                  ref
-                      .read(mapControlsProvider.notifier)
-                      .update(MapControlsStateDashboard());
-                  const LandingRoute(focusMaker: LangingFocusMaker.mosques)
-                      .go(context);
+                  context.pop();
+                  final quickFilters = ref.read(quickFiltersProvider);
+                  final mosquesFilter = quickFilters.valueOrNull
+                      ?.firstWhereOrNull((e) => e.rubrics.contains(13374));
+                  if (mosquesFilter != null) {
+                    ref
+                        .read(searchByRubricsQueryProvider.notifier)
+                        .update((mosquesFilter, 4));
+                  }
                 },
               ),
             ),
