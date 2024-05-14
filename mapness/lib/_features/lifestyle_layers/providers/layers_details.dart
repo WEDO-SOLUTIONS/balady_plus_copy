@@ -14,7 +14,7 @@ part 'layers_details.g.dart';
 class LayersDetails extends _$LayersDetails {
   @override
   Future<PointLayersData?> build(PointLayersData e) async =>
-      await _showObjectDetails(e);
+      _showObjectDetails(e);
 
   Future<PointLayersData?> _showObjectDetails(PointLayersData layerData) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
