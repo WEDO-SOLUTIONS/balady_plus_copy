@@ -49,27 +49,27 @@ class SearchByRubrics extends _$SearchByRubrics {
     if (dgisController == null) {
       return;
     }
-
+    SearchResultMessage? searchResults;
     if (filter.rubrics.isEmpty && filter.query != null) {
       final category = getCategoryByTag(filter.query!);
       if (category == null) {
         return;
       }
 
-      final searchResults = await dgisController.searchByCategory(
+      searchResults = await dgisController.searchByCategory(
         category,
         sortingType: SortingTypeMessage.byRelevance,
         searchRect: searchRect,
       );
-
-      final markers = await _showAndReturnMarkers(searchResults);
-      state = AsyncValue.data(markers);
     } else {
-      final searchResults = await dgisController.searchByRubrics(
+      searchResults = await dgisController.searchByRubrics(
         filter.rubrics,
         sortingType: SortingTypeMessage.byRelevance,
         searchRect: searchRect,
       );
+    }
+    final currentFilter = ref.watch(searchByRubricsQueryProvider);
+    if (currentFilter?.$1 == filter) {
       final markers = await _showAndReturnMarkers(searchResults);
       state = AsyncValue.data(markers);
     }
