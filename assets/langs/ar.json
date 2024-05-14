@@ -3878,6 +3878,8 @@
   "delete_all": "حذف الكل",
   "locale": "ar",
   "no_notifications": "",
+  "notification_read": "مقروءة",
+  "notification_unread": "غير مقروءة",
     "issue_commercial_conclusion_owner_data": "بيانات مالك الرخصة",
     "issue_commercial_conclusion_owner_data_name": "اسم المنشأة",
     "issue_commercial_conclusion_owner_data_cr": "الرقم الموحد للمنشأة (سجل تجاري/رقم 700)",
