@@ -14,6 +14,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
@@ -34,11 +35,12 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 /// We don't show black background under the opened sheet. The meaning of this is that the user have to control the map even if he opened the sheet.
 /// You don't need to add black background to make the app similar to the other app
 class PathNavPage extends ConsumerStatefulWidget {
+  final RouteSearchOptionsMessage navType;
+
   const PathNavPage({
     required this.navType,
     super.key,
   });
-  final RouteSearchOptionsMessage navType;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => PathNavPageState();
@@ -48,7 +50,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
   late StreamSubscription? _naviEventsListener;
-  ValueNotifier<PathNavState> navigationState = ValueNotifier(PathNavState.running);
+  final _navigationState = ValueNotifier(PathNavState.running);
+  final _betterRouteDurationProfit = ValueNotifier<int?>(null);
   double heightOfEta = 90.0;
 
   @override
@@ -58,7 +61,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     ref.read(dgisControllerProvider).value?.setNavigatorVoice(
           ref.read(navigatorVoiceProvider),
         );
-    _naviEventsListener = ref.read(dgisControllerProvider).value?.navigationEvents.listen(_naviEvent);
+    _naviEventsListener = ref
+        .read(dgisControllerProvider)
+        .value
+        ?.navigationEvents
+        .listen(_naviEvent);
     unawaited(ref.read(dgisControllerProvider).value?.startNavigation());
     WakelockPlus.enable();
   }
@@ -73,6 +80,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(
+      betterRouteProvider,
+      (_, next) => next == null
+          ? _betterRouteDurationProfit.value = null
+          : _betterRouteDurationProfit.value = next.durationProfit,
+    );
+
     // We use the Directionality widget to set the text direction to ltr.
     // This is necessary for LayersControl to be at the right side of the screen.
     return Directionality(
@@ -84,7 +98,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
           children: [
             const SizedBox(height: 6, width: double.maxFinite),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.verticalBaseToTopSafezone),
+              padding: const EdgeInsets.symmetric(
+                  vertical: uikit.Spacing.verticalBaseToTopSafezone),
               child: Directionality(
                 // Here we set the text direction according to the current locale to display the correct direction of the widget.
                 textDirection: Directionality.of(context),
@@ -92,7 +107,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                   builder: (context, ref, child) {
                     final message = ref.watch(pathNavMessageProvider);
                     final maneuver = ref.watch(pathNavManeuverProvider);
-                    final isPedestrian = widget.navType == RouteSearchOptionsMessage.pedestrian;
+                    final isPedestrian =
+                        widget.navType == RouteSearchOptionsMessage.pedestrian;
                     final info = ref.watch(pathNavSpeedInfoProvider);
 
                     // This made to remove yellow lines under the text
@@ -162,7 +178,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
               // Here we set the text direction according to the current locale to display the correct direction of the widget.
               textDirection: Directionality.of(context),
               child: ValueListenableBuilder(
-                  valueListenable: navigationState,
+                  valueListenable: _navigationState,
                   builder: (context, state, child) {
                     switch (state) {
                       case PathNavState.running:
@@ -170,7 +186,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                           alignment: Alignment.bottomCenter,
                           child: EtaSheet(
                             onEndTripPressed: _endTripAndShowHome,
-                            onRoutePressed: _onPausedPressed,
+                            onRoutePressed: _onShowRoutePressed,
+                            onBetterRouteAccept: () =>
+                                _acceptBetterRoute(context),
+                            onBetterRouteReject: () =>
+                                _rejectBetterRoute(context),
+                            betterRouteDurationProfit:
+                                _betterRouteDurationProfit,
                             onSizeChanged: _onSizeChanged,
                           ),
                         );
@@ -182,7 +204,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                       case PathNavState.finished:
                         return EtaFinished(
                           onEndTripPressed: _endTripAndShowHome,
-                          onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                          onBuildAnotherRoutePressed:
+                              _endTripAndBuildAnotherRoute,
                           onSizeChanged: _onSizeChanged,
                         );
                     }
@@ -194,19 +217,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     );
   }
 
-  void _setNavigationState(PathNavState value) {
-    setState(() {
-      navigationState.value = value;
-    });
-  }
-
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip(VoidCallback action) async {
-    if (navigationState.value != PathNavState.finished) {
+    if (_navigationState.value != PathNavState.finished) {
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
-      _setNavigationState(PathNavState.finished);
+      _navigationState.value = PathNavState.finished;
     }
     _setPaddingToCamera(0.0);
     action();
@@ -245,31 +262,30 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   }
 
   // Show the pause state
-  Future<void> _onPausedPressed() async {
+  Future<void> _onShowRoutePressed() async {
     Metrics.logEventAdvanced(
       MetricsConstants.navigationKeys.showRoute,
       group: MetricsConstants.navigationTag,
       action: MetricAction.tap.toString(),
     );
 
-    _setNavigationState(PathNavState.paused);
+    _betterRouteDurationProfit.value = null;
+    _navigationState.value = PathNavState.paused;
     await ref.read(cameraPositionProvider.notifier).animateToRoute();
   }
 
   // Continue the trip after the pause state
   Future<void> _onContinuePressed() async {
-    _setNavigationState(PathNavState.running);
+    _navigationState.value = PathNavState.running;
     final dgisController = await ref.read(dgisControllerProvider.future);
-
     await _moveCameraToUser();
-
     await dgisController.followNavigation();
   }
 
   // Notify the listeners about the end of the trip
   void _naviEvent(NavigationEvent event) {
     if (event == NavigationEvent.finished) {
-      _setNavigationState(PathNavState.finished);
+      _navigationState.value = PathNavState.finished;
     }
   }
 
@@ -310,5 +326,17 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
             bottomPadding: (pixelSize * padding).floor(),
           ),
         );
+  }
+
+  Future<void> _acceptBetterRoute(BuildContext context) async {
+    _betterRouteDurationProfit.value = null;
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    await dgisController.betterRouteResponse(BetterRouteResponseMessage.accept);
+  }
+
+  Future<void> _rejectBetterRoute(BuildContext context) async {
+    _betterRouteDurationProfit.value = null;
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    await dgisController.betterRouteResponse(BetterRouteResponseMessage.reject);
   }
 }

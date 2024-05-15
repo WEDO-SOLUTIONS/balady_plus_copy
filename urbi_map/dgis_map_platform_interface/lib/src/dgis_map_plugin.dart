@@ -88,6 +88,9 @@ class DgisMapPlugin extends FlutterMapApi {
   Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
       _routesEventHandler.routesInfoChangedEvents;
 
+  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents =>
+      _routesEventHandler.betterRouteInfoEvents;
+
   Stream<NavigationEvent> get navigationEvents =>
       _navigationEventHandler.navigationEvents;
 
@@ -232,6 +235,8 @@ class DgisMapPlugin extends FlutterMapApi {
             return _routesEventHandler.activeRouteChangedEvent(map);
           case RoutesInfoChangedEvent.name:
             return _routesEventHandler.routesInfoChangedEvent(map);
+          case BetterRouteInfoEvent.name:
+            return _routesEventHandler.betterRouteInfoEvent(map);
           case NavigationEvent.name:
             return _navigationEventHandler.handleNavigationEvent(map);
           case IoTapEvent.name:
@@ -798,4 +803,7 @@ class DgisMapPlugin extends FlutterMapApi {
 
   Future<bool> toggleHeatmap(WeatherMapMessage message) =>
       _api.toggleHeatmap(message);
+
+  Future<void> betterRouteResponse(BetterRouteResponseMessage response) =>
+      _api.betterRouteResponse(response);
 }
