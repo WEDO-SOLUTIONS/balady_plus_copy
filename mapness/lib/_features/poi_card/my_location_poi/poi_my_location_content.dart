@@ -10,6 +10,9 @@ class PoiMyLocationContent extends ConsumerWidget {
     super.key,
   });
 
+  /// Profile size with image padding included
+  static const _profileImgSize = 52.0;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
         width: double.infinity,
@@ -42,15 +45,17 @@ class PoiMyLocationContent extends ConsumerWidget {
                   text: title,
                   subTitle: subTitle,
                   profileImage: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: NumericBase.$1x),
                     child: ProfileImageWidget(
-                      dimension: 52,
+                      dimension: _profileImgSize,
                       color: context.color.strokeAccent,
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: Spacing.verticalPaddingInsideCell),
                   child: Text(
                     '${location.latitude}, ${location.longitude}',
                     style: context.textStyle.text,
