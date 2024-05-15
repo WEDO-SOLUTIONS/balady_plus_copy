@@ -41,9 +41,12 @@ class PoiMyLocationContent extends ConsumerWidget {
                   onTapClose: onTapClose,
                   text: title,
                   subTitle: subTitle,
-                  profileImage: ProfileImageWidget(
-                    dimension: 48,
-                    color: context.color.strokeAccent,
+                  profileImage: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: ProfileImageWidget(
+                      dimension: 52,
+                      color: context.color.strokeAccent,
+                    ),
                   ),
                 ),
                 Padding(
