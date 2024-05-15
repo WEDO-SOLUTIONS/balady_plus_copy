@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,7 +13,7 @@ part 'happiness_repository.g.dart';
 class _HappinessRepository extends _$HappinessRepository {
   // returns should close or not
   Future<void> submitFeedback(HappinessState feedback) async {
-    Metrics.logEvent('Happiness_map/submitFeedback',
+    Metrics.logEvent(MetricsConstants.exploreKeys.happinessMapSubmitFeedback,
         object: runtimeType,
         extras: {
           'feedback': feedback.feedback.toString(),
