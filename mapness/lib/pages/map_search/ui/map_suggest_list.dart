@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class MapSuggestList extends ConsumerWidget {
@@ -28,8 +29,15 @@ class MapSuggestList extends ConsumerWidget {
       itemBuilder: (context, index) => SuggestItem(
         suggest: suggests[index],
         onObjectTap: (object) {
-          ref.read(urbiMetricsProvider.notifier).logEvent(
-              'Search/Suggestion => Tap', {'object': object.id!.objectId});
+          Metrics.logEventAdvanced(
+            MetricsConstants.searchKeys.suggestion,
+            group: MetricsConstants.searchTag,
+            action: MetricAction.tap.toString(),
+            props: {
+              'object': object.id!.objectId,
+            },
+          );
+
           PoiMapRoute.open(ref.read(goRouterProvider), object.id!.objectId);
         },
       ),

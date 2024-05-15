@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -14,9 +15,12 @@ class FavoriteCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => CardContent(
         onTap: () {
-          ref
-              .read(urbiMetricsProvider.notifier)
-              .logEvent('POI/Favorites => Tap');
+          Metrics.logEventAdvanced(
+            MetricsConstants.poiKeys.favorites,
+            group: MetricsConstants.poiTag,
+            action: MetricAction.tap.toString(),
+          );
+
           const FavouritesRoute().push(context);
         },
         child: Row(

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_favourites.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/routing/ui/route_editor.dart';
@@ -80,9 +81,14 @@ class RoutingHeader extends ConsumerWidget {
               child: RouteEditor(
                 points: points,
                 onTap: (index) {
-                  ref
-                      .read(urbiMetricsProvider.notifier)
-                      .logEvent('Routes/Change location => Tap');
+                  Metrics.logEventAdvanced(
+                      MetricsConstants.routesKeys.changeLocation,
+                      group: MetricsConstants.routesTag,
+                      action: MetricAction.tap.toString(),
+                      props: {
+                        'isMyLocation': index == 0 &&
+                            points[index] is! RoutePointMyLocation,
+                      });
 
                   RoutingSearchRoute(
                     placeholder:
@@ -99,9 +105,12 @@ class RoutingHeader extends ConsumerWidget {
                   );
                 },
                 onReorder: (oldIndex, newIndex) {
-                  ref.read(urbiMetricsProvider.notifier).logEvent(
-                        'Routes/On reorder => Tap',
-                      );
+                  Metrics.logEventAdvanced(
+                    MetricsConstants.routesKeys.onReorder,
+                    group: MetricsConstants.routesTag,
+                    action: MetricAction.tap.toString(),
+                  );
+
                   if (oldIndex < newIndex) {
                     newIndex -= 1;
                   }
@@ -116,14 +125,17 @@ class RoutingHeader extends ConsumerWidget {
             RoutingFavourites(
               showBookmark: true,
               onFavouriteTap: (point) async {
-                ref.read(urbiMetricsProvider.notifier).logEvent(
-                  'Routes/Route to favorite => Tap',
-                  {
+                Metrics.logEventAdvanced(
+                  MetricsConstants.routesKeys.startRouteFromFavorite,
+                  group: MetricsConstants.routesTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
                     'id': point.entity?.id,
                     'destination':
                         '${point.coordinates.latitude},${point.coordinates.longitude}'
                   },
                 );
+
                 final index =
                     points.indexWhere((element) => !element.isNotEmpty);
                 points[index] = RoutePointFavouriteItem(point);

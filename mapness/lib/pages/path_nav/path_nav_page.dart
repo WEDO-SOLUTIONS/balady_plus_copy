@@ -18,6 +18,7 @@ import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
@@ -218,9 +219,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   // Show the route page after the trip is finished
   Future<void> _endTripAndBuildAnotherRoute() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent(
-          'Routes/Navigator/End trip and build another => Tap',
-        );
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndBuildAnother,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     await _endTrip(() {
       if (context.mounted) {
         const RoutingRoute(collapseInitially: true).go(context);
@@ -230,9 +234,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   // Show the home page after the trip is finished
   Future<void> _endTripAndShowHome() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent(
-          'Routes/Navigator/End trip and show home => Tap',
-        );
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndShowHome,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     await _endTrip(() {
       if (context.mounted) {
         const LandingRoute().go(context);
@@ -242,9 +249,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   // Show the pause state
   Future<void> _onPausedPressed() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent(
-          'Routes/Navigator/On Route => Tap',
-        );
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.showRoute,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     _setNavigationState(PathNavState.paused);
     await ref.read(cameraPositionProvider.notifier).animateToRoute();
   }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -39,9 +40,12 @@ class FavouritesToggle extends ConsumerWidget {
             onChanged: isEditing
                 ? null
                 : (_) async {
-                    ref.read(urbiMetricsProvider.notifier).logEvent(
-                          'Favorites/Toggle show on map => Tap',
-                        );
+                    Metrics.logEventAdvanced(
+                      MetricsConstants.favoritesKeys.toggleShowOnMap,
+                      action: MetricAction.tap.name,
+                      group: MetricsConstants.favoriteTag,
+                    );
+
                     await ref.read(favouriteToggleProvider.notifier).toggle();
                     ref.read(layersControlsProvider.notifier).updateLayerInfo();
                   },

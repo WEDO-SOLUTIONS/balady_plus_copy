@@ -12,6 +12,7 @@ import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -139,12 +140,18 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                         child: RoutesCarousel(
                           points: widget.points,
                           startNavigation: () {
-                            ref.read(urbiMetricsProvider.notifier).logEvent(
-                                'Routes/Route-selection/Go btn => Tap', {
-                              'navType': navigatingType.name,
-                              'points':
-                                  '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
-                            });
+                            Metrics.logEventAdvanced(
+                              MetricsConstants
+                                  .routesKeys.routeSelectionChangeNavType,
+                              group: MetricsConstants.routesTag,
+                              action: MetricAction.tap.toString(),
+                              props: {
+                                'navType': navigatingType.name,
+                                'points':
+                                    '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
+                              },
+                            );
+
                             PathNavRoute.open(
                               ref.watch(goRouterProvider),
                               navigatingType,
@@ -157,10 +164,16 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                       _RouteTabBar(
                         active: navigatingType,
                         onChanged: (e) {
-                          ref.read(urbiMetricsProvider.notifier).logEvent(
-                              'Routes/Route-selection/Change nav type => Tap', {
-                            'navType': e.name,
-                          });
+                          Metrics.logEventAdvanced(
+                            MetricsConstants
+                                .routesKeys.routeSelectionChangeNavType,
+                            group: MetricsConstants.routesTag,
+                            action: MetricAction.tap.toString(),
+                            props: {
+                              'navType': e.name,
+                            },
+                          );
+
                           _navType.value = e;
                         },
                         points: widget.points,

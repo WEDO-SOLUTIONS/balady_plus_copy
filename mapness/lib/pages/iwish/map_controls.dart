@@ -14,6 +14,7 @@ import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/weather/widgets/weather_control.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/weather.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -62,9 +63,11 @@ class MapControls extends ConsumerWidget {
                             package: 'mapness',
                           ),
                           onTap: () async {
-                            ref
-                                .read(urbiMetricsProvider.notifier)
-                                .logEvent('Explore/Qibla => Tap');
+                            Metrics.logEventAdvanced(
+                              MetricsConstants.exploreKeys.qibla,
+                              action: MetricAction.tap.name,
+                              group: MetricsConstants.exploreTag,
+                            );
                             final location =
                                 ref.read(locationProvider.notifier);
 
@@ -72,9 +75,6 @@ class MapControls extends ConsumerWidget {
                                 .checkLocationPermission()
                                 .then((allowed) {
                               if (allowed) {
-                                ref
-                                    .read(urbiMetricsProvider.notifier)
-                                    .logEvent('Explore/Qibla => Tap');
                                 const KiblahRoute().push(context);
                               }
                             });

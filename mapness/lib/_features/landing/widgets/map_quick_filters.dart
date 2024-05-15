@@ -7,6 +7,7 @@ import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -81,9 +82,12 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
           if (!mounted) {
             return;
           }
-          ref
-              .read(urbiMetricsProvider.notifier)
-              .logEvent('Explore/Bookmark icon => Tap');
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.bookmarkIcon,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
+
           const FavouritesRoute().push(context);
         },
       ),
@@ -100,20 +104,26 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
                   .read(searchByRubricsQueryProvider.notifier)
                   .update((filter, index));
             }
-            ref
-                .read(urbiMetricsProvider.notifier)
-                .logEvent('Explore/Quick filter => Tap', {
-              'filter': filter.title,
-              'toggle_state': isSame,
-            });
+            Metrics.logEventAdvanced(
+              MetricsConstants.exploreKeys.quickFilter,
+              action: MetricAction.tap.name,
+              group: MetricsConstants.exploreTag,
+              props: {
+                'filter': filter.title,
+                'toggle_state': isSame,
+              },
+            );
           },
         );
       },
       onFavouritesTap: () {
         _debouncer.run(() {
-          ref
-              .read(urbiMetricsProvider.notifier)
-              .logEvent('Explore/Bookmark icon => Tap');
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.bookmarkIcon,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
+
           ref.read(searchByRubricsQueryProvider.notifier).update(null);
           searchObjectManager.removeAllMarkers();
         });

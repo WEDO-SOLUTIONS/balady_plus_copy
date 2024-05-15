@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class TrafficControl extends ConsumerWidget {
+  static const _tag = MetricsConstants.exploreTag;
   const TrafficControl({super.key});
 
   @override
@@ -21,9 +23,11 @@ class TrafficControl extends ConsumerWidget {
       duration: const Duration(milliseconds: 250),
       child: MapButton(
         onTap: () {
-          ref
-              .read(urbiMetricsProvider.notifier)
-              .logEvent('Explore/Traffic light button => Tap');
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.trafficLightButton,
+            group: _tag,
+            action: MetricAction.tap.name,
+          );
           trafficNotifier.onTrafficTap();
         },
         child: SizedBox(

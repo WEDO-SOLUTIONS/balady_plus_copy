@@ -23,6 +23,7 @@ import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -216,14 +217,14 @@ class LayersControls extends _$LayersControls {
   }) {
     if (selectedType != null) {
       _saveLayersState(selectedType);
-      ref.read(urbiMetricsProvider.notifier).logEvent(
-        'Layers/Layer => Tap',
-        {
-          'type': selectedType.titleLocale(
-            AppLocalizationsEn(),
-          ),
-        },
-      );
+      Metrics.logEventAdvanced(MetricsConstants.layersKeys.layerSelect,
+          group: MetricsConstants.layersTag,
+          action: MetricAction.tap.toString(),
+          props: {
+            'type': selectedType.titleLocale(
+              AppLocalizationsEn(),
+            ),
+          });
     } else {
       _removeLayersState();
     }

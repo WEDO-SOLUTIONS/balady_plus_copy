@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -57,11 +58,12 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
           child: _PoiTabItem(
             title: context.l10n.info,
             onTap: () {
-              ref
-                  .read(urbiMetricsProvider.notifier)
-                  .logEvent('POI/Tab => Tap', {
-                'tab': context.l10n.info,
-              });
+              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
+                    'tab': context.l10n.info,
+                  });
               widget.tabController.animateTo(0);
             },
             isActive: widget.tabController.index == 0,
@@ -77,11 +79,13 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
                 widget.tabController.index = widget.tabController.previousIndex;
                 return;
               }
-              ref
-                  .read(urbiMetricsProvider.notifier)
-                  .logEvent('POI/Tab => Tap', {
-                'tab': context.l10n.photos,
-              });
+              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
+                    'tab': context.l10n.photos,
+                  });
+
               widget.tabController.animateTo(1);
             },
             isActive: widget.tabController.index == 1,

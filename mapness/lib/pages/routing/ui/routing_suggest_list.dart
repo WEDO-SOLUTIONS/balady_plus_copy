@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class RoutingSuggestList extends ConsumerWidget {
@@ -35,8 +36,12 @@ class RoutingSuggestList extends ConsumerWidget {
             return;
           }
 
-          ref.read(urbiMetricsProvider.notifier).logEvent(
-              'Routes/Search/Suggestion => Tap', {'item': object.id?.objectId});
+          Metrics.logEventAdvanced(MetricsConstants.routesKeys.searchSuggestion,
+              group: MetricsConstants.routesTag,
+              action: MetricAction.tap.toString(),
+              props: {
+                'item': object.id?.objectId,
+              });
 
           context.pop(RoutePointDirectoryObject(object));
         },

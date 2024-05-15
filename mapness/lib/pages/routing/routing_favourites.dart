@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -39,9 +40,12 @@ class RoutingFavouritesPage extends ConsumerWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        ref
-                            .read(urbiMetricsProvider.notifier)
-                            .logEvent('Routes/Favorite/Back => Tap');
+                        Metrics.logEventAdvanced(
+                          MetricsConstants.routesKeys.favoriteBack,
+                          group: MetricsConstants.routesTag,
+                          action: MetricAction.tap.toString(),
+                        );
+
                         context.pop(null);
                       },
                       borderRadius: BorderRadius.circular(8),

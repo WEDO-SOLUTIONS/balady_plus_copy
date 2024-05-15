@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
@@ -65,9 +66,12 @@ class SigninScreen extends ConsumerWidget {
                         constraints: const BoxConstraints.expand(height: 48),
                         child: LabeledElevatedButton(
                           onPressed: () async {
-                            ref
-                                .read(urbiMetricsProvider.notifier)
-                                .logEvent('Login/Sign-in => Tap');
+                            Metrics.logEventAdvanced(
+                              MetricsConstants.loginKeys.signIn,
+                              group: MetricsConstants.loginTag,
+                              action: MetricAction.tap.toString(),
+                            );
+
                             await ref.read(authProvider.notifier).doAuth();
                             if (!context.mounted) {
                               return;
@@ -96,9 +100,12 @@ class SigninScreen extends ConsumerWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
             onTap: () {
-              ref
-                  .read(urbiMetricsProvider.notifier)
-                  .logEvent('Login/Close => Tap');
+              Metrics.logEventAdvanced(
+                MetricsConstants.loginKeys.close,
+                group: MetricsConstants.loginTag,
+                action: MetricAction.tap.toString(),
+              );
+
               context.pop();
             },
             child: Container(

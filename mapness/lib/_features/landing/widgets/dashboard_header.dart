@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -66,9 +67,11 @@ class DashboardHeader extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GestureDetector(
                 onTap: () {
-                  ref
-                      .read(urbiMetricsProvider.notifier)
-                      .logEvent('Explore/Search field => Tap');
+                  Metrics.logEventAdvanced(
+                    MetricsConstants.exploreKeys.searchField,
+                    action: MetricAction.tap.name,
+                    group: MetricsConstants.exploreTag,
+                  );
                   ref.read(searchByRubricsQueryProvider.notifier).update(null);
                   const SearchRoute().push(context);
                   draggableScrollableController.animateTo(

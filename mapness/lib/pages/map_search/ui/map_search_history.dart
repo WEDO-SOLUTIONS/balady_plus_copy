@@ -7,6 +7,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart' as ui;
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -32,9 +33,11 @@ class MapSearchHistory extends ConsumerWidget {
               ),
             );
 
-            ref
-                .read(urbiMetricsProvider.notifier)
-                .logEvent('POI/Object => Tap', {'objectId': item.objectId});
+            Metrics.logEventAdvanced(MetricsConstants.poiKeys.object,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {'objectId': item.objectId});
+
             PoiMapRoute.open(
               ref.read(goRouterProvider),
               int.parse(item.objectId!),

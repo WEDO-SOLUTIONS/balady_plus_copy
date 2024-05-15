@@ -16,6 +16,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -93,9 +94,12 @@ class _DashboardState extends ConsumerState<Dashboard> {
     return WillPopScope(
       onWillPop: () async {
         if (Stories.isShowing) {
-          ref.read(urbiMetricsProvider.notifier).logEvent(
-                'Stories/close',
-              );
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.storiesClose,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
+
           //Resume the story update when viewport changed
           ref.read(storyServiceProvider.notifier).resumeUpdate();
           Stories.hide();
@@ -177,24 +181,30 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               height: 20,
                             ),
                             PrayerHomeCard(
-                              onNotificationTap: () => ref
-                                  .read(urbiMetricsProvider.notifier)
-                                  .logEvent(
-                                      'Explore/Prayer Times banner bell icon => Tap'),
-                              onShowTimesTap: () => ref
-                                  .read(urbiMetricsProvider.notifier)
-                                  .logEvent(
-                                      'Prayer Times banner button => Tap'),
+                              onNotificationTap: () => Metrics.logEventAdvanced(
+                                MetricsConstants
+                                    .exploreKeys.prayerTimesBannerBellIcon,
+                                action: MetricAction.tap.name,
+                                group: MetricsConstants.exploreTag,
+                              ),
+                              onShowTimesTap: () => Metrics.logEventAdvanced(
+                                MetricsConstants
+                                    .exploreKeys.prayerTimesBannerButton,
+                                action: MetricAction.tap.name,
+                                group: MetricsConstants.exploreTag,
+                              ),
                             ),
                             const SizedBox(
                               height: 20,
                             ),
                             CalendarHomeCard(
                               colorScheme: ref.read(colorSchemeProvider),
-                              onShowAll: () => ref
-                                  .read(urbiMetricsProvider.notifier)
-                                  .logEvent(
-                                      'Explore/Kingdom Calendar - View all => Tap'),
+                              onShowAll: () => Metrics.logEventAdvanced(
+                                MetricsConstants
+                                    .exploreKeys.kingdomCalendarViewAll,
+                                action: MetricAction.tap.name,
+                                group: MetricsConstants.exploreTag,
+                              ),
                             ),
                             const SizedBox(
                               height: 20,

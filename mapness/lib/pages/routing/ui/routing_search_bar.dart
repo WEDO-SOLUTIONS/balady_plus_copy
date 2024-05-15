@@ -6,6 +6,7 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:provider/provider.dart';
 
@@ -63,15 +64,22 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
       searchInput: BaladyInput.search(
         focusNode: _focusNode,
         onChanged: (query) {
-          ref
-              .read(urbiMetricsProvider.notifier)
-              .logEvent('Routes/Search/Submit => Tap', {'query': query});
+          Metrics.logEventAdvanced(
+            MetricsConstants.routesKeys.searchSubmit,
+            group: MetricsConstants.routesTag,
+            action: MetricAction.type.toString(),
+            props: {'query': query},
+          );
+
           ref.read(searchQueryProvider(scope.value).notifier).update(query);
         },
         onSubmitted: (query) {
-          ref
-              .read(urbiMetricsProvider.notifier)
-              .logEvent('Routes/Search/Submit => Tap', {'query': query});
+          Metrics.logEventAdvanced(
+            MetricsConstants.routesKeys.searchSubmit,
+            group: MetricsConstants.routesTag,
+            action: MetricAction.type.toString(),
+            props: {'query': query},
+          );
           ref.read(searchProvider(scope.value).notifier).searchByText(query);
           if (query.isNotEmpty) {
             ref.read(searchHistoryProvider(scope.value).notifier).put(
@@ -83,9 +91,11 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
         hintText: widget.placeholder,
       ),
       onBackButtonPressed: () {
-        ref.read(urbiMetricsProvider.notifier).logEvent(
-              'Routes/Search/Back btn => Tap',
-            );
+        Metrics.logEventAdvanced(
+          MetricsConstants.routesKeys.searchBackButton,
+          group: MetricsConstants.routesTag,
+          action: MetricAction.tap.toString(),
+        );
         context.pop();
       },
     );
