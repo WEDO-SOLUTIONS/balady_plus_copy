@@ -17,6 +17,7 @@ class IwishTextEditingField extends StatefulWidget {
 
 class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
   final _controller = TextEditingController();
+  final _focusNode = FocusNode();
 
   static const _minMaxLines = 11;
 
@@ -39,22 +40,26 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
         .text
         .copyWith(color: context.color.textAndIconsBasePrimary);
 
-    return TextField(
-      minLines: _minMaxLines,
-      maxLines: _minMaxLines,
-      focusNode: FocusNode()..requestFocus(),
-      controller: _controller,
-      onChanged: widget.onChanged,
-      style: style,
-      cursorColor: context.color.strokeAccent,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: context.color.surfaceBasePrimary,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
+    return Expanded(
+      child: TextField(
+        autofocus: true,
+        minLines: _minMaxLines,
+        maxLines: _minMaxLines,
+        focusNode: _focusNode,
+        controller: _controller,
+        onChanged: widget.onChanged,
+        style: style,
+        cursorColor: context.color.strokeAccent,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: context.color.surfaceBasePrimary,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
       ),
     );
   }
