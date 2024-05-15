@@ -15,6 +15,7 @@ import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
@@ -138,6 +139,12 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                         child: RoutesCarousel(
                           points: widget.points,
                           startNavigation: () {
+                            ref.read(urbiMetricsProvider.notifier).logEvent(
+                                'Routes/Route-selection/Go btn => Tap', {
+                              'navType': navigatingType.name,
+                              'points':
+                                  '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
+                            });
                             PathNavRoute.open(
                               ref.watch(goRouterProvider),
                               navigatingType,
@@ -150,6 +157,10 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                       _RouteTabBar(
                         active: navigatingType,
                         onChanged: (e) {
+                          ref.read(urbiMetricsProvider.notifier).logEvent(
+                              'Routes/Route-selection/Change nav type => Tap', {
+                            'navType': e.name,
+                          });
                           _navType.value = e;
                         },
                         points: widget.points,

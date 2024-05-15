@@ -7,12 +7,15 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 import 'package:provider/provider.dart';
 
 class RoutingSearchResults extends ConsumerWidget {
   const RoutingSearchResults({
-    required this.results, required this.scrollController, super.key,
+    required this.results,
+    required this.scrollController,
+    super.key,
   });
 
   final SearchResultMessage results;
@@ -36,6 +39,9 @@ class RoutingSearchResults extends ConsumerWidget {
       itemBuilder: (context, item) => SearchItem(
         result: item,
         onTap: () {
+          ref.read(urbiMetricsProvider.notifier).logEvent(
+              'Routes/Search/Result select => Tap',
+              {'item': item.id?.objectId});
           ref.read(searchHistoryProvider(scope.value).notifier).put(
                 SearchHistoryItem.fromDirectoryObject(item),
               );

@@ -11,12 +11,12 @@ import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/weather/widgets/weather_control.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/weather.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class PoiCardMapControls extends ConsumerStatefulWidget {
-
   const PoiCardMapControls({
     required this.biggestHeight,
     required this.scrollController,
@@ -80,7 +80,8 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           WeatherControl(
-                              onTap: () => const WeatherRoute().push(context),),
+                            onTap: () => const WeatherRoute().push(context),
+                          ),
                           const SizedBox(height: 8),
                           const HappinesControl(),
                           const Spacer(),
@@ -104,6 +105,9 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                               package: 'mapness',
                             ),
                             onTap: () {
+                              ref
+                                  .read(urbiMetricsProvider.notifier)
+                                  .logEvent('Explore/Qibla => Tap');
                               const KiblahRoute().pushReplacement(context);
                             },
                           ),

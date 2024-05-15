@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 class PoiTabs extends ConsumerStatefulWidget {
-
   const PoiTabs({
     required this.tabController,
     required this.model,
@@ -56,7 +56,14 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
           iconMargin: EdgeInsets.zero,
           child: _PoiTabItem(
             title: context.l10n.info,
-            onTap: () => widget.tabController.animateTo(0),
+            onTap: () {
+              ref
+                  .read(urbiMetricsProvider.notifier)
+                  .logEvent('POI/Tab => Tap', {
+                'tab': context.l10n.info,
+              });
+              widget.tabController.animateTo(0);
+            },
             isActive: widget.tabController.index == 0,
           ),
         ),
@@ -70,6 +77,11 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
                 widget.tabController.index = widget.tabController.previousIndex;
                 return;
               }
+              ref
+                  .read(urbiMetricsProvider.notifier)
+                  .logEvent('POI/Tab => Tap', {
+                'tab': context.l10n.photos,
+              });
               widget.tabController.animateTo(1);
             },
             isActive: widget.tabController.index == 1,
@@ -81,8 +93,12 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
 }
 
 class _PoiTabItem extends StatelessWidget {
-  const _PoiTabItem(
-      {required this.title, this.isActive, this.onTap, this.count,});
+  const _PoiTabItem({
+    required this.title,
+    this.isActive,
+    this.onTap,
+    this.count,
+  });
   final bool? isActive;
   final VoidCallback? onTap;
   final String title;
@@ -127,7 +143,8 @@ class _PoiTabItem extends StatelessWidget {
                           .copyWith(
                             color: isActive ?? false
                                 ? context.color.textAndIconsBasePrimary
-                                : context.color.textAndIconsBasePrimary.withOpacity(0.5),
+                                : context.color.textAndIconsBasePrimary
+                                    .withOpacity(0.5),
                           ),
                     ),
                     if (count != null)

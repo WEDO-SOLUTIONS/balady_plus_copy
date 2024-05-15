@@ -80,7 +80,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   void _objectTapListener(TapEvent event) {
     if (event is ObjectTapEvent) {
       ref.read(urbiMetricsProvider.notifier).logEvent(
-        'Landing/objectTap',
+        'POI/Object => Tap',
         {'objectId': event.dgisObjectId.objectId},
       );
       if (context.mounted) {
@@ -88,6 +88,10 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
             ref.read(goRouterProvider), event.dgisObjectId.objectId);
       }
     } else if (event is RoadEventTapEvent) {
+      ref.read(urbiMetricsProvider.notifier).logEvent(
+        'POI/Road event => Tap',
+        {'objectId': event.id.objectId, 'title': event.title},
+      );
       EventsRoute.open(context, event);
     }
   }
@@ -184,6 +188,10 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                           }
                         },
                         searchByQuery: (query) {
+                          ref.read(urbiMetricsProvider.notifier).logEvent(
+                            'Routes/Search/Query => Update',
+                            {'query': query},
+                          );
                           final index = points[0].isNotEmpty ? 1 : 0;
                           RoutingSearchRoute(
                             placeholder: index == 0

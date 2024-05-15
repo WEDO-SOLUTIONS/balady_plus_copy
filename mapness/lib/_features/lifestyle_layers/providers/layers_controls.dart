@@ -217,7 +217,7 @@ class LayersControls extends _$LayersControls {
     if (selectedType != null) {
       _saveLayersState(selectedType);
       ref.read(urbiMetricsProvider.notifier).logEvent(
-        'Landing/selectLayer',
+        'Layers/Layer => Tap',
         {
           'type': selectedType.titleLocale(
             AppLocalizationsEn(),

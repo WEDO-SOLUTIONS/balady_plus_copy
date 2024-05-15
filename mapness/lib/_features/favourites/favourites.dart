@@ -13,6 +13,7 @@ import 'package:mapness/_features/favourites/widgets/screen/pinned_place_widget.
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 
 class Favourites extends ConsumerStatefulWidget {
@@ -29,6 +30,11 @@ class _FavouritesState extends ConsumerState<Favourites> {
     setState(() {
       isEditing = !isEditing;
     });
+
+    ref.read(urbiMetricsProvider.notifier).logEvent(
+      'Favorites/Edit => Tap',
+      {'isEditing': isEditing},
+    );
   }
 
   void _deleteItem(FavouriteItem item) {
@@ -41,8 +47,16 @@ class _FavouritesState extends ConsumerState<Favourites> {
     return asyncState.map(
       error: (error) => ErrorSheet(
         buttonLabel: 'Reload',
-        onClose: () => context.pop(),
+        onClose: () {
+          ref.read(urbiMetricsProvider.notifier).logEvent(
+                'Favorites/Close => Tap',
+              );
+          context.pop();
+        },
         onRetry: () {
+          ref.read(urbiMetricsProvider.notifier).logEvent(
+                'Favorites/Retry => Tap',
+              );
           ref.invalidate(favouriteCacheProvider);
         },
       ),
@@ -105,6 +119,9 @@ class _FavouritesState extends ConsumerState<Favourites> {
                           if (!ref.context.mounted) {
                             return;
                           }
+                          ref.read(urbiMetricsProvider.notifier).logEvent(
+                                'Favorites/Delete all => Tap',
+                              );
                           await ref
                               .read(favouriteCacheProvider.notifier)
                               .deleteAll();
@@ -138,13 +155,23 @@ class _FavouritesState extends ConsumerState<Favourites> {
                         isAdded: state.home != null,
                         onDelete: () => _deleteItem(state.home!),
                         onTap: state.home == null
-                            ? () => const FavouritesSearchRoute(
+                            ? () {
+                                ref.read(urbiMetricsProvider.notifier).logEvent(
+                                      'Favorites/Set home search => Tap',
+                                    );
+                                const FavouritesSearchRoute(
                                   markerType: FavouriteItemMarkerType.home,
-                                ).push(context)
-                            : () => PoiMapRoute(
+                                ).push(context);
+                              }
+                            : () {
+                                ref.read(urbiMetricsProvider.notifier).logEvent(
+                                    'Favorites/Open home => Tap',
+                                    {'home': state.home!.entity!.id});
+                                PoiMapRoute(
                                   dgisObjectId:
                                       int.parse(state.home!.entity!.id),
-                                ).replace(context),
+                                ).replace(context);
+                              },
                       ),
                       const SizedBox(height: 8),
                       PinnedPlaceWidget(
@@ -157,13 +184,23 @@ class _FavouritesState extends ConsumerState<Favourites> {
                         isAdded: state.work != null,
                         onDelete: () => _deleteItem(state.work!),
                         onTap: state.work == null
-                            ? () => const FavouritesSearchRoute(
+                            ? () {
+                                ref.read(urbiMetricsProvider.notifier).logEvent(
+                                      'Favorites/Set work search => Tap',
+                                    );
+                                const FavouritesSearchRoute(
                                   markerType: FavouriteItemMarkerType.work,
-                                ).push(context)
-                            : () => PoiMapRoute(
+                                ).push(context);
+                              }
+                            : () {
+                                ref.read(urbiMetricsProvider.notifier).logEvent(
+                                    'Favorites/Open work => Tap',
+                                    {'work': state.work!.entity!.id});
+                                PoiMapRoute(
                                   dgisObjectId:
                                       int.parse(state.work!.entity!.id),
-                                ).replace(context),
+                                ).replace(context);
+                              },
                       ),
                     ],
                   ),
@@ -200,10 +237,26 @@ class _FavouritesState extends ConsumerState<Favourites> {
 
                               /// item
                               return FavouriteItemWidget(
-                                onDelete: () => _deleteItem(item),
-                                onTap: () => PoiMapRoute(
-                                  dgisObjectId: int.parse(item.entity!.id),
-                                ).replace(context),
+                                onDelete: () {
+                                  ref
+                                      .read(urbiMetricsProvider.notifier)
+                                      .logEvent(
+                                    'Favorites/Delete item => Tap',
+                                    {'item': item.entity!.id},
+                                  );
+                                  _deleteItem(item);
+                                },
+                                onTap: () {
+                                  ref
+                                      .read(urbiMetricsProvider.notifier)
+                                      .logEvent(
+                                    'Favorites/Open favorite item => Tap',
+                                    {'item': item.entity!.id},
+                                  );
+                                  PoiMapRoute(
+                                    dgisObjectId: int.parse(item.entity!.id),
+                                  ).replace(context);
+                                },
                                 isEditing: isEditing,
                                 item: item,
                               );

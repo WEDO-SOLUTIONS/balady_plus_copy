@@ -176,12 +176,25 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             const SizedBox(
                               height: 20,
                             ),
-                            const PrayerHomeCard(),
+                            PrayerHomeCard(
+                              onNotificationTap: () => ref
+                                  .read(urbiMetricsProvider.notifier)
+                                  .logEvent(
+                                      'Explore/Prayer Times banner bell icon => Tap'),
+                              onShowTimesTap: () => ref
+                                  .read(urbiMetricsProvider.notifier)
+                                  .logEvent(
+                                      'Prayer Times banner button => Tap'),
+                            ),
                             const SizedBox(
                               height: 20,
                             ),
                             CalendarHomeCard(
                               colorScheme: ref.read(colorSchemeProvider),
+                              onShowAll: () => ref
+                                  .read(urbiMetricsProvider.notifier)
+                                  .logEvent(
+                                      'Explore/Kingdom Calendar - View all => Tap'),
                             ),
                             const SizedBox(
                               height: 20,

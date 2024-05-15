@@ -11,6 +11,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_ext
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
@@ -108,7 +109,12 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                                       style: headerStyle),
                                   const Spacer(),
                                   ui_kit.AppButton.close(
-                                    onTap: context.pop,
+                                    onTap: () {
+                                      ref
+                                          .read(urbiMetricsProvider.notifier)
+                                          .logEvent('Layers/Exit icon => Tap');
+                                      context.pop();
+                                    },
                                     padding: EdgeInsets.zero,
                                   ),
                                 ],

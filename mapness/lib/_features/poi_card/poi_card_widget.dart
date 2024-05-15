@@ -26,6 +26,7 @@ import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -81,8 +82,7 @@ class _Content extends ConsumerStatefulWidget {
   ConsumerState<_Content> createState() => _ContentState();
 }
 
-class _ContentState extends ConsumerState<_Content>
-    with SingleTickerProviderStateMixin {
+class _ContentState extends ConsumerState<_Content> with SingleTickerProviderStateMixin {
   bool showEntrances = true;
 
   final _expansion = ValueNotifier(Expansion.middle);
@@ -142,8 +142,7 @@ class _ContentState extends ConsumerState<_Content>
 
     ref.listen(viewModelProvider, (_, next) {
       if (next.value != null && next.value?.gisObjectIdMessage != null) {
-        _toggleEntrances(next.value!.gisObjectIdMessage!,
-            displayEntrance: true);
+        _toggleEntrances(next.value!.gisObjectIdMessage!, displayEntrance: true);
       }
     });
 
@@ -161,8 +160,7 @@ class _ContentState extends ConsumerState<_Content>
 
           /// sometimes error code is in message and sometimes in code, idk, probably changed in releases
           ((state.error! as PlatformException).code == 'NotFoundException' ||
-              (state.error! as PlatformException).message ==
-                  'NotFoundException')) {
+              (state.error! as PlatformException).message == 'NotFoundException')) {
         return Column(
           children: [
             const Spacer(flex: 3),
@@ -269,9 +267,7 @@ class _ContentState extends ConsumerState<_Content>
         middleHeight: middleHeight,
         hiddenHeight: hiddenHeight,
         controller: _bottomSheetController,
-        mapControlsBuilder:
-            (context, scrollController, biggestHeight, smallestHeight) =>
-                PoiCardMapControls(
+        mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
           scrollController: scrollController,
           biggestHeight: biggestHeight,
         ),
@@ -284,29 +280,33 @@ class _ContentState extends ConsumerState<_Content>
         ),
         actions: PoiCardFooter2(
           data: data,
-          share: () => viewModel.share(
-            objectId: objectId,
-            markerCoords: widget.closestPoint,
-          ),
-          callPhone: () => viewModel.callPhone(data: data),
-          onEntranceTap: () {
-            setState(() {
-              showEntrances = !showEntrances;
-              _toggleEntrances(data, displayEntrance: showEntrances);
+          share: () {
+            ref.read(urbiMetricsProvider.notifier).logEvent('POI/Share => Tap', {
+              'object_id': data.id?.objectId,
+              'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
             });
+            viewModel.share(
+              objectId: objectId,
+              markerCoords: widget.closestPoint,
+            );
           },
+          callPhone: () {
+            ref.read(urbiMetricsProvider.notifier).logEvent('POI/Call => Tap', {
+              'object_id': data.id?.objectId,
+            });
+            viewModel.callPhone(data: data);
+          },
+          onEntranceTap: () => _toggleEntrances(data, displayEntrance: showEntrances),
         ),
-        scrollableBody: (context, controller) =>
-            DgisBottomSheetScrollableContent(
+        scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
           controller: controller,
           header: PoiHeader(
             tabController: _tabController,
             data: data,
             onTapClose: () {
+              ref.read(urbiMetricsProvider.notifier).logEvent('POI/Exit button => Tap');
               ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-              ref
-                  .read(highlightProvider.notifier)
-                  .removeHighlight(widget.objectId);
+              ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
               context.pop();
             },
           ),
@@ -328,8 +328,15 @@ class _ContentState extends ConsumerState<_Content>
     );
   }
 
-  Future<void> _toggleEntrances(DirectoryObjectMessage data,
-      {required bool displayEntrance}) async {
+  Future<void> _toggleEntrances(DirectoryObjectMessage data, {required bool displayEntrance}) async {
+    setState(() {
+      showEntrances = !showEntrances;
+    });
+
+    ref.read(urbiMetricsProvider.notifier).logEvent('POI/Entrances => Tap', {
+      'poi_id': data.id?.objectId,
+      'show_entrances': showEntrances,
+    });
     final highlightController = ref.read(highlightProvider.notifier);
 
     if (displayEntrance) {
@@ -341,11 +348,7 @@ class _ContentState extends ConsumerState<_Content>
       }
 
       await _animateToEntrance([
-        ...data.entrances
-            .map((e) => e?.geometry?.entrancePoints ?? [])
-            .toList()
-            .expand((element) => element)
-            .toList()
+        ...data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList()
       ]);
     } else {
       for (final entrance in data.entrances) {

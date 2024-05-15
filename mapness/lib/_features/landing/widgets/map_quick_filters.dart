@@ -9,6 +9,7 @@ import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -80,24 +81,39 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
           if (!mounted) {
             return;
           }
+          ref
+              .read(urbiMetricsProvider.notifier)
+              .logEvent('Explore/Bookmark icon => Tap');
           const FavouritesRoute().push(context);
         },
       ),
       onFilterTap: (filter, index) {
-        _debouncer.run(() {
-          if (selectedFilter?.$1 == filter) {
-            ref.read(searchByRubricsQueryProvider.notifier).update(null);
-            searchObjectManager.removeAllMarkers();
-          } else {
-            ref.read(layersControlsProvider.notifier).disable();
+        _debouncer.run(
+          () {
+            final isSame = selectedFilter?.$1 == filter;
+            if (isSame) {
+              ref.read(searchByRubricsQueryProvider.notifier).update(null);
+              searchObjectManager.removeAllMarkers();
+            } else {
+              ref.read(layersControlsProvider.notifier).disable();
+              ref
+                  .read(searchByRubricsQueryProvider.notifier)
+                  .update((filter, index));
+            }
             ref
-                .read(searchByRubricsQueryProvider.notifier)
-                .update((filter, index));
-          }
-        });
+                .read(urbiMetricsProvider.notifier)
+                .logEvent('Explore/Quick filter => Tap', {
+              'filter': filter.title,
+              'toggle_state': isSame,
+            });
+          },
+        );
       },
       onFavouritesTap: () {
         _debouncer.run(() {
+          ref
+              .read(urbiMetricsProvider.notifier)
+              .logEvent('Explore/Bookmark icon => Tap');
           ref.read(searchByRubricsQueryProvider.notifier).update(null);
           searchObjectManager.removeAllMarkers();
         });

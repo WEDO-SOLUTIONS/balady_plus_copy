@@ -11,6 +11,7 @@ import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -159,6 +160,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                               ),
                               NavButton(
                                 onTap: () {
+                                  ref.read(urbiMetricsProvider.notifier).logEvent(
+                                      'Routes/Route-selection/Reverse Route Direction icon => Tap');
                                   setState(() {
                                     points = points.reversed.toList();
                                     labels = labels.reversed.toList();
@@ -173,6 +176,10 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                               ),
                               NavButton(
                                 onTap: () {
+                                  ref
+                                      .read(urbiMetricsProvider.notifier)
+                                      .logEvent(
+                                          'Routes/Route-selection/Back => Tap');
                                   final routes = ref.read(currentRouteProvider);
 
                                   switch (routes?.previousPath) {

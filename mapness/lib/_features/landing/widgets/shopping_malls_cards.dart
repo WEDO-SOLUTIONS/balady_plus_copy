@@ -33,7 +33,7 @@ class ShoppingMallsCardsList extends ConsumerWidget {
             onItemTap: (index) {
               final objectId = int.tryParse(places[index].entity.id) ?? 0;
               ref.read(urbiMetricsProvider.notifier).logEvent(
-                'poi/open_shopping_mall',
+                'POI/Explore/Places to shop banner => Tap',
                 {
                   'id': objectId,
                   'title': places[index].titleOrFallback(

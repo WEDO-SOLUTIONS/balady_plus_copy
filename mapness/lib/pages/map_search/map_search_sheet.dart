@@ -13,6 +13,7 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -68,6 +69,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   late ClusteringMapObjectManager _clustering;
 
   void close() {
+    ref.read(urbiMetricsProvider.notifier).logEvent('Search/Exit icon => Tap');
     setState(() {
       closing = true;
     });
@@ -126,6 +128,9 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
             id: markerInfo?.objectId?.objectId.toString() ??
                 context.l10n.invalid,
             onTap: () {
+              ref.read(urbiMetricsProvider.notifier).logEvent(
+                  'POI/Marker => Tap',
+                  {'objectId': markerInfo.objectId!.objectId});
               PoiMapRoute.open(
                 ref.read(goRouterProvider),
                 markerInfo.objectId!.objectId,

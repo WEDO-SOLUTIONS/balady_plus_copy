@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
 
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -27,7 +28,12 @@ class FollowControl extends ConsumerWidget {
       opacity: followState.enabled ? 1 : 1, // fix
       duration: const Duration(milliseconds: 250),
       child: MapButton(
-        onTap: followNotifier.toggleFollowState,
+        onTap: () {
+          ref
+              .read(urbiMetricsProvider.notifier)
+              .logEvent('Explore/Locate me icon => Tap');
+          followNotifier.toggleFollowState();
+        },
         child: SvgPicture.asset(
           'assets/icons/svg/ic_control_location.svg',
           semanticsLabel: 'MinApps Screen',

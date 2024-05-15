@@ -15,11 +15,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CalendarHomeCard extends StatelessWidget {
+  final VoidCallback? onShowAll;
   final AppColorScheme colorScheme;
 
   const CalendarHomeCard({
     super.key,
     required this.colorScheme,
+    this.onShowAll,
   });
 
   @override
@@ -61,16 +63,14 @@ class CalendarHomeCard extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
+                        onShowAll?.call();
                         NavigationService.navigatorKey.currentState!.pushNamed(
                           RouteName.calendarMainPage,
                         );
                       },
                       child: Text(
                         "show_all".tr(),
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()
-                            ?.footNoteBold
-                            .copyWith(
+                        style: Theme.of(context).extension<ThemeTextStyles>()?.footNoteBold.copyWith(
                               color: const Color(0xFF1E2A36).withOpacity(0.5),
                             ),
                       ),
@@ -83,9 +83,7 @@ class CalendarHomeCard extends StatelessWidget {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemCount: ((state.searchItems.length) > 4)
-                      ? 4
-                      : state.searchItems.length,
+                  itemCount: ((state.searchItems.length) > 4) ? 4 : state.searchItems.length,
                   padding: const EdgeInsets.only(
                     top: 12,
                     left: 16,
