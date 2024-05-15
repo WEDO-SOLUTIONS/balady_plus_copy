@@ -3,6 +3,7 @@ import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
@@ -27,6 +28,9 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   LatLng? closestPoint,
 }) async {
   final dgisController = ref.watch(dgisControllerProvider);
+  final directoryObject =
+      await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
+
   if (closestPoint != null) {
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.showMarker(
@@ -44,8 +48,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final cameraData = ref.read(cameraPositionProvider) ??
       await dgisController.value?.getCameraPosition();
 
-  final result = await dgisController.value?.searchByObjectId(objectId);
-
   final cameraZoom = cameraData?.zoom;
   final point = cameraData?.point;
 
@@ -55,10 +57,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   ref.onDispose(() async {
     await highlightController.removeAll();
   });
-  if (result == null || result.markerPosition == null) {
+  if (directoryObject == null || directoryObject.markerPosition == null) {
     return null;
   }
-  final position = result.markerPosition!;
+  final position = directoryObject.markerPosition!;
   if (closestPoint == null) {
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.showMarker(
@@ -116,5 +118,5 @@ Future<DirectoryObjectMessage?> pointOfInterest(
           ),
         );
   }
-  return result;
+  return directoryObject;
 }
