@@ -6,6 +6,7 @@ import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
@@ -33,9 +34,11 @@ class InterestingPlacesCardsList extends ConsumerWidget {
             places: places,
             onItemTap: (index) {
               final objectId = int.tryParse(places[index].entity.id) ?? 0;
-              ref.read(urbiMetricsProvider.notifier).logEvent(
-                'poi/open_interesting_place',
-                {
+              Metrics.logEventAdvanced(
+                MetricsConstants.exploreKeys.placesToVisitBanner,
+                action: MetricAction.tap.name,
+                group: MetricsConstants.exploreTag,
+                props: {
                   'id': objectId,
                   'title': places[index].titleOrFallback(
                     locale: AppLocalizationsEn(),

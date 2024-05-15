@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class SnapAndSendCard extends ConsumerWidget {
@@ -84,7 +86,15 @@ class SnapAndSendCard extends ConsumerWidget {
                               horizontal: 14,
                               vertical: 10,
                             ),
-                            onPressed: CommonFunctions.openSnapAndSend,
+                            onPressed: () {
+                              Metrics.logEventAdvanced(
+                                  MetricsConstants.exploreKeys
+                                      .enhanceUrbanSceneBannerButton,
+                                  action: MetricAction.tap.name,
+                                  group: MetricsConstants.exploreTag);
+
+                              CommonFunctions.openSnapAndSend();
+                            },
                           ),
                         ],
                       ),

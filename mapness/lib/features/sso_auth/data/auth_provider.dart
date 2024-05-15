@@ -15,7 +15,7 @@ part 'auth_provider.g.dart';
 @riverpod
 class Auth extends _$Auth {
   Future<void> doAuth() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent('Auth/doAuth');
+    Metrics.logEvent('Auth/doAuth');
     mixpanel?.timeEvent('Auth: doAuth');
     await CommonFunctions.onLogin();
     ref
@@ -25,7 +25,7 @@ class Auth extends _$Auth {
   }
 
   Future<void> logOut() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent('Auth/logOut');
+    Metrics.logEvent('Auth/logOut');
     mixpanel?.timeEvent('Auth: logOut');
     await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();
@@ -36,7 +36,7 @@ class Auth extends _$Auth {
   }
 
   Future<void> tokenExpireLogout() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent('Auth/tokenExpireLogout');
+    Metrics.logEvent('Auth/tokenExpireLogout');
     mixpanel?.timeEvent('Auth: tokenExpireLogout');
     await sl<EntryPointCubit>().autoLogout();
     ref.invalidateSelf();
