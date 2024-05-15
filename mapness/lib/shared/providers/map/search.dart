@@ -81,8 +81,7 @@ class Search extends _$Search {
     );
 
     final markers = <Marker>[];
-    for (final markerInfo
-        in result?.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+    for (final markerInfo in result?.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       markers.add(
         Marker(
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
@@ -102,8 +101,7 @@ class Search extends _$Search {
 
     _currentPage = result?.firstPage;
 
-    state =
-        _currentPage?.items.whereType<DirectoryObjectMessage>().toList() ?? [];
+    state = _currentPage?.items.whereType<DirectoryObjectMessage>().toList() ?? [];
   }
 
   Future<bool> fetchNext() async {

@@ -89,8 +89,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   void initState() {
     super.initState();
 
-    _keyboardVisible =
-        kbVisibilityController.onChange.listen(_onKeyboardToggle);
+    _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
   }
 
   @override
@@ -133,12 +132,10 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
     await searchObjectManager.removeAllMarkers();
     if (searchState is SearchStateResults) {
       final markers = <Marker>[];
-      for (final markerInfo in searchState.results.itemMarkerInfos ??
-          List<ItemMarkerInfoMessage>.empty()) {
+      for (final markerInfo in searchState.results.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
         markers.add(
           Marker(
-            id: markerInfo?.objectId?.objectId.toString() ??
-                context.l10n.invalid,
+            id: markerInfo?.objectId?.objectId.toString() ?? context.l10n.invalid,
             onTap: () {
               Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
                   group: MetricsConstants.poiTag,
@@ -172,8 +169,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
     }
   }
 
-  SimpleClusterOptionsMessage _renderCluster(int objectCount) =>
-      SimpleClusterOptionsMessage(
+  SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
         icon: LayersSvgPaths.basicMarker.markerIcon(),
         text: '$objectCount',
         textStyle: MarkerTextStyleMessage(
@@ -185,8 +181,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
 
   void _onExpansionChanged(Expansion expansion) => switch (expansion) {
         Expansion.hidden => context.pop(),
-        Expansion.collapsed when kbVisibilityController.isVisible =>
-          _dgisSheetController.animateTo(Expansion.expanded),
+        Expansion.collapsed when kbVisibilityController.isVisible => _dgisSheetController.animateTo(Expansion.expanded),
         _ => null,
       };
 
@@ -207,8 +202,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
     final closable = ref.watch(
-          searchProvider(searchScope)
-              .select((value) => value is! SearchStateResults),
+          searchProvider(searchScope).select((value) => value is! SearchStateResults),
         ) ||
         closing;
 
@@ -224,8 +218,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
           Expansion.middle,
           if (closable) Expansion.hidden,
         },
-        onExpansionChanged: (expansion, {byUser = false}) =>
-            _onExpansionChanged(expansion),
+        onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
         middleHeight: widget.biggestHeight * 0.7,
         collapsedHeight: _headerExtent,
         scrollableBody: (context, scrollController) {

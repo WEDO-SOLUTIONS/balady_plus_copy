@@ -21,8 +21,7 @@ class MapObjectManagerSettings {
 
   const MapObjectManagerSettings._({required this.name, required this.layerId});
 
-  factory MapObjectManagerSettings.favourites() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.favourites() => const MapObjectManagerSettings._(
         name: 'favourite-markers',
         layerId: MapObjectLayers.defaultLayerId,
       );
@@ -31,18 +30,15 @@ class MapObjectManagerSettings {
         layerId: MapObjectLayers.defaultLayerId,
       );
 
-  factory MapObjectManagerSettings.mappness() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.mappness() => const MapObjectManagerSettings._(
         name: MapnessConsts.mapLayerName,
         layerId: MapObjectLayers.defaultLayerId,
       );
-  factory MapObjectManagerSettings.quickFilter() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.quickFilter() => const MapObjectManagerSettings._(
         name: 'QuickFilters',
         layerId: MapObjectLayers.defaultLayerId,
       );
-  factory MapObjectManagerSettings.myLocation() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.myLocation() => const MapObjectManagerSettings._(
         name: 'my_location',
         layerId: MapObjectLayers.priorityLayerId,
       );
@@ -57,8 +53,7 @@ class MapObjectManagerSettings {
         layerId: MapObjectLayers.defaultLayerId,
       );
 
-  factory MapObjectManagerSettings.selectedMarker() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.selectedMarker() => const MapObjectManagerSettings._(
         name: 'selected-marker',
         layerId: MapObjectLayers.defaultLayerId,
       );
