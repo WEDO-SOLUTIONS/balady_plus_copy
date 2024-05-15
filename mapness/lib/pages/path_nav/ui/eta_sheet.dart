@@ -5,7 +5,9 @@ import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_sound_provider.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 
 import 'layout_size_wrapper.dart';
@@ -32,6 +34,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
   Widget build(BuildContext context) {
     final eta = ref.watch(pathNavEtaProvider);
     final sound = ref.watch(pathNavSoundProviderProvider);
+    final dark = ref.watch(darkModeProvider);
     if (eta == null) {
       return const SizedBox();
     }
@@ -51,7 +54,16 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
               title: eta.timeEta),
           contentRows: [
             ContentRow(
-              onToggle: (_) => ref.read(darkModeProvider.notifier).toggle(),
+              onToggle: (_) {
+                ref.read(darkModeProvider.notifier).toggle();
+                Metrics.logEventAdvanced(
+                    MetricsConstants.navigationKeys.darkMode,
+                    group: MetricsConstants.navigationTag,
+                    action: MetricAction.tap.toString(),
+                    props: {
+                      'dark': !dark,
+                    });
+              },
               options: ContentRowOptions(
                 padding: const EdgeInsets.symmetric(
                   vertical: NumericBase.$3x,
@@ -62,13 +74,21 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                     .copyWith(color: context.color.textAndIconsBasePrimary),
                 actionWidget: ContentRowActionOptions(
                   enabledToggle: true,
-                  toggleInitialValue: ref.watch(darkModeProvider),
+                  toggleInitialValue: dark,
                 ),
               ),
             ),
             ContentRow(
-              onToggle: (_) =>
-                  ref.read(pathNavSoundProviderProvider.notifier).toggle(),
+              onToggle: (_) {
+                ref.read(pathNavSoundProviderProvider.notifier).toggle();
+                Metrics.logEventAdvanced(
+                    MetricsConstants.navigationKeys.soundMode,
+                    group: MetricsConstants.navigationTag,
+                    action: MetricAction.tap.toString(),
+                    props: {
+                      'sound': !sound,
+                    });
+              },
               options: ContentRowOptions(
                 padding: const EdgeInsets.symmetric(
                   vertical: NumericBase.$3x,
@@ -108,5 +128,11 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     setState(() {
       _isExpanded = !_isExpanded;
     });
+    Metrics.logEventAdvanced(MetricsConstants.navigationKeys.burgerToggle,
+        group: MetricsConstants.navigationTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'isExpanded': _isExpanded,
+        });
   }
 }

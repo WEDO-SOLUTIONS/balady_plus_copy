@@ -6,6 +6,7 @@ import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/presentation/stories_row.dart';
 import 'package:mapness/_features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/_features/stories/stories.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class StoriesWidget extends ConsumerStatefulWidget {
@@ -32,10 +33,10 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   }
 
   void openStory(BuildContext context, String id) {
-    ref.read(urbiMetricsProvider.notifier).logEvent(
-      'Stories/open_story',
-      {'id': id},
-    );
+    Metrics.logEventAdvanced(MetricsConstants.exploreKeys.storyBanner,
+        group: MetricsConstants.exploreTag,
+        action: MetricAction.tap.name,
+        props: {'id': id});
     Stories.showStoryById(context, id);
   }
 
@@ -59,7 +60,12 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
         orElse: () => const SizedBox.shrink(),
         error: (_, __) => StoryRefreshButton(
           onPressed: () {
-            ref.read(urbiMetricsProvider.notifier).logEvent('Stories/refresh');
+            Metrics.logEventAdvanced(
+              MetricsConstants.exploreKeys.storiesRefresh,
+              group: MetricsConstants.exploreTag,
+              action: MetricAction.tap.name,
+            );
+
             ref.read(storyServiceProvider.notifier).refresh();
           },
         ),

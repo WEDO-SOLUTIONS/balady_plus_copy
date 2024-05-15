@@ -19,11 +19,6 @@ class LayersDetailsWidget extends ConsumerStatefulWidget {
 
 class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8),
