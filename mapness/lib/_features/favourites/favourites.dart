@@ -60,7 +60,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
         buttonLabel: MetricsConstants.favoritesKeys.reload,
         onClose: () {
           Metrics.logEventAdvanced(
-            'Close',
+            MetricsConstants.favoritesKeys.close,
             group: _tag,
             action: MetricAction.tap.name,
           );
