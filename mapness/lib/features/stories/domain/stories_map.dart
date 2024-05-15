@@ -1,11 +1,11 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
-import 'package:mapness/_features/stories/domain/frame/story_text_style.dart';
-import 'package:mapness/_features/stories/domain/story_action.dart';
-import 'package:mapness/_features/stories/domain/story_data.dart';
-import 'package:mapness/_features/stories/domain/thumbnail/story_thumbnail_data.dart';
+import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
+import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
+import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
+import 'package:mapness/features/stories/domain/story_action.dart';
+import 'package:mapness/features/stories/domain/story_data.dart';
+import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
 
 class StoriesMap {
   static final stories = {
