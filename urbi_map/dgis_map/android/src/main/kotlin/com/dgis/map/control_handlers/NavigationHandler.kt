@@ -1,6 +1,5 @@
 package com.dgis.map.control_handlers
 
-import android.content.res.Resources
 import android.view.View
 import com.dgis.map.control_handlers.navigation_controls.DashboardControlModel
 import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
@@ -11,27 +10,23 @@ import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.BetterRouteResponseMessage
 import com.dgis.map.map_api.Messages.Result
 import io.flutter.plugin.common.EventChannel
+import ru.dgis.sdk.Duration
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
+import ru.dgis.sdk.map.CalloutVisualizationMode
 import ru.dgis.sdk.map.CameraBehaviour
-import ru.dgis.sdk.map.CameraPosition
-import ru.dgis.sdk.map.FollowBearing
-import ru.dgis.sdk.map.FollowPosition
-import ru.dgis.sdk.map.FollowStyleZoom
 import ru.dgis.sdk.map.Map
-import ru.dgis.sdk.map.MyLocationController
 import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteMapObject
-import ru.dgis.sdk.map.SimpleMapObject
 import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.Tilt
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.map.styleZToProjectionZ
 import ru.dgis.sdk.navigation.*
-import ru.dgis.sdk.positioning.LocationSource
+import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.routing.TrafficRoute
@@ -78,6 +73,11 @@ class NavigationHandler(
     init {
         navigationView.visibility = View.INVISIBLE
         navigationView.navigationManager = navigationManager
+
+        navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
+        navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = Duration.ofSeconds(5 /*5 * 60*/)
+        navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(100 /*500 * 1000*/)
+        navigationManager.routeSourceSettings.calloutVisualizationMode = CalloutVisualizationMode.MULTIPLE_ROUTES
 
         dashboardControlModel = DashboardControlModel(
             navigationManager.uiModel,
@@ -232,7 +232,7 @@ class NavigationHandler(
                         )
                 )
                 stopNavigation()
-                isNavigating = true
+                isNavigating = false
             }
             State.NAVIGATION -> {
                 isNavigating = true
@@ -247,6 +247,7 @@ class NavigationHandler(
         val trafficRoute = route.route
         if (!route.isActive) {
             this.navigationManager.alternativeRouteSelector.selectAlternativeRoute(trafficRoute)
+            betterRouteResponse(BetterRouteResponseMessage.ACCEPT)
         }
     }
 
@@ -260,14 +261,20 @@ class NavigationHandler(
     }
 
     private fun betterRouteListener(routeInfo: BetterRouteInfo?) {
-        routeInfo?.let {
-            eventSink.success(
-                mapOf(
-                    "event" to Event.betterRouteEvent.name,
-                    "route" to RouteHandler.mapRouteInfo(routeInfo.trafficRoute)
-                )
-            )
+        val activeRouteDuration = navigationManager.uiModel.duration?.inSeconds
+        val betterRouteDuration = routeInfo?.trafficRoute?.route?.geometry?.first?.point?.let {
+            routeInfo.trafficRoute.traffic.durations.calculateDuration(
+                it
+            ).inSeconds
         }
+        val durationProfit = if (activeRouteDuration != null && betterRouteDuration != null) (activeRouteDuration - betterRouteDuration).toInt() else 0;
+        eventSink.success(
+            mapOf(
+                "event" to Event.betterRouteEvent.name,
+                "route" to if (routeInfo != null) RouteHandler.mapRouteInfo(routeInfo.trafficRoute) else null,
+                "durationProfit" to durationProfit,
+            )
+        )
     }
 
     fun betterRouteResponse(response: BetterRouteResponseMessage) {
