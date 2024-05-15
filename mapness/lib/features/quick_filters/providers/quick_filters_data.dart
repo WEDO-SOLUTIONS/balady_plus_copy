@@ -1,5 +1,7 @@
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 
+const quickFilterRubricMosques = 13374;
+
 final quickFilters = [
   QuickFilter(
     rubrics: [161, 165, 161, 9786, 162, 469, 58871],
@@ -43,7 +45,7 @@ final quickFilters = [
     mapIcon: 'assets/icons/svg/quick_filters/hotels_pin.svg',
   ),
   QuickFilter(
-    rubrics: [13374],
+    rubrics: [quickFilterRubricMosques],
     title: 'المساجد',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_mosques.svg',
     mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
