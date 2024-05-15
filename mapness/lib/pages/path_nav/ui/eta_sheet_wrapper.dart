@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/pages/path_nav/path_nav_page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
 
 class EtaSheetWrapper extends StatelessWidget {
@@ -49,8 +51,9 @@ class EtaSheetWrapper extends StatelessWidget {
                         right: Spacing.horizontalPaddingInsideWrapper,
                         bottom: Spacing.verticalPaddingInsideCell,
                       ),
-                      child: BetterRouteButton(
-                        title: 'Found a route ${(duration / 60).floor()} min faster',
+                      child: _BetterRouteButton(
+                        title: context.l10n
+                            .betterRouteFound((duration / 60).floor()),
                         onTap: onBetterRouteAccept,
                         onCloseTap: onBetterRouteReject,
                       ),
@@ -78,4 +81,69 @@ class EtaSheetWrapper extends StatelessWidget {
       ),
     );
   }
+}
+
+// TODO(Sergei): legacy designed local component, replace with uikit component (will be created in future)
+class _BetterRouteButton extends StatelessWidget {
+  const _BetterRouteButton({
+    required this.title,
+    this.onTap,
+    this.onCloseTap,
+    Key? key,
+  }) : super(key: key);
+
+  final String title;
+  final VoidCallback? onTap;
+  final VoidCallback? onCloseTap;
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Material(
+          color: Colors.transparent,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: context.color.surfaceStatusAccent,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/svg/ic_best_route.svg',
+                    width: 40,
+                    height: 40,
+                    package: PackageConfig.packageName,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: context.textStyle.footNoteBold.copyWith(
+                        color: context.color.textAndIconsBaseInversePrimary,
+                      ),
+                    ),
+                  ),
+                  AppButton(
+                    buttonColorScheme: ButtonColorScheme.primary,
+                    size: ButtonSize.small,
+                    trailing: SvgPicture.asset(
+                      'assets/icons/svg/ic_close.svg',
+                      width: 16,
+                      height: 16,
+                      package: PackageConfig.packageName,
+                      colorFilter: ColorFilter.mode(
+                        context.color.textAndIconsBaseInversePrimary,
+                        BlendMode.srcATop,
+                      ),
+                    ),
+                    onTap: onCloseTap,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
 }
