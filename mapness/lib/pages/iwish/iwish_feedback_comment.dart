@@ -36,7 +36,7 @@ class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackComment> {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
 
     /// keep provider alive
-    ref.watch(iwishFeedbackProvider(widget.iwishId).select((value) => null));
+    ref.watch(iwishFeedbackProvider(widget.iwishId).select((_) {}));
 
     /// screen is not available when provider is not ready
     final state = ref.read(iwishFeedbackProvider(widget.iwishId)).requireValue;
