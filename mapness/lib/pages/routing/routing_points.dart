@@ -8,7 +8,6 @@ import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
