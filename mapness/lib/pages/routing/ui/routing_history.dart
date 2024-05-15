@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/pages/routing/ui/routing_history_empty.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
@@ -31,14 +33,36 @@ class RoutingHistory extends ConsumerWidget {
         : SearchHistoryCollapsible(
             history: history,
             onClear: () {
+              Metrics.logEventAdvanced(
+                MetricsConstants.routesKeys.searchClearButton,
+                group: MetricsConstants.routesTag,
+                action: MetricAction.tap.toString(),
+              );
               ref.read(searchHistoryProvider(_searchScope).notifier).clear();
             },
             onDelete: (item) {
+              Metrics.logEventAdvanced(
+                MetricsConstants.routesKeys.searchOnDelete,
+                group: MetricsConstants.routesTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'item': item.objectId,
+                },
+              );
+
               ref
                   .read(searchHistoryProvider(_searchScope).notifier)
                   .delete(item);
             },
             onTap: (item) async {
+              Metrics.logEventAdvanced(
+                MetricsConstants.routesKeys.routeSelectionChangeNavType,
+                group: MetricsConstants.routesTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'item': item.objectId,
+                },
+              );
               final dgisController =
                   await ref.read(dgisControllerProvider.future);
               try {
