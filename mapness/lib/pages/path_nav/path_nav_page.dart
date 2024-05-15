@@ -6,7 +6,6 @@ import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -20,7 +19,6 @@ import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -63,7 +61,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     ref.read(dgisControllerProvider).value?.setNavigatorVoice(
           ref.read(navigatorVoiceProvider),
         );
-    _naviEventsListener = ref.read(dgisControllerProvider).value?.navigationEvents.listen(_naviEvent);
+    _naviEventsListener = ref
+        .read(dgisControllerProvider)
+        .value
+        ?.navigationEvents
+        .listen(_naviEvent);
     unawaited(ref.read(dgisControllerProvider).value?.startNavigation());
     WakelockPlus.enable();
   }
@@ -96,7 +98,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
           children: [
             const SizedBox(height: 6, width: double.maxFinite),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.verticalBaseToTopSafezone),
+              padding: const EdgeInsets.symmetric(
+                  vertical: uikit.Spacing.verticalBaseToTopSafezone),
               child: Directionality(
                 // Here we set the text direction according to the current locale to display the correct direction of the widget.
                 textDirection: Directionality.of(context),
@@ -104,7 +107,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                   builder: (context, ref, child) {
                     final message = ref.watch(pathNavMessageProvider);
                     final maneuver = ref.watch(pathNavManeuverProvider);
-                    final isPedestrian = widget.navType == RouteSearchOptionsMessage.pedestrian;
+                    final isPedestrian =
+                        widget.navType == RouteSearchOptionsMessage.pedestrian;
                     final info = ref.watch(pathNavSpeedInfoProvider);
 
                     // This made to remove yellow lines under the text
@@ -183,9 +187,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                           child: EtaSheet(
                             onEndTripPressed: _endTripAndShowHome,
                             onRoutePressed: _onShowRoutePressed,
-                            onBetterRouteAccept: () => _acceptBetterRoute(context),
-                            onBetterRouteReject: () => _rejectBetterRoute(context),
-                            betterRouteDurationProfit: _betterRouteDurationProfit,
+                            onBetterRouteAccept: () =>
+                                _acceptBetterRoute(context),
+                            onBetterRouteReject: () =>
+                                _rejectBetterRoute(context),
+                            betterRouteDurationProfit:
+                                _betterRouteDurationProfit,
                             onSizeChanged: _onSizeChanged,
                           ),
                         );
@@ -197,7 +204,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                       case PathNavState.finished:
                         return EtaFinished(
                           onEndTripPressed: _endTripAndShowHome,
-                          onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                          onBuildAnotherRoutePressed:
+                              _endTripAndBuildAnotherRoute,
                           onSizeChanged: _onSizeChanged,
                         );
                     }
@@ -331,69 +339,4 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     final dgisController = await ref.read(dgisControllerProvider.future);
     await dgisController.betterRouteResponse(BetterRouteResponseMessage.reject);
   }
-}
-
-// TODO(Sergei): legacy designed local component, replace with uikit component (will be created in future)
-class BetterRouteButton extends StatelessWidget {
-  const BetterRouteButton({
-    required this.title,
-    this.onTap,
-    this.onCloseTap,
-    Key? key,
-  }) : super(key: key);
-
-  final String title;
-  final VoidCallback? onTap;
-  final VoidCallback? onCloseTap;
-
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Material(
-          color: Colors.transparent,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: context.color.surfaceStatusAccent,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/svg/ic_best_route.svg',
-                    width: 40,
-                    height: 40,
-                    package: PackageConfig.packageName,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: context.textStyle.footNoteBold.copyWith(
-                        color: context.color.textAndIconsBaseInversePrimary,
-                      ),
-                    ),
-                  ),
-                  uikit.AppButton(
-                    buttonColorScheme: uikit.ButtonColorScheme.primary,
-                    size: uikit.ButtonSize.small,
-                    trailing: SvgPicture.asset(
-                      'assets/icons/svg/ic_close.svg',
-                      width: 16,
-                      height: 16,
-                      package: PackageConfig.packageName,
-                      colorFilter: ColorFilter.mode(
-                        context.color.textAndIconsBaseInversePrimary,
-                        BlendMode.srcATop,
-                      ),
-                    ),
-                    onTap: onCloseTap,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
 }
