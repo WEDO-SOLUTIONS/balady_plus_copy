@@ -4,6 +4,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'urbi_metrics.g.dart';
 
+enum MetricAction { tap, longPress, swipe, scroll, drag, type }
+
 @Riverpod(keepAlive: true)
 class UrbiMetrics extends _$UrbiMetrics {
   bool get isProduction =>
@@ -15,11 +17,7 @@ class UrbiMetrics extends _$UrbiMetrics {
   }
 
   void logEvent(String eventName, [Map<String, dynamic>? extras]) {
-    if (extras == null) {
-      FlutterUxcam.logEvent(eventName);
-      return;
-    }
-    FlutterUxcam.logEventWithProperties(eventName, extras);
+    Metrics.logEvent(eventName, extras: extras);
   }
 
   void logEventAdvanced(
@@ -29,28 +27,10 @@ class UrbiMetrics extends _$UrbiMetrics {
     String? action,
     Map<String, dynamic>? props,
   }) {
-    final str = StringBuffer();
-
-    if (group != null) {
-      str.write('$group/');
-    }
-    if (screen != null) {
-      str.write('${screen.toString()}/');
-    }
-    str.write(eventName);
-    if (action != null) {
-      str.write(' => $action');
-    }
-
-    if (props == null) {
-      FlutterUxcam.logEvent(eventName);
-      return;
-    }
-    FlutterUxcam.logEventWithProperties(eventName, props);
+    Metrics.logEventAdvanced(eventName,
+        group: group, screen: screen, action: action, props: props);
   }
 }
-
-enum MetricAction { tap, longPress, swipe, scroll, drag, type }
 
 class Metrics {
   static void logEvent(String eventName,

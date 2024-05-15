@@ -40,6 +40,7 @@ class Favorites {
 class Explore {
   const Explore();
 
+  String get happinessMapSubmitFeedback => 'Happiness_map/submitFeedback';
   String get placesToVisitBanner => 'Places to visit banner';
   String get trafficLightButton => 'Traffic light button';
   String get navbarExplore => 'Navbar/explore';
