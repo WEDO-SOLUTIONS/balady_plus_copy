@@ -21,9 +21,10 @@ class SearchQuery extends _$SearchQuery {
   String build(String scope) => '';
 
   void update(String value) {
-    ref.read(urbiMetricsProvider.notifier).logEvent(
+    Metrics.logEvent(
       'SearchQuery',
-      {'value': value},
+      object: runtimeType,
+      extras: {'value': value},
     );
     mixpanel?.track('SearchQuery', properties: {'value': value});
     state = value;
@@ -44,7 +45,11 @@ class Search extends _$Search {
   CancelableOperation? _searchOperation;
 
   Future<void> fetchSuggest(String query) async {
-    ref.read(urbiMetricsProvider.notifier).logEvent('Search/fetchSuggest');
+    Metrics.logEvent(
+      'fetchSuggest',
+      object: runtimeType,
+    );
+
     mixpanel?.timeEvent('Search: fetchSuggest');
     await _searchOperation?.cancel();
     if (query.isEmpty) {
@@ -64,10 +69,12 @@ class Search extends _$Search {
   }
 
   Future<void> searchByText(String query) async {
-    ref.read(urbiMetricsProvider.notifier).logEvent(
-      'Search/searchByText',
-      {'query': query},
+    Metrics.logEvent(
+      'searchByText',
+      object: runtimeType,
+      extras: {'query': query},
     );
+
     mixpanel?.timeEvent('Search: searchByText');
     await _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
@@ -88,9 +95,10 @@ class Search extends _$Search {
   }
 
   Future<void> searchByQuery(SearchQueryMessage query) async {
-    ref.read(urbiMetricsProvider.notifier).logEvent(
+    Metrics.logEvent(
       'Search/searchByQuery',
-      {'query_id': query.id},
+      object: runtimeType,
+      extras: {'query_id': query.id},
     );
     mixpanel?.timeEvent('Search: searchByQuery');
     await _searchOperation?.cancel();

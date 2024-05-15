@@ -14,11 +14,14 @@ class EventItemCard extends StatelessWidget {
   final double? width;
   final EdgeInsets? padding;
   final AppColorScheme colorScheme;
+  final ValueChanged<SearchEventsItem>? onItemTap;
+
   const EventItemCard({
     super.key,
     required this.item,
     this.width,
     this.padding,
+    this.onItemTap,
     required this.colorScheme,
   });
 
@@ -26,6 +29,7 @@ class EventItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        onItemTap?.call(item);
         NavigationService.navigatorKey.currentState!.pushNamed(
           RouteName.eventsDetailsPage,
           arguments: item.id,
@@ -48,8 +52,7 @@ class EventItemCard extends StatelessWidget {
                   item.logoImage ?? "",
                   imageWidth: MediaQuery.of(context).size.width,
                   imageHeight: 200,
-                  placeHolderWidget:
-                      SvgPicture.asset(ImagePath.calendarBackground),
+                  placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
                 ),
               ),
               if (colorScheme == AppColorScheme.brown)
@@ -81,8 +84,7 @@ class EventItemCard extends StatelessWidget {
               Align(
                 alignment: AlignmentDirectional.bottomStart,
                 child: Container(
-                  padding:
-                      const EdgeInsetsDirectional.only(start: 24, bottom: 20),
+                  padding: const EdgeInsetsDirectional.only(start: 24, bottom: 20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,9 +92,7 @@ class EventItemCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           item.eventName ?? "",
-                          textAlign: CommonFunctions.isAppAR
-                              ? TextAlign.right
-                              : TextAlign.left,
+                          textAlign: CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
                           maxLines: 2,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()
@@ -119,8 +119,7 @@ class EventItemCard extends StatelessWidget {
                             color: Colors.white,
                           ),
                           const CustomHorizontalSpace(width: 8),
-                          if (item.feesType != null &&
-                              item.feesType!.isNotEmpty)
+                          if (item.feesType != null && item.feesType!.isNotEmpty)
                             IconName(
                               icon: IconPath.tagHomeEvents,
                               name: item.feesType!,

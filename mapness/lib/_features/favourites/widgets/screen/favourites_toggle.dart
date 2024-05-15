@@ -3,13 +3,13 @@ import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class FavouritesToggle extends ConsumerWidget {
-
   const FavouritesToggle({required this.isEditing, super.key});
   final bool isEditing;
 
@@ -40,6 +40,12 @@ class FavouritesToggle extends ConsumerWidget {
             onChanged: isEditing
                 ? null
                 : (_) async {
+                    Metrics.logEventAdvanced(
+                      MetricsConstants.favoritesKeys.toggleShowOnMap,
+                      action: MetricAction.tap.name,
+                      group: MetricsConstants.favoriteTag,
+                    );
+
                     await ref.read(favouriteToggleProvider.notifier).toggle();
                     ref.read(layersControlsProvider.notifier).updateLayerInfo();
                   },

@@ -14,6 +14,7 @@ import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -79,15 +80,27 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   void _objectTapListener(TapEvent event) {
     if (event is ObjectTapEvent) {
-      ref.read(urbiMetricsProvider.notifier).logEvent(
-        'Landing/objectTap',
-        {'objectId': event.dgisObjectId.objectId},
+      Metrics.logEventAdvanced(
+        MetricsConstants.poiKeys.object,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'objectId': event.dgisObjectId.objectId,
+        },
       );
+
       if (context.mounted) {
         PoiMapRoute.open(
             ref.read(goRouterProvider), event.dgisObjectId.objectId);
       }
     } else if (event is RoadEventTapEvent) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.poiKeys.roadEvent,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {'objectId': event.id.objectId, 'title': event.title},
+      );
+
       EventsRoute.open(context, event);
     }
   }
@@ -184,6 +197,13 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                           }
                         },
                         searchByQuery: (query) {
+                          Metrics.logEventAdvanced(
+                            MetricsConstants.routesKeys.searchQuery,
+                            group: MetricsConstants.routesTag,
+                            action: MetricAction.type.toString(),
+                            props: {'query': query},
+                          );
+
                           final index = points[0].isNotEmpty ? 1 : 0;
                           RoutingSearchRoute(
                             placeholder: index == 0
