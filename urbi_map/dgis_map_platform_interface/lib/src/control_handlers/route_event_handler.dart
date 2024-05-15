@@ -55,10 +55,10 @@ class RoutesEventHandler {
   }
 
   void betterRouteInfoEvent(Map map) {
+    final route = map["route"] != null ? mapRouteInfo(map["route"] as Map) : null;
+    final durationProfit = map["durationProfit"];
     _betterRouteInfoController.add(
-      BetterRouteInfoEvent(
-        mapRouteInfo(map["route"] as Map),
-      ),
+      BetterRouteInfoEvent(route, durationProfit),
     );
   }
 

@@ -17,6 +17,7 @@ import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteEditorSource
 import ru.dgis.sdk.map.RouteMapObject
+import ru.dgis.sdk.map.RouteMapObjectCalloutLabelDisplayMode
 import ru.dgis.sdk.map.Source
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.map.createRasterTileDataSource
@@ -52,7 +53,7 @@ class RouteHandler(
     init {
         val routesEditor = RouteEditor(sdkContext)
         this.routeEditorSource = RouteEditorSource(
-            sdkContext, routesEditor,
+            sdkContext, routesEditor, calloutLabelDisplayMode = RouteMapObjectCalloutLabelDisplayMode.RELATIVE_TO_ACTIVE_ROUTE_VALUES
         )
         this.trafficRouter = TrafficRouter(sdkContext)
 

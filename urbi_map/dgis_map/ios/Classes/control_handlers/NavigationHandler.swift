@@ -40,7 +40,10 @@ class NavigationHandler {
         self.eventChannel = eventChannel
         
         self.navigationManager = try! NavigationManager(platformContext: context)
-
+        self.navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = 5 /*5 * 60*/
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: 100 /*500 * 1000*/)
+        self.navigationManager.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
         self.navigationManager.mapManager.addMap(map: self.map)
         
         self.voiceManager = getVoiceManager(context: context)
@@ -110,6 +113,7 @@ class NavigationHandler {
         let trafficRoute = route.route
         if !route.isActive {
             self.navigationManager.alternativeRouteSelector.selectAlternativeRoute(trafficRoute: trafficRoute)
+            betterRouteResponse(response: .accept)
         }
     }
     
@@ -122,13 +126,21 @@ class NavigationHandler {
     
     
     private func betterRouteListener(_ routeInfo: BetterRouteInfo?) {
-        guard let routeInfo else {
-            return
+        let activeRouteDuration = navigationManager.uiModel.duration
+        var betterRouteDuration: TimeInterval? = nil
+        let durationProfit: Int
+        if let first = routeInfo?.trafficRoute.route.geometry.first {
+            betterRouteDuration = routeInfo!.trafficRoute.traffic.durations.calculateDuration(routePoint: first.point).rounded()
         }
-        
+        if let activeRouteDuration = activeRouteDuration, let betterRouteDuration = betterRouteDuration {
+            durationProfit = Int(activeRouteDuration - betterRouteDuration)
+        } else {
+            durationProfit = 0
+        }
         self.eventChannel.success([
             "event": Events.betterRouteEvent,
-            "route": RouteHandler.mapRouteInfo(routeInfo.trafficRoute)
+            "route": routeInfo != nil ? RouteHandler.mapRouteInfo(routeInfo!.trafficRoute) : nil,
+            "durationProfit": durationProfit
         ])
     }
     
