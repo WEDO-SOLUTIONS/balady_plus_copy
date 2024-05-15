@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +19,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
-// import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 import '../ui_kit_tmp/poi_header.dart';
 
@@ -59,7 +59,7 @@ class ContentMyLocation extends ConsumerWidget {
           availableExpansions: Expansion.values.toSet(),
           initialExpansion: Expansion.middle,
           collapsedHeight: 100,
-          middleHeight: 162 + MediaQuery.of(context).padding.bottom,
+          middleHeight: 179 + MediaQuery.of(context).viewPadding.bottom,
           hiddenHeight: 90,
           mapControlsBuilder:
               (context, scrollController, biggestHeight, smallestHeight) =>
@@ -69,51 +69,39 @@ class ContentMyLocation extends ConsumerWidget {
           ),
           body: (context) => ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 400),
-            child: Builder(
-              builder: (context) => Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Builder(builder: (context) {
-                    switch (locationType) {
-                      case LocationType.myLocation:
-                        return PoiMyLocationContent(
-                          location: closestPoint!,
-                          onTapClose: () => onClose(context, ref),
-                        );
-                      case LocationType.deeplinkLocation:
-                        return PoiDeeplinkContent(
-                          location: closestPoint!,
-                          onTapClose: () => onClose(context, ref),
-                        );
-                    }
-                  }),
-                  Builder(builder: (context) {
-                    switch (locationType) {
-                      case LocationType.myLocation:
-                        return MyLocationPoiActions(
-                          onShare: () =>
-                              viewModel.shareMyLocation(closestPoint),
-                          onCopy: () => viewModel.copyToClipboard(closestPoint),
-                        );
-                      case LocationType.deeplinkLocation:
-                        return PoiDeeplinkPersonActions(
-                          onShare: () =>
-                              viewModel.shareMyLocation(closestPoint),
-                          onGo: () {
-                            viewModel
-                                .goRoute(
-                                  startLabel: context.l10n.myLocation,
-                                  finishLabel: context.l10n.pointToMap,
-                                  finishLocation: closestPoint!,
-                                )
-                                .pushReplacement(context);
-                          },
-                        );
-                    }
-                  }),
-                ],
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                switch (locationType) {
+                  LocationType.myLocation => PoiMyLocationContent(
+                      location: closestPoint!,
+                      onTapClose: () => onClose(context, ref),
+                    ),
+                  LocationType.deeplinkLocation => PoiDeeplinkContent(
+                      location: closestPoint!,
+                      onTapClose: () => onClose(context, ref),
+                    )
+                },
+                switch (locationType) {
+                  LocationType.myLocation => MyLocationPoiActions(
+                      onShare: () => viewModel.shareMyLocation(closestPoint),
+                      onCopy: () => viewModel.copyToClipboard(closestPoint),
+                    ),
+                  LocationType.deeplinkLocation => PoiDeeplinkPersonActions(
+                      onShare: () => viewModel.shareMyLocation(closestPoint),
+                      onGo: () {
+                        viewModel
+                            .goRoute(
+                              startLabel: context.l10n.myLocation,
+                              finishLabel: context.l10n.pointToMap,
+                              finishLocation: closestPoint!,
+                            )
+                            .pushReplacement(context);
+                      },
+                    )
+                }
+              ],
             ),
           ),
         ),
