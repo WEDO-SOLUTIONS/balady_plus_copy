@@ -75,8 +75,8 @@ class NavigationHandler(
         navigationView.navigationManager = navigationManager
 
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = Duration.ofSeconds(5 /*5 * 60*/)
-        navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(100 /*500 * 1000*/)
+        navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = Duration.ofSeconds(5 * 60)
+        navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(500 * 1000)
         navigationManager.routeSourceSettings.calloutVisualizationMode = CalloutVisualizationMode.MULTIPLE_ROUTES
 
         dashboardControlModel = DashboardControlModel(

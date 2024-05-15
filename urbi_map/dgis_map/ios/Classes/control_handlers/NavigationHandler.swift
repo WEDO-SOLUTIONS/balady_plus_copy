@@ -41,8 +41,8 @@ class NavigationHandler {
         
         self.navigationManager = try! NavigationManager(platformContext: context)
         self.navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        self.navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = 5 /*5 * 60*/
-        self.navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: 100 /*500 * 1000*/)
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = 5 * 60
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: 500 * 1000)
         self.navigationManager.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
         self.navigationManager.mapManager.addMap(map: self.map)
         
