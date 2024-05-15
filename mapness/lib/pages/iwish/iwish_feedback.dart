@@ -109,37 +109,41 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
       title: title,
       child: SafeArea(
         top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (isCompleted)
-              IwishFeedbackMood(
-                selectedMood: feedback.mood,
-                onMoodSelected: feedbackNotifier.updateMood,
-              ),
-            if (feedback.mood != null || isPlanned) ...[
-              const SizedBox(height: 16),
-              IwishFeedbackTags(
-                tags: tags,
-                selectedTags: feedback.tags,
-                onTagToggled: _toggleTag,
-              ),
-              const SizedBox(height: 16),
-              BaladyInput(
-                hintText: context.l10n.shareYourFeedback,
-                initialValue: feedback.comment,
-                onTap: () => IwishFeedbackCommentRoute(iwishId: widget.iwishId)
-                    .replace(context),
-              ),
-              const SizedBox(height: 16),
-              LabeledElevatedButton(
-                onPressed: onPressedSubmit,
-                label: context.l10n.sendFeedback,
-              ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (isCompleted)
+                IwishFeedbackMood(
+                  selectedMood: feedback.mood,
+                  onMoodSelected: feedbackNotifier.updateMood,
+                ),
+              if (feedback.mood != null || isPlanned) ...[
+                const SizedBox(height: 16),
+                IwishFeedbackTags(
+                  tags: tags,
+                  selectedTags: feedback.tags,
+                  onTagToggled: _toggleTag,
+                ),
+                const SizedBox(height: 16),
+                BaladyInput(
+                  hintText: context.l10n.shareYourFeedback,
+                  initialValue:
+                      feedbackState.value?.comment ?? feedback.comment,
+                  onTap: () =>
+                      IwishFeedbackCommentRoute(iwishId: widget.iwishId)
+                          .replace(context),
+                ),
+                const SizedBox(height: 16),
+                LabeledElevatedButton(
+                  onPressed: onPressedSubmit,
+                  label: context.l10n.sendFeedback,
+                ),
+              ],
+              const SizedBox(height: 24),
             ],
-            const SizedBox(height: 24),
-          ],
+          ),
         ),
       ),
     );
