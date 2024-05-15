@@ -1,7 +1,6 @@
 import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/features/stories/data/local_stories_service.dart';
 import 'package:mapness/features/stories/data/story_service.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
@@ -38,36 +37,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
   late final StoryFrameController _storyFrameController;
   late final IndexController _indexController;
 
-  void _setCurrentPage(int page) {
-    if (!mounted) {
-      return;
-    }
-    if (page <= -1 || page >= _maxPages) {
-      onClose();
-    }
-    setState(() {
-      _currentPage = page;
-    });
-  }
-
-  void _onChangeStory(int page, int length) {
-    _setCurrentPage(page);
-  }
-
-  Future<List<StoryData>> _initStories() async {
-    final stories = (widget.localStoryType?.file != null
-        ? await ref.read(
-            localStoriesServiceProvider(widget.localStoryType!.file).future)
-        : await ref.read(storyServiceProvider.future));
-    final index = stories.indexWhere(
-      (element) => element.storyId == widget.initialStoryId,
-    );
-
-    _maxPages = stories.length;
-
-    _setCurrentPage(index != -1 ? index : 0);
-    return stories;
-  }
+  final ValueNotifier<int> _currentPageNotifier = ValueNotifier<int>(0);
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -114,7 +84,42 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
     ref.read(storyServiceProvider.notifier).pauseUpdate();
   }
 
+  void _setCurrentPage(int page) {
+    if (!mounted) {
+      return;
+    }
+    if (page <= -1 || page >= _maxPages) {
+      onClose();
+    }
+
+    _currentPage = page;
+    _currentPageNotifier.value = _currentPage;
+  }
+
+  void _onChangeStory(int page, int length) {
+    _setCurrentPage(page);
+  }
+
+  Future<List<StoryData>> _initStories() async {
+    final stories = (widget.localStoryType?.file != null
+        ? await ref.read(
+            localStoriesServiceProvider(widget.localStoryType!.file).future)
+        : await ref.read(storyServiceProvider.future));
+    final index = stories.indexWhere(
+      (element) => element.storyId == widget.initialStoryId,
+    );
+
+    _maxPages = stories.length;
+
+    _setCurrentPage(index != -1 ? index : 0);
+    return stories;
+  }
+
   void _nextStory() {
+    if (_currentPage + 1 >= _maxPages) {
+      onClose();
+      return;
+    }
     _indexController.next(animation: false);
   }
 
@@ -142,8 +147,6 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
   Widget build(BuildContext context) {
     const blank = SizedBox.shrink();
 
-    final direction = ref.read(uiDirectionProvider);
-
     return FutureBuilder<List<StoryData>>(
       future: _initStories(),
 
@@ -155,26 +158,29 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
             : Material(
                 color: context.color.surfaceBaseInversePrimary,
                 child: Directionality(
-                  textDirection: direction,
-                  child: TransformerPageView(
-                    onPageChanged: (index) => index == null
-                        ? null
-                        : _onChangeStory(index, stories.length),
-                    index: _currentPage,
-                    controller: _indexController,
-                    transformer: DepthPageTransformer(
-                        isRtl: direction == TextDirection.rtl),
-                    itemCount: stories.length,
-                    itemBuilder: (context, index) => StoryFramesPlayer(
-                      controller: _storyFrameController,
-                      onActionPressed: (action) =>
-                          onActionPressed(action, context),
-                      story: stories[index],
-                      onNextStory: _nextStory,
-                      onPreviousStory: _previousStory,
-                      onClose: onClose,
-                    ),
-                  ),
+                  textDirection: Directionality.of(context),
+                  child: ValueListenableBuilder(
+                      valueListenable: _currentPageNotifier,
+                      builder: (context, page, _) => TransformerPageView(
+                            onPageChanged: (index) => index == null
+                                ? null
+                                : _onChangeStory(index, stories.length),
+                            index: page,
+                            controller: _indexController,
+                            transformer: DepthPageTransformer(
+                                isRtl: Directionality.of(context) ==
+                                    TextDirection.rtl),
+                            itemCount: stories.length,
+                            itemBuilder: (context, index) => StoryFramesPlayer(
+                              controller: _storyFrameController,
+                              onActionPressed: (action) =>
+                                  onActionPressed(action, context),
+                              story: stories[index],
+                              onNextStory: _nextStory,
+                              onPreviousStory: _previousStory,
+                              onClose: onClose,
+                            ),
+                          )),
                 ),
               );
       },
