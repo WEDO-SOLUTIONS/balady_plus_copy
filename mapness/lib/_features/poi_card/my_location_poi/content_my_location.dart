@@ -72,36 +72,34 @@ class ContentMyLocation extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
-                ...[
-                  switch (locationType) {
-                    LocationType.myLocation => PoiMyLocationContent(
-                        location: closestPoint!,
-                        onTapClose: () => onClose(context, ref),
-                      ),
-                    LocationType.deeplinkLocation => PoiDeeplinkContent(
-                        location: closestPoint!,
-                        onTapClose: () => onClose(context, ref),
-                      )
-                  },
-                  switch (locationType) {
-                    LocationType.myLocation => MyLocationPoiActions(
-                        onShare: () => viewModel.shareMyLocation(closestPoint),
-                        onCopy: () => viewModel.copyToClipboard(closestPoint),
-                      ),
-                    LocationType.deeplinkLocation => PoiDeeplinkPersonActions(
-                        onShare: () => viewModel.shareMyLocation(closestPoint),
-                        onGo: () {
-                          viewModel
-                              .goRoute(
-                                startLabel: context.l10n.myLocation,
-                                finishLabel: context.l10n.pointToMap,
-                                finishLocation: closestPoint!,
-                              )
-                              .pushReplacement(context);
-                        },
-                      )
-                  }
-                ],
+                switch (locationType) {
+                  LocationType.myLocation => PoiMyLocationContent(
+                      location: closestPoint!,
+                      onTapClose: () => onClose(context, ref),
+                    ),
+                  LocationType.deeplinkLocation => PoiDeeplinkContent(
+                      location: closestPoint!,
+                      onTapClose: () => onClose(context, ref),
+                    )
+                },
+                switch (locationType) {
+                  LocationType.myLocation => MyLocationPoiActions(
+                      onShare: () => viewModel.shareMyLocation(closestPoint),
+                      onCopy: () => viewModel.copyToClipboard(closestPoint),
+                    ),
+                  LocationType.deeplinkLocation => PoiDeeplinkPersonActions(
+                      onShare: () => viewModel.shareMyLocation(closestPoint),
+                      onGo: () {
+                        viewModel
+                            .goRoute(
+                              startLabel: context.l10n.myLocation,
+                              finishLabel: context.l10n.pointToMap,
+                              finishLocation: closestPoint!,
+                            )
+                            .pushReplacement(context);
+                      },
+                    )
+                }
               ],
             ),
           ),
