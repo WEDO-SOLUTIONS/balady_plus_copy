@@ -20,12 +20,14 @@ class DismissibleTransitionState extends State<DismissibleTransition>
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
 
+  static const _animationDuration = Duration(milliseconds: 500);
+
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: _animationDuration,
     );
     _opacityAnimation = (Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -70,7 +72,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
             children: [
               Opacity(
                 opacity: _opacityAnimation.value,
-                child: Container(color: context.color.textAndIconsBasePrimary),
+                child: ColoredBox(color: context.color.textAndIconsBasePrimary),
               ),
               Transform(
                 transform: Matrix4.identity()
