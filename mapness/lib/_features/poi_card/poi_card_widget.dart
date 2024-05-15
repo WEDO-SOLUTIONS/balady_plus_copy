@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/_features/poi_card/enums/pot_tabs_type.dart';
+import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
@@ -18,6 +18,7 @@ import 'package:mapness/_features/poi_card/widgets/footer/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
 import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
@@ -97,7 +98,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
   void initState() {
     super.initState();
     _tabController = TabController(
-      length: 2,
+      length: 3,
       vsync: this,
     );
 
@@ -110,6 +111,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               _tabType.value = PoiTabsType.info;
             case 1:
               _tabType.value = PoiTabsType.photos;
+            case 2:
+              _tabType.value = PoiTabsType.inBuilding;
           }
         }
       },
@@ -310,6 +313,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
           controller: controller,
           header: PoiHeader(
+            poiCardState: poiCardState,
             tabController: _tabController,
             data: data,
             onTapClose: () {
@@ -333,6 +337,10 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                     model: PoiModel(
                       directoryObjectMessage: data,
                     ),
+                  ),
+                PoiTabsType.inBuilding => InBuildingWidget(
+                    state: poiCardState,
+                    objectId: widget.objectId,
                   ),
               },
             ),
