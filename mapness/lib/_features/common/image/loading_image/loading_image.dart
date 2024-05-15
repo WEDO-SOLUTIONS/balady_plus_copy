@@ -31,6 +31,8 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
   late String imageUrl;
   bool _isLoaded = false;
 
+  static const _animationDuration = Duration(milliseconds: 50);
+
   @override
   void initState() {
     super.initState();
@@ -73,8 +75,8 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
                 ),
               ),
             ),
-            fadeInDuration: const Duration(milliseconds: 50),
-            fadeOutDuration: const Duration(milliseconds: 50),
+            fadeInDuration: _animationDuration,
+            fadeOutDuration: _animationDuration,
             placeholder: (context, _) => widget.loadingWidget,
             imageBuilder: (context, imageProvider) {
               if (!_isLoaded) {
