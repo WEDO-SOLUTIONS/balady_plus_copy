@@ -14,6 +14,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -78,8 +79,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   Future<void> setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    _streamSubscription =
-        dgisController.objectTapEvents.listen(_objectTapListener);
+    _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
   }
 
   @override
@@ -98,12 +98,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       ..watch(favouriteMarkersProvider.select((value) => null))
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
-      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId)
-          .notifier)
+      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       // ref.watch(iwishMarkersProvider.select((value) => null));
-      ..watch(mapObjectManagerProvider(
-              named: mappness.name, layerId: mappness.layerId)
-          .notifier);
+      ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -121,8 +118,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
                   ///TODO: change while Dashboard refactoring
                   initWithMinSize:
-                      widget.focusMaker == LangingFocusMaker.iwish ||
-                          widget.focusMaker == LangingFocusMaker.mosques,
+                      widget.focusMaker == LangingFocusMaker.iwish || widget.focusMaker == LangingFocusMaker.mosques,
                 ),
               ),
             ],
@@ -134,10 +130,13 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   void _objectTapListener(TapEvent event) {
     if (event is ObjectTapEvent) {
-      ref.read(urbiMetricsProvider.notifier).logEvent(
-        'POI/Map => Tap',
-        {'objectId': event.dgisObjectId.objectId},
-      );
+      Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
+          group: MetricsConstants.poiTag,
+          action: MetricAction.tap.toString(),
+          props: {
+            'objectId': event.dgisObjectId.objectId,
+          });
+
       if (context.mounted) {
         PoiMapRoute.open(
           ref.read(goRouterProvider),
@@ -147,24 +146,28 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         );
       }
     } else if (event is RoadEventTapEvent) {
-      ref.read(urbiMetricsProvider.notifier).logEvent(
-        'POI/Road Event => Tap',
-        {'event': event.id.objectId, 'title': event.title},
+      Metrics.logEventAdvanced(
+        MetricsConstants.poiKeys.roadEvent,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {'event': event.id.objectId, 'title': event.title},
       );
+
       EventsRoute.open(context, event);
     } else if (event is MyLocationTapEvent) {
       if (context.mounted) {
-        ref.read(urbiMetricsProvider.notifier).logEvent(
-              'POI/My Location => Tap',
-            );
+        Metrics.logEventAdvanced(
+          MetricsConstants.poiKeys.myLocation,
+          group: MetricsConstants.poiTag,
+          action: MetricAction.tap.toString(),
+        );
+
         final userLocation = ref.read(locationProvider);
         PoiMapRoute.open(
           ref.read(goRouterProvider),
           -1,
           latLng: userLocation != null
-              ? LatLng(
-                  latitude: userLocation.latitude,
-                  longitude: userLocation.longitude)
+              ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
               : event.latLng,
           zoom: 17,
           bearing: 0,

@@ -10,6 +10,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/_features/stories/domain/story_types.dart';
 import 'package:mapness/_features/stories/stories.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
@@ -31,6 +32,8 @@ class ScaffoldWithNestedNavigation extends ConsumerStatefulWidget {
 
 class _ScaffoldWithNestedNavigationState
     extends ConsumerState<ScaffoldWithNestedNavigation> {
+  static const _tag = MetricsConstants.exploreTag;
+
   int currentTab = 0;
 
   @override
@@ -59,9 +62,8 @@ class _ScaffoldWithNestedNavigationState
             3: 'explore',
           };
 
-          ref
-              .read(urbiMetricsProvider.notifier)
-              .logEvent('Explore/Navbar/${pageTitle[selected]} => Tap');
+          Metrics.logEventAdvanced('Navbar/${pageTitle[selected]}',
+              group: _tag, action: MetricAction.tap.name);
 
           if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
             final isShowRoute = await ref.read(routeOnboardingProvider.future);

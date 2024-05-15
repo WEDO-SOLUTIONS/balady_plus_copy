@@ -6,6 +6,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:provider/provider.dart';
@@ -78,14 +79,24 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         focusNode: _focusNode,
         onChanged: (query) {
           ref.read(searchQueryProvider(scope.value).notifier).update(query);
-          ref
-              .read(urbiMetricsProvider.notifier)
-              .logEvent('Search/Search field => type', {'query': query});
+          Metrics.logEventAdvanced(
+            MetricsConstants.searchKeys.searchField,
+            group: MetricsConstants.searchTag,
+            action: MetricAction.type.toString(),
+            props: {
+              'query': query,
+            },
+          );
         },
         onSubmitted: (query) {
-          ref
-              .read(urbiMetricsProvider.notifier)
-              .logEvent('Search/Search field => type', {'query': query});
+          Metrics.logEventAdvanced(
+            MetricsConstants.searchKeys.searchField,
+            group: MetricsConstants.searchTag,
+            action: MetricAction.type.toString(),
+            props: {
+              'query': query,
+            },
+          );
           ref.read(searchProvider(scope.value).notifier).searchByText(query);
           if (query.isNotEmpty) {
             ref.read(searchHistoryProvider(scope.value).notifier).put(

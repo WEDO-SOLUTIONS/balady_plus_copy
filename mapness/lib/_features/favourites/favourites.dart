@@ -12,6 +12,7 @@ import 'package:mapness/_features/favourites/widgets/screen/favourites_toggle.da
 import 'package:mapness/_features/favourites/widgets/screen/pinned_place_widget.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
@@ -24,6 +25,8 @@ class Favourites extends ConsumerStatefulWidget {
 }
 
 class _FavouritesState extends ConsumerState<Favourites> {
+  static const String _tag = MetricsConstants.favoriteTag;
+
   bool isEditing = false;
 
   void toggleEditing() {
@@ -31,13 +34,21 @@ class _FavouritesState extends ConsumerState<Favourites> {
       isEditing = !isEditing;
     });
 
-    ref.read(urbiMetricsProvider.notifier).logEvent(
-      'Favorites/Edit => Tap',
-      {'isEditing': isEditing},
+    Metrics.logEventAdvanced(
+      MetricsConstants.favoritesKeys.edit,
+      group: _tag,
+      action: MetricAction.tap.name,
+      props: {'isEditing': isEditing},
     );
   }
 
   void _deleteItem(FavouriteItem item) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.favoritesKeys.deleteItem,
+      group: _tag,
+      action: MetricAction.tap.name,
+      props: {'item': item.entity!.id},
+    );
     ref.read(favouriteCacheProvider.notifier).deleteItem(item);
   }
 
@@ -46,17 +57,23 @@ class _FavouritesState extends ConsumerState<Favourites> {
     final asyncState = ref.watch(favouriteCacheProvider);
     return asyncState.map(
       error: (error) => ErrorSheet(
-        buttonLabel: 'Reload',
+        buttonLabel: MetricsConstants.favoritesKeys.reload,
         onClose: () {
-          ref.read(urbiMetricsProvider.notifier).logEvent(
-                'Favorites/Close => Tap',
-              );
+          Metrics.logEventAdvanced(
+            'Close',
+            group: _tag,
+            action: MetricAction.tap.name,
+          );
+
           context.pop();
         },
         onRetry: () {
-          ref.read(urbiMetricsProvider.notifier).logEvent(
-                'Favorites/Retry => Tap',
-              );
+          Metrics.logEventAdvanced(
+            MetricsConstants.favoritesKeys.retry,
+            group: _tag,
+            action: MetricAction.tap.name,
+          );
+
           ref.invalidate(favouriteCacheProvider);
         },
       ),
@@ -119,9 +136,12 @@ class _FavouritesState extends ConsumerState<Favourites> {
                           if (!ref.context.mounted) {
                             return;
                           }
-                          ref.read(urbiMetricsProvider.notifier).logEvent(
-                                'Favorites/Delete all => Tap',
-                              );
+
+                          Metrics.logEventAdvanced(
+                            MetricsConstants.favoritesKeys.deleteAll,
+                            group: _tag,
+                            action: MetricAction.tap.name,
+                          );
                           await ref
                               .read(favouriteCacheProvider.notifier)
                               .deleteAll();
@@ -154,24 +174,8 @@ class _FavouritesState extends ConsumerState<Favourites> {
                         isEditing: isEditing && state.home != null,
                         isAdded: state.home != null,
                         onDelete: () => _deleteItem(state.home!),
-                        onTap: state.home == null
-                            ? () {
-                                ref.read(urbiMetricsProvider.notifier).logEvent(
-                                      'Favorites/Set home search => Tap',
-                                    );
-                                const FavouritesSearchRoute(
-                                  markerType: FavouriteItemMarkerType.home,
-                                ).push(context);
-                              }
-                            : () {
-                                ref.read(urbiMetricsProvider.notifier).logEvent(
-                                    'Favorites/Open home => Tap',
-                                    {'home': state.home!.entity!.id});
-                                PoiMapRoute(
-                                  dgisObjectId:
-                                      int.parse(state.home!.entity!.id),
-                                ).replace(context);
-                              },
+                        onTap: () => _onSpecItemTap(
+                            FavouriteItemMarkerType.home, state.home),
                       ),
                       const SizedBox(height: 8),
                       PinnedPlaceWidget(
@@ -183,24 +187,8 @@ class _FavouritesState extends ConsumerState<Favourites> {
                         isEditing: isEditing && state.work != null,
                         isAdded: state.work != null,
                         onDelete: () => _deleteItem(state.work!),
-                        onTap: state.work == null
-                            ? () {
-                                ref.read(urbiMetricsProvider.notifier).logEvent(
-                                      'Favorites/Set work search => Tap',
-                                    );
-                                const FavouritesSearchRoute(
-                                  markerType: FavouriteItemMarkerType.work,
-                                ).push(context);
-                              }
-                            : () {
-                                ref.read(urbiMetricsProvider.notifier).logEvent(
-                                    'Favorites/Open work => Tap',
-                                    {'work': state.work!.entity!.id});
-                                PoiMapRoute(
-                                  dgisObjectId:
-                                      int.parse(state.work!.entity!.id),
-                                ).replace(context);
-                              },
+                        onTap: () => _onSpecItemTap(
+                            FavouriteItemMarkerType.work, state.work),
                       ),
                     ],
                   ),
@@ -237,21 +225,14 @@ class _FavouritesState extends ConsumerState<Favourites> {
 
                               /// item
                               return FavouriteItemWidget(
-                                onDelete: () {
-                                  ref
-                                      .read(urbiMetricsProvider.notifier)
-                                      .logEvent(
-                                    'Favorites/Delete item => Tap',
-                                    {'item': item.entity!.id},
-                                  );
-                                  _deleteItem(item);
-                                },
+                                onDelete: () => _deleteItem(item),
                                 onTap: () {
-                                  ref
-                                      .read(urbiMetricsProvider.notifier)
-                                      .logEvent(
-                                    'Favorites/Open favorite item => Tap',
-                                    {'item': item.entity!.id},
+                                  Metrics.logEventAdvanced(
+                                    MetricsConstants
+                                        .favoritesKeys.openFavoriteItem,
+                                    group: _tag,
+                                    action: MetricAction.tap.name,
+                                    props: {'item': item.entity!.id},
                                   );
                                   PoiMapRoute(
                                     dgisObjectId: int.parse(item.entity!.id),
@@ -270,5 +251,31 @@ class _FavouritesState extends ConsumerState<Favourites> {
         );
       },
     );
+  }
+
+  void _onSpecItemTap(FavouriteItemMarkerType type, FavouriteItem? item) {
+    if (item == null) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.favoritesKeys.openHomeSearch,
+        group: _tag,
+        action: MetricAction.tap.name,
+      );
+
+      FavouritesSearchRoute(
+        markerType: type,
+      ).push(context);
+    } else {
+      Metrics.logEventAdvanced(
+        MetricsConstants.favoritesKeys.openHome,
+        group: _tag,
+        action: MetricAction.tap.name,
+        props: type == FavouriteItemMarkerType.home
+            ? {'home': item.entity!.id}
+            : {'work': item.entity!.id},
+      );
+      PoiMapRoute(
+        dgisObjectId: int.parse(item.entity!.id),
+      ).replace(context);
+    }
   }
 }

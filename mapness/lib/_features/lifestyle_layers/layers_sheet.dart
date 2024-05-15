@@ -9,6 +9,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -110,9 +111,12 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                                   const Spacer(),
                                   ui_kit.AppButton.close(
                                     onTap: () {
-                                      ref
-                                          .read(urbiMetricsProvider.notifier)
-                                          .logEvent('Layers/Exit icon => Tap');
+                                      Metrics.logEventAdvanced(
+                                        MetricsConstants.layersKeys.exitIcon,
+                                        group: MetricsConstants.layersTag,
+                                        action: MetricAction.tap.toString(),
+                                      );
+
                                       context.pop();
                                     },
                                     padding: EdgeInsets.zero,

@@ -12,13 +12,13 @@ part 'happiness_repository.g.dart';
 class _HappinessRepository extends _$HappinessRepository {
   // returns should close or not
   Future<void> submitFeedback(HappinessState feedback) async {
-    ref
-        .read(urbiMetricsProvider.notifier)
-        .logEvent('Happiness_map/submitFeedback', {
-      'feedback': feedback.feedback.toString(),
-      'tags': feedback.tags.toString(),
-      'coordinates': feedback.coordinates.toString(),
-    });
+    Metrics.logEvent('Happiness_map/submitFeedback',
+        object: runtimeType,
+        extras: {
+          'feedback': feedback.feedback.toString(),
+          'tags': feedback.tags.toString(),
+          'coordinates': feedback.coordinates.toString(),
+        });
     mixpanel?.timeEvent('Happiness map: submitFeedback');
     final dio = await ref.read(dGisNetworkProvider.future);
     state = const AsyncLoading();

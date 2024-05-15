@@ -38,9 +38,15 @@ class _FavoriteItem extends ConsumerWidget {
     await CommonFunctions.authOrOpen(
       context,
       callback: () {
-        ref
-            .read(urbiMetricsProvider.notifier)
-            .logEvent('POI/Add to favorite => Tap', {'object_id': objectId});
+        Metrics.logEventAdvanced(
+          MetricsConstants.poiKeys.addToFavorite,
+          group: MetricsConstants.poiTag,
+          action: MetricAction.tap.toString(),
+          props: {
+            'objectId': objectId,
+          },
+        );
+
         final favState = ref.read(favouriteCacheProvider).valueOrNull;
         final favRepo = ref.read(favouriteCacheProvider.notifier);
 

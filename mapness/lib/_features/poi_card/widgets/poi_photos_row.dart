@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 import 'package:shimmer/shimmer.dart';
@@ -73,12 +74,15 @@ class PoiPhotosRow extends ConsumerWidget {
                         key: ValueKey(photo),
                         child: LoadingShimmerImage(
                           onImageTap: (name, {isAsset}) {
-                            ref
-                                .read(urbiMetricsProvider.notifier)
-                                .logEvent('POI/Photo => Tap', {
-                              'poi_id': objectId,
-                              'photo_url': photo,
-                            });
+                            Metrics.logEventAdvanced(
+                                MetricsConstants.poiKeys.photo,
+                                group: MetricsConstants.poiTag,
+                                action: MetricAction.tap.toString(),
+                                props: {
+                                  'poi_id': objectId,
+                                  'photo_url': photo,
+                                });
+
                             PhotoViewer.open(context, index, photos);
                           },
                           imageUrl: photo,

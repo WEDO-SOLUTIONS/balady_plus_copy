@@ -9,6 +9,7 @@ import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -179,9 +180,12 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           ),
                           AppCloseButton(
                             onPressed: () {
-                              ref.read(urbiMetricsProvider.notifier).logEvent(
-                                    'Routing/Specify on map/Exit => Tap',
-                                  );
+                              Metrics.logEventAdvanced(
+                                MetricsConstants.routesKeys.specifyOnMapExit,
+                                group: MetricsConstants.routesTag,
+                                action: MetricAction.tap.toString(),
+                              );
+
                               context.pop(null);
                             },
                           ),
@@ -201,9 +205,12 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                         child: LabeledElevatedButton(
                           label: context.l10n.done,
                           onPressed: () {
-                            ref.read(urbiMetricsProvider.notifier).logEvent(
-                                  'Routing/Specify on map/Done => Tap',
-                                );
+                            Metrics.logEventAdvanced(
+                              MetricsConstants.routesKeys.specifyOnMapDone,
+                              group: MetricsConstants.routesTag,
+                              action: MetricAction.tap.toString(),
+                            );
+
                             switch (nearestObject.value!) {
                               case DGisNearestObject(object: final object):
                                 context.pop(

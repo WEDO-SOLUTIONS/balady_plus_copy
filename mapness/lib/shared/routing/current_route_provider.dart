@@ -24,7 +24,8 @@ class CurrentRoute extends _$CurrentRoute {
     mixpanel
         ?.track('CurrentRoute', properties: {'path': '${state?.currentPath}'});
     FlutterUxcam.tagScreenName(state?.currentPath ?? 'unknown');
-    ref.read(urbiMetricsProvider.notifier).logEvent('CurrentRoute/update', {
+
+    Metrics.logEventAdvanced('Update', screen: CurrentRoute, props: {
       'path': '${state?.currentPath}',
       'previousPath': '$previosPath',
     });

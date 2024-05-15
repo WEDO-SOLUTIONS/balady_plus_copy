@@ -8,6 +8,7 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
 import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -103,9 +104,10 @@ class SearchByRubrics extends _$SearchByRubrics {
         Marker(
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
           onTap: () {
-            ref
-                .read(urbiMetricsProvider.notifier)
-                .logEvent('POI/Marker => Tap', {'objectId': markerInfo.objectId!.objectId});
+            Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {'objectId': markerInfo.objectId!.objectId});
             PoiMapRoute.open(
               ref.read(goRouterProvider),
               markerInfo.objectId!.objectId,

@@ -10,6 +10,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -160,8 +161,13 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                               ),
                               NavButton(
                                 onTap: () {
-                                  ref.read(urbiMetricsProvider.notifier).logEvent(
-                                      'Routes/Route-selection/Reverse Route Direction icon => Tap');
+                                  Metrics.logEventAdvanced(
+                                    MetricsConstants.routesKeys
+                                        .routeSelectionReverseRouteDirectionIcon,
+                                    group: MetricsConstants.routesTag,
+                                    action: MetricAction.tap.toString(),
+                                  );
+
                                   setState(() {
                                     points = points.reversed.toList();
                                     labels = labels.reversed.toList();
@@ -176,10 +182,13 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                               ),
                               NavButton(
                                 onTap: () {
-                                  ref
-                                      .read(urbiMetricsProvider.notifier)
-                                      .logEvent(
-                                          'Routes/Route-selection/Back => Tap');
+                                  Metrics.logEventAdvanced(
+                                    MetricsConstants
+                                        .routesKeys.routeSelectionBack,
+                                    group: MetricsConstants.routesTag,
+                                    action: MetricAction.tap.toString(),
+                                  );
+
                                   final routes = ref.read(currentRouteProvider);
 
                                   switch (routes?.previousPath) {

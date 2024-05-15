@@ -10,6 +10,7 @@ import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
