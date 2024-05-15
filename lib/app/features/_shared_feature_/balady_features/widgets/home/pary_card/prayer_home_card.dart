@@ -97,6 +97,7 @@ class PrayerHomeCard extends StatelessWidget {
                                                     color: Colors.white,
                                                   ),
                                             ),
+                                          const SizedBox(height: 8),
                                           state.nextPrayer != null
                                               ? NextPrayerHome(
                                                   prayer:
