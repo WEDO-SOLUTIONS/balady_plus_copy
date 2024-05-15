@@ -13,15 +13,22 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'layout_size_wrapper.dart';
 
 class EtaSheet extends ConsumerStatefulWidget {
+  final VoidCallback onEndTripPressed;
+  final VoidCallback onRoutePressed;
+  final VoidCallback onBetterRouteAccept;
+  final VoidCallback onBetterRouteReject;
+  final OnWidgetSizeChange onSizeChanged;
+  final ValueNotifier<int?> betterRouteDurationProfit;
+
   const EtaSheet({
     required this.onEndTripPressed,
     required this.onRoutePressed,
+    required this.onBetterRouteAccept,
+    required this.onBetterRouteReject,
     required this.onSizeChanged,
+    required this.betterRouteDurationProfit,
     super.key,
   });
-  final VoidCallback onEndTripPressed;
-  final VoidCallback onRoutePressed;
-  final OnWidgetSizeChange onSizeChanged;
 
   @override
   ConsumerState<EtaSheet> createState() => _EtaSheetState();
@@ -41,23 +48,21 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
       onSizeChanged: widget.onSizeChanged,
+      betterRouteDurationProfit: widget.betterRouteDurationProfit,
+      onBetterRouteAccept: widget.onBetterRouteAccept,
+      onBetterRouteReject: widget.onBetterRouteReject,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           enabledHeader: _isExpanded,
-          distanceChild: NaviChildModel(
-              description: eta.distanceEtaUnits.getDescription(context),
-              title: eta.distanceEta),
-          arrivalChild: NaviChildModel(
-              description: context.l10n.arrival, title: eta.arrivalTime),
-          drivingChild: NaviChildModel(
-              description: eta.timeEtaUnits.getDescription(context),
-              title: eta.timeEta),
+          distanceChild:
+              NaviChildModel(description: eta.distanceEtaUnits.getDescription(context), title: eta.distanceEta),
+          arrivalChild: NaviChildModel(description: context.l10n.arrival, title: eta.arrivalTime),
+          drivingChild: NaviChildModel(description: eta.timeEtaUnits.getDescription(context), title: eta.timeEta),
           contentRows: [
             ContentRow(
               onToggle: (_) {
                 ref.read(darkModeProvider.notifier).toggle();
-                Metrics.logEventAdvanced(
-                    MetricsConstants.navigationKeys.darkMode,
+                Metrics.logEventAdvanced(MetricsConstants.navigationKeys.darkMode,
                     group: MetricsConstants.navigationTag,
                     action: MetricAction.tap.toString(),
                     props: {
@@ -70,8 +75,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                   horizontal: Spacing.horizontalSpacingTabsRow,
                 ),
                 title: context.l10n.darkMap,
-                titleStyle: context.textStyle.text
-                    .copyWith(color: context.color.textAndIconsBasePrimary),
+                titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
                 actionWidget: ContentRowActionOptions(
                   enabledToggle: true,
                   toggleInitialValue: dark,
@@ -81,8 +85,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ContentRow(
               onToggle: (_) {
                 ref.read(pathNavSoundProviderProvider.notifier).toggle();
-                Metrics.logEventAdvanced(
-                    MetricsConstants.navigationKeys.soundMode,
+                Metrics.logEventAdvanced(MetricsConstants.navigationKeys.soundMode,
                     group: MetricsConstants.navigationTag,
                     action: MetricAction.tap.toString(),
                     props: {
@@ -96,8 +99,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 ),
                 title: context.l10n.soundSettings,
                 subtitle: context.l10n.maneuvers,
-                titleStyle: context.textStyle.text
-                    .copyWith(color: context.color.textAndIconsBasePrimary),
+                titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
                 actionWidget: ContentRowActionOptions(
                   enabledToggle: true,
                   toggleInitialValue: sound,

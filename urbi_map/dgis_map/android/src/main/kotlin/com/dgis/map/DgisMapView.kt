@@ -820,7 +820,7 @@ class DgisMapView(
         )
         map.addSource(mapSource)
 
-        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource)
+        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler)
         zoomControlHandler = ZoomControlHandler(map, eventSink)
         locationControlHandler = LocationControlHandler(map, eventSink)
         indoorControlHandler = IndoorControlHandler(map, eventSink)
@@ -885,6 +885,11 @@ class DgisMapView(
 
     override fun toggleHeatmap(message: WeatherMapMessage, result: Messages.Result<Boolean>?) {
         weatherHandler?.toggleHeatmap(message,result)
+    }
+
+    override fun betterRouteResponse(response: BetterRouteResponseMessage, result: Messages.Result<Void>?) {
+        navigationHandler.betterRouteResponse(response)
+        result?.success(null)
     }
 
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {

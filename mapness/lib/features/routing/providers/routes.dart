@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -56,5 +57,28 @@ class ActiveRoute extends _$ActiveRoute {
       activeRouteSubscription?.cancel();
     });
     return 0;
+  }
+}
+
+@riverpod
+class BetterRoute extends _$BetterRoute {
+  @override
+  PathNavBetterRoute? build() {
+    final dgisController = ref.watch(dgisControllerProvider);
+
+    final betterRouteSubscription =
+        dgisController.value?.betterRouteInfoEvents.listen((event) {
+      state = event.route != null
+          ? PathNavBetterRoute(
+              route: event.route!,
+              durationProfit: event.durationProfit,
+            )
+          : null;
+    });
+
+    ref.onDispose(() {
+      betterRouteSubscription?.cancel();
+    });
+    return null;
   }
 }
