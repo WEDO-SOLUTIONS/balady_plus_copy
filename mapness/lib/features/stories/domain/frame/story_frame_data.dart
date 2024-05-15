@@ -1,25 +1,24 @@
-import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/_features/stories/domain/frame/story_text_style.dart';
+import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
+import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension StoryFrameDataX on StoryFrameData {
   String titleOrFailback(AppLocalizations locale) => switch (storyId) {
-      'route1' => locale.whatCanTheNavigatorDo,
-      'route2' => locale.theShortestRoute,
-      'route3' => locale.focusOnTheRoad,
-      _ => title,
-    };
+        'route1' => locale.whatCanTheNavigatorDo,
+        'route2' => locale.theShortestRoute,
+        'route3' => locale.focusOnTheRoad,
+        _ => title,
+      };
 
   String? descriptionOrFailback(AppLocalizations locale) => switch (storyId) {
-      'route1' => locale.route1description,
-      'route2' => locale.route2description,
-      'route3' => locale.route3description,
-      _ => description,
-    };
+        'route1' => locale.route1description,
+        'route2' => locale.route2description,
+        'route3' => locale.route3description,
+        _ => description,
+      };
 }
 
 class StoryFrameData {
-
   const StoryFrameData({
     required this.duration,
     required this.storyId,
@@ -57,17 +56,18 @@ class StoryFrameData {
     StoryFrameAction? action,
     int? duration,
     bool? isAssetImage,
-  }) => StoryFrameData(
-      isAssetImage: isAssetImage ?? this.isAssetImage,
-      storyId: storyId ?? this.storyId,
-      title: title ?? this.title,
-      imageUrl: imageUrl ?? this.imageUrl,
-      subtitle: subtitle ?? this.subtitle,
-      description: description ?? this.description,
-      titleStyle: titleStyle ?? this.titleStyle,
-      descriptionStyle: descriptionStyle ?? this.descriptionStyle,
-      isWatched: isWatched ?? this.isWatched,
-      action: action ?? this.action,
-      duration: duration ?? this.duration,
-    );
+  }) =>
+      StoryFrameData(
+        isAssetImage: isAssetImage ?? this.isAssetImage,
+        storyId: storyId ?? this.storyId,
+        title: title ?? this.title,
+        imageUrl: imageUrl ?? this.imageUrl,
+        subtitle: subtitle ?? this.subtitle,
+        description: description ?? this.description,
+        titleStyle: titleStyle ?? this.titleStyle,
+        descriptionStyle: descriptionStyle ?? this.descriptionStyle,
+        isWatched: isWatched ?? this.isWatched,
+        action: action ?? this.action,
+        duration: duration ?? this.duration,
+      );
 }

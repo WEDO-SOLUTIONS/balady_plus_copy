@@ -90,6 +90,7 @@ dependencies:
   app_links: ^3.5.0
   flutter_keyboard_visibility: ^6.0.0
   another_transformer_page_view: ^2.0.1
+  cached_network_image: ^3.2.2
 
 dependency_overrides:
   geolocator_android: ^4.2.2
