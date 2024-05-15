@@ -81,6 +81,8 @@ class SnapAndSendCard extends ConsumerWidget {
                             height: 23,
                           ),
                           LabeledElevatedButton(
+                            textColor: context.color.textAndIconsStatusAccent,
+                            backgroundColor: context.color.surfaceBasePrimary,
                             label: context.l10n.snapAndSendButton,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 14,
