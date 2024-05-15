@@ -23,6 +23,15 @@ class _CarItem extends ConsumerWidget {
         child: BriefRouteButton(
           routeType: RouteSearchOptionsMessage.car,
           onTap: () {
+            Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'object_id': objectMessage?.id?.objectId,
+                  'finish_point':
+                      '${finishPoint?.coordinates.latitude},${finishPoint?.coordinates.longitude}'
+                });
+
             getRoute(
               objectMessage_,
               context.l10n.myLocation,

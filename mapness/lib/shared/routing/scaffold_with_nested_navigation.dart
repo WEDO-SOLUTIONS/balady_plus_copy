@@ -10,7 +10,9 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/_features/stories/domain/story_types.dart';
 import 'package:mapness/_features/stories/stories.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
@@ -30,6 +32,8 @@ class ScaffoldWithNestedNavigation extends ConsumerStatefulWidget {
 
 class _ScaffoldWithNestedNavigationState
     extends ConsumerState<ScaffoldWithNestedNavigation> {
+  static const _tag = MetricsConstants.exploreTag;
+
   int currentTab = 0;
 
   @override
@@ -51,6 +55,18 @@ class _ScaffoldWithNestedNavigationState
         body: widget.navigationShell,
         currentIndex: currentTab,
         onDestinationSelected: (selected) async {
+          const pageTitle = {
+            0: 'profile',
+            1: 'services',
+            2: 'route',
+            3: 'explore',
+          };
+
+          Metrics.logEventAdvanced(
+              MetricsConstants.exploreKeys
+                  .navbarClick(pageTitle[selected] ?? 'Unknown'),
+              group: _tag,
+              action: MetricAction.tap.name);
           if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
             final isShowRoute = await ref.read(routeOnboardingProvider.future);
             if (isShowRoute) {
@@ -112,13 +128,15 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
             Directionality(
               textDirection: bottomNavigationDirection,
               child: DecoratedBox(
-                decoration: BoxDecoration(boxShadow: [
-                  BoxShadow(
-                    color: NonThemeColor.color14.withOpacity(0.05),
-                    offset: const Offset(0, -2),
-                    blurRadius: 8,
-                  ),
-                ],),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: NonThemeColor.color14.withOpacity(0.05),
+                      offset: const Offset(0, -2),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
                 child: BottomNavigationBar(
                   backgroundColor: Colors.white,
                   elevation: 0,

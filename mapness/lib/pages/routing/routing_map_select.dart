@@ -9,8 +9,10 @@ import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/dgis_handle.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
@@ -52,14 +54,14 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
           final notEqual = prevValue is DGisNearestObject &&
               prevValue.object.id?.objectId != nextValue.object.id?.objectId;
           if (prevValue == null || notEqual) {
-            ref
-                .read(cameraPositionProvider.notifier)
-                .animateTo(CameraPositionMessage(
-                  point: nextValue.nearestPoint.geoPoint,
-                  zoom: 17,
-                  tilt: 0,
-                  bearing: 0,
-                ),);
+            ref.read(cameraPositionProvider.notifier).animateTo(
+                  CameraPositionMessage(
+                    point: nextValue.nearestPoint.geoPoint,
+                    zoom: 17,
+                    tilt: 0,
+                    bearing: 0,
+                  ),
+                );
           }
         }
       },
@@ -159,7 +161,8 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                                       .extension<ThemeTextStyles>()!
                                       .heading2
                                       .copyWith(
-                                        color: context.color.textAndIconsBasePrimary,
+                                        color: context
+                                            .color.textAndIconsBasePrimary,
                                       ),
                                 ),
                                 Text(
@@ -168,14 +171,23 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                                       .extension<ThemeTextStyles>()!
                                       .footNote
                                       .copyWith(
-                                        color: context.color.textAndIconsBaseTertiary,
+                                        color: context
+                                            .color.textAndIconsBaseTertiary,
                                       ),
                                 ),
                               ],
                             ),
                           ),
                           AppCloseButton(
-                            onPressed: () => context.pop(null),
+                            onPressed: () {
+                              Metrics.logEventAdvanced(
+                                MetricsConstants.routesKeys.specifyOnMapExit,
+                                group: MetricsConstants.routesTag,
+                                action: MetricAction.tap.toString(),
+                              );
+
+                              context.pop(null);
+                            },
                           ),
                         ],
                       ),
@@ -193,11 +205,19 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                         child: LabeledElevatedButton(
                           label: context.l10n.done,
                           onPressed: () {
+                            Metrics.logEventAdvanced(
+                              MetricsConstants.routesKeys.specifyOnMapDone,
+                              group: MetricsConstants.routesTag,
+                              action: MetricAction.tap.toString(),
+                            );
+
                             switch (nearestObject.value!) {
                               case DGisNearestObject(object: final object):
-                                context.pop(RoutePointDirectoryObject(
-                                  object,
-                                ),);
+                                context.pop(
+                                  RoutePointDirectoryObject(
+                                    object,
+                                  ),
+                                );
                               case CooridnatesNearestObject(
                                   geoPoint: final geoPoint
                                 ):

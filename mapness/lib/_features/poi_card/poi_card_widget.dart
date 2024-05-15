@@ -24,8 +24,10 @@ import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -284,17 +286,33 @@ class _ContentState extends ConsumerState<_Content>
         ),
         actions: PoiCardFooter2(
           data: data,
-          share: () => viewModel.share(
-            objectId: objectId,
-            markerCoords: widget.closestPoint,
-          ),
-          callPhone: () => viewModel.callPhone(data: data),
-          onEntranceTap: () {
-            setState(() {
-              showEntrances = !showEntrances;
-              _toggleEntrances(data, displayEntrance: showEntrances);
-            });
+          share: () {
+            Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'object_id': data.id?.objectId,
+                  'closest_point':
+                      '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                });
+
+            viewModel.share(
+              objectId: objectId,
+              markerCoords: widget.closestPoint,
+            );
           },
+          callPhone: () {
+            Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'objectId': objectId,
+                });
+
+            viewModel.callPhone(data: data);
+          },
+          onEntranceTap: () =>
+              _toggleEntrances(data, displayEntrance: showEntrances),
         ),
         scrollableBody: (context, controller) =>
             DgisBottomSheetScrollableContent(
@@ -303,6 +321,12 @@ class _ContentState extends ConsumerState<_Content>
             tabController: _tabController,
             data: data,
             onTapClose: () {
+              Metrics.logEventAdvanced(
+                MetricsConstants.poiKeys.exitButton,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+              );
+
               ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
               ref
                   .read(highlightProvider.notifier)
@@ -330,6 +354,18 @@ class _ContentState extends ConsumerState<_Content>
 
   Future<void> _toggleEntrances(DirectoryObjectMessage data,
       {required bool displayEntrance}) async {
+    setState(() {
+      showEntrances = !showEntrances;
+    });
+
+    Metrics.logEventAdvanced(MetricsConstants.poiKeys.entrances,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'poi_id': data.id?.objectId,
+          'show_entrances': showEntrances,
+        });
+
     final highlightController = ref.read(highlightProvider.notifier);
 
     if (displayEntrance) {

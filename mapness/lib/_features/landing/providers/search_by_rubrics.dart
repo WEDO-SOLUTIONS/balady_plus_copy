@@ -1,17 +1,24 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
+import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_by_rubrics.g.dart';
 
+// TODO(Sergei): remove index from state, this will allow to select filter without information about index
+//  and allow to not be tied to order of filters
 @riverpod
 class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   @override
@@ -19,6 +26,15 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
 
   // ignore: use_setters_to_change_properties
   void update((QuickFilter filter, int index)? newState) => state = newState;
+
+  void selectMosques() {
+    final quickFilters = ref.read(quickFiltersProvider);
+    final mosquesFilter = quickFilters.valueOrNull
+        ?.firstWhereOrNull((e) => e.rubrics.contains(quickFilterRubricMosques));
+    if (mosquesFilter != null) {
+      update((mosquesFilter, 4));
+    }
+  }
 }
 
 @riverpod
@@ -50,27 +66,27 @@ class SearchByRubrics extends _$SearchByRubrics {
     if (dgisController == null) {
       return;
     }
-
+    SearchResultMessage? searchResults;
     if (filter.rubrics.isEmpty && filter.query != null) {
       final category = getCategoryByTag(filter.query!);
       if (category == null) {
         return;
       }
 
-      final searchResults = await dgisController.searchByCategory(
+      searchResults = await dgisController.searchByCategory(
         category,
         sortingType: SortingTypeMessage.byRelevance,
         searchRect: searchRect,
       );
-
-      final markers = await _showAndReturnMarkers(searchResults);
-      state = AsyncValue.data(markers);
     } else {
-      final searchResults = await dgisController.searchByRubrics(
+      searchResults = await dgisController.searchByRubrics(
         filter.rubrics,
         sortingType: SortingTypeMessage.byRelevance,
         searchRect: searchRect,
       );
+    }
+    final currentFilter = ref.watch(searchByRubricsQueryProvider);
+    if (currentFilter?.$1 == filter) {
       final markers = await _showAndReturnMarkers(searchResults);
       state = AsyncValue.data(markers);
     }
@@ -93,6 +109,10 @@ class SearchByRubrics extends _$SearchByRubrics {
         Marker(
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
           onTap: () {
+            Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {'objectId': markerInfo.objectId!.objectId});
             PoiMapRoute.open(
               ref.read(goRouterProvider),
               markerInfo.objectId!.objectId,
