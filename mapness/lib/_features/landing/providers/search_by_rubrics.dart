@@ -1,16 +1,21 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
+import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_by_rubrics.g.dart';
 
+// TODO(Sergei): remove index from state, this will allow to select filter without information about index
+//  and allow to not be tied to order of filters
 @riverpod
 class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   @override
@@ -18,6 +23,15 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
 
   // ignore: use_setters_to_change_properties
   void update((QuickFilter filter, int index)? newState) => state = newState;
+
+  void selectMosques() {
+    final quickFilters = ref.read(quickFiltersProvider);
+    final mosquesFilter = quickFilters.valueOrNull
+        ?.firstWhereOrNull((e) => e.rubrics.contains(quickFilterRubricMosques));
+    if (mosquesFilter != null) {
+      update((mosquesFilter, 4));
+    }
+  }
 }
 
 @riverpod
