@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -70,14 +68,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         }();
       case LangingFocusMaker.mosques:
         Future.delayed(Duration.zero, () {
-          final quickFilters = ref.read(quickFiltersProvider);
-          final mosquesFilter = quickFilters.valueOrNull
-              ?.firstWhereOrNull((e) => e.rubrics.contains(13374));
-          if (mosquesFilter != null) {
-            ref
-                .read(searchByRubricsQueryProvider.notifier)
-                .update((mosquesFilter, 4));
-          }
+          ref.read(searchByRubricsQueryProvider.notifier).selectMosques();
         });
       // ignore: no_default_cases
       default:
