@@ -82,6 +82,7 @@ class FrameProgressIndicator extends AnimatedWidget {
                 AppButton.close(
                   onTap: onClose,
                   padding: EdgeInsets.zero,
+                  innerPadding: const EdgeInsets.all(8),
                 ),
               ],
             ),
