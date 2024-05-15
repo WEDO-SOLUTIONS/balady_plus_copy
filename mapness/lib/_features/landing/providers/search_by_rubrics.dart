@@ -8,6 +8,7 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
 import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -26,8 +27,8 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
 
   void selectMosques() {
     final quickFilters = ref.read(quickFiltersProvider);
-    final mosquesFilter = quickFilters.valueOrNull
-        ?.firstWhereOrNull((e) => e.rubrics.contains(quickFilterRubricMosques));
+    final mosquesFilter =
+        quickFilters.valueOrNull?.firstWhereOrNull((e) => e.rubrics.contains(quickFilterRubricMosques));
     if (mosquesFilter != null) {
       update((mosquesFilter, 4));
     }
@@ -43,21 +44,18 @@ class SearchByRubrics extends _$SearchByRubrics {
       return null;
     }
 
-    final searchRect =
-        ref.watch(searchInRectProvider.select((value) => value.$1));
+    final searchRect = ref.watch(searchInRectProvider.select((value) => value.$1));
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
     unawaited(performSearch(
       filter.$1,
-      searchRect ??
-          dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
+      searchRect ?? dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
     ));
 
     return null;
   }
 
-  Future<void> performSearch(
-      QuickFilter filter, GeoRectMessage? searchRect) async {
+  Future<void> performSearch(QuickFilter filter, GeoRectMessage? searchRect) async {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
     if (dgisController == null) {
@@ -100,12 +98,14 @@ class SearchByRubrics extends _$SearchByRubrics {
 
     final selectedFilter = ref.watch(searchByRubricsQueryProvider);
     final markers = <Marker>[];
-    for (final markerInfo
-        in value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+    for (final markerInfo in value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       markers.add(
         Marker(
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
           onTap: () {
+            ref
+                .read(urbiMetricsProvider.notifier)
+                .logEvent('POI/Marker => Tap', {'objectId': markerInfo.objectId!.objectId});
             PoiMapRoute.open(
               ref.read(goRouterProvider),
               markerInfo.objectId!.objectId,
@@ -114,8 +114,7 @@ class SearchByRubrics extends _$SearchByRubrics {
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,
             icon: MarkerIconMessage(
-              path:
-                  "packages/mapness/${selectedFilter?.$1.mapIcon ?? "assets/icons/svg/ic_marker.svg"}",
+              path: "packages/mapness/${selectedFilter?.$1.mapIcon ?? "assets/icons/svg/ic_marker.svg"}",
               width: 24,
             ),
           ),

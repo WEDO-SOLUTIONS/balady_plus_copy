@@ -135,7 +135,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   void _objectTapListener(TapEvent event) {
     if (event is ObjectTapEvent) {
       ref.read(urbiMetricsProvider.notifier).logEvent(
-        'Landing/objectTap',
+        'POI/Map => Tap',
         {'objectId': event.dgisObjectId.objectId},
       );
       if (context.mounted) {
@@ -147,9 +147,16 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         );
       }
     } else if (event is RoadEventTapEvent) {
+      ref.read(urbiMetricsProvider.notifier).logEvent(
+        'POI/Road Event => Tap',
+        {'event': event.id.objectId, 'title': event.title},
+      );
       EventsRoute.open(context, event);
     } else if (event is MyLocationTapEvent) {
       if (context.mounted) {
+        ref.read(urbiMetricsProvider.notifier).logEvent(
+              'POI/My Location => Tap',
+            );
         final userLocation = ref.read(locationProvider);
         PoiMapRoute.open(
           ref.read(goRouterProvider),

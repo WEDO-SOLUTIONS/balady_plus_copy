@@ -33,7 +33,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
 
   void openStory(BuildContext context, String id) {
     ref.read(urbiMetricsProvider.notifier).logEvent(
-      'Stories/open_story',
+      'Explore/Story banner => Tap',
       {'id': id},
     );
     Stories.showStoryById(context, id);
@@ -59,7 +59,9 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
         orElse: () => const SizedBox.shrink(),
         error: (_, __) => StoryRefreshButton(
           onPressed: () {
-            ref.read(urbiMetricsProvider.notifier).logEvent('Stories/refresh');
+            ref
+                .read(urbiMetricsProvider.notifier)
+                .logEvent('Explore/Stories => Refresh');
             ref.read(storyServiceProvider.notifier).refresh();
           },
         ),

@@ -34,7 +34,7 @@ class InterestingPlacesCardsList extends ConsumerWidget {
             onItemTap: (index) {
               final objectId = int.tryParse(places[index].entity.id) ?? 0;
               ref.read(urbiMetricsProvider.notifier).logEvent(
-                'poi/open_interesting_place',
+                'POI/Explore/Places to visit banner => Tap',
                 {
                   'id': objectId,
                   'title': places[index].titleOrFallback(

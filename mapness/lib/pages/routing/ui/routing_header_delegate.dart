@@ -1,9 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/routing/ui/route_editor.dart';
 
 class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -14,7 +16,10 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent,) =>
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) =>
       RoutingHeader(
         points: points,
         updatePoints: updatePoints,
@@ -33,7 +38,7 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
 }
 
-class RoutingHeader extends StatelessWidget {
+class RoutingHeader extends ConsumerWidget {
   const RoutingHeader({
     required this.points,
     required this.updatePoints,
@@ -44,7 +49,7 @@ class RoutingHeader extends StatelessWidget {
   final void Function(List<RoutePoint>) updatePoints;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context, WidgetRef ref) => Container(
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -74,19 +79,29 @@ class RoutingHeader extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: RouteEditor(
                 points: points,
-                onTap: (index) => RoutingSearchRoute(
-                  placeholder: index == 0 ? context.l10n.from : context.l10n.to,
-                  showMyLocation:
-                      index == 0 && points[index] is! RoutePointMyLocation,
-                ).push(context).then(
-                  (value) {
-                    if (value != null && value is RoutePoint) {
-                      points[index] = value;
-                      updatePoints(points);
-                    }
-                  },
-                ),
+                onTap: (index) {
+                  ref
+                      .read(urbiMetricsProvider.notifier)
+                      .logEvent('Routes/Change location => Tap');
+
+                  RoutingSearchRoute(
+                    placeholder:
+                        index == 0 ? context.l10n.from : context.l10n.to,
+                    showMyLocation:
+                        index == 0 && points[index] is! RoutePointMyLocation,
+                  ).push(context).then(
+                    (value) {
+                      if (value != null && value is RoutePoint) {
+                        points[index] = value;
+                        updatePoints(points);
+                      }
+                    },
+                  );
+                },
                 onReorder: (oldIndex, newIndex) {
+                  ref.read(urbiMetricsProvider.notifier).logEvent(
+                        'Routes/On reorder => Tap',
+                      );
                   if (oldIndex < newIndex) {
                     newIndex -= 1;
                   }
@@ -101,6 +116,14 @@ class RoutingHeader extends StatelessWidget {
             RoutingFavourites(
               showBookmark: true,
               onFavouriteTap: (point) async {
+                ref.read(urbiMetricsProvider.notifier).logEvent(
+                  'Routes/Route to favorite => Tap',
+                  {
+                    'id': point.entity?.id,
+                    'destination':
+                        '${point.coordinates.latitude},${point.coordinates.longitude}'
+                  },
+                );
                 final index =
                     points.indexWhere((element) => !element.isNotEmpty);
                 points[index] = RoutePointFavouriteItem(point);

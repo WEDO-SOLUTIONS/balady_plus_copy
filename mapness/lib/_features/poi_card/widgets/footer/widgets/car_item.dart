@@ -23,6 +23,13 @@ class _CarItem extends ConsumerWidget {
         child: BriefRouteButton(
           routeType: RouteSearchOptionsMessage.car,
           onTap: () {
+            ref
+                .read(urbiMetricsProvider.notifier)
+                .logEvent('POI/Route => Tap', {
+              'object_id': objectMessage?.id?.objectId,
+              'finish_point':
+                  '${finishPoint?.coordinates.latitude},${finishPoint?.coordinates.longitude}'
+            });
             getRoute(
               objectMessage_,
               context.l10n.myLocation,
