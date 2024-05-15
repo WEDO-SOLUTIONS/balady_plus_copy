@@ -46,8 +46,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
   late StreamSubscription? _naviEventsListener;
-  ValueNotifier<PathNavState> navigationState =
-      ValueNotifier(PathNavState.running);
+  ValueNotifier<PathNavState> navigationState = ValueNotifier(PathNavState.running);
   double heightOfEta = 90.0;
 
   @override
@@ -57,11 +56,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     ref.read(dgisControllerProvider).value?.setNavigatorVoice(
           ref.read(navigatorVoiceProvider),
         );
-    _naviEventsListener = ref
-        .read(dgisControllerProvider)
-        .value
-        ?.navigationEvents
-        .listen(_naviEvent);
+    _naviEventsListener = ref.read(dgisControllerProvider).value?.navigationEvents.listen(_naviEvent);
     unawaited(ref.read(dgisControllerProvider).value?.startNavigation());
     WakelockPlus.enable();
   }
@@ -87,8 +82,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
           children: [
             const SizedBox(height: 6, width: double.maxFinite),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: uikit.Spacing.verticalBaseToTopSafezone),
+              padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.verticalBaseToTopSafezone),
               child: Directionality(
                 // Here we set the text direction according to the current locale to display the correct direction of the widget.
                 textDirection: Directionality.of(context),
@@ -96,13 +90,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                   builder: (context, ref, child) {
                     final message = ref.watch(pathNavMessageProvider);
                     final maneuver = ref.watch(pathNavManeuverProvider);
-                    final isPedestrian =
-                        widget.navType == RouteSearchOptionsMessage.pedestrian;
+                    final isPedestrian = widget.navType == RouteSearchOptionsMessage.pedestrian;
                     final info = ref.watch(pathNavSpeedInfoProvider);
 
                     // This made to remove yellow lines under the text
-                    return DefaultTextStyle(
-                      style: context.textStyle.heading1,
+                    return Material(
+                      type: MaterialType.transparency,
+                      color: Colors.transparent,
                       child: uikit.BaladyManeuverAndLimit(
                         isPedestrian: isPedestrian,
                         speedInfo: uikit.LimitsModel(
@@ -186,8 +180,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                       case PathNavState.finished:
                         return EtaFinished(
                           onEndTripPressed: _endTripAndShowHome,
-                          onBuildAnotherRoutePressed:
-                              _endTripAndBuildAnotherRoute,
+                          onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
                           onSizeChanged: _onSizeChanged,
                         );
                     }
