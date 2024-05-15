@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
@@ -115,10 +116,9 @@ class SearchByRubrics extends _$SearchByRubrics {
           },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,
-            icon: MarkerIconMessage(
-              path: "packages/mapness/${selectedFilter?.$1.mapIcon ?? "assets/icons/svg/ic_marker.svg"}",
-              width: 24,
-            ),
+            icon:
+                (selectedFilter == null ? LayersSvgPaths.basicMarker : 'packages/mapness/${selectedFilter.$1.mapIcon}')
+                    .markerIcon(),
           ),
         ),
       );
