@@ -18,7 +18,9 @@ import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -217,6 +219,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   // Show the route page after the trip is finished
   Future<void> _endTripAndBuildAnotherRoute() async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndBuildAnother,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     await _endTrip(() {
       if (context.mounted) {
         const RoutingRoute(collapseInitially: true).go(context);
@@ -226,6 +234,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   // Show the home page after the trip is finished
   Future<void> _endTripAndShowHome() async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndShowHome,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     await _endTrip(() {
       if (context.mounted) {
         const LandingRoute().go(context);
@@ -235,6 +249,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   // Show the pause state
   Future<void> _onPausedPressed() async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.showRoute,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     _setNavigationState(PathNavState.paused);
     await ref.read(cameraPositionProvider.notifier).animateToRoute();
   }
