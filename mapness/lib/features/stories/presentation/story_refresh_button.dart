@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 
 class StoryRefreshButton extends StatelessWidget {
@@ -6,17 +7,12 @@ class StoryRefreshButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Center(
-        child: Material(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          child: InkWell(
-            onTap: onPressed,
-            borderRadius: BorderRadius.circular(24),
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              child: const Icon(Icons.refresh),
-            ),
-          ),
+        child: AppButton(
+          onTap: onPressed,
+          buttonColorScheme: ButtonColorScheme.tertiary,
+          size: ButtonSize.small,
+          primaryIcon: Icons.refresh,
+          innerPadding: const EdgeInsets.all(Spacing.verticalGapBetweenStories),
         ),
       );
 }

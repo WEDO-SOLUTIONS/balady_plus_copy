@@ -48,7 +48,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
     );
     ref
         .read(storyServiceProvider.notifier)
-        .markStoryReeded(widget.story.storyId, currentIndex);
+        .markStoryAsRead(widget.story.storyId, currentIndex);
   }
 
   void _nextPage(String storyId, int pageIndex, int maxIndex) {
@@ -56,7 +56,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       widget.onNextStory();
       ref
           .read(storyServiceProvider.notifier)
-          .markStoryReeded(widget.story.storyId, currentIndex);
+          .markStoryAsRead(widget.story.storyId, currentIndex);
       return;
     }
 
