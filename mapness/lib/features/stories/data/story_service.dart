@@ -14,7 +14,7 @@ part 'story_service.g.dart';
 class StoryService extends _$StoryService {
   late Box<dynamic> _viewedStories;
 
-  Future<void> markStoryReeded(final String storyId, int frameIndex) async {
+  Future<void> markStoryAsRead(final String storyId, int frameIndex) async {
     await _viewedStories.put(
       storyId,
       max(frameIndex, (_viewedStories.get(storyId) as int?) ?? 0),

@@ -59,7 +59,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
 
     return widget.isAssetImg == true
         ? Image.asset(
-            widget.imageUrl,
+            imageUrl,
             fit: widget.fit,
           )
         : CachedNetworkImage(
