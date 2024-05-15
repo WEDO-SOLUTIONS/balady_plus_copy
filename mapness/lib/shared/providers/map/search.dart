@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -80,8 +81,7 @@ class Search extends _$Search {
     );
 
     final markers = <Marker>[];
-    for (final markerInfo
-        in result?.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+    for (final markerInfo in result?.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       markers.add(
         Marker(
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
@@ -90,11 +90,7 @@ class Search extends _$Search {
           },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,
-            icon: icon ??
-                MarkerIconMessage(
-                  path: 'packages/mapness/assets/icons/svg/ic_marker.svg',
-                  width: 24,
-                ),
+            icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(),
           ),
         ),
       );
@@ -105,8 +101,7 @@ class Search extends _$Search {
 
     _currentPage = result?.firstPage;
 
-    state =
-        _currentPage?.items.whereType<DirectoryObjectMessage>().toList() ?? [];
+    state = _currentPage?.items.whereType<DirectoryObjectMessage>().toList() ?? [];
   }
 
   Future<bool> fetchNext() async {
