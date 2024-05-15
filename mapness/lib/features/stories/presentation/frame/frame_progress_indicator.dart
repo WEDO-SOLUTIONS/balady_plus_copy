@@ -49,7 +49,7 @@ class FrameProgressIndicator extends AnimatedWidget {
           //TODO(scroollocker): refactor this with insert_between
           .map((e) => Expanded(child: e))
           .expand(
-            (element) => [element, const SizedBox(width: 8)],
+            (element) => [element, const SizedBox(width: NumericBase.$2x)],
           )
           .toList()
         ..removeLast();
@@ -61,7 +61,7 @@ class FrameProgressIndicator extends AnimatedWidget {
         child: Directionality(
           textDirection: Directionality.of(context),
           child: Padding(
-            padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+            padding: const EdgeInsets.all(NumericBase.$4x).copyWith(bottom: 0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -78,10 +78,12 @@ class FrameProgressIndicator extends AnimatedWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: Spacing.verticalGapBetweenLoading),
                 AppButton.close(
                   onTap: onClose,
                   padding: EdgeInsets.zero,
+                  innerPadding:
+                      const EdgeInsets.all(Spacing.verticalGapBetweenStories),
                 ),
               ],
             ),

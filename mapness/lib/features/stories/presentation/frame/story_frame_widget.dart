@@ -1,12 +1,12 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
-import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
-import 'package:mapness/_features/stories/helper/locale_helper.dart';
-import 'package:mapness/_features/stories/presentation/frame/frame_progress_indicator.dart';
-import 'package:mapness/_features/stories/presentation/frame/story_frame_content.dart';
-import 'package:mapness/_features/stories/presentation/frame/story_frame_controller.dart';
+import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
+import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
+import 'package:mapness/features/stories/helper/locale_helper.dart';
+import 'package:mapness/features/stories/presentation/frame/frame_progress_indicator.dart';
+import 'package:mapness/features/stories/presentation/frame/story_frame_content.dart';
+import 'package:mapness/features/stories/presentation/frame/story_frame_controller.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class StoryFrameWidget extends StatefulWidget {
@@ -45,7 +45,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   late final Animation<double> _progress;
   late final StoryFrameData _frame;
 
-  DateTime _lastTap = DateTime.now();
+  late DateTime _lastTap = DateTime.now();
 
   late bool _isLoading = _frame.isAssetImage == false;
 
@@ -64,6 +64,16 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
     };
   }
 
+  void _onProgressListener() {
+    switch (_progress.status) {
+      case AnimationStatus.completed:
+        _onNext();
+      // ignore: no_default_cases
+      default:
+        break;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -80,15 +90,18 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
     _progress = Tween<double>(begin: 0, end: 1).animate(_controller);
     _frame = widget.frame;
 
-    _progress.addListener(() {
-      switch (_progress.status) {
-        case AnimationStatus.completed:
-          widget.onNext();
-        // ignore: no_default_cases
-        default:
-          break;
-      }
-    });
+    _progress.addListener(_onProgressListener);
+
+    if (_frame.isAssetImage == true) {
+      _imageLoaded();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _progress.removeListener(_onProgressListener);
+    super.dispose();
   }
 
   @override
@@ -101,12 +114,6 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
       _frame = widget.frame;
       _resetProgress();
     }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   void _pauseProgress() {
@@ -129,12 +136,16 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   }
 
   void _onNext() {
-    _resetProgress();
+    _progress.removeListener(_onProgressListener);
+    _controller.stop();
+
     widget.onNext();
   }
 
   void _onPrevious() {
-    _resetProgress();
+    _progress.removeListener(_onProgressListener);
+    _controller.stop();
+
     widget.onPrevious();
   }
 

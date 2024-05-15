@@ -1,13 +1,10 @@
-import 'dart:async';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
-import 'package:mapness/_features/stories/presentation/story_refresh_button.dart';
+import 'package:mapness/features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-
-enum ImageState { loading, loaded, error, start }
 
 class LoadingImage extends ConsumerStatefulWidget {
   const LoadingImage({
@@ -31,8 +28,10 @@ class LoadingImage extends ConsumerStatefulWidget {
 }
 
 class _LoadingImageState extends ConsumerState<LoadingImage> {
-  ImageState state = ImageState.start;
   late String imageUrl;
+  bool _isLoaded = false;
+
+  static const _animationDuration = Duration(milliseconds: 50);
 
   @override
   void initState() {
@@ -40,47 +39,10 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
     imageUrl = widget.imageUrl;
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (imageUrl != widget.imageUrl || state == ImageState.start) {
-      imageUrl = widget.imageUrl;
-      unawaited(loadImage(context));
-    }
-  }
-
-  Future<void> loadImage(BuildContext context) async {
-    /// await for image to be ready
-    bool failed = false;
-    if (widget.isAssetImg == false) {
-      // wait for 100ms before showing loading widget maybe image is already cached
-      final timer = Timer(const Duration(milliseconds: 100), () {
-        if (state == ImageState.start) {
-          if (context.mounted) {
-            setState(() {
-              state = ImageState.loading;
-            });
-          }
-        }
-      });
-      await precacheImage(
-        NetworkImage(widget.imageUrl),
-        context,
-        onError: (_, __) {
-          failed = true;
-          setState(() {
-            state = ImageState.error;
-          });
-        },
-      );
-      timer.cancel();
-    }
-
-    if (context.mounted && !failed) {
-      setState(() {
-        state = ImageState.loaded;
-      });
-      widget.onImageReady?.call();
+  void _reloadWidget(BuildContext context) {
+    if (context.mounted) {
+      _isLoaded = false;
+      setState(() {});
     }
   }
 
@@ -90,45 +52,51 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
       networkStatusProvider,
       (previous, next) {
         if (previous == ConnectivityResult.none && next != previous) {
-          unawaited(loadImage(context));
+          _reloadWidget(context);
         }
       },
     );
 
-    return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 350),
-        switchOutCurve: Curves.easeOut,
-        child: switch (state) {
-          ImageState.error => Container(
+    return widget.isAssetImg == true
+        ? Image.asset(
+            imageUrl,
+            fit: widget.fit,
+          )
+        : CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: widget.fit,
+            errorWidget: (context, _, __) => Container(
               color: context.color.surfaceBasePrimary,
               child: Center(
                 child: StoryRefreshButton(
                   onPressed: () {
-                    loadImage(context);
+                    _reloadWidget(context);
                   },
                 ),
               ),
             ),
-          ImageState.loaded => ConstrainedBox(
-              constraints: const BoxConstraints.expand(),
-              child: GestureDetector(
-                onTap: () {
-                  widget.onImageTap
-                      ?.call(widget.imageUrl, isAsset: widget.isAssetImg);
-                },
-                child: widget.isAssetImg == true
-                    ? Image.asset(
-                        widget.imageUrl,
-                        fit: widget.fit,
-                      )
-                    : Image.network(
-                        widget.imageUrl,
-                        fit: widget.fit,
-                      ),
-              ),
-            ),
-          ImageState.loading => widget.loadingWidget,
-          _ => const SizedBox.shrink(),
-        });
+            fadeInDuration: _animationDuration,
+            fadeOutDuration: _animationDuration,
+            placeholder: (context, _) => widget.loadingWidget,
+            imageBuilder: (context, imageProvider) {
+              if (!_isLoaded) {
+                _isLoaded = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  widget.onImageReady?.call();
+                });
+              }
+              return ConstrainedBox(
+                constraints: const BoxConstraints.expand(),
+                child: GestureDetector(
+                  onTap: () => widget.onImageTap
+                      ?.call(widget.imageUrl, isAsset: widget.isAssetImg),
+                  child: Image(
+                    image: imageProvider,
+                    fit: widget.fit,
+                  ),
+                ),
+              );
+            },
+          );
   }
 }
