@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:balady_uikit/balady_uikit.dart' show Stories;
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
-import 'package:mapness/_features/stories/domain/story_data.dart';
+import 'package:mapness/features/stories/domain/story_data.dart';
 
 class StoriesRow extends StatelessWidget {
   final List<StoryData> stories;

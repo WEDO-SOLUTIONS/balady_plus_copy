@@ -1,13 +1,13 @@
-import 'dart:async';
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/stories/data/story_service.dart';
-import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/_features/stories/domain/story_data.dart';
-import 'package:mapness/_features/stories/presentation/frame/story_frame_controller.dart';
-import 'package:mapness/_features/stories/presentation/frame/story_frame_widget.dart';
+import 'package:mapness/features/stories/data/story_service.dart';
+import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
+import 'package:mapness/features/stories/domain/story_data.dart';
+import 'package:mapness/features/stories/presentation/frame/story_frame_controller.dart';
+import 'package:mapness/features/stories/presentation/frame/story_frame_widget.dart';
 
 class StoryFramesPlayer extends ConsumerStatefulWidget {
   final StoryFrameController? controller;
@@ -52,26 +52,27 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
   }
 
   void _nextPage(String storyId, int pageIndex, int maxIndex) {
-    setState(() {
-      currentIndex++;
-      if (currentIndex >= maxIndex) {
-        widget.onNextStory();
-        currentIndex = 0;
-      }
-    });
-    ref.read(storyServiceProvider.notifier).markStoryReeded(storyId, pageIndex);
     if (pageIndex == maxIndex - 1) {
       widget.onNextStory();
+      ref
+          .read(storyServiceProvider.notifier)
+          .markStoryReeded(widget.story.storyId, currentIndex);
+      return;
     }
+
+    setState(() {
+      currentIndex++;
+    });
   }
 
   void _previousPage(String storyId, int pageIndex) {
+    if (pageIndex == 0) {
+      widget.onPreviousStory();
+      return;
+    }
     setState(() {
       currentIndex = max(currentIndex - 1, 0);
     });
-    if (pageIndex == 0) {
-      widget.onPreviousStory();
-    }
   }
 
   @override
@@ -82,7 +83,9 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       if (frames[i].isAssetImage == true) {
         continue;
       }
-      unawaited(precacheImage(NetworkImage(frames[i].imageUrl), context));
+      // Preload images for better performance
+      CachedNetworkImageProvider(frames[i].imageUrl)
+          .resolve(ImageConfiguration.empty);
     }
   }
 

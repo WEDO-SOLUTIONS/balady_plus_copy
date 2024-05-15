@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/stories/domain/frame/story_text_style.dart';
-import 'package:mapness/_features/stories/domain/story_action.dart';
+import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
+import 'package:mapness/features/stories/domain/story_action.dart';
 
 sealed class StoryFrameAction {
   StoryFrameAction({

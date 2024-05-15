@@ -3,13 +3,12 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/stories/data/story_service.dart';
-import 'package:mapness/_features/stories/domain/story_types.dart';
-import 'package:mapness/_features/stories/presentation/frame/dismissible_overlay.dart';
-import 'package:mapness/_features/stories/presentation/stories_fullscreen.dart';
-import 'package:mapness/_features/stories/presentation/stories_onboarding.dart';
-import 'package:mapness/_features/stories/presentation/story_localizations.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/features/stories/data/story_service.dart';
+import 'package:mapness/features/stories/domain/story_types.dart';
+import 'package:mapness/features/stories/presentation/frame/dismissible_overlay.dart';
+import 'package:mapness/features/stories/presentation/stories_fullscreen.dart';
+import 'package:mapness/features/stories/presentation/story_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -98,8 +97,8 @@ class Stories {
   }) {
     final storyWidget = StoryLocalization(
       l10n: context.l10n,
-      child: StoriesOnboarding(
-        type: type,
+      child: StoriesFullscreen(
+        localStoryType: type,
         initialStoryId: id,
         onClose: () {
           _transitionState.currentState?.dismiss();
