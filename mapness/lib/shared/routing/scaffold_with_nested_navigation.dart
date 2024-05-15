@@ -55,16 +55,18 @@ class _ScaffoldWithNestedNavigationState
         body: widget.navigationShell,
         currentIndex: currentTab,
         onDestinationSelected: (selected) async {
-          final pageTitle = {
+          const pageTitle = {
             0: 'profile',
             1: 'services',
             2: 'route',
             3: 'explore',
           };
 
-          Metrics.logEventAdvanced('Navbar/${pageTitle[selected]}',
-              group: _tag, action: MetricAction.tap.name);
-
+          Metrics.logEventAdvanced(
+              MetricsConstants.exploreKeys
+                  .navbarClick(pageTitle[selected] ?? 'Unknown'),
+              group: _tag,
+              action: MetricAction.tap.name);
           if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
             final isShowRoute = await ref.read(routeOnboardingProvider.future);
             if (isShowRoute) {

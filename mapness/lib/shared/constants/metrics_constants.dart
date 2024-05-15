@@ -67,6 +67,7 @@ class Explore {
   String get prayerTimesBannerBellIcon => 'Prayer Times banner bell icon';
   String get prayerTimesBannerButton => 'Prayer Times banner button';
   String get kingdomCalendarViewAll => 'Kingdom Calendar - View all';
+  String navbarClick(String value) => 'Navbar/$value';
 }
 
 class Routes {
