@@ -83,8 +83,7 @@ class _Content extends ConsumerStatefulWidget {
   ConsumerState<_Content> createState() => _ContentState();
 }
 
-class _ContentState extends ConsumerState<_Content>
-    with SingleTickerProviderStateMixin {
+class _ContentState extends ConsumerState<_Content> with SingleTickerProviderStateMixin {
   bool showEntrances = true;
 
   final _expansion = ValueNotifier(Expansion.middle);
@@ -144,8 +143,7 @@ class _ContentState extends ConsumerState<_Content>
 
     ref.listen(viewModelProvider, (_, next) {
       if (next.value != null && next.value?.gisObjectIdMessage != null) {
-        _toggleEntrances(next.value!.gisObjectIdMessage!,
-            displayEntrance: true);
+        _toggleEntrances(next.value!.gisObjectIdMessage!, displayEntrance: true);
       }
     });
 
@@ -163,8 +161,7 @@ class _ContentState extends ConsumerState<_Content>
 
           /// sometimes error code is in message and sometimes in code, idk, probably changed in releases
           ((state.error! as PlatformException).code == 'NotFoundException' ||
-              (state.error! as PlatformException).message ==
-                  'NotFoundException')) {
+              (state.error! as PlatformException).message == 'NotFoundException')) {
         return Column(
           children: [
             const Spacer(flex: 3),
@@ -271,9 +268,7 @@ class _ContentState extends ConsumerState<_Content>
         middleHeight: middleHeight,
         hiddenHeight: hiddenHeight,
         controller: _bottomSheetController,
-        mapControlsBuilder:
-            (context, scrollController, biggestHeight, smallestHeight) =>
-                PoiCardMapControls(
+        mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
           scrollController: scrollController,
           biggestHeight: biggestHeight,
         ),
@@ -292,8 +287,7 @@ class _ContentState extends ConsumerState<_Content>
                 action: MetricAction.tap.toString(),
                 props: {
                   'object_id': data.id?.objectId,
-                  'closest_point':
-                      '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                  'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
                 });
 
             viewModel.share(
@@ -311,11 +305,9 @@ class _ContentState extends ConsumerState<_Content>
 
             viewModel.callPhone(data: data);
           },
-          onEntranceTap: () =>
-              _toggleEntrances(data, displayEntrance: showEntrances),
+          onEntranceTap: () => _toggleEntrances(data, displayEntrance: showEntrances),
         ),
-        scrollableBody: (context, controller) =>
-            DgisBottomSheetScrollableContent(
+        scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
           controller: controller,
           header: PoiHeader(
             tabController: _tabController,
@@ -328,9 +320,7 @@ class _ContentState extends ConsumerState<_Content>
               );
 
               ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-              ref
-                  .read(highlightProvider.notifier)
-                  .removeHighlight(widget.objectId);
+              ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
               context.pop();
             },
           ),
@@ -352,8 +342,7 @@ class _ContentState extends ConsumerState<_Content>
     );
   }
 
-  Future<void> _toggleEntrances(DirectoryObjectMessage data,
-      {required bool displayEntrance}) async {
+  Future<void> _toggleEntrances(DirectoryObjectMessage data, {required bool displayEntrance}) async {
     setState(() {
       showEntrances = !showEntrances;
     });
@@ -377,11 +366,7 @@ class _ContentState extends ConsumerState<_Content>
       }
 
       await _animateToEntrance([
-        ...data.entrances
-            .map((e) => e?.geometry?.entrancePoints ?? [])
-            .toList()
-            .expand((element) => element)
-            .toList()
+        ...data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList()
       ]);
     } else {
       for (final entrance in data.entrances) {

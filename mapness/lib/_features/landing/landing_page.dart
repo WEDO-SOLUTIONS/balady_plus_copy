@@ -79,8 +79,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   Future<void> setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    _streamSubscription =
-        dgisController.objectTapEvents.listen(_objectTapListener);
+    _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
   }
 
   @override
@@ -99,12 +98,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       ..watch(favouriteMarkersProvider.select((value) => null))
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
-      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId)
-          .notifier)
+      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       // ref.watch(iwishMarkersProvider.select((value) => null));
-      ..watch(mapObjectManagerProvider(
-              named: mappness.name, layerId: mappness.layerId)
-          .notifier);
+      ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -122,8 +118,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
                   ///TODO: change while Dashboard refactoring
                   initWithMinSize:
-                      widget.focusMaker == LangingFocusMaker.iwish ||
-                          widget.focusMaker == LangingFocusMaker.mosques,
+                      widget.focusMaker == LangingFocusMaker.iwish || widget.focusMaker == LangingFocusMaker.mosques,
                 ),
               ),
             ],
@@ -172,9 +167,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           ref.read(goRouterProvider),
           -1,
           latLng: userLocation != null
-              ? LatLng(
-                  latitude: userLocation.latitude,
-                  longitude: userLocation.longitude)
+              ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
               : event.latLng,
           zoom: 17,
           bearing: 0,
