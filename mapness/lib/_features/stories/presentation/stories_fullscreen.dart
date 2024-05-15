@@ -1,4 +1,4 @@
-import 'package:cube_transition_plus/cube_transition_plus.dart';
+import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
@@ -28,13 +28,13 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
 
 class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
     with WidgetsBindingObserver {
-  late final PageController _storyController;
   late int initialPage;
 
   late final StoryFrameController _storyFrameController;
+  late final IndexController _indexController;
 
-  void _onChangeStory(int pageIndex, int length) {
-    if (pageIndex == 0 || pageIndex == length + 1) {
+  void _onChangeStory(_, int length) {
+    if (initialPage == -1 || initialPage + 1 == length) {
       onClose();
     }
     _precacheStories();
@@ -42,7 +42,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
 
   Future<void> _precacheStories() async {
     ref.read(storyServiceProvider).whenData((data) {
-      final nearStories = data.skip(initialPage - 1);
+      final nearStories = data.skip(initialPage);
 
       for (final story in nearStories) {
         final unseenFrames = story.frames.take(2);
@@ -67,7 +67,14 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
   void initState() {
     super.initState();
     _storyFrameController = StoryFrameController();
-    initialPage = 1;
+    final stories = ref.read(storyServiceProvider).value ?? const [];
+    final index = stories.indexWhere(
+      (element) => element.storyId == widget.initialStoryId,
+    );
+    _indexController = IndexController();
+
+    initialPage = index;
+
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -75,36 +82,29 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _storyFrameController.dispose();
+    _indexController.dispose();
     super.dispose();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final stories = ref.read(storyServiceProvider).value ?? const [];
-    final index = stories.indexWhere(
-          (element) => element.storyId == widget.initialStoryId,
-        ) +
-        1;
-    _storyController = PageController(initialPage: index);
-    setState(() {
-      initialPage = index;
-    });
+
     ref.read(storyServiceProvider.notifier).pauseUpdate();
   }
 
   void _nextStory() {
-    _storyController.nextPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    _indexController.next();
+    setState(() {
+      initialPage++;
+    });
   }
 
   void _previousStory() {
-    _storyController.previousPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    _indexController.previous();
+    setState(() {
+      initialPage--;
+    });
   }
 
   void onActionPressed(StoryFrameAction action, BuildContext context) {
@@ -134,29 +134,69 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
           color: context.color.surfaceBaseInversePrimary,
           child: Directionality(
             textDirection: direction,
-            child: CubePageView(
-              onPageChanged: (index) => _onChangeStory(index, stories.length),
-              controller: _storyController,
-              startPage: initialPage,
-              children: [
-                blank,
-                ...stories.map(
-                  (story) => StoryFramesPlayer(
-                    controller: _storyFrameController,
-                    onActionPressed: (action) =>
-                        onActionPressed(action, context),
-                    story: story,
-                    onNextStory: _nextStory,
-                    onPreviousStory: _previousStory,
-                    onClose: onClose,
-                  ),
-                ),
-                blank,
-              ],
+            child: TransformerPageView(
+              onPageChanged: (index) =>
+                  index == null ? null : _onChangeStory(index, stories.length),
+              index: initialPage,
+              controller: _indexController,
+              transformer:
+                  DepthPageTransformer(isRtl: direction == TextDirection.rtl),
+              itemCount: stories.length,
+              itemBuilder: (context, index) => StoryFramesPlayer(
+                controller: _storyFrameController,
+                onActionPressed: (action) => onActionPressed(action, context),
+                story: stories[index],
+                onNextStory: _nextStory,
+                onPreviousStory: _previousStory,
+                onClose: onClose,
+              ),
             ),
           ),
         );
       },
     );
+  }
+}
+
+class DepthPageTransformer extends PageTransformer {
+  final bool isRtl;
+
+  DepthPageTransformer({this.isRtl = false}) : super(reverse: false);
+
+  @override
+  Widget transform(Widget child, TransformInfo info) {
+    final position = info.position!;
+
+    if (position >= 0) {
+      return Opacity(
+        opacity: 1.0,
+        child: Transform.translate(
+          offset: Offset.zero,
+          child: Transform.scale(
+            scale: 1.0,
+            child: child,
+          ),
+        ),
+      );
+    } else if (position >= -1) {
+      const minScale = 0.75;
+      // Scale the page down (between minScale and 1)
+      final scaleFactor = minScale + (1 - minScale) * (1 + position);
+
+      final offsetX = isRtl ? info.width! * position : info.width! * -position;
+
+      return Opacity(
+        opacity: 1.0 + position,
+        child: Transform.translate(
+          offset: Offset(offsetX, 0.0),
+          child: Transform.scale(
+            scale: scaleFactor,
+            child: child,
+          ),
+        ),
+      );
+    }
+
+    return child;
   }
 }
