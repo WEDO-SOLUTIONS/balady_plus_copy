@@ -14,9 +14,8 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/app/routes/routing.dart';
-import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -132,49 +131,54 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   void _objectTapListener(TapEvent event) {
-    if (event is ObjectTapEvent) {
-      Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
-          group: MetricsConstants.poiTag,
-          action: MetricAction.tap.toString(),
-          props: {
-            'objectId': event.dgisObjectId.objectId,
-          });
+    final goRouter = ref.read(goRouterProvider);
+    if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
+      return;
+    } else {
+      if (event is ObjectTapEvent) {
+        Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
+            group: MetricsConstants.poiTag,
+            action: MetricAction.tap.toString(),
+            props: {
+              'objectId': event.dgisObjectId.objectId,
+            });
 
-      if (context.mounted) {
-        PoiMapRoute.open(
-          ref.read(goRouterProvider),
-          event.dgisObjectId.objectId,
-          latLng: event.latLng,
-        );
-      }
-    } else if (event is RoadEventTapEvent) {
-      Metrics.logEventAdvanced(
-        MetricsConstants.poiKeys.roadEvent,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-        props: {'event': event.id.objectId, 'title': event.title},
-      );
-
-      EventsRoute.open(context, event);
-    } else if (event is MyLocationTapEvent) {
-      if (context.mounted) {
+        if (context.mounted) {
+          PoiMapRoute.open(
+            ref.read(goRouterProvider),
+            event.dgisObjectId.objectId,
+            latLng: event.latLng,
+          );
+        }
+      } else if (event is RoadEventTapEvent) {
         Metrics.logEventAdvanced(
-          MetricsConstants.poiKeys.myLocation,
+          MetricsConstants.poiKeys.roadEvent,
           group: MetricsConstants.poiTag,
           action: MetricAction.tap.toString(),
+          props: {'event': event.id.objectId, 'title': event.title},
         );
 
-        final userLocation = ref.read(locationProvider);
-        PoiMapRoute.open(
-          ref.read(goRouterProvider),
-          -1,
-          latLng: userLocation != null
-              ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-              : event.latLng,
-          zoom: 17,
-          bearing: 0,
-          tilt: 0,
-        );
+        EventsRoute.open(context, event);
+      } else if (event is MyLocationTapEvent) {
+        if (context.mounted) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.poiKeys.myLocation,
+            group: MetricsConstants.poiTag,
+            action: MetricAction.tap.toString(),
+          );
+
+          final userLocation = ref.read(locationProvider);
+          PoiMapRoute.open(
+            ref.read(goRouterProvider),
+            -1,
+            latLng: userLocation != null
+                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                : event.latLng,
+            zoom: 17,
+            bearing: 0,
+            tilt: 0,
+          );
+        }
       }
     }
   }
