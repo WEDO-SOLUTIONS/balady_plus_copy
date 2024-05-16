@@ -114,7 +114,7 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                                                     width: 32),
                                                 Expanded(
                                                   child: ElevatedButtonWidget
-                                                      .primaryCustomBorder(
+                                                      .primaryCustomBorder( 
                                                           text: "cancelButton"
                                                               .tr(),
                                                           onPressed: () {
@@ -385,7 +385,8 @@ class ObjectionReaason extends StatelessWidget {
                                   file: state
                                       .details!
                                       .objectionReasonsList![index]
-                                      .reasonAttachment![i]);
+                                      .reasonAttachment![i], sessionId:state
+                                      .details!.sessionID ,);
                             },
                           ),
                         ),
