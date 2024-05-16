@@ -78,7 +78,7 @@ class Stories {
 
     final storyWidget = StoryLocalization(
       l10n: context.l10n,
-      child: StoriesFullscreen(
+      child: StoriesFullscreen.story(
         onClose: () => _transitionState.currentState?.dismiss(),
         initialStoryId: id,
         handleDeeplink: handleDeeplink,
@@ -96,14 +96,13 @@ class Stories {
   }) {
     final storyWidget = StoryLocalization(
       l10n: context.l10n,
-      child: StoriesFullscreen(
+      child: StoriesFullscreen.onboadring(
         localStoryType: type,
         initialStoryId: id,
         onClose: () {
           _transitionState.currentState?.dismiss();
           onClose?.call();
         },
-        onActionShowNextStory: true,
       ),
     );
 
