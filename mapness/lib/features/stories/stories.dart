@@ -16,8 +16,7 @@ import 'helper/locale_helper.dart';
 
 class Stories {
   static OverlayEntry? _overlayEntry;
-  static final GlobalKey<DismissibleTransitionState> _transitionState =
-      GlobalKey();
+  static final GlobalKey<DismissibleTransitionState> _transitionState = GlobalKey();
 
   static void close() {
     _transitionState.currentState?.dismiss();
@@ -104,6 +103,7 @@ class Stories {
           _transitionState.currentState?.dismiss();
           onClose?.call();
         },
+        onActionShowNextStory: true,
       ),
     );
 

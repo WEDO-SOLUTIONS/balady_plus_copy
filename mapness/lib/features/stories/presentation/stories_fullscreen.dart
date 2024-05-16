@@ -16,12 +16,14 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
   final String initialStoryId;
   final StoryTypes? localStoryType;
   final void Function(String)? handleDeeplink;
+  final bool onActionShowNextStory;
 
   const StoriesFullscreen({
     required this.initialStoryId,
     required this.onClose,
     this.handleDeeplink,
     this.localStoryType,
+    this.onActionShowNextStory = false,
     super.key,
   });
 
@@ -29,8 +31,7 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
   ConsumerState<StoriesFullscreen> createState() => _StoriesFullscreenState();
 }
 
-class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
-    with WidgetsBindingObserver {
+class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with WidgetsBindingObserver {
   late int _currentPage;
   late int _maxPages;
 
@@ -102,8 +103,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
 
   Future<List<StoryData>> _initStories() async {
     final stories = (widget.localStoryType?.file != null
-        ? await ref.read(
-            localStoriesServiceProvider(widget.localStoryType!.file).future)
+        ? await ref.read(localStoriesServiceProvider(widget.localStoryType!.file).future)
         : await ref.read(storyServiceProvider.future));
     final index = stories.indexWhere(
       (element) => element.storyId == widget.initialStoryId,
@@ -132,7 +132,9 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
   }
 
   void onActionPressed(StoryFrameAction action, BuildContext context) {
-    if (widget.handleDeeplink != null) {
+    if (widget.onActionShowNextStory) {
+      _storyFrameController.nextPage?.call();
+    } else if (widget.handleDeeplink != null) {
       widget.handleDeeplink?.call(action.deeplinkUrl);
       onClose();
     }
@@ -162,19 +164,14 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
                   child: ValueListenableBuilder(
                       valueListenable: _currentPageNotifier,
                       builder: (context, page, _) => TransformerPageView(
-                            onPageChanged: (index) => index == null
-                                ? null
-                                : _onChangeStory(index, stories.length),
+                            onPageChanged: (index) => index == null ? null : _onChangeStory(index, stories.length),
                             index: page,
                             controller: _indexController,
-                            transformer: DepthPageTransformer(
-                                isRtl: Directionality.of(context) ==
-                                    TextDirection.rtl),
+                            transformer: DepthPageTransformer(isRtl: Directionality.of(context) == TextDirection.rtl),
                             itemCount: stories.length,
                             itemBuilder: (context, index) => StoryFramesPlayer(
                               controller: _storyFrameController,
-                              onActionPressed: (action) =>
-                                  onActionPressed(action, context),
+                              onActionPressed: (action) => onActionPressed(action, context),
                               story: stories[index],
                               onNextStory: _nextStory,
                               onPreviousStory: _previousStory,
