@@ -18,14 +18,40 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
   final void Function(String)? handleDeeplink;
   final bool onActionShowNextStory;
 
-  const StoriesFullscreen({
+  const StoriesFullscreen._({
     required this.initialStoryId,
     required this.onClose,
     this.handleDeeplink,
     this.localStoryType,
     this.onActionShowNextStory = false,
-    super.key,
   });
+
+  factory StoriesFullscreen.story({
+    required String initialStoryId,
+    required VoidCallback onClose,
+    void Function(String)? handleDeeplink,
+    StoryTypes? localStoryType,
+  }) =>
+      StoriesFullscreen._(
+        initialStoryId: initialStoryId,
+        onClose: onClose,
+        handleDeeplink: handleDeeplink,
+        localStoryType: localStoryType,
+      );
+
+  factory StoriesFullscreen.onboadring({
+    required String initialStoryId,
+    required VoidCallback onClose,
+    void Function(String)? handleDeeplink,
+    StoryTypes? localStoryType,
+  }) =>
+      StoriesFullscreen._(
+        initialStoryId: initialStoryId,
+        onClose: onClose,
+        handleDeeplink: handleDeeplink,
+        localStoryType: localStoryType,
+        onActionShowNextStory: true,
+      );
 
   @override
   ConsumerState<StoriesFullscreen> createState() => _StoriesFullscreenState();
