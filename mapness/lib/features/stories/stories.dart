@@ -16,8 +16,7 @@ import 'helper/locale_helper.dart';
 
 class Stories {
   static OverlayEntry? _overlayEntry;
-  static final GlobalKey<DismissibleTransitionState> _transitionState =
-      GlobalKey();
+  static final GlobalKey<DismissibleTransitionState> _transitionState = GlobalKey();
 
   static void close() {
     _transitionState.currentState?.dismiss();
@@ -79,7 +78,7 @@ class Stories {
 
     final storyWidget = StoryLocalization(
       l10n: context.l10n,
-      child: StoriesFullscreen(
+      child: StoriesFullscreen.story(
         onClose: () => _transitionState.currentState?.dismiss(),
         initialStoryId: id,
         handleDeeplink: handleDeeplink,
@@ -97,7 +96,7 @@ class Stories {
   }) {
     final storyWidget = StoryLocalization(
       l10n: context.l10n,
-      child: StoriesFullscreen(
+      child: StoriesFullscreen.onboadring(
         localStoryType: type,
         initialStoryId: id,
         onClose: () {
