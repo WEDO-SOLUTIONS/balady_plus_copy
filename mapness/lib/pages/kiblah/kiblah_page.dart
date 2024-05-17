@@ -18,7 +18,6 @@ class KiblahPage extends ConsumerWidget {
     final isReady = userBearing != null && kaabaBearing != null;
     final isArabic = Directionality.of(context) == TextDirection.rtl;
 
-    print('object ${MediaQuery.of(context).padding.bottom}');
     return Scaffold(
       backgroundColor: context.staticColor.surfaceOverlayModal.withOpacity(0.7),
       appBar: BaladyTopBar(
