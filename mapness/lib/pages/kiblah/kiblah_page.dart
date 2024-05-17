@@ -26,7 +26,9 @@ class KiblahPage extends ConsumerWidget {
         },
         leading: Padding(
           padding: const EdgeInsets.only(
-              left: NumericBase.$4x, right: NumericBase.$4x),
+            left: NumericBase.$4x,
+            right: NumericBase.$4x,
+          ),
           child: Row(
             children: [
               Icon(
@@ -56,8 +58,12 @@ class KiblahPage extends ConsumerWidget {
             alignment: Alignment.bottomCenter,
             child: Container(
               width: double.infinity,
-              margin:
-                  const EdgeInsets.all(Spacing.horizontalPaddingInsideWrapper),
+              margin: EdgeInsets.only(
+                left: Spacing.horizontalPaddingInsideWrapper,
+                right: Spacing.horizontalPaddingInsideWrapper,
+                top: Spacing.horizontalPaddingInsideWrapper,
+                bottom: MediaQuery.of(context).padding.bottom + NumericBase.$0_5x,
+              ),
               child: AppButton(
                 primaryIcon: GeneralIcons.mosq2,
                 primaryLabel: context.l10n.mosquesNearYou,
