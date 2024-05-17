@@ -384,8 +384,6 @@ class LayersControls extends _$LayersControls {
         .listen(
       (markers) async {
         update(isLoading: false);
-        // await mapController.removeAllMarkers();
-        await _removeAll();
         if (state.selectedType == LayerType.invest) {
           final stateMarkers = state.investmentsMarkers;
           markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
@@ -393,7 +391,6 @@ class LayersControls extends _$LayersControls {
             stateMarkers[element.id] = element;
           }
           update(investmentsMarkers: stateMarkers);
-
           await map.addMarkers(markers);
         }
       },
