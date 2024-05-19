@@ -150,6 +150,11 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         _toggleEntrances(next.value!.gisObjectIdMessage!, displayEntrance: true);
       }
     });
+    if (widget.closestPoint != null) {
+      final closestPoint = widget.closestPoint!;
+      data?.markerPosition = GeoPointWithElevationMessage(
+          latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 0);
+    }
 
     /// loading progress indicator
     if (state.isLoading) {
