@@ -328,7 +328,7 @@ class BillsInfo {
 
   BillsInfo.fromJson(dynamic json) {
     billNumber = json['billNumber'];
-    billAmount = json['billAmount'];
+    billAmount = (json['billAmount'] ?? 0.0).toDouble();
     paymentDate = json['paymentDate'];
     isSadadPaid = json['isSadadPaid'];
     if (json['billFees'] != null) {
@@ -340,7 +340,7 @@ class BillsInfo {
   }
 
   String? billNumber;
-  int? billAmount;
+  double? billAmount;
   String? paymentDate;
   bool? isSadadPaid;
   List<BillFees>? billFees;
@@ -354,12 +354,12 @@ class BillFees {
   });
 
   BillFees.fromJson(dynamic json) {
-    costItemValue = json['costItemValue'];
+    costItemValue = (json['costItemValue'] ?? 0.0).toDouble();
     costItemTypeId = json['costItemTypeId'];
     costItemDescription = json['costItemDescription'];
   }
 
-  int? costItemValue;
+  double? costItemValue;
   int? costItemTypeId;
   String? costItemDescription;
 }
@@ -617,12 +617,12 @@ class BoardsInfomation {
   BoardsInfomation.fromJson(dynamic json) {
     typeId = json['typeId'];
     typeName = json['typeName'];
-    area = json['area'];
+    area = (json['area'] ?? 0.0).toDouble();
   }
 
   int? typeId;
   String? typeName;
-  int? area;
+  double? area;
 }
 
 class SubmitterInfo {
