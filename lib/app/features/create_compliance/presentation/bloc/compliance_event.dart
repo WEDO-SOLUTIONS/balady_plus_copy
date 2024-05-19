@@ -5,6 +5,7 @@ import '../../../../core/utils/enums/date_form.dart';
 import '../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../data/models/compliance_certificate_item_request.dart';
 import '../../domain/entities/comliance_request_details.dart';
+import '../../domain/entities/compliance_appointment_response.dart';
 import '../../domain/entities/complinace_engoffice_response.dart';
 import '../../domain/entities/complinace_licenses_response.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
@@ -214,4 +215,19 @@ class ChangeApplicantNotesEvent extends ComplianceEvent {
   final String? text;
 
   const ChangeApplicantNotesEvent({this.text});
+}
+
+class GetAppointments extends ComplianceEvent {
+  const GetAppointments();
+}
+
+class ChangeSelectedAppointmentDay extends ComplianceEvent { 
+  final DayItem? item; 
+    const ChangeSelectedAppointmentDay({this.item});
+}
+
+class ChangeSelectedAppointmentSlot extends ComplianceEvent { 
+  final String? visitFrom; 
+  final String? visitTo; 
+    const ChangeSelectedAppointmentSlot({this.visitFrom, this.visitTo});
 }

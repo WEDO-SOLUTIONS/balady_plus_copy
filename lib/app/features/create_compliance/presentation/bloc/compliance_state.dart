@@ -14,6 +14,7 @@ import '../../../../core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import '../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
 import '../../data/models/apply_create_compliance_request_model.dart';
+import '../../domain/entities/compliance_appointment_response.dart';
 import '../../domain/entities/compliance_deed_info.dart';
 import '../../domain/entities/compliance_engoffice_details.dart';
 import '../../domain/entities/compliance_gis_resopnse.dart';
@@ -78,6 +79,10 @@ class ComplianceState extends Equatable {
   final bool? showEksanId;
   final String? applicantNotes;
   final bool? showDetails;
+  final DayItem? visitDate;
+  final String? visitTimeFrom;
+  final String? visitTimeTo;
+  final ComplainceAppointmentResponse? complainceAppointmentResponse;
 
   PhoneNumberValidation get phoneValidator => contactMobileNumber == null
       ? PhoneNumberValidation.pure()
@@ -134,7 +139,11 @@ class ComplianceState extends Equatable {
       this.landSubsidyContract,
       this.showEksanId,
       this.applicantNotes,
-      this.showDetails});
+      this.showDetails,
+      this.visitDate,
+      this.visitTimeFrom,
+      this.visitTimeTo,
+      this.complainceAppointmentResponse});
   ComplianceState copyWith(
       {final BlocStatus? status,
       final int? currentStep,
@@ -183,10 +192,17 @@ class ComplianceState extends Equatable {
       final Nullable<LandSubsidyContract?>? landSubsidyContract,
       final bool? showEksanId,
       final String? applicantNotes,
-      final bool? showDetails}) {
+      final bool? showDetails,
+      final DayItem? visitDate,
+      final String? visitTimeFrom,
+      final String? visitTimeTo,
+      final ComplainceAppointmentResponse? complainceAppointmentResponse}) {
     return ComplianceState(
         status: status ?? this.status,
         contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
+        visitDate: visitDate ?? this.visitDate,
+        visitTimeFrom: visitTimeFrom ?? this.visitTimeFrom,
+        visitTimeTo: visitTimeTo ?? this.visitTimeTo,
         currentStep: currentStep ?? this.currentStep,
         agreement: agreement ?? this.agreement,
         benificiaryTypeSelection:
@@ -255,7 +271,9 @@ class ComplianceState extends Equatable {
             : landSubsidyContract.value,
         applicantNotes: applicantNotes ?? this.applicantNotes,
         showEksanId: showEksanId ?? this.showEksanId,
-        showDetails: showDetails ?? this.showDetails);
+        showDetails: showDetails ?? this.showDetails,
+        complainceAppointmentResponse: complainceAppointmentResponse ??
+            this.complainceAppointmentResponse);
   }
 
   bool isNextButtonEnabled() {
@@ -489,6 +507,9 @@ class ComplianceState extends Equatable {
         reciptTypesStatus,
         reciptLists,
         showEksanId,
-        applicantNotes
+        applicantNotes,
+        visitTimeTo,
+        visitTimeFrom,
+        visitDate
       ];
 }
