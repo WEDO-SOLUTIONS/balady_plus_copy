@@ -9,6 +9,7 @@ class ApiUrl {
   static const apigeeToken = '/oauth/v1/token';
   static const forceUpdate = '/v1/force-update-apps/version';
   static const uploadFile = '/v1/dms-mobile/upload';
+  static const uploadFileV2 = '/v2/dms-mobile/upload';
 
   //! Services
   //! Public Services
@@ -135,7 +136,7 @@ class ApiUrl {
       '/v1/balady-dashboard/objectable-requests';
 
   static const postObjection =
-      '/v1/objection-services/submit-objection-requests';
+      '/v2/objection-services/submit-objection-requests';
 
   static const objectionRequestDetails =
       '/v1/objection-services/objection-details';

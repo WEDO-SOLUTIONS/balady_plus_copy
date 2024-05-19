@@ -29,8 +29,9 @@ class ObjectionAttachmentItem extends StatefulWidget {
   ReasonAttachment file;
   String? name;
   double? width;
+  String? sessionId; 
 
-  ObjectionAttachmentItem({Key? key, required this.file, this.name, this.width})
+  ObjectionAttachmentItem({Key? key, required this.file, this.name, this.width, this.sessionId})
       : super(key: key);
 
   @override
@@ -65,9 +66,12 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
                       false))
                   ? const CustomSvgIconWidget(IconPath.pdf)
                   : CustomNetworkImageWidget(
-                      widget.file.getUrl() ?? "",
+                    
+                    widget.sessionId !=null ?( widget.file.getV2Url(widget.sessionId!) ?? "")  :  widget.file.getUrl() ?? "",
                       imageWidth: 24,
+                   
                       imageHeight: 28,
+                         sso: widget.sessionId!=null ?  true : false,
                     ),
               CustomHorizontalSpace(width: 8),
               Flexible(
@@ -104,17 +108,19 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
   }
 
   void showFile(ReasonAttachment file) async {
+
+    String? url = widget.sessionId!=null ? file.getV2Url(widget.sessionId!) : file.getUrl();
     try {
       if (file.fileName!.toLowerCase().contains(".png") ||
           file.fileName!.toLowerCase().contains(".jpeg") ||
           file.fileName!.toLowerCase().contains(".jpg")) {
         //MM
         NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.dmsImageFullScreen, arguments: file.getUrl());
+            .pushNamed(RouteName.dmsImageFullScreen, arguments: url);
       } else {
         try {
           EasyLoading.show();
-          File fileDownloaded = await createFileOfPdfUrl(file.getUrl() ?? "");
+          File fileDownloaded = await createFileOfPdfUrl( url ?? "");
           EasyLoading.dismiss();
 
           /*  final encodedStr = file.attachmentStream;
@@ -161,7 +167,7 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
     ;
     Response r = await WebService(dio: dio)
         .dio
-        .getUri(Uri.parse(url), options: Options(headers: {"X-Service-Id": 2}));
+        .getUri(Uri.parse(url), options: Options(headers: {"X-Service-Id": 2,  'Authorization': 'Bearer ${CommonProperties.token}',}));
 
     String dir = (await getTemporaryDirectory()).path;
     File file = new File('$dir/$filename');

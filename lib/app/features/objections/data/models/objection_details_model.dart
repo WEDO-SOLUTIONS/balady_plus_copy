@@ -23,7 +23,7 @@ class ObjectionDetailsModel extends ObjectionDetails {
       super.enquiryList,
       super.requestStatusId,
       super.serviceTypeId,
-      super.objectionServiceName});
+      super.objectionServiceName, super.sessionID});
 
   factory ObjectionDetailsModel.fromJson(Map<String, dynamic> json) =>
       ObjectionDetailsModel(
@@ -65,7 +65,11 @@ class ObjectionDetailsModel extends ObjectionDetails {
                   .map((x) => EnquiryItemModel.fromJson(x))),
           requestStatusId: json["RequestStatusId"],
           serviceTypeId: json["ServiceTypeId"],
-          objectionServiceName: json["ObjectionServiceName"]);
+          objectionServiceName: json["ObjectionServiceName"], 
+         sessionID :json["SessionID"]
+          
+          
+          );
 
   @override
   List<Object?> get props => [

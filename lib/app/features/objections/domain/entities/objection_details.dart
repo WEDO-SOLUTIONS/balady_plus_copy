@@ -26,6 +26,7 @@ class ObjectionDetails {
   final String? objectionServiceName;
   String? hashingRequestNumber;
   String? serviceTypeId;
+  final String? sessionID; 
 
   ObjectionDetails(
       {this.subMunicipalityId,
@@ -50,7 +51,7 @@ class ObjectionDetails {
       this.objectionServiceName,
       this.hashingRequestNumber,
       this.serviceTypeId,
-      this.enquiryList});
+      this.enquiryList, this.sessionID});
 
   String get getLastUpdatedDate =>
       lastUpdatedDate != null ? DateFormat.yMd().format(lastUpdatedDate!) : "";
@@ -135,6 +136,11 @@ class ReasonAttachment {
   String? getUrl() {
     return RemoteConfig.apigeeURL +
         "/v1/dms-mobile/files/${contentLocation?.split("/").last}";
+  }
+
+    String? getV2Url(String sessionId) {
+    return RemoteConfig.apigeeURL +
+        "/v2/dms-mobile/files/${contentLocation?.split("/").last}?sessionId=$sessionId";
   }
 }
 
