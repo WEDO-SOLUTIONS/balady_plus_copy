@@ -85,8 +85,7 @@ class _Content extends ConsumerStatefulWidget {
   ConsumerState<_Content> createState() => _ContentState();
 }
 
-class _ContentState extends ConsumerState<_Content>
-    with SingleTickerProviderStateMixin {
+class _ContentState extends ConsumerState<_Content> with SingleTickerProviderStateMixin {
   bool showEntrances = false;
 
   final _expansion = ValueNotifier(Expansion.middle);
@@ -143,6 +142,12 @@ class _ContentState extends ConsumerState<_Content>
     final data = poiCardState?.gisObjectIdMessage;
     final objectId = data?.id?.objectId;
 
+    if (widget.closestPoint != null) {
+      final closestPoint = widget.closestPoint!;
+      data?.markerPosition = GeoPointWithElevationMessage(
+          latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 0);
+    }
+
     /// loading progress indicator
     if (state.isLoading) {
       return Align(
@@ -157,8 +162,7 @@ class _ContentState extends ConsumerState<_Content>
 
           /// sometimes error code is in message and sometimes in code, idk, probably changed in releases
           ((state.error! as PlatformException).code == 'NotFoundException' ||
-              (state.error! as PlatformException).message ==
-                  'NotFoundException')) {
+              (state.error! as PlatformException).message == 'NotFoundException')) {
         return Column(
           children: [
             const Spacer(flex: 3),
@@ -260,9 +264,7 @@ class _ContentState extends ConsumerState<_Content>
         middleHeight: middleHeight,
         hiddenHeight: hiddenHeight,
         controller: _bottomSheetController,
-        mapControlsBuilder:
-            (context, scrollController, biggestHeight, smallestHeight) =>
-                PoiCardMapControls(
+        mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
           scrollController: scrollController,
           biggestHeight: biggestHeight,
         ),
@@ -282,17 +284,14 @@ class _ContentState extends ConsumerState<_Content>
           callPhone: () => viewModel.callPhone(data: data),
           onEntranceTap: () => showEntrance(data),
         ),
-        scrollableBody: (context, controller) =>
-            DgisBottomSheetScrollableContent(
+        scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
           controller: controller,
           header: PoiHeader(
             tabController: _tabController,
             data: data,
             onTapClose: () {
               ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-              ref
-                  .read(highlightProvider.notifier)
-                  .removeHighlight(widget.objectId);
+              ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
               context.pop();
             },
           ),
@@ -330,11 +329,7 @@ class _ContentState extends ConsumerState<_Content>
       }
 
       await _animateToEntrance([
-        ...data.entrances
-            .map((e) => e?.geometry?.entrancePoints ?? [])
-            .toList()
-            .expand((element) => element)
-            .toList()
+        ...data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList()
       ]);
     } else {
       for (final entrance in data.entrances) {
