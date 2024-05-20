@@ -17,22 +17,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_by_rubrics.g.dart';
 
-// TODO(Sergei): remove index from state, this will allow to select filter without information about index
-//  and allow to not be tied to order of filters
 @riverpod
 class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   @override
-  (QuickFilter, int)? build() => null;
+  QuickFilter? build() => null;
 
   // ignore: use_setters_to_change_properties
-  void update((QuickFilter filter, int index)? newState) => state = newState;
+  void update(QuickFilter? filter) => state = filter;
 
   void selectMosques() {
     final quickFilters = ref.read(quickFiltersProvider);
-    final mosquesFilter =
-        quickFilters.valueOrNull?.firstWhereOrNull((e) => e.rubrics.contains(quickFilterRubricMosques));
+    final mosquesFilter = quickFilters.valueOrNull
+        ?.firstWhereOrNull((e) => e.type == QuickFilterType.mosques);
     if (mosquesFilter != null) {
-      update((mosquesFilter, 4));
+      update(mosquesFilter);
     }
   }
 }
@@ -46,18 +44,21 @@ class SearchByRubrics extends _$SearchByRubrics {
       return null;
     }
 
-    final searchRect = ref.watch(searchInRectProvider.select((value) => value.$1));
+    final searchRect =
+        ref.watch(searchInRectProvider.select((value) => value.$1));
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
     unawaited(performSearch(
-      filter.$1,
-      searchRect ?? dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
+      filter,
+      searchRect ??
+          dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
     ));
 
     return null;
   }
 
-  Future<void> performSearch(QuickFilter filter, GeoRectMessage? searchRect) async {
+  Future<void> performSearch(
+      QuickFilter filter, GeoRectMessage? searchRect) async {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
     if (dgisController == null) {
@@ -83,7 +84,7 @@ class SearchByRubrics extends _$SearchByRubrics {
       );
     }
     final currentFilter = ref.watch(searchByRubricsQueryProvider);
-    if (currentFilter?.$1 == filter) {
+    if (currentFilter?.type == filter.type) {
       final markers = await _showAndReturnMarkers(searchResults);
       state = AsyncValue.data(markers);
     }
@@ -100,7 +101,8 @@ class SearchByRubrics extends _$SearchByRubrics {
 
     final selectedFilter = ref.watch(searchByRubricsQueryProvider);
     final markers = <Marker>[];
-    for (final markerInfo in value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+    for (final markerInfo
+        in value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       markers.add(
         Marker(
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
@@ -116,9 +118,10 @@ class SearchByRubrics extends _$SearchByRubrics {
           },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,
-            icon:
-                (selectedFilter == null ? LayersSvgPaths.basicMarker : 'packages/mapness/${selectedFilter.$1.mapIcon}')
-                    .markerIcon(),
+            icon: (selectedFilter == null
+                    ? LayersSvgPaths.basicMarker
+                    : 'packages/mapness/${selectedFilter.mapIcon}')
+                .markerIcon(),
           ),
         ),
       );

@@ -53,7 +53,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedFilter = ref.watch(searchByRubricsQueryProvider);
+    final selectedQuickFilter = ref.watch(searchByRubricsQueryProvider);
     final settings = MapObjectManagerSettings.quickFilter();
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
@@ -91,10 +91,10 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
           const FavouritesRoute().push(context);
         },
       ),
-      onFilterTap: (filter, index) {
+      onQuickFilterTap: (quickFilter) {
         _debouncer.run(
           () {
-            final isSame = selectedFilter?.$1 == filter;
+            final isSame = quickFilter.type == selectedQuickFilter?.type;
             if (isSame) {
               ref.read(searchByRubricsQueryProvider.notifier).update(null);
               searchObjectManager.removeAllMarkers();
@@ -102,14 +102,14 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
               ref.read(layersControlsProvider.notifier).disable();
               ref
                   .read(searchByRubricsQueryProvider.notifier)
-                  .update((filter, index));
+                  .update(quickFilter);
             }
             Metrics.logEventAdvanced(
               MetricsConstants.exploreKeys.quickFilter,
               action: MetricAction.tap.name,
               group: MetricsConstants.exploreTag,
               props: {
-                'filter': filter.title,
+                'filter': quickFilter.title,
                 'toggle_state': isSame,
               },
             );
@@ -128,7 +128,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
           searchObjectManager.removeAllMarkers();
         });
       },
-      selectedIndex: selectedFilter?.$2,
+      selectedQuickFilter: selectedQuickFilter,
       itemBackground: widget.forMap ? Colors.white : NonThemeColor.color11,
       customFilters: widget.customFilters,
       onCustomTap: widget.onCustomTap,
