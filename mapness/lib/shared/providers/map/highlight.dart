@@ -11,10 +11,14 @@ class Highlight extends _$Highlight {
   List<DgisObjectIdMessage> build() => [];
 
   Future<void> addHighlight(DgisObjectIdMessage objectId) async {
-    state = [...state, objectId];
-    await ref.read(dgisControllerProvider).value?.setHighlighted(state);
+    if (!_containsObjectWithId(objectId.entranceId)) {
+      state = [...state, objectId];
+      await ref.read(dgisControllerProvider).value?.setHighlighted(state);
+    }
   }
 
+  bool _containsObjectWithId(int objectId) => state.any((element) => element.entranceId == objectId);
+  
   Future<void> removeHighlight(DgisObjectIdMessage objectId) async {
     state = state.whereNot((element) => element == objectId).toList();
     await ref.read(dgisControllerProvider).value?.setHighlighted(state);
