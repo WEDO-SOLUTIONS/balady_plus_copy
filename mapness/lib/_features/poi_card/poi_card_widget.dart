@@ -37,6 +37,7 @@ import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
@@ -125,7 +126,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   @override
   void dispose() {
-    resetPadding();
     _tabController.dispose();
     _tabType.dispose();
     _bottomSheetController.dispose();
@@ -139,12 +139,13 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final sizeOfScreen = MediaQuery.of(context).size;
     final sheetSizes = PoiSheetSizes.fromScreenSize(sizeOfScreen: sizeOfScreen);
 
+    final safeArea = MediaQuery.of(context).padding;
     final paddingConfig = PoiPaddingConfig(
       paddingOfCamera: EdgeInsets.only(
-        left: PoiCardMapControls.horizontalPadding + Markers.defaultWidth,
-        right: PoiCardMapControls.horizontalPadding + Markers.defaultWidth,
-        top: PoiCardMapControls.topPadding + Markers.defaultHeight,
-        bottom: sheetSizes.middleHeight,
+        left: PoiCardMapControls.horizontalPadding + Markers.defaultWidth + MapButton.defaultSize,
+        right: PoiCardMapControls.horizontalPadding + Markers.defaultWidth + MapButton.defaultSize,
+        top: Markers.defaultHeight + safeArea.top,
+        bottom: PoiCardMapControls.bottomPadding + sheetSizes.middleHeight,
       ),
       sizeOfScreen: sizeOfScreen,
     );
@@ -258,13 +259,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       ),
     );
     final language = ref.watch(appLanguageProvider);
-
-    setPaddingToCamera(switch (_expansion.value) {
-      Expansion.collapsed => sheetSizes.collapsedHeight,
-      Expansion.expanded => sheetSizes.expandedHeight,
-      Expansion.hidden => sheetSizes.hiddenHeight,
-      Expansion.middle => sheetSizes.middleHeight,
-    });
 
     return Directionality(
       textDirection: switch (language) {
@@ -438,30 +432,5 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         bearing: cameraPosition?.tilt ?? 0,
       ),
     );
-  }
-
-  void setPaddingToCamera(double size) {
-    final pixelSize = MediaQuery.of(context).devicePixelRatio;
-    final navbarSize = MediaQuery.of(context).viewPadding.bottom;
-
-    ref.watch(cameraPositionProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: (size * pixelSize - navbarSize * pixelSize).floor(),
-          ),
-        );
-  }
-
-  void resetPadding() {
-    ref.watch(cameraPositionProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: 0,
-          ),
-        );
   }
 }

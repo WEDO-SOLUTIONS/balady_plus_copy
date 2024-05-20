@@ -23,7 +23,7 @@ class PoiSheetSizes {
   }) {
     /// The middle height should be higher than the collapsed height
     /// if [availableExpansions] contains [Expansion.middle] and [Expansion.collapsed]
-    final middleHeight = math.max(sizeOfScreen.height / 3, _collapsedHeight + 1);
+    final middleHeight = math.max(sizeOfScreen.height / 3.2, _collapsedHeight + 1);
 
     /// This number was taken at random.
     final expandedHeight = sizeOfScreen.height / 2;
