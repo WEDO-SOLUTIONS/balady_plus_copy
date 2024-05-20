@@ -6,8 +6,8 @@ import 'package:mapness/widgets/quick_filters/ui/quick_filter.dart';
 
 class QuickFilters extends StatelessWidget {
   const QuickFilters({
-    required this.filters, super.key,
-    this.selectedIndex,
+    required this.filters,
+    super.key,
     this.padding = const EdgeInsets.symmetric(
       horizontal: 16,
     ),
@@ -15,7 +15,6 @@ class QuickFilters extends StatelessWidget {
   });
 
   final EdgeInsets padding;
-  final int? selectedIndex;
   final List<FilterItem> filters;
   final Color itemBackground;
 
@@ -31,7 +30,7 @@ class QuickFilters extends StatelessWidget {
             final item = filters[index];
             return QuickFilter(
               item: item,
-              selected: index == selectedIndex,
+              selected: item.selected,
               // background: itemBackground,
               background: context.color.surfaceBaseSecondary,
             );
