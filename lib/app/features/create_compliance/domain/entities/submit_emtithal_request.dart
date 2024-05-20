@@ -27,8 +27,11 @@ class SubmitEmtithalRequest {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'notes': notes,
+      if (visitDate!=null)
       'visitDate': visitDate,
+         if (visitTimeFrom!=null)
       'visitTimeFrom': visitTimeFrom,
+      if (visitTimeTo!=null)
       'visitTimeTo': visitTimeTo,
     };
   }

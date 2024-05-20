@@ -99,6 +99,12 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     CreateComplianceSummurySection()
   ];
 
+
+ List pageEditAppointments = [
+
+   SeventhSubmitComplianceSubmitStep(),
+  ];
+
   List pagesListEngOffice = [
     FirstComplianceSubmissionWidget(),
     SecondSubmissonCompliance(),
@@ -1041,7 +1047,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    if (isLastPage()) {
+    if (isLastPage() || editOnlyAppointment) {
       add(SubmitComplianceEvent());
     } else if (state.currentStep == 0 && state.benificiaryTypeSelection == 2) {
       add(GetEtmamEntityIdEvent());
@@ -1453,10 +1459,21 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     return state.currentStep == (pages().length - 1);
   }
 
-  List<dynamic> pages() =>
-      (state.requestDetails?.showMomtathelVisitSection ?? false) || state.requestDetails?.isReadOnly == true
-          ? pagesListHimSelfWithAppointments
-          : pagesListHimSelf;
+  List<dynamic> pages() { 
+if ((state.isDraft == false) && (state.requestDetails?.showMomtathelVisitSection ?? false)) { 
+  return pagesListHimSelfWithAppointments; 
+} 
+    else if (editOnlyAppointment ) { 
+
+
+      return pageEditAppointments; 
+    }  else { 
+      return pagesListHimSelf; 
+    }
+  }
+
+  bool get editOnlyAppointment => ((state.isDraft == true) && (state.requestDetails?.showMomtathelVisitSection ?? false) &&  (state.requestDetails?.isReadOnly == true) ); 
+    
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
