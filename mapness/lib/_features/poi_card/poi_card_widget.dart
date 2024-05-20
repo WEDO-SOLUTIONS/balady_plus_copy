@@ -1,11 +1,11 @@
-import 'dart:math' as math;
-
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_padding_config.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
 import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
@@ -37,6 +37,7 @@ import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
@@ -134,10 +135,24 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
   @override
   Widget build(BuildContext context) {
     final viewModel = PoiCardViewModel(ref: ref);
+
+    final sizeOfScreen = MediaQuery.of(context).size;
+    final sheetSizes = PoiSheetSizes.fromScreenSize(sizeOfScreen: sizeOfScreen);
+
+    final paddingConfig = PoiPaddingConfig(
+      paddingOfCamera: EdgeInsets.only(
+        left: PoiCardMapControls.horizontalPadding + Markers.defaultWidth,
+        right: PoiCardMapControls.horizontalPadding + Markers.defaultWidth,
+        top: PoiCardMapControls.topPadding + Markers.defaultHeight,
+        bottom: sheetSizes.middleHeight,
+      ),
+      sizeOfScreen: sizeOfScreen,
+    );
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
+      paddingConfig: paddingConfig,
     );
     final state = ref.watch(viewModelProvider);
 
@@ -243,20 +258,12 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       ),
     );
     final language = ref.watch(appLanguageProvider);
-    final heightOfScreen = MediaQuery.of(context).size.height;
-
-    const collapsedHeight = 300.0;
-    const hiddenHeight = 100.0;
-
-    /// The middle height should be higher than the collapsed height
-    /// if [availableExpansions] contains [Expansion.middle] and [Expansion.collapsed]
-    final middleHeight = math.max(heightOfScreen / 3, collapsedHeight + 1);
 
     setPaddingToCamera(switch (_expansion.value) {
-      Expansion.collapsed => collapsedHeight,
-      Expansion.expanded => heightOfScreen / 2,
-      Expansion.hidden => hiddenHeight,
-      Expansion.middle => middleHeight,
+      Expansion.collapsed => sheetSizes.collapsedHeight,
+      Expansion.expanded => sheetSizes.expandedHeight,
+      Expansion.hidden => sheetSizes.hiddenHeight,
+      Expansion.middle => sheetSizes.middleHeight,
     });
 
     return Directionality(
@@ -268,9 +275,9 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         showBarrier: false,
         availableExpansions: Expansion.values.toSet(),
         initialExpansion: Expansion.middle,
-        collapsedHeight: collapsedHeight,
-        middleHeight: middleHeight,
-        hiddenHeight: hiddenHeight,
+        collapsedHeight: sheetSizes.collapsedHeight,
+        middleHeight: sheetSizes.middleHeight,
+        hiddenHeight: sheetSizes.hiddenHeight,
         controller: _bottomSheetController,
         mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
           scrollController: scrollController,
