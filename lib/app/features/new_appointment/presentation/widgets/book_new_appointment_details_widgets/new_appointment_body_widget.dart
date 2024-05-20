@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +11,6 @@ import '../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../_shared_feature_/presentation/widgets/check_boxes/text_field_with_check_btn.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_tooltip_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../core/models/service_config_reseponse.dart';
@@ -22,7 +19,7 @@ import '../book_new_appointment_widgets/book_appointment_attachments_widget_new.
 import '../book_new_appointment_widgets/book_appointment_special_needs_widget.dart';
 
 class NewAppointmentBody extends StatefulWidget {
-  NewAppointmentBody({Key? key}) : super(key: key);
+  const NewAppointmentBody({Key? key}) : super(key: key);
 
   @override
   _NewAppointmentBody createState() => _NewAppointmentBody();
@@ -58,7 +55,7 @@ class _NewAppointmentBody extends State<NewAppointmentBody> {
 
                 const CustomVerticalSpace(height: 30.0),
 
-                AppointmentAttachmentSection(),
+                const AppointmentAttachmentSection(),
 
                 Constants.verticalSpaceMedium,
                 // special needs
@@ -115,8 +112,8 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               'bookNewAppointmentAppointmentInformationWord'),
           img: "titleItemsIconAppointment@3x.png",
         ),*/
-        CustomVerticalSpace(height: 16),
-        if (model.categoriesList != null && model.categoriesList.isNotEmpty)
+        const CustomVerticalSpace(height: 16),
+        if (model.categoriesList.isNotEmpty)
           CustomTapWidgetForLongDialog(
             items: model.categoriesList,
             value: model.catetgoryType,
@@ -137,7 +134,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (item != null) model.getSubMunicipalities(item);
             model.validateForm();
           },
-          label: ("homeUpComingAppointmentMunicipalityWord").tr(),
+          label: ("homeUpComingAppointmentMunicipality").tr(),
           hint: ("bookNewAppointmentMunicipalityDropDownHintWord").tr(),
           searchHint: ("search_for_municipality").tr(),
         ),
@@ -148,7 +145,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (item != null) model.getMainClassifications(item);
             model.validateForm();
           },
-          label: ("homeUpComingAppointmentMunicipalWord").tr(),
+          label: ("homeUpComingAppointmentMunicipalEntity").tr(),
           hint: ("bookNewAppointmentMunicipalDropDownHintWord").tr(),
           searchHint: ("search_for_sub_municipality").tr(),
           errorText: ('select_municipality_first').tr(),
@@ -217,7 +214,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               model.validateForm();
             },
           ),*/
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         CustomTextFieldWidgetWithOptinal(
           controller: model.dataModel.transactionNoController,
           focusNode: _transactionNoFocusNode,
@@ -231,7 +228,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           onSaved: (_) {
             FocusScope.of(context).requestFocus(_descFocusNode);
           },
-          inputFormatter: [new LengthLimitingTextInputFormatter(10)],
+          inputFormatter: [LengthLimitingTextInputFormatter(10)],
           validator: (text) {
             if (text.toString().isEmpty) {
               return ('text_field_error').tr();
@@ -279,7 +276,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             hintText: ("realEstateSurveyId").tr(),
             maxLines: 1,
             keyboardType: TextInputType.text,
-            inputFormatters: [],
+            inputFormatters: const [],
             onValidate: (text) {
               if (text.toString().isEmpty) {
                 return ('text_field_error').tr();
@@ -300,7 +297,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             hintText: ("realEstateId").tr(),
             maxLines: 1,
             keyboardType: TextInputType.text,
-            inputFormatters: [],
+            inputFormatters: const [],
             onValidate: (text) {
               return null;
             },
