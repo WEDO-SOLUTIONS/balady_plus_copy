@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catches_without_on_clauses
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -51,8 +53,9 @@ class ProfileImage extends _$ProfileImage {
 
   Future<void> changeUserProfileImageByBytes(Uint8List bytes) async {
     try {
-      await _uploadImage(bytes);
-      final imgBase64 = await _saveImageBytes(bytes);
+      final imgUrl = await _uploadImage(bytes);
+      final updatedImgBytes = await _downloadProfileImageToBytes(url: imgUrl);
+      final imgBase64 = await _saveImageBytes(updatedImgBytes);
 
       if (imgBase64 != null) {
         state = AsyncData(UserProfileData(imageBase64: imgBase64));
@@ -80,15 +83,13 @@ class ProfileImage extends _$ProfileImage {
       minWidth: 200,
       quality: 40,
     );
-    print(list.length);
-    print(result.length);
     return result;
   }
 
   /// Загружает изображение на бекенд.
   /// Возвращает ссылку на изображение.
   Future<String> _uploadImage(Uint8List bytes) async {
-    bytes = await _comporessList(bytes);
+    final compressedBytes = await _comporessList(bytes);
     // start the timer for the event "Image Upload"
     ref.read(urbiMetricsProvider.notifier).logEvent('Profile_Image_Upload');
     mixpanel?.timeEvent('Profile Image Upload');
@@ -97,9 +98,11 @@ class ProfileImage extends _$ProfileImage {
     try {
       final response = await dio.post(
         '/profile/photo',
-        data: bytes,
+        data: compressedBytes,
+        options: Options(
+            sendTimeout: const Duration(seconds: 35),
+            receiveTimeout: const Duration(seconds: 35)),
       );
-      print('response: ${response.statusMessage}');
 
       final result = proto.Profile_Photo.fromBuffer(response.data as List<int>);
       mixpanel?.track('Profile Image Upload');
@@ -113,23 +116,25 @@ class ProfileImage extends _$ProfileImage {
   Future<Uint8List> _downloadProfileImageToBytes({String url = ''}) async {
     final dio = await ref.read(dGisNetworkProvider.future);
     final imageRequestDio = ref.watch(baseDioProvider);
+    String imgUrl = url;
     try {
-      if (url.isEmpty) {
+      if (imgUrl.isEmpty) {
         final profileResponse = await dio.get('/profile');
         final profileData =
             proto.ProfileResponse.fromBuffer(profileResponse.data as List<int>);
-        url = profileData.profile.photo.image.url;
+        imgUrl = profileData.profile.photo.image.url;
       }
 
-      if (url.isEmpty) {
+      if (imgUrl.isEmpty) {
         return Uint8List(0);
       }
 
       // start image with base dio
       final response = await imageRequestDio.get(
-        url,
+        imgUrl,
         options: Options(
           responseType: ResponseType.bytes,
+          receiveTimeout: const Duration(seconds: 35),
           followRedirects: false,
         ),
       );
