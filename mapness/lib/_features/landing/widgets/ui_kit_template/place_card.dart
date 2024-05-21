@@ -67,14 +67,15 @@ class PlaceCard extends StatelessWidget {
                       const SizedBox(
                         height: 6,
                       ),
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.textStyle.footNote.copyWith(
-                          color: context.color.surfaceBaseSecondary,
+                      if (subtitle.isNotEmpty)
+                        Text(
+                          subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.textStyle.footNote.copyWith(
+                            color: context.color.surfaceBaseSecondary,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
