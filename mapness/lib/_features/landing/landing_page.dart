@@ -14,7 +14,6 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -25,6 +24,7 @@ enum LangingFocusMaker { iwish, mosques }
 
 class LandingPage extends ConsumerStatefulWidget {
   const LandingPage({this.focusMaker, super.key});
+
   final LangingFocusMaker? focusMaker;
 
   @override
@@ -68,17 +68,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         }();
       case LangingFocusMaker.mosques:
         Future.delayed(Duration.zero, () {
-          ref.read(searchByRubricsQueryProvider.notifier).update(
-            (
-              QuickFilter(
-                rubrics: [13374],
-                title: 'المساجد',
-                uiIcon: 'assets/icons/svg/quick_filters/ic_quick_mosques.svg',
-                mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
-              ),
-              1
-            ),
-          );
+          ref.read(searchByRubricsQueryProvider.notifier).selectMosques();
         });
       // ignore: no_default_cases
       default:
@@ -130,7 +120,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   biggestWidth: constraints.biggest.width,
 
                   ///TODO: change while Dashboard refactoring
-                  initWithMinSize: widget.focusMaker == LangingFocusMaker.iwish,
+                  initWithMinSize:
+                      widget.focusMaker == LangingFocusMaker.iwish ||
+                          widget.focusMaker == LangingFocusMaker.mosques,
                 ),
               ),
             ],

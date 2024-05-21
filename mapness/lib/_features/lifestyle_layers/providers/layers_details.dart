@@ -13,8 +13,7 @@ part 'layers_details.g.dart';
 @riverpod
 class LayersDetails extends _$LayersDetails {
   @override
-  Future<PointLayersData?> build(PointLayersData e) async =>
-      await _showObjectDetails(e);
+  Future<PointLayersData?> build(PointLayersData e) => _showObjectDetails(e);
 
   Future<PointLayersData?> _showObjectDetails(PointLayersData layerData) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
