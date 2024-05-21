@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cub
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:jiffy/jiffy.dart';
 
 class NotificationsCountIcon extends StatelessWidget {
   const NotificationsCountIcon({super.key});
@@ -14,21 +15,25 @@ class NotificationsCountIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<EntryPointCubit, EntryPointState>(
       builder: (contextCubit, state) {
-        return state.userInfo != null ? BlocProvider(
-          create: (context) {
-            return NotificationsCountCubit(webService: sl());
-          },
-          child: BlocBuilder<NotificationsCountCubit, SucceedCountState>(
+        return state.userInfo != null
+            ? BlocProvider(
+                create: (context) {
+                  return NotificationsCountCubit(webService: sl());
+                },
+                child: BlocBuilder<NotificationsCountCubit, SucceedCountState>(
                   builder: (contextCubit, state) {
                     NotificationsCountCubit cubit =
                         contextCubit.watch<NotificationsCountCubit>();
-                    return   InkWell(
+                    return InkWell(
                       onTap: () {
                         NavigationService.navigatorKey.currentState!
                             .pushNamed(
-                              RouteName.notificationsListScreen,
-                            )
-                            .then((value) => cubit.getUnreadMessages());
+                          RouteName.notificationsListScreen,
+                        )
+                            .then((value) {
+                          cubit.getUnreadMessages();
+                          Jiffy.setLocale("en");
+                        });
                       },
                       child: Stack(
                         alignment: AlignmentDirectional.topStart,
@@ -72,10 +77,11 @@ class NotificationsCountIcon extends StatelessWidget {
                               : const SizedBox(),
                         ],
                       ),
-                      );
+                    );
                   },
                 ),
-        ) : const SizedBox();
+              )
+            : const SizedBox();
       },
     );
   }
