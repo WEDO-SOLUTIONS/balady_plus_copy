@@ -49,6 +49,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       await dgisController.value?.getCameraPosition();
 
   final cameraZoom = cameraData?.zoom;
+  final cameraBearing = cameraData?.bearing;
   final point = cameraData?.point;
 
   final highlightController = ref.read(highlightProvider.notifier);
@@ -105,7 +106,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
             point: isInViewPort && point != null ? point : markerPoint,
             zoom: isInViewPort ? cameraZoom ?? 17 : 17,
             tilt: 0,
-            bearing: 0,
+            bearing: cameraBearing ?? 0,
           ),
         );
   } else {
