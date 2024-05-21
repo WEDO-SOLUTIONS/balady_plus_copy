@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/ui/kiblah_compass.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -32,23 +33,19 @@ class KiblahPage extends ConsumerWidget {
           child: Row(
             children: [
               Icon(
-                isArabic
-                    ? SystemIcons.arrowCornerRightL
-                    : SystemIcons.arrowCornerLeftL,
+                isArabic ? SystemIcons.arrowCornerRightL : SystemIcons.arrowCornerLeftL,
                 color: context.color.textAndIconsBaseInversePrimary,
               ),
               const SizedBox(width: NumericBase.$0_5x),
               Text(
                 context.l10n.back,
-                style: context.textStyle.footNote.copyWith(
-                    color: context.staticColor.textAndIconsBaseInversePrimary),
+                style: context.textStyle.footNote.copyWith(color: context.staticColor.textAndIconsBaseInversePrimary),
               )
             ],
           ),
         ),
         title: isReady ? '$userBearing°' : context.l10n.calibrating,
-        textStyle: context.textStyle.footNoteBold
-            .copyWith(color: context.color.textAndIconsBaseInversePrimary),
+        textStyle: context.textStyle.footNoteBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -70,9 +67,7 @@ class KiblahPage extends ConsumerWidget {
                 buttonColorScheme: ButtonColorScheme.primary,
                 onTap: () {
                   context.pop();
-                  ref
-                      .read(searchByRubricsQueryProvider.notifier)
-                      .selectMosques();
+                  ref.read(searchByRubricsQueryProvider.notifier).selectFilter(QuickFilterType.mosques);
                 },
               ),
             ),
