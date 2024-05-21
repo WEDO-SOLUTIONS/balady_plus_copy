@@ -109,11 +109,11 @@ class _DashboardState extends ConsumerState<Dashboard> {
       },
       child: DraggableScrollableSheet(
         controller: _draggableScrollableController,
-        initialChildSize: widget.initWithMinSize ? _headerExtent : .75,
+        initialChildSize: widget.initWithMinSize ? _headerExtent : .38,
         minChildSize: _headerExtent,
-        maxChildSize: .9,
+        maxChildSize: .95,
         snap: true,
-        snapSizes: [_headerExtent, .75, .9],
+        snapSizes: [_headerExtent, .38, .95],
         builder: (context, scrollController) => Directionality(
           textDirection: direction,
           child: ClipRRect(

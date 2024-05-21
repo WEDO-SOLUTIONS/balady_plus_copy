@@ -9,38 +9,37 @@ import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-part 'widgets/phone_item.dart';
-part 'widgets/entrance_item.dart';
 part 'widgets/car_item.dart';
-part 'widgets/share_item.dart';
+part 'widgets/entrance_item.dart';
 part 'widgets/favorite_item.dart';
+part 'widgets/phone_item.dart';
+part 'widgets/share_item.dart';
 part 'widgets/wrapper.dart';
 
-class PoiCardFooter2 extends ConsumerWidget {
+class PoiCardFooter extends ConsumerWidget {
   final DirectoryObjectMessage data;
-  final void Function() share;
-  final void Function() callPhone;
-  final void Function() onEntranceTap;
-  late final RouteSearchPointMessage _finishPoint;
+  final VoidCallback share;
+  final VoidCallback callPhone;
+  final VoidCallback onEntranceTap;
+  final RouteSearchPoint finishPoint;
 
-  PoiCardFooter2({
+  PoiCardFooter({
     required this.data,
     required this.share,
     required this.callPhone,
     required this.onEntranceTap,
     super.key,
-  }) {
-    _finishPoint = RouteSearchPointMessage(
-      coordinates: data.markerPosition!.toGeoPointMessage(),
-      objectId: data.id!,
-    );
-  }
+  }) : finishPoint = RouteSearchPoint(
+          coordinates: data.markerPosition!.toGeoPointMessage(),
+          dgisObjectId: data.id!,
+        );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -63,7 +62,7 @@ class PoiCardFooter2 extends ConsumerWidget {
             onTap: share,
           ),
           _CarItem(
-            finishPoint: _finishPoint,
+            finishPoint: finishPoint,
             objectMessage: data,
             flex: 2,
           ),
@@ -95,7 +94,7 @@ class PoiCardFooter2 extends ConsumerWidget {
           objectId: objectId,
         ),
         _CarItem(
-          finishPoint: _finishPoint,
+          finishPoint: finishPoint,
           objectMessage: data,
           flex: carIconFlex,
         ),

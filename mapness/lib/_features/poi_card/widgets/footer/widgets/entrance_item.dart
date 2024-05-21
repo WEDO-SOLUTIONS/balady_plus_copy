@@ -1,4 +1,4 @@
-part of '../footer.dart';
+part of '../poi_card_footer.dart';
 
 class _EntranceItem extends StatelessWidget {
   static const int flex = 2;
