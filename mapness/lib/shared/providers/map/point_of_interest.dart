@@ -32,12 +32,13 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
   final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
 
-  final position = isMarkerPositionIsNull
-      ? closestPoint
-      : LatLng(
-          latitude: directoryObject.markerPosition!.latitude,
-          longitude: directoryObject.markerPosition!.longitude,
-        );
+  final position = closestPoint ??
+      (isMarkerPositionIsNull
+          ? null
+          : LatLng(
+              latitude: directoryObject.markerPosition!.latitude,
+              longitude: directoryObject.markerPosition!.longitude,
+            ));
 
   if (position != null) {
     final read = ref.read(selectedMarkerProvider.notifier);
