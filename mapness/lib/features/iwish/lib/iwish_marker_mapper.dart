@@ -13,10 +13,9 @@ extension IwishMarkerMapper on IwishMarker {
     // and replace current `icon` with `MarkerIconMessage` with proper path
     // ignore: unused_local_variable
     final path = switch ((isSelected, state)) {
-      (true, _) =>
-        'packages/mapness/assets/icons/svg/ic_iwish_marker_selected.svg',
-      (_, IwishState.completed) => LayersSvgPaths.joyPark,
-      (_, _) => 'packages/mapness/assets/icons/svg/ic_iwish_marker_planned.svg',
+      (true, _) => LayersSvgPathsDeprecated.joyParkSelected,
+      (_, IwishState.completed) => LayersSvgPathsDeprecated.joyParkCompleted,
+      (_, _) => LayersSvgPathsDeprecated.joyParkPlanned,
     };
     return Marker(
       id: '$iwishMarkerPrefix$id',
@@ -26,7 +25,7 @@ extension IwishMarkerMapper on IwishMarker {
           longitude: location.longitude,
           elevation: 0,
         ),
-        icon: LayersSvgPaths.joyPark.markerIcon(),
+        icon: path.markerIcon(),
       ),
       onTap: () => onMarkerTap(this),
     );

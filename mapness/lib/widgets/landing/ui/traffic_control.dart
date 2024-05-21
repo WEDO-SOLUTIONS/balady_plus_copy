@@ -15,7 +15,7 @@ class TrafficControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final trafficState = ref.watch(trafficStateProvider);
-    final trafficNotifier = ref.watch(trafficStateProvider.notifier);
+    final trafficNotifier = ref.read(trafficStateProvider.notifier);
     final isEnabled = trafficState.status == TrafficControlStatus.enabled;
 
     return AnimatedOpacity(
@@ -34,9 +34,7 @@ class TrafficControl extends ConsumerWidget {
           width: 28,
           height: 28,
           child: SvgPicture.asset(
-            isEnabled
-                ? 'assets/icons/svg/ic_traffic_active.svg'
-                : 'assets/icons/svg/ic_traffic.svg',
+            isEnabled ? 'assets/icons/svg/ic_traffic_active.svg' : 'assets/icons/svg/ic_traffic.svg',
             package: PackageConfig.packageName,
             width: 28,
             height: 28,

@@ -16,21 +16,46 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
   final String initialStoryId;
   final StoryTypes? localStoryType;
   final void Function(String)? handleDeeplink;
+  final bool onActionShowNextStory;
 
-  const StoriesFullscreen({
+  const StoriesFullscreen._({
     required this.initialStoryId,
     required this.onClose,
     this.handleDeeplink,
     this.localStoryType,
-    super.key,
+    this.onActionShowNextStory = false,
   });
+
+  factory StoriesFullscreen.story({
+    required String initialStoryId,
+    required VoidCallback onClose,
+    void Function(String)? handleDeeplink,
+  }) =>
+      StoriesFullscreen._(
+        initialStoryId: initialStoryId,
+        onClose: onClose,
+        handleDeeplink: handleDeeplink,
+      );
+
+  factory StoriesFullscreen.onboadring({
+    required String initialStoryId,
+    required VoidCallback onClose,
+    void Function(String)? handleDeeplink,
+    StoryTypes? localStoryType,
+  }) =>
+      StoriesFullscreen._(
+        initialStoryId: initialStoryId,
+        onClose: onClose,
+        handleDeeplink: handleDeeplink,
+        localStoryType: localStoryType,
+        onActionShowNextStory: true,
+      );
 
   @override
   ConsumerState<StoriesFullscreen> createState() => _StoriesFullscreenState();
 }
 
-class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
-    with WidgetsBindingObserver {
+class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with WidgetsBindingObserver {
   late int _currentPage;
   late int _maxPages;
 
@@ -89,21 +114,16 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
       return;
     }
     if (page <= -1 || page >= _maxPages) {
-      onClose();
+      _onClose();
     }
 
     _currentPage = page;
     _currentPageNotifier.value = _currentPage;
   }
 
-  void _onChangeStory(int page, int length) {
-    _setCurrentPage(page);
-  }
-
   Future<List<StoryData>> _initStories() async {
     final stories = (widget.localStoryType?.file != null
-        ? await ref.read(
-            localStoriesServiceProvider(widget.localStoryType!.file).future)
+        ? await ref.read(localStoriesServiceProvider(widget.localStoryType!.file).future)
         : await ref.read(storyServiceProvider.future));
     final index = stories.indexWhere(
       (element) => element.storyId == widget.initialStoryId,
@@ -117,7 +137,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
 
   void _nextStory() {
     if (_currentPage + 1 >= _maxPages) {
-      onClose();
+      _onClose();
       return;
     }
     _indexController.next(animation: false);
@@ -125,20 +145,22 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
 
   void _previousStory() {
     if (_currentPage - 1 < 0) {
-      onClose();
+      _onClose();
       return;
     }
     _indexController.previous(animation: false);
   }
 
-  void onActionPressed(StoryFrameAction action, BuildContext context) {
-    if (widget.handleDeeplink != null) {
+  void _onActionPressed(StoryFrameAction action, BuildContext context) {
+    if (widget.onActionShowNextStory) {
+      _storyFrameController.nextPage?.call();
+    } else if (widget.handleDeeplink != null) {
       widget.handleDeeplink?.call(action.deeplinkUrl);
-      onClose();
+      _onClose();
     }
   }
 
-  Future<void> onClose() async {
+  Future<void> _onClose() async {
     ref.read(storyServiceProvider.notifier).resumeUpdate();
     widget.onClose();
   }
@@ -149,8 +171,6 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
 
     return FutureBuilder<List<StoryData>>(
       future: _initStories(),
-
-      // ignore: prefer_expression_function_bodies
       builder: (context, snapshot) {
         final stories = snapshot.data ?? const [];
         return !snapshot.hasData
@@ -160,27 +180,23 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
                 child: Directionality(
                   textDirection: Directionality.of(context),
                   child: ValueListenableBuilder(
-                      valueListenable: _currentPageNotifier,
-                      builder: (context, page, _) => TransformerPageView(
-                            onPageChanged: (index) => index == null
-                                ? null
-                                : _onChangeStory(index, stories.length),
-                            index: page,
-                            controller: _indexController,
-                            transformer: DepthPageTransformer(
-                                isRtl: Directionality.of(context) ==
-                                    TextDirection.rtl),
-                            itemCount: stories.length,
-                            itemBuilder: (context, index) => StoryFramesPlayer(
-                              controller: _storyFrameController,
-                              onActionPressed: (action) =>
-                                  onActionPressed(action, context),
-                              story: stories[index],
-                              onNextStory: _nextStory,
-                              onPreviousStory: _previousStory,
-                              onClose: onClose,
-                            ),
-                          )),
+                    valueListenable: _currentPageNotifier,
+                    builder: (context, page, _) => TransformerPageView(
+                      onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
+                      index: page,
+                      controller: _indexController,
+                      transformer: DepthPageTransformer(isRtl: Directionality.of(context) == TextDirection.rtl),
+                      itemCount: stories.length,
+                      itemBuilder: (context, index) => StoryFramesPlayer(
+                        controller: _storyFrameController,
+                        onActionPressed: (action) => _onActionPressed(action, context),
+                        story: stories[index],
+                        onNextStory: _nextStory,
+                        onPreviousStory: _previousStory,
+                        onClose: _onClose,
+                      ),
+                    ),
+                  ),
                 ),
               );
       },

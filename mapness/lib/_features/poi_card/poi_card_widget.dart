@@ -14,7 +14,7 @@ import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
 import 'package:mapness/_features/poi_card/widgets/favourites.dart';
-import 'package:mapness/_features/poi_card/widgets/footer/footer.dart';
+import 'package:mapness/_features/poi_card/widgets/footer/poi_card_footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
@@ -168,6 +168,11 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         _toggleEntrances(next.value!.gisObjectIdMessage!, displayEntrance: true);
       }
     });
+    if (widget.closestPoint != null) {
+      final closestPoint = widget.closestPoint!;
+      data?.markerPosition = GeoPointWithElevationMessage(
+          latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 0);
+    }
 
     /// loading progress indicator
     if (state.isLoading) {
@@ -286,7 +291,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           objectId: objectId,
           expansion: _expansion,
         ),
-        actions: PoiCardFooter2(
+        actions: PoiCardFooter(
           data: data,
           share: () {
             Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
