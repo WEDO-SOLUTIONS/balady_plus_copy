@@ -1,4 +1,4 @@
-part of '../footer.dart';
+part of '../poi_card_footer.dart';
 
 class _FavoriteItem extends ConsumerWidget {
   static const flex = 2;

@@ -8,6 +8,7 @@ import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -115,9 +116,9 @@ class PoiHeader extends ConsumerWidget {
           ),
           BriefRouteInfo(
             routeType: RouteSearchOptionsMessage.car,
-            finishPoint: RouteSearchPointMessage(
+            finishPoint: RouteSearchPoint(
               coordinates: this.data.markerPosition!.toGeoPointMessage(),
-              objectId: this.data.id!,
+              dgisObjectId: this.data.id!,
             ),
           ),
         ],

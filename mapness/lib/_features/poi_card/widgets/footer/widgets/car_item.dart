@@ -1,9 +1,10 @@
-part of '../footer.dart';
+part of '../poi_card_footer.dart';
 
 class _CarItem extends ConsumerWidget {
   final DirectoryObjectMessage? objectMessage;
-  final RouteSearchPointMessage? finishPoint;
+  final RouteSearchPoint? finishPoint;
   final int flex;
+
   const _CarItem({
     required this.objectMessage,
     required this.finishPoint,
@@ -28,8 +29,7 @@ class _CarItem extends ConsumerWidget {
                 action: MetricAction.tap.toString(),
                 props: {
                   'object_id': objectMessage?.id?.objectId,
-                  'finish_point':
-                      '${finishPoint?.coordinates.latitude},${finishPoint?.coordinates.longitude}'
+                  'finish_point': '${finishPoint?.coordinates.latitude},${finishPoint?.coordinates.longitude}'
                 });
 
             getRoute(
