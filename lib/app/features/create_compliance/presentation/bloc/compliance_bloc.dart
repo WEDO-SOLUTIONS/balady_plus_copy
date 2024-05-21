@@ -314,6 +314,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.Compliance_Certificate_Open_Select_EngOffice_Event);
     }
+    if (e.selectedLicense != null) { 
+      add(const GetRequestDetails(updateCurrentRequest: true)); 
+    }
   }
 
   /* Future<void> _radioChangeHandler(RadioSelectEvent e, Emitter emitter) async {
@@ -348,7 +351,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   Future<void> _getAppintmentHandler(GetAppointments e, Emitter emitter) async {
     emitter(state.copyWith(
-      status: BlocStatus.loading,
+      appointmentsStatus: BlocStatus.loading,
     ));
     final failOrSuccess = await _getAppointments((
       state.requestDetails?.locationResponseInfoDto?.x ?? state.gisParams?.x.toString() ?? "",
@@ -358,11 +361,11 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
-        status: BlocStatus.failure,
+        appointmentsStatus: BlocStatus.failure,
       ));
     }, (r) async {
       emitter(state.copyWith(
-          status: BlocStatus.success, complainceAppointmentResponse: r));
+          appointmentsStatus: BlocStatus.success, complainceAppointmentResponse: r));
     });
   }
 
@@ -450,6 +453,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         pageController.jumpToPage(nextPage);
 
         sendEventPage(nextPage);
+
+           add(GetRequestDetails(updateCurrentRequest: true));
       }
     });
   }
@@ -585,6 +590,26 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         ),
       );
     }, (r) async {
+
+
+      if (event.updateCurrentRequest == true) { 
+
+ComplianceRequestDetails? requestDetails = state.requestDetails; 
+
+requestDetails?.showMomtathelVisitSection = r.showMomtathelVisitSection; 
+requestDetails?.isReadOnly = r.isReadOnly; 
+
+   emitter(
+          state.copyWith(
+              requestDetails: requestDetails,
+              errorMessage: "",
+            
+              detailsStatus: BlocRequestStatus.submissionGetSuccess,
+            ),
+        );
+
+return ; 
+      } 
       if (r.submitterThrough == "BENEFICARY") {
         List<AttachmentData> attachmentData = [];
         List<AttachmentData> viewAttachmentData = [];
@@ -1047,7 +1072,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    if (isLastPage() || editOnlyAppointment) {
+    if (isLastPage() || state.editOnlyAppointment) {
       add(SubmitComplianceEvent());
     } else if (state.currentStep == 0 && state.benificiaryTypeSelection == 2) {
       add(GetEtmamEntityIdEvent());
@@ -1460,10 +1485,10 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   }
 
   List<dynamic> pages() { 
-if ((state.isDraft == false) && (state.requestDetails?.showMomtathelVisitSection ?? false)) { 
+if (state.showNewAppointments)  { 
   return pagesListHimSelfWithAppointments; 
 } 
-    else if (editOnlyAppointment ) { 
+    else if (state.editOnlyAppointment ) { 
 
 
       return pageEditAppointments; 
@@ -1472,7 +1497,6 @@ if ((state.isDraft == false) && (state.requestDetails?.showMomtathelVisitSection
     }
   }
 
-  bool get editOnlyAppointment => ((state.isDraft == true) && (state.requestDetails?.showMomtathelVisitSection ?? false) &&  (state.requestDetails?.isReadOnly == true) ); 
     
 
   hideKeyboard() {

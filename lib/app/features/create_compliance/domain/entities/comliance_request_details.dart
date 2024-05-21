@@ -56,8 +56,8 @@ class ComplianceRequestDetails extends Equatable {
   final bool? isRequestReturnedFromMunicipality;
   final List<MainEmtithalItemsDto>? mainEmtithalItemsDto;
   final List<ApplicantNote>? applicantNotes;
-  final bool? isReadOnly;
-  final bool? showMomtathelVisitSection;
+   bool? isReadOnly;
+   bool? showMomtathelVisitSection;
 
   ComplianceRequestDetails(
       {this.requestId,

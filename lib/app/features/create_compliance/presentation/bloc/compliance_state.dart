@@ -83,6 +83,7 @@ class ComplianceState extends Equatable {
   final String? visitTimeFrom;
   final String? visitTimeTo;
   final ComplainceAppointmentResponse? complainceAppointmentResponse;
+  final BlocStatus appointmentsStatus; 
 
   PhoneNumberValidation get phoneValidator => contactMobileNumber == null
       ? PhoneNumberValidation.pure()
@@ -93,7 +94,7 @@ class ComplianceState extends Equatable {
 
   ComplianceState(
       {required this.currentStep,
-      this.status = BlocStatus.initial,
+      this.status = BlocStatus.initial, this.appointmentsStatus = BlocStatus.initial, 
       this.mainUsagesStatus = BlocRequestStatus.initial,
       this.enginnerOfficesStatus = BlocRequestStatus.initial,
       this.subUsagesStatus = BlocRequestStatus.initial,
@@ -146,6 +147,7 @@ class ComplianceState extends Equatable {
       this.complainceAppointmentResponse});
   ComplianceState copyWith(
       {final BlocStatus? status,
+      final BlocStatus? appointmentsStatus, 
       final int? currentStep,
       final int? benificiaryTypeSelection,
       final int? documentTypeSelection,
@@ -199,6 +201,7 @@ class ComplianceState extends Equatable {
       final ComplainceAppointmentResponse? complainceAppointmentResponse}) {
     return ComplianceState(
         status: status ?? this.status,
+        appointmentsStatus: appointmentsStatus ?? this.appointmentsStatus, 
         contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
         visitDate: visitDate ?? this.visitDate,
         visitTimeFrom: visitTimeFrom ?? this.visitTimeFrom,
@@ -348,7 +351,10 @@ class ComplianceState extends Equatable {
     } else if ((currentStep == 6)) {
       if (requestDetails?.isRequestReturnedFromMunicipality == true &&
           (applicantNotes?.isEmpty ?? true)) return false;
-    } else if ((currentStep == 7)) {
+    } else if ((currentStep == 7) && ! showNewAppointments) {
+      return agreement ?? false;
+    }
+    else if ((currentStep == 8 && showNewAppointments) ) {
       return agreement ?? false;
     }
     return true;
@@ -466,6 +472,7 @@ class ComplianceState extends Equatable {
   List<Object?> get props => [
         status,
         gisResponse,
+        appointmentsStatus, 
         gisParams,
         currentStep,
         requestId,
@@ -512,4 +519,9 @@ class ComplianceState extends Equatable {
         visitTimeFrom,
         visitDate
       ];
+
+      bool get showNewAppointments => ((requestDetails?.showMomtathelVisitSection ?? false) && (requestDetails?.isReadOnly == false) ) ;
+
+        bool get editOnlyAppointment => ((requestDetails?.showMomtathelVisitSection ?? false) &&  (requestDetails?.isReadOnly == true) ); 
+
 }

@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
@@ -52,11 +53,11 @@ class _SeventhSubmitComplianceSubmitStepState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 32,
                 ),
 
-                  if (state.status == BlocStatus.failure )
+                  if (state.appointmentsStatus == BlocStatus.failure )
                         ReloadWidget(onTab: () {
     context.read<ComplianceBloc>().add(const GetAppointments());
                         }), 
@@ -170,7 +171,7 @@ class _DateBoxWidgetState extends State<DateBoxWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CustomTextWidget(
-                widget.dayName,
+                widget.dayName.toLowerCase().tr(),
                 fontWeight: AppFontWeight.medium, 
                 fontColor: widget.currentDate == widget.date
                     ? AppColor.primary900Light
