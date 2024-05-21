@@ -91,7 +91,7 @@ class QuickFilters extends ConsumerWidget {
       ...customItems,
       ...favourites,
       ...(quickFilters.valueOrNull ?? []).map(
-            (filter) => FilterItem(
+        (filter) => FilterItem(
           filterType: FilterType.quick,
           icon: filter.uiIcon,
           title: filter.title(context.l10n),
@@ -108,9 +108,11 @@ class QuickFilters extends ConsumerWidget {
     );
   }
 
-  void _showRouting(AppFeatures naviFeature,
-      FavouriteItem point,
-      BuildContext context,) {
+  void _showRouting(
+    AppFeatures naviFeature,
+    FavouriteItem point,
+    BuildContext context,
+  ) {
     if (naviFeature.naviEnabled) {
       RoutingRoutesRoute(
         finishLabel: point.title,
