@@ -140,10 +140,12 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
 
     final safeArea = MediaQuery.of(context).padding;
+    const horizontalPadding = PoiCardMapControls.horizontalPadding + Markers.defaultWidth + MapButton.defaultSize;
+
     final paddingConfig = PoiPaddingConfig(
       paddingOfCamera: EdgeInsets.only(
-        left: PoiCardMapControls.horizontalPadding + Markers.defaultWidth + MapButton.defaultSize,
-        right: PoiCardMapControls.horizontalPadding + Markers.defaultWidth + MapButton.defaultSize,
+        left: horizontalPadding,
+        right: horizontalPadding,
         top: Markers.defaultHeight + safeArea.top,
         bottom: PoiCardMapControls.bottomPadding + sheetSizes.middleHeight,
       ),

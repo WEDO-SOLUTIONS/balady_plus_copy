@@ -153,10 +153,12 @@ VisibleRect? _getRectWithPaddings(VisibleRect? rect, PoiPaddingConfig? paddingCo
   double northEastLat = rect.northEastLat;
 
   if (screenSize != null && padding != null) {
-    southWestLon = southWestLon + difLon * (padding.left / screenSize.width);
-    northEastLon = northEastLon - difLon * (padding.right / screenSize.width);
-    southWestLat = southWestLat + difLat * (padding.bottom / screenSize.height);
-    northEastLat = northEastLat - difLat * (padding.top / screenSize.height);
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+    southWestLon = southWestLon + difLon * (padding.left / screenWidth);
+    northEastLon = northEastLon - difLon * (padding.right / screenWidth);
+    southWestLat = southWestLat + difLat * (padding.bottom / screenHeight);
+    northEastLat = northEastLat - difLat * (padding.top / screenHeight);
   }
 
   return VisibleRect(
