@@ -137,7 +137,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final viewModel = PoiCardViewModel(ref: ref);
 
     final sizeOfScreen = MediaQuery.of(context).size;
-    final sheetSizes = PoiSheetSizes.fromScreenSize(sizeOfScreen: sizeOfScreen);
+    final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
 
     final safeArea = MediaQuery.of(context).padding;
     final paddingConfig = PoiPaddingConfig(

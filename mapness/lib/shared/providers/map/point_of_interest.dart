@@ -68,17 +68,15 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     longitude: position.longitude,
   );
 
-  // Get viewports: visible (whole screen) and tappable (area of the screen where user can tap to interact with the marker)
+  // Get viewports: visible (whole screen) and tappable (area of the screen where marker will not overlap on other elements)
   final visibleRect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect;
   final tappableRect = _getRectWithPaddings(visibleRect, paddingConfig);
 
   // Check if point is in viewport
-  final isInViewZone =
-      visibleRect != null && await dgisController.value!.contains(visibleRect.geoRectMessage(), markerPoint);
+  final isInViewZone = await _isInViewZone(visibleRect, dgisController, markerPoint);
 
   // Check if point is in tappable zone
-  final isInTappableZone =
-      tappableRect != null && await dgisController.value!.contains(tappableRect.geoRectMessage(), markerPoint);
+  final isInTappableZone = await _isInViewZone(tappableRect, dgisController, markerPoint);
 
   final cameraHaveToBeMoved = isInViewZone && !isInTappableZone;
 
@@ -90,7 +88,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final newPoint = point;
 
   if (cameraHaveToBeMoved && newPoint != null) {
-    // If tapped point is to the left than min longitude => move right*
+    // If tapped point is to the left than min longitude => move right
     final distFromMarkerToTapZoneLeft = tappableRect!.southWestLon - markerPoint.longitude;
     if (distFromMarkerToTapZoneLeft > 0) {
       newPoint.longitude -= distFromMarkerToTapZoneLeft;
@@ -112,14 +110,14 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     }
   }
 
-  // If point is in view zone, we animate to point of the camera (and slightly move it if needed)
-  // Else we animate to marker point (if it is not in view zone, we will see the marker on the screen)
+  // If point is in view zone, we do nothing or we slightly move to point of the camera if needed
+  // Else we animate to marker point (we will see the marker on the screen and the camera will be centered on it)
   final cameraPoint = isInViewZone && newPoint != null ? newPoint : markerPoint;
 
-  // Act like 2GIS app: if point is in view zone, we animate to
-  // a) point if it's not in tappable zone but in view zone
+  // Act like 2GIS app: if point is in view zone, we do:
+  // a) slightly animate to point if it's not in tappable zone but in view zone
   // b) tilt set to 0 in all cases
-  // c) zoom set to 17 if point is not in view zone
+  // c) zoom set to 17 if point is not in view zone or if zoom is not set
   // d) bearing set to 0 if not set
   await ref.read(cameraPositionProvider.notifier).animateTo(
         CameraPositionMessage(
@@ -131,6 +129,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       );
   return directoryObject;
 }
+
+Future<bool> _isInViewZone(
+        VisibleRect? rect, AsyncValue<DgisMapController> dgisController, GeoPointMessage markerPoint) async =>
+    rect != null && await dgisController.value!.contains(rect.geoRectMessage(), markerPoint);
 
 VisibleRect? _getRectWithPaddings(VisibleRect? rect, PoiPaddingConfig? paddingConfig) {
   if (rect == null) {

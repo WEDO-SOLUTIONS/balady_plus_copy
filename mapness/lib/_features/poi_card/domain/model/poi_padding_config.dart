@@ -1,11 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
+/// Config file for settings  of tappable zone on the screen
+/// Here we have [paddingOfCamera] which is the padding from the edges of the screen
+/// and [sizeOfScreen] which is the size of the screen
 @immutable
 class PoiPaddingConfig {
-  /// Padding for camera if we want to control where the point will be
+  /// Padding from the edges of the screen to the tappable zone
   final EdgeInsets? paddingOfCamera;
 
+  /// Size of the screen. Could be taken as `MediaQuery.of(context).size`
   final Size? sizeOfScreen;
 
   /// Constructor
