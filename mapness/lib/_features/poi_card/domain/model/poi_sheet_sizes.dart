@@ -1,40 +1,45 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-const _collapsedHeight = 300.0;
-const _hiddenHeight = 100.0;
-
+/// Config file for settings of the POI sheet sizes
+/// Sheet have several sizes and controlled by [Expansion] enum
 @immutable
 class PoiSheetSizes {
-  final double collapsedHeight;
   final double hiddenHeight;
+  final double collapsedHeight;
   final double middleHeight;
-  final double expandedHeight;
 
   const PoiSheetSizes._({
     required this.middleHeight,
-    required this.expandedHeight,
     required this.collapsedHeight,
     required this.hiddenHeight,
   });
 
-  factory PoiSheetSizes.fromScreenSize({
+  /// Factory constructor for the POI card
+  factory PoiSheetSizes.poiCard({
     required Size sizeOfScreen,
   }) {
-    /// The middle height should be higher than the collapsed height
-    /// if [availableExpansions] contains [Expansion.middle] and [Expansion.collapsed]
-    final middleHeight = math.max(sizeOfScreen.height / 3.2, _collapsedHeight + 1);
+    const collapsedHeight = 300.0;
 
-    /// This number was taken at random.
-    final expandedHeight = sizeOfScreen.height / 2;
+    /// The middle height should be higher than the collapsed height
+    final middleHeight = math.max(sizeOfScreen.height / 3.2, collapsedHeight + 1);
 
     return PoiSheetSizes._(
       middleHeight: middleHeight,
-      expandedHeight: expandedHeight,
-      collapsedHeight: _collapsedHeight,
-      hiddenHeight: _hiddenHeight,
+      collapsedHeight: collapsedHeight,
+      hiddenHeight: 100.0,
     );
   }
+
+  /// Factory constructor for the My location card
+  factory PoiSheetSizes.myLocation({
+    required double bottomPadding,
+  }) =>
+      PoiSheetSizes._(
+        middleHeight: 179 + bottomPadding,
+        collapsedHeight: 100,
+        hiddenHeight: 90,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -45,9 +50,11 @@ class PoiSheetSizes {
       return false;
     }
     final PoiSheetSizes _other = other;
-    return middleHeight == _other.middleHeight && expandedHeight == _other.expandedHeight;
+    return middleHeight == _other.middleHeight &&
+        collapsedHeight == _other.collapsedHeight &&
+        hiddenHeight == _other.hiddenHeight;
   }
 
   @override
-  int get hashCode => middleHeight.hashCode ^ expandedHeight.hashCode;
+  int get hashCode => middleHeight.hashCode ^ collapsedHeight.hashCode ^ hiddenHeight.hashCode;
 }
