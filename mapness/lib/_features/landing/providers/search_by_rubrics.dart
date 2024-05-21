@@ -25,10 +25,9 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   // ignore: use_setters_to_change_properties
   void update(QuickFilter? filter) => state = filter;
 
-  void selectMosques() {
+  void selectFilter(QuickFilterType type) {
     final quickFilters = ref.read(quickFiltersProvider);
-    final mosquesFilter = quickFilters.valueOrNull
-        ?.firstWhereOrNull((e) => e.type == QuickFilterType.mosques);
+    final mosquesFilter = quickFilters.valueOrNull?.firstWhereOrNull((e) => e.type == type);
     if (mosquesFilter != null) {
       update(mosquesFilter);
     }
@@ -44,21 +43,18 @@ class SearchByRubrics extends _$SearchByRubrics {
       return null;
     }
 
-    final searchRect =
-        ref.watch(searchInRectProvider.select((value) => value.$1));
+    final searchRect = ref.watch(searchInRectProvider.select((value) => value.$1));
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
     unawaited(performSearch(
       filter,
-      searchRect ??
-          dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
+      searchRect ?? dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
     ));
 
     return null;
   }
 
-  Future<void> performSearch(
-      QuickFilter filter, GeoRectMessage? searchRect) async {
+  Future<void> performSearch(QuickFilter filter, GeoRectMessage? searchRect) async {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
     if (dgisController == null) {
@@ -101,8 +97,7 @@ class SearchByRubrics extends _$SearchByRubrics {
 
     final selectedFilter = ref.watch(searchByRubricsQueryProvider);
     final markers = <Marker>[];
-    for (final markerInfo
-        in value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+    for (final markerInfo in value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       markers.add(
         Marker(
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
@@ -118,9 +113,7 @@ class SearchByRubrics extends _$SearchByRubrics {
           },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,
-            icon: (selectedFilter == null
-                    ? LayersSvgPaths.basicMarker
-                    : 'packages/mapness/${selectedFilter.mapIcon}')
+            icon: (selectedFilter == null ? LayersSvgPaths.basicMarker : 'packages/mapness/${selectedFilter.mapIcon}')
                 .markerIcon(),
           ),
         ),
