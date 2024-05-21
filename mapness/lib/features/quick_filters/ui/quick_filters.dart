@@ -12,6 +12,15 @@ import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
 
 class QuickFilters extends ConsumerWidget {
+  final models.QuickFilter? selectedQuickFilter;
+  final List<FilterItem>? customFilters;
+  final ValueChanged<models.QuickFilter> onQuickFilterTap;
+  final void Function() onFavouritesTap;
+  final void Function() onFavouritesBookmarkTap;
+  final void Function(FilterItem)? onCustomTap;
+  final EdgeInsets padding;
+  final Color itemBackground;
+
   const QuickFilters({
     required this.onQuickFilterTap,
     required this.onFavouritesTap,
@@ -25,15 +34,6 @@ class QuickFilters extends ConsumerWidget {
     this.onCustomTap,
     this.itemBackground = NonThemeColor.color11,
   });
-
-  final models.QuickFilter? selectedQuickFilter;
-  final List<FilterItem>? customFilters;
-  final ValueChanged<models.QuickFilter> onQuickFilterTap;
-  final void Function() onFavouritesTap;
-  final void Function() onFavouritesBookmarkTap;
-  final void Function(FilterItem)? onCustomTap;
-  final EdgeInsets padding;
-  final Color itemBackground;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,10 +91,10 @@ class QuickFilters extends ConsumerWidget {
       ...customItems,
       ...favourites,
       ...(quickFilters.valueOrNull ?? []).map(
-        (filter) => FilterItem(
+            (filter) => FilterItem(
           filterType: FilterType.quick,
           icon: filter.uiIcon,
-          title: filter.titleOrFailback(context.l10n),
+          title: filter.title(context.l10n),
           selected: filter.type == selectedQuickFilter?.type,
           onTap: () => onQuickFilterTap(filter),
         ),
@@ -108,11 +108,9 @@ class QuickFilters extends ConsumerWidget {
     );
   }
 
-  void _showRouting(
-    AppFeatures naviFeature,
-    FavouriteItem point,
-    BuildContext context,
-  ) {
+  void _showRouting(AppFeatures naviFeature,
+      FavouriteItem point,
+      BuildContext context,) {
     if (naviFeature.naviEnabled) {
       RoutingRoutesRoute(
         finishLabel: point.title,

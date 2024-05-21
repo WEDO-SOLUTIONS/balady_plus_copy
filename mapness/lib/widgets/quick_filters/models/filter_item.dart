@@ -1,4 +1,10 @@
 class FilterItem {
+  FilterType filterType;
+  final String? title;
+  final String icon;
+  final bool selected;
+  void Function() onTap;
+
   FilterItem({
     required this.filterType,
     required this.icon,
@@ -6,12 +12,6 @@ class FilterItem {
     this.title,
     this.selected = false,
   });
-
-  final String? title;
-  final String icon;
-  FilterType filterType;
-  final bool selected;
-  void Function() onTap;
 }
 
 enum FilterType {

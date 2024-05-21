@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/favourites.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -100,9 +101,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
               searchObjectManager.removeAllMarkers();
             } else {
               ref.read(layersControlsProvider.notifier).disable();
-              ref
-                  .read(searchByRubricsQueryProvider.notifier)
-                  .update(quickFilter);
+              ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
             }
             Metrics.logEventAdvanced(
               MetricsConstants.exploreKeys.quickFilter,
