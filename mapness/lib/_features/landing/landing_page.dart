@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/controls.dart' as controls;
 import 'package:mapness/_features/landing/dashboard.dart';
@@ -12,6 +13,7 @@ import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/esri_layers.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
@@ -38,10 +40,12 @@ class LandingPage extends ConsumerStatefulWidget {
 class _LandingPageState extends ConsumerState<LandingPage> {
   StreamSubscription<TapEvent>? _streamSubscription;
   bool needToShow = true;
+  late final DraggableScrollableController draggableScrollableController;
 
   @override
   void initState() {
     super.initState();
+    draggableScrollableController = DraggableScrollableController();
 
     setupTapListener();
 
@@ -86,6 +90,12 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   @override
+  void dispose() {
+    draggableScrollableController.dispose();
+    super.dispose();
+  }
+
+  @override
   void deactivate() {
     _streamSubscription?.cancel();
     super.deactivate();
@@ -116,6 +126,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
               const controls.MapControls(),
               LayoutBuilder(
                 builder: (context, constraints) => Dashboard(
+                  scrollableController: draggableScrollableController,
                   biggestHeight: constraints.biggest.height,
                   biggestWidth: constraints.biggest.width,
 
@@ -132,55 +143,87 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   void _objectTapListener(TapEvent event) {
-    final goRouter = ref.read(goRouterProvider);
-    if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
-      return;
+
+    ///TODO: need to refactor after Dashboard refactoring to designSystem
+    if (draggableScrollableController.size > 0.1) {
+      _hideDashboard(event);
     } else {
-      if (event is ObjectTapEvent) {
-        Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
-            group: MetricsConstants.poiTag,
-            action: MetricAction.tap.toString(),
-            props: {
-              'objectId': event.dgisObjectId.objectId,
-            });
-
+      final goRouter = ref.read(goRouterProvider);
+      if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
+        return;
+      } else if (goRouter.isCurrentRoute(EsriLayersRoute.path)) {
+        ///Close Esri Layers page
         if (context.mounted) {
-          PoiMapRoute.open(
-            ref.read(goRouterProvider),
-            event.dgisObjectId.objectId,
-            latLng: event.latLng,
-          );
+          context.pop();
         }
-      } else if (event is RoadEventTapEvent) {
-        Metrics.logEventAdvanced(
-          MetricsConstants.poiKeys.roadEvent,
-          group: MetricsConstants.poiTag,
-          action: MetricAction.tap.toString(),
-          props: {'event': event.id.objectId, 'title': event.title},
-        );
+      } else {
+        if (event is ObjectTapEvent) {
+          Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+              props: {
+                'objectId': event.dgisObjectId.objectId,
+              });
 
-        EventsRoute.open(context, event);
-      } else if (event is MyLocationTapEvent) {
-        if (context.mounted) {
+          if (context.mounted) {
+            PoiMapRoute.open(
+              ref.read(goRouterProvider),
+              event.dgisObjectId.objectId,
+              latLng: event.latLng,
+            );
+          }
+        } else if (event is RoadEventTapEvent) {
           Metrics.logEventAdvanced(
-            MetricsConstants.poiKeys.myLocation,
+            MetricsConstants.poiKeys.roadEvent,
             group: MetricsConstants.poiTag,
             action: MetricAction.tap.toString(),
+            props: {'event': event.id.objectId, 'title': event.title},
           );
 
-          final userLocation = ref.read(locationProvider);
-          PoiMapRoute.open(
-            ref.read(goRouterProvider),
-            -1,
-            latLng: userLocation != null
-                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                : event.latLng,
-            zoom: 17,
-            bearing: 0,
-            tilt: 0,
-          );
+          EventsRoute.open(context, event);
+        } else if (event is MyLocationTapEvent) {
+          if (context.mounted) {
+            Metrics.logEventAdvanced(
+              MetricsConstants.poiKeys.myLocation,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+            );
+
+            final userLocation = ref.read(locationProvider);
+            PoiMapRoute.open(
+              ref.read(goRouterProvider),
+              -1,
+              latLng: userLocation != null
+                  ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                  : event.latLng,
+              zoom: 17,
+              bearing: 0,
+              tilt: 0,
+            );
+          }
         }
       }
     }
+  }
+
+  void _hideDashboard(TapEvent event) {
+    if(event is ObjectTapEvent){
+      ref.read(cameraPositionProvider.notifier).animateTo(
+          CameraPositionMessage(
+            point: GeoPointMessage(
+              latitude: event.latLng.latitude,
+              longitude: event.latLng.longitude,
+            ),
+            zoom: 17,
+            tilt: 0,
+            bearing: 0,
+          ));
+
+    }
+    draggableScrollableController.animateTo(
+      0.1,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.linear,
+    );
   }
 }
