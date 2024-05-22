@@ -28,6 +28,8 @@ import '../../../../core/utils/constants/apis/api_info.dart';
 import '../../../transaction_inquiry/customer_voice_exports.dart';
 import '../../../vd/data/model/create_incident/create_incident_response_model.dart';
 import '../../../vd/domain/entities/gis/gis_params.dart';
+import '../../create_compliance_exports.dart';
+import '../../domain/entities/compliance_appointment_response.dart';
 import '../../domain/entities/compliance_deed_info_request.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
 import '../../domain/entities/send_otp_response.dart';
@@ -68,7 +70,8 @@ abstract class CreateComplianceRemoteDataSource {
     ComplianceCertificateItemRequest params,
   );
 
-  Future<(String, bool?)> submitRequest(String params, String notes);
+  Future<(String, bool?)> submitRequest(
+      String id, SubmitEmtithalRequest params);
 
   Future<ComplinaceLookUpResponseModel> getOwnerShipDocTypeResponse();
 
@@ -104,6 +107,9 @@ abstract class CreateComplianceRemoteDataSource {
 
   Future<bool> validateComplianceCertificateItem(int params);
   Future<bool> cancelComplianceCertificate(int params);
+
+  Future<ComplainceAppointmentResponse> getComplainceAppointment(
+      String x, String y);
 }
 
 class CreateComplianceRemoteDataSourceImpl
@@ -332,13 +338,13 @@ class CreateComplianceRemoteDataSourceImpl
   }
 
   @override
-  Future<(String, bool?)> submitRequest(String params, String notes) async {
+  Future<(String, bool?)> submitRequest(
+      String id, SubmitEmtithalRequest params) async {
     var response;
 
     try {
-      response = await webService.dio.post(
-          ApiUrl.submitComplianceRequest + params,
-          data: {"notes": notes});
+      response = await webService.dio
+          .post(ApiUrl.submitComplianceRequest + id, data: params.toMap());
 
       final data = response.data;
 
@@ -1236,6 +1242,112 @@ class CreateComplianceRemoteDataSourceImpl
       return true;
     } on DioError catch (error) {
       var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<ComplainceAppointmentResponse> getComplainceAppointment(
+      String x, String y) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .get(ApiUrl.complainceAppointments, queryParameters: {
+        "latitude": y,
+        "longitude": x,
+      });
+
+      final data = response.data;
+
+      ComplainceAppointmentResponse parsedResult =
+          ComplainceAppointmentResponse.fromJson(data["data"]);
+      //  final result = ResponseBodyModel<ComplainceAppointmentResponse>.fromMap(data, parsedResult: parsedResult).data?.result;
+
+      return parsedResult;
+    } on DioError catch (error) {
+      var errorCode;
+     /* Map<String, dynamic> data = {
+"statusDetails": {
+"code": 200,
+"message": "Ok"
+},
+"data": {
+"responseCode": "1",
+"responseMessage": "success",
+"responseId": "02-10721-8998559-4",
+"result": [
+{
+"Slots": [
+{
+"EndTime": "11AM",
+"StartTime": "8AM"
+},
+{
+"EndTime": "12PM",
+"StartTime": "9AM"
+},
+{
+"EndTime": "4PM",
+"StartTime": "1PM"
+}
+],
+"SlotDate": "20240506",
+"pxListSubscript": "1",
+"Day": "Mon"
+},
+{
+"Slots": [
+{
+"EndTime": "2PM",
+"StartTime": "11AM"
+},
+{
+"EndTime": "1PM",
+"StartTime": "10AM"
+},
+{
+"EndTime": "3PM",
+"StartTime": "12PM"
+}
+],
+"SlotDate": "20240507",
+"pxListSubscript": "2",
+"Day": "Tue"
+}]}}; 
+  try {
+      ComplainceAppointmentResponse parsedResult =
+          ComplainceAppointmentResponse.fromJson(data["data"]);
+      //  final result = ResponseBodyModel<ComplainceAppointmentResponse>.fromMap(data, parsedResult: parsedResult).data?.result;
+
+      return parsedResult;
+  }
+  catch(ex){
+    print(ex);
+  }*/
       try {
         final decodedResponse = ResponseBodyModel.fromMap(
           error.response?.data,

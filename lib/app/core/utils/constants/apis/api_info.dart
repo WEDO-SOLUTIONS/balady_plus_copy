@@ -516,6 +516,10 @@ class ApiUrl {
   static const String complianceLandContract =
       '/v1/compliance-certificate-mobile-services/land-subsidy-contracts';
 
+  static const String complainceAppointments =
+      'v1/compliance-certificate-mobile-services/visit-appointments';
+
+
 // ! Events
 
   static const eventsSearch = '/v1/balady-events-services/events/search';

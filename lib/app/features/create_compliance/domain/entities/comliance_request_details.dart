@@ -56,6 +56,8 @@ class ComplianceRequestDetails extends Equatable {
   final bool? isRequestReturnedFromMunicipality;
   final List<MainEmtithalItemsDto>? mainEmtithalItemsDto;
   final List<ApplicantNote>? applicantNotes;
+   bool? isReadOnly;
+   bool? showMomtathelVisitSection;
 
   ComplianceRequestDetails(
       {this.requestId,
@@ -105,7 +107,9 @@ class ComplianceRequestDetails extends Equatable {
       this.usageDisable,
       this.mainEmtithalItemsDto,
       this.isRequestReturnedFromMunicipality,
-      this.applicantNotes});
+      this.applicantNotes,
+      this.isReadOnly,
+      this.showMomtathelVisitSection});
 
   @override
   // TODO: implement props

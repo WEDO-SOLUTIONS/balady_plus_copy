@@ -53,7 +53,9 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
       super.usageDisable,
       super.isRequestReturnedFromMunicipality,
       super.applicantNotes,
-      super.mainEmtithalItemsDto});
+      super.mainEmtithalItemsDto,
+      super.isReadOnly,
+      super.showMomtathelVisitSection});
 
   factory ComplianceRequestDetailsModel.fromJson(Map<String, dynamic> json) {
     ComplianceRequestDetailsModel? details = ComplianceRequestDetailsModel(
@@ -132,6 +134,8 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
       isRequestReturnedFromMunicipality:
           json["isRequestReturnedFromMunicipality"],
       usageDisable: json["usageDisable"],
+      isReadOnly: json["isReadOnly"],
+      showMomtathelVisitSection: json["showMomtathelVisitSection"],
       applicantNotes: json["applicantNotes"] == null
           ? []
           : List<ApplicantNoteModel>.from(json["applicantNotes"]!

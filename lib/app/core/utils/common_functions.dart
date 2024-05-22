@@ -337,6 +337,17 @@ class CommonFunctions {
     return replaceArabicNumberWithEnglish(formattedDate);
   }
 
+  static String getDateNoDash(String? dateStr) {
+    String formattedDate = "";
+  
+  String year = dateStr?.substring(0,4) ?? "";
+  String month = dateStr?.substring(4,6) ?? ""; 
+  String day = dateStr?.substring(6,8) ?? ""; 
+
+  return "$year/$month/$day"; 
+
+  }
+
   static String getMonthName(String? dateStr) {
     String monthName = "";
     try {
