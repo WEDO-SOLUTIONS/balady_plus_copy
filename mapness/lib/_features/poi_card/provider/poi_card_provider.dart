@@ -4,9 +4,11 @@ import 'package:mapness/_features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/_features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/_features/poi_card/domain/model/organizations_response.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_padding_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -27,9 +29,9 @@ class PoiCardState {
     required this.showEntrances,
     required this.isLoading,
     required this.gisObjectIdMessage,
+    required this.organizations,
     this.qrTradeLicense,
     this.tradeLicense,
-    required this.organizations,
   });
 
   PoiCardState copyWith({
@@ -59,6 +61,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     DgisObjectIdMessage objectId, {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
+    PoiPaddingConfig? paddingConfig,
   }) async {
     if (poiCardState != null && poiCardState?.gisObjectIdMessage?.id == objectId) {
       return poiCardState;
@@ -66,12 +69,19 @@ class PoiCardProvider extends _$PoiCardProvider {
 
     final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
 
+    ref.onDispose(() {
+      ref
+          .read(cameraPositionProvider.notifier)
+          .setPadding(CameraSetPaddingMessage(leftPadding: 0, topPadding: 0, rightPadding: 0, bottomPadding: 0));
+    });
+
     final result = await ref
         .watch(
       pointOfInterestProvider(
         objectId,
         cameraConfig: cameraConfig,
         closestPoint: closestPoint,
+        paddingConfig: paddingConfig,
       ).future,
     )
         .timeout(
@@ -127,7 +137,8 @@ class PoiCardProvider extends _$PoiCardProvider {
           .onError((error, stackTrace) => null);
 
       return response;
-    } catch (e) {
+      // ignore: avoid_catches_without_on_clauses
+    } catch (_) {
       return null;
     }
   }

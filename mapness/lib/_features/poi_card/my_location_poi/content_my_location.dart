@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
@@ -47,6 +48,10 @@ class ContentMyLocation extends ConsumerWidget {
     final language = ref.watch(appLanguageProvider);
     _cameraAnimation(ref);
 
+    final sheetSizes = PoiSheetSizes.myLocation(
+      bottomPadding: MediaQuery.of(context).viewPadding.bottom,
+    );
+
     return Directionality(
       textDirection: switch (language) {
         Language.arabic => TextDirection.rtl,
@@ -58,12 +63,10 @@ class ContentMyLocation extends ConsumerWidget {
           scrollBehavior: const NeverScrollableConfiguration(),
           availableExpansions: Expansion.values.toSet(),
           initialExpansion: Expansion.middle,
-          collapsedHeight: 100,
-          middleHeight: 179 + MediaQuery.of(context).viewPadding.bottom,
-          hiddenHeight: 90,
-          mapControlsBuilder:
-              (context, scrollController, biggestHeight, smallestHeight) =>
-                  PoiCardMapControls(
+          collapsedHeight: sheetSizes.collapsedHeight,
+          middleHeight: sheetSizes.middleHeight,
+          hiddenHeight: sheetSizes.hiddenHeight,
+          mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
             scrollController: scrollController,
             biggestHeight: biggestHeight,
           ),
@@ -140,9 +143,7 @@ class ContentMyLocation extends ConsumerWidget {
 
       await ref.read(cameraPositionProvider.notifier).animateTo(
             CameraPositionMessage(
-              point: GeoPointMessage(
-                  latitude: closestPoint!.latitude,
-                  longitude: closestPoint!.longitude),
+              point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
               zoom: cameraConfig?.zoom ?? 16,
               tilt: cameraConfig?.tilt ?? 0,
               bearing: cameraConfig?.bearing ?? 0,
