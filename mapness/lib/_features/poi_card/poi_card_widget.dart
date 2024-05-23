@@ -55,15 +55,15 @@ class PoiCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => _Content(
-          objectId: objectId,
-          cameraConfig: cameraConfig,
-          biggestHeight: constraints.biggest.height,
-          biggestWidth: constraints.biggest.width,
-          closestPoint: closestPoint,
-          // directoryObject: result,
-        ),
-      );
+    builder: (context, constraints) => _Content(
+      objectId: objectId,
+      cameraConfig: cameraConfig,
+      biggestHeight: constraints.biggest.height,
+      biggestWidth: constraints.biggest.width,
+      closestPoint: closestPoint,
+      // directoryObject: result,
+    ),
+  );
 }
 
 class _Content extends ConsumerStatefulWidget {
@@ -86,8 +86,6 @@ class _Content extends ConsumerStatefulWidget {
 }
 
 class _ContentState extends ConsumerState<_Content> with SingleTickerProviderStateMixin {
-  bool showEntrances = true;
-
   final _expansion = ValueNotifier(Expansion.middle);
 
   late final TabController _tabController;
@@ -105,7 +103,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     _tabType = ValueNotifier(PoiTabsType.info);
     _tabController.addListener(
-      () {
+          () {
         if (_tabController.indexIsChanging) {
           switch (_tabController.index) {
             case 0:
@@ -147,14 +145,9 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     ref.listen(viewModelProvider, (_, next) {
       if (next.value != null && next.value?.gisObjectIdMessage != null) {
-        _toggleEntrances(next.value!.gisObjectIdMessage!, displayEntrance: true);
+        _toggleEntrances(next.value!.gisObjectIdMessage!);
       }
     });
-    if (widget.closestPoint != null) {
-      final closestPoint = widget.closestPoint!;
-      data?.markerPosition = GeoPointWithElevationMessage(
-          latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 0);
-    }
 
     /// loading progress indicator
     if (state.isLoading) {
@@ -170,7 +163,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
           /// sometimes error code is in message and sometimes in code, idk, probably changed in releases
           ((state.error! as PlatformException).code == 'NotFoundException' ||
-              (state.error! as PlatformException).message == 'NotFoundException')) {
+              (state.error! as PlatformException).message ==
+                  'NotFoundException')) {
         return Column(
           children: [
             const Spacer(flex: 3),
@@ -218,10 +212,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             title: data.address?.buildingName ?? data.title,
             exits: data.entrances.length,
             onEntranceTap: () {
-              setState(() {
-                showEntrances = !showEntrances;
-                _toggleEntrances(data, displayEntrance: showEntrances);
-              });
+              _toggleEntrances(data);
             },
           ),
           if (about.isNotEmpty)
@@ -277,10 +268,12 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         middleHeight: middleHeight,
         hiddenHeight: hiddenHeight,
         controller: _bottomSheetController,
-        mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
-          scrollController: scrollController,
-          biggestHeight: biggestHeight,
-        ),
+        mapControlsBuilder:
+            (context, scrollController, biggestHeight, smallestHeight) =>
+            PoiCardMapControls(
+              scrollController: scrollController,
+              biggestHeight: biggestHeight,
+            ),
         onExpansionChanged: (expansion, {byUser = false}) => setState(() {
           _expansion.value = expansion;
         }),
@@ -296,7 +289,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                 action: MetricAction.tap.toString(),
                 props: {
                   'object_id': data.id?.objectId,
-                  'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                  'closest_point':
+                  '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
                 });
 
             viewModel.share(
@@ -314,79 +308,72 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
             viewModel.callPhone(data: data);
           },
-          onEntranceTap: () => _toggleEntrances(data, displayEntrance: showEntrances),
+          onEntranceTap: () => _toggleEntrances(data),
         ),
-        scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
-          controller: controller,
-          header: PoiHeader(
-            poiCardState: poiCardState,
-            tabController: _tabController,
-            data: data,
-            onTapClose: () {
-              Metrics.logEventAdvanced(
-                MetricsConstants.poiKeys.exitButton,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-              );
+        scrollableBody: (context, controller) =>
+            DgisBottomSheetScrollableContent(
+              controller: controller,
+              header: PoiHeader(
+                poiCardState: poiCardState,
+                tabController: _tabController,
+                data: data,
+                onTapClose: () {
+                  Metrics.logEventAdvanced(
+                    MetricsConstants.poiKeys.exitButton,
+                    group: MetricsConstants.poiTag,
+                    action: MetricAction.tap.toString(),
+                  );
 
-              ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-              ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-              context.pop();
-            },
-          ),
-          body: [
-            ValueListenableBuilder(
-              valueListenable: _tabType,
-              builder: (context, tabType, _) => switch (tabType) {
-                PoiTabsType.info => infoBody,
-                PoiTabsType.photos => PoiPhotoCard(
-                    model: PoiModel(
-                      directoryObjectMessage: data,
+                  ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+                  ref
+                      .read(highlightProvider.notifier)
+                      .removeHighlight(widget.objectId);
+                  context.pop();
+                },
+              ),
+              body: [
+                ValueListenableBuilder(
+                  valueListenable: _tabType,
+                  builder: (context, tabType, _) => switch (tabType) {
+                    PoiTabsType.info => infoBody,
+                    PoiTabsType.photos => PoiPhotoCard(
+                      model: PoiModel(
+                        directoryObjectMessage: data,
+                      ),
                     ),
-                  ),
-                PoiTabsType.inBuilding => InBuildingWidget(
-                    state: poiCardState,
-                    objectId: widget.objectId,
-                  ),
-              },
+                    PoiTabsType.inBuilding => InBuildingWidget(
+                      state: poiCardState,
+                      objectId: widget.objectId,
+                    ),
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
       ),
     );
   }
 
-  Future<void> _toggleEntrances(DirectoryObjectMessage data, {required bool displayEntrance}) async {
-    setState(() {
-      showEntrances = !showEntrances;
-    });
-
+  Future<void> _toggleEntrances(DirectoryObjectMessage data) async {
     Metrics.logEventAdvanced(MetricsConstants.poiKeys.entrances,
         group: MetricsConstants.poiTag,
         action: MetricAction.tap.toString(),
         props: {
           'poi_id': data.id?.objectId,
-          'show_entrances': showEntrances,
+          'show_entrances': true,
         });
 
-    final highlightController = ref.read(highlightProvider.notifier);
+    final highlightController = ref.watch(highlightProvider.notifier);
 
-    if (displayEntrance) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _bottomSheetController.animateTo(Expansion.collapsed);
-      });
-      for (final entrance in data.entrances) {
-        await highlightController.addHighlight(entrance!.id);
-      }
-
-      await _animateToEntrance([
-        ...data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList()
-      ]);
-    } else {
-      for (final entrance in data.entrances) {
-        await highlightController.removeHighlight(entrance!.id);
+    for (final entrance in data.entrances) {
+      if (entrance != null) {
+        await highlightController.addHighlight(entrance.id);
       }
     }
+
+    await _animateToEntrance(
+        data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList()
+    );
+    _bottomSheetController.animateTo(Expansion.collapsed);
   }
 
   Future<void> _animateToEntrance(List<GeoPointMessage?> data) async {
@@ -423,7 +410,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     final cameraController = ref.read(cameraPositionProvider.notifier);
     final cameraPosition = ref.read(cameraPositionProvider);
-
     // Animate to the entrance
     await cameraController.animateTo(
       CameraPositionMessage(
@@ -443,23 +429,23 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final navbarSize = MediaQuery.of(context).viewPadding.bottom;
 
     ref.watch(cameraPositionProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: (size * pixelSize - navbarSize * pixelSize).floor(),
-          ),
-        );
+      CameraSetPaddingMessage(
+        leftPadding: 0,
+        topPadding: 0,
+        rightPadding: 0,
+        bottomPadding: (size * pixelSize - navbarSize * pixelSize).floor(),
+      ),
+    );
   }
 
   void resetPadding() {
     ref.watch(cameraPositionProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: 0,
-          ),
-        );
+      CameraSetPaddingMessage(
+        leftPadding: 0,
+        topPadding: 0,
+        rightPadding: 0,
+        bottomPadding: 0,
+      ),
+    );
   }
 }
