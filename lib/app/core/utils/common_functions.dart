@@ -810,11 +810,11 @@ class CommonFunctions {
     });
   }
 
-  static showError(String error) {
+  static showError(String error,[bool? isHtml]) {
     if (error.isNotEmpty) {
       if (error.contains("https")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
-            NavigationService.navigatorKey.currentContext!, error);
+            NavigationService.navigatorKey.currentContext!, error,isHtml??false);
       } else {
         try {
           BotToast.showSimpleNotification(

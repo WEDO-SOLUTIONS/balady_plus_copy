@@ -235,7 +235,7 @@ class NewAppointmentViewModel extends BaseViewModel {
   void setMunicipalities(Municipality? data) {
     municipalitiesResponse = data;
     municipalitiesList = municipalitiesResponse!.data!.result!
-        .map<DropDownItem>((e) => DropDownItem(id: e.id, name: e.name ?? ""))
+        .map<DropDownItem>((e) => DropDownItem(id: e.id, name: e.name ?? "",externalSystemUrl: e.externalSystemUrl??"",externalSystem: e.externalSystem??false))
         .toList();
   }
 

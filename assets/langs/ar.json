@@ -4033,6 +4033,8 @@
   "no_attachments": "لا يوجد مرفقات",
   "required_field_must_number_12_digits": "عفوا رقم الصك يجب أن يحتوى 12 رقما.",
   "most_selected_ownershipType": "برجاء إدخال بيانات الصك",
-  "renew_salama_permit_question":"هل لديك تصريح سلامة ساري؟"
-
+  "renew_salama_permit_question":"هل لديك تصريح سلامة ساري؟",
+  "redircetionMessage1": "لحجز موعد في ",
+  "redircetionMessage2": " انقر على ",
+  "here": "الرابط هنا"
 }
