@@ -73,7 +73,7 @@ class CreateObjectionBloc
         emit(state.copyWith(status: BlocStatus.loading));
 
         List<ReasonModel> reasons = state.reasons ?? [];
-        reasons.add(ReasonModel());
+        reasons.add(ReasonModel(guid: CommonFunctions.generateGUID()));
         emit(state.copyWith(status: BlocStatus.success, reasons: reasons));
       },
     );
