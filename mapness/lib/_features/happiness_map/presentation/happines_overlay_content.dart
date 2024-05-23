@@ -118,9 +118,7 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
                 context.pop();
               },
               onFeedbackSent: () {
-                if (!confettiController.isAnimating) {
-                  playConfettiAnimation();
-                }
+
               },
             ),
           ],
