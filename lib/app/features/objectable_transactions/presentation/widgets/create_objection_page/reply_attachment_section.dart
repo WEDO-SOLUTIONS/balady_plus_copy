@@ -44,8 +44,10 @@ class _ReplyAttachmentSectionState extends State<ReplyAttachmentSection> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   NotesFieldsSection(
+                    key: ValueKey(state.reasons?[index].guid), 
                     initialDesc: state.reasons?[index].notes,
                     index: index,
+                    hideDelete:(state.reasons?.length??0) < 2,
                     onDelete: () {
                       context
                           .read<CreateObjectionBloc>()

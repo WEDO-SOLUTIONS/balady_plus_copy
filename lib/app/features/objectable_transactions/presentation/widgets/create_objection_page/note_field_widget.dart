@@ -11,12 +11,14 @@ class NotesFieldsSection extends StatefulWidget {
   final Function onChanged;
   final int index;
   final Function onDelete;
+  final bool? hideDelete; 
+  final Key? key;
 
   NotesFieldsSection(
       {this.initialDesc,
       required this.onChanged,
-      required this.index,
-      required this.onDelete});
+      required this.index, this.hideDelete = false, 
+      required this.onDelete, this.key});
 
   @override
   State<NotesFieldsSection> createState() => _NotesFieldsSection();
@@ -35,6 +37,7 @@ class _NotesFieldsSection extends State<NotesFieldsSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
+
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         //  incident Desc ,
@@ -62,6 +65,7 @@ class _NotesFieldsSection extends State<NotesFieldsSection> {
                 widget.onChanged(text);
               },
             ),
+            if (widget.hideDelete != true)
             Align(
               alignment: AlignmentDirectional.topEnd,
               child: IconButton(
