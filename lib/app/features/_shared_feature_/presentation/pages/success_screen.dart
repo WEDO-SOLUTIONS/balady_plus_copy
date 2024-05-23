@@ -268,7 +268,8 @@ class SuccessBody extends StatelessWidget {
               //   height: 48,
               // ),
 
-              successScreenArgs?.idNumber != null?
+
+              successScreenArgs?.idNumber != null && successScreenArgs?.type == PAGE_TYPE.ekramCemetry?
               CustomElevatedButtonWidget(
                 btnColor: Colors.transparent,
                 textStyle: AppStyle.elevatedButtonStyle.copyWith(
