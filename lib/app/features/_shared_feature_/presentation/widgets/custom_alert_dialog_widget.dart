@@ -195,6 +195,7 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
   final String? primaryBtnText;
   final VoidCallback? secondaryBtnPressed;
   final String? secondaryBtnText;
+  final bool? isHtml;
   const CustomHTMLAlertDialogWidget({
     super.key,
     this.backgroundColor,
@@ -231,6 +232,7 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
     this.primaryBtnText,
     this.secondaryBtnPressed,
     this.secondaryBtnText,
+    this.isHtml
   });
 
   @override
@@ -257,6 +259,8 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
                 child: Icon(Icons.close),
               ),
             ),
+
+        if (isHtml == false)
             Flexible(
               child: content ??
                   Linkify(
@@ -273,6 +277,25 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
                         fontFamily: Constants.appFontType,
                       ))
             ),
+
+    if (isHtml == true)
+      Flexible(
+    child: content ??
+        Html(
+            onLinkTap: (url, attributes, element) =>
+        CommonFunctions.openBaladyWebView(url),
+            data:contentText ?? "",
+          style: {
+            "body": Style(
+                fontSize: FontSize(14.0),
+                fontWeight: FontWeight.w600,
+                lineHeight: const LineHeight(1.4),
+                textAlign: TextAlign.start,
+                color: AppColor.primary500Light,
+                fontFamily: Constants.appFontType),
+          },
+        )
+    ),
           ],
         ),
       ),
