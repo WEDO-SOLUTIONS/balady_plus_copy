@@ -1,8 +1,8 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
 import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
@@ -19,12 +19,13 @@ class QuickFilters extends ConsumerWidget {
   final void Function() onFavouritesBookmarkTap;
   final void Function(FilterItem)? onCustomTap;
   final EdgeInsets padding;
-  final Color itemBackground;
+  final QuickFilterScreen id;
 
   const QuickFilters({
     required this.onQuickFilterTap,
     required this.onFavouritesTap,
     required this.onFavouritesBookmarkTap,
+    required this.id,
     super.key,
     this.selectedQuickFilter,
     this.padding = const EdgeInsets.symmetric(
@@ -32,7 +33,6 @@ class QuickFilters extends ConsumerWidget {
     ),
     this.customFilters,
     this.onCustomTap,
-    this.itemBackground = NonThemeColor.color11,
   });
 
   @override
@@ -92,19 +92,21 @@ class QuickFilters extends ConsumerWidget {
       ...favourites,
       ...(quickFilters.valueOrNull ?? []).map(
         (filter) => FilterItem(
-          filterType: FilterType.quick,
-          icon: filter.uiIcon,
-          title: filter.title(context.l10n),
-          selected: filter.type == selectedQuickFilter?.type,
-          onTap: () => onQuickFilterTap(filter),
-        ),
+            filterType: FilterType.quick,
+            icon: filter.uiIcon,
+            title: filter.title(context.l10n),
+            selected: filter.type == selectedQuickFilter?.type,
+            onTap: () {
+              onQuickFilterTap(filter);
+              ref.read(scrollToSelectedQuickFilterProvider.notifier).scrollToSelected(id);
+            }),
       ),
     ];
 
     return widgets.QuickFilters(
       padding: padding,
       filters: items,
-      itemBackground: itemBackground,
+      id: id,
     );
   }
 

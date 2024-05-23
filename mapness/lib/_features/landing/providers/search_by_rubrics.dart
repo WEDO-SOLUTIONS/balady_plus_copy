@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/router.dart';
@@ -22,14 +23,25 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   @override
   QuickFilter? build() => null;
 
-  // ignore: use_setters_to_change_properties
-  void update(QuickFilter? filter) => state = filter;
+  void update(QuickFilter? filter) {
+    if (filter?.type != null) {
+      // If we have type of filter and this filter is selected, we need to scroll all quick filter rows to selected filter
+      // We do it to show the selected filter on the screen, not hidden
+      final quickFilters = ref.read(quickFiltersProvider);
+      final selectedFilter = quickFilters.valueOrNull?.firstWhereOrNull((e) => e.type == filter?.type);
+      if (selectedFilter != null) {
+        ref.read(scrollToSelectedQuickFilterProvider.notifier).scrollToSelected();
+      }
+    }
+
+    state = filter;
+  }
 
   void selectFilter(QuickFilterType type) {
     final quickFilters = ref.read(quickFiltersProvider);
-    final mosquesFilter = quickFilters.valueOrNull?.firstWhereOrNull((e) => e.type == type);
-    if (mosquesFilter != null) {
-      update(mosquesFilter);
+    final selectedFilter = quickFilters.valueOrNull?.firstWhereOrNull((e) => e.type == type);
+    if (selectedFilter != null) {
+      update(selectedFilter);
     }
   }
 }
