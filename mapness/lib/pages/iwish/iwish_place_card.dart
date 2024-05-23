@@ -124,7 +124,6 @@ class IwishPlaceCard extends ConsumerWidget {
                                       children: [
                                         Expanded(
                                           child: LabeledElevatedButton(
-                                            enabled: !entity.feedbackSent,
                                             padding: const EdgeInsets.symmetric(
                                               vertical: 8,
                                               horizontal: 9,
