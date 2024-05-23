@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/routes/search.dart';
@@ -16,9 +17,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final DraggableScrollableController draggableScrollableController;
 
   @override
-  Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent) =>
-      DashboardHeader(
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
         draggableScrollableController: draggableScrollableController,
       );
 
@@ -89,7 +88,7 @@ class DashboardHeader extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const MapQuickFilters(),
+            const MapQuickFilters(id: QuickFilterScreen.dashboard),
             const SizedBox(height: 16),
           ],
         ),

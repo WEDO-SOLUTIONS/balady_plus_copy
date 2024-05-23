@@ -1,8 +1,8 @@
 import 'package:balady_plus/app/core/utils/debouncer.dart';
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/favourites.dart';
@@ -18,6 +18,7 @@ import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 class MapQuickFilters extends ConsumerStatefulWidget {
   const MapQuickFilters({
+    required this.id,
     super.key,
     this.customFilters,
     this.onCustomTap,
@@ -27,6 +28,7 @@ class MapQuickFilters extends ConsumerStatefulWidget {
   final List<FilterItem>? customFilters;
   final void Function(FilterItem)? onCustomTap;
   final bool forMap;
+  final QuickFilterScreen id;
 
   @override
   ConsumerState<MapQuickFilters> createState() => _MapQuickFiltersState();
@@ -77,6 +79,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
     });
 
     return QuickFilters(
+      id: widget.id,
       onFavouritesBookmarkTap: () => CommonFunctions.authOrOpen(
         context,
         callback: () {
@@ -102,6 +105,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             } else {
               ref.read(layersControlsProvider.notifier).disable();
               ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
+              ref.read(scrollToSelectedQuickFilterProvider.notifier).scrollToSelected(widget.id);
             }
             Metrics.logEventAdvanced(
               MetricsConstants.exploreKeys.quickFilter,
@@ -128,16 +132,9 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         });
       },
       selectedQuickFilter: selectedQuickFilter,
-      itemBackground: widget.forMap ? Colors.white : NonThemeColor.color11,
       customFilters: widget.customFilters,
       onCustomTap: widget.onCustomTap,
-      padding: widget.forMap
-          ? const EdgeInsets.symmetric(
-              horizontal: 12,
-            )
-          : const EdgeInsets.symmetric(
-              horizontal: 16,
-            ),
+      padding: widget.forMap ? const EdgeInsets.symmetric(horizontal: 12) : const EdgeInsets.symmetric(horizontal: 16),
     );
   }
 
