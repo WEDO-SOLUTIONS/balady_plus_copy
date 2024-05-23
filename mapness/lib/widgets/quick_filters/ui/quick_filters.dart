@@ -54,7 +54,6 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
           return QuickFilter(
             item: item,
             selected: item.selected,
-            // background: itemBackground,
             background: context.color.surfaceBaseSecondary,
           );
         },
