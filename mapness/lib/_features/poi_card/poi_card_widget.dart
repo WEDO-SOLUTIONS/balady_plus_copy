@@ -85,8 +85,7 @@ class _Content extends ConsumerStatefulWidget {
   ConsumerState<_Content> createState() => _ContentState();
 }
 
-class _ContentState extends ConsumerState<_Content>
-    with SingleTickerProviderStateMixin {
+class _ContentState extends ConsumerState<_Content> with SingleTickerProviderStateMixin {
   final _expansion = ValueNotifier(Expansion.middle);
 
   late final TabController _tabController;
@@ -372,13 +371,7 @@ class _ContentState extends ConsumerState<_Content>
     }
 
     await _animateToEntrance(
-      [
-        ...data.entrances
-            .map((e) => e?.geometry?.entrancePoints ?? [])
-            .toList()
-            .expand((element) => element)
-            .toList()
-      ],
+        data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList()
     );
     _bottomSheetController.animateTo(Expansion.collapsed);
   }
