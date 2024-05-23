@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart' as uiKit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,6 +27,10 @@ class PoiCardMapControls extends ConsumerStatefulWidget {
   final double biggestHeight;
   final ScrollController scrollController;
 
+  static const horizontalPadding = uiKit.NumericBase.$3x;
+  static const topPadding = uiKit.NumericBase.$3x;
+  static const bottomPadding = uiKit.NumericBase.$4x;
+
   @override
   ConsumerState<PoiCardMapControls> createState() => _PoiCardMapControlsState();
 }
@@ -42,8 +47,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
 
   void _scrollListener() {
     Future.delayed(Duration.zero, () {
-      final size = widget.scrollController.position.maxScrollExtent -
-          widget.scrollController.position.pixels;
+      final size = widget.scrollController.position.maxScrollExtent - widget.scrollController.position.pixels;
       final sizeFixed = double.parse(size.toStringAsFixed(2));
 
       if (sizeFixed == .1) {
@@ -70,10 +74,10 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                    left: 12,
-                    top: 12,
-                    right: 12,
-                    bottom: 16,
+                    left: PoiCardMapControls.horizontalPadding,
+                    top: PoiCardMapControls.topPadding,
+                    right: PoiCardMapControls.horizontalPadding,
+                    bottom: PoiCardMapControls.bottomPadding,
                   ),
                   child: Row(
                     children: [
@@ -88,17 +92,6 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                           const Spacer(),
                           const IndoorControl(),
                           const Spacer(),
-                          // MapButton(
-                          //   child: Image.asset(
-                          //     "assets/images/beta_icon.png",
-                          //     height: 44,
-                          //   ),
-                          //   onTap: () {
-                          //     Stories.showOnboarding(
-                          //         context, StoryTypes.route, 'route');
-                          //   },
-                          // ),
-                          // const SizedBox(height: 8),
                           MapButton(
                             child: SvgPicture.asset(
                               'assets/icons/svg/ic_controls_qibla.svg',
@@ -106,10 +99,8 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                               package: 'mapness',
                             ),
                             onTap: () {
-                              Metrics.logEventAdvanced(
-                                  MetricsConstants.exploreKeys.qibla,
-                                  action: MetricAction.tap.name,
-                                  group: MetricsConstants.exploreTag);
+                              Metrics.logEventAdvanced(MetricsConstants.exploreKeys.qibla,
+                                  action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
                               const KiblahRoute().pushReplacement(context);
                             },
                           ),
