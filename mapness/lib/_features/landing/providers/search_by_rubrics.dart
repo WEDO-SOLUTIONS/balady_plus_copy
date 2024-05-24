@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
+import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
-import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
+import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart' as data;
 import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -28,11 +28,10 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   }
 
   void selectFilter(QuickFilterType type) {
-    final quickFilters = ref.read(quickFiltersProvider);
-    final selectedFilter = quickFilters.valueOrNull?.firstWhereOrNull((e) => e.type == type);
+    final selectedFilter = data.quickFilters.firstWhereOrNull((e) => e.type == type);
     if (selectedFilter != null) {
+      ref.read(quickFiltersRequestSourceScreenProvider.notifier).scrollToSelected();
       update(selectedFilter);
-      ref.read(scrollToSelectedQuickFilterProvider.notifier).scrollToSelected();
     }
   }
 }

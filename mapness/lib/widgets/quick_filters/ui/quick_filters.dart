@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
+import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filter.dart';
@@ -32,16 +32,25 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    ref.listen(scrollToSelectedQuickFilterProvider, (_, requestId) {
-      if (requestId != null) {
+  void didUpdateWidget(QuickFilters oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final requestId = ref.read(quickFiltersRequestSourceScreenProvider);
+      if (requestId != null && requestId != widget.id) {
         final selectedIndex = widget.filters.indexWhere((element) => element.selected);
-        if (selectedIndex != -1 && requestId != widget.id) {
+        if (selectedIndex != -1) {
           itemScrollController.jumpTo(index: selectedIndex, alignment: 0.03);
-          ref.read(scrollToSelectedQuickFilterProvider.notifier).reset();
         }
+        ref.read(quickFiltersRequestSourceScreenProvider.notifier).reset();
       }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // We watch [scrollToSelectedQuickFilterProvider] to keep it alive in the widget tree
+    ref.watch(quickFiltersRequestSourceScreenProvider);
+
     return SizedBox(
       height: 40,
       child: ScrollablePositionedList.separated(

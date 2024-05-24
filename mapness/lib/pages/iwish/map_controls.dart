@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
-import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
+import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';

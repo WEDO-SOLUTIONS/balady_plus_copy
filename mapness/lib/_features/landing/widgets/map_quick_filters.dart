@@ -2,7 +2,7 @@ import 'package:balady_plus/app/core/utils/debouncer.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
+import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/favourites.dart';
@@ -104,8 +104,8 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
               searchObjectManager.removeAllMarkers();
             } else {
               ref.read(layersControlsProvider.notifier).disable();
+              ref.read(quickFiltersRequestSourceScreenProvider.notifier).scrollToSelected(widget.id);
               ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
-              ref.read(scrollToSelectedQuickFilterProvider.notifier).scrollToSelected(widget.id);
             }
             Metrics.logEventAdvanced(
               MetricsConstants.exploreKeys.quickFilter,

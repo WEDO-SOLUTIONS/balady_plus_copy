@@ -32,7 +32,7 @@ class QuickFilter {
   final String uiIcon;
   final String mapIcon;
 
-  QuickFilter({
+  const QuickFilter({
     required this.type,
     required this.rubrics,
     required this.uiIcon,

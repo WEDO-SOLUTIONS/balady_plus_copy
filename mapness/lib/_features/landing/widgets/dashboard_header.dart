@@ -1,7 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
+import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/routes/search.dart';
