@@ -30,7 +30,7 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   void selectFilter(QuickFilterType type) {
     final selectedFilter = data.quickFilters.firstWhereOrNull((e) => e.type == type);
     if (selectedFilter != null) {
-      ref.read(quickFiltersRequestSourceScreenProvider.notifier).scrollToSelected();
+      ref.read(quickFiltersRequestSourceScreenProvider.notifier).setSourceScreen();
       update(selectedFilter);
     }
   }

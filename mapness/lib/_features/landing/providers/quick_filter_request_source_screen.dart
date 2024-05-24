@@ -7,7 +7,7 @@ class QuickFiltersRequestSourceScreen extends _$QuickFiltersRequestSourceScreen 
   @override
   QuickFilterScreen? build() => null;
 
-  void scrollToSelected([QuickFilterScreen? screen]) {
+  void setSourceScreen([QuickFilterScreen? screen]) {
     state = screen ?? QuickFilterScreen.outside;
   }
 

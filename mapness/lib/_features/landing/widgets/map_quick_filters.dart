@@ -104,7 +104,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
               searchObjectManager.removeAllMarkers();
             } else {
               ref.read(layersControlsProvider.notifier).disable();
-              ref.read(quickFiltersRequestSourceScreenProvider.notifier).scrollToSelected(widget.id);
+              ref.read(quickFiltersRequestSourceScreenProvider.notifier).setSourceScreen(widget.id);
               ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
             }
             Metrics.logEventAdvanced(
