@@ -23,9 +23,8 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   @override
   QuickFilter? build() => null;
 
-  void update(QuickFilter? filter) {
-    state = filter;
-  }
+  // ignore: use_setters_to_change_properties
+  void update(QuickFilter? filter) => state = filter;
 
   void selectFilter(QuickFilterType type) {
     final selectedFilter = data.quickFilters.firstWhereOrNull((e) => e.type == type);
