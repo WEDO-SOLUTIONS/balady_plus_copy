@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/_features/landing/providers/scroll_to_selected_filter.dart';
+import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
-import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
+import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart' as data;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -37,7 +37,6 @@ class QuickFilters extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final quickFilters = ref.watch(quickFiltersProvider);
     final favouritesState = ref.watch(favouriteCacheProvider);
     final naviFeature = ref.watch(appFeaturesProvider);
 
@@ -90,7 +89,7 @@ class QuickFilters extends ConsumerWidget {
     final items = [
       ...customItems,
       ...favourites,
-      ...(quickFilters.valueOrNull ?? []).map(
+      ...data.quickFilters.map(
         (filter) => FilterItem(
             filterType: FilterType.quick,
             icon: filter.uiIcon,
