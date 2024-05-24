@@ -98,7 +98,6 @@ class QuickFilters extends ConsumerWidget {
             selected: filter.type == selectedQuickFilter?.type,
             onTap: () {
               onQuickFilterTap(filter);
-              ref.read(scrollToSelectedQuickFilterProvider.notifier).scrollToSelected(id);
             }),
       ),
     ];

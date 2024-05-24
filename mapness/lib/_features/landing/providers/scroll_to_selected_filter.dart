@@ -5,13 +5,18 @@ part 'scroll_to_selected_filter.g.dart';
 
 @riverpod
 class ScrollToSelectedQuickFilter extends _$ScrollToSelectedQuickFilter {
-  final _debouncer = Debouncer(milliseconds: 400);
+  final _debouncer = Debouncer(milliseconds: 200);
   @override
   QuickFilterScreen? build() => null;
 
   void scrollToSelected([QuickFilterScreen? screen]) {
-    state = screen ?? QuickFilterScreen.outside;
-    _debouncer.run(() => state = null);
+    _debouncer.run(() {
+      state = screen ?? QuickFilterScreen.outside;
+    });
+  }
+
+  void reset() {
+    state = null;
   }
 }
 
