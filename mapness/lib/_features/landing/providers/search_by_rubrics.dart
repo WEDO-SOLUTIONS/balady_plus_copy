@@ -24,16 +24,6 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   QuickFilter? build() => null;
 
   void update(QuickFilter? filter) {
-    if (filter?.type != null) {
-      // If we have type of filter and this filter is selected, we need to scroll all quick filter rows to selected filter
-      // We do it to show the selected filter on the screen, not hidden
-      final quickFilters = ref.read(quickFiltersProvider);
-      final selectedFilter = quickFilters.valueOrNull?.firstWhereOrNull((e) => e.type == filter?.type);
-      if (selectedFilter != null) {
-        ref.read(scrollToSelectedQuickFilterProvider.notifier).scrollToSelected();
-      }
-    }
-
     state = filter;
   }
 
@@ -42,6 +32,7 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
     final selectedFilter = quickFilters.valueOrNull?.firstWhereOrNull((e) => e.type == type);
     if (selectedFilter != null) {
       update(selectedFilter);
+      ref.read(scrollToSelectedQuickFilterProvider.notifier).scrollToSelected();
     }
   }
 }

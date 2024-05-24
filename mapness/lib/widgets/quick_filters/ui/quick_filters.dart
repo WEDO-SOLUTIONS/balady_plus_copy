@@ -28,19 +28,20 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
   @override
   void initState() {
     super.initState();
-
     itemScrollController = ItemScrollController();
   }
 
   @override
   Widget build(BuildContext context) {
-    final requestId = ref.watch(scrollToSelectedQuickFilterProvider);
-    if (requestId != null) {
-      final selectedIndex = widget.filters.indexWhere((element) => element.selected);
-      if (selectedIndex != -1 && requestId != widget.id) {
-        itemScrollController.jumpTo(index: selectedIndex, alignment: 0.03);
+    ref.listen(scrollToSelectedQuickFilterProvider, (_, requestId) {
+      if (requestId != null) {
+        final selectedIndex = widget.filters.indexWhere((element) => element.selected);
+        if (selectedIndex != -1 && requestId != widget.id) {
+          itemScrollController.jumpTo(index: selectedIndex, alignment: 0.03);
+          ref.read(scrollToSelectedQuickFilterProvider.notifier).reset();
+        }
       }
-    }
+    });
     return SizedBox(
       height: 40,
       child: ScrollablePositionedList.separated(
