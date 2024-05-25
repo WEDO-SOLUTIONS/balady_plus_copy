@@ -753,6 +753,7 @@ class SearchResultMessage {
     this.searchResultType,
     this.dynamicFilters,
     this.autoUseFirstResult,
+    this.markersWithLabel,
   );
 
   final PageMessage? firstPage;
@@ -762,6 +763,14 @@ class SearchResultMessage {
   final SearchResultTypeMessage searchResultType;
   final List<DynamicFilterMessage?> dynamicFilters;
   final bool autoUseFirstResult;
+  final List<UiMarkerInfoMessage?>? markersWithLabel;
+}
+
+class UiMarkerInfoMessage {
+  UiMarkerInfoMessage(this.objectId, this.label);
+
+  final DgisObjectIdMessage? objectId;
+  final String? label;
 }
 
 class SuggestObjectHandlerMessage {

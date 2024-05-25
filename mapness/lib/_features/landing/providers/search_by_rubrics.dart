@@ -16,6 +16,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_by_rubrics.g.dart';
 
+FutureOr<Map<String, String>> generateTitleMap(List<UiMarkerInfoMessage?>? uiMarkers) {
+  final titleMap = <String, String>{};
+  for (final uiMarker in uiMarkers ?? List<UiMarkerInfoMessage?>.empty()) {
+    if (uiMarker?.objectId == null || uiMarker?.label == null) {
+      continue;
+    }
+    titleMap[uiMarker!.objectId!.objectId.toString()] = uiMarker.label!;
+  }
+  return titleMap;
+}
+
 // TODO(Sergei): remove index from state, this will allow to select filter without information about index
 //  and allow to not be tied to order of filters
 @riverpod
@@ -44,7 +55,7 @@ class SearchByRubrics extends _$SearchByRubrics {
       return null;
     }
 
-    final searchRect = ref.watch(searchInRectProvider.select((value) => value.$1));
+    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
     unawaited(performSearch(
@@ -80,6 +91,7 @@ class SearchByRubrics extends _$SearchByRubrics {
         searchRect: searchRect,
       );
     }
+
     final currentFilter = ref.watch(searchByRubricsQueryProvider);
     if (currentFilter?.type == filter.type) {
       final markers = await _showAndReturnMarkers(searchResults);
@@ -103,6 +115,7 @@ class SearchByRubrics extends _$SearchByRubrics {
 
     await searchObjectManager.removeAllMarkers();
     await searchObjectManager.addMarkers(markers);
+
     return markers;
   }
 
