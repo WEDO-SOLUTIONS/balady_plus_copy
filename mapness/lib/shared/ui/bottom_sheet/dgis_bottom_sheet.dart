@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
@@ -36,12 +37,36 @@ enum Expansion {
 }
 
 extension ExpansionUtils on Expansion {
-  Expansion next(ScrollDirection direction) => switch (this) {
-        Expansion.hidden => direction == ScrollDirection.up ? Expansion.collapsed : Expansion.hidden,
-        Expansion.collapsed => direction == ScrollDirection.up ? Expansion.middle : Expansion.hidden,
-        Expansion.middle => direction == ScrollDirection.up ? Expansion.expanded : Expansion.collapsed,
-        Expansion.expanded => direction == ScrollDirection.up ? Expansion.expanded : Expansion.middle,
-      };
+  Expansion next(ScrollDirection direction) {
+    switch (this) {
+      case Expansion.hidden:
+        return direction == ScrollDirection.up ? Expansion.collapsed : Expansion.hidden;
+      case Expansion.collapsed:
+        return direction == ScrollDirection.up ? Expansion.middle : Expansion.hidden;
+      case Expansion.middle:
+        return direction == ScrollDirection.up ? Expansion.expanded : Expansion.collapsed;
+      case Expansion.expanded:
+        return direction == ScrollDirection.up ? Expansion.expanded : Expansion.middle;
+    }
+  }
+
+  Expansion getNextExpansion(ScrollDirection direction, Set<Expansion> availableExpansions) {
+    Expansion nextExpansion = this;
+    do {
+      final expansion = nextExpansion.next(direction);
+
+      if (expansion.index == nextExpansion.index) {
+        break;
+      }
+      if (availableExpansions.contains(expansion)) {
+        nextExpansion = expansion;
+      } else {
+        break;
+      }
+    } while (!availableExpansions.contains(nextExpansion));
+
+    return nextExpansion;
+  }
 }
 
 enum ScrollDirection {
@@ -598,9 +623,11 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     final closestExpansion = _closestExpansionByVisibleHeight(_visibleHeight);
     final visibleHeightOfClosestExpansion = _visibleHeightByExpansion(closestExpansion);
 
+    final fastSwipeTreshold = (Platform.isAndroid ? 3400 : 5000);
+
     bool upDirection;
 
-    final fastSwipe = velocity.abs() > 3400;
+    final fastSwipe = velocity.abs() > fastSwipeTreshold;
 
     /// флинг вверх
     if (velocity > _velocityFlingThreshold) {
@@ -612,7 +639,8 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     }
 
     if (fastSwipe) {
-      final nextExtention = closestExpansion.next(upDirection ? ScrollDirection.up : ScrollDirection.down);
+      final nextExtention = closestExpansion.getNextExpansion(
+          upDirection ? ScrollDirection.up : ScrollDirection.down, widget.availableExpansions);
 
       return nextExtention;
     }
@@ -664,7 +692,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
     final nearestHeight = heights.firstWhereOrNull((height) {
       final diff = (height.value - visibleHeight).abs();
-      if (diff < _deltaThreshold) {
+      if (diff <= _deltaThreshold) {
         return true;
       }
       return false;
@@ -672,19 +700,18 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
     final closest = widget.controller?.currentExpansion ?? heights.first.key;
 
-    final height = _visibleHeightByExpansion(closest);
-
-    final delta = (height - visibleHeight).abs();
-
     if (nearestHeight != null) {
       return nearestHeight.key;
     }
 
+    final height = _visibleHeightByExpansion(closest);
+    final delta = (height - visibleHeight).abs();
+
     if (delta >= _deltaThreshold) {
       if (visibleHeight > height) {
-        return closest.next(ScrollDirection.up);
+        return closest.getNextExpansion(ScrollDirection.up, widget.availableExpansions);
       } else {
-        return closest.next(ScrollDirection.down);
+        return closest.getNextExpansion(ScrollDirection.down, widget.availableExpansions);
       }
     }
 
