@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,35 +27,36 @@ class Dashboard extends ConsumerStatefulWidget {
     required this.biggestHeight,
     required this.biggestWidth,
     required this.initWithMinSize,
+    required this.draggableScrollableController,
+    required this.onScroll,
     super.key,
   });
 
   final double biggestHeight;
   final double biggestWidth;
   final bool initWithMinSize;
+  final Function(bool) onScroll;
+  final DraggableScrollableController draggableScrollableController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
 class _DashboardState extends ConsumerState<Dashboard> {
-  late final DraggableScrollableController _draggableScrollableController;
-
   double get _headerExtent => 75 / widget.biggestHeight;
 
   @override
   void initState() {
     super.initState();
-    _draggableScrollableController = DraggableScrollableController()
-      ..addListener(() {
-        Future.delayed(Duration.zero, () {
-          if (_draggableScrollableController.size > _headerExtent + 0.001) {
-            ref.read(mapControlsProvider.notifier).update(
-                  MapControlsStateDashboard(),
-                );
-          } else {
-            ref.read(mapControlsProvider.notifier).update(
-                  MapControlsStateIdle(),
+    widget.draggableScrollableController.addListener(() {
+      Future.delayed(Duration.zero, () {
+        if (widget.draggableScrollableController.size > _headerExtent + 0.001) {
+          ref.read(mapControlsProvider.notifier).update(
+                MapControlsStateDashboard(),
+              );
+        } else {
+          ref.read(mapControlsProvider.notifier).update(
+                MapControlsStateIdle(),
                 );
             FocusManager.instance.primaryFocus?.unfocus();
           }
@@ -62,17 +65,11 @@ class _DashboardState extends ConsumerState<Dashboard> {
   }
 
   @override
-  void dispose() {
-    _draggableScrollableController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     ref
       ..listen(searchByRubricsQueryProvider, (previous, next) {
         if (next != null) {
-          _draggableScrollableController.animateTo(
+          widget.draggableScrollableController.animateTo(
             _headerExtent,
             duration: const Duration(milliseconds: 250),
             curve: Curves.linear,
@@ -81,7 +78,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
       })
       ..listen(layersControlsProvider, (previous, next) {
         if (next.layersVisible) {
-          _draggableScrollableController.animateTo(
+          widget.draggableScrollableController.animateTo(
             _headerExtent,
             duration: const Duration(milliseconds: 250),
             curve: Curves.linear,
@@ -107,109 +104,108 @@ class _DashboardState extends ConsumerState<Dashboard> {
         }
         return true;
       },
-      child: DraggableScrollableSheet(
-        controller: _draggableScrollableController,
-        initialChildSize: widget.initWithMinSize ? _headerExtent : .38,
-        minChildSize: _headerExtent,
-        maxChildSize: .95,
-        snap: true,
-        snapSizes: [_headerExtent, .38, .95],
-        builder: (context, scrollController) => Directionality(
-          textDirection: direction,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(16),
-              topLeft: Radius.circular(16),
-            ),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(16),
-                  topLeft: Radius.circular(16),
-                ),
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification is ScrollStartNotification) {
+            widget.onScroll.call(true);
+          } else
+            if (notification is ScrollEndNotification) {
+            widget.onScroll.call(false);
+          }
+          return true;
+        },
+        child: DraggableScrollableSheet(
+          controller: widget.draggableScrollableController,
+          initialChildSize: widget.initWithMinSize ? _headerExtent : .38,
+          minChildSize: _headerExtent,
+          maxChildSize: .93,
+          snap: true,
+          snapSizes: [_headerExtent, if (Platform.isIOS) .3 else .38, .93],
+          builder: (context, scrollController) => Directionality(
+            textDirection: direction,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(16),
+                topLeft: Radius.circular(16),
               ),
-              child: CustomScrollView(
-                controller: scrollController,
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                physics: const ClampingScrollPhysics(),
-                slivers: [
-                  SliverPersistentHeader(
-                    delegate: DashboardHeaderDelegate(
-                      draggableScrollableController: _draggableScrollableController,
-                    ),
-                    pinned: true,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16),
                   ),
-                  SliverList.list(
-                    children: [
-                      Container(
-                        color: context.color.surfaceBasePrimary,
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const DashboardProfile(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const StoriesWidget(),
-                            const InterestingPlacesCardsList(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const SnapAndSendCard(),
-                            const ComplianceCard(),
-                            const ShoppingMallsCardsList(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            EventsHomeCardWrapper(
-                              colorScheme: ref.read(colorSchemeProvider),
-                              key: ValueKey(
-                                'events_home_card_wrapper_${direction.name}',
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            // const JobsAroundCard(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            PrayerHomeCard(
-                              onNotificationTap: () => Metrics.logEventAdvanced(
-                                MetricsConstants.exploreKeys.prayerTimesBannerBellIcon,
-                                action: MetricAction.tap.name,
-                                group: MetricsConstants.exploreTag,
-                              ),
-                              onShowTimesTap: () => Metrics.logEventAdvanced(
-                                MetricsConstants.exploreKeys.prayerTimesBannerButton,
-                                action: MetricAction.tap.name,
-                                group: MetricsConstants.exploreTag,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            CalendarHomeCard(
-                              colorScheme: ref.read(colorSchemeProvider),
-                              onShowAll: () => Metrics.logEventAdvanced(
-                                MetricsConstants.exploreKeys.kingdomCalendarViewAll,
-                                action: MetricAction.tap.name,
-                                group: MetricsConstants.exploreTag,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
+                ),
+                child: CustomScrollView(
+                  controller: scrollController,
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  physics: const ClampingScrollPhysics(),
+                  slivers: [
+                    SliverPersistentHeader(
+                      delegate: DashboardHeaderDelegate(
+                        draggableScrollableController: widget.draggableScrollableController,
                       ),
-                    ],
-                  ),
-                ],
+                      pinned: true,
+                    ),
+                    SliverList.list(
+                      children: [
+                        Container(
+                          color: context.color.surfaceBasePrimary,
+                          padding: const EdgeInsets.only(
+                            top: 16,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const DashboardProfile(),
+                              const SizedBox(height: 20),
+                              const StoriesWidget(),
+                              const InterestingPlacesCardsList(),
+                              const SizedBox(height: 20),
+                              const SnapAndSendCard(),
+                              const ComplianceCard(),
+                              const ShoppingMallsCardsList(),
+                              EventsHomeCardWrapper(
+                                colorScheme: ref.read(colorSchemeProvider),
+                                key: ValueKey(
+                                  'events_home_card_wrapper_${direction.name}',
+                                ),
+                              ),
+                              // const JobsAroundCard(),
+                              const SizedBox(height: 20),
+                              PrayerHomeCard(
+                                onNotificationTap: () => Metrics.logEventAdvanced(
+                                  MetricsConstants.exploreKeys.prayerTimesBannerBellIcon,
+                                  action: MetricAction.tap.name,
+                                  group: MetricsConstants.exploreTag,
+                                ),
+                                onShowTimesTap: () => Metrics.logEventAdvanced(
+                                  MetricsConstants.exploreKeys.prayerTimesBannerButton,
+                                  action: MetricAction.tap.name,
+                                  group: MetricsConstants.exploreTag,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              CalendarHomeCard(
+                                colorScheme: ref.read(colorSchemeProvider),
+                                onShowAll: () => Metrics.logEventAdvanced(
+                                  MetricsConstants.exploreKeys.kingdomCalendarViewAll,
+                                  action: MetricAction.tap.name,
+                                  group: MetricsConstants.exploreTag,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

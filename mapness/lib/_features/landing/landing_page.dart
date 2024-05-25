@@ -37,7 +37,9 @@ class LandingPage extends ConsumerStatefulWidget {
 
 class _LandingPageState extends ConsumerState<LandingPage> {
   StreamSubscription<TapEvent>? _streamSubscription;
+  final DraggableScrollableController _draggableScrollableController = DraggableScrollableController();
   bool needToShow = true;
+  final ValueNotifier<bool> _onScroll = ValueNotifier(false);
 
   @override
   void initState() {
@@ -92,6 +94,12 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   @override
+  void dispose() {
+    _draggableScrollableController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
@@ -113,11 +121,21 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           type: MaterialType.transparency,
           child: Stack(
             children: [
-              const controls.MapControls(),
+              ValueListenableBuilder(
+                valueListenable: _onScroll,
+                builder: (context, value, child) => controls.MapControls(
+                  draggableScrollableController: _draggableScrollableController,
+                  onScroll: value,
+                ),
+              ),
               LayoutBuilder(
                 builder: (context, constraints) => Dashboard(
                   biggestHeight: constraints.biggest.height,
                   biggestWidth: constraints.biggest.width,
+                  draggableScrollableController: _draggableScrollableController,
+                  onScroll: (value) {
+                    _onScroll.value = value;
+                  },
 
                   ///TODO: change while Dashboard refactoring
                   initWithMinSize:
