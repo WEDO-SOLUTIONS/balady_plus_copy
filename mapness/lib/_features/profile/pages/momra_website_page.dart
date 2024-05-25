@@ -1,15 +1,10 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/ui/loading/loading_circular.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MomraWebsitePage extends ConsumerStatefulWidget {
@@ -22,9 +17,6 @@ class MomraWebsitePage extends ConsumerStatefulWidget {
 class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
   late WebViewController controller;
 
-  bool _isLoading = true;
-  final _progress = ValueNotifier(0.0);
-
   @override
   void initState() {
     super.initState();
@@ -35,19 +27,10 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
       ..setBackgroundColor(NonThemeColor.color70)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (progress) {
-            final percent = progress / 100;
-            _progress.value = percent > 1 || percent < 0 ? 1.0 : percent;
-          },
-          onPageStarted: (url) {
-            setState(() => _isLoading = true);
-          },
-          onPageFinished: (url) {
-            setState(() => _isLoading = false);
-          },
-          onWebResourceError: (error) {
-            setState(() => _isLoading = false);
-          },
+          onProgress: (progress) {},
+          onPageStarted: (url) {},
+          onPageFinished: (url) {},
+          onWebResourceError: (error) {},
         ),
       )
       ..loadRequest(
@@ -67,102 +50,28 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
           textDirection: Directionality.of(context),
           child: Material(
             color: Colors.white,
-            child: Column(
-              children: [
-                const SizedBox(
-                  width: 12,
+            child: Scaffold(
+              appBar: BaladyTopBar.iconAndText(
+                title: context.l10n.baladyWebsite,
+                colorEnabled: context.color.textAndIconsStatusAccent,
+                leading: ActionModel(
+                  text: context.l10n.back,
+                  onPressed: () => context.pop(),
+                  icon: context.isLtr
+                      ? SystemIcons.arrowCornerRightL
+                      : SystemIcons.arrowCornerLeftL,
                 ),
-                SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Consumer(
-                          builder: (context, ref, _) {
-                            final direction = ref.watch(uiDirectionProvider);
-                            return SizedBox(
-                              height: 40,
-                              width: 40,
-                              child: Material(
-                                borderRadius: BorderRadius.circular(8),
-                                color: context.color.surfaceBaseSecondary,
-                                child: InkWell(
-                                  onTap: () {
-                                    context.pop();
-                                  },
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: SvgPicture.asset(
-                                      direction == TextDirection.ltr
-                                          ? 'assets/icons/svg/ic_chevron_left.svg'
-                                          : 'assets/icons/svg/ic_chevron_right.svg',
-                                      height: 24,
-                                      width: 24,
-                                      package: PackageConfig.packageName,
-                                      colorFilter: ColorFilter.mode(
-                                        context
-                                            .color.textAndIconsBasePrimary,
-                                        BlendMode.srcIn,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const Spacer(),
-                        Text(
-                          context.l10n.baladyWebsite,
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .callout
-                              .copyWith(
-                                  color: context
-                                      .color.textAndIconsBasePrimary),
-                        ),
-                        const Spacer(),
-                        const SizedBox(
-                          width: 40,
-                        ),
-                      ],
-                    ),
+              ),
+              body: Column(
+                children: [
+                  const SizedBox(
+                    width: 28,
                   ),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                if (_isLoading)
-                  ValueListenableBuilder(
-                    valueListenable: _progress,
-                    builder: (context, percent, _) => LinearProgressIndicator(
-                      value: percent,
-                    ),
+                  Expanded(
+                    child: WebViewWidget(controller: controller),
                   ),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      if (_isLoading)
-                        const Positioned(
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          top: 0,
-                          child: Center(
-                            child: LoadingCircular(),
-                          ),
-                        ),
-                      Positioned.fill(
-                        child: WebViewWidget(
-                            key: const ValueKey('momra_website'),
-                            controller: controller),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
