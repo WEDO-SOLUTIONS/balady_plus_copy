@@ -155,7 +155,6 @@ dependencies:
   flutter_cached_pdfview: ^0.4.2
   network_info_plus: ^2.1.4+1
   dart_ipify: ^1.1.1
-  timelines: ^0.1.0
   pdfx:
   archive: ^3.3.7
   bottom_picker: ^2.0.4
