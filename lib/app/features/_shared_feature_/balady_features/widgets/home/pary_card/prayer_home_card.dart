@@ -35,16 +35,11 @@ class PrayerHomeCard extends StatelessWidget {
                 start: 16,
                 end: 16,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "prayerTimes".tr(),
-                    style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(
-                          color: const Color(0xFF1E2A36),
-                        ),
-                  ),
-                ],
+              child: Text(
+                "prayerTimes".tr(),
+                style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(
+                  color: const Color(0xFF1E2A36),
+                ),
               ),
             ),
             state.nextPrayer != null && state.status != BlocRequestStatus.submissionGetLoading

@@ -51,6 +51,7 @@ class EventsHomeCard extends StatelessWidget {
           return Column(
             //   mainAxisSize: MainAxisSize.min,
             children: [
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
