@@ -1,5 +1,4 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +7,11 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
-import 'package:mapness/shared/ui/loading/inline_loading_indicator.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_localization.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_card.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_loading.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
 
 class RoutesCarousel extends ConsumerWidget {
   const RoutesCarousel({
@@ -31,17 +33,78 @@ class RoutesCarousel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => routes.when(
-        data: (routes) => PageView.builder(
-          controller: pageController,
-          onPageChanged: onActiveChanged,
-          itemBuilder: (context, index) => RouteCell(
-            navType: navType,
-            route: routes[index],
-            // Assuming that onChanged event always fired before
-            startNavigation: startNavigation,
-          ),
-          itemCount: routes.length,
-        ),
+        data: (routes) => Builder(builder: (context) {
+          if (routes.length == 1) {
+            final route = routes.first;
+            final distance = route.distance;
+            final duration = route.duration;
+
+            const averageHumanStepsByKm = 1350;
+            const averageCaloriesPerMinute = 4.6;
+
+            final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
+            final calories = ((duration / 60.0) * averageCaloriesPerMinute).toInt();
+            return Padding(
+              padding: const EdgeInsets.only(
+                left: Spacing.horizontalPaddingInsideWrapper,
+                right: Spacing.horizontalPaddingInsideWrapper,
+              ),
+              child: PathCard(
+                distance: distance.formatDistance(context.l10n),
+                isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
+                localizations: PathCardLocalization(
+                  calories: context.l10n.calories,
+                  steps: context.l10n.steps,
+                  go: context.l10n.go,
+                ),
+                duration: duration.formatDuration(context.l10n),
+                steps: steps,
+                calories: calories,
+                onStartTap: startNavigation,
+              ),
+            );
+          }
+
+          return SizedBox(
+            height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
+            child: PageView.builder(
+              controller: routes.length == 1 ? PageController() : pageController,
+              padEnds: false,
+              itemBuilder: (context, index) {
+                final route = routes[index];
+                final distance = route.distance;
+                final duration = route.duration;
+
+                const averageHumanStepsByKm = 1350;
+                const averageCaloriesPerMinute = 4.6;
+
+                final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
+                final calories = ((duration / 60.0) * averageCaloriesPerMinute).toInt();
+                return Padding(
+                  padding: padding(
+                    index: index,
+                    length: routes.length,
+                    isLtr: Directionality.of(context) == TextDirection.ltr,
+                  ),
+                  child: PathCard(
+                    distance: distance.formatDistance(context.l10n),
+                    isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
+                    localizations: PathCardLocalization(
+                      calories: context.l10n.calories,
+                      steps: context.l10n.steps,
+                      go: context.l10n.go,
+                    ),
+                    duration: duration.formatDuration(context.l10n),
+                    steps: steps,
+                    calories: calories,
+                    onStartTap: startNavigation,
+                  ),
+                );
+              },
+              itemCount: routes.length,
+            ),
+          );
+        }),
         error: (_, __) => Directionality(
           textDirection: ref.watch(uiDirectionProvider),
           child: Padding(
@@ -53,10 +116,7 @@ class RoutesCarousel extends ConsumerWidget {
               children: [
                 Text(
                   context.l10n.routeNotFound,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .text
-                      .copyWith(
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.text.copyWith(
                         color: context.color.textAndIconsBasePrimary,
                       ),
                 ),
@@ -71,34 +131,28 @@ class RoutesCarousel extends ConsumerWidget {
             ),
           ),
         ),
-        loading: () => IgnorePointer(
-          child: PageView.builder(
-            controller: pageController,
-            onPageChanged: onActiveChanged,
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-              ),
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: NonThemeColor.color11,
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: InlineLoadingIndicator(),
-                  ),
-                ),
-              ),
-            ),
-            itemCount: 3,
-          ),
-        ),
+        loading: () => PathCardLoading(text: context.l10n.loading),
         skipLoadingOnRefresh: false,
         skipLoadingOnReload: false,
       );
+
+  EdgeInsets padding({required int index, required int length, required bool isLtr}) {
+    EdgeInsets result;
+    if (index == 0) {
+      result = const EdgeInsets.only(
+        left: Spacing.horizontalPaddingInsideWrapper,
+        right: Spacing.horizontalGapBetweenChips / 2,
+      );
+    } else if (index == length - 1) {
+      result = const EdgeInsets.only(
+        left: Spacing.horizontalGapBetweenChips / 2,
+        right: Spacing.horizontalPaddingInsideWrapper,
+      );
+    } else {
+      result = const EdgeInsets.symmetric(horizontal: Spacing.horizontalGapBetweenChips / 2);
+    }
+    return isLtr ? result : result.flipped;
+  }
 }
 
 class RouteCell extends ConsumerWidget {
@@ -147,22 +201,14 @@ class RouteCell extends ConsumerWidget {
                       children: [
                         Text(
                           duration.formatDuration(context.l10n),
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .callout
-                              .copyWith(
-                                color:
-                                    context.color.textAndIconsBasePrimary,
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.callout.copyWith(
+                                color: context.color.textAndIconsBasePrimary,
                               ),
                         ),
                         Text(
                           distance.formatDistance(context.l10n),
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .footNote
-                              .copyWith(
-                                color:
-                                    context.color.textAndIconsBasePrimary,
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.footNote.copyWith(
+                                color: context.color.textAndIconsBasePrimary,
                               ),
                         ),
                       ],
@@ -185,10 +231,8 @@ class RouteCell extends ConsumerWidget {
                             ),
                             child: Text(
                               context.l10n.go,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .caption
-                                  .copyWith(color: Colors.white),
+                              style:
+                                  Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(color: Colors.white),
                             ),
                           ),
                         ),
@@ -254,14 +298,12 @@ class HealthInfo extends StatelessWidget {
           const SizedBox(width: 3),
           Text(
             title,
-            style: context.textStyle.footNote
-                .copyWith(color: context.color.textAndIconsBasePrimary),
+            style: context.textStyle.footNote.copyWith(color: context.color.textAndIconsBasePrimary),
           ),
           const SizedBox(width: 3),
           Text(
             '$count',
-            style: context.textStyle.footNote
-                .copyWith(color: context.color.textAndIconsBaseTertiary),
+            style: context.textStyle.footNote.copyWith(color: context.color.textAndIconsBaseTertiary),
           ),
         ],
       );

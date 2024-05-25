@@ -32,8 +32,7 @@ class RoutingInfo extends ConsumerStatefulWidget {
 }
 
 class _RoutingInfoState extends ConsumerState<RoutingInfo> {
-  final ValueNotifier<RouteSearchOptionsMessage> _navType =
-      ValueNotifier(RouteSearchOptionsMessage.car);
+  final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(RouteSearchOptionsMessage.car);
 
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
 
@@ -73,9 +72,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
     final finishPoint = widget.points[1]!;
 
-    if (location == null ||
-        dgisController == null ||
-        finishPoint.dgisObjectId == null) {
+    if (location == null || dgisController == null || finishPoint.dgisObjectId == null) {
       _isNavTypeLoading.value = false;
       return;
     }
@@ -113,8 +110,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     // if distance is less than 0.7 km and time <= 7 min then use pedestrian just for in building navigation
     else if (distance < 0.7 && time.floor() <= 7) {
       // Check if finish point is in building, if we have building name then it's in building)
-      final objectInfo =
-          await dgisController.searchByObjectId(finishPoint.dgisObjectId!);
+      final objectInfo = await dgisController.searchByObjectId(finishPoint.dgisObjectId!);
       if (objectInfo.buildingInfo.buildingName != null) {
         _navType.value = RouteSearchOptionsMessage.pedestrian;
       }
@@ -134,39 +130,36 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
               valueListenable: _navType,
               builder: (context, navigatingType, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Spacing.verticalPaddingInsideWrapper.heightBox,
-                      Expanded(
-                        child: RoutesCarousel(
-                          points: widget.points,
-                          startNavigation: () {
-                            Metrics.logEventAdvanced(
-                              MetricsConstants
-                                  .routesKeys.routeSelectionChangeNavType,
-                              group: MetricsConstants.routesTag,
-                              action: MetricAction.tap.toString(),
-                              props: {
-                                'navType': navigatingType.name,
-                                'points':
-                                    '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
-                              },
-                            );
+                      RoutesCarousel(
+                        points: widget.points,
+                        startNavigation: () {
+                          Metrics.logEventAdvanced(
+                            MetricsConstants.routesKeys.routeSelectionChangeNavType,
+                            group: MetricsConstants.routesTag,
+                            action: MetricAction.tap.toString(),
+                            props: {
+                              'navType': navigatingType.name,
+                              'points':
+                                  '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
+                            },
+                          );
 
-                            PathNavRoute.open(
-                              ref.watch(goRouterProvider),
-                              navigatingType,
-                            );
-                          },
-                          navType: navigatingType,
-                        ),
+                          PathNavRoute.open(
+                            ref.watch(goRouterProvider),
+                            navigatingType,
+                          );
+                        },
+                        navType: navigatingType,
                       ),
                       Spacing.verticalPaddingInsideWrapper.heightBox,
                       _RouteTabBar(
                         active: navigatingType,
                         onChanged: (e) {
                           Metrics.logEventAdvanced(
-                            MetricsConstants
-                                .routesKeys.routeSelectionChangeNavType,
+                            MetricsConstants.routesKeys.routeSelectionChangeNavType,
                             group: MetricsConstants.routesTag,
                             action: MetricAction.tap.toString(),
                             props: {
@@ -212,8 +205,7 @@ class _RouteTabBar extends ConsumerWidget {
     final routeDuration = routes.isEmpty ? null : routes[activeRoute].duration;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.verticalPaddingInsideWrapper),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.verticalPaddingInsideWrapper),
       child: Row(
         children: [
           RouteSearchOptionsMessage.pedestrian,
@@ -222,9 +214,7 @@ class _RouteTabBar extends ConsumerWidget {
             .map(
               (e) => RouteTypeSwitch(
                 iconAsset: e.icon,
-                title: active == e
-                    ? routeDuration?.formatDuration(context.l10n)
-                    : null,
+                title: active == e ? routeDuration?.formatDuration(context.l10n) : null,
                 onPressed: () => onChanged(e),
                 isChoosed: active == e,
               ),
