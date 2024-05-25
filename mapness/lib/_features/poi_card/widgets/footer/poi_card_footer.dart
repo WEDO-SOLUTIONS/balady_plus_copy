@@ -73,30 +73,30 @@ class PoiCardFooter extends ConsumerWidget {
     final carIconFlex = (hasEntrances || hasContacts) ? 3 : 2;
     return _Wrapper(
       children: [
-        _ShareItem(
-          hasContactsAndHasEntrances: hasContactsAndHasEntrances,
+        _CarItem(
+          finishPoint: finishPoint,
+          objectMessage: data,
+          flex: carIconFlex,
+        ),
+        if (hasContacts)
+        _PhoneItem(
+          hasContacts: true,
           flex: 2,
-          onTap: share,
+          onTap: callPhone,
         ),
         if (hasEntrances)
           _EntranceItem(
-            hasEntrances: hasEntrances,
+            hasEntrances: true,
             onEntranceTap: onEntranceTap,
-          ),
-        if (hasContacts)
-          _PhoneItem(
-            hasContacts: hasContacts,
-            flex: 2,
-            onTap: callPhone,
           ),
         _FavoriteItem(
           objectMessage: data,
           objectId: objectId,
         ),
-        _CarItem(
-          finishPoint: finishPoint,
-          objectMessage: data,
-          flex: carIconFlex,
+        _ShareItem(
+          hasContactsAndHasEntrances: hasContactsAndHasEntrances,
+          flex: 2,
+          onTap: share,
         ),
       ],
     );
