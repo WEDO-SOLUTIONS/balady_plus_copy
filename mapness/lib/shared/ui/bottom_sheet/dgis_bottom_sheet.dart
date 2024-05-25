@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_theme.dart';
 import 'package:mapness/shared/ui/bottom_sheet/lib/scroll_listeners.dart';
@@ -561,7 +560,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   void goIdle({bool byUser = false}) {
     _printDebugLog('_goIdle. byUser=$byUser');
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    Future.delayed(Duration.zero, () {
       if (!_initialized) {
         _printDebugLog('_goIdle. !_initialized -> ignore');
         return;
@@ -600,7 +599,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
     bool upDirection;
 
-    final fastSwipe = velocity.abs() > 4000;
+    final fastSwipe = velocity.abs() > 3400;
 
     /// флинг вверх
     if (velocity > _velocityFlingThreshold) {
