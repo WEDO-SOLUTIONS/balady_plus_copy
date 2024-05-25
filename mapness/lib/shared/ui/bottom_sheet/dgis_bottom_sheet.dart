@@ -164,6 +164,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     with TickerProviderStateMixin
     implements DgisDraggableScrollableListener {
   static const _velocityFlingThreshold = 1000;
+  static const _deltaThreshold = 100;
 
   double _visibleHeight = 0;
 
@@ -663,7 +664,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
     final nearestHeight = heights.firstWhereOrNull((height) {
       final diff = (height.value - visibleHeight).abs();
-      if (diff < 100) {
+      if (diff < _deltaThreshold) {
         return true;
       }
       return false;
@@ -673,13 +674,13 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
     final height = _visibleHeightByExpansion(closest);
 
-    final delta = (height - visibleHeight).abs() - 100;
+    final delta = (height - visibleHeight).abs();
 
     if (nearestHeight != null) {
       return nearestHeight.key;
     }
 
-    if (delta >= 100) {
+    if (delta >= _deltaThreshold) {
       if (visibleHeight > height) {
         return closest.next(ScrollDirection.up);
       } else {
