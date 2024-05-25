@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +36,6 @@ class RoutingRoutesPage extends ConsumerStatefulWidget {
 }
 
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
-  late DraggableScrollableController _controller;
-
   late List<RouteParamsPoint?> points;
   late List<String> labels;
   late List<RouteSearchPointMessage?> searchPoints;
@@ -51,8 +50,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
           (e) => e?.routeSearchPointMessage,
         )
         .toList();
-
-    _controller = DraggableScrollableController();
   }
 
   @override
@@ -67,12 +64,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         routeOnClose: const RoutingRoute().location,
       );
     }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -97,79 +88,66 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
     return Stack(
+      alignment: Alignment.bottomCenter,
       children: [
         RoutingMapControls(
-          bottomExtent: MediaQuery.of(context).size.height * 0.35,
+          bottomExtent: MediaQuery.of(context).size.height * 0.3,
         ),
-        DraggableScrollableSheet(
-          controller: _controller,
-          initialChildSize: 0.35,
-          minChildSize: 0.35,
-          maxChildSize: 0.35,
-          builder: (context, scrollController) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16),
-                topLeft: Radius.circular(16),
-              ),
+        BottomSheet(
+          backgroundColor: context.color.surfaceBasePrimary,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
             ),
-            child: Material(
-              color: NonThemeColor.color11,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16),
+          ),
+          onClosing: () => {},
+          builder: (context) => SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: Spacing.horizontalPaddingInsideWrapper,
+                    right: Spacing.horizontalPaddingInsideWrapper,
+                    top: Spacing.verticalPaddingInsideWrapper,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      AppButton(
+                        primaryIcon: getIcon(context),
+                        buttonColorScheme: ButtonColorScheme.tertiary,
+                        onTap: _onClose,
+                      ),
+                      AppButton(
+                        primaryIcon: TransportIcons.verticalChange,
+                        buttonColorScheme: ButtonColorScheme.tertiary,
+                        onTap: _onSwipeRoutes,
+                      ),
+                      Expanded(child: ABPoints(locations: labels)),
+                    ]
+                        .insertBetween(
+                          Spacing.horizontalGapBetweenCellContent.widthBox,
+                        )
+                        .toList(),
                   ),
                 ),
-                child: SafeArea(
-                  top: false,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: Spacing.horizontalPaddingInsideWrapper,
-                          right: Spacing.horizontalPaddingInsideWrapper,
-                          top: Spacing.verticalPaddingInsideWrapper,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            AppButton(
-                              primaryIcon: SystemIcons.arrowLeft,
-                              buttonColorScheme: ButtonColorScheme.tertiary,
-                              onTap: _onSwipeRoutes,
-                              size: ButtonSize.small,
-                            ),
-                            AppButton(
-                              primaryIcon: TransportIcons.verticalChange,
-                              buttonColorScheme: ButtonColorScheme.tertiary,
-                              onTap: _onSwipeRoutes,
-                              size: ButtonSize.small,
-                            ),
-                            Expanded(child: ABPoints(locations: labels)),
-                          ]
-                              .insertBetween(
-                                Spacing.horizontalGapBetweenCellContent.widthBox,
-                              )
-                              .toList(),
-                        ),
-                      ),
-                      Expanded(
-                        child: RoutingInfo(
-                          points: points,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                RoutingInfo(points: points),
+              ],
             ),
           ),
         ),
       ],
     );
+  }
+
+  IconData getIcon(BuildContext context) {
+    if (Localizations.localeOf(context).languageCode == 'ar') {
+      return SystemIcons.arrowRight;
+    } else {
+      return SystemIcons.arrowLeft;
+    }
   }
 
   void _onSwipeRoutes() {
