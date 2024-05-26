@@ -19,6 +19,7 @@ class _EntranceItem extends StatelessWidget {
       flex: flex,
       assetName: 'assets/icons/svg/ic_entrance.svg',
       onTap: onEntranceTap,
+      colorIcon: context.color.textAndIconsStatusAccent,
     );
   }
 }
