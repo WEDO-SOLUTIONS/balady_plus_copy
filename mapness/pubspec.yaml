@@ -94,6 +94,8 @@ dependencies:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: ^2.2.0
   cached_network_image: ^3.2.2
+  # Scrollable list
+  scrollable_positioned_list: ^0.3.8
 
 dependency_overrides:
   geolocator_android: ^4.2.2
