@@ -208,8 +208,8 @@ class _RouteTabBar extends ConsumerWidget {
 
     final anotherRoute = ref.watch(
       briefRouteInfoProvider(
-        startPoint: pointFrom(points[0]),
-        finishPoint: pointFrom(points[1]),
+        startPoint: points[0]?.toRouteSearch,
+        finishPoint: points[1]?.toRouteSearch,
         navType: active == RouteSearchOptionsMessage.car
             ? RouteSearchOptionsMessage.pedestrian
             : RouteSearchOptionsMessage.car,
