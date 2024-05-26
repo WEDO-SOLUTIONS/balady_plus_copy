@@ -109,7 +109,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
         },
         child: DraggableScrollableSheet(
           controller: widget.scrollableController,
-          initialChildSize: widget.initWithMinSize ? _headerExtent : .38,
+          initialChildSize: widget.initWithMinSize ? _headerExtent : Platform.isIOS ? .3 : .38,
           minChildSize: _headerExtent,
           maxChildSize: .93,
           snap: true,

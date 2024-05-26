@@ -135,7 +135,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   scrollableController: _draggableScrollableController,
                   biggestHeight: constraints.biggest.height,
                   biggestWidth: constraints.biggest.width,
-                  scrollableController: _draggableScrollableController,
                   onScroll: (value) {
                     _onScroll.value = value;
                   },
