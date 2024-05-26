@@ -22,8 +22,7 @@ class PoiPhotosHeader extends ConsumerWidget {
     final bool = !photos.hasValue || photos.requireValue.items.isEmpty;
     return ValueListenableBuilder(
       valueListenable: expansion,
-      builder: (context, expansion, child) {
-        return AnimatedCrossFade(
+      builder: (context, expansion, child) => AnimatedCrossFade(
           crossFadeState: bool || expansion == Expansion.hidden ? CrossFadeState.showFirst : CrossFadeState.showSecond,
           firstCurve: Curves.easeInOut,
           secondCurve: Curves.easeInOut,
@@ -43,43 +42,7 @@ class PoiPhotosHeader extends ConsumerWidget {
             ),
           ),
           duration: const Duration(milliseconds: 300),
-        );
-      },
-    );
-
-    /// two crossfades since we have 4 states. And it looks more smooth than animated container imo
-    return ValueListenableBuilder(
-      valueListenable: expansion,
-      builder: (context, expansion, child) => AnimatedCrossFade(
-        crossFadeState: !photos.hasValue || photos.requireValue.items.isEmpty || expansion == Expansion.hidden
-            // ||
-            //     expansion == Expansion.expanded
-            ? CrossFadeState.showFirst
-            : CrossFadeState.showSecond,
-        firstCurve: Curves.easeInOut,
-        secondCurve: Curves.easeInOut,
-        sizeCurve: Curves.easeInOut,
-        duration: const Duration(milliseconds: 300),
-        firstChild: const SizedBox.shrink(),
-        secondChild: Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: AnimatedCrossFade(
-            firstCurve: Curves.easeInOut,
-            secondCurve: Curves.easeInOut,
-            sizeCurve: Curves.easeInOut,
-            duration: const Duration(milliseconds: 300),
-            crossFadeState: switch (expansion) {
-              Expansion.hidden || Expansion.expanded => CrossFadeState.showFirst,
-              Expansion.collapsed || Expansion.middle => CrossFadeState.showSecond,
-            },
-            firstChild: SizedBox(height: 150, child: child),
-            secondChild: SizedBox(height: 100, child: child),
-          ),
         ),
-      ),
-      child: PoiPhotosRow(
-        objectId: objectId,
-      ),
     );
   }
 }
