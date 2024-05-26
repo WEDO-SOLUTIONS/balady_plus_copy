@@ -1023,6 +1023,13 @@ enum FollowStateMessage {
 
 enum BetterRouteResponseMessage { accept, reject, timeout }
 
+/// Settings for better route searching
+/// [routeSearchDelay] - delay before searching for alternative routes when starting a trip on a route or after switching
+/// to another route. Must be not less than 5 seconds
+/// [betterRouteTimeCostThreshold] - minimum travel time difference between the original route and the alternative route
+/// for which the alternative route is considered a better route
+/// [betterRouteLengthThreshold] - minimum total length of route edges that differ between the original route
+/// and the alternative route at which the alternative route is considered a better route
 class BetterRouteSettingsMessage {
   final int betterRouteTimeCostThreshold;
   final int betterRouteLengthThreshold;
