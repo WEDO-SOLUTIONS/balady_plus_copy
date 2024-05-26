@@ -19,32 +19,62 @@ import 'package:mapness/app/routes/weather.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
-class MapControls extends ConsumerWidget {
+class MapControls extends ConsumerStatefulWidget {
   const MapControls({
-    this.hideControls,
+    required this.draggableScrollableController,
+    required this.onScroll,
     super.key,
   });
-  final bool? hideControls;
+
+  final DraggableScrollableController draggableScrollableController;
+  final bool onScroll;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controlsState = ref.watch(mapControlsProvider);
-    final currentRoute = ref.watch(currentRouteProvider);
+  ConsumerState<MapControls> createState() => _MapControlsState();
+}
 
-    final controlsHidden = hideControls ??
-        controlsState.controlsVisible == false ||
-            (currentRoute?.currentPath != null && currentRoute!.currentPath != '/landing');
+class _MapControlsState extends ConsumerState<MapControls> {
+  bool _hideControls = false;
+  double _bottomPadding = 16;
+
+  @override
+  void didUpdateWidget(covariant MapControls oldWidget) {
+    _handleScroll();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _handleScroll() {
+    if (!widget.onScroll) {
+      final currentSize = widget.draggableScrollableController.size;
+      final double screenHeight = MediaQuery.of(context).size.height;
+      final double padding = currentSize * screenHeight;
+      setState(() {
+        final locationBottomSheet = currentSize > 0.90;
+        _hideControls = locationBottomSheet;
+
+        if (currentSize > 0.28 && currentSize < 0.4) {
+          // for a new feature you need to change and replace the magic number, now these numbers are taken by taking into account all the indents, the height of the bottom nav bar
+          _bottomPadding = 16 + padding - 74 - 80;
+        } else {
+          _bottomPadding = 16;
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controlsState = ref.watch(mapControlsProvider);
 
     return IgnorePointer(
-      ignoring: controlsHidden,
+      ignoring: _hideControls,
       child: SafeArea(
         bottom: false,
         child: AnimatedOpacity(
-          opacity: controlsHidden ? 0 : 1,
+          opacity: _hideControls ? 0 : 1,
           duration: const Duration(milliseconds: 250),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,11 +83,11 @@ class MapControls extends ConsumerWidget {
                 textDirection: TextDirection.ltr,
                 child: Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(
+                    padding: EdgeInsets.only(
                       left: 12,
                       top: 12,
                       right: 12,
-                      bottom: 16,
+                      bottom: _bottomPadding,
                     ),
                     child: Row(
                       children: [
@@ -95,9 +125,7 @@ class MapControls extends ConsumerWidget {
                                     });
                                   },
                                 ),
-                                const SizedBox(
-                                  width: 12,
-                                ),
+                                const SizedBox(width: 12),
                                 const SearchInArea(),
                               ],
                             ),
@@ -141,9 +169,7 @@ class MapControls extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 74,
-              ),
+              const SizedBox(height: 74),
             ],
           ),
         ),
