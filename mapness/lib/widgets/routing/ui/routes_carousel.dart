@@ -32,84 +32,49 @@ class RoutesCarousel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => routes.when(
-        data: (routes) => Builder(builder: (context) {
-          if (routes.length == 1) {
-            final route = routes.first;
-            final distance = route.distance;
-            final duration = route.duration;
-
-            const averageHumanStepsByKm = 1350;
-            const averageCaloriesPerMinute = 4.6;
-
-            final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
-            final calories = ((duration / 60.0) * averageCaloriesPerMinute).toInt();
-            return Padding(
-              padding: padding(
-                index: 0,
-                length: routes.length,
-                isLtr: Directionality.of(context) == TextDirection.ltr,
-              ),
-              child: PathCard(
-                distance: distance.formatDistance(context.l10n),
-                isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
-                localizations: PathCardLocalization(
-                  calories: context.l10n.calories,
-                  steps: context.l10n.steps,
-                  go: context.l10n.go,
-                ),
-                duration: duration.formatDuration(context.l10n),
-                steps: steps,
-                calories: calories,
-                onStartTap: startNavigation,
-              ),
-            );
-          }
+        data: (routes) {
           final shortest = shortestIsOnlyOne(routes);
-          return SizedBox(
+          return _CarouselWrapper(
+            pageController: pageController,
+            routes: routes,
             height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
-            child: PageView.builder(
-              controller: pageController,
-              padEnds: false,
-              itemBuilder: (context, index) {
-                final route = routes[index];
-                final distance = route.distance;
-                final duration = route.duration;
+            itemBuilder: (context, index) {
+              final route = routes[index];
+              final distance = route.distance;
+              final duration = route.duration;
 
-                const averageHumanStepsByKm = 1350;
-                const averageCaloriesPerMinute = 4.6;
+              const averageHumanStepsByKm = 1350;
+              const averageCaloriesPerMinute = 4.6;
 
-                final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
-                final calories = ((duration / 60.0) * averageCaloriesPerMinute).toInt();
-                return Padding(
-                  padding: padding(
-                    index: index,
-                    length: routes.length,
-                    isLtr: Directionality.of(context) == TextDirection.ltr,
+              final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
+              final calories = ((duration / 60.0) * averageCaloriesPerMinute).toInt();
+              return Padding(
+                padding: padding(
+                  index: index,
+                  length: routes.length,
+                  isLtr: Directionality.of(context) == TextDirection.ltr,
+                ),
+                child: PathCard(
+                  distance: distance.formatDistance(context.l10n),
+                  isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
+                  localizations: PathCardLocalization(
+                    calories: context.l10n.calories,
+                    steps: context.l10n.steps,
+                    go: context.l10n.go,
                   ),
-                  child: PathCard(
-                    distance: distance.formatDistance(context.l10n),
-                    isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
-                    localizations: PathCardLocalization(
-                      calories: context.l10n.calories,
-                      steps: context.l10n.steps,
-                      go: context.l10n.go,
-                    ),
-                    duration: duration.formatDuration(context.l10n),
-                    steps: steps,
-                    calories: calories,
-                    onStartTap: startNavigation,
-                    additionalInfo: shortest != null && shortest == duration
-                        ? PathCardStatus.shortest(context.l10n.shortest)
-                        : null,
-                  ),
-                );
-              },
-              itemCount: routes.length,
-            ),
+                  duration: duration.formatDuration(context.l10n),
+                  steps: steps,
+                  calories: calories,
+                  onStartTap: startNavigation,
+                  additionalInfo:
+                      shortest != null && shortest == duration ? PathCardStatus.shortest(context.l10n.shortest) : null,
+                ),
+              );
+            },
           );
-        }),
+        },
         error: (_, __) => PathCardFailure(refresh: refresh),
-        loading: () => PathCardLoading(text: context.l10n.loading),
+        loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
         skipLoadingOnRefresh: false,
         skipLoadingOnReload: false,
       );
@@ -153,8 +118,31 @@ class RoutesCarousel extends ConsumerWidget {
 }
 
 class _CarouselWrapper extends StatelessWidget {
-  const _CarouselWrapper();
+  final double height;
+  final PageController pageController;
+  final List<RouteInfo> routes;
+  final Widget Function(BuildContext, int) itemBuilder;
+
+  const _CarouselWrapper({
+    required this.itemBuilder,
+    required this.routes,
+    required this.height,
+    required this.pageController,
+  });
 
   @override
-  Widget build(BuildContext context) => const Placeholder();
+  Widget build(BuildContext context) {
+    if (routes.length == 1) {
+      return itemBuilder(context, 0);
+    }
+    return SizedBox(
+      height: height,
+      child: PageView.builder(
+        controller: pageController,
+        padEnds: false,
+        itemBuilder: itemBuilder,
+        itemCount: routes.length,
+      ),
+    );
+  }
 }
