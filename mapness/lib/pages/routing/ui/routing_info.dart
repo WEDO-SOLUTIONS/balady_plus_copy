@@ -8,20 +8,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
-import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
-import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
+import 'package:mapness/pages/routing/ui/routing_tab_bar.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
-import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
-import 'package:urbi_utils/urbi_utils.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
@@ -138,7 +133,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                     navType: navigatingType,
                   ),
                   Spacing.verticalPaddingInsideWrapper.heightBox,
-                  _RouteTabBar(
+                  RouteTabBar(
                     active: navigatingType,
                     onChanged: _onChanged,
                     points: widget.points,
@@ -179,70 +174,5 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     );
 
     _navType.value = routeSearch;
-  }
-}
-
-class _RouteTabBar extends ConsumerWidget {
-  final void Function(RouteSearchOptionsMessage) onChanged;
-  final RouteSearchOptionsMessage active;
-  final List<RouteParamsPoint?> points;
-
-  const _RouteTabBar({
-    required this.onChanged,
-    required this.active,
-    required this.points,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final routes = ref
-            .watch(
-              routesProvider(
-                startPoint: points[0],
-                finishPoint: points[1],
-                navType: active,
-              ),
-            )
-            .unwrapPrevious()
-            .valueOrNull ??
-        [];
-    final activeRoute = ref.watch(activeRouteProvider);
-    final routeDuration = routes.isEmpty ? null : routes[activeRoute].duration;
-
-    final anotherRoute = ref.watch(
-      briefRouteInfoProvider(
-        startPoint: points[0]?.toRouteSearch,
-        finishPoint: points[1]?.toRouteSearch,
-        navType: active == RouteSearchOptionsMessage.car
-            ? RouteSearchOptionsMessage.pedestrian
-            : RouteSearchOptionsMessage.car,
-      ),
-    );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.verticalPaddingInsideWrapper),
-      child: Row(
-        children: [
-          RouteSearchOptionsMessage.car,
-          RouteSearchOptionsMessage.pedestrian,
-        ]
-            .map<Widget>(
-              (e) => Expanded(
-                child: Chips(
-                  onTap: () => onChanged(e),
-                  style: ChipsStyle.whiteBackground,
-                  leadingIcon: ChipIconData(e.icon(context)),
-                  title: active == e
-                      ? routeDuration?.formatDuration(context.l10n)
-                      : anotherRoute?.firstOrNull?.duration.toInt().formatDuration(context.l10n),
-                  isSelected: active == e,
-                  size: ChipsSize.medium,
-                ),
-              ),
-            )
-            .insertBetween(Spacing.horizontalGapBetweenChips.widthBox)
-            .toList(),
-      ),
-    );
   }
 }
