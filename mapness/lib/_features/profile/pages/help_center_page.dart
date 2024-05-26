@@ -27,7 +27,7 @@ class HelpCenterPage extends ConsumerWidget {
                   leading: ActionModel(
                     text: context.l10n.back,
                     onPressed: () => context.pop(),
-                    icon: context.isLtr ? SystemIcons.arrowCornerRightL : SystemIcons.arrowCornerLeftL,
+                    icon: context.isLTR ? SystemIcons.arrowCornerRightL : SystemIcons.arrowCornerLeftL,
                   ),
                 ),
                 body: Padding(
@@ -50,7 +50,7 @@ class HelpCenterPage extends ConsumerWidget {
                                 color: context.color.textAndIconsStatusAccent,
                               ),
                               actionWidget: ContentRowActionOptions(
-                                actionIcon: context.isLtr
+                                actionIcon: context.isLTR
                                     ? SystemIcons.arrowCornerLeftS.icon(
                                         color: context.color.textAndIconsBaseSecondary,
                                       )

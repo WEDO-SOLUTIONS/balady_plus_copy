@@ -1,20 +1,20 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PopupModel {
   final String title;
   final IconData icon;
   final VoidCallback onTap;
   final Color? color;
+  final TextStyle? titleStyle;
 
   PopupModel({
     required this.title,
     required this.icon,
     required this.onTap,
     required this.color,
+    this.titleStyle,
   });
 }
 
@@ -45,8 +45,8 @@ class PopupCard extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   onTap: item.onTap,
                   child: PopupMenuWidget(
-                    title: Text(item.title,
-                        style: context.textStyle.footNote.copyWith(color: context.color.textAndIconsBasePrimary)),
+                    titleStyle: item.titleStyle,
+                    title: item.title,
                     icon: item.icon.icon(
                       color: item.color,
                     ),
@@ -58,14 +58,16 @@ class PopupCard extends StatelessWidget {
 }
 
 class PopupMenuWidget extends StatelessWidget {
-  final Widget title;
+  final String title;
   final Widget icon;
   final bool showDivider;
+  final TextStyle? titleStyle;
 
   const PopupMenuWidget({
     super.key,
     required this.title,
     required this.icon,
+    this.titleStyle,
     this.showDivider = true,
   });
 
@@ -74,18 +76,22 @@ class PopupMenuWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: Spacing.verticalPaddingInsideCell,
-              horizontal: Spacing.horizontalPaddingInsideWrapper,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                icon,
-                Spacing.horizontalGapBetweenCellContent.widthBox,
-                title,
-              ],
+          SizedBox(
+            height: 48,
+            width: 140,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: Spacing.verticalPaddingInsideCell,
+                horizontal: Spacing.horizontalPaddingInsideWrapper,
+              ),
+              child: ContentRow(
+                options: ContentRowOptions(
+                  padding: EdgeInsets.zero,
+                  title: title,
+                  titleStyle: titleStyle,
+                  leadingIcon: icon,
+                ),
+              ),
             ),
           ),
           if (showDivider) const Divider(),

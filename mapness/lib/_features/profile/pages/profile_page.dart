@@ -30,7 +30,7 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
-    final actionIcon = context.isLtr
+    final actionIcon = context.isLTR
         ? SystemIcons.arrowCornerLeftS.icon(
             color: context.color.textAndIconsBaseSecondary,
           )

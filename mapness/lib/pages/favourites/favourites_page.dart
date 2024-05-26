@@ -29,6 +29,9 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
 
   void toggleEditing() {
     setState(() {
+      if(isEditing) {
+        selectedItems.clear();
+      }
       isEditing = !isEditing;
     });
   }

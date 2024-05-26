@@ -36,7 +36,7 @@ class PinnedPlaceCard extends StatelessWidget {
           horizontal: Spacing.horizontalPaddingInsideCell,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(CornerRadius.smallContainer),
           color: context.color.surfaceBaseSecondary,
         ),
         child: Stack(
@@ -45,7 +45,7 @@ class PinnedPlaceCard extends StatelessWidget {
             Column(
               children: [
                 const SizedBox(
-                  height: 8,
+                  height: NumericBase.$2x,
                 ),
                 InkWell(
                   onTap: onTap,
@@ -70,7 +70,7 @@ class PinnedPlaceCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(
-                  height: 4,
+                  height: NumericBase.$1x,
                 ),
                 Text(
                   title,
@@ -78,7 +78,7 @@ class PinnedPlaceCard extends StatelessWidget {
                   style: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
                 ),
                 const SizedBox(
-                  height: 2,
+                  height: NumericBase.$0_5x,
                 ),
                 Text(
                   address,
@@ -116,6 +116,9 @@ class PinnedPlaceCard extends StatelessWidget {
                       color: context.color.textAndIconsBasePrimary,
                     ),
                     PopupModel(
+                      titleStyle: context.textStyle.text.copyWith(
+                        color: context.color.textAndIconsStatusNegative,
+                      ),
                       color: context.color.textAndIconsStatusNegative,
                       title: context.l10n.delete,
                       icon: GeneralIcons.trash,
@@ -123,7 +126,7 @@ class PinnedPlaceCard extends StatelessWidget {
                     ),
                   ],
                   child: GeneralIcons.ellipsis.icon(
-                    color: context.color.textAndIconsBaseTertiary,
+                    color: context.color.textAndIconsStatusAccent,
                   ),
                 ),
               ),

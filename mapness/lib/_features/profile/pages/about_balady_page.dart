@@ -63,7 +63,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                 leading: ActionModel(
                   text: context.l10n.back,
                   onPressed: () => context.pop(),
-                  icon: context.isLtr ? SystemIcons.arrowCornerRightL : SystemIcons.arrowCornerLeftL,
+                  icon: context.isLTR ? SystemIcons.arrowCornerRightL : SystemIcons.arrowCornerLeftL,
                 ),
               ),
               body: ListView(
