@@ -68,16 +68,20 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
               },
               child: InkWell(
                 onTap: () {
-                  if (!widget.isEditing) widget.onTap();
                   if (widget.isEditing) {
-                    setState(() {
-                      widget.onSelect?.call(widget.isSelected == true);
-                    });
+                    setState(() => widget.onSelect?.call(widget.isSelected == true));
+                  } else {
+                    widget.onTap();
                   }
                 },
                 onLongPress: () {
                   if (!widget.isEditing) {
+                    final color = context.color;
                     showMenu(
+                      constraints: const BoxConstraints(
+                        minWidth: 140,
+                        maxWidth: 140,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -87,14 +91,9 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                           padding: EdgeInsets.zero,
                           onTap: () => widget.onRouteTap?.call(),
                           child: PopupMenuWidget(
-                            title: Text(
-                              context.l10n.route,
-                              style: context.textStyle.footNote.copyWith(
-                                color: context.color.textAndIconsBasePrimary,
-                              ),
-                            ),
+                            title: context.l10n.route,
                             icon: GeneralIcons.route.icon(
-                              color: context.color.textAndIconsBasePrimary,
+                              color: color.textAndIconsBasePrimary,
                             ),
                           ),
                         ),
@@ -102,14 +101,9 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                           padding: EdgeInsets.zero,
                           onTap: () => widget.onShareTap?.call(),
                           child: PopupMenuWidget(
-                            title: Text(
-                              context.l10n.share,
-                              style: context.textStyle.footNote.copyWith(
-                                color: context.color.textAndIconsBasePrimary,
-                              ),
-                            ),
+                            title: context.l10n.share,
                             icon: GeneralIcons.share.icon(
-                              color: context.color.textAndIconsBasePrimary,
+                              color: color.textAndIconsBasePrimary,
                             ),
                           ),
                         ),
@@ -117,14 +111,12 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                           padding: EdgeInsets.zero,
                           onTap: () => widget.onDelete?.call(),
                           child: PopupMenuWidget(
-                            title: Text(
-                              context.l10n.delete,
-                              style: context.textStyle.footNote.copyWith(
-                                color: context.color.textAndIconsStatusNegative,
-                              ),
+                            titleStyle: context.textStyle.text.copyWith(
+                              color: color.textAndIconsStatusNegative,
                             ),
+                            title: context.l10n.delete,
                             icon: GeneralIcons.trash.icon(
-                              color: context.color.textAndIconsStatusNegative,
+                              color: color.textAndIconsStatusNegative,
                             ),
                             showDivider: false,
                           ),

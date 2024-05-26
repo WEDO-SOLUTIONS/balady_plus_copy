@@ -68,7 +68,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                   color: context.color.textAndIconsStatusAccent,
                 ),
                 actionWidget: ContentRowActionOptions(
-                  actionIcon: context.isLtr
+                  actionIcon: context.isLTR
                       ? SystemIcons.arrowCornerLeftS.icon(
                           color: context.color.textAndIconsBaseSecondary,
                         )
