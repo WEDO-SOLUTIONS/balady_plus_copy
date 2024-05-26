@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
@@ -52,8 +53,7 @@ class EtaSheetWrapper extends StatelessWidget {
                         bottom: Spacing.verticalPaddingInsideCell,
                       ),
                       child: _BetterRouteButton(
-                        title: context.l10n
-                            .betterRouteFound((duration / 60).ceil()),
+                        title: context.l10n.betterRouteFound(max((duration / 60).floor(), 1)),
                         onTap: onBetterRouteAccept,
                         onCloseTap: onBetterRouteReject,
                       ),
