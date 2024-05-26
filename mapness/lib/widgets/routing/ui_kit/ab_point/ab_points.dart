@@ -32,18 +32,22 @@ class ABPoints extends StatelessWidget {
             ),
           ),
           Spacing.horizontalGapBetweenChips.widthBox,
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: locations
-                .map<Widget>(
-                  (e) => Text(
-                    e,
-                    style: context.textStyle.footNote,
-                  ),
-                )
-                .insertBetween(const SizedBox(height: 4))
-                .toList(),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: locations
+                  .map<Widget>(
+                    (e) => Text(
+                      e,
+                      style: context.textStyle.footNote,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )
+                  .insertBetween(const SizedBox(height: 4))
+                  .toList(),
+            ),
           ),
         ],
       ));
