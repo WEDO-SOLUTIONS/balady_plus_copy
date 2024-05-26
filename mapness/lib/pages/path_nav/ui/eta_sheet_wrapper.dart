@@ -53,7 +53,7 @@ class EtaSheetWrapper extends StatelessWidget {
                       ),
                       child: _BetterRouteButton(
                         title: context.l10n
-                            .betterRouteFound((duration / 60).floor()),
+                            .betterRouteFound((duration / 60).ceil()),
                         onTap: onBetterRouteAccept,
                         onCloseTap: onBetterRouteReject,
                       ),
