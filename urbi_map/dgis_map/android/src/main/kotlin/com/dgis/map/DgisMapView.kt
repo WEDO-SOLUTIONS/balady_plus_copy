@@ -892,6 +892,18 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun getBetterRouteSettings(result: Messages.Result<BetterRouteSettingsMessage>?) {
+        navigationHandler.getBetterRouteSettings(result)
+    }
+
+    override fun setBetterRouteSettings(
+        message: BetterRouteSettingsMessage,
+        result: Messages.Result<Void>?
+    ) {
+        navigationHandler.setBetterRouteSettings(message)
+        result?.success(null)
+    }
+
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {
         packagesHandler.listPackages(result)
     }
