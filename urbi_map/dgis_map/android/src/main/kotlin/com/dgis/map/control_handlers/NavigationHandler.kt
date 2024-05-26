@@ -8,6 +8,7 @@ import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.BetterRouteResponseMessage
+import com.dgis.map.map_api.Messages.BetterRouteSettingsMessage
 import com.dgis.map.map_api.Messages.Result
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
@@ -75,8 +76,6 @@ class NavigationHandler(
         navigationView.navigationManager = navigationManager
 
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = Duration.ofSeconds(5 * 60)
-        navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(500 * 1000)
         navigationManager.routeSourceSettings.calloutVisualizationMode = CalloutVisualizationMode.MULTIPLE_ROUTES
 
         dashboardControlModel = DashboardControlModel(
@@ -283,6 +282,23 @@ class NavigationHandler(
             BetterRouteResponseMessage.REJECT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.REJECT)
             BetterRouteResponseMessage.TIMEOUT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.TIMEOUT)
         }
+    }
+
+    fun getBetterRouteSettings(result: Result<BetterRouteSettingsMessage>?) {
+        val settings = navigationManager.alternativeRoutesProviderSettings
+        result?.success(
+            BetterRouteSettingsMessage.Builder()
+                .setRouteSearchDelay(settings.routeSearchDelay.inSeconds)
+                .setBetterRouteTimeCostThreshold(settings.betterRouteTimeCostThreshold.inSeconds)
+                .setBetterRouteLengthThreshold(settings.betterRouteLengthThreshold.millimeters)
+                .build()
+        )
+    }
+
+    fun setBetterRouteSettings(settings: BetterRouteSettingsMessage) {
+        navigationManager.alternativeRoutesProviderSettings.routeSearchDelay = Duration.ofSeconds(settings.routeSearchDelay)
+        navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = Duration.ofSeconds(settings.betterRouteTimeCostThreshold)
+        navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(settings.betterRouteLengthThreshold)
     }
 
     fun calcPositionForRoute(

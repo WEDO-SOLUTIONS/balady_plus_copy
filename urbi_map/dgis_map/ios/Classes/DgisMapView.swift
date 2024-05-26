@@ -1064,4 +1064,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         navigationHandler?.betterRouteResponse(response: response)
         completion(nil)
     }
+    
+    func getBetterRouteSettings(completion: @escaping (BetterRouteSettingsMessage?, FlutterError?) -> Void) {
+        navigationHandler?.getBetterRouteSettings(completion: completion)
+    }
+    
+    func setBetterRouteSettingsMessage(_ message: BetterRouteSettingsMessage, completion: @escaping (FlutterError?) -> Void) {
+        navigationHandler?.setBetterRouteSettings(settings: message)
+        completion(nil)
+    }
 }
