@@ -18,7 +18,7 @@ enum QuickFilterType {
   schools,
 }
 
-final quickFilters = [
+const quickFilters = [
   QuickFilter(
     type: QuickFilterType.restaurants,
     rubrics: [161, 165, 161, 9786, 162, 469, 58871],

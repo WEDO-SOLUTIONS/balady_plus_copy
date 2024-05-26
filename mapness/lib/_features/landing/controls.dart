@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
+import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
@@ -117,9 +118,7 @@ class _MapControlsState extends ConsumerState<MapControls> {
                                     );
                                     final location = ref.read(locationProvider.notifier);
 
-                                    await location
-                                        .checkLocationPermission()
-                                        .then((allowed) {
+                                    await location.checkLocationPermission().then((allowed) {
                                       if (allowed) {
                                         const KiblahRoute().push(context);
                                       }
@@ -165,6 +164,7 @@ class _MapControlsState extends ConsumerState<MapControls> {
                     padding: EdgeInsets.only(bottom: 12),
                     child: MapQuickFilters(
                       forMap: true,
+                      id: QuickFilterScreen.controls,
                     ),
                   ),
                 ),

@@ -27,16 +27,16 @@ class Dashboard extends ConsumerStatefulWidget {
     required this.biggestHeight,
     required this.biggestWidth,
     required this.initWithMinSize,
-    required this.draggableScrollableController,
     required this.onScroll,
+    required this.scrollableController,
     super.key,
   });
 
+  final DraggableScrollableController scrollableController;
   final double biggestHeight;
   final double biggestWidth;
   final bool initWithMinSize;
   final Function(bool) onScroll;
-  final DraggableScrollableController draggableScrollableController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -48,20 +48,13 @@ class _DashboardState extends ConsumerState<Dashboard> {
   @override
   void initState() {
     super.initState();
-    widget.draggableScrollableController.addListener(() {
-      Future.delayed(Duration.zero, () {
-        if (widget.draggableScrollableController.size > _headerExtent + 0.001) {
-          ref.read(mapControlsProvider.notifier).update(
-                MapControlsStateDashboard(),
-              );
-        } else {
-          ref.read(mapControlsProvider.notifier).update(
-                MapControlsStateIdle(),
-                );
-            FocusManager.instance.primaryFocus?.unfocus();
-          }
-        });
-      });
+    widget.scrollableController.addListener(_scrollListenHandler);
+  }
+
+  @override
+  void dispose() {
+    widget.scrollableController.removeListener(_scrollListenHandler);
+    super.dispose();
   }
 
   @override
@@ -69,7 +62,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
     ref
       ..listen(searchByRubricsQueryProvider, (previous, next) {
         if (next != null) {
-          widget.draggableScrollableController.animateTo(
+          widget.scrollableController.animateTo(
             _headerExtent,
             duration: const Duration(milliseconds: 250),
             curve: Curves.linear,
@@ -78,7 +71,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
       })
       ..listen(layersControlsProvider, (previous, next) {
         if (next.layersVisible) {
-          widget.draggableScrollableController.animateTo(
+          widget.scrollableController.animateTo(
             _headerExtent,
             duration: const Duration(milliseconds: 250),
             curve: Curves.linear,
@@ -115,7 +108,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
           return true;
         },
         child: DraggableScrollableSheet(
-          controller: widget.draggableScrollableController,
+          controller: widget.scrollableController,
           initialChildSize: widget.initWithMinSize ? _headerExtent : .38,
           minChildSize: _headerExtent,
           maxChildSize: .93,
@@ -143,7 +136,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                   slivers: [
                     SliverPersistentHeader(
                       delegate: DashboardHeaderDelegate(
-                        draggableScrollableController: widget.draggableScrollableController,
+                        draggableScrollableController: widget.scrollableController,
                       ),
                       pinned: true,
                     ),
@@ -212,5 +205,20 @@ class _DashboardState extends ConsumerState<Dashboard> {
         ),
       ),
     );
+  }
+
+  void _scrollListenHandler() {
+    Future.delayed(Duration.zero, () {
+      if (widget.scrollableController.size > _headerExtent + 0.001) {
+        ref.read(mapControlsProvider.notifier).update(
+          MapControlsStateDashboard(),
+        );
+      } else {
+        ref.read(mapControlsProvider.notifier).update(
+          MapControlsStateIdle(),
+        );
+        FocusManager.instance.primaryFocus?.unfocus();
+      }
+    });
   }
 }
