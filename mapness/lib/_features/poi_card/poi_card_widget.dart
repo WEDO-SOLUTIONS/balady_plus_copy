@@ -10,6 +10,7 @@ import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
+import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
@@ -57,15 +58,15 @@ class PoiCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) => _Content(
-      objectId: objectId,
-      cameraConfig: cameraConfig,
-      biggestHeight: constraints.biggest.height,
-      biggestWidth: constraints.biggest.width,
-      closestPoint: closestPoint,
-      // directoryObject: result,
-    ),
-  );
+        builder: (context, constraints) => _Content(
+          objectId: objectId,
+          cameraConfig: cameraConfig,
+          biggestHeight: constraints.biggest.height,
+          biggestWidth: constraints.biggest.width,
+          closestPoint: closestPoint,
+          // directoryObject: result,
+        ),
+      );
 }
 
 class _Content extends ConsumerStatefulWidget {
@@ -76,6 +77,7 @@ class _Content extends ConsumerStatefulWidget {
     required this.closestPoint,
     this.cameraConfig,
   });
+
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
 
@@ -105,7 +107,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     _tabType = ValueNotifier(PoiTabsType.info);
     _tabController.addListener(
-          () {
+      () {
         if (_tabController.indexIsChanging) {
           switch (_tabController.index) {
             case 0:
@@ -181,8 +183,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
           /// sometimes error code is in message and sometimes in code, idk, probably changed in releases
           ((state.error! as PlatformException).code == 'NotFoundException' ||
-              (state.error! as PlatformException).message ==
-                  'NotFoundException')) {
+              (state.error! as PlatformException).message == 'NotFoundException')) {
         return Column(
           children: [
             const Spacer(flex: 3),
@@ -257,6 +258,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       ),
     );
     final language = ref.watch(appLanguageProvider);
+    final photos = ref.watch(poiPhotoProvider(objectId));
 
     return Directionality(
       textDirection: switch (language) {
@@ -268,15 +270,13 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         availableExpansions: Expansion.values.toSet(),
         initialExpansion: Expansion.middle,
         collapsedHeight: sheetSizes.collapsedHeight,
-        middleHeight: sheetSizes.middleHeight,
+        middleHeight: sheetSizes.middleHeight + (photos.hasValue == true ? 100.0 : .0),
         hiddenHeight: sheetSizes.hiddenHeight,
         controller: _bottomSheetController,
-        mapControlsBuilder:
-            (context, scrollController, biggestHeight, smallestHeight) =>
-            PoiCardMapControls(
-              scrollController: scrollController,
-              biggestHeight: biggestHeight,
-            ),
+        mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
+          scrollController: scrollController,
+          biggestHeight: biggestHeight,
+        ),
         onExpansionChanged: (expansion, {byUser = false}) => setState(() {
           _expansion.value = expansion;
         }),
@@ -292,8 +292,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                 action: MetricAction.tap.toString(),
                 props: {
                   'object_id': data.id?.objectId,
-                  'closest_point':
-                  '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                  'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
                 });
 
             viewModel.share(
@@ -313,45 +312,42 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           },
           onEntranceTap: () => _toggleEntrances(data),
         ),
-        scrollableBody: (context, controller) =>
-            DgisBottomSheetScrollableContent(
-              controller: controller,
-              header: PoiHeader(
-                poiCardState: poiCardState,
-                tabController: _tabController,
-                data: data,
-                onTapClose: () {
-                  Metrics.logEventAdvanced(
-                    MetricsConstants.poiKeys.exitButton,
-                    group: MetricsConstants.poiTag,
-                    action: MetricAction.tap.toString(),
-                  );
+        scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
+          controller: controller,
+          header: PoiHeader(
+            poiCardState: poiCardState,
+            tabController: _tabController,
+            data: data,
+            onTapClose: () {
+              Metrics.logEventAdvanced(
+                MetricsConstants.poiKeys.exitButton,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+              );
 
-                  ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-                  ref
-                      .read(highlightProvider.notifier)
-                      .removeHighlight(widget.objectId);
-                  context.pop();
-                },
-              ),
-              body: [
-                ValueListenableBuilder(
-                  valueListenable: _tabType,
-                  builder: (context, tabType, _) => switch (tabType) {
-                    PoiTabsType.info => infoBody,
-                    PoiTabsType.photos => PoiPhotoCard(
-                      model: PoiModel(
-                        directoryObjectMessage: data,
-                      ),
+              ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+              context.pop();
+            },
+          ),
+          body: [
+            ValueListenableBuilder(
+              valueListenable: _tabType,
+              builder: (context, tabType, _) => switch (tabType) {
+                PoiTabsType.info => infoBody,
+                PoiTabsType.photos => PoiPhotoCard(
+                    model: PoiModel(
+                      directoryObjectMessage: data,
                     ),
-                    PoiTabsType.inBuilding => InBuildingWidget(
-                      state: poiCardState,
-                      objectId: widget.objectId,
-                    ),
-                  },
-                ),
-              ],
+                  ),
+                PoiTabsType.inBuilding => InBuildingWidget(
+                    state: poiCardState,
+                    objectId: widget.objectId,
+                  ),
+              },
             ),
+          ],
+        ),
       ),
     );
   }
@@ -374,8 +370,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     }
 
     await _animateToEntrance(
-        data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList()
-    );
+        data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList());
     _bottomSheetController.animateTo(Expansion.collapsed);
   }
 
