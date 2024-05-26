@@ -1,8 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/profile/logout_dialog.dart';
 
 class ProfileMenu extends StatelessWidget {
   final VoidCallback? onTapLogout;
@@ -27,25 +25,25 @@ class ProfileMenu extends StatelessWidget {
             onTap: onTapChangeAvatar?.call,
             child: Text(context.l10n.change_avatar, style: context.textStyle.text),
           ),
-          PopupMenuItem(
-              child: Text(
-                context.l10n.logOut,
-                style: context.textStyle.text.copyWith(
-                  color: context.color.textAndIconsStatusNegative,
-                ),
-              ),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => LogoutDialog(
-                    onCancel: () => Navigator.of(ctx).pop(),
-                    onLogout: onTapLogout?.call,
-                    title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
-                    logOutText: context.l10n.logOut,
-                    cancelText: context.l10n.cancel,
-                  ),
-                );
-              }),
+          // PopupMenuItem(
+          //     child: Text(
+          //       context.l10n.logOut,
+          //       style: context.textStyle.text.copyWith(
+          //         color: context.color.textAndIconsStatusNegative,
+          //       ),
+          //     ),
+          //     onTap: () {
+          //       showDialog(
+          //         context: context,
+          //         builder: (ctx) => LogoutDialog(
+          //           onCancel: () => Navigator.of(ctx).pop(),
+          //           onLogout: onTapLogout?.call,
+          //           title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
+          //           logOutText: context.l10n.logOut,
+          //           cancelText: context.l10n.cancel,
+          //         ),
+          //       );
+          //     }),
         ],
         icon: AppIcons(
           iconData: GeneralIcons.ellipsis,

@@ -1,18 +1,18 @@
+import 'dart:typed_data';
+
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/profile.dart';
-import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
-import 'package:mapness/widgets/profile/profile_menu.dart';
+
+import 'profile_menu.dart';
 
 class AuthorizedWidget extends ConsumerWidget {
   const AuthorizedWidget({super.key, required this.userData});
@@ -28,6 +28,7 @@ class AuthorizedWidget extends ConsumerWidget {
             LayoutBuilder(
               builder: (context, constraints) {
                 final textDirection = Directionality.of(context);
+
                 /// top position of the profile image
                 /// all "magic" numbers are calculated based on the design
                 /// was found by selecting options
@@ -62,10 +63,11 @@ class AuthorizedWidget extends ConsumerWidget {
                       left: isLTR ? null : 0,
                       child: Center(
                         child: ProfileMenu(
-                          onTapLogout: () async {
-                            await ref.read(authProvider.notifier).logOut();
-                            context.pop();
-                          },
+                          // Disabled in BSA-331 Keep an old design for logout page
+                          // onTapLogout: () async {
+                          //   await ref.read(authProvider.notifier).logOut();
+                          //   context.pop();
+                          // },
                           onTapChangeAvatar: () async {
                             final picker = ImagePicker();
                             final image = await picker.pickImage(source: ImageSource.gallery);
