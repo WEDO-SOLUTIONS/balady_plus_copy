@@ -64,8 +64,6 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   final kbVisibilityController = KeyboardVisibilityController();
   final settings = MapObjectManagerSettings.search();
 
-  double get _headerExtent => 88;
-
   bool closing = false;
 
   ClusteringMapObjectManager? _clustering;
@@ -180,10 +178,10 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
       );
 
   void _onExpansionChanged(Expansion expansion) => switch (expansion) {
-        Expansion.hidden => context.pop(),
-        Expansion.collapsed when kbVisibilityController.isVisible => _dgisSheetController.animateTo(Expansion.expanded),
-        _ => null,
-      };
+      Expansion.hidden => context.pop(),
+      Expansion.middle => context.pop(),
+      _ => null,
+    };
 
   @override
   Widget build(BuildContext context) {
@@ -201,63 +199,65 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
       )
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
-    final closable = ref.watch(
-          searchProvider(searchScope).select((value) => value is! SearchStateResults),
-        ) ||
-        closing;
-
     return Directionality(
       textDirection: Directionality.of(context),
-      child: DgisBottomSheet(
-        showBarrier: false,
-        controller: _dgisSheetController,
-        initialExpansion: Expansion.expanded,
-        availableExpansions: {
-          Expansion.collapsed,
-          Expansion.expanded,
-          Expansion.middle,
-          if (closable) Expansion.hidden,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification is ScrollStartNotification) {
+            if (kbVisibilityController.isVisible) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            }
+          }
+          return true;
         },
-        onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
-        middleHeight: widget.biggestHeight * 0.7,
-        collapsedHeight: _headerExtent,
-        scrollableBody: (context, scrollController) {
-          scrollController.addListener(
-            () {
-              /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
-              /// https://www.youtube.com/watch?v=L_WoOkDAqbM
-              if (kbVisibilityController.isVisible) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
-          );
+        child: DgisBottomSheet(
+          showBarrier: false,
+          controller: _dgisSheetController,
+          initialExpansion: Expansion.expanded,
+          availableExpansions: const {
+            Expansion.expanded,
+            Expansion.middle,
+          },
+          onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
+          middleHeight: widget.biggestHeight * 0.7,
+          scrollableBody: (context, scrollController) {
+            scrollController.addListener(
+                  () {
+                /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
+                /// https://www.youtube.com/watch?v=L_WoOkDAqbM
+                if (kbVisibilityController.isVisible) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                }
+              },
+            );
 
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Material(
-              color: Colors.white,
-              child: SearchScope(
-                named: searchScope,
-                child: CustomScrollView(
-                  controller: scrollController,
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: MapSearchHeaderDelegate(
-                        requestFocus: widget.initialQuery == null,
-                        onClose: close,
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Material(
+                color: Colors.white,
+                child: SearchScope(
+                  named: searchScope,
+                  child: CustomScrollView(
+                    controller: scrollController,
+                    physics: const ClampingScrollPhysics(),
+                    slivers: [
+                      SliverPersistentHeader(
+                        delegate: MapSearchHeaderDelegate(
+                          requestFocus: widget.initialQuery == null,
+                          onClose: close,
+                        ),
+                        pinned: true,
                       ),
-                      pinned: true,
-                    ),
-                    MapSearchContent(
-                      scrollController: scrollController,
-                    ),
-                  ],
+                      MapSearchContent(
+                        scrollController: scrollController,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
