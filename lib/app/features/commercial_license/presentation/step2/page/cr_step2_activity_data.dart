@@ -232,14 +232,18 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                     ),
                   ),
                 ),
-                CRPreviousNextButtons(
-                  isBtnDisabled: !state.isFormValid(),
-                  onPressed: () {
-                    context
-                        .read<CrStep2ActivityDataCubit>()
-                        .getSalamaWarningMessage();
-                  },
-                ),
+
+                (state.subActivityDetailsStatus.isSubmissionLoading ||
+                        state.status.isSubmissionLoading)
+                    ? const Center(child: CustomCircularLoadingWidget())
+                    : CRPreviousNextButtons(
+                        isBtnDisabled: !state.isFormValid(),
+                        onPressed: () {
+                          context
+                              .read<CrStep2ActivityDataCubit>()
+                              .getSalamaWarningMessage();
+                        },
+                      ),
               ],
             ),
           if (state.subActivityDetailsStatus.isSubmissionLoading ||

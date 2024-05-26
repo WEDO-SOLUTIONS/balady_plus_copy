@@ -858,7 +858,9 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                   ],
                 ),
               ),
-              CRPreviousNextButtons(
+              (state.status.isSubmissionLoading)
+                  ? const Center(child: CustomCircularLoadingWidget())
+                  : CRPreviousNextButtons(
                 isBtnDisabled: false,
                 onPressed: () {
                   context.read<CrStep13ReviewDataCubit>().save();
