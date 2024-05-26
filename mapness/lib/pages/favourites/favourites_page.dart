@@ -14,7 +14,7 @@ import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
 import 'package:mapness/widgets/favourites/favourites_toggle.dart';
-import 'package:mapness/widgets/favourites/pinned_place_widget.dart';
+import 'package:mapness/widgets/favourites/pinned_place_card.dart';
 
 class FavouritesPage extends ConsumerStatefulWidget {
   const FavouritesPage({super.key});
@@ -162,7 +162,6 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             final id = entity?.id ?? '';
                             return Expanded(
                               child: PinnedPlaceCard(
-                                objectId: entity?.id,
                                 key: Key('home${home?.id}'),
                                 title: homeTitle,
                                 address: home?.subtitle ?? ctx.l10n.addAddress,
@@ -186,6 +185,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                     finishLevelId: null,
                                   ).push(ctx);
                                 },
+                                onTapShare: () => ShareUtil.share(entity?.id),
                                 onTapChange: () {
                                   const FavouritesSearchRoute(
                                     markerType: FavouriteItemMarkerType.home,
@@ -211,7 +211,6 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               final id = entity?.id ?? '';
                               return Expanded(
                                 child: PinnedPlaceCard(
-                                  objectId: entity?.id,
                                   key: Key('work${work?.id}'),
                                   title: workTitle,
                                   address: work?.subtitle ?? ctx.l10n.addAddress,
@@ -235,6 +234,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                       finishLevelId: null,
                                     ).push(context);
                                   },
+                                  onTapShare: () => ShareUtil.share(entity?.id),
                                   onTapChange: () {
                                     const FavouritesSearchRoute(
                                       markerType: FavouriteItemMarkerType.work,

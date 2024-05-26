@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/ui/popup_card/popup_card.dart';
 
 class PinnedPlaceCard extends StatelessWidget {
@@ -14,12 +13,11 @@ class PinnedPlaceCard extends StatelessWidget {
     required this.isEditing,
     required this.onDelete,
     required this.isAdded,
-    required this.objectId,
     required this.onTapRoute,
+    required this.onTapShare,
     required this.onTapChange,
   });
 
-  final String? objectId;
   final IconData iconData;
   final String title;
   final String address;
@@ -28,6 +26,7 @@ class PinnedPlaceCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback onDelete;
   final VoidCallback onTapRoute;
+  final VoidCallback onTapShare;
   final VoidCallback onTapChange;
 
   @override
@@ -106,7 +105,7 @@ class PinnedPlaceCard extends StatelessWidget {
                     PopupModel(
                       title: context.l10n.share,
                       icon: GeneralIcons.share,
-                      onTap: () => ShareUtil.share(objectId),
+                      onTap: onTapShare,
                       color: context.color.textAndIconsBasePrimary,
                     ),
                     PopupModel(
