@@ -1023,6 +1023,18 @@ enum FollowStateMessage {
 
 enum BetterRouteResponseMessage { accept, reject, timeout }
 
+class BetterRouteSettingsMessage {
+  final int betterRouteTimeCostThreshold;
+  final int betterRouteLengthThreshold;
+  final int routeSearchDelay;
+
+  const BetterRouteSettingsMessage({
+    required this.betterRouteTimeCostThreshold,
+    required this.betterRouteLengthThreshold,
+    required this.routeSearchDelay,
+  });
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1365,6 +1377,12 @@ abstract class MapApi {
 
   @async
   void betterRouteResponse(BetterRouteResponseMessage response);
+
+  @async
+  BetterRouteSettingsMessage getBetterRouteSettings();
+
+  @async
+  void setBetterRouteSettings(BetterRouteSettingsMessage message);
 }
 
 @FlutterApi()
