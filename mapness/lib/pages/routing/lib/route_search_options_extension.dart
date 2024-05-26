@@ -1,10 +1,12 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 
 extension RouteSearchOptionsMessageIcon on RouteSearchOptionsMessage {
-  String get icon => switch (this) {
+  IconData icon(BuildContext context) => switch (this) {
         RouteSearchOptionsMessage.pedestrian =>
-          'assets/icons/svg/ic_routing_pedestrian.svg',
-        RouteSearchOptionsMessage.car => 'assets/icons/svg/ic_routing_car.svg',
-        _ => throw UnimplementedError('Not supported routing type'),
+          Directionality.of(context) == TextDirection.ltr ? PlacesIcons.runningLTR : PlacesIcons.runningRTL,
+        RouteSearchOptionsMessage.car => TransportIcons.car,
+        _ => TransportIcons.car,
       };
 }
