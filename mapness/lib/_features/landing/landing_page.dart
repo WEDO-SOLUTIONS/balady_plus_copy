@@ -40,13 +40,13 @@ class LandingPage extends ConsumerStatefulWidget {
 class _LandingPageState extends ConsumerState<LandingPage> {
   StreamSubscription<TapEvent>? _streamSubscription;
   bool needToShow = true;
-  late final DraggableScrollableController draggableScrollableController;
+  final ValueNotifier<bool> _onScroll = ValueNotifier(false);
+  late final DraggableScrollableController _draggableScrollableController;
 
   @override
   void initState() {
     super.initState();
-    draggableScrollableController = DraggableScrollableController();
-
+    _draggableScrollableController = DraggableScrollableController();
     setupTapListener();
 
     switch (widget.focusMaker) {
@@ -91,7 +91,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   void dispose() {
-    draggableScrollableController.dispose();
+    _draggableScrollableController.dispose();
+    _onScroll.dispose();
     super.dispose();
   }
 
@@ -123,12 +124,21 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           type: MaterialType.transparency,
           child: Stack(
             children: [
-              const controls.MapControls(),
+              ValueListenableBuilder(
+                valueListenable: _onScroll,
+                builder: (context, value, child) => controls.MapControls(
+                  draggableScrollableController: _draggableScrollableController,
+                  onScroll: value,
+                ),
+              ),
               LayoutBuilder(
                 builder: (context, constraints) => Dashboard(
-                  scrollableController: draggableScrollableController,
+                  scrollableController: _draggableScrollableController,
                   biggestHeight: constraints.biggest.height,
                   biggestWidth: constraints.biggest.width,
+                  onScroll: (value) {
+                    _onScroll.value = value;
+                  },
 
                   ///TODO: change while Dashboard refactoring
                   initWithMinSize:
@@ -145,7 +155,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   void _objectTapListener(TapEvent event) {
 
     ///TODO: need to refactor after Dashboard refactoring to designSystem
-    if (draggableScrollableController.size > 0.1) {
+    if (_draggableScrollableController.size > 0.1) {
       _hideDashboard(event);
     } else {
       final goRouter = ref.read(goRouterProvider);
@@ -220,7 +230,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           ));
 
     }
-    draggableScrollableController.animateTo(
+    _draggableScrollableController.animateTo(
       0.1,
       duration: const Duration(milliseconds: 250),
       curve: Curves.linear,
