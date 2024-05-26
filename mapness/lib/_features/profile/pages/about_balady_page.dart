@@ -69,9 +69,9 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
               body: ListView(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(Spacing.horizontalPaddingInsideWrapper),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(CornerRadius.smallContainer),
                       // ignore: prefer_const_constructors
                       child: YoutubePlayer(
                         controller: _controller,
