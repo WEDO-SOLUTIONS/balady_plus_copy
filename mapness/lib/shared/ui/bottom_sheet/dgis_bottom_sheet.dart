@@ -1,10 +1,10 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_theme.dart';
 import 'package:mapness/shared/ui/bottom_sheet/lib/scroll_listeners.dart';
@@ -36,6 +36,45 @@ enum Expansion {
   expanded,
 }
 
+extension ExpansionUtils on Expansion {
+  Expansion next(ScrollDirection direction) {
+    switch (this) {
+      case Expansion.hidden:
+        return direction == ScrollDirection.up ? Expansion.collapsed : Expansion.hidden;
+      case Expansion.collapsed:
+        return direction == ScrollDirection.up ? Expansion.middle : Expansion.hidden;
+      case Expansion.middle:
+        return direction == ScrollDirection.up ? Expansion.expanded : Expansion.collapsed;
+      case Expansion.expanded:
+        return direction == ScrollDirection.up ? Expansion.expanded : Expansion.middle;
+    }
+  }
+
+  Expansion getNextExpansion(ScrollDirection direction, Set<Expansion> availableExpansions) {
+    Expansion nextExpansion = this;
+    do {
+      final expansion = nextExpansion.next(direction);
+
+      if (expansion.index == nextExpansion.index) {
+        break;
+      }
+      if (availableExpansions.contains(expansion)) {
+        nextExpansion = expansion;
+      } else {
+        break;
+      }
+    } while (!availableExpansions.contains(nextExpansion));
+
+    return nextExpansion;
+  }
+}
+
+enum ScrollDirection {
+  up,
+  down,
+  idle,
+}
+
 class DgisBottomSheet extends StatefulWidget {
   DgisBottomSheet({
     required this.initialExpansion,
@@ -57,13 +96,11 @@ class DgisBottomSheet extends StatefulWidget {
     this.mapControlsBuilder,
     this.scrollBehavior = const DisabledOverscrollScrollBehavior(),
   })  : assert(
-          !availableExpansions.contains(Expansion.collapsed) ||
-              collapsedHeight != null && collapsedHeight > 0,
+          !availableExpansions.contains(Expansion.collapsed) || collapsedHeight != null && collapsedHeight > 0,
           'You should provide collapsedHeight Expansion.collapsed which should be greater than 0',
         ),
         assert(
-          !availableExpansions.contains(Expansion.middle) ||
-              middleHeight != null && middleHeight > 0,
+          !availableExpansions.contains(Expansion.middle) || middleHeight != null && middleHeight > 0,
           'You should provide middleHeight Expansion.middle which should be greater than 0',
         ),
         assert(
@@ -152,6 +189,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     with TickerProviderStateMixin
     implements DgisDraggableScrollableListener {
   static const _velocityFlingThreshold = 1000;
+  static const _deltaThreshold = 100;
 
   double _visibleHeight = 0;
 
@@ -310,8 +348,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
         _hasActiveAnimation = false;
       }
       setExpansion(_closestExpansionByVisibleHeight(_visibleHeight));
-    } else if (_visibleHeightByExpansion(_expansion, oldWidget) !=
-        _visibleHeightByExpansion(_expansion)) {
+    } else if (_visibleHeightByExpansion(_expansion, oldWidget) != _visibleHeightByExpansion(_expansion)) {
       _printDebugLog(
         'height for current expansion changed -> update it',
       );
@@ -334,8 +371,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   @override
   Widget build(BuildContext context) {
     assert(
-      _hasActiveAnimation ||
-          _visibleHeight >= 0 && _visibleHeight <= _maxVisibleHeight,
+      _hasActiveAnimation || _visibleHeight >= 0 && _visibleHeight <= _maxVisibleHeight,
       'Visible height=$_visibleHeight should be between 0 and _maxVisibleHeight=$_maxVisibleHeight',
     );
 
@@ -363,8 +399,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                       ignoring: _backgroundOpacity == 0,
                       child: GestureDetector(
                         onTap: () {
-                          if (widget.availableExpansions
-                              .contains(Expansion.hidden)) {
+                          if (widget.availableExpansions.contains(Expansion.hidden)) {
                             // logger.info(
                             //   'On barrier tapped -> hide bottom sheet',
                             //   tags: [LogTag.bottomSheet],
@@ -392,8 +427,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                             '_maxVisibleHeight=$_maxVisibleHeight',
                           );
 
-                          _visibleHeight =
-                              min(_visibleHeight, _maxVisibleHeight);
+                          _visibleHeight = min(_visibleHeight, _maxVisibleHeight);
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             widget.onVisibleHeightChanged?.call(_visibleHeight);
                           });
@@ -406,9 +440,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                         return Stack(
                           children: [
                             Positioned(
-                              top: _initialized
-                                  ? _maxVisibleHeight - _visibleHeight
-                                  : _screenHeight,
+                              top: _initialized ? _maxVisibleHeight - _visibleHeight : _screenHeight,
                               left: 0,
                               right: 0,
                               child: Container(
@@ -419,11 +451,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                             ),
                             if (widget.actions != null)
                               Positioned(
-                                top: _initialized
-                                    ? _maxVisibleHeight -
-                                        _visibleHeight +
-                                        actionsHeight
-                                    : _screenHeight,
+                                top: _initialized ? _maxVisibleHeight - _visibleHeight + actionsHeight : _screenHeight,
                                 height: _visibleHeight,
                                 left: 0,
                                 right: 0,
@@ -431,8 +459,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                                   height: _screenHeight,
                                   alignment: Alignment.bottomCenter,
                                   child: WidgetSizeNotifier(
-                                    onSizeChanged: (value) =>
-                                        _actionsVisibleHeight = value.height,
+                                    onSizeChanged: (value) => _actionsVisibleHeight = value.height,
                                     child: widget.actions!,
                                   ),
                                 ),
@@ -504,11 +531,11 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
         ],
       );
 
-  Widget _wrappedWithVerticalScrollListener({required Widget child}) =>
-      VerticalScrollListener(
+  Widget _wrappedWithVerticalScrollListener({required Widget child}) => VerticalScrollListener(
         onVerticalDragUpdate: (details) {
           applyUserOffset(details.delta.dy);
         },
+
         onVerticalDragEnd: (_) => goIdle(byUser: true),
         // ignore: sized_box_for_whitespace
         child: Container(
@@ -518,7 +545,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       );
 
   @override
-  void applyUserOffset(double delta) {
+  void applyUserOffset(double delta, {double? scrollOffset}) {
     if (_hasActiveAnimation || widget.availableExpansions.length == 1) {
       return;
     }
@@ -529,6 +556,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     if (delta < 0) {
       _printDebugLog('Scrolling up');
       //Скролим снизу вверх
+
       if (_visibleHeight < _maxVisibleHeight) {
         _printDebugLog('Scrolling up outer scroll');
         //Скролим внешний скрол вверх
@@ -558,17 +586,16 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   void goIdle({bool byUser = false}) {
     _printDebugLog('_goIdle. byUser=$byUser');
 
-    if (!_initialized) {
-      _printDebugLog('_goIdle. !_initialized -> ignore');
-      return;
-    }
+    Future.delayed(Duration.zero, () {
+      if (!_initialized) {
+        _printDebugLog('_goIdle. !_initialized -> ignore');
+        return;
+      }
 
-    if (_hasActiveAnimation) {
-      _printDebugLog('_goIdle. hasActiveAnimation -> ignore');
-      return;
-    }
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (_hasActiveAnimation) {
+        _printDebugLog('_goIdle. hasActiveAnimation -> ignore');
+        return;
+      }
       setExpansion(
         _closestExpansionByVisibleHeight(_visibleHeight),
         byUser: byUser,
@@ -594,10 +621,13 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   Expansion? _getNextExpansionForFling(double velocity) {
     Expansion? expansion;
     final closestExpansion = _closestExpansionByVisibleHeight(_visibleHeight);
-    final visibleHeightOfClosestExpansion =
-        _visibleHeightByExpansion(closestExpansion);
+    final visibleHeightOfClosestExpansion = _visibleHeightByExpansion(closestExpansion);
+
+    final fastSwipeTreshold = (Platform.isAndroid ? 3400 : 5000);
 
     bool upDirection;
+
+    final fastSwipe = velocity.abs() > fastSwipeTreshold;
 
     /// флинг вверх
     if (velocity > _velocityFlingThreshold) {
@@ -608,10 +638,16 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       return null;
     }
 
+    if (fastSwipe) {
+      final nextExtention = closestExpansion.getNextExpansion(
+          upDirection ? ScrollDirection.up : ScrollDirection.down, widget.availableExpansions);
+
+      return nextExtention;
+    }
+
     if (upDirection && visibleHeightOfClosestExpansion > _visibleHeight) {
       expansion = closestExpansion;
-    } else if (!upDirection &&
-        visibleHeightOfClosestExpansion < _visibleHeight) {
+    } else if (!upDirection && visibleHeightOfClosestExpansion < _visibleHeight) {
       expansion = closestExpansion;
     }
 
@@ -621,9 +657,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
         orderedExpansions = orderedExpansions.reversed.toList();
       }
 
-      for (var i = orderedExpansions.indexOf(closestExpansion) + 1;
-          i < orderedExpansions.length;
-          i++) {
+      for (var i = orderedExpansions.indexOf(closestExpansion) + 1; i < orderedExpansions.length; i++) {
         final candidate = orderedExpansions[i];
         if (widget.availableExpansions.contains(candidate)) {
           expansion = candidate;
@@ -656,14 +690,28 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       return heights.last.key;
     }
 
-    var closestDiff = (heights.first.value - heights.last.value).abs();
-    var closest = heights.first.key;
-
-    for (final height in heights) {
+    final nearestHeight = heights.firstWhereOrNull((height) {
       final diff = (height.value - visibleHeight).abs();
-      if (diff < closestDiff) {
-        closestDiff = diff;
-        closest = height.key;
+      if (diff <= _deltaThreshold) {
+        return true;
+      }
+      return false;
+    });
+
+    final closest = widget.controller?.currentExpansion ?? heights.first.key;
+
+    if (nearestHeight != null) {
+      return nearestHeight.key;
+    }
+
+    final height = _visibleHeightByExpansion(closest);
+    final delta = (height - visibleHeight).abs();
+
+    if (delta >= _deltaThreshold) {
+      if (visibleHeight > height) {
+        return closest.getNextExpansion(ScrollDirection.up, widget.availableExpansions);
+      } else {
+        return closest.getNextExpansion(ScrollDirection.down, widget.availableExpansions);
       }
     }
 
@@ -704,8 +752,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     bool byUser = false,
   }) async {
     assert(
-      expansion == Expansion.hidden ||
-          widget.availableExpansions.contains(expansion),
+      expansion == Expansion.hidden || widget.availableExpansions.contains(expansion),
       'You can set expansion witch is available or Expansion.hidden',
     );
 
@@ -744,7 +791,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       _animationController?.dispose();
       // TODO: добавить физику (Curve и Duration)
       final animationController = AnimationController(
-        duration: const Duration(milliseconds: 150),
+        duration: const Duration(milliseconds: 250),
         vsync: this,
       );
       _animationController = animationController;
@@ -753,18 +800,17 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
       _printDebugLog('setExpansion. position.pixels=${position.pixels}');
 
+      _hasActiveAnimation = true;
+
       // если bottom sheet развёрнут и внутренний список не на начальной позиции
       // нужно сначала проскролить внутненний список а только потом bottom sheet
-      if (_visibleHeight == _maxVisibleHeight &&
-          expansion != Expansion.expanded &&
-          position.pixels > 0) {
+      if (_visibleHeight == _maxVisibleHeight && expansion != Expansion.expanded && position.pixels > 0) {
         _printDebugLog(
           'setExpansion. First start with scrollableBodyPixelsAnimation',
         );
         final visibleHeightDelta = _visibleHeight - visibleHeight;
 
-        visibleHeightAnimationIntervalBegin =
-            position.pixels / (position.pixels + visibleHeightDelta);
+        visibleHeightAnimationIntervalBegin = position.pixels / (position.pixels + visibleHeightDelta);
 
         // TODO: здесь нужно сделать как в телеге,
         // когда в чате отсролил очень далеко
@@ -802,7 +848,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
           curve: Interval(
             visibleHeightAnimationIntervalBegin,
             1,
-            curve: Curves.easeOut,
+            curve: Curves.ease,
           ),
         ),
       );
@@ -812,8 +858,6 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
           widget.onVisibleHeightChanged?.call(_visibleHeight);
         });
       });
-
-      _hasActiveAnimation = true;
 
       await animationController.forward().whenComplete(() {
         _printDebugLog(

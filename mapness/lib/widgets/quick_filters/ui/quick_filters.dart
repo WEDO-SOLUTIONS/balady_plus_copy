@@ -1,38 +1,73 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filter.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class QuickFilters extends StatelessWidget {
+class QuickFilters extends ConsumerStatefulWidget {
   final EdgeInsets padding;
   final List<FilterItem> filters;
-  final Color itemBackground;
+  final QuickFilterScreen id;
 
   const QuickFilters({
     required this.filters,
+    required this.id,
     super.key,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
-    this.itemBackground = NonThemeColor.color11,
   });
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-        height: 40,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: padding,
-          separatorBuilder: (_, __) => const SizedBox(width: 8),
-          itemCount: filters.length,
-          itemBuilder: (context, index) {
-            final item = filters[index];
-            return QuickFilter(
-              item: item,
-              selected: item.selected,
-              // background: itemBackground,
-              background: context.color.surfaceBaseSecondary,
-            );
-          },
-        ),
-      );
+  ConsumerState<QuickFilters> createState() => _QuickFiltersState();
+}
+
+class _QuickFiltersState extends ConsumerState<QuickFilters> {
+  late final ItemScrollController itemScrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    itemScrollController = ItemScrollController();
+  }
+
+  @override
+  void didUpdateWidget(QuickFilters oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final requestId = ref.read(quickFiltersRequestSourceScreenProvider);
+      if (requestId != null && requestId != widget.id) {
+        final selectedIndex = widget.filters.indexWhere((element) => element.selected);
+        if (selectedIndex != -1) {
+          itemScrollController.jumpTo(index: selectedIndex, alignment: 0.03);
+        }
+        ref.read(quickFiltersRequestSourceScreenProvider.notifier).reset();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // We watch [scrollToSelectedQuickFilterProvider] to keep it alive in the widget tree
+    ref.watch(quickFiltersRequestSourceScreenProvider);
+
+    return SizedBox(
+      height: 40,
+      child: ScrollablePositionedList.separated(
+        scrollDirection: Axis.horizontal,
+        padding: widget.padding,
+        itemScrollController: itemScrollController,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemCount: widget.filters.length,
+        itemBuilder: (context, index) {
+          final item = widget.filters[index];
+          return QuickFilter(
+            item: item,
+            selected: item.selected,
+            background: context.color.surfaceBaseSecondary,
+          );
+        },
+      ),
+    );
+  }
 }
