@@ -171,7 +171,7 @@ class ProfilePage extends ConsumerWidget {
                           Text(
                             context.l10n.chooseTheLanguageOfAll,
                             style: context.textStyle.caption.copyWith(
-                              color: const Color(0xFF1E2A36).withOpacity(0.36),
+                              color: context.color.textAndIconsBaseTertiary,
                             ),
                           ),
                           const SizedBox(
