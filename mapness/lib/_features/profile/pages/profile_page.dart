@@ -15,6 +15,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/profile/authorized_widget.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
+import 'package:mapness/widgets/profile/logout_dialog.dart';
 import 'package:mapness/widgets/profile/unathorized_profile.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
@@ -36,6 +37,7 @@ class ProfilePage extends ConsumerWidget {
         : SystemIcons.arrowCornerRightS.icon(
             color: context.color.textAndIconsBaseSecondary,
           );
+
     return WillPopScope(
       onWillPop: () async {
         StatefulNavigationShell.of(context).goBranch(
@@ -64,10 +66,10 @@ class ProfilePage extends ConsumerWidget {
                       ),
                       child: Consumer(
                         builder: (context, ref, child) {
-                          final userData = ref.watch(authProvider);
                           final userUnauthorized = UnautorizedProfile(
                             onConnect: ref.read(authProvider.notifier).doAuth,
                           );
+                          final userData = ref.watch(authProvider);
                           return userData.maybeWhen(
                             orElse: () => userUnauthorized,
                             data: (userData) => userData == null
@@ -101,13 +103,11 @@ class ProfilePage extends ConsumerWidget {
                                   ),
                                   leadingIcon: Icon(
                                     GeneralIcons.questionCircleLTR,
-                                    color:
-                                        context.color.textAndIconsStatusAccent,
+                                    color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.helpCenter,
                                 ),
-                                onTap: () =>
-                                    const HelpCenterRoute().push(context),
+                                onTap: () => const HelpCenterRoute().push(context),
                               ),
                               ContentRow(
                                 options: ContentRowOptions(
@@ -116,8 +116,7 @@ class ProfilePage extends ConsumerWidget {
                                   ),
                                   leadingIcon: Icon(
                                     GeneralIcons.infoCircleFill,
-                                    color:
-                                        context.color.textAndIconsStatusAccent,
+                                    color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.aboutApp,
                                 ),
@@ -132,8 +131,7 @@ class ProfilePage extends ConsumerWidget {
                                   ),
                                   leadingIcon: Icon(
                                     GeneralIcons.starSolid,
-                                    color:
-                                        context.color.textAndIconsStatusAccent,
+                                    color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.rateBaladyApp,
                                 ),
@@ -161,8 +159,7 @@ class ProfilePage extends ConsumerWidget {
                                       leadingIcon: leadingIcon(language),
                                     ),
                                     content: const LanguagePicker(),
-                                    expandIconColor:
-                                        context.color.textAndIconsBaseSecondary,
+                                    expandIconColor: context.color.textAndIconsBaseSecondary,
                                   ),
                                 ],
                               );
@@ -187,15 +184,13 @@ class ProfilePage extends ConsumerWidget {
                                 options: ContentRowOptions(
                                     leadingIcon: AppIcons(
                                       iconData: GeneralIcons.darkMode,
-                                      color: context
-                                          .color.textAndIconsStatusAccent,
+                                      color: context.color.textAndIconsStatusAccent,
                                       size: 24,
                                     ),
                                     title: context.l10n.darkMap,
                                     actionWidget: ContentRowActionOptions(
                                       enabledToggle: true,
-                                      toggleInitialValue:
-                                          ref.watch(darkModeProvider),
+                                      toggleInitialValue: ref.watch(darkModeProvider),
                                     )),
                                 onToggle: (_) {
                                   ref.read(darkModeProvider.notifier).toggle();
@@ -213,8 +208,48 @@ class ProfilePage extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(
-                            height: 24,
+                            height: 32,
                           ),
+                          Consumer(builder: (context, ref, _) {
+                            final userData = ref.watch(authProvider);
+                            const emptyBox = SizedBox.shrink();
+
+                            return userData.maybeWhen(
+                              orElse: () => emptyBox,
+                              data: (data) => data == null
+                                  ? emptyBox
+                                  : SizedBox(
+                                      width: double.infinity,
+                                      child: AppButton(
+                                        primaryLabel: context.l10n.logOut,
+                                        buttonColorScheme: ButtonColorScheme.tertiary,
+                                        onTap: () async {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (ctx) => LogoutDialog(
+                                              onCancel: () => Navigator.of(ctx).pop(),
+                                              onLogout: () async {
+                                                await ref.read(authProvider.notifier).logOut();
+                                                context.pop();
+                                              },
+                                              title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
+                                              logOutText: context.l10n.logOut,
+                                              cancelText: context.l10n.cancel,
+                                            ),
+                                          );
+                                        },
+                                        textColor: context.color.textAndIconsStatusNegative,
+                                        trailing: SvgPicture.asset(
+                                          'assets/icons/svg/ic_profile_logout.svg',
+                                          height: 24,
+                                          width: 24,
+                                          matchTextDirection: true,
+                                          package: PackageConfig.packageName,
+                                        ),
+                                      ),
+                                    ),
+                            );
+                          })
                         ],
                       ),
                     ),
