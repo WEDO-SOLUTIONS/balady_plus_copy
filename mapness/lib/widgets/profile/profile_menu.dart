@@ -25,6 +25,11 @@ class ProfileMenu extends StatelessWidget {
             onTap: onTapChangeAvatar?.call,
             child: Text(context.l10n.change_avatar, style: context.textStyle.text),
           ),
+
+          /// This code is commented because the logout dialog didn't liked by the client
+          /// But design still have this logout behavior
+          /// IF DESIGN CHANGES, UNCOMMENT THIS CODE OR DELETE IT
+          /// https://urbi-team.youtrack.cloud/issue/BSA-331
           // PopupMenuItem(
           //     child: Text(
           //       context.l10n.logOut,
