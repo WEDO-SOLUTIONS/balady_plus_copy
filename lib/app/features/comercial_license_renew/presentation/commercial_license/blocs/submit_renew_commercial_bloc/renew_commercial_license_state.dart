@@ -59,6 +59,7 @@ class RenewCommercialLicenseState extends Equatable {
   Cr700Validation get deedOwnerIdValidator => deedInfoRequst?.ownerId == null
       ? Cr700Validation.pure()
       : Cr700Validation.dirty(value: deedInfoRequst?.ownerId);
+
   String? get deedOwnerIdValidatorErrorText =>
       deedOwnerIdValidator.error?.message != null
           ? (deedOwnerIdValidator.error?.message ?? "").tr()
@@ -481,6 +482,19 @@ class RenewCommercialLicenseState extends Equatable {
     if (crContractOption == CRContractOption.service &&
         crContractType == CRContractType.ejar &&
         ejarVerified == false) return false;
+
+
+    // All Salma validation
+    if (showSalmaExists() && salamaExists == null) return false;
+    if ((showSalamaReport() && !showSalmaExists()) ||
+        (showSalamaReport() && salamaExists == false) &&
+            (salamaReportNumber?.isEmpty ?? true)) return false;
+    if ((showSalamaBill() && !showSalmaExists()) ||
+        (showSalamaBill() && salamaExists == false) &&
+            (salamaBillNumber?.isEmpty ?? true)) return false;
+    if ((showSalamaPermit() && !showSalmaExists()) ||
+        (showSalamaPermit() && salamaExists == true) &&
+            (salamaPermitNumber?.isEmpty ?? true)) return false;
 
     return true;
   }
