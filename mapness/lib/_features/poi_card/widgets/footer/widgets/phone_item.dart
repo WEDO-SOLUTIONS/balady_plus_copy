@@ -20,6 +20,7 @@ class _PhoneItem extends StatelessWidget {
       flex: flex,
       assetName: 'assets/icons/svg/ic_phone_poi.svg',
       onTap: onTap,
+      colorIcon: context.color.textAndIconsStatusAccent,
     );
   }
 }
