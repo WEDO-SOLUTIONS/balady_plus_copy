@@ -92,6 +92,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   @override
   void dispose() {
     _draggableScrollableController.dispose();
+    _onScroll.dispose();
     super.dispose();
   }
 
