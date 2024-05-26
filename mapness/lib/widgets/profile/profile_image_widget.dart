@@ -1,17 +1,14 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/shared/config/package_config.dart';
-
-import '../../_features/profile/providers/profile_image_provider.dart';
-
 
 class ProfileImageWidget extends ConsumerWidget {
   const ProfileImageWidget({
@@ -34,14 +31,11 @@ class ProfileImageWidget extends ConsumerWidget {
 
     final bytes = await image.readAsBytes();
 
-    final Uint8List? croppedBytes = await ref
-        .read(goRouterProvider)
-        .push(const ImageEditorRoute().location, extra: bytes);
+    final Uint8List? croppedBytes =
+        await ref.read(goRouterProvider).push(const ImageEditorRoute().location, extra: bytes);
 
     if (croppedBytes != null) {
-      await ref
-          .read(profileImageProvider.notifier)
-          .changeUserProfileImageByBytes(croppedBytes);
+      await ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes);
     }
   }
 

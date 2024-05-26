@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,13 +17,13 @@ import 'package:mapness/widgets/profile/profile_image_widget.dart';
 import 'profile_menu.dart';
 
 class AuthorizedWidget extends ConsumerWidget {
-  const AuthorizedWidget({super.key, required this.userData});
+  const AuthorizedWidget({required this.userData, super.key});
 
   final SsoUserInfo userData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Material(
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        shape: smoothBorder(CornerRadius.smallContainer),
         color: Colors.transparent,
         child: Column(
           children: [
@@ -92,7 +94,7 @@ class AuthorizedWidget extends ConsumerWidget {
                       left: isLTR ? 0 : null,
                       right: isLTR ? null : 0,
                       child: Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(NumericBase.$5x),
                         child: Text(
                           userData.getFirstAndLastName(),
                           style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsBasePrimary),
