@@ -8,10 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
-import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/double_ext.dart';
@@ -19,8 +19,9 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
-import 'package:mapness/widgets/routing/ui/route_type_switch.dart';
+import 'package:urbi_utils/urbi_utils.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
@@ -179,14 +180,15 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 }
 
 class _RouteTabBar extends ConsumerWidget {
+  final void Function(RouteSearchOptionsMessage) onChanged;
+  final RouteSearchOptionsMessage active;
+  final List<RouteParamsPoint?> points;
+
   const _RouteTabBar({
     required this.onChanged,
     required this.active,
     required this.points,
   });
-  final void Function(RouteSearchOptionsMessage) onChanged;
-  final RouteSearchOptionsMessage active;
-  final List<RouteParamsPoint?> points;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -204,23 +206,66 @@ class _RouteTabBar extends ConsumerWidget {
     final activeRoute = ref.watch(activeRouteProvider);
     final routeDuration = routes.isEmpty ? null : routes[activeRoute].duration;
 
+    final anotherRoute = ref.watch(
+      briefRouteInfoProvider(
+        startPoint: pointFrom(points[0]),
+        finishPoint: pointFrom(points[1]),
+        navType: active == RouteSearchOptionsMessage.car
+            ? RouteSearchOptionsMessage.pedestrian
+            : RouteSearchOptionsMessage.car,
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.verticalPaddingInsideWrapper),
       child: Row(
         children: [
-          RouteSearchOptionsMessage.pedestrian,
           RouteSearchOptionsMessage.car,
+          RouteSearchOptionsMessage.pedestrian,
         ]
-            .map(
-              (e) => RouteTypeSwitch(
-                iconAsset: e.icon,
-                title: active == e ? routeDuration?.formatDuration(context.l10n) : null,
-                onPressed: () => onChanged(e),
-                isChoosed: active == e,
+            .map<Widget>(
+              (e) => Expanded(
+                child: Chips(
+                  onTap: () => onChanged(e),
+                  style: ChipsStyle.whiteBackground,
+                  leadingIcon: ChipIconData(e.icon(context)),
+                  title: active == e
+                      ? routeDuration?.formatDuration(context.l10n)
+                      : anotherRoute?.firstOrNull?.duration.toInt().formatDuration(context.l10n),
+                  isSelected: active == e,
+                  size: ChipsSize.medium,
+                ),
               ),
             )
+            .insertBetween(Spacing.horizontalGapBetweenChips.widthBox)
             .toList(),
       ),
     );
   }
+
+  RouteSearchPoint? pointFrom(RouteParamsPoint? point) {
+    if (point == null) {
+      return null;
+    }
+    final dgisObjectId = point.dgisObjectId;
+    if (dgisObjectId == null) {
+      return null;
+    }
+    return RouteSearchPoint(
+      coordinates: GeoPointMessage(
+        latitude: point.latitude,
+        longitude: point.longitude,
+      ),
+      dgisObjectId: dgisObjectId,
+    );
+  }
+}
+
+extension IconDataOfRouteSearchOptionsMessage on RouteSearchOptionsMessage {
+  IconData icon(BuildContext context) => switch (this) {
+        RouteSearchOptionsMessage.pedestrian =>
+          Directionality.of(context) == TextDirection.ltr ? PlacesIcons.runningLTR : PlacesIcons.runningRTL,
+        RouteSearchOptionsMessage.car => TransportIcons.car,
+        _ => TransportIcons.car,
+      };
 }
