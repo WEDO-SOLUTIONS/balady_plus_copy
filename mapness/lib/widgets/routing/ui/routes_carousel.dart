@@ -44,9 +44,10 @@ class RoutesCarousel extends ConsumerWidget {
             final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
             final calories = ((duration / 60.0) * averageCaloriesPerMinute).toInt();
             return Padding(
-              padding: const EdgeInsets.only(
-                left: Spacing.horizontalPaddingInsideWrapper,
-                right: Spacing.horizontalPaddingInsideWrapper,
+              padding: padding(
+                index: 0,
+                length: routes.length,
+                isLtr: Directionality.of(context) == TextDirection.ltr,
               ),
               child: PathCard(
                 distance: distance.formatDistance(context.l10n),
@@ -67,7 +68,7 @@ class RoutesCarousel extends ConsumerWidget {
           return SizedBox(
             height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
             child: PageView.builder(
-              controller: routes.length == 1 ? PageController() : pageController,
+              controller: pageController,
               padEnds: false,
               itemBuilder: (context, index) {
                 final route = routes[index];
@@ -127,6 +128,12 @@ class RoutesCarousel extends ConsumerWidget {
   }
 
   EdgeInsets padding({required int index, required int length, required bool isLtr}) {
+    if (length == 1) {
+      return const EdgeInsets.only(
+        left: Spacing.horizontalPaddingInsideWrapper,
+        right: Spacing.horizontalPaddingInsideWrapper,
+      );
+    }
     EdgeInsets result;
     if (index == 0) {
       result = const EdgeInsets.only(
@@ -143,4 +150,11 @@ class RoutesCarousel extends ConsumerWidget {
     }
     return isLtr ? result : result.flipped;
   }
+}
+
+class _CarouselWrapper extends StatelessWidget {
+  const _CarouselWrapper();
+
+  @override
+  Widget build(BuildContext context) => const Placeholder();
 }

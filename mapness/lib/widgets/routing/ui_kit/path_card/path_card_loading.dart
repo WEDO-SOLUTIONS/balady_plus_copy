@@ -7,8 +7,11 @@ class PathCardLoading extends StatelessWidget {
   const PathCardLoading({required this.text, super.key});
 
   @override
-  Widget build(BuildContext context) => PathCardWrapper(
-        alignment: Alignment.center,
-        child: Loading(title: text),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: PathCardWrapper(
+          alignment: Alignment.center,
+          child: Loading(title: text),
+        ),
       );
 }
