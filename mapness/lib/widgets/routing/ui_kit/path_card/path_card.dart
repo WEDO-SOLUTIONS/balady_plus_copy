@@ -13,6 +13,28 @@ import 'package:urbi_utils/urbi_utils.dart';
 part 'icon_and_block.dart';
 part 'path_status.dart';
 
+/// This widget is used to show a path card with the duration, distance and additional information
+///
+/// Example:
+/// ```dart
+/// PathCard(
+///  duration: '1h 30m',
+///  distance: '5.2 km',
+///  localizations: PathCardLocalization(
+///    go: 'Go',
+///    calories: 'Calories',
+///    steps: 'Steps',
+///  ),
+///  isPedestrian: true,
+///  calories: 200,
+///  steps: 3000,
+///  onStartTap: () => print('Start navigation'),
+///  additionalInfo: PathCardStatus.shortest(context.l10n.shortest),
+/// )
+/// ```
+///
+/// See also:
+/// * [Figma] https://www.figma.com/design/owbsr9Pf0mQSEHXlbiPGOv/Balady-%E2%80%93-Components-Library?m=dev&node-id=7165-36707
 class PathCard extends StatelessWidget {
   final String duration;
   final String distance;
