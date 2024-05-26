@@ -41,7 +41,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.2.3
+    version: ^1.2.4
 
   collection: ^1.17.1
   flutter_localizations:
@@ -68,7 +68,6 @@ dependencies:
   geolocator: ^10.1.0
   flutter_compass: ^0.8.0
   vibration: ^1.8.3
-  timelines: ^0.1.0
   share_plus: ^4.5.3
   image_picker: ^0.8.6
   geobase: ^1.0.0

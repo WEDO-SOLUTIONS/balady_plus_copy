@@ -1,15 +1,16 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
-import 'package:mapness/shared/ui/loading/inline_loading_indicator.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_localization.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_card.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_failure.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_loading.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
 
 class RoutesCarousel extends ConsumerWidget {
   const RoutesCarousel({
@@ -31,238 +32,126 @@ class RoutesCarousel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => routes.when(
-        data: (routes) => PageView.builder(
-          controller: pageController,
-          onPageChanged: onActiveChanged,
-          itemBuilder: (context, index) => RouteCell(
-            navType: navType,
-            route: routes[index],
-            // Assuming that onChanged event always fired before
-            startNavigation: startNavigation,
-          ),
-          itemCount: routes.length,
-        ),
-        error: (_, __) => Directionality(
-          textDirection: ref.watch(uiDirectionProvider),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  context.l10n.routeNotFound,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .text
-                      .copyWith(
-                        color: context.color.textAndIconsBasePrimary,
-                      ),
+        data: (routes) {
+          final shortest = shortestIsOnlyOne(routes);
+          return _CarouselWrapper(
+            pageController: pageController,
+            routes: routes,
+            height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
+            itemBuilder: (context, index) {
+              final route = routes[index];
+              final distanceInMeters = route.distance;
+              final durationInSeconds = route.duration;
+
+              const averageHumanStepsByKm = 1350;
+              const averageCaloriesPerMinute = 4.6;
+
+              final steps = ((distanceInMeters / 1000) * averageHumanStepsByKm).toInt();
+              final calories = ((durationInSeconds / 60.0) * averageCaloriesPerMinute).toInt();
+              return Padding(
+                padding: padding(
+                  index: index,
+                  length: routes.length,
+                  isLtr: Directionality.of(context) == TextDirection.ltr,
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
-                LabeledElevatedButton(
-                  label: context.l10n.reload,
-                  onPressed: refresh,
-                ),
-              ],
-            ),
-          ),
-        ),
-        loading: () => IgnorePointer(
-          child: PageView.builder(
-            controller: pageController,
-            onPageChanged: onActiveChanged,
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-              ),
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: NonThemeColor.color11,
+                child: PathCard(
+                  distance: distanceInMeters.formatDistance(context.l10n),
+                  isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
+                  localizations: PathCardLocalization(
+                    calories: context.l10n.calories,
+                    steps: context.l10n.steps,
+                    go: context.l10n.go,
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: InlineLoadingIndicator(),
-                  ),
+                  duration: durationInSeconds.formatDuration(context.l10n),
+                  steps: steps,
+                  calories: calories,
+                  onStartTap: startNavigation,
+                  additionalInfo: shortest != null && shortest == durationInSeconds
+                      ? PathCardStatus.shortest(context.l10n.shortest)
+                      : null,
                 ),
-              ),
-            ),
-            itemCount: 3,
-          ),
-        ),
+              );
+            },
+          );
+        },
+        error: (_, __) => PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound),
+        loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
         skipLoadingOnRefresh: false,
         skipLoadingOnReload: false,
       );
-}
 
-class RouteCell extends ConsumerWidget {
-  const RouteCell({
-    required this.route,
-    required this.startNavigation,
-    required this.navType,
-    super.key,
-  });
+  /// We use it to show the badge "Shortest" on only one shortest route
+  /// If we have more then one shortest route we don't show the badge and return null
+  int? shortestIsOnlyOne(List<RouteInfo> routes) {
+    if (routes.length == 1) {
+      return routes.first.duration;
+    }
+    final durations = routes.map((e) => e.duration).sorted((a, b) => a.compareTo(b));
 
-  final RouteSearchOptionsMessage navType;
-  final RouteInfo route;
-  final Function() startNavigation;
+    final shortestDuration = durations.first;
+    if (durations[1] == shortestDuration) {
+      return null;
+    }
+    return shortestDuration;
+  }
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final direction = ref.watch(uiDirectionProvider);
-    final distance = route.distance;
-    final duration = route.duration;
-
-    const averageHumanStepsByKm = 1350;
-    const averageCaloriesPerMinute = 4.6;
-
-    final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
-    final calories = ((duration / 60.0) * averageCaloriesPerMinute).toInt();
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 4,
-      ),
-      child: Material(
-        color: NonThemeColor.color11,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Directionality(
-                    textDirection: direction,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          duration.formatDuration(context.l10n),
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .callout
-                              .copyWith(
-                                color:
-                                    context.color.textAndIconsBasePrimary,
-                              ),
-                        ),
-                        Text(
-                          distance.formatDistance(context.l10n),
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .footNote
-                              .copyWith(
-                                color:
-                                    context.color.textAndIconsBasePrimary,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  Material(
-                    color: context.color.strokeAccent,
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      onTap: startNavigation,
-                      child: SizedBox(
-                        width: 70,
-                        height: 40,
-                        child: Align(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 14,
-                            ),
-                            child: Text(
-                              context.l10n.go,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .caption
-                                  .copyWith(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              if (navType == RouteSearchOptionsMessage.pedestrian)
-                Row(
-                  children: [
-                    HealthInfo(
-                      title: context.l10n.steps,
-                      count: steps,
-                      icon: SvgPicture.asset(
-                        'assets/icons/svg/steps.svg',
-                        package: PackageConfig.packageName,
-                        height: 16,
-                        width: 16,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    HealthInfo(
-                      title: context.l10n.calories,
-                      count: calories,
-                      icon: SvgPicture.asset(
-                        'assets/icons/svg/calories.svg',
-                        package: PackageConfig.packageName,
-                        height: 16,
-                        width: 16,
-                      ),
-                    ),
-                  ],
-                )
-              else
-                const SizedBox.shrink(),
-            ],
-          ),
-        ),
-      ),
-    );
+  /// We use it to calculate padding for the first and last elements in the [PageView]
+  /// Because [PageView] doesn't have a separated constructor, we need to calculate padding manually
+  ///
+  /// Also we use it for single element in the list to unify the padding for all cases
+  EdgeInsets padding({required int index, required int length, required bool isLtr}) {
+    if (length == 1) {
+      return const EdgeInsets.only(
+        left: Spacing.horizontalPaddingInsideWrapper,
+        right: Spacing.horizontalPaddingInsideWrapper,
+      );
+    }
+    EdgeInsets result;
+    if (index == 0) {
+      result = const EdgeInsets.only(
+        left: Spacing.horizontalPaddingInsideWrapper,
+        right: Spacing.horizontalGapBetweenChips / 2,
+      );
+    } else if (index == length - 1) {
+      result = const EdgeInsets.only(
+        left: Spacing.horizontalGapBetweenChips / 2,
+        right: Spacing.horizontalPaddingInsideWrapper,
+      );
+    } else {
+      result = const EdgeInsets.symmetric(horizontal: Spacing.horizontalGapBetweenChips / 2);
+    }
+    return isLtr ? result : result.flipped;
   }
 }
 
-class HealthInfo extends StatelessWidget {
-  final String title;
-  final int count;
-  final Widget icon;
+/// This widget is used to wrap in [PageView] cards if amount of cards is more then one
+/// If amount is more then one we set the default width for [PathCard] (but we set it earlier when we setup [PageController] and [viewportFraction])
+class _CarouselWrapper extends StatelessWidget {
+  final double height;
+  final PageController pageController;
+  final List<RouteInfo> routes;
+  final Widget Function(BuildContext, int) itemBuilder;
 
-  const HealthInfo({
-    required this.title,
-    required this.count,
-    required this.icon,
-    super.key,
+  const _CarouselWrapper({
+    required this.itemBuilder,
+    required this.routes,
+    required this.height,
+    required this.pageController,
   });
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          icon,
-          const SizedBox(width: 3),
-          Text(
-            title,
-            style: context.textStyle.footNote
-                .copyWith(color: context.color.textAndIconsBasePrimary),
-          ),
-          const SizedBox(width: 3),
-          Text(
-            '$count',
-            style: context.textStyle.footNote
-                .copyWith(color: context.color.textAndIconsBaseTertiary),
-          ),
-        ],
-      );
+  Widget build(BuildContext context) {
+    if (routes.length == 1) {
+      return itemBuilder(context, 0);
+    }
+    return SizedBox(
+      height: height,
+      child: PageView.builder(
+        controller: pageController,
+        padEnds: false,
+        itemBuilder: itemBuilder,
+        itemCount: routes.length,
+      ),
+    );
+  }
 }
