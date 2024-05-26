@@ -73,7 +73,7 @@ class RoutesCarousel extends ConsumerWidget {
             },
           );
         },
-        error: (_, __) => PathCardFailure(refresh: refresh),
+        error: (_, __) => PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound),
         loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
         skipLoadingOnRefresh: false,
         skipLoadingOnReload: false,

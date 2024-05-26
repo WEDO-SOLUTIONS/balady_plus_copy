@@ -9,6 +9,20 @@ import 'package:urbi_utils/urbi_utils.dart';
 part 'ab_points_line.dart';
 part 'ab_points_point.dart';
 
+/// This widget is used to show the A and B points in the path card
+/// Here you car give a list of locations and it will show them in a column
+/// Also we can give a onTap function to handle the tap on the points (for example, to change route)
+///
+/// Example:
+/// ```dart
+/// ABPoints(
+///  locations: ['A', 'B'],
+/// onTap: () => print('Change route'),
+/// )
+/// ```
+///
+/// See also:
+/// * [Figma] https://www.figma.com/design/owbsr9Pf0mQSEHXlbiPGOv/Balady-%E2%80%93-Components-Library?m=dev&node-id=7247-46340
 class ABPoints extends StatelessWidget {
   final List<String> locations;
   final OnTap? onTap;

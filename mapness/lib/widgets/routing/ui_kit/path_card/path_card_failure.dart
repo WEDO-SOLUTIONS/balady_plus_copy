@@ -5,10 +5,14 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_wrapper.dart';
 
+/// This widget is used to show a failure message in the path card
+/// It will show a message and a button to refresh the path
 class PathCardFailure extends StatelessWidget {
   final VoidCallback refresh;
+  final String text;
   const PathCardFailure({
     required this.refresh,
+    required this.text,
     super.key,
   });
 
@@ -20,7 +24,7 @@ class PathCardFailure extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                AppLocalizations.of(context).routeNotFound,
+                text,
                 style: context.textStyle.footNote,
                 textAlign: TextAlign.center,
               ),
