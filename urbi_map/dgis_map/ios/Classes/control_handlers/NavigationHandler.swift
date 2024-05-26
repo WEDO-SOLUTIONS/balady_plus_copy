@@ -41,8 +41,6 @@ class NavigationHandler {
         
         self.navigationManager = try! NavigationManager(platformContext: context)
         self.navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        self.navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = 5 * 60
-        self.navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: 500 * 1000)
         self.navigationManager.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
         self.navigationManager.mapManager.addMap(map: self.map)
         
@@ -154,6 +152,26 @@ class NavigationHandler {
             self.navigationManager.uiModel.betterRouteResponse(response: .timeout)
         }
     }
+    
+    func getBetterRouteSettings(completion: @escaping (BetterRouteSettingsMessage?, FlutterError?) -> Void) {
+        let settings = self.navigationManager.alternativeRoutesProviderSettings
+        completion(
+            BetterRouteSettingsMessage.make(
+                withBetterRouteTimeCostThreshold: NSNumber(value: Int(settings.betterRouteTimeCostThreshold)),
+                betterRouteLengthThreshold: NSNumber(value: settings.betterRouteLengthThreshold.millimeters),
+                routeSearchDelay: NSNumber(value: Int(settings.routeSearchDelay))
+            ),
+            nil
+        )
+    }
+    
+    func setBetterRouteSettings(settings: BetterRouteSettingsMessage) {
+        self.navigationManager.alternativeRoutesProviderSettings.routeSearchDelay = settings.routeSearchDelay.doubleValue
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = settings.betterRouteTimeCostThreshold.doubleValue
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: settings.betterRouteLengthThreshold.int64Value)
+    }
+    
+    
 
     func cancel() {
         cancelable.forEach { $0.cancel() }

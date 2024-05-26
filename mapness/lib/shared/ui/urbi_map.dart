@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 
 import '../providers/app_language.dart';
@@ -30,15 +31,12 @@ class UrbiMap extends ConsumerWidget {
             min: 5.5,
           );
           await controller.overrideLocales(
-            ref.read(appLanguageProvider) == Language.arabic
-                ? ['ar-SA']
-                : ['en-SA'],
+            ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA'],
           );
           await controller.setAppearance(
-            ref.read(darkModeProvider)
-                ? MapAppearanceMessage.night
-                : MapAppearanceMessage.day,
+            ref.read(darkModeProvider) ? MapAppearanceMessage.night : MapAppearanceMessage.day,
           );
+          await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 
           onMapCreated(controller);
         },

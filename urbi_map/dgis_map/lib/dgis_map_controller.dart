@@ -580,6 +580,12 @@ class DgisMapController {
 
   Future<void> betterRouteResponse(BetterRouteResponseMessage response) =>
       _instance.betterRouteResponse(response);
+
+  Future<BetterRouteSettingsMessage> getBetterRouteSettings() =>
+      _instance.getBetterRouteSettings();
+
+  Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) =>
+      _instance.setBetterRouteSettings(message);
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {
