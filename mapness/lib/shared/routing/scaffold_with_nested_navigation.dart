@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/route_onboarding.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/features/stories/domain/story_types.dart';
 import 'package:mapness/features/stories/stories.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -15,6 +14,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 // Stateful navigation based on:
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart

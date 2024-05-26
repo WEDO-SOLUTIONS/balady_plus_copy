@@ -1,4 +1,3 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -37,8 +36,7 @@ class LogoutCell extends ConsumerWidget {
                     padding: const EdgeInsets.only(bottom: 2),
                     child: Text(
                       context.l10n.logOut,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
+                      style: context.textStyle
                           .text
                           .copyWith(
                               color: context.color.textAndIconsBasePrimary),
