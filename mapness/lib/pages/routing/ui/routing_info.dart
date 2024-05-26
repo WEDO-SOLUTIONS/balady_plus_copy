@@ -8,10 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
-import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
+import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/double_ext.dart';
@@ -124,59 +124,62 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   Widget build(BuildContext context) => ValueListenableBuilder(
         valueListenable: _isNavTypeLoading,
         builder: (context, isLoading, child) => switch (isLoading) {
-          true => Center(
-              child: Loading.large(),
-            ),
+          true => Center(child: Loading.large()),
           false => ValueListenableBuilder(
               valueListenable: _navType,
               builder: (context, navigatingType, _) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Spacing.verticalPaddingInsideWrapper.heightBox,
-                      RoutesCarousel(
-                        points: widget.points,
-                        startNavigation: () {
-                          Metrics.logEventAdvanced(
-                            MetricsConstants.routesKeys.routeSelectionChangeNavType,
-                            group: MetricsConstants.routesTag,
-                            action: MetricAction.tap.toString(),
-                            props: {
-                              'navType': navigatingType.name,
-                              'points':
-                                  '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
-                            },
-                          );
-
-                          PathNavRoute.open(
-                            ref.watch(goRouterProvider),
-                            navigatingType,
-                          );
-                        },
-                        navType: navigatingType,
-                      ),
-                      Spacing.verticalPaddingInsideWrapper.heightBox,
-                      _RouteTabBar(
-                        active: navigatingType,
-                        onChanged: (e) {
-                          Metrics.logEventAdvanced(
-                            MetricsConstants.routesKeys.routeSelectionChangeNavType,
-                            group: MetricsConstants.routesTag,
-                            action: MetricAction.tap.toString(),
-                            props: {
-                              'navType': e.name,
-                            },
-                          );
-
-                          _navType.value = e;
-                        },
-                        points: widget.points,
-                      ),
-                      Spacing.verticalPaddingInsideWrapper.heightBox,
-                    ],
-                  )),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Spacing.verticalPaddingInsideWrapper.heightBox,
+                  RoutesCarousel(
+                    points: widget.points,
+                    startNavigation: () => _startNavigation(navigatingType),
+                    navType: navigatingType,
+                  ),
+                  Spacing.verticalPaddingInsideWrapper.heightBox,
+                  _RouteTabBar(
+                    active: navigatingType,
+                    onChanged: _onChanged,
+                    points: widget.points,
+                  ),
+                  Spacing.verticalPaddingInsideWrapper.heightBox,
+                ],
+              ),
+            ),
         },
       );
+
+  void _startNavigation(RouteSearchOptionsMessage navigatingType) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.routeSelectionChangeNavType,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+      props: {
+        'navType': navigatingType.name,
+        'points':
+            '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
+      },
+    );
+
+    PathNavRoute.open(
+      ref.watch(goRouterProvider),
+      navigatingType,
+    );
+  }
+
+  void _onChanged(RouteSearchOptionsMessage routeSearch) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.routeSelectionChangeNavType,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+      props: {
+        'navType': routeSearch.name,
+      },
+    );
+
+    _navType.value = routeSearch;
+  }
 }
 
 class _RouteTabBar extends ConsumerWidget {
@@ -242,30 +245,4 @@ class _RouteTabBar extends ConsumerWidget {
       ),
     );
   }
-
-  RouteSearchPoint? pointFrom(RouteParamsPoint? point) {
-    if (point == null) {
-      return null;
-    }
-    final dgisObjectId = point.dgisObjectId;
-    if (dgisObjectId == null) {
-      return null;
-    }
-    return RouteSearchPoint(
-      coordinates: GeoPointMessage(
-        latitude: point.latitude,
-        longitude: point.longitude,
-      ),
-      dgisObjectId: dgisObjectId,
-    );
-  }
-}
-
-extension IconDataOfRouteSearchOptionsMessage on RouteSearchOptionsMessage {
-  IconData icon(BuildContext context) => switch (this) {
-        RouteSearchOptionsMessage.pedestrian =>
-          Directionality.of(context) == TextDirection.ltr ? PlacesIcons.runningLTR : PlacesIcons.runningRTL,
-        RouteSearchOptionsMessage.car => TransportIcons.car,
-        _ => TransportIcons.car,
-      };
 }

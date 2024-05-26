@@ -116,7 +116,10 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                   child: Row(
                     children: <Widget>[
                       AppButton(
-                        primaryIcon: getIcon(context),
+                        primaryIcon: switch (Directionality.of(context)) {
+                          TextDirection.ltr => SystemIcons.arrowLeft,
+                          TextDirection.rtl => SystemIcons.arrowRight
+                        },
                         buttonColorScheme: ButtonColorScheme.tertiary,
                         onTap: _onClose,
                       ),
@@ -140,14 +143,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         ),
       ],
     );
-  }
-
-  IconData getIcon(BuildContext context) {
-    if (Localizations.localeOf(context).languageCode == 'ar') {
-      return SystemIcons.arrowRight;
-    } else {
-      return SystemIcons.arrowLeft;
-    }
   }
 
   void _onSwipeRoutes() {

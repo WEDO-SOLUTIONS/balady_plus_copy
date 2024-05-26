@@ -40,14 +40,14 @@ class RoutesCarousel extends ConsumerWidget {
             height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
             itemBuilder: (context, index) {
               final route = routes[index];
-              final distance = route.distance;
-              final duration = route.duration;
+              final distanceInMeters = route.distance;
+              final durationInSeconds = route.duration;
 
               const averageHumanStepsByKm = 1350;
               const averageCaloriesPerMinute = 4.6;
 
-              final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
-              final calories = ((duration / 60.0) * averageCaloriesPerMinute).toInt();
+              final steps = ((distanceInMeters / 1000) * averageHumanStepsByKm).toInt();
+              final calories = ((durationInSeconds / 60.0) * averageCaloriesPerMinute).toInt();
               return Padding(
                 padding: padding(
                   index: index,
@@ -55,19 +55,20 @@ class RoutesCarousel extends ConsumerWidget {
                   isLtr: Directionality.of(context) == TextDirection.ltr,
                 ),
                 child: PathCard(
-                  distance: distance.formatDistance(context.l10n),
+                  distance: distanceInMeters.formatDistance(context.l10n),
                   isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
                   localizations: PathCardLocalization(
                     calories: context.l10n.calories,
                     steps: context.l10n.steps,
                     go: context.l10n.go,
                   ),
-                  duration: duration.formatDuration(context.l10n),
+                  duration: durationInSeconds.formatDuration(context.l10n),
                   steps: steps,
                   calories: calories,
                   onStartTap: startNavigation,
-                  additionalInfo:
-                      shortest != null && shortest == duration ? PathCardStatus.shortest(context.l10n.shortest) : null,
+                  additionalInfo: shortest != null && shortest == durationInSeconds
+                      ? PathCardStatus.shortest(context.l10n.shortest)
+                      : null,
                 ),
               );
             },
@@ -79,6 +80,8 @@ class RoutesCarousel extends ConsumerWidget {
         skipLoadingOnReload: false,
       );
 
+  /// We use it to show the badge "Shortest" on only one shortest route
+  /// If we have more then one shortest route we don't show the badge and return null
   int? shortestIsOnlyOne(List<RouteInfo> routes) {
     if (routes.length == 1) {
       return routes.first.duration;
@@ -92,6 +95,10 @@ class RoutesCarousel extends ConsumerWidget {
     return shortestDuration;
   }
 
+  /// We use it to calculate padding for the first and last elements in the [PageView]
+  /// Because [PageView] doesn't have a separated constructor, we need to calculate padding manually
+  ///
+  /// Also we use it for single element in the list to unify the padding for all cases
   EdgeInsets padding({required int index, required int length, required bool isLtr}) {
     if (length == 1) {
       return const EdgeInsets.only(
@@ -117,6 +124,8 @@ class RoutesCarousel extends ConsumerWidget {
   }
 }
 
+/// This widget is used to wrap in [PageView] cards if amount of cards is more then one
+/// If amount is more then one we set the default width for [PathCard] (but we set it earlier when we setup [PageController] and [viewportFraction])
 class _CarouselWrapper extends StatelessWidget {
   final double height;
   final PageController pageController;
