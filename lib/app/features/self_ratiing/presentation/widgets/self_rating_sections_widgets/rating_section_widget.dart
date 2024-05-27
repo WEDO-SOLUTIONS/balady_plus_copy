@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/radio_custom.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/self_rating_radio_option.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import '../../../data/models/self_rating_item.dart';
 class SelfRatingSectionWidget extends StatelessWidget {
   const SelfRatingSectionWidget(
       {super.key, required this.item, required this.onSelect});
+
   final SelfRatingItem item;
   final Function onSelect;
 
@@ -31,10 +33,27 @@ class SelfRatingSectionWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-                height: 311,
-                child: Image.asset(
-                  item.getImage(),
-                )),
+              height: 311,
+              child: CachedNetworkImage(
+                imageUrl: item.getImage(),
+                width: double.maxFinite,
+                height: double.maxFinite,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                      // colorFilter: const ColorFilter.mode(
+                      //   Colors.red,
+                      //   BlendMode.colorBurn,
+                      // ),
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ),
+            ),
             SizedBox(
               height: 8,
             ),

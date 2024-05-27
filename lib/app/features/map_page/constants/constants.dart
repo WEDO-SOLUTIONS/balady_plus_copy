@@ -8,7 +8,7 @@ class Constants {
   static String mainUrl = "${sl<EnvType>().domain}v1/gis-urbi-services/layers";
 
   // Map Style
-  static String mapStyle = "assets/maps/styles/common-styles.2gis";
+  // static String mapStyle = "assets/maps/styles/common-styles.2gis";
   static double markerElevation = 0;
 
   // Map Icons

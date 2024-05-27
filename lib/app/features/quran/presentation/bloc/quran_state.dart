@@ -5,6 +5,7 @@ class QuranState extends Equatable {
   final BlocStatus status;
   final String? errorMessage;
   final int currentPageValue;
+  final int progressDownload;
   final List<QuranAyaModel>? quranAyat;
   final Map<int, List<QuranAyaModel>>? pages;
   final Map<int, String>? pagesStr;
@@ -15,10 +16,12 @@ class QuranState extends Equatable {
   final Map<int, Map<int, QuranSuraModel>>? suras;
   final bool? showDetails;
   final bool? showBookMark;
+
   QuranState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
       this.currentPageValue = 0,
+      this.progressDownload = 0,
       this.pages,
       this.pagesStr,
       this.quranAyat,
@@ -34,6 +37,7 @@ class QuranState extends Equatable {
   List<Object?> get props => [
         status,
         currentPageValue,
+        progressDownload,
         quranAyat,
         pages,
         pagesStr,
@@ -50,6 +54,7 @@ class QuranState extends Equatable {
       {BlocStatus? status,
       String? errorMessage,
       int? currentPageValue,
+      int? progressDownload,
       List<QuranAyaModel>? quranAyat,
       Map<int, List<QuranAyaModel>>? pages,
       Map<int, String>? pagesStr,
@@ -63,6 +68,7 @@ class QuranState extends Equatable {
     return QuranState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
+        progressDownload: progressDownload ?? this.progressDownload,
         currentPageValue: currentPageValue ?? this.currentPageValue,
         quranAyat: quranAyat ?? this.quranAyat,
         pages: pages ?? this.pages,

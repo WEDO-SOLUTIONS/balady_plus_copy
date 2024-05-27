@@ -1,5 +1,6 @@
 const _imagePath = 'assets/images/';
 const _etmamImagePath = 'assets/etmam_app/images/';
+const _imagePathRemote = 'https://baladyapps.momra.gov.sa/BaladyCDN/Mobile/';
 
 const _png = '.png';
 const _svg = '.svg';
@@ -60,7 +61,7 @@ class ImagePath {
   static const supportImg = '${_imagePath}support_img$_png';
   static const readBg = '${_imagePath}read_bg$_png';
   static const quranImg = '${_imagePath}quran_img$_png';
-  static const challengeBaladyBg = '${_imagePath}challenge_balady_bg$_png';
+  // static const challengeBaladyBg = '${_imagePath}challenge_balady_bg$_png';
   static const reportBg = '${_imagePath}report_bg$_png';
   static const deformityBg = '${_imagePath}deformity_bg$_png';
   static const boardingSplashImage = '${_imagePath}balady_logo$_png';
@@ -77,25 +78,25 @@ class ImagePath {
   static const boardingloader4 = '${_imagePath}loader4$_png';
 
   // building requirements
-  static const buildingReq1 = '${_imagePath}building/1$_png';
-  static const buildingReq2 = '${_imagePath}building/2$_png';
-  static const buildingReq3 = '${_imagePath}building/3$_png';
-  static const buildingReq4 = '${_imagePath}building/4$_png';
-  static const buildingReq5 = '${_imagePath}building/5$_png';
-  static const buildingReq6 = '${_imagePath}building/6$_png';
-  static const buildingReq7 = '${_imagePath}building/7$_png';
-  static const buildingReq8 = '${_imagePath}building/8$_png';
-  static const buildingReq9 = '${_imagePath}building/9$_png';
-  static const buildingReq10 = '${_imagePath}building/10$_png';
-  static const buildingReq11 = '${_imagePath}building/11$_png';
-  static const buildingReq12 = '${_imagePath}building/12$_png';
-  static const buildingReq13 = '${_imagePath}building/13$_png';
-  static const buildingReq14 = '${_imagePath}building/14$_png';
-  static const buildingReq15 = '${_imagePath}building/15$_png';
-  static const buildingReq16 = '${_imagePath}building/16$_png';
-  static const buildingReq17 = '${_imagePath}building/17$_png';
-  static const buildingReq18 = '${_imagePath}building/18$_png';
-  static const buildingReq19 = '${_imagePath}building/19$_png';
+  static const buildingReq1 = '${_imagePathRemote}compliance/building/1$_png';
+  static const buildingReq2 = '${_imagePathRemote}compliance/building/2$_png';
+  static const buildingReq3 = '${_imagePathRemote}compliance/building/3$_png';
+  static const buildingReq4 = '${_imagePathRemote}compliance/building/4$_png';
+  static const buildingReq5 = '${_imagePathRemote}compliance/building/5$_png';
+  static const buildingReq6 = '${_imagePathRemote}compliance/building/6$_png';
+  static const buildingReq7 = '${_imagePathRemote}compliance/building/7$_png';
+  static const buildingReq8 = '${_imagePathRemote}compliance/building/8$_png';
+  static const buildingReq9 = '${_imagePathRemote}compliance/building/9$_png';
+  static const buildingReq10 = '${_imagePathRemote}compliance/building/10$_png';
+  static const buildingReq11 = '${_imagePathRemote}compliance/building/11$_png';
+  static const buildingReq12 = '${_imagePathRemote}compliance/building/12$_png';
+  static const buildingReq13 = '${_imagePathRemote}compliance/building/13$_png';
+  static const buildingReq14 = '${_imagePathRemote}compliance/building/14$_png';
+  static const buildingReq15 = '${_imagePathRemote}compliance/building/15$_png';
+  static const buildingReq16 = '${_imagePathRemote}compliance/building/16$_png';
+  static const buildingReq17 = '${_imagePathRemote}compliance/building/17$_png';
+  static const buildingReq18 = '${_imagePathRemote}compliance/building/18$_png';
+  static const buildingReq19 = '${_imagePathRemote}compliance/building/19$_png';
 
   // Visual Distoration  static const buildingReq17 = '${_imagePath}building_req17$_png';
   static const distortedWritings = '${_imagePath}distortedWritings$_png';
