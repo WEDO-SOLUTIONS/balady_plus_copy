@@ -403,7 +403,7 @@ class MapViewModel extends BaseViewModel {
     }
     _setupListeners();
 
-    await controller.loadStyles(Constants.mapStyle);
+    // await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(

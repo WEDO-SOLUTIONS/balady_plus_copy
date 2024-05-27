@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -274,10 +275,24 @@ class BuildingReqCard extends StatelessWidget {
           if (imgPath != null)
             ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(16)),
-              child: Image.asset(
-                imgPath!,
+              child: CachedNetworkImage(
+                imageUrl: imgPath!,
                 width: MediaQuery.sizeOf(context).width,
                 height: 190,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.red,
+                        BlendMode.colorBurn,
+                      ),
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
         ],

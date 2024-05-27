@@ -909,6 +909,16 @@ class ApiUrl {
   static String commercialLicenseOwnershipServicesUploadAttachments(
       int requestId, int attachTypeId) =>
       'v1/superapp-commercial-ownership-services/transfer/upload-attachment/$attachTypeId/attachments/$requestId';
+
+
+
+
+
+
+
+  static const quranUrlDownload = 'https://baladyapps.momra.gov.sa/BaladyCDN/Mobile/conditions/quran/quran.zip';
+
+
 }
 
 /// It has any header which used inside any API
