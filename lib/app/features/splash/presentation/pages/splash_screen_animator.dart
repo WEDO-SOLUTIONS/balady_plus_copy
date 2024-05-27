@@ -18,23 +18,23 @@ class SplashScreenAnimator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (CommonFunctions.changeSpalsh()) {
-      /* return Image.asset(
+      return Image.asset(
         "assets/images/eid-splash.png",
         fit: BoxFit.fill,
-      );*/
-
-      return Gif(
-        image: const AssetImage("assets/images/splash-screen.gif"),
-        // controller:
-        //    _controller, // if duration and fps is null, original gif fps will be used.
-        /// fps: 30,
-
-        fit: BoxFit.cover,
-
-        //   duration: const Duration(seconds: 3),
-        autostart: Autostart.once,
-        onFetchCompleted: () {},
       );
+
+      // return Gif(
+      //   image: const AssetImage("assets/images/splash-screen.gif"),
+      //   // controller:
+      //   //    _controller, // if duration and fps is null, original gif fps will be used.
+      //   /// fps: 30,
+      //
+      //   fit: BoxFit.cover,
+      //
+      //   //   duration: const Duration(seconds: 3),
+      //   autostart: Autostart.once,
+      //   onFetchCompleted: () {},
+      // );
     }
     return Scaffold(
         backgroundColor: AppColor.primary900Light,

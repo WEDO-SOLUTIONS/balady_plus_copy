@@ -17,6 +17,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
+
 // import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, EventTransformer;
@@ -591,10 +592,12 @@ class CommonFunctions {
   }
 
   static bool get isAuthed => sl.isRegistered<AuthData>();
+
   static bool get isAppAR =>
       translator.activeLanguageCode == AppLanguage.ar.name;
 
   static Future<bool> onLogin() async => await sl<EntryPointCubit>().onLogin();
+
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
     return r.allMatches(str).length >= 15;
@@ -1416,8 +1419,8 @@ class CommonFunctions {
     int todayDay = today.day;
     int todayMonth = today.month;
     int todayYear = today.year;
-    var allowedDays = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-    if (allowedDays.contains(todayDay) && todayMonth == 4 && todayYear == 2024)
+    var allowedDays = [13, 14, 15, 16, 17, 18, 19, 20];
+    if (allowedDays.contains(todayDay) && todayMonth == 6 && todayYear == 2024)
       return true;
     return false;
   }
@@ -1461,6 +1464,7 @@ class CommonProperties {
       sl<EntryPointCubit>().state.token?.appCookie ?? "";
 
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
+
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
 
@@ -1489,7 +1493,9 @@ class CommonProperties {
   }
 
   static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
+
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
+
   static GISResponse? get userLocationGIS =>
       sl<LocationCubit>().state.gisResponse;
 
