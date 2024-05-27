@@ -69,29 +69,16 @@ class _FavouriteCache extends _$FavouriteCache {
     if (!state.hasValue) {
       return;
     }
-
     final oldDataState = state.requireValue;
-    FavouritesState newState;
+    final items = oldDataState.items;
+    final work = oldDataState.work;
+    final home = oldDataState.home;
 
-    if (item.id == oldDataState.home?.id) {
-      newState = FavouritesState(
-        items: oldDataState.items,
-        work: oldDataState.work,
-      );
-    } else if (item.id == oldDataState.work?.id) {
-      newState = FavouritesState(
-        items: oldDataState.items,
-        home: oldDataState.home,
-      );
-    } else {
-      final newItems =
-          oldDataState.items.where((e) => e.id != item.id).toList();
-      newState = FavouritesState(
-        items: newItems,
-        work: oldDataState.work,
-        home: oldDataState.home,
-      );
-    }
+    final newState = FavouritesState(
+      items: items.where((e) => e.id != item.id).toList(),
+      work: item.id == work?.id ? null:work,
+      home: item.id == home?.id ? null:home,
+    );
 
     await _updateState(newState);
 
@@ -103,6 +90,39 @@ class _FavouriteCache extends _$FavouriteCache {
       );
     } on Exception catch (_) {
       await _addToDeletionSync([item]);
+    }
+  }
+
+  Future<void> deleteItems(List<FavouriteItem> items) async {
+    if (!state.hasValue) {
+      return;
+    }
+
+    final oldDataState = state.requireValue;
+    final oldItems = oldDataState.items;
+    final work = oldDataState.work;
+    final home = oldDataState.home;
+
+    oldItems.removeWhere((element) => items.any((e) => e.id == element.id));
+
+    final newState = FavouritesState(
+      items: oldItems,
+      work: work,
+      home: home,
+    );
+
+
+    await _updateState(newState);
+
+
+    try {
+      await _deleteRequest(
+        items: items,
+        workId: oldDataState.work?.id,
+        homeId: oldDataState.home?.id,
+      );
+    } on Exception catch (_) {
+      await _addToDeletionSync(items);
     }
   }
 
