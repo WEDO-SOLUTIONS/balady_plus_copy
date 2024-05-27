@@ -155,7 +155,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   void _objectTapListener(TapEvent event) {
     ///TODO: need to refactor after Dashboard refactoring to designSystem
-    if (_draggableScrollableController.size > 0.1) {
+    if (_draggableScrollableController.size > 0.13) {
       _hideDashboard(event);
     } else {
       final goRouter = ref.read(goRouterProvider);
