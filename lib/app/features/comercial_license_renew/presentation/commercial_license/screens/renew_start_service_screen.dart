@@ -78,18 +78,18 @@ class _RenewStartServiceState extends State<RenewStartService> {
                           color: Colors.white),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 18, vertical: 26),
-                      child: ElevatedButtonWidget.startService(
-                        onPressed: () async {
-                          context
-                              .read<RenewStartServiceBloc>()
-                              .add(const ValidateBeforeApplyEvent());
-                        },
-                      ),
+                      child: state.status == BlocStatus.loading
+                          ? const Center(child: CustomCircularLoadingWidget())
+                          : ElevatedButtonWidget.startService(
+                              onPressed: () async {
+                                context
+                                    .read<RenewStartServiceBloc>()
+                                    .add(const ValidateBeforeApplyEvent());
+                              },
+                            ),
                     )
                   ],
                 ),
-                if (state.status == BlocStatus.loading)
-                  const CustomCircularLoadingWidget(),
               ],
             ),
           );

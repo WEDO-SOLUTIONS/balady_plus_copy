@@ -78,22 +78,26 @@ class CRStep1ApplicantData extends StatelessWidget {
                       ),
                     ),
                   ),
-                  CRPreviousNextButtons(
-                      isBtnDisabled: false,
-                      onPressed: () {
-                        if (state.isicActivitiesNotExistInBalady.isNotEmpty) {
-                          BottomSheetDialog.showDraggableSheet(context,
-                              child: BlocProvider.value(
-                                  value: BlocProvider.of<
-                                      CrStep1ApplicantDataCubit>(context),
-                                  child:
-                                      const IsicActivitiesDialogNotExistInBalady()));
-                        } else {
-                          context
-                              .read<CrStep1ApplicantDataCubit>()
-                              .saveComSubmitterAndOwner();
-                        }
-                      }),
+                  (state.recordStatus.isSubmissionLoading ||
+                          state.status.isSubmissionLoading)
+                      ? const Center(child: CustomCircularLoadingWidget())
+                      : CRPreviousNextButtons(
+                          isBtnDisabled: false,
+                          onPressed: () {
+                            if (state
+                                .isicActivitiesNotExistInBalady.isNotEmpty) {
+                              BottomSheetDialog.showDraggableSheet(context,
+                                  child: BlocProvider.value(
+                                      value: BlocProvider.of<
+                                          CrStep1ApplicantDataCubit>(context),
+                                      child:
+                                          const IsicActivitiesDialogNotExistInBalady()));
+                            } else {
+                              context
+                                  .read<CrStep1ApplicantDataCubit>()
+                                  .saveComSubmitterAndOwner();
+                            }
+                          }),
                 ],
               ),
             if (state.recordStatus.isSubmissionFailure)
@@ -104,7 +108,7 @@ class CRStep1ApplicantData extends StatelessWidget {
               ),
             if (state.recordStatus.isSubmissionLoading ||
                 state.status.isSubmissionLoading)
-              const CustomCircularLoadingWidget(),
+              const Center(child: CustomCircularLoadingWidget())
           ],
         );
       },

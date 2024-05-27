@@ -27,6 +27,7 @@ class CRStep4ShopData extends StatefulWidget {
 
 class _CRStep4ShopDataState extends State<CRStep4ShopData> {
   TextEditingController _deedServiceController = TextEditingController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -718,12 +719,14 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                     ),
                   ),
                 ),
-                CRPreviousNextButtons(
-                  isBtnDisabled: !state.isFormValid(),
-                  onPressed: () {
-                    context.read<CrStep4ShopDataCubit>().save();
-                  },
-                ),
+                (state.status.isSubmissionLoading)
+                    ? const Center(child: CustomCircularLoadingWidget())
+                    : CRPreviousNextButtons(
+                        isBtnDisabled: !state.isFormValid(),
+                        onPressed: () {
+                          context.read<CrStep4ShopDataCubit>().save();
+                        },
+                      ),
               ],
             ),
           if (state.deedOptionsStatus == BlocStatus.failure ||

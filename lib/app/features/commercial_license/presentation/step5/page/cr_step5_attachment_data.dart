@@ -115,13 +115,15 @@ class _CRStep5AttachmentDataState extends State<CRStep5AttachmentData> {
                     ),
                   ),
                 ),
-                CRPreviousNextButtons(
-                    onPressed: () {
-                      context
-                          .read<CRStep5AttachmentCubit>()
-                          .addBeneficiaryNotes();
-                    },
-                    isBtnDisabled: !state.isFormValid()),
+                (state.status.isSubmissionLoading)
+                    ? const Center(child: CustomCircularLoadingWidget())
+                    : CRPreviousNextButtons(
+                        onPressed: () {
+                          context
+                              .read<CRStep5AttachmentCubit>()
+                              .addBeneficiaryNotes();
+                        },
+                        isBtnDisabled: !state.isFormValid()),
               ],
             ),
             if (state.attachmentStatus.isSubmissionLoading ||

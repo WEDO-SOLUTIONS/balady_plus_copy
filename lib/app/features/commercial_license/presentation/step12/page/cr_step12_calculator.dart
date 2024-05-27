@@ -64,15 +64,15 @@ class CRStep12CalculatorReview extends StatelessWidget {
                   ),
                 ),
               ),
-              CRPreviousNextButtons(
-                  onPressed: () {
-                    context.read<CrStep12SadadCubit>().calculate();
-                  },
-                  isBtnDisabled: state.selectedPeriod == null),
+              (state.status.isSubmissionLoading)
+                  ? const Center(child: CustomCircularLoadingWidget())
+                  : CRPreviousNextButtons(
+                      onPressed: () {
+                        context.read<CrStep12SadadCubit>().calculate();
+                      },
+                      isBtnDisabled: state.selectedPeriod == null),
             ],
           ),
-          if (state.status.isSubmissionLoading)
-            const CustomCircularLoadingWidget(),
         ],
       );
     });

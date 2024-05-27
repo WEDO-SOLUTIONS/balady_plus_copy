@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -103,6 +104,7 @@ class CalcualtorWidget extends StatefulWidget {
 
 class _CalcualtorWidgetState extends State<CalcualtorWidget> {
   bool showCostsInfo = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RenewCommercialLicenseBloc, RenewCommercialLicenseState>(
@@ -196,12 +198,16 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                   ],
                 ),
               ),
-              CRPreviousNextButtons(
-                isBtnDisabled: false,
-                onPressed: () {
-                  context.read<RenewCommercialLicenseBloc>().submitRenew();
-                },
-              ),
+              (state.status.isSubmissionLoading)
+                  ? const Center(child: CustomCircularLoadingWidget())
+                  : CRPreviousNextButtons(
+                      isBtnDisabled: false,
+                      onPressed: () {
+                        context
+                            .read<RenewCommercialLicenseBloc>()
+                            .submitRenew();
+                      },
+                    ),
             ],
           ),
         );

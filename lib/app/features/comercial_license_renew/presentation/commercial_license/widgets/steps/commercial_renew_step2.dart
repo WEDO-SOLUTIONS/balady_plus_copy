@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/widgets/request_service/attachment_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -83,12 +84,16 @@ class _CommercialRenewStep2State extends State<CommercialRenewStep2> {
                 ),
               ),
             ),
-            CRPreviousNextButtons(
-              isBtnDisabled: !state.isAttacmentsFormValid(),
-              onPressed: () {
-                context.read<RenewCommercialLicenseBloc>().submitAttachments();
-              },
-            ),
+            (state.status.isSubmissionLoading)
+                ? const Center(child: CustomCircularLoadingWidget())
+                : CRPreviousNextButtons(
+                    isBtnDisabled: !state.isAttacmentsFormValid(),
+                    onPressed: () {
+                      context
+                          .read<RenewCommercialLicenseBloc>()
+                          .submitAttachments();
+                    },
+                  ),
           ],
         );
       },
