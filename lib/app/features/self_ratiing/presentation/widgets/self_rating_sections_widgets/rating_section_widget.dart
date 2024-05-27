@@ -32,26 +32,31 @@ class SelfRatingSectionWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             SizedBox(
               height: 311,
               child: CachedNetworkImage(
                 imageUrl: item.getImage(),
                 width: double.maxFinite,
                 height: double.maxFinite,
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                      // colorFilter: const ColorFilter.mode(
-                      //   Colors.red,
-                      //   BlendMode.colorBurn,
-                      // ),
+                imageBuilder: (context, imageProvider) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                        // colorFilter: const ColorFilter.mode(
+                        //   Colors.red,
+                        //   BlendMode.colorBurn,
+                        // ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
                 placeholder: (context, url) => const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+                errorWidget: (context, url, error) {
+                  return const Icon(Icons.error);
+                },
               ),
             ),
             SizedBox(
