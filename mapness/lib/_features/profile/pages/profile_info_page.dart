@@ -32,7 +32,7 @@ class ProfileInfoPage extends ConsumerWidget {
                   leading: ActionModel(
                     text: context.l10n.back,
                     onPressed: () => context.pop(),
-                    icon: context.isLtr
+                    icon: context.isLTR
                         ? SystemIcons.arrowCornerRightL
                         : SystemIcons.arrowCornerLeftL,
                   ),
