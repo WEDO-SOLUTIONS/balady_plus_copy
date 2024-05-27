@@ -25,6 +25,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
 
 enum LangingFocusMaker { iwish, mosques }
 
@@ -153,7 +154,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   void _objectTapListener(TapEvent event) {
-
     ///TODO: need to refactor after Dashboard refactoring to designSystem
     if (_draggableScrollableController.size > 0.1) {
       _hideDashboard(event);
@@ -217,9 +217,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   void _hideDashboard(TapEvent event) {
-    if(event is ObjectTapEvent){
-      ref.read(cameraPositionProvider.notifier).animateTo(
-          CameraPositionMessage(
+    if (event is ObjectTapEvent) {
+      ref.read(cameraPositionProvider.notifier).animateTo(CameraPositionMessage(
             point: GeoPointMessage(
               latitude: event.latLng.latitude,
               longitude: event.latLng.longitude,
@@ -228,7 +227,12 @@ class _LandingPageState extends ConsumerState<LandingPage> {
             tilt: 0,
             bearing: 0,
           ));
+    }
 
+    // Ignore hide dashboard if current route is not landing
+    final currentRoute = ref.watch(currentRouteProvider);
+    if (currentRoute?.currentPath != '/landing') {
+      return;
     }
     _draggableScrollableController.animateTo(
       0.1,
