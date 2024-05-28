@@ -12,22 +12,25 @@ class HelpCenterPage extends ConsumerWidget {
   const HelpCenterPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context, WidgetRef ref) =>
+      AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Directionality(
           textDirection: Directionality.of(context),
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
+              padding:
+                  const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
                   title: context.l10n.helpCenter,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
-                    text: context.l10n.back,
                     onPressed: () => context.pop(),
-                    icon: context.isLTR ? SystemIcons.arrowCornerRightL : SystemIcons.arrowCornerLeftL,
+                    icon: context.isLTR
+                        ? SystemIcons.arrowCornerLeftL
+                        : SystemIcons.arrowCornerRightL,
                   ),
                 ),
                 body: Padding(
@@ -43,7 +46,8 @@ class HelpCenterPage extends ConsumerWidget {
                         color: context.color.surfaceBaseSecondary,
                         children: [
                           ContentRow(
-                            onTap: () => const MomraWebsitePageRoute().push(context),
+                            onTap: () =>
+                                const MomraWebsitePageRoute().push(context),
                             options: ContentRowOptions(
                               title: context.l10n.baladyWebsite,
                               leadingIcon: GeneralIcons.globe.icon(
@@ -51,11 +55,13 @@ class HelpCenterPage extends ConsumerWidget {
                               ),
                               actionWidget: ContentRowActionOptions(
                                 actionIcon: context.isLTR
-                                    ? SystemIcons.arrowCornerLeftS.icon(
-                                        color: context.color.textAndIconsBaseSecondary,
+                                    ? SystemIcons.arrowCornerRightS.icon(
+                                        color: context
+                                            .color.textAndIconsBaseSecondary,
                                       )
-                                    : SystemIcons.arrowCornerRightS.icon(
-                                        color: context.color.textAndIconsBaseSecondary,
+                                    : SystemIcons.arrowCornerLeftS.icon(
+                                        color: context
+                                            .color.textAndIconsBaseSecondary,
                                       ),
                               ),
                             ),
