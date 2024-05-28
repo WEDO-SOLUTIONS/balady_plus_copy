@@ -22,59 +22,51 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
-class MapControls extends ConsumerStatefulWidget {
+class MapControls extends ConsumerWidget {
+  final DraggableScrollableController draggableScrollableController;
+  final bool onScroll;
+
   const MapControls({
     required this.draggableScrollableController,
     required this.onScroll,
     super.key,
   });
 
-  final DraggableScrollableController draggableScrollableController;
-  final bool onScroll;
-
   @override
-  ConsumerState<MapControls> createState() => _MapControlsState();
-}
-
-class _MapControlsState extends ConsumerState<MapControls> {
-  bool _hideControls = false;
-  double _bottomPadding = 16;
-
-  @override
-  void didUpdateWidget(covariant MapControls oldWidget) {
-    _handleScroll();
-    super.didUpdateWidget(oldWidget);
-  }
-
-  void _handleScroll() {
-    if (!widget.onScroll) {
-      final currentSize = widget.draggableScrollableController.size;
-      final double screenHeight = MediaQuery.of(context).size.height;
-      final double padding = currentSize * screenHeight;
-      setState(() {
-        final locationBottomSheet = currentSize > 0.90;
-        _hideControls = locationBottomSheet;
-
-        if (currentSize > 0.28 && currentSize < 0.4) {
-          // for a new feature you need to change and replace the magic number, now these numbers are taken by taking into account all the indents, the height of the bottom nav bar
-          _bottomPadding = 16 + padding - 74 - 80;
-        } else {
-          _bottomPadding = 16;
-        }
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final controlsState = ref.watch(mapControlsProvider);
 
+    bool hideControls = false;
+    double bottomPadding = 16;
+
+    double currentSize = 0;
+
+    // Hide controls when the bottom sheet is expanded
+    if (draggableScrollableController.isAttached) {
+      currentSize = draggableScrollableController.size;
+      final locationBottomSheet = currentSize > 0.75;
+      hideControls = locationBottomSheet;
+    }
+
+    // Update Padding for the bottom sheet size
+    if (!onScroll && draggableScrollableController.isAttached) {
+      final double screenHeight = MediaQuery.of(context).size.height;
+      final double padding = currentSize * screenHeight;
+
+      if (currentSize > 0.28 && currentSize < 0.4) {
+        // for a new feature you need to change and replace the magic number, now these numbers are taken by taking into account all the indents, the height of the bottom nav bar
+        bottomPadding = 16 + padding - 74 - 80;
+      } else {
+        bottomPadding = 16;
+      }
+    }
+
     return IgnorePointer(
-      ignoring: _hideControls,
+      ignoring: hideControls,
       child: SafeArea(
         bottom: false,
         child: AnimatedOpacity(
-          opacity: _hideControls ? 0 : 1,
+          opacity: hideControls ? 0 : 1,
           duration: const Duration(milliseconds: 250),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +79,7 @@ class _MapControlsState extends ConsumerState<MapControls> {
                       left: 12,
                       top: 12,
                       right: 12,
-                      bottom: _bottomPadding,
+                      bottom: bottomPadding,
                     ),
                     child: Row(
                       children: [
