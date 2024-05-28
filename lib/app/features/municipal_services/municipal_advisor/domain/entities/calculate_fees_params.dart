@@ -9,11 +9,14 @@ class CalculateFeesParams extends CalculateFeesParamsModel {
     required super.activityId,
     required super.licensePeriod,
     required super.shopArea,
+    required super.mainActivityArea,
     required super.cleanOption,
     required super.unitCount,
     required super.accommodationTypeId,
     required super.permits,
     required super.boards,
     required super.atmFeesPaid,
+    required super.additionalActivities,
+
   });
 }

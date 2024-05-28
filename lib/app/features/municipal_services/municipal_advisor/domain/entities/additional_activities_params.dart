@@ -4,5 +4,7 @@ class AdditionalActivitiesParams extends AdditionalActivitiesParamsModel {
   const AdditionalActivitiesParams(
       {required super.consultationKey,
       required super.ids,
-      super.hasSalamaPermit});
+      super.hasSalamaPermit,
+      super.mainActivityArea,
+      super.shopArea});
 }

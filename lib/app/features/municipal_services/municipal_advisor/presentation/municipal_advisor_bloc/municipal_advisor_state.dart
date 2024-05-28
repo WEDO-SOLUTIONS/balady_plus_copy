@@ -22,6 +22,7 @@ class MunicipalAdvisorState extends Equatable {
   final bool? hasSalama;
   final List<CivilDefenceEntity>? civilDefenceList;
   final num? selectedArea;
+  final num? totalShopArea;
   final bool changingInfo;
   final List<String> issuingPredefinedConditions;
   final List<LicensePermitEntity> licensePermits;
@@ -78,6 +79,7 @@ class MunicipalAdvisorState extends Equatable {
       this.hasSalama,
       this.civilDefenceList,
       this.selectedArea,
+        this.totalShopArea,
       this.changingInfo = false,
       this.issuingPredefinedConditions = const <String>[],
       this.licensePermits = const <LicensePermitEntity>[],
@@ -153,6 +155,7 @@ class MunicipalAdvisorState extends Equatable {
     Nullable<bool?>? hasSalama,
     List<CivilDefenceEntity>? civilDefenceList,
     num? selectedArea,
+    num? totalShopArea,
     bool? changingInfo,
     List<String>? issuingPredefinedConditions,
     List<LicensePermitEntity>? licensePermits,
@@ -213,6 +216,7 @@ class MunicipalAdvisorState extends Equatable {
         hasSalama: hasSalama == null ? this.hasSalama : hasSalama.value,
         civilDefenceList: civilDefenceList ?? this.civilDefenceList,
         selectedArea: selectedArea ?? this.selectedArea,
+        totalShopArea: totalShopArea ?? this.totalShopArea,
         changingInfo: changingInfo ?? this.changingInfo,
         issuingPredefinedConditions:
             issuingPredefinedConditions ?? this.issuingPredefinedConditions,
@@ -275,6 +279,7 @@ class MunicipalAdvisorState extends Equatable {
         atmPaid,
         hasSalama,
         selectedArea,
+        totalShopArea,
         changingInfo,
         issuingPredefinedConditions,
         licensePermits,

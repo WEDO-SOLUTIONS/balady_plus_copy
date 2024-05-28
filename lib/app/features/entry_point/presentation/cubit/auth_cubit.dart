@@ -290,7 +290,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
-    //await _logout(NoParams());
+    await _logout(NoParams());
     sl<DelegatorsCubit>().clearDelegators();
     final failureOrSuccess = await _clearAuth(NoParams());
 

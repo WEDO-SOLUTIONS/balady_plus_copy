@@ -408,9 +408,28 @@ class MunicipalAdvisorBloc
           ),
         );
 
+
+
+
+        double totalShopArea=0;
+        for (var activity in state.selectedAdditionalActivities) {
+
+          if(activity.inputArea!= null && activity.inputArea!.isNotEmpty )
+          {
+            totalShopArea =  totalShopArea + double.parse(activity.inputArea!);
+          }
+        }
+
+
+        if(state.selectedArea != null)
+        {
+          totalShopArea = totalShopArea + state.selectedArea!;
+        }
+
+
         final failOrSuccess = await _validateAddetionalActivites(
             ValidateAdditionalActivitiesParams(
-                shopArea: state.selectedArea?.toDouble() ?? 0,
+                shopArea: totalShopArea,
                 mainActivityId: state.selectedIsicSubActivity?.id ?? 0,
                 addetionalActivites: state.selectedAdditionalActivities
                     .map((e) =>
@@ -652,6 +671,7 @@ class MunicipalAdvisorBloc
             lastEvent: event,
           ),
         );
+
         final failureOrSuccess = await _saveConsultationProgress(
           SaveConsultationProgressParams(
             consultationKey: state.consultationKey!,
@@ -666,7 +686,7 @@ class MunicipalAdvisorBloc
             latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
             mapNo: null,
             landNo: null,
-            shopArea: state.selectedArea ?? 0,
+            mainActivityArea: state.selectedArea ?? 0,
             activityId: state.selectedIsicSubActivity?.id ?? 0,
             atmFeesOption: state.atmPaid,
             unitCount: state.unitCount,
@@ -682,6 +702,23 @@ class MunicipalAdvisorBloc
 
         final additionalActivities = state.selectedAdditionalActivities;
 
+        double totalShopArea=0;
+        for (var activity in additionalActivities) {
+
+          if(activity.inputArea!= null && activity.inputArea!.isNotEmpty )
+            {
+              totalShopArea =  totalShopArea + double.parse(activity.inputArea!);
+            }
+        }
+
+
+        if(state.selectedArea != null)
+          {
+            totalShopArea = totalShopArea + state.selectedArea!;
+          }
+
+        state.copyWith(totalShopArea: totalShopArea);
+
         final saveAdditionalActivities = await _saveAdditionalActivities(
           AdditionalActivitiesParams(
               consultationKey: state.consultationKey!,
@@ -689,7 +726,10 @@ class MunicipalAdvisorBloc
                   .map(
                       (e) => (e.activityId, double.tryParse(e.inputArea ?? "")))
                   .toList(),
-              hasSalamaPermit: state.hasSalama),
+              hasSalamaPermit: state.hasSalama,
+            mainActivityArea: state.selectedArea ?? 0,
+            shopArea: totalShopArea
+          ),
         );
         if (failureOrSuccess.isLeft()) return;
         saveAdditionalActivities.fold(
@@ -1155,6 +1195,7 @@ class MunicipalAdvisorBloc
             maskType: EasyLoadingMaskType.black,
           );
         }
+
         final failureOrSuccess = await _calculateLicenseFees(
           CalculateFeesParams(
             consultationKey: state.consultationKey!,
@@ -1167,12 +1208,17 @@ class MunicipalAdvisorBloc
             latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
             activityId: state.selectedIsicSubActivity!.id,
             licensePeriod: state.selectedLicenseYear,
-            shopArea: state.selectedArea!,
+            shopArea: state.totalShopArea!,
             cleanOption: state.selectedCleanMechanism?.id,
             unitCount: state.unitCount,
             atmFeesPaid: state.atmPaid,
             boards: state.boards,
             permits: state.selectedPermits,
+            mainActivityArea:state.selectedArea!,
+              additionalActivities:state.selectedAdditionalActivities
+                  .map(
+                      (e) => (e.activityId, double.tryParse(e.inputArea ?? "")))
+                  .toList()
           ),
         );
         if (!event.finalCalculation) EasyLoading.dismiss();

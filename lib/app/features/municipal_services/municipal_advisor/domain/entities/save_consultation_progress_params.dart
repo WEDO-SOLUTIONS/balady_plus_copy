@@ -12,7 +12,7 @@ class SaveConsultationProgressParams
     required super.latitude,
     required super.mapNo,
     required super.landNo,
-    required super.shopArea,
+    required super.mainActivityArea,
     required super.activityId,
     required super.atmFeesOption,
     required super.unitCount,
