@@ -52,9 +52,7 @@ class QuickFilter extends StatelessWidget {
                     ),
                     Text(
                       item.title!,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .text
+                      style: context.textStyle.text
                           .copyWith(
                             color: selected
                                 ? Colors.white
