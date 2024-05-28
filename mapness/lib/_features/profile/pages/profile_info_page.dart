@@ -24,7 +24,8 @@ class ProfileInfoPage extends ConsumerWidget {
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.only(top:Spacing.verticalBaseToTopModal),
+              padding:
+                  const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
                   title: context.l10n.profileInfo,
@@ -43,7 +44,8 @@ class ProfileInfoPage extends ConsumerWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          if (userData != null) PersonalData(userInfo: userData),
+                          if (userData != null)
+                            PersonalData(userInfo: userData),
                         ],
                       ),
                     ),
