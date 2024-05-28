@@ -821,6 +821,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.map = map
         
         let mapView = mapFactory.mapView
+        
+        // This gesture is temporarily disabled as it conflicts with MapObjectTappedCallback
+        mapView.gestureView?.doubleTapAndPanGestureRecognizer?.isEnabled = false
+        
         mapView.translatesAutoresizingMaskIntoConstraints = false
         self._view.addSubview(mapView)
         NSLayoutConstraint.activate([
