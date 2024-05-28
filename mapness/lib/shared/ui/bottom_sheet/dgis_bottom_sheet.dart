@@ -34,6 +34,9 @@ enum Expansion {
 
   /// take all available space
   expanded,
+
+  /// for full hide photo
+  fullHidePhoto,
 }
 
 extension ExpansionUtils on Expansion {
@@ -45,8 +48,9 @@ extension ExpansionUtils on Expansion {
         return direction == ScrollDirection.up ? Expansion.middle : Expansion.hidden;
       case Expansion.middle:
         return direction == ScrollDirection.up ? Expansion.expanded : Expansion.collapsed;
+      case Expansion.fullHidePhoto:
       case Expansion.expanded:
-        return direction == ScrollDirection.up ? Expansion.expanded : Expansion.middle;
+        return direction == ScrollDirection.up ? Expansion.expanded : Expansion.collapsed;
     }
   }
 
@@ -162,6 +166,7 @@ class DgisBottomSheet extends StatefulWidget {
 class DgisBottomSheetController {
   bool _isAttached = false;
   Expansion? _currentExpansion;
+
   Expansion? get currentExpansion => _currentExpansion;
 
   Function(Expansion expansion)? _onAnimate;
@@ -565,6 +570,8 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
           widget.onVisibleHeightChanged?.call(_visibleHeight);
           _printDebugLog('_applyUserOffset new _visibleHeight=$_visibleHeight');
         });
+      } else {
+        widget.onExpansionChanged?.call(Expansion.fullHidePhoto, byUser: true);
       }
     } else {
       _printDebugLog('Scrolling down');
@@ -638,13 +645,6 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       return null;
     }
 
-    if (fastSwipe) {
-      final nextExtention = closestExpansion.getNextExpansion(
-          upDirection ? ScrollDirection.up : ScrollDirection.down, widget.availableExpansions);
-
-      return nextExtention;
-    }
-
     if (upDirection && visibleHeightOfClosestExpansion > _visibleHeight) {
       expansion = closestExpansion;
     } else if (!upDirection && visibleHeightOfClosestExpansion < _visibleHeight) {
@@ -670,52 +670,28 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   }
 
   Expansion _closestExpansionByVisibleHeight(double visibleHeight) {
-    final length = widget.availableExpansions.length;
-
-    if (length == 1) {
-      return widget.availableExpansions.first;
-    }
-
     final heights = <MapEntry<Expansion, double>>[];
     for (final expansion in widget.availableExpansions) {
       heights.add(MapEntry(expansion, _visibleHeightByExpansion(expansion)));
     }
 
-    heights.sort((h1, h2) => h1.value.compareTo(h2.value));
-
-    if (visibleHeight < heights.first.value) {
-      return heights.first.key;
-    }
-    if (visibleHeight > heights.last.value) {
-      return heights.last.key;
-    }
-
-    final nearestHeight = heights.firstWhereOrNull((height) {
-      final diff = (height.value - visibleHeight).abs();
-      if (diff <= _deltaThreshold) {
-        return true;
-      }
-      return false;
-    });
-
-    final closest = widget.controller?.currentExpansion ?? heights.first.key;
-
-    if (nearestHeight != null) {
-      return nearestHeight.key;
-    }
-
-    final height = _visibleHeightByExpansion(closest);
-    final delta = (height - visibleHeight).abs();
-
-    if (delta >= _deltaThreshold) {
-      if (visibleHeight > height) {
-        return closest.getNextExpansion(ScrollDirection.up, widget.availableExpansions);
+    final visibleHeightByExpansion = _visibleHeightByExpansion(_expansion);
+    final _delta = (visibleHeightByExpansion - visibleHeight).abs();
+    Expansion result;
+    if (_delta > _deltaThreshold) {
+      if (visibleHeight > visibleHeightByExpansion) {
+        heights.sort((h1, h2) => h1.value.compareTo(h2.value));
+        final firstWhere = heights.firstWhere((element) => element.value > visibleHeightByExpansion);
+        result = firstWhere.key;
       } else {
-        return closest.getNextExpansion(ScrollDirection.down, widget.availableExpansions);
+        heights.sort((h1, h2) => h2.value.compareTo(h1.value));
+        final firstWhere = heights.firstWhere((element) => element.value < visibleHeightByExpansion);
+        result = firstWhere.key;
       }
+    } else {
+      result = _expansion;
     }
-
-    return closest;
+    return result;
   }
 
   void _printDebugLog(String text) {
@@ -733,6 +709,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     widget ??= this.widget;
     var visibleHeight = 0.0;
     switch (expansion) {
+      case Expansion.fullHidePhoto:
       case Expansion.expanded:
         visibleHeight = _maxVisibleHeight;
       case Expansion.middle:
