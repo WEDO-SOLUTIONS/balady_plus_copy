@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/quran/data/models/quran_sura_model.dart';
 import 'package:collection/collection.dart';
@@ -65,30 +66,34 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
     emitter(state.copyWith(showDetails: !(state.showDetails ?? false)));
   }
 
-
   Future<File?> downloadQuran(Emitter emitter) async {
     var tempDir = await getTemporaryDirectory();
     String fullPath = "${tempDir.path}/quran.zip'";
     File file = File(fullPath);
-    if(await file.exists()) {
+    if (await file.exists()) {
       return file;
     } else {
       WebService webService = sl();
       try {
         Response response = await webService.dio.get(
-          ApiUrl.quranUrlDownload,
+          '${RemoteConfig.baladyBaseUrl}/${ApiUrl.quranUrlDownload}',
           onReceiveProgress: (received, total) {
             if (total != -1) {
-              emitter(state.copyWith(status: BlocStatus.loading,progressDownload: (received / total * 100).toInt() ));
-              print((received / total * 100).toStringAsFixed(0) + "%");
+              emitter(
+                state.copyWith(
+                  status: BlocStatus.loading,
+                  progressDownload: (received / total * 100).toInt(),
+                ),
+              );
             }
           },
           //Received data with List<int>
           options: Options(
               responseType: ResponseType.bytes,
               followRedirects: false,
-              validateStatus: (status) { return (status ?? 501) < 500; }
-          ),
+              validateStatus: (status) {
+                return (status ?? 501) < 500;
+              }),
         );
         print(response.headers);
         File file = File(fullPath);
@@ -104,14 +109,14 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
     }
   }
 
-
-
   Future<void> unzipArchive(Emitter emitter) async {
-    File? file =  await downloadQuran(emitter);
+    File? file = await downloadQuran(emitter);
     // ByteData data = await rootBundle.load('assets/quran/data2.zip');
     // List<int> bytes = data.buffer.asUint8List();
-    List<int> bytes =  await file!.readAsBytes();
-    emitter(state.copyWith(status: BlocStatus.loading,errorMessage: "Done download will Open in moments" ));
+    List<int> bytes = await file!.readAsBytes();
+    emitter(state.copyWith(
+        status: BlocStatus.loading,
+        errorMessage: "Done download will Open in moments"));
     final archive = ZipDecoder().decodeBytes(bytes);
     try {
       for (final file in archive) {
