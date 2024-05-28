@@ -154,8 +154,13 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   void _objectTapListener(TapEvent event) {
+    final currentRoute = ref.watch(currentRouteProvider);
+
+    const landingPagePath = '/landing';
+
     ///TODO: need to refactor after Dashboard refactoring to designSystem
-    if (_draggableScrollableController.size > 0.13) {
+    ///Ignore hide dashboard tap from other pages
+    if (_draggableScrollableController.size > 0.13 && currentRoute?.currentPath == landingPagePath) {
       _hideDashboard(event);
     } else {
       final goRouter = ref.read(goRouterProvider);
@@ -166,51 +171,50 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         if (context.mounted) {
           context.pop();
         }
-      } else {
-        if (event is ObjectTapEvent) {
-          Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-              props: {
-                'objectId': event.dgisObjectId.objectId,
-              });
-
-          if (context.mounted) {
-            PoiMapRoute.open(
-              ref.read(goRouterProvider),
-              event.dgisObjectId.objectId,
-              latLng: event.latLng,
-            );
-          }
-        } else if (event is RoadEventTapEvent) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.poiKeys.roadEvent,
+      }
+      if (event is ObjectTapEvent) {
+        Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
             group: MetricsConstants.poiTag,
             action: MetricAction.tap.toString(),
-            props: {'event': event.id.objectId, 'title': event.title},
+            props: {
+              'objectId': event.dgisObjectId.objectId,
+            });
+
+        if (context.mounted) {
+          PoiMapRoute.open(
+            ref.read(goRouterProvider),
+            event.dgisObjectId.objectId,
+            latLng: event.latLng,
+          );
+        }
+      } else if (event is RoadEventTapEvent) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.poiKeys.roadEvent,
+          group: MetricsConstants.poiTag,
+          action: MetricAction.tap.toString(),
+          props: {'event': event.id.objectId, 'title': event.title},
+        );
+
+        EventsRoute.open(context, event);
+      } else if (event is MyLocationTapEvent) {
+        if (context.mounted) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.poiKeys.myLocation,
+            group: MetricsConstants.poiTag,
+            action: MetricAction.tap.toString(),
           );
 
-          EventsRoute.open(context, event);
-        } else if (event is MyLocationTapEvent) {
-          if (context.mounted) {
-            Metrics.logEventAdvanced(
-              MetricsConstants.poiKeys.myLocation,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-            );
-
-            final userLocation = ref.read(locationProvider);
-            PoiMapRoute.open(
-              ref.read(goRouterProvider),
-              -1,
-              latLng: userLocation != null
-                  ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                  : event.latLng,
-              zoom: 17,
-              bearing: 0,
-              tilt: 0,
-            );
-          }
+          final userLocation = ref.read(locationProvider);
+          PoiMapRoute.open(
+            ref.read(goRouterProvider),
+            -1,
+            latLng: userLocation != null
+                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                : event.latLng,
+            zoom: 17,
+            bearing: 0,
+            tilt: 0,
+          );
         }
       }
     }
@@ -229,11 +233,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           ));
     }
 
-    // Ignore hide dashboard if current route is not landing
-    final currentRoute = ref.watch(currentRouteProvider);
-    if (currentRoute?.currentPath != '/landing') {
-      return;
-    }
     _draggableScrollableController.animateTo(
       0.1,
       duration: const Duration(milliseconds: 250),
