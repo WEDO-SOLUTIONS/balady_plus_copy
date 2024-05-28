@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
@@ -630,11 +629,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     final closestExpansion = _closestExpansionByVisibleHeight(_visibleHeight);
     final visibleHeightOfClosestExpansion = _visibleHeightByExpansion(closestExpansion);
 
-    final fastSwipeTreshold = (Platform.isAndroid ? 3400 : 5000);
-
     bool upDirection;
-
-    final fastSwipe = velocity.abs() > fastSwipeTreshold;
 
     /// флинг вверх
     if (velocity > _velocityFlingThreshold) {
