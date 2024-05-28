@@ -12,22 +12,24 @@ class ContactInfo extends StatefulWidget {
   final Color colorEnd;
 
   const ContactInfo({
-    super.key,
     required this.colorBegin,
     required this.colorEnd,
+    super.key,
   });
 
   @override
   State<ContactInfo> createState() => _ContactInfoState();
 }
 
-class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStateMixin {
+class _ContactInfoState extends State<ContactInfo>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Color?> _animation;
 
   @override
   void initState() {
-    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1500));
 
     _animation = TweenSequence<Color?>(
       <TweenSequenceItem<Color?>>[
@@ -69,10 +71,10 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                 ),
                 actionWidget: ContentRowActionOptions(
                   actionIcon: context.isLTR
-                      ? SystemIcons.arrowCornerLeftS.icon(
+                      ? SystemIcons.arrowCornerRightS.icon(
                           color: context.color.textAndIconsBaseSecondary,
                         )
-                      : SystemIcons.arrowCornerRightS.icon(
+                      : SystemIcons.arrowCornerLeftS.icon(
                           color: context.color.textAndIconsBaseSecondary,
                         ),
                 ),
@@ -122,7 +124,8 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                     ),
                   );
 
-                  if (_animationController.status == AnimationStatus.completed) {
+                  if (_animationController.status ==
+                      AnimationStatus.completed) {
                     await _animationController.reverse();
                   } else {
                     await _animationController.forward();
