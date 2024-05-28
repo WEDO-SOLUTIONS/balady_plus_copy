@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
@@ -213,7 +214,7 @@ class _QuranPageState extends State<QuranPage> {
                                 ),
                                 Text(
                                   state.progressDownload >= 100
-                                      ? state.errorMessage ?? ''
+                                      ? "done_download_open_moments".tr()
                                       : "${state.progressDownload} %",
                                 )
                               ],

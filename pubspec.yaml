@@ -271,7 +271,6 @@ flutter:
     - assets/icons/inq/
     - assets/icons/msr/
     - assets/icons/tsr/
-    - assets/images/building/
     - assets/compliance_pdf/images/
     - assets/compliance_pdf/text/
     - assets/athkar/

@@ -114,9 +114,6 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
     // ByteData data = await rootBundle.load('assets/quran/data2.zip');
     // List<int> bytes = data.buffer.asUint8List();
     List<int> bytes = await file!.readAsBytes();
-    emitter(state.copyWith(
-        status: BlocStatus.loading,
-        errorMessage: "Done download will Open in moments"));
     final archive = ZipDecoder().decodeBytes(bytes);
     try {
       for (final file in archive) {
