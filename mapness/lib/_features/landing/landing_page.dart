@@ -116,7 +116,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         return;
       }
 
-      final bottomSheetSize = _draggableScrollableController.size <= 0.6 ? _draggableScrollableController.size : 0.6;
+      final bottomSheetSize = _draggableScrollableController.size <= 0.7 ? _draggableScrollableController.size : 0.7;
 
       // calculate bottom padding for camera
       final padding = (bottomSheetSize * MediaQuery.of(context).size.height * pixelSize) +
@@ -152,9 +152,23 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
+      ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
       ..watch(locationProvider.select((_) => null))
       ..watch(favouriteMarkersProvider.select((value) => null))
+      ..listen(currentRouteProvider, (_, next) {
+        const landingPage = '/landing';
+        if (next?.previousPath == landingPage && next?.currentPath != landingPage) {
+          ref.read(cameraPositionProvider.notifier).setPadding(
+                CameraSetPaddingMessage(
+                  leftPadding: 0,
+                  topPadding: 0,
+                  rightPadding: 0,
+                  bottomPadding: 0,
+                ),
+              );
+        }
+      })
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
