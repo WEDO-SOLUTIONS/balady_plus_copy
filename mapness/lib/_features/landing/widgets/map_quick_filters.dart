@@ -23,12 +23,14 @@ class MapQuickFilters extends ConsumerStatefulWidget {
     this.customFilters,
     this.onCustomTap,
     this.forMap = false,
+    this.isDashboard = false,
   });
 
   final List<FilterItem>? customFilters;
   final void Function(FilterItem)? onCustomTap;
   final bool forMap;
   final QuickFilterScreen id;
+  final bool isDashboard;
 
   @override
   ConsumerState<MapQuickFilters> createState() => _MapQuickFiltersState();
@@ -80,6 +82,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
 
     return QuickFilters(
       id: widget.id,
+      isDashboard: widget.isDashboard,
       onFavouritesBookmarkTap: () => CommonFunctions.authOrOpen(
         context,
         callback: () {

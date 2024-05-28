@@ -88,7 +88,7 @@ class DashboardHeader extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const MapQuickFilters(id: QuickFilterScreen.dashboard),
+            const MapQuickFilters(id: QuickFilterScreen.dashboard, isDashboard: true),
             const SizedBox(height: 16),
           ],
         ),
