@@ -20,7 +20,7 @@ class PoiSheetSizes {
     required Size sizeOfScreen,
   }) {
     // The collapsed height for POI card. Have been calculated
-    const collapsedHeight = 300.0;
+    const collapsedHeight = 210.0;
 
     /// The middle height should be higher than the collapsed height
     final middleHeight = math.max(sizeOfScreen.height / 3.2, collapsedHeight + 1);
@@ -28,7 +28,7 @@ class PoiSheetSizes {
     return PoiSheetSizes._(
       middleHeight: middleHeight,
       collapsedHeight: collapsedHeight,
-      hiddenHeight: 100.0,
+      hiddenHeight: 130.0,
     );
   }
 
