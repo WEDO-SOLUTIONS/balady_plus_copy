@@ -267,10 +267,13 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       },
       child: DgisBottomSheet(
         showBarrier: false,
-        availableExpansions: Expansion.values.toSet(),
-        initialExpansion: Expansion.middle,
-        collapsedHeight: sheetSizes.collapsedHeight,
-        middleHeight: sheetSizes.middleHeight + (photos.hasValue == true ? 100.0 : .0),
+        availableExpansions: const {
+          Expansion.collapsed,
+          Expansion.expanded,
+          Expansion.hidden,
+        },
+        initialExpansion: Expansion.collapsed,
+        collapsedHeight: sheetSizes.collapsedHeight + (photos.hasValue == true ? 100.0 : .0) ,
         hiddenHeight: sheetSizes.hiddenHeight,
         controller: _bottomSheetController,
         mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
