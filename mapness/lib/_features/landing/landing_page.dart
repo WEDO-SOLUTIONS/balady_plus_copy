@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
@@ -25,6 +26,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
 
 enum LangingFocusMaker { iwish, mosques }
 
@@ -87,6 +89,49 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   Future<void> setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
+    final cameraController = ref.read(cameraPositionProvider.notifier);
+
+    final pixelSize = MediaQuery.of(context).devicePixelRatio;
+    final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
+    final int qfilterPadding = (48 * pixelSize).floor();
+
+    final initBottomSize = Platform.isIOS ? .3 : .38;
+
+    // TODO(someone): Move this logic in new uikit bottom sheet
+    // calculate intitial padding for camera
+    final initPadding =
+        (initBottomSize * MediaQuery.of(context).size.height * pixelSize) + (navbarSize * pixelSize) + qfilterPadding;
+
+    unawaited(cameraController.setPadding(
+      CameraSetPaddingMessage(
+        leftPadding: 0,
+        topPadding: 0,
+        rightPadding: 0,
+        bottomPadding: initPadding.floor(),
+      ),
+    ));
+
+    _onScroll.addListener(() {
+      if (_onScroll.value && !_draggableScrollableController.isAttached) {
+        return;
+      }
+
+      final bottomSheetSize = _draggableScrollableController.size <= 0.7 ? _draggableScrollableController.size : 0.7;
+
+      // calculate bottom padding for camera
+      final padding = (bottomSheetSize * MediaQuery.of(context).size.height * pixelSize) +
+          (navbarSize * pixelSize) +
+          qfilterPadding;
+
+      cameraController.setPadding(
+        CameraSetPaddingMessage(
+          leftPadding: 0,
+          topPadding: 0,
+          rightPadding: 0,
+          bottomPadding: padding.floor(),
+        ),
+      );
+    });
   }
 
   @override
@@ -107,9 +152,23 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
+      ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
       ..watch(locationProvider.select((_) => null))
       ..watch(favouriteMarkersProvider.select((value) => null))
+      ..listen(currentRouteProvider, (_, next) {
+        const landingPage = '/landing';
+        if (next?.previousPath == landingPage && next?.currentPath != landingPage) {
+          ref.read(cameraPositionProvider.notifier).setPadding(
+                CameraSetPaddingMessage(
+                  leftPadding: 0,
+                  topPadding: 0,
+                  rightPadding: 0,
+                  bottomPadding: 0,
+                ),
+              );
+        }
+      })
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
@@ -153,9 +212,13 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   void _objectTapListener(TapEvent event) {
+    final currentRoute = ref.watch(currentRouteProvider);
+
+    const landingPagePath = '/landing';
 
     ///TODO: need to refactor after Dashboard refactoring to designSystem
-    if (_draggableScrollableController.size > 0.1) {
+    ///Ignore hide dashboard tap from other pages
+    if (_draggableScrollableController.size > 0.13 && currentRoute?.currentPath == landingPagePath) {
       _hideDashboard(event);
     } else {
       final goRouter = ref.read(goRouterProvider);
@@ -166,60 +229,58 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         if (context.mounted) {
           context.pop();
         }
-      } else {
-        if (event is ObjectTapEvent) {
-          Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-              props: {
-                'objectId': event.dgisObjectId.objectId,
-              });
-
-          if (context.mounted) {
-            PoiMapRoute.open(
-              ref.read(goRouterProvider),
-              event.dgisObjectId.objectId,
-              latLng: event.latLng,
-            );
-          }
-        } else if (event is RoadEventTapEvent) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.poiKeys.roadEvent,
+      }
+      if (event is ObjectTapEvent) {
+        Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
             group: MetricsConstants.poiTag,
             action: MetricAction.tap.toString(),
-            props: {'event': event.id.objectId, 'title': event.title},
+            props: {
+              'objectId': event.dgisObjectId.objectId,
+            });
+
+        if (context.mounted) {
+          PoiMapRoute.open(
+            ref.read(goRouterProvider),
+            event.dgisObjectId.objectId,
+            latLng: event.latLng,
+          );
+        }
+      } else if (event is RoadEventTapEvent) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.poiKeys.roadEvent,
+          group: MetricsConstants.poiTag,
+          action: MetricAction.tap.toString(),
+          props: {'event': event.id.objectId, 'title': event.title},
+        );
+
+        EventsRoute.open(context, event);
+      } else if (event is MyLocationTapEvent) {
+        if (context.mounted) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.poiKeys.myLocation,
+            group: MetricsConstants.poiTag,
+            action: MetricAction.tap.toString(),
           );
 
-          EventsRoute.open(context, event);
-        } else if (event is MyLocationTapEvent) {
-          if (context.mounted) {
-            Metrics.logEventAdvanced(
-              MetricsConstants.poiKeys.myLocation,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-            );
-
-            final userLocation = ref.read(locationProvider);
-            PoiMapRoute.open(
-              ref.read(goRouterProvider),
-              -1,
-              latLng: userLocation != null
-                  ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                  : event.latLng,
-              zoom: 17,
-              bearing: 0,
-              tilt: 0,
-            );
-          }
+          final userLocation = ref.read(locationProvider);
+          PoiMapRoute.open(
+            ref.read(goRouterProvider),
+            -1,
+            latLng: userLocation != null
+                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                : event.latLng,
+            zoom: 17,
+            bearing: 0,
+            tilt: 0,
+          );
         }
       }
     }
   }
 
   void _hideDashboard(TapEvent event) {
-    if(event is ObjectTapEvent){
-      ref.read(cameraPositionProvider.notifier).animateTo(
-          CameraPositionMessage(
+    if (event is ObjectTapEvent) {
+      ref.read(cameraPositionProvider.notifier).animateTo(CameraPositionMessage(
             point: GeoPointMessage(
               latitude: event.latLng.latitude,
               longitude: event.latLng.longitude,
@@ -228,8 +289,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
             tilt: 0,
             bearing: 0,
           ));
-
     }
+
     _draggableScrollableController.animateTo(
       0.1,
       duration: const Duration(milliseconds: 250),
