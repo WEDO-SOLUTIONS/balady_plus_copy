@@ -51,22 +51,34 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
     // We watch [scrollToSelectedQuickFilterProvider] to keep it alive in the widget tree
     ref.watch(quickFiltersRequestSourceScreenProvider);
 
+    // Workaround to fix issue: https://github.com/google/flutter.widgets/issues/192
+    final originalDirectionality = Directionality.of(context);
+    const positionedListDirectionality = TextDirection.ltr;
+    final reverse = originalDirectionality == TextDirection.rtl;
+
     return SizedBox(
       height: 40,
-      child: ScrollablePositionedList.separated(
-        scrollDirection: Axis.horizontal,
-        padding: widget.padding,
-        itemScrollController: itemScrollController,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemCount: widget.filters.length,
-        itemBuilder: (context, index) {
-          final item = widget.filters[index];
-          return QuickFilter(
-            item: item,
-            selected: item.selected,
-            background: context.color.surfaceBaseSecondary,
-          );
-        },
+      child: Directionality(
+        textDirection: positionedListDirectionality,
+        child: ScrollablePositionedList.separated(
+          scrollDirection: Axis.horizontal,
+          reverse: reverse,
+          padding: widget.padding,
+          itemScrollController: itemScrollController,
+          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          itemCount: widget.filters.length,
+          itemBuilder: (context, index) {
+            final item = widget.filters[index];
+            return Directionality(
+              textDirection: originalDirectionality,
+              child: QuickFilter(
+                item: item,
+                selected: item.selected,
+                background: context.color.surfaceBaseSecondary,
+              ),
+            );
+          },
+        ),
       ),
     );
   }
