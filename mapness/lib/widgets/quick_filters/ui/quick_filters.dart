@@ -10,10 +10,12 @@ class QuickFilters extends ConsumerStatefulWidget {
   final EdgeInsets padding;
   final List<FilterItem> filters;
   final QuickFilterScreen id;
+  final bool isDashboard;
 
   const QuickFilters({
     required this.filters,
     required this.id,
+    this.isDashboard = false,
     super.key,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
   });
@@ -74,7 +76,7 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
               child: QuickFilter(
                 item: item,
                 selected: item.selected,
-                background: context.color.surfaceBasePrimary,
+                background: widget.isDashboard ? context.color.surfaceBaseSecondary : context.color.surfaceBasePrimary,
               ),
             );
           },
