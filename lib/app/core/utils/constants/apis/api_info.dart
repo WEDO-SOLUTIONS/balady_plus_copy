@@ -916,7 +916,7 @@ class ApiUrl {
 
 
 
-  static const quranUrlDownload = 'https://baladyapps.momra.gov.sa/BaladyCDN/Mobile/conditions/quran/quran.zip';
+  static const quranUrlDownload = 'BaladyCDN/Mobile/conditions/quran/quran.zip';
 
 
 }
