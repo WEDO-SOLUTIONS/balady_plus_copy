@@ -212,9 +212,9 @@ class _QuranPageState extends State<QuranPage> {
                                   height: 16,
                                 ),
                                 Text(
-                                  state.progressDownload == 100
-                                      ? "${state.progressDownload} %"
-                                      : state.errorMessage ?? '',
+                                  state.progressDownload >= 100
+                                      ? state.errorMessage ?? ''
+                                      : "${state.progressDownload} %",
                                 )
                               ],
                             ),
