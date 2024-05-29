@@ -44,8 +44,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   final kbVisibilityController = KeyboardVisibilityController();
   final settings = MapObjectManagerSettings.search();
 
-  bool closing = false;
-
   ClusteringMapObjectManager? _clustering;
 
   void close() {
@@ -54,10 +52,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       group: MetricsConstants.searchTag,
       action: MetricAction.tap.toString(),
     );
-
-    setState(() {
-      closing = true;
-    });
     Future.delayed(const Duration(milliseconds: 50), () {
       _dgisSheetController.animateTo(Expansion.hidden);
     });
