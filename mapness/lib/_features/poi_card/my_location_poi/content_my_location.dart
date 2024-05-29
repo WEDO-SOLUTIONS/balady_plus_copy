@@ -66,8 +66,8 @@ class ContentMyLocation extends ConsumerWidget {
           collapsedHeight: sheetSizes.collapsedHeight,
           middleHeight: sheetSizes.middleHeight,
           hiddenHeight: sheetSizes.hiddenHeight,
-          mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
-            scrollController: scrollController,
+          mapControlsBuilder: (context, bottomSheetSize, biggestHeight, smallestHeight) => PoiCardMapControls(
+            bottomSheetSize: bottomSheetSize,
             biggestHeight: biggestHeight,
           ),
           body: (context) => ConstrainedBox(

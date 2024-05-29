@@ -279,11 +279,11 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           Expansion.hidden,
         },
         initialExpansion: Expansion.collapsed,
-        collapsedHeight: sheetSizes.collapsedHeight + (photos.hasValue == true ? 100.0 : .0) ,
+        collapsedHeight: sheetSizes.collapsedHeight + (photos.hasValue == true ? 100.0 : .0),
         hiddenHeight: sheetSizes.hiddenHeight,
         controller: _bottomSheetController,
-        mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
-          scrollController: scrollController,
+        mapControlsBuilder: (context, bottomSheetSize, biggestHeight, smallestHeight) => PoiCardMapControls(
+          bottomSheetSize: bottomSheetSize,
           biggestHeight: biggestHeight,
         ),
         onExpansionChanged: (expansion, {byUser = false}) => setState(() {
