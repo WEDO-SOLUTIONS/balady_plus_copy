@@ -74,7 +74,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
         const RoutingMapControls(bottomExtent: 136),
         LayoutBuilder(
           builder: (context, constraints) => DgisBottomSheet(
-            initialExpansion: Expansion.middle,
+            initialExpansion: Expansion.expanded,
             availableExpansions: const {
               Expansion.hidden,
               Expansion.middle,
