@@ -44,12 +44,9 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
     final objectId = widget.model.directoryObjectMessage?.id?.objectId ?? 0;
     final photos = ref.watch(poiPhotoProvider(objectId));
 
-    final count = photos.whenOrNull(
-          data: (data) => data.items.length,
-        ) ??
-        0;
-
+    final photoCount = photos.whenOrNull(data: (data) => data.items.length) ?? 0;
     final inBuildingCount = widget.poiCardState?.organizations?.total ?? 0;
+
     return TabBar(
       padding: EdgeInsets.zero,
       controller: widget.tabController,
@@ -77,9 +74,9 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
           iconMargin: EdgeInsets.zero,
           child: _PoiTabItem(
             title: context.l10n.photos,
-            count: count,
+            count: photoCount,
             onTap: () {
-              if (count == 0) {
+              if (photoCount == 0) {
                 widget.tabController.index = widget.tabController.previousIndex;
                 return;
               }
@@ -102,7 +99,7 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
                   title: context.l10n.organisations,
                   count: inBuildingCount,
                   onTap: () {
-                    if (count == 0) {
+                    if (inBuildingCount == 0) {
                       widget.tabController.index = widget.tabController.previousIndex;
                       return;
                     }
