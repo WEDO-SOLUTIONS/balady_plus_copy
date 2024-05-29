@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -61,8 +62,12 @@ class Search extends _$Search {
       return;
     }
     final dgisController = await ref.read(dgisControllerProvider.future);
+    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
 
-    final searchOperation = CancelableOperation.fromFuture(dgisController.fetchSuggest(query));
+    final searchOperation = CancelableOperation.fromFuture(dgisController.fetchSuggest(
+      query,
+      searchRect: searchRect,
+    ));
     _searchOperation = searchOperation;
     final result = await searchOperation.value;
     state = result.suggests.isEmpty ? SearchStateEmpty() : SearchStateSuggest(result);
@@ -70,6 +75,7 @@ class Search extends _$Search {
   }
 
   Future<void> searchByText(String query) async {
+    final searchRect = ref.watch(searchInRectProvider.select((value) => value.$1));
     Metrics.logEvent(
       'searchByText',
       object: runtimeType,
@@ -84,7 +90,8 @@ class Search extends _$Search {
       dgisController.search(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: saRestrictions,
+        //   spatialRestriction: saRestrictions,
+        searchRect: searchRect,
       ),
     );
     _searchOperation = searchOperation;
@@ -94,6 +101,8 @@ class Search extends _$Search {
   }
 
   Future<void> searchByQuery(SearchQueryMessage query, String text) async {
+    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+
     Metrics.logEvent(
       'Search/searchByQuery',
       object: runtimeType,
@@ -107,7 +116,8 @@ class Search extends _$Search {
       dgisController.searchByQuery(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: saRestrictions,
+        // spatialRestriction: saRestrictions,
+        searchRect: searchRect,
       ),
     );
     _searchOperation = searchOperation;

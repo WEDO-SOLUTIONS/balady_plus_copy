@@ -1,5 +1,8 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/features/search/models/search_state.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,14 +14,15 @@ class SearchInRect extends _$SearchInRect {
   @override
   (GeoRectMessage?, bool) build() {
     final filter = ref.watch(searchByRubricsQueryProvider);
-    if (filter == null) {
+    final searchStateMap = ref.watch(searchProvider(SearchScopeEnum.map.value));
+    final searchStateRoutes = ref.watch(searchProvider(SearchScopeEnum.routes.value));
+    if (filter == null && (searchStateMap is SearchStateHistory) && (searchStateRoutes is SearchStateHistory)) {
       return (null, false);
     }
 
     final dgisController = ref.watch(dgisControllerProvider).value;
 
-    final subscription =
-        dgisController?.visibleRectEvents.listen((event) async {
+    final subscription = dgisController?.visibleRectEvents.listen((event) async {
       state = (
         state.$1,
         _buttonVisible(
@@ -32,12 +36,7 @@ class SearchInRect extends _$SearchInRect {
     });
 
     return (
-      ref
-          .read(dgisControllerProvider.notifier)
-          .visibleRectSubject
-          .value
-          ?.visibleRect
-          .geoRectMessage(),
+      ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect.geoRectMessage(),
       false,
     );
   }
@@ -45,10 +44,7 @@ class SearchInRect extends _$SearchInRect {
   void update() {
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
-    state = (
-      dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
-      false
-    );
+    state = (dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(), false);
   }
 
   bool _buttonVisible(GeoRectMessage? oldRect, GeoRectMessage newRect) {
