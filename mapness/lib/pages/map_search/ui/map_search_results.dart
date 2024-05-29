@@ -10,7 +10,7 @@ import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 import 'package:provider/provider.dart';
 
@@ -28,8 +28,7 @@ class MapSearchResults extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scope = context.read<SearchScope>();
     final language = ref.watch(appLanguageProvider);
-    final cameraPosition = ref.watch(cameraPositionProvider);
-    final myLocation = cameraPosition?.point;
+    final myLocation = ref.watch(locationProvider);
     return SearchResults(
       results: results,
       scrollController: scrollController,
