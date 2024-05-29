@@ -52,9 +52,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       group: MetricsConstants.searchTag,
       action: MetricAction.tap.toString(),
     );
-    Future.delayed(const Duration(milliseconds: 50), () {
-      _dgisSheetController.animateTo(Expansion.hidden);
-    });
+    searchObjectManager.removeAllMarkers().then((value) => context.pop());
   }
 
   @override
