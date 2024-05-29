@@ -46,7 +46,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   ClusteringMapObjectManager? _clustering;
 
-  void close() {
+  void onClose() {
     Metrics.logEventAdvanced(
       MetricsConstants.searchKeys.exitIcon,
       group: MetricsConstants.searchTag,
@@ -136,7 +136,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       );
 
   void _onExpansionChanged(Expansion expansion) => switch (expansion) {
-        Expansion.hidden => context.pop(),
+        Expansion.hidden => searchObjectManager.removeAllMarkers().then((value) => context.pop()),
         Expansion.middle => context.pop(),
         _ => null,
       };
@@ -202,7 +202,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
                       SliverPersistentHeader(
                         delegate: MapSearchHeaderDelegate(
                           requestFocus: widget.initialQuery == null,
-                          onClose: close,
+                          onClose: onClose,
                         ),
                         pinned: true,
                       ),
