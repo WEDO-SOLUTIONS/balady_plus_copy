@@ -21,8 +21,6 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
-const searchScope = 'MapSearch';
-
 class MapSearchSheet extends StatelessWidget {
   const MapSearchSheet({
     required this.withClustering,
@@ -181,7 +179,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
         ).notifier,
       )
       ..listen(
-        searchProvider(searchScope),
+        searchProvider(SearchScopeEnum.map.value),
         (previous, next) => _drawSearchMarkers(next),
       )
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
@@ -223,7 +221,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
               child: Material(
                 color: Colors.white,
                 child: SearchScope(
-                  named: searchScope,
+                  named: SearchScopeEnum.map,
                   child: CustomScrollView(
                     controller: scrollController,
                     physics: const ClampingScrollPhysics(),
