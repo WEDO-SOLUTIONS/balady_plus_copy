@@ -6,12 +6,10 @@ import 'package:mapness/_features/landing/providers/quick_filter_request_source_
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart' as data;
 import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -97,29 +95,9 @@ class SearchByRubrics extends _$SearchByRubrics {
     );
 
     final selectedFilter = ref.watch(searchByRubricsQueryProvider);
-    final markers = <Marker>[];
-    for (final markerInfo in value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
-      markers.add(
-        Marker(
-          id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
-          onTap: () {
-            Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {'objectId': markerInfo.objectId!.objectId});
-            PoiMapRoute.open(
-              ref.read(goRouterProvider),
-              markerInfo.objectId!.objectId,
-            );
-          },
-          options: MarkerOptionsMessage(
-            position: markerInfo!.geoPoint,
-            icon: (selectedFilter == null ? LayersSvgPaths.basicMarker : 'packages/mapness/${selectedFilter.mapIcon}')
-                .markerIcon(),
-          ),
-        ),
-      );
-    }
+    final icon = (selectedFilter == null ? LayersSvgPaths.basicMarker : 'packages/mapness/${selectedFilter.mapIcon}')
+        .markerIcon();
+    final markers = await value.getMarkers(router: ref.read(goRouterProvider), icon: icon);
 
     await searchObjectManager.removeAllMarkers();
     await searchObjectManager.addMarkers(markers);
