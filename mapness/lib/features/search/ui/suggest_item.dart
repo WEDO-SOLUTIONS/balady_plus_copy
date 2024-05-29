@@ -1,3 +1,5 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,42 +7,89 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
-import 'package:mapness/widgets/search/ui/suggest_item.dart' as widgets;
+
+import 'package:mapness/shared/lib/make_address.dart';
 import 'package:provider/provider.dart';
 
 class SuggestItem extends ConsumerWidget {
+  final SuggestMessage suggest;
+  final bool isLast;
+  final Function(DirectoryObjectMessage) onObjectTap;
+
   const SuggestItem({
     required this.suggest,
     required this.onObjectTap,
+    this.isLast = false,
     super.key,
   });
-
-  final SuggestMessage suggest;
-  final Function(DirectoryObjectMessage) onObjectTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scope = context.read<SearchScope>();
 
-    return widgets.SuggestItem(
-      suggest: suggest,
-      onTap: () {
-        if (suggest.handler.incompleteTextHandler != null) {
-          ref.read(searchQueryProvider(scope.value).notifier).update(
-                suggest.handler.incompleteTextHandler!.queryText,
-              );
-        } else if (suggest.handler.performSearchHandler != null) {
-          ref
-              .read(searchProvider(scope.value).notifier)
-              .searchByQuery(suggest.handler.performSearchHandler!.searchQuery, suggest.title.text);
-        } else {
-          final objectItem = suggest.handler.objectHandler!.item;
-          ref.read(searchHistoryProvider(scope.value).notifier).put(
-                SearchHistoryItem.fromDirectoryObject(objectItem),
-              );
-          onObjectTap(objectItem);
-        }
-      },
+    final incompleteText = suggest.handler.incompleteTextHandler;
+    final performSearch = suggest.handler.performSearchHandler;
+    final object = suggest.handler.objectHandler;
+
+    IconData? icon;
+    if (incompleteText != null) {
+      icon = GeneralIcons.placeholder;
+    } else if (performSearch != null) {
+      icon = GeneralIcons.search;
+    } else if (object != null) {
+      icon = GeneralIcons.pinSolid;
+    }
+
+    void _onSuggestTap() {
+      if (incompleteText != null) {
+        ref.read(searchQueryProvider(scope.value).notifier).update(incompleteText.queryText);
+      } else if (performSearch != null) {
+        ref.read(searchProvider(scope.value).notifier).searchByQuery(performSearch.searchQuery, suggest.title.text);
+        final historyObject = SearchHistoryItem.fromQuery(query: suggest.title.text);
+        ref.read(searchHistoryProvider(scope.value).notifier).put(historyObject);
+      } else if (object != null) {
+        final objectItem = object.item;
+        final historyItem = SearchHistoryItem.fromDirectoryObject(objectItem);
+        ref.read(searchHistoryProvider(scope.value).notifier).put(historyItem);
+        onObjectTap(objectItem);
+      }
+    }
+
+    final address = object?.item.makeAddress();
+
+    return ContentRow(
+      onTap: _onSuggestTap,
+      options: ContentRowOptions(
+        leadingIcon: Icon(
+          icon,
+          size: 24,
+          color: context.color.textAndIconsBaseTertiary,
+        ),
+        title: buildSuggestTitle(context, suggest),
+        subtitle: address,
+        dividerEnabled: !isLast,
+      ),
     );
   }
+}
+
+String buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
+  final prefixMapping = {
+    ', region': 'منطقة',
+    ', governorate': 'محافظة',
+    ', city': 'مدينة',
+    ', district area': 'محافظة',
+    ', district': 'حى',
+    ', street': 'شارع',
+    ', buildings': 'مبنى',
+    ', park': 'بارك',
+  };
+  var title = suggest.title.text;
+  prefixMapping.forEach((key, replacement) {
+    if (title.contains(key)) {
+      title = "$replacement ${title.replaceAll(key, "")}";
+    }
+  });
+
+  return title;
 }
