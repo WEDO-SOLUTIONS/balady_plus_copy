@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -81,20 +83,18 @@ class RoutingHeader extends ConsumerWidget {
               child: RouteEditor(
                 points: points,
                 onTap: (index) {
-                  Metrics.logEventAdvanced(
-                      MetricsConstants.routesKeys.changeLocation,
+                  Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
                       group: MetricsConstants.routesTag,
                       action: MetricAction.tap.toString(),
                       props: {
-                        'isMyLocation': index == 0 &&
-                            points[index] is! RoutePointMyLocation,
+                        'isMyLocation': index == 0 && points[index] is! RoutePointMyLocation,
                       });
 
+                  ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
+
                   RoutingSearchRoute(
-                    placeholder:
-                        index == 0 ? context.l10n.from : context.l10n.to,
-                    showMyLocation:
-                        index == 0 && points[index] is! RoutePointMyLocation,
+                    placeholder: index == 0 ? context.l10n.from : context.l10n.to,
+                    showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
                   ).push(context).then(
                     (value) {
                       if (value != null && value is RoutePoint) {
@@ -131,13 +131,11 @@ class RoutingHeader extends ConsumerWidget {
                   action: MetricAction.tap.toString(),
                   props: {
                     'id': point.entity?.id,
-                    'destination':
-                        '${point.coordinates.latitude},${point.coordinates.longitude}'
+                    'destination': '${point.coordinates.latitude},${point.coordinates.longitude}'
                   },
                 );
 
-                final index =
-                    points.indexWhere((element) => !element.isNotEmpty);
+                final index = points.indexWhere((element) => !element.isNotEmpty);
                 points[index] = RoutePointFavouriteItem(point);
                 updatePoints(points);
               },
