@@ -209,7 +209,8 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
   void _scrollListenHandler() {
     Future.delayed(Duration.zero, () {
-      if (widget.scrollableController.size > _headerExtent + 0.001) {
+      final size = widget.scrollableController.size;
+      if (size > _headerExtent + 0.001) {
         ref.read(mapControlsProvider.notifier).update(
           MapControlsStateDashboard(),
         );
