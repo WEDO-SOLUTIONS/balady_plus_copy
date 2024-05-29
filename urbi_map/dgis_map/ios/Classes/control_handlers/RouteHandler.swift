@@ -160,7 +160,6 @@ class RouteHandler {
             intermediatePoints: []
         )
         routeEditor.setRouteParams(routeParams: routeEditorParams)
-        routeEditorSource.setRoutesVisible(visible: true)
         routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: params.options == .publicTransport)
     }
     

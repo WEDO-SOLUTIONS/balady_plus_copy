@@ -1310,6 +1310,9 @@ abstract class MapApi {
   void hideRoutes();
 
   @async
+  void showRoutes();
+
+  @async
   void startNavigation();
 
   @async
