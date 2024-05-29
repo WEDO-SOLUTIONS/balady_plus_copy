@@ -7,14 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
@@ -129,29 +128,8 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
     );
     await searchObjectManager.removeAllMarkers();
     if (searchState is SearchStateResults) {
-      final markers = <Marker>[];
-      for (final markerInfo in searchState.results.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
-        markers.add(
-          Marker(
-            id: markerInfo?.objectId?.objectId.toString() ?? context.l10n.invalid,
-            onTap: () {
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
-                  group: MetricsConstants.poiTag,
-                  action: MetricAction.tap.toString(),
-                  props: {'objectId': markerInfo.objectId!.objectId});
-
-              PoiMapRoute.open(
-                ref.read(goRouterProvider),
-                markerInfo.objectId!.objectId,
-              );
-            },
-            options: MarkerOptionsMessage(
-              position: markerInfo!.geoPoint,
-              icon: LayersSvgPaths.basicMarker.markerIcon(size: 16),
-            ),
-          ),
-        );
-      }
+      final icon = LayersSvgPaths.basicMarker.markerIcon(size: 16);
+      final markers = await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon);
 
       await searchObjectManager.addMarkers(markers);
 
@@ -178,10 +156,10 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
       );
 
   void _onExpansionChanged(Expansion expansion) => switch (expansion) {
-      Expansion.hidden => context.pop(),
-      Expansion.middle => context.pop(),
-      _ => null,
-    };
+        Expansion.hidden => context.pop(),
+        Expansion.middle => context.pop(),
+        _ => null,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +200,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
           middleHeight: widget.biggestHeight * 0.7,
           scrollableBody: (context, scrollController) {
             scrollController.addListener(
-                  () {
+              () {
                 /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
                 /// https://www.youtube.com/watch?v=L_WoOkDAqbM
                 if (kbVisibilityController.isVisible) {
