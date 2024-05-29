@@ -33,7 +33,7 @@ class _AreaSelectorState extends State<AreaSelector> {
     _controller.text = context
             .read<MunicipalAdvisorBloc>()
             .state
-            .selectedArea
+            .totalShopArea
             ?.toStringAsFixed(2) ??
         '';
   }
