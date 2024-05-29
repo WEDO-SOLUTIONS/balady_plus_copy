@@ -112,14 +112,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         ref.read(cameraPositionProvider),
         ref.read(cameraPositionProvider.notifier).animateTo,
       );
-
-      _dgisSheetController.animateTo(Expansion.middle);
     }
   }
 
   void _currentRouteListener(RouteState? previous, RouteState? next) {
     if (next?.currentPath != null && next!.currentPath!.startsWith('/search')) {
-      _dgisSheetController.animateTo(Expansion.middle);
+      _dgisSheetController.animateTo(Expansion.expanded);
     } else {
       _dgisSheetController.animateTo(Expansion.hidden);
     }
@@ -137,7 +135,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   void _onExpansionChanged(Expansion expansion) => switch (expansion) {
         Expansion.hidden => searchObjectManager.removeAllMarkers().then((value) => context.pop()),
-        Expansion.middle => context.pop(),
         _ => null,
       };
 
@@ -173,11 +170,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
           controller: _dgisSheetController,
           initialExpansion: Expansion.expanded,
           availableExpansions: const {
+            Expansion.hidden,
             Expansion.expanded,
-            Expansion.middle,
+            Expansion.collapsed,
           },
           onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
           middleHeight: widget.biggestHeight * 0.7,
+          collapsedHeight: widget.biggestHeight * 0.2,
           scrollableBody: (context, scrollController) {
             scrollController.addListener(
               () {
