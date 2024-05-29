@@ -163,7 +163,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     if (next?.currentPath != null && next!.currentPath!.startsWith('/search')) {
       _dgisSheetController.animateTo(Expansion.expanded);
     } else {
-      _dgisSheetController.animateTo(Expansion.hidden);
+      searchObjectManager.removeAllMarkers().then((value) => context.pop());
     }
   }
 
