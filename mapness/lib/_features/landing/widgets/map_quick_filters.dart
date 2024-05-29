@@ -106,9 +106,16 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
               ref.read(searchByRubricsQueryProvider.notifier).update(null);
               searchObjectManager.removeAllMarkers();
             } else {
+              // TODO(Sergei): we should call removeAllMarkers() because quick filter updating in sdk is slow,
+              // remove this when quick filters performance will be fixed
+              searchObjectManager.removeAllMarkers();
               ref.read(layersControlsProvider.notifier).disable();
-              ref.read(quickFiltersRequestSourceScreenProvider.notifier).setSourceScreen(widget.id);
-              ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
+              ref
+                  .read(quickFiltersRequestSourceScreenProvider.notifier)
+                  .setSourceScreen(widget.id);
+              ref
+                  .read(searchByRubricsQueryProvider.notifier)
+                  .update(quickFilter);
             }
             Metrics.logEventAdvanced(
               MetricsConstants.exploreKeys.quickFilter,
@@ -137,7 +144,9 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       selectedQuickFilter: selectedQuickFilter,
       customFilters: widget.customFilters,
       onCustomTap: widget.onCustomTap,
-      padding: widget.forMap ? const EdgeInsets.symmetric(horizontal: 12) : const EdgeInsets.symmetric(horizontal: 16),
+      padding: widget.forMap
+          ? const EdgeInsets.symmetric(horizontal: 12)
+          : const EdgeInsets.symmetric(horizontal: 16),
     );
   }
 
