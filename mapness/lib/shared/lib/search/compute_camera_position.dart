@@ -29,15 +29,12 @@ Future<void> computeCameraPosition(
   if (cameraPosition?.zoom != null) {
     zoom = cameraPosition!.zoom < zoom ? cameraPosition.zoom : zoom;
   }
-  if (cameraPosition?.point == null) {
-    return;
-  }
 
   await animateTo(
     CameraPositionMessage(
-      point: cameraPosition!.point,
-      tilt: cameraPosition.tilt,
-      bearing: cameraPosition.bearing,
+      point: location,
+      tilt: cameraPosition?.tilt ?? 0.0,
+      bearing: cameraPosition?.bearing ?? 0.0,
       zoom: zoom,
     ),
   );
