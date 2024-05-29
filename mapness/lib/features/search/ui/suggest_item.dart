@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 
 class SuggestItem extends ConsumerWidget {
   const SuggestItem({
-    required this.suggest, required this.onObjectTap, super.key,
+    required this.suggest,
+    required this.onObjectTap,
+    super.key,
   });
 
   final SuggestMessage suggest;
@@ -30,7 +32,7 @@ class SuggestItem extends ConsumerWidget {
         } else if (suggest.handler.performSearchHandler != null) {
           ref
               .read(searchProvider(scope.value).notifier)
-              .searchByQuery(suggest.handler.performSearchHandler!.searchQuery);
+              .searchByQuery(suggest.handler.performSearchHandler!.searchQuery, suggest.title.text);
         } else {
           final objectItem = suggest.handler.objectHandler!.item;
           ref.read(searchHistoryProvider(scope.value).notifier).put(
