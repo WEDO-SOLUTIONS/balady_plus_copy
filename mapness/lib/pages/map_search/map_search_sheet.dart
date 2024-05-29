@@ -21,30 +21,11 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
-class MapSearchSheet extends StatelessWidget {
+class MapSearchSheet extends ConsumerStatefulWidget {
   const MapSearchSheet({
     required this.withClustering,
-    super.key,
-    this.initialQuery,
-  });
-
-  final String? initialQuery;
-  final bool withClustering;
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => _MapSearchSheet(
-          initialQuery: initialQuery,
-          withClustering: withClustering,
-          biggestHeight: constraints.biggest.height,
-        ),
-      );
-}
-
-class _MapSearchSheet extends ConsumerStatefulWidget {
-  const _MapSearchSheet({
-    required this.withClustering,
     required this.biggestHeight,
+    super.key,
     this.initialQuery,
   });
 
@@ -53,10 +34,10 @@ class _MapSearchSheet extends ConsumerStatefulWidget {
   final double biggestHeight;
 
   @override
-  ConsumerState<_MapSearchSheet> createState() => _MapSearchSheetState();
+  ConsumerState<MapSearchSheet> createState() => _MapSearchSheetState();
 }
 
-class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
+class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   late final _dgisSheetController = DgisBottomSheetController();
 
   late final StreamSubscription<bool> _keyboardVisible;
