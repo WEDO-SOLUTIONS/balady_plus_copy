@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
@@ -30,7 +31,13 @@ class FavouritesRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const FavouritesPage();
+  Widget build(BuildContext context, GoRouterState state) =>
+      const FavouritesPage();
+
+  Future<T?> pushToRoot<T>(BuildContext context) {
+    context.popRouteUntilFirst();
+    return context.push<T>(location);
+  }
 }
 
 class FavouritesSearchRoute extends GoRouteData {
@@ -70,7 +77,6 @@ class FavouritesDeleteAllRoute extends GoRouteData {
 
   Future<bool?> push(BuildContext context) => context.push<bool>(location);
 }
-
 
 class FavouritesPickerRoute extends GoRouteData {
   const FavouritesPickerRoute();
