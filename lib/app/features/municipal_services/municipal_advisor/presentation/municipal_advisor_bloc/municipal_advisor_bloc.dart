@@ -23,6 +23,7 @@ import '../../domain/use_cases/validate_addetional_activites.dart';
 import '../../municipal_advisor_exports.dart';
 
 part 'municipal_advisor_event.dart';
+
 part 'municipal_advisor_state.dart';
 
 class MunicipalAdvisorBloc
@@ -408,24 +409,16 @@ class MunicipalAdvisorBloc
           ),
         );
 
-
-
-
-        double totalShopArea=0;
+        double totalShopArea = 0;
         for (var activity in state.selectedAdditionalActivities) {
-
-          if(activity.inputArea!= null && activity.inputArea!.isNotEmpty )
-          {
-            totalShopArea =  totalShopArea + double.parse(activity.inputArea!);
+          if (activity.inputArea != null && activity.inputArea!.isNotEmpty) {
+            totalShopArea = totalShopArea + double.parse(activity.inputArea!);
           }
         }
 
-
-        if(state.selectedArea != null)
-        {
+        if (state.selectedArea != null) {
           totalShopArea = totalShopArea + state.selectedArea!;
         }
-
 
         final failOrSuccess = await _validateAddetionalActivites(
             ValidateAdditionalActivitiesParams(
@@ -702,23 +695,21 @@ class MunicipalAdvisorBloc
 
         final additionalActivities = state.selectedAdditionalActivities;
 
-        double totalShopArea=0;
+        double totalShopArea = 0;
         for (var activity in additionalActivities) {
+          if (activity.inputArea != null && activity.inputArea!.isNotEmpty) {
+            totalShopArea = totalShopArea + double.parse(activity.inputArea!);
+          }
+        }
 
-          if(activity.inputArea!= null && activity.inputArea!.isNotEmpty )
-            {
-              totalShopArea =  totalShopArea + double.parse(activity.inputArea!);
-            }
+        if (state.selectedArea != null) {
+          totalShopArea = totalShopArea + state.selectedArea!;
         }
 
 
-        if(state.selectedArea != null)
-          {
-            totalShopArea = totalShopArea + state.selectedArea!;
-          }
-
-        state.copyWith(totalShopArea: totalShopArea);
-
+        emit(
+          state.copyWith(totalShopArea: totalShopArea),
+        );
         final saveAdditionalActivities = await _saveAdditionalActivities(
           AdditionalActivitiesParams(
               consultationKey: state.consultationKey!,
@@ -727,9 +718,8 @@ class MunicipalAdvisorBloc
                       (e) => (e.activityId, double.tryParse(e.inputArea ?? "")))
                   .toList(),
               hasSalamaPermit: state.hasSalama,
-            mainActivityArea: state.selectedArea ?? 0,
-            shopArea: totalShopArea
-          ),
+              mainActivityArea: state.selectedArea ?? 0,
+              shopArea: totalShopArea),
         );
         if (failureOrSuccess.isLeft()) return;
         saveAdditionalActivities.fold(
@@ -1079,19 +1069,21 @@ class MunicipalAdvisorBloc
 
         final boardTypes = await _boardTypes(NoParams());
 
+
         boardTypes.fold(
           (failure) => emitFailure(emit, failure),
           (boardTypes) {
-            add(
-              const MunicipalAdvisorCalculateLicenseEvent(
-                firstCalculation: true,
-              ),
-            );
             emit(
               state.copyWith(
                 status: BlocRequestStatus.submissionGetSuccess,
                 boardTypes: boardTypes,
                 selectedPermits: [],
+              ),
+            );
+
+            add(
+              const MunicipalAdvisorCalculateLicenseEvent(
+                firstCalculation: true,
               ),
             );
           },
@@ -1184,79 +1176,84 @@ class MunicipalAdvisorBloc
 
     on<MunicipalAdvisorCalculateLicenseEvent>(
       (event, emit) async {
-        emit(state.copyWith(lastEvent: event));
-        if (event.firstCalculation || event.finalCalculation) {
-          emit(
-            state.copyWith(status: BlocRequestStatus.submissionGetLoading),
-          );
-        } else {
-          EasyLoading.show(
-            dismissOnTap: false,
-            maskType: EasyLoadingMaskType.black,
-          );
-        }
+        try{
 
-        final failureOrSuccess = await _calculateLicenseFees(
-          CalculateFeesParams(
-            consultationKey: state.consultationKey!,
-            accommodationTypeId: null,
-            municipalityGisCode:
+          emit(state.copyWith(lastEvent: event));
+          if (event.firstCalculation || event.finalCalculation) {
+            emit(
+              state.copyWith(status: BlocRequestStatus.submissionGetLoading),
+            );
+          } else {
+            EasyLoading.show(
+              dismissOnTap: false,
+              maskType: EasyLoadingMaskType.black,
+            );
+          }
+
+          final failureOrSuccess = await _calculateLicenseFees(
+            CalculateFeesParams(
+                consultationKey: state.consultationKey!,
+                accommodationTypeId: null,
+                municipalityGisCode:
                 state.activityLocation!.gisResponse.municipalityuniquecode ??
                     "",
-            longitude:
+                longitude:
                 state.activityLocation?.latLng.longitude.toString() ?? "",
-            latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
-            activityId: state.selectedIsicSubActivity!.id,
-            licensePeriod: state.selectedLicenseYear,
-            shopArea: state.totalShopArea!,
-            cleanOption: state.selectedCleanMechanism?.id,
-            unitCount: state.unitCount,
-            atmFeesPaid: state.atmPaid,
-            boards: state.boards,
-            permits: state.selectedPermits,
-            mainActivityArea:state.selectedArea!,
-              additionalActivities:state.selectedAdditionalActivities
-                  .map(
-                      (e) => (e.activityId, double.tryParse(e.inputArea ?? "")))
-                  .toList()
-          ),
-        );
-        if (!event.finalCalculation) EasyLoading.dismiss();
-        failureOrSuccess.fold(
-          (failure) => emitFailure(emit, failure),
-          (licenseFees) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetSuccess,
-                licenseFees: licenseFees,
-                messages: event.finalCalculation
-                    ? [
-                        ...state.messages,
-                        ...nextStep(
-                          MunicipalAdvisorSteps.licenseCost,
-                        ),
-                      ]
-                    : event.firstCalculation
-                        ? [
-                            ...state.messages,
-                            ChatMessage(
-                              message: 'municipalAdvisorLicenseCost'.tr(),
-                              step: MunicipalAdvisorSteps.licenseCost,
-                              isResponse: true,
-                              data: true,
-                            ),
-                            ChatMessage(
-                              message: 'municipalAdvisorPermitsCost'.tr(),
-                              step: MunicipalAdvisorSteps.licenseCost,
-                              isResponse: true,
-                              data: false,
-                            ),
-                          ]
-                        : null,
-              ),
-            );
-          },
-        );
+                latitude:
+                state.activityLocation?.latLng.latitude.toString() ?? "",
+                activityId: state.selectedIsicSubActivity!.id,
+                licensePeriod: state.selectedLicenseYear,
+                shopArea: state.totalShopArea!,
+                cleanOption: state.selectedCleanMechanism?.id,
+                unitCount: state.unitCount,
+                atmFeesPaid: state.atmPaid,
+                boards: state.boards,
+                permits: state.selectedPermits,
+                mainActivityArea: state.selectedArea!,
+                additionalActivities: state.selectedAdditionalActivities
+                    .map(
+                        (e) => (e.activityId, double.tryParse(e.inputArea ?? "")))
+                    .toList()),
+          );
+          if (!event.finalCalculation) EasyLoading.dismiss();
+          failureOrSuccess.fold(
+                (failure) => emitFailure(emit, failure),
+                (licenseFees) {
+              emit(
+                state.copyWith(
+                  status: BlocRequestStatus.submissionGetSuccess,
+                  licenseFees: licenseFees,
+                  messages: event.finalCalculation
+                      ? [
+                    ...state.messages,
+                    ...nextStep(
+                      MunicipalAdvisorSteps.licenseCost,
+                    ),
+                  ]
+                      : event.firstCalculation
+                      ? [
+                    ...state.messages,
+                    ChatMessage(
+                      message: 'municipalAdvisorLicenseCost'.tr(),
+                      step: MunicipalAdvisorSteps.licenseCost,
+                      isResponse: true,
+                      data: true,
+                    ),
+                    ChatMessage(
+                      message: 'municipalAdvisorPermitsCost'.tr(),
+                      step: MunicipalAdvisorSteps.licenseCost,
+                      isResponse: true,
+                      data: false,
+                    ),
+                  ]
+                      : null,
+                ),
+              );
+            },
+          );
+        }catch(e){
+          print(e);
+        }
       },
     );
 
