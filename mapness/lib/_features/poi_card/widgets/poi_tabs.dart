@@ -99,7 +99,7 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
           iconMargin: EdgeInsets.zero,
           child: inBuildingCount > 0
               ? _PoiTabItem(
-                  title: context.l10n.organisations,
+                  title: context.l10n.inTheBuilding,
                   count: inBuildingCount,
                   onTap: () {
                     if (count == 0) {
