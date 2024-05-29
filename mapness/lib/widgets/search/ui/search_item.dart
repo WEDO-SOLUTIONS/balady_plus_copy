@@ -1,21 +1,29 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
 class SearchItem extends StatelessWidget {
+  final Language language;
+  final GeoPointMessage? myLocation;
+  final DirectoryObjectMessage result;
+
+  final void Function() onTap;
   const SearchItem({
-    required this.result, required this.onTap, super.key,
+    required this.result,
+    required this.onTap,
+    required this.language,
+    this.myLocation,
+    super.key,
   });
 
-  final DirectoryObjectMessage result;
-  final void Function() onTap;
-
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     var subtitle = result.subtitle;
     final prefixMapping = {
       'Region': 'منطقة',
@@ -26,66 +34,66 @@ class SearchItem extends StatelessWidget {
       'Street': 'شارع',
       'Buildings': 'مبنى',
       'Park': 'بارك',
+      'Coffee shop': 'كافيه',
     };
     if (prefixMapping.containsKey(subtitle)) {
-      subtitle = prefixMapping[subtitle]!;
+      subtitle = switch (language) {
+        Language.english => subtitle,
+        Language.arabic => prefixMapping[subtitle]!,
+      };
     }
+    double? distanceKm;
 
+    if (result.markerPosition != null && myLocation != null) {
+      distanceKm = CommonFunctions.distance(
+        result.markerPosition!.latitude,
+        result.markerPosition!.longitude,
+        myLocation!.latitude,
+        myLocation!.longitude,
+      );
+    }
     return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(8),
+      color: context.color.surfaceBaseSecondary,
+      shape: smoothBorder(CornerRadius.baseContainer),
       child: InkWell(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(CornerRadius.baseContainer),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            vertical: 16,
-            horizontal: 20,
+            vertical: 12,
+            horizontal: 16,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                result.title,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .text
-                    .copyWith(color: context.color.textAndIconsBasePrimary),
-              ),
               Row(
                 children: [
-                  Text(
-                    subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .text
-                        .copyWith(color: context.color.textAndIconsBasePrimary),
+                  Expanded(
+                    child: Text(
+                      result.title,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textStyle.text,
+                    ),
                   ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  const Spacer(),
-                  // Text(
-                  //   "1.3 ${context.l10n.km}",
-                  //   overflow: TextOverflow.ellipsis,
-                  //   style: Theme.of(context).extension<ThemeTextStyles>()!.text.copyWith(color: context.color.textAndIconsBasePrimary),
-                  // ),
+                  if (distanceKm != null) ...[
+                    const SizedBox(width: 12),
+                    Text((distanceKm * 1000).formatDistance(context.l10n)),
+                  ],
                 ],
               ),
-              const SizedBox(
-                height: 8,
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.textStyle.footNote,
               ),
+              const SizedBox(height: 8),
               Text(
                 result.makeAddress(),
-                maxLines: 5,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .text
-                    .copyWith(color: context.color.textAndIconsBasePrimary),
+                style: context.textStyle.footNote.copyWith(color: context.color.textAndIconsBaseSecondary),
               ),
             ],
           ),
