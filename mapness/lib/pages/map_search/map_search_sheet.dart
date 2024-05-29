@@ -14,7 +14,9 @@ import 'package:mapness/pages/map_search/ui/map_search_content.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -118,20 +120,27 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
     super.dispose();
   }
 
+  MapObjectManager get searchObjectManager => ref.read(
+        mapObjectManagerProvider(
+          named: settings.name,
+          layerId: settings.layerId,
+          clustering: _clustering,
+        ).notifier,
+      );
+
   Future<void> _drawSearchMarkers(SearchState searchState) async {
-    final searchObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-        clustering: _clustering,
-      ).notifier,
-    );
-    await searchObjectManager.removeAllMarkers();
     if (searchState is SearchStateResults) {
       final icon = LayersSvgPaths.basicMarker.markerIcon(size: 16);
       final markers = await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon);
 
+      await searchObjectManager.removeAllMarkers();
       await searchObjectManager.addMarkers(markers);
+
+      await computeCameraPosition(
+        markers,
+        ref.read(cameraPositionProvider),
+        ref.read(cameraPositionProvider.notifier).animateTo,
+      );
 
       _dgisSheetController.animateTo(Expansion.middle);
     }

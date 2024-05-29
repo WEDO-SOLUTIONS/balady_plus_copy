@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/utils/debouncer.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
@@ -10,7 +9,7 @@ import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/lib/geo/geo_utils.dart';
+import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -37,18 +36,7 @@ class MapQuickFilters extends ConsumerStatefulWidget {
 }
 
 class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
-  bool isZoomInteracted = false;
-  bool isCoordComputed = false;
-
-  late final Debouncer _debouncer = Debouncer(milliseconds: 400);
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      isZoomInteracted = false;
-    });
-  }
+  late final _debouncer = Debouncer(milliseconds: 400);
 
   @override
   void dispose() {
@@ -72,11 +60,13 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       }
       final value = next.unwrapPrevious().value;
       if (value != null) {
-        Debouncer(milliseconds: 300).run(() async {
-          await _computeCameraPosition(value);
+        Debouncer(milliseconds: 200).run(() async {
+          await computeCameraPosition(
+            value,
+            ref.read(cameraPositionProvider),
+            ref.read(cameraPositionProvider.notifier).animateTo,
+          );
         });
-      } else {
-        isZoomInteracted = false;
       }
     });
 
@@ -139,48 +129,5 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       onCustomTap: widget.onCustomTap,
       padding: widget.forMap ? const EdgeInsets.symmetric(horizontal: 12) : const EdgeInsets.symmetric(horizontal: 16),
     );
-  }
-
-  Future<void> _computeCameraPosition(List<Marker> markers) async {
-    if (isCoordComputed) {
-      return;
-    }
-
-    final location = ref.read(cameraPositionProvider)?.point;
-
-    if (location?.latitude == null && location?.longitude == null) {
-      return;
-    }
-    if (isZoomInteracted) {
-      return;
-    }
-
-    isCoordComputed = true;
-
-    var zoom = await GeoUtils.zoomByMarkersNearby(
-      markers: markers,
-      position: location!,
-    );
-
-    isCoordComputed = false;
-    final cameraPosition = ref.read(cameraPositionProvider);
-
-    if (cameraPosition?.zoom != null) {
-      zoom = cameraPosition!.zoom < zoom ? cameraPosition.zoom : zoom;
-    }
-    if (cameraPosition?.point == null) {
-      return;
-    }
-
-    await ref.read(cameraPositionProvider.notifier).animateTo(
-          CameraPositionMessage(
-            point: cameraPosition!.point,
-            tilt: cameraPosition.tilt,
-            bearing: cameraPosition.bearing,
-            zoom: zoom,
-          ),
-        );
-
-    isZoomInteracted = true;
   }
 }
