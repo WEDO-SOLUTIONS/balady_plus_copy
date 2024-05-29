@@ -75,7 +75,7 @@ class Search extends _$Search {
   }
 
   Future<void> searchByText(String query) async {
-    final searchRect = ref.watch(searchInRectProvider.select((value) => value.$1));
+    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
     Metrics.logEvent(
       'searchByText',
       object: runtimeType,
