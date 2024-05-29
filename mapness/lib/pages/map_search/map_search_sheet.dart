@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -47,13 +48,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   ClusteringMapObjectManager? _clustering;
 
-  MapObjectManager get searchObjectManager => ref.read(
-        mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
-          clustering: _clustering,
-        ).notifier,
-      );
+  MapObjectManager? searchObjectManager;
 
   @override
   void initState() {
@@ -77,19 +72,21 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   void dispose() {
     _keyboardVisible.cancel();
     _dgisSheetController.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    searchObjectManager ??= ref.watch(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+        clustering: _clustering,
+      ).notifier,
+    );
     ref
-      ..watch(
-        mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
-          clustering: _clustering,
-        ).notifier,
-      )
+      ..watch(searchInRectProvider.notifier)
       ..listen(
         searchProvider(SearchScopeEnum.map.value),
         (previous, next) => _drawSearchMarkers(next),
@@ -148,8 +145,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       final icon = LayersSvgPaths.basicMarker.markerIcon(size: 16);
       final markers = await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon);
 
-      await searchObjectManager.removeAllMarkers();
-      await searchObjectManager.addMarkers(markers);
+      await searchObjectManager?.removeAllMarkers();
+      await searchObjectManager?.addMarkers(markers);
 
       await computeCameraPosition(
         markers,
@@ -163,7 +160,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     if (next?.currentPath != null && next!.currentPath!.startsWith('/search')) {
       _dgisSheetController.animateTo(Expansion.expanded);
     } else {
-      searchObjectManager.removeAllMarkers().then((value) => context.pop());
+      close();
     }
   }
 
@@ -178,7 +175,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       );
 
   void _onExpansionChanged(Expansion expansion) => switch (expansion) {
-        Expansion.hidden => searchObjectManager.removeAllMarkers().then((value) => context.pop()),
+        Expansion.hidden => close(),
         _ => null,
       };
 
@@ -211,6 +208,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       group: MetricsConstants.searchTag,
       action: MetricAction.tap.toString(),
     );
-    searchObjectManager.removeAllMarkers().then((value) => context.pop());
+    close();
+  }
+
+  void close() {
+    searchObjectManager?.removeAllMarkers().then((value) {
+      ref.read(searchInRectProvider.notifier).update();
+      searchObjectManager = null;
+      context.pop();
+    });
   }
 }
