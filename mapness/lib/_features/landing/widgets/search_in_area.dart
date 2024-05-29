@@ -12,30 +12,25 @@ class SearchInArea extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final visible = ref.watch(searchInRectProvider.select(
-      (value) => value.$2,
-    ),);
-
-    return visible
-        ? MapButton(
-            onTap: () {
-              ref.read(searchInRectProvider.notifier).update();
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
+    final visible = ref.watch(searchInRectProvider.select((value) => value.$2));
+    if (!visible) {
+      return const SizedBox.shrink();
+    }
+    return MapButton(
+      onTap: () {
+        ref.read(searchInRectProvider.notifier).update();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+        ),
+        child: Text(
+          context.l10n.searchInThisArea,
+          style: Theme.of(context).extension<ThemeTextStyles>()?.callout.copyWith(
+                color: context.color.textAndIconsBasePrimary,
               ),
-              child: Text(
-                context.l10n.searchInThisArea,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()
-                    ?.callout
-                    .copyWith(
-                      color: context.color.textAndIconsBasePrimary,
-                    ),
-              ),
-            ),
-          )
-        : const SizedBox.shrink();
+        ),
+      ),
+    );
   }
 }
