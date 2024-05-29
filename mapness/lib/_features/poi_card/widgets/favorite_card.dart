@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,7 +22,7 @@ class FavoriteCard extends ConsumerWidget {
             action: MetricAction.tap.toString(),
           );
 
-          const FavouritesRoute().push(context);
+          const FavouritesRoute().pushToRoot(context);
         },
         child: Row(
           children: [
@@ -46,16 +47,9 @@ class FavoriteCard extends ConsumerWidget {
                   .copyWith(color: context.color.textAndIconsBasePrimary),
             ),
             const Spacer(),
-            SvgPicture.asset(
-              'assets/icons/svg/ic_chevron_left.svg',
-              package: PackageConfig.packageName,
-              height: 24,
-              width: 24,
-              colorFilter: ColorFilter.mode(
-                context.color.textAndIconsBasePrimary,
-                BlendMode.srcATop,
-              ),
-            ),
+            Icon(context.isLTR
+                ? SystemIcons.arrowCornerRightS
+                : SystemIcons.arrowCornerLeftS),
           ],
         ),
       );
