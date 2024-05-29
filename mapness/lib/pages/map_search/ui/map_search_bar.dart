@@ -67,6 +67,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   @override
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
+    final searcher = ref.watch(searchProvider(scope.value).notifier);
     ref
       ..listen(searchProvider(scope.value), (previous, next) {
         if (next is SearchStateResults) {
@@ -82,7 +83,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
       searchInput: BaladyInput.search(
         focusNode: _focusNode,
         onTap: () {
-          ref.read(searchProvider(scope.value).notifier).clear();
+          searcher.clear();
         },
         onChanged: (query) {
           ref.read(searchQueryProvider(scope.value).notifier).update(query);
@@ -95,7 +96,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             },
           );
         },
-        onSubmitted: (query) {
+        onSubmitted: (query) async {
           Metrics.logEventAdvanced(
             MetricsConstants.searchKeys.searchField,
             group: MetricsConstants.searchTag,
@@ -104,9 +105,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               'query': query,
             },
           );
-          ref.read(searchProvider(scope.value).notifier).searchByText(query);
+          await searcher.searchByText(query);
           if (query.isNotEmpty) {
-            ref.read(searchHistoryProvider(scope.value).notifier).put(
+            await ref.read(searchHistoryProvider(scope.value).notifier).put(
                   SearchHistoryItem(
                     title: query,
                     address: '',
