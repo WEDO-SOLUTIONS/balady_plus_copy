@@ -19,15 +19,12 @@ class MapSuggestList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
 
-    return ListView.separated(
+    return ListView.builder(
       shrinkWrap: true,
-      padding: const EdgeInsetsDirectional.only(
-        start: 16,
-        bottom: 16,
-      ),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => SuggestItem(
         suggest: suggests[index],
+        isLast: index == suggests.length - 1,
         onObjectTap: (object) {
           Metrics.logEventAdvanced(
             MetricsConstants.searchKeys.suggestion,
@@ -42,10 +39,6 @@ class MapSuggestList extends ConsumerWidget {
         },
       ),
       itemCount: suggests.length,
-      separatorBuilder: (context, index) => const Padding(
-        padding: EdgeInsetsDirectional.only(start: 52),
-        child: Divider(),
-      ),
     );
   }
 }
