@@ -44,6 +44,10 @@ class Search extends _$Search {
 
   CancelableOperation? _searchOperation;
 
+  void clear() {
+    state = SearchStateHistory();
+  }
+
   Future<void> fetchSuggest(String query) async {
     Metrics.logEvent(
       'fetchSuggest',
@@ -58,13 +62,10 @@ class Search extends _$Search {
     }
     final dgisController = await ref.read(dgisControllerProvider.future);
 
-    final searchOperation =
-        CancelableOperation.fromFuture(dgisController.fetchSuggest(query));
+    final searchOperation = CancelableOperation.fromFuture(dgisController.fetchSuggest(query));
     _searchOperation = searchOperation;
     final result = await searchOperation.value;
-    state = result.suggests.isEmpty
-        ? SearchStateEmpty()
-        : SearchStateSuggest(result);
+    state = result.suggests.isEmpty ? SearchStateEmpty() : SearchStateSuggest(result);
     mixpanel?.track('Search: fetchSuggest');
   }
 
@@ -88,9 +89,7 @@ class Search extends _$Search {
     );
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
-    state = (results.firstPage?.items.isEmpty ?? true)
-        ? SearchStateEmpty()
-        : SearchStateResults(results);
+    state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results);
     mixpanel?.track('Search: fetchSuggest');
   }
 
@@ -113,9 +112,7 @@ class Search extends _$Search {
     );
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
-    state = (results.firstPage?.items.isEmpty ?? true)
-        ? SearchStateEmpty()
-        : SearchStateResults(results);
+    state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results);
     mixpanel?.track('Search: searchByQuery');
   }
 }
