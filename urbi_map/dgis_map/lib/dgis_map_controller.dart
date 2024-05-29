@@ -315,8 +315,10 @@ class DgisMapController {
       _instance.removeMarker(id, fromManager);
 
   /// Creates [MapObjectManagerMessage] with clustering.
-  Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(ClusteringMapObjectManager manager,
-          {String? layerId}) =>
+  Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
+    ClusteringMapObjectManager manager, {
+    String? layerId,
+  }) =>
       _instance.createMapObjectManagerWithClustering(manager, layerId: layerId);
 
   /// Creates [MapObjectManagerMessage] without clustering.
