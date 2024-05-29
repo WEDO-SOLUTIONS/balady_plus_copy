@@ -7,15 +7,14 @@ class SearchStateHistory extends SearchState {}
 class SearchStateEmpty extends SearchState {}
 
 class SearchStateSuggest extends SearchState {
-
   SearchStateSuggest(this.suggest);
   final SuggestResultMessage suggest;
 }
 
 class SearchStateResults extends SearchState {
-
-  SearchStateResults(this.results);
+  SearchStateResults(this.results, this.searchText);
   final SearchResultMessage results;
+  final String searchText;
 }
 
 extension SearchStateMap on SearchState {
@@ -24,10 +23,11 @@ extension SearchStateMap on SearchState {
     required T Function() history,
     required T Function(SuggestResultMessage suggest) suggest,
     required T Function(SearchResultMessage results) results,
-  }) => switch (this) {
-      SearchStateEmpty() => empty(),
-      SearchStateHistory() => history(),
-      SearchStateSuggest(suggest: final value) => suggest(value),
-      SearchStateResults(results: final value) => results(value),
-    };
+  }) =>
+      switch (this) {
+        SearchStateEmpty() => empty(),
+        SearchStateHistory() => history(),
+        SearchStateSuggest(suggest: final value) => suggest(value),
+        SearchStateResults(results: final value) => results(value),
+      };
 }

@@ -56,22 +56,26 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     super.dispose();
   }
 
+  void _updateText(String text) {
+    if (text != _controller.text) {
+      _controller
+        ..text = text
+        ..selection = TextSelection.collapsed(offset: _controller.text.length);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     ref
       ..listen(searchProvider(scope.value), (previous, next) {
         if (next is SearchStateResults) {
+          _updateText(next.searchText);
           _focusNode.unfocus();
         }
       })
       ..listen(searchQueryProvider(scope.value), (previous, next) {
-        if (next != _controller.text) {
-          _controller
-            ..text = next
-            ..selection =
-                TextSelection.collapsed(offset: _controller.text.length);
-        }
+        _updateText(next);
       });
 
     return BaladySearchWithBackButton(

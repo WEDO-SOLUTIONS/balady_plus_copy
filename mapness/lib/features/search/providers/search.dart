@@ -89,11 +89,11 @@ class Search extends _$Search {
     );
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
-    state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results);
+    state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results, query);
     mixpanel?.track('Search: fetchSuggest');
   }
 
-  Future<void> searchByQuery(SearchQueryMessage query) async {
+  Future<void> searchByQuery(SearchQueryMessage query, String text) async {
     Metrics.logEvent(
       'Search/searchByQuery',
       object: runtimeType,
@@ -112,7 +112,7 @@ class Search extends _$Search {
     );
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
-    state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results);
+    state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results, text);
     mixpanel?.track('Search: searchByQuery');
   }
 }
