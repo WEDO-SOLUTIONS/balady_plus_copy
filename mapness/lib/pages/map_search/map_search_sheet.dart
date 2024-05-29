@@ -21,17 +21,18 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
+/// Search sheet that is shown on the explore screen.
 class MapSearchSheet extends ConsumerStatefulWidget {
+  final String? initialQuery;
+  final bool withClustering;
+  final double biggestHeight;
+
   const MapSearchSheet({
     required this.withClustering,
     required this.biggestHeight,
     super.key,
     this.initialQuery,
   });
-
-  final String? initialQuery;
-  final bool withClustering;
-  final double biggestHeight;
 
   @override
   ConsumerState<MapSearchSheet> createState() => _MapSearchSheetState();
@@ -46,19 +47,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   ClusteringMapObjectManager? _clustering;
 
-  void onClose() {
-    Metrics.logEventAdvanced(
-      MetricsConstants.searchKeys.exitIcon,
-      group: MetricsConstants.searchTag,
-      action: MetricAction.tap.toString(),
-    );
-    searchObjectManager.removeAllMarkers().then((value) => context.pop());
-  }
+  MapObjectManager get searchObjectManager => ref.read(
+        mapObjectManagerProvider(
+          named: settings.name,
+          layerId: settings.layerId,
+          clustering: _clustering,
+        ).notifier,
+      );
 
   @override
   void initState() {
     super.initState();
-
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
   }
 
@@ -74,16 +73,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     );
   }
 
-  void _onKeyboardToggle(bool kbState) {
-    if (!kbState) {
-      return;
-    }
-    return switch (_dgisSheetController.currentExpansion) {
-      Expansion.middle || Expansion.expanded => null,
-      _ => _dgisSheetController.animateTo(Expansion.expanded),
-    };
-  }
-
   @override
   void dispose() {
     _keyboardVisible.cancel();
@@ -91,13 +80,68 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     super.dispose();
   }
 
-  MapObjectManager get searchObjectManager => ref.read(
+  @override
+  Widget build(BuildContext context) {
+    ref
+      ..watch(
         mapObjectManagerProvider(
           named: settings.name,
           layerId: settings.layerId,
           clustering: _clustering,
         ).notifier,
-      );
+      )
+      ..listen(
+        searchProvider(SearchScopeEnum.map.value),
+        (previous, next) => _drawSearchMarkers(next),
+      )
+      ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
+
+    return NotificationListener<ScrollNotification>(
+      onNotification: _onNotification,
+      child: DgisBottomSheet(
+        showBarrier: false,
+        controller: _dgisSheetController,
+        initialExpansion: Expansion.expanded,
+        availableExpansions: const {
+          Expansion.hidden,
+          Expansion.expanded,
+          Expansion.collapsed,
+        },
+        onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
+        middleHeight: widget.biggestHeight * 0.7,
+        collapsedHeight: widget.biggestHeight * 0.2,
+        scrollableBody: (context, scrollController) {
+          /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
+          /// https://www.youtube.com/watch?v=L_WoOkDAqbM
+          scrollController.addListener(_unfocusOnScroll);
+
+          return ClipRRect(
+            borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+            child: Material(
+              color: Colors.white,
+              child: SearchScope(
+                named: SearchScopeEnum.map,
+                child: CustomScrollView(
+                  controller: scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  slivers: [
+                    SliverPersistentHeader(
+                      delegate: MapSearchHeaderDelegate(
+                        requestFocus: widget.initialQuery == null,
+                        onClose: onClose,
+                      ),
+                      pinned: true,
+                    ),
+                    MapSearchContent(scrollController: scrollController),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   Future<void> _drawSearchMarkers(SearchState searchState) async {
     if (searchState is SearchStateResults) {
@@ -138,84 +182,35 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         _ => null,
       };
 
-  @override
-  Widget build(BuildContext context) {
-    ref
-      ..watch(
-        mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
-          clustering: _clustering,
-        ).notifier,
-      )
-      ..listen(
-        searchProvider(SearchScopeEnum.map.value),
-        (previous, next) => _drawSearchMarkers(next),
-      )
-      ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
+  bool _onNotification(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      _unfocusOnScroll();
+    }
+    return true;
+  }
 
-    return Directionality(
-      textDirection: Directionality.of(context),
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
-          if (notification is ScrollStartNotification) {
-            if (kbVisibilityController.isVisible) {
-              FocusManager.instance.primaryFocus?.unfocus();
-            }
-          }
-          return true;
-        },
-        child: DgisBottomSheet(
-          showBarrier: false,
-          controller: _dgisSheetController,
-          initialExpansion: Expansion.expanded,
-          availableExpansions: const {
-            Expansion.hidden,
-            Expansion.expanded,
-            Expansion.collapsed,
-          },
-          onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
-          middleHeight: widget.biggestHeight * 0.7,
-          collapsedHeight: widget.biggestHeight * 0.2,
-          scrollableBody: (context, scrollController) {
-            scrollController.addListener(
-              () {
-                /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
-                /// https://www.youtube.com/watch?v=L_WoOkDAqbM
-                if (kbVisibilityController.isVisible) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                }
-              },
-            );
+  void _unfocusOnScroll() {
+    if (kbVisibilityController.isVisible) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
 
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Material(
-                color: Colors.white,
-                child: SearchScope(
-                  named: SearchScopeEnum.map,
-                  child: CustomScrollView(
-                    controller: scrollController,
-                    physics: const ClampingScrollPhysics(),
-                    slivers: [
-                      SliverPersistentHeader(
-                        delegate: MapSearchHeaderDelegate(
-                          requestFocus: widget.initialQuery == null,
-                          onClose: onClose,
-                        ),
-                        pinned: true,
-                      ),
-                      MapSearchContent(
-                        scrollController: scrollController,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
+  void _onKeyboardToggle(bool kbState) {
+    if (!kbState) {
+      return;
+    }
+    return switch (_dgisSheetController.currentExpansion) {
+      Expansion.middle || Expansion.expanded => null,
+      _ => _dgisSheetController.animateTo(Expansion.expanded),
+    };
+  }
+
+  void onClose() {
+    Metrics.logEventAdvanced(
+      MetricsConstants.searchKeys.exitIcon,
+      group: MetricsConstants.searchTag,
+      action: MetricAction.tap.toString(),
     );
+    searchObjectManager.removeAllMarkers().then((value) => context.pop());
   }
 }
