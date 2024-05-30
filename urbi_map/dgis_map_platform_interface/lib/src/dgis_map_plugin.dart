@@ -697,6 +697,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.hideRoutes();
   }
 
+  Future<void> showRoutes() {
+    return _api.showRoutes();
+  }
+
   Future<void> startNavigation() {
     return _api.startNavigation();
   }

@@ -886,6 +886,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func hideRoutes(completion: @escaping (FlutterError?) -> Void) {
         self.routeHandler?.setRoutesVisible(false)
+        completion(nil);
+    }
+
+    func showRoutes(completion: @escaping (FlutterError?) -> Void) {
+        self.routeHandler?.setRoutesVisible(true)
+        completion(nil);
     }
     
     func startNavigation(completion: @escaping (FlutterError?) -> Void) {

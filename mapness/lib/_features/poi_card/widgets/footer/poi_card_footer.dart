@@ -52,6 +52,11 @@ class PoiCardFooter extends ConsumerWidget {
     if (hasContactsAndHasEntrances) {
       return _Wrapper(
         children: [
+          _CarItem(
+            finishPoint: finishPoint,
+            objectMessage: data,
+            flex: 2,
+          ),
           _FavoriteItem(
             objectMessage: data,
             objectId: objectId,
@@ -60,11 +65,6 @@ class PoiCardFooter extends ConsumerWidget {
             hasContactsAndHasEntrances: hasContactsAndHasEntrances,
             flex: 2,
             onTap: share,
-          ),
-          _CarItem(
-            finishPoint: finishPoint,
-            objectMessage: data,
-            flex: 2,
           ),
         ],
       );

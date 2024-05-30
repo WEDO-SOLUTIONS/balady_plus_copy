@@ -15,8 +15,9 @@ class Routes extends _$Routes {
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
     required RouteSearchOptionsMessage navType,
-  }) {
+  }) async {
     final dgisController = ref.watch(dgisControllerProvider);
+    unawaited(dgisController.value?.hideRoutes());
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
       finishPoint: finishPoint?.pointMessage,
@@ -25,6 +26,7 @@ class Routes extends _$Routes {
 
     final routesCompleter = Completer<List<RouteInfo>>();
     final routesInfoChangedSubscription = dgisController.value?.routesInfoChangedEvents.listen((event) {
+      dgisController.value?.showRoutes();
       routesCompleter.complete(event.routes);
     });
     Timer(const Duration(minutes: 2), () {
@@ -37,7 +39,8 @@ class Routes extends _$Routes {
       routesInfoChangedSubscription?.cancel();
     });
 
-    dgisController.value?.setRouteParams(params);
+    await dgisController.value?.setRouteParams(params);
+
     return routesCompleter.future;
   }
 }
@@ -83,9 +86,9 @@ class BetterRoute extends _$BetterRoute {
 @riverpod
 class BetterRouteSettings extends _$BetterRouteSettings {
   static final prod = BetterRouteSettingsMessage(
-      routeSearchDelay: 20,
-      betterRouteTimeCostThreshold: 5 * 60,
-      betterRouteLengthThreshold: 500 * 1000,
+    routeSearchDelay: 20,
+    betterRouteTimeCostThreshold: 5 * 60,
+    betterRouteLengthThreshold: 500 * 1000,
   );
 
   static final test = BetterRouteSettingsMessage(
