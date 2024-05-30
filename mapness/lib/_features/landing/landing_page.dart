@@ -216,6 +216,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     final currentRoute = ref.watch(currentRouteProvider);
 
     const landingPagePath = '/landing';
+    const routingRoutePath = '/routingRoutes';
 
     ///TODO: need to refactor after Dashboard refactoring to designSystem
     ///Ignore hide dashboard tap from other pages
@@ -241,6 +242,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
             });
 
         if (context.mounted) {
+          if (currentRoute?.currentPath == routingRoutePath) {
+            context.pop();
+          }
           PoiMapRoute.open(
             ref.read(goRouterProvider),
             event.dgisObjectId.objectId,

@@ -45,7 +45,6 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 }
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
-
   List<RoutePoint> points = [
     RoutePointMyLocation(),
     RoutePointDirectoryObject(null),
@@ -73,11 +72,8 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       ..watch(favouriteMarkersProvider.select((value) => null))
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
-      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId)
-          .notifier)
-      ..watch(mapObjectManagerProvider(
-              named: mappness.name, layerId: mappness.layerId)
-          .notifier);
+      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
+      ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -93,9 +89,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
               Expansion.expanded,
               Expansion.middle,
             },
-            initialExpansion: widget.collapseInitially
-                ? Expansion.collapsed
-                : Expansion.middle,
+            initialExpansion: widget.collapseInitially ? Expansion.collapsed : Expansion.middle,
             middleHeight: 0.7 * widget.biggestHeight,
             collapsedHeight: 136,
             scrollableBody: (context, scrollController) => Container(
@@ -114,8 +108,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                 color: NonThemeColor.color11,
                 child: CustomScrollView(
                   controller: scrollController,
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                   physics: const ClampingScrollPhysics(),
                   slivers: [
                     SliverPersistentHeader(
@@ -176,7 +169,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
         finishEntranceId: finish.entranceId,
         finishLevelId: finish.levelId,
         finishLabel: finish.title(context.l10n) ?? '',
-      ).go(context);
+      ).push(context);
     }
   }
 
