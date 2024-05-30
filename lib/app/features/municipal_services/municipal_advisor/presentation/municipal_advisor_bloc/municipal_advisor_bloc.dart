@@ -586,10 +586,12 @@ class MunicipalAdvisorBloc
             lastEvent: event,
           ),
         );
-        add(MunicipalAdvisorAddMessageEvent(
-          message: '${event.area.toStringAsFixed(0)} ${"m2".tr()}',
-          step: MunicipalAdvisorSteps.area,
-        ));
+        if(event.isCostingFrees == false) {
+          add(MunicipalAdvisorAddMessageEvent(
+            message: '${event.area.toStringAsFixed(0)} ${"m2".tr()}',
+            step: MunicipalAdvisorSteps.area,
+          ));
+        }
       },
     );
 
@@ -728,7 +730,7 @@ class MunicipalAdvisorBloc
             if (state.selectedAdditionalActivities.isNotEmpty) {
               add(MunicipalAdvisorAddMessageEvent(
                 message: state.selectedAdditionalActivities
-                    .map((e) => e.activityName)
+                    .map((e) => '${e.activityName}\n${e.inputArea!} ${"m2".tr()}')
                     .join('\n'),
                 step: MunicipalAdvisorSteps.additionalActivities,
               ));
@@ -1190,6 +1192,18 @@ class MunicipalAdvisorBloc
             );
           }
 
+          double totalShopArea = 0;
+          for (var activity in state.selectedAdditionalActivities) {
+            if (activity.inputArea != null && activity.inputArea!.isNotEmpty) {
+              totalShopArea = totalShopArea + double.parse(activity.inputArea!);
+            }
+          }
+
+
+          if (state.selectedArea != null) {
+
+              totalShopArea = totalShopArea +state.selectedArea!;
+            }
           final failureOrSuccess = await _calculateLicenseFees(
             CalculateFeesParams(
                 consultationKey: state.consultationKey!,
@@ -1203,7 +1217,7 @@ class MunicipalAdvisorBloc
                 state.activityLocation?.latLng.latitude.toString() ?? "",
                 activityId: state.selectedIsicSubActivity!.id,
                 licensePeriod: state.selectedLicenseYear,
-                shopArea: state.totalShopArea!,
+                shopArea: totalShopArea,
                 cleanOption: state.selectedCleanMechanism?.id,
                 unitCount: state.unitCount,
                 atmFeesPaid: state.atmPaid,
@@ -1903,7 +1917,6 @@ class MunicipalAdvisorBloc
         });
       },
     );
-
     on<ChangeAreaInAddetionalActivityEvent>((event, emit) async {
       List<ActivityDetailsEntity> selectedAdditionalActivities =
           state.selectedAdditionalActivities;
