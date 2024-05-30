@@ -56,27 +56,35 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     super.dispose();
   }
 
+  void _updateText(String text) {
+    if (text != _controller.text) {
+      _controller
+        ..text = text
+        ..selection = TextSelection.collapsed(offset: _controller.text.length);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
+    final searcher = ref.watch(searchProvider(scope.value).notifier);
     ref
       ..listen(searchProvider(scope.value), (previous, next) {
         if (next is SearchStateResults) {
+          _updateText(next.searchText);
           _focusNode.unfocus();
         }
       })
       ..listen(searchQueryProvider(scope.value), (previous, next) {
-        if (next != _controller.text) {
-          _controller
-            ..text = next
-            ..selection =
-                TextSelection.collapsed(offset: _controller.text.length);
-        }
+        _updateText(next);
       });
 
     return BaladySearchWithBackButton(
       searchInput: BaladyInput.search(
         focusNode: _focusNode,
+        onTap: () {
+          searcher.clear();
+        },
         onChanged: (query) {
           ref.read(searchQueryProvider(scope.value).notifier).update(query);
           Metrics.logEventAdvanced(
@@ -88,7 +96,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             },
           );
         },
-        onSubmitted: (query) {
+        onSubmitted: (query) async {
           Metrics.logEventAdvanced(
             MetricsConstants.searchKeys.searchField,
             group: MetricsConstants.searchTag,
@@ -97,9 +105,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               'query': query,
             },
           );
-          ref.read(searchProvider(scope.value).notifier).searchByText(query);
+          await searcher.searchByText(query);
           if (query.isNotEmpty) {
-            ref.read(searchHistoryProvider(scope.value).notifier).put(
+            await ref.read(searchHistoryProvider(scope.value).notifier).put(
                   SearchHistoryItem(
                     title: query,
                     address: '',

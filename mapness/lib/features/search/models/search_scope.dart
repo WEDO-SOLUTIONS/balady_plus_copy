@@ -1,5 +1,7 @@
 class SearchScope {
-
-  SearchScope(this.value);
   final String value;
+
+  SearchScope({
+    required this.value,
+  });
 }
