@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/favourites/widgets/search/favourite_text_field.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/suggest.dart';
 
 class SearchScreen extends ConsumerWidget {
   const SearchScreen({
@@ -15,6 +15,7 @@ class SearchScreen extends ConsumerWidget {
     super.key,
     this.onHistoryItemTap,
   });
+
   final VoidCallback onBackTap;
   final int itemCount;
   final String? hintText;
@@ -23,7 +24,7 @@ class SearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-        backgroundColor: context.color.surfaceBaseSecondary,
+        backgroundColor: context.color.surfaceBasePrimary,
         body: Column(
           children: [
             Container(
@@ -33,26 +34,19 @@ class SearchScreen extends ConsumerWidget {
                 right: 16,
                 top: MediaQuery.of(context).padding.top + 8,
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: FavouriteTextField(hintText: hintText),
-                  ),
-                  const SizedBox(width: 8),
-                  Material(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: onBackTap,
-                      child: const SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: Icon(CupertinoIcons.forward),
-                      ),
-                    ),
-                  ),
-                ],
+              child: BaladySearchWithBackButton(
+                onBackButtonPressed: onBackTap,
+                searchInput: BaladyInput(
+                  higlighFocusedBorder: false,
+                  hintText: hintText ?? context.l10n.search,
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      ref.read(suggestQueryProvider.notifier).update('');
+                    } else {
+                      ref.read(suggestQueryProvider.notifier).update(value);
+                    }
+                  },
+                ),
               ),
             ),
             if (itemCount == 0)
@@ -64,8 +58,7 @@ class SearchScreen extends ConsumerWidget {
               ),
             Expanded(
               child: ListView.separated(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 itemCount: itemCount,
                 separatorBuilder: (_, __) => const Divider(),
                 itemBuilder: itemBuilder,

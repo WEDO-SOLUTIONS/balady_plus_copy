@@ -33,3 +33,15 @@ class RoutesInfoChangedEvent {
 
   final List<RouteInfo> routes;
 }
+
+class BetterRouteInfoEvent {
+  const BetterRouteInfoEvent(
+    this.route,
+    this.durationProfit,
+  );
+
+  static const name = "betterRouteEvent";
+
+  final RouteInfo? route;
+  final int durationProfit;
+}

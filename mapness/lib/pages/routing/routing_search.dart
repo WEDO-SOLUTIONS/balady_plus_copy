@@ -9,8 +9,6 @@ import 'package:mapness/pages/routing/ui/routing_search_content.dart';
 import 'package:mapness/pages/routing/ui/routing_search_header_delegate.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
-const _searchScope = 'RoutingSearch';
-
 class RoutingSearchSheet extends ConsumerStatefulWidget {
   const RoutingSearchSheet({
     required this.placeholder,
@@ -54,7 +52,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
     if (widget.initialQuery != null) {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) {
-          ref.read(searchQueryProvider(_searchScope).notifier).update(
+          ref.read(searchQueryProvider(SearchScopeEnum.routes.value).notifier).update(
                 widget.initialQuery!,
               );
         },
@@ -76,7 +74,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
         const RoutingMapControls(bottomExtent: 136),
         LayoutBuilder(
           builder: (context, constraints) => DgisBottomSheet(
-            initialExpansion: Expansion.middle,
+            initialExpansion: Expansion.expanded,
             availableExpansions: const {
               Expansion.hidden,
               Expansion.middle,
@@ -99,11 +97,10 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
               child: Material(
                 color: Colors.transparent,
                 child: SearchScope(
-                  named: _searchScope,
+                  named: SearchScopeEnum.routes,
                   child: CustomScrollView(
                     controller: scrollController,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                     physics: const ClampingScrollPhysics(),
                     slivers: [
                       SliverPersistentHeader(

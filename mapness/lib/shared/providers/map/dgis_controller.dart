@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/_features/common/providers/permissions.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
@@ -13,14 +14,14 @@ import 'package:rxdart/rxdart.dart';
 
 part 'dgis_controller.g.dart';
 
-final GeoPointMessage _kingdomTower =
-    GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
+final GeoPointMessage _kingdomTower = GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
 
 @Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
   late Completer<DgisMapController> _completer;
 
   final _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
+
   ValueStream<VisibleRectEvent?> get visibleRectSubject => _visibleRectSubject;
 
   @override
@@ -57,9 +58,7 @@ class DgisController extends _$DgisController {
       ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA'],
     );
     await controller.setAppearance(
-      ref.read(darkModeProvider)
-          ? MapAppearanceMessage.night
-          : MapAppearanceMessage.day,
+      ref.read(darkModeProvider) ? MapAppearanceMessage.night : MapAppearanceMessage.day,
     );
     ref
       ..listen(
@@ -79,14 +78,14 @@ class DgisController extends _$DgisController {
         },
       );
 
+    await controller.setBetterRouteSettings(BetterRouteSettings.prod);
+
     try {
       // Voice
       await controller.installVoice('voice-saud');
       await controller.installVoice('voice-jennifer');
 
-      ref
-          .read(navigatorVoiceProvider.notifier)
-          .update(ref.read(appLanguageProvider).navigatorVoice);
+      ref.read(navigatorVoiceProvider.notifier).update(ref.read(appLanguageProvider).navigatorVoice);
     } on PlatformException catch (e) {
       debugPrint('Voice installation error: $e');
     }
@@ -97,8 +96,7 @@ class DgisController extends _$DgisController {
     var locationPermission = await ref.read(
       permissionsProvider(Permission.location).future,
     );
-    final locationNotifier =
-        ref.read(permissionsProvider(Permission.location).notifier);
+    final locationNotifier = ref.read(permissionsProvider(Permission.location).notifier);
 
     await _setDefaultLocation(controller);
 
@@ -129,16 +127,15 @@ class DgisController extends _$DgisController {
       CameraPositionMessage(
         point: _kingdomTower,
         zoom: 17,
-        tilt: 45,
+        tilt: 0,
         bearing: 0,
       ),
     );
   }
 
   Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
-    final visibleRectSubscription = controller.visibleRectEvents
-        .debounceTime(const Duration(seconds: 1))
-        .listen(_listenVisibleRectangle);
+    final visibleRectSubscription =
+        controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen(_listenVisibleRectangle);
     _visibleRectSubject.add(null);
 
     ref.onDispose(visibleRectSubscription.cancel);

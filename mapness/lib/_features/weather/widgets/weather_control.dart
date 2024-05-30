@@ -5,12 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/weather/data/models/weather_model.dart';
 import 'package:mapness/_features/weather/provider/current_weather_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class WeatherControl extends ConsumerWidget {
-
   const WeatherControl({this.onTap, super.key});
   final VoidCallback? onTap;
 
@@ -19,16 +19,23 @@ class WeatherControl extends ConsumerWidget {
     final weatherData = ref.watch(currentWeatherProvider);
 
     return buildContent(
-        context: context,
-        data: weatherData,
-        onTap: () {
-          onTap?.call();
-        },);
+      context: context,
+      data: weatherData,
+      onTap: () {
+        Metrics.logEventAdvanced(
+          MetricsConstants.exploreKeys.weatherIcon,
+          action: MetricAction.tap.name,
+          group: MetricsConstants.exploreTag,
+        );
+        onTap?.call();
+      },
+    );
   }
 
   MapButton buildContent({
     required BuildContext context,
-    required VoidCallback onTap, AllWeatherInfoModel? data,
+    required VoidCallback onTap,
+    AllWeatherInfoModel? data,
   }) {
     final tempC2 = data?.current?.tempC;
     final temp = tempC2 == null ? '30°' : '${tempC2.toInt()}°';
@@ -48,12 +55,10 @@ class WeatherControl extends ConsumerWidget {
               temp,
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .text
-                  .copyWith(
-                    color: context.color.textAndIconsBasePrimary,
-                  ),
+              style:
+                  Theme.of(context).extension<ThemeTextStyles>()!.text.copyWith(
+                        color: context.color.textAndIconsBasePrimary,
+                      ),
             ),
           ),
         ],
