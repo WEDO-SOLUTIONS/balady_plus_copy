@@ -175,7 +175,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         context.pop();
         break;
       default:
-        const RoutingRoute().go(context);
+        const RoutingRoute().pushReplacement(context);
     }
   }
 }
