@@ -153,6 +153,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         ref.read(cameraPositionProvider),
         ref.read(cameraPositionProvider.notifier).animateTo,
       );
+    } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
+      await searchObjectManager?.removeAllMarkers();
     }
   }
 
