@@ -52,12 +52,9 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
         ]
             .map<Widget>((e) {
               final isSelected = widget.active == e;
-              var flex = 3;
-              if ((routeDuration ?? 0) > 60 * 60 && isSelected) {
-                flex = 4;
-              }
+              final isOverflowed = (routeDuration ?? 0) > 60 * 60 && isSelected;
               return Expanded(
-                flex: flex,
+                flex: isOverflowed ? 4 : 3,
                 child: Chips(
                   onTap: () => widget.onChanged(e),
                   style: ChipsStyle.whiteBackground,
