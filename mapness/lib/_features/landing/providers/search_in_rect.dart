@@ -1,8 +1,5 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
-import 'package:mapness/features/search/models/search_state.dart';
-import 'package:mapness/features/search/providers/search.dart';
-import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,9 +11,7 @@ class SearchInRect extends _$SearchInRect {
   @override
   (GeoRectMessage?, bool) build() {
     final filter = ref.watch(searchByRubricsQueryProvider);
-    final searchStateMap = ref.watch(searchProvider(SearchScopeEnum.map.value));
-    final searchStateRoutes = ref.watch(searchProvider(SearchScopeEnum.routes.value));
-    if (filter == null && (searchStateMap is SearchStateHistory) && (searchStateRoutes is SearchStateHistory)) {
+    if (filter == null) {
       return (null, false);
     }
 
