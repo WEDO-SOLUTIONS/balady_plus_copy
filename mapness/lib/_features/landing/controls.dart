@@ -23,6 +23,9 @@ import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapControls extends StatelessWidget {
+  // Calculate the topbar and bottom padding
+  static const screenPadding = 80 + 70;
+
   final DraggableScrollableController draggableScrollableController;
 
   const MapControls({
@@ -32,9 +35,6 @@ class MapControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate the topbar and bottom padding
-    const screenPadding = 70 + 80;
-
     final double screenHeight = MediaQuery.of(context).size.height;
 
     bool hideControls = false;
