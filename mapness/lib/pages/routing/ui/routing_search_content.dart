@@ -11,7 +11,9 @@ import 'package:provider/provider.dart';
 
 class RoutingSearchContent extends ConsumerWidget {
   const RoutingSearchContent({
-    required this.scrollController, required this.showMyLocation, super.key,
+    required this.scrollController,
+    required this.showMyLocation,
+    super.key,
   });
 
   final bool showMyLocation;
@@ -54,9 +56,12 @@ class RoutingSearchContent extends ConsumerWidget {
       results: (results) => SliverToBoxAdapter(
         child: SafeArea(
           top: false,
-          child: RoutingSearchResults(
-            results: results,
-            scrollController: scrollController,
+          child: Container(
+            color: Colors.white,
+            child: RoutingSearchResults(
+              results: results,
+              scrollController: scrollController,
+            ),
           ),
         ),
       ),

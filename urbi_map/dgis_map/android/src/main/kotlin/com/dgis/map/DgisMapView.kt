@@ -593,6 +593,11 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun showRoutes(result: Messages.Result<Void>?) {
+        routeHandler?.setRoutesVisible(true)
+        result?.success(null)
+    }
+
     override fun startNavigation(result: Messages.Result<Void>?) {
         val routeHandler = routeHandler ?: kotlin.run {
             result?.error(Exception("RouteHandler not initialized"))
@@ -820,7 +825,7 @@ class DgisMapView(
         )
         map.addSource(mapSource)
 
-        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource)
+        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler)
         zoomControlHandler = ZoomControlHandler(map, eventSink)
         locationControlHandler = LocationControlHandler(map, eventSink)
         indoorControlHandler = IndoorControlHandler(map, eventSink)
@@ -885,6 +890,23 @@ class DgisMapView(
 
     override fun toggleHeatmap(message: WeatherMapMessage, result: Messages.Result<Boolean>?) {
         weatherHandler?.toggleHeatmap(message,result)
+    }
+
+    override fun betterRouteResponse(response: BetterRouteResponseMessage, result: Messages.Result<Void>?) {
+        navigationHandler.betterRouteResponse(response)
+        result?.success(null)
+    }
+
+    override fun getBetterRouteSettings(result: Messages.Result<BetterRouteSettingsMessage>?) {
+        navigationHandler.getBetterRouteSettings(result)
+    }
+
+    override fun setBetterRouteSettings(
+        message: BetterRouteSettingsMessage,
+        result: Messages.Result<Void>?
+    ) {
+        navigationHandler.setBetterRouteSettings(message)
+        result?.success(null)
     }
 
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {

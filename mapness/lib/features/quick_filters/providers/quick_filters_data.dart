@@ -1,15 +1,32 @@
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 
-const quickFilterRubricMosques = 13374;
+enum QuickFilterType {
+  restaurants,
+  markets,
+  hotels,
+  mosques,
+  gasStation,
+  carServices,
+  hospitals,
+  dentalCenters,
+  pharmacies,
+  sportClubs,
+  parks,
+  recreationCenters,
+  beautyCenters,
+  salons,
+  schools,
+}
 
-final quickFilters = [
+const quickFilters = [
   QuickFilter(
+    type: QuickFilterType.restaurants,
     rubrics: [161, 165, 161, 9786, 162, 469, 58871],
-    title: 'المطاعم',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_restaurants.svg',
     mapIcon: 'assets/icons/svg/quick_filters/restaurants_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.markets,
     rubrics: [
       112589,
       361,
@@ -34,29 +51,29 @@ final quickFilters = [
       544,
       398,
     ],
-    title: 'الأسواق',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_markets.svg',
     mapIcon: 'assets/icons/svg/quick_filters/markets_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.hotels,
     rubrics: [269],
-    title: 'الفنادق',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_hotels.svg',
     mapIcon: 'assets/icons/svg/quick_filters/hotels_pin.svg',
   ),
   QuickFilter(
-    rubrics: [quickFilterRubricMosques],
-    title: 'المساجد',
+    type: QuickFilterType.mosques,
+    rubrics: [13374],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_mosques.svg',
     mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.gasStation,
     rubrics: [18547],
-    title: 'المحطات',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_gas_station.svg',
     mapIcon: 'assets/icons/svg/quick_filters/gas_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.carServices,
     rubrics: [
       404,
       405,
@@ -97,29 +114,29 @@ final quickFilters = [
       429,
       1156,
     ],
-    title: 'خدمات السيارات',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_car_services.svg',
     mapIcon: 'assets/icons/svg/quick_filters/cars_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.hospitals,
     rubrics: [201],
-    title: 'المستشفيات',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_hospital.svg',
     mapIcon: 'assets/icons/svg/quick_filters/hospitals_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.dentalCenters,
     rubrics: [222],
-    title: 'الأسنان',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_dental.svg',
     mapIcon: 'assets/icons/svg/quick_filters/dental_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.pharmacies,
     rubrics: [207],
-    title: 'الصيدليات',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_medicine.svg',
     mapIcon: 'assets/icons/svg/quick_filters/pharmacies_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.sportClubs,
     rubrics: [
       261,
       262,
@@ -136,18 +153,18 @@ final quickFilters = [
       51256,
       110498,
     ],
-    title: 'النوادي والصالونات الرياضية',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_sport_clubs.svg',
     mapIcon: 'assets/icons/svg/quick_filters/sport_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.parks,
     rubrics: [],
     query: 'parks',
-    title: 'الحدائق',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_park.svg',
     mapIcon: 'assets/icons/svg/quick_filters/parks_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.recreationCenters,
     rubrics: [
       537,
       169,
@@ -164,11 +181,11 @@ final quickFilters = [
       190,
       110358,
     ],
-    title: 'مراكز الترفيه',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_recreation.svg',
     mapIcon: 'assets/icons/svg/quick_filters/recreation_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.beautyCenters,
     rubrics: [
       56759,
       110351,
@@ -187,19 +204,18 @@ final quickFilters = [
       695,
       51009,
     ],
-    title: 'مراكز التجميل',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_beauty.svg',
     mapIcon: 'assets/icons/svg/quick_filters/beauty_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.salons,
     rubrics: [110352],
-    title: 'Salons',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_salons.svg',
     mapIcon: 'assets/icons/svg/quick_filters/salons_pin.svg',
   ),
   QuickFilter(
+    type: QuickFilterType.schools,
     rubrics: [245],
-    title: 'المدارس',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_school.svg',
     mapIcon: 'assets/icons/svg/quick_filters/schools_pin.svg',
   ),

@@ -14,8 +14,13 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:provider/provider.dart';
 
 class PrayerHomeCard extends StatelessWidget {
+  final VoidCallback? onShowTimesTap;
+  final VoidCallback? onNotificationTap;
+
   const PrayerHomeCard({
     super.key,
+    this.onShowTimesTap,
+    this.onNotificationTap,
   });
 
   @override
@@ -30,20 +35,14 @@ class PrayerHomeCard extends StatelessWidget {
                 start: 16,
                 end: 16,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "prayerTimes".tr(),
-                    style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(
-                          color: const Color(0xFF1E2A36),
-                        ),
-                  ),
-                ],
+              child: Text(
+                "prayerTimes".tr(),
+                style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(
+                  color: const Color(0xFF1E2A36),
+                ),
               ),
             ),
-            state.nextPrayer != null &&
-                    state.status != BlocRequestStatus.submissionGetLoading
+            state.nextPrayer != null && state.status != BlocRequestStatus.submissionGetLoading
                 ? Container(
                     height: 200,
                     margin: const EdgeInsets.only(left: 16, right: 16, top: 12),
@@ -57,8 +56,7 @@ class PrayerHomeCard extends StatelessWidget {
                                   ? "assets/images/sunrise_pray.png" // day
                                   : state.nextPrayer!.prayer == Prayers.asr
                                       ? "assets/images/sunrise_pray.png" // day
-                                      : state.nextPrayer!.prayer ==
-                                              Prayers.maghrib
+                                      : state.nextPrayer!.prayer == Prayers.maghrib
                                           ? "assets/images/sunrise_pray.png" // sunset
                                           : "assets/images/sunrise_pray.png", // night
                           package: PackageConfig.packageName,
@@ -72,37 +70,31 @@ class PrayerHomeCard extends StatelessWidget {
                           children: [
                             const SizedBox(height: 20),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 24),
+                              padding: const EdgeInsets.symmetric(horizontal: 24),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           if (state.nextPrayer != null)
                                             Text(
-                                              "remain_to_azan".tr().replaceAll(
-                                                  "{}",
-                                                  state.nextPrayer!.prayer.label
-                                                      .tr()),
+                                              "remain_to_azan"
+                                                  .tr()
+                                                  .replaceAll("{}", state.nextPrayer!.prayer.label.tr()),
                                               style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(
                                                     color: Colors.white,
                                                   ),
                                             ),
+                                          const SizedBox(height: 8),
                                           state.nextPrayer != null
                                               ? NextPrayerHome(
-                                                  prayer:
-                                                      state.nextPrayer!.prayer,
-                                                  time: state
-                                                      .nextPrayer!.dateTime,
+                                                  prayer: state.nextPrayer!.prayer,
+                                                  time: state.nextPrayer!.dateTime,
                                                 )
                                               : const ShimmerEffectWidget(
                                                   width: 160,
@@ -122,20 +114,15 @@ class PrayerHomeCard extends StatelessWidget {
                                         ),
                                         child: GestureDetector(
                                           onTap: () {
-                                            Provider.of<PrayerTimesCubit>(
-                                                    context,
-                                                    listen: false)
-                                                .prayerSettingsOnOff();
+                                            onNotificationTap?.call();
+                                            Provider.of<PrayerTimesCubit>(context, listen: false).prayerSettingsOnOff();
                                           },
-                                          child: BlocBuilder<PrayerTimesCubit,
-                                              PrayerTimesState>(
+                                          child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
                                             builder: (context, state) {
-                                              bool isNotificationDisabled =
-                                                  state.isNotificationDisable;
+                                              bool isNotificationDisabled = state.isNotificationDisable;
                                               return SvgPicture.asset(
                                                 "assets/icons/svg/ic_notification.svg",
-                                                package:
-                                                    PackageConfig.packageName,
+                                                package: PackageConfig.packageName,
                                                 colorFilter: ColorFilter.mode(
                                                   isNotificationDisabled ? const Color(0x99FFFFFF) : Colors.white,
                                                   BlendMode.srcIn,
@@ -166,25 +153,15 @@ class PrayerHomeCard extends StatelessWidget {
                                       ? Row(
                                           children: [
                                             Text(
-                                              state.nextPrayer!.dateTime.hour >
-                                                      12
-                                                  ? "PM"
-                                                  : "AM",
-                                              style: Theme.of(context)
-                                                  .extension<ThemeTextStyles>()!
-                                                  .callout
-                                                  .copyWith(
+                                              state.nextPrayer!.dateTime.hour > 12 ? "PM" : "AM",
+                                              style: Theme.of(context).extension<ThemeTextStyles>()!.callout.copyWith(
                                                     color: Colors.white,
                                                   ),
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
-                                              DateFormat("hh:mm").format(
-                                                  state.nextPrayer!.dateTime),
-                                              style: Theme.of(context)
-                                                  .extension<ThemeTextStyles>()!
-                                                  .callout
-                                                  .copyWith(
+                                              DateFormat("hh:mm").format(state.nextPrayer!.dateTime),
+                                              style: Theme.of(context).extension<ThemeTextStyles>()!.callout.copyWith(
                                                     color: Colors.white,
                                                   ),
                                             ),
@@ -201,12 +178,10 @@ class PrayerHomeCard extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8),
                                     child: InkWell(
                                       onTap: () {
-                                        NavigationService
-                                            .navigatorKey.currentState!
-                                            .pushNamed(
+                                        onShowTimesTap?.call();
+                                        NavigationService.navigatorKey.currentState!.pushNamed(
                                           RouteName.prayerTimes,
-                                          arguments:
-                                              context.read<PrayerTimesCubit>(),
+                                          arguments: context.read<PrayerTimesCubit>(),
                                         );
                                       },
                                       child: Padding(
@@ -216,10 +191,7 @@ class PrayerHomeCard extends StatelessWidget {
                                         ),
                                         child: Text(
                                           'prayer_timings'.tr(),
-                                          style: Theme.of(context)
-                                              .extension<ThemeTextStyles>()!
-                                              .callout
-                                              .copyWith(
+                                          style: Theme.of(context).extension<ThemeTextStyles>()!.callout.copyWith(
                                                 color: Colors.black,
                                               ),
                                         ),
@@ -235,8 +207,7 @@ class PrayerHomeCard extends StatelessWidget {
                     ),
                   )
                 : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: CustomShimmerWidget(
                       childHeight: 234,
                       childWidth: MediaQuery.sizeOf(context).width,

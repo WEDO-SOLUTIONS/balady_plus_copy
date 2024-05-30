@@ -12,6 +12,7 @@ import 'package:mapness/_features/favourites/mappers/favorite_cache_item_mapper.
 import 'package:mapness/_features/favourites/mappers/favourites_response_mapper.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
@@ -27,6 +28,8 @@ class _FavouriteCache extends _$FavouriteCache {
   static const _keyCache = 'cache';
   static const _keyDeleteSync = 'delete_sync';
   static const _keyAddSync = 'add_sync';
+
+  static const _tag = MetricsConstants.favoriteTag;
 
   final _cacheFor = const Duration(minutes: 30);
 
@@ -66,29 +69,16 @@ class _FavouriteCache extends _$FavouriteCache {
     if (!state.hasValue) {
       return;
     }
-
     final oldDataState = state.requireValue;
-    FavouritesState newState;
+    final items = oldDataState.items;
+    final work = oldDataState.work;
+    final home = oldDataState.home;
 
-    if (item.id == oldDataState.home?.id) {
-      newState = FavouritesState(
-        items: oldDataState.items,
-        work: oldDataState.work,
-      );
-    } else if (item.id == oldDataState.work?.id) {
-      newState = FavouritesState(
-        items: oldDataState.items,
-        home: oldDataState.home,
-      );
-    } else {
-      final newItems =
-          oldDataState.items.where((e) => e.id != item.id).toList();
-      newState = FavouritesState(
-        items: newItems,
-        work: oldDataState.work,
-        home: oldDataState.home,
-      );
-    }
+    final newState = FavouritesState(
+      items: items.where((e) => e.id != item.id).toList(),
+      work: item.id == work?.id ? null:work,
+      home: item.id == home?.id ? null:home,
+    );
 
     await _updateState(newState);
 
@@ -100,6 +90,39 @@ class _FavouriteCache extends _$FavouriteCache {
       );
     } on Exception catch (_) {
       await _addToDeletionSync([item]);
+    }
+  }
+
+  Future<void> deleteItems(List<FavouriteItem> items) async {
+    if (!state.hasValue) {
+      return;
+    }
+
+    final oldDataState = state.requireValue;
+    final oldItems = oldDataState.items;
+    final work = oldDataState.work;
+    final home = oldDataState.home;
+
+    oldItems.removeWhere((element) => items.any((e) => e.id == element.id));
+
+    final newState = FavouritesState(
+      items: oldItems,
+      work: work,
+      home: home,
+    );
+
+
+    await _updateState(newState);
+
+
+    try {
+      await _deleteRequest(
+        items: items,
+        workId: oldDataState.work?.id,
+        homeId: oldDataState.home?.id,
+      );
+    } on Exception catch (_) {
+      await _addToDeletionSync(items);
     }
   }
 
@@ -273,6 +296,13 @@ class _FavouriteCache extends _$FavouriteCache {
         },
       ),
     );
+    Metrics.logEventAdvanced(
+      MetricsConstants.favoritesKeys.deleteItems,
+      group: _tag,
+      props: {
+        'items': items.map((e) => e.id).toList(),
+      },
+    );
     await dio.delete('favourites', data: request.writeToBuffer());
   }
 
@@ -281,9 +311,13 @@ class _FavouriteCache extends _$FavouriteCache {
     required String? workId,
     required String? homeId,
   }) async {
-    ref.read(urbiMetricsProvider.notifier).logEvent('Favorites/addItems', {
-      'items': items.map((e) => e.id).toList(),
-    });
+    Metrics.logEventAdvanced(
+      MetricsConstants.favoritesKeys.addItems,
+      group: _tag,
+      props: {
+        'items': items.map((e) => e.id).toList(),
+      },
+    );
     mixpanel?.timeEvent('Favorites: addItems');
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.AddFavouriteItemsRequest(

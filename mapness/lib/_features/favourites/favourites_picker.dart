@@ -6,10 +6,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/favourites/widgets/empty_result_widget.dart';
-import 'package:mapness/_features/favourites/widgets/screen/favourite_item_widget.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
+import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
 
 class FavouritesPicker extends ConsumerWidget {
   const FavouritesPicker({super.key});
@@ -129,10 +129,7 @@ class FavouritesPicker extends ConsumerWidget {
                                 ? const EdgeInsets.only(bottom: 8)
                                 : EdgeInsets.zero,
                             child: FavouriteItemWidget(
-                              onTap: () {
-                                context.pop(item);
-                              },
-                              onDelete: () {},
+                              onTap: () => context.pop(item),
                               isEditing: false,
                               isDeletable: false,
                               item: item,

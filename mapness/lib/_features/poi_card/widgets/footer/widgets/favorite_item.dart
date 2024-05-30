@@ -1,4 +1,4 @@
-part of '../footer.dart';
+part of '../poi_card_footer.dart';
 
 class _FavoriteItem extends ConsumerWidget {
   static const flex = 2;
@@ -16,7 +16,8 @@ class _FavoriteItem extends ConsumerWidget {
     ref.watch(favouriteCacheProvider).valueOrNull;
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId!);
-    final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId!): null;
+    final favouriteItem =
+        objectId != null ? provider.getFavouriteOrNull(objectId!) : null;
     final assetName = isFavourite
         ? 'assets/icons/svg/ic_fav_solid.svg'
         : 'assets/icons/svg/ic_fav_poi.svg';
@@ -24,7 +25,8 @@ class _FavoriteItem extends ConsumerWidget {
       flex: flex,
       assetName: assetName,
       colorIcon: context.color.textAndIconsStatusAccent,
-      onTap: () => _onFavTap(context: context, favouriteItem: favouriteItem, ref: ref),
+      onTap: () =>
+          _onFavTap(context: context, favouriteItem: favouriteItem, ref: ref),
     );
   }
 
@@ -36,6 +38,15 @@ class _FavoriteItem extends ConsumerWidget {
     await CommonFunctions.authOrOpen(
       context,
       callback: () {
+        Metrics.logEventAdvanced(
+          MetricsConstants.poiKeys.addToFavorite,
+          group: MetricsConstants.poiTag,
+          action: MetricAction.tap.toString(),
+          props: {
+            'objectId': objectId,
+          },
+        );
+
         final favState = ref.read(favouriteCacheProvider).valueOrNull;
         final favRepo = ref.read(favouriteCacheProvider.notifier);
 

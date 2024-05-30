@@ -1,4 +1,5 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'dart:io';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,8 +10,10 @@ import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/dgis_handle.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
@@ -49,17 +52,17 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
         final nextValue = next.valueOrNull;
 
         if (nextValue is DGisNearestObject) {
-          final notEqual = prevValue is DGisNearestObject &&
-              prevValue.object.id?.objectId != nextValue.object.id?.objectId;
+          final notEqual =
+              prevValue is DGisNearestObject && prevValue.object.id?.objectId != nextValue.object.id?.objectId;
           if (prevValue == null || notEqual) {
-            ref
-                .read(cameraPositionProvider.notifier)
-                .animateTo(CameraPositionMessage(
-                  point: nextValue.nearestPoint.geoPoint,
-                  zoom: 17,
-                  tilt: 0,
-                  bearing: 0,
-                ),);
+            ref.read(cameraPositionProvider.notifier).animateTo(
+                  CameraPositionMessage(
+                    point: nextValue.nearestPoint.geoPoint,
+                    zoom: 17,
+                    tilt: 0,
+                    bearing: 0,
+                  ),
+                );
           }
         }
       },
@@ -114,13 +117,17 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
               onSizeChanged: (value) {
                 final pixelSize = MediaQuery.of(context).devicePixelRatio;
                 final topPadding = MediaQuery.of(context).viewPadding.top;
+                final double screenHeight = MediaQuery.of(context).size.height;
+                final extendSize = screenHeight - value.height;
+                // TODO(Sergei): refactor this (we need additional research)
+                final additionalPadding = Platform.isAndroid ? extendSize / 2 - 80 : 0;
 
                 ref.read(cameraPositionProvider.notifier).setPadding(
                       CameraSetPaddingMessage(
                         leftPadding: 0,
                         topPadding: (topPadding * pixelSize).floor(),
                         rightPadding: 0,
-                        bottomPadding: (value.height * pixelSize).floor(),
+                        bottomPadding: ((value.height + additionalPadding) * pixelSize).floor(),
                       ),
                     );
               },
@@ -155,27 +162,29 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                               children: [
                                 Text(
                                   context.l10n.pointToMap,
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()!
-                                      .heading2
-                                      .copyWith(
-                                        color: context.color.textAndIconsBasePrimary,
-                                      ),
+                                  style: context.textStyle.heading2.copyWith(
+                                    color: context.color.textAndIconsBasePrimary,
+                                  ),
                                 ),
                                 Text(
                                   context.l10n.moveMap,
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()!
-                                      .footNote
-                                      .copyWith(
-                                        color: context.color.textAndIconsBaseTertiary,
-                                      ),
+                                  style: context.textStyle.footNote.copyWith(
+                                    color: context.color.textAndIconsBaseTertiary,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                           AppCloseButton(
-                            onPressed: () => context.pop(null),
+                            onPressed: () {
+                              Metrics.logEventAdvanced(
+                                MetricsConstants.routesKeys.specifyOnMapExit,
+                                group: MetricsConstants.routesTag,
+                                action: MetricAction.tap.toString(),
+                              );
+
+                              context.pop(null);
+                            },
                           ),
                         ],
                       ),
@@ -193,14 +202,20 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                         child: LabeledElevatedButton(
                           label: context.l10n.done,
                           onPressed: () {
+                            Metrics.logEventAdvanced(
+                              MetricsConstants.routesKeys.specifyOnMapDone,
+                              group: MetricsConstants.routesTag,
+                              action: MetricAction.tap.toString(),
+                            );
+
                             switch (nearestObject.value!) {
                               case DGisNearestObject(object: final object):
-                                context.pop(RoutePointDirectoryObject(
-                                  object,
-                                ),);
-                              case CooridnatesNearestObject(
-                                  geoPoint: final geoPoint
-                                ):
+                                context.pop(
+                                  RoutePointDirectoryObject(
+                                    object,
+                                  ),
+                                );
+                              case CooridnatesNearestObject(geoPoint: final geoPoint):
                                 context.pop(
                                   RoutePointCoordinates(geoPoint),
                                 );
@@ -268,32 +283,23 @@ class _NearestObject extends StatelessWidget {
             child: nearestObject.when(
               data: (object) => Text(
                 _buildTitle(object),
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .text
-                    .copyWith(
-                      color: context.color.textAndIconsBasePrimary,
-                    ),
+                style: context.textStyle.text.copyWith(
+                  color: context.color.textAndIconsBasePrimary,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
               error: (_, __) => Text(
                 context.l10n.moveMap,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .text
-                    .copyWith(
-                      color: context.color.textAndIconsBasePrimary,
-                    ),
+                style: context.textStyle.text.copyWith(
+                  color: context.color.textAndIconsBasePrimary,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
               loading: () => Text(
                 context.l10n.moveMap,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .text
-                    .copyWith(
-                      color: context.color.textAndIconsBasePrimary,
-                    ),
+                style: context.textStyle.text.copyWith(
+                  color: context.color.textAndIconsBasePrimary,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
               skipLoadingOnRefresh: true,

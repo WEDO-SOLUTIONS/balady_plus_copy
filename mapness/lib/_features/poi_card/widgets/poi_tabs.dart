@@ -1,20 +1,24 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 class PoiTabs extends ConsumerStatefulWidget {
+  final PoiCardState? poiCardState;
+  final PoiModel model;
+  final TabController tabController;
 
   const PoiTabs({
     required this.tabController,
     required this.model,
     super.key,
+    this.poiCardState,
   });
-  final PoiModel model;
-  final TabController tabController;
 
   @override
   ConsumerState<PoiTabs> createState() => _PoiTabsState();
@@ -40,10 +44,8 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
     final objectId = widget.model.directoryObjectMessage?.id?.objectId ?? 0;
     final photos = ref.watch(poiPhotoProvider(objectId));
 
-    final count = photos.whenOrNull(
-          data: (data) => data.items.length,
-        ) ??
-        0;
+    final photoCount = photos.whenOrNull(data: (data) => data.items.length) ?? 0;
+    final inBuildingCount = widget.poiCardState?.organizations?.total ?? 0;
 
     return TabBar(
       padding: EdgeInsets.zero,
@@ -56,7 +58,15 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
           iconMargin: EdgeInsets.zero,
           child: _PoiTabItem(
             title: context.l10n.info,
-            onTap: () => widget.tabController.animateTo(0),
+            onTap: () {
+              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
+                    'tab': context.l10n.info,
+                  });
+              widget.tabController.animateTo(0);
+            },
             isActive: widget.tabController.index == 0,
           ),
         ),
@@ -64,16 +74,40 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
           iconMargin: EdgeInsets.zero,
           child: _PoiTabItem(
             title: context.l10n.photos,
-            count: count,
+            count: photoCount,
             onTap: () {
-              if (count == 0) {
+              if (photoCount == 0) {
                 widget.tabController.index = widget.tabController.previousIndex;
                 return;
               }
+              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
+                    'tab': context.l10n.photos,
+                  });
+
               widget.tabController.animateTo(1);
             },
             isActive: widget.tabController.index == 1,
           ),
+        ),
+        Tab(
+          iconMargin: EdgeInsets.zero,
+          child: inBuildingCount > 0
+              ? _PoiTabItem(
+                  title: context.l10n.inTheBuilding,
+                  count: inBuildingCount,
+                  onTap: () {
+                    if (inBuildingCount == 0) {
+                      widget.tabController.index = widget.tabController.previousIndex;
+                      return;
+                    }
+                    widget.tabController.animateTo(2);
+                  },
+                  isActive: widget.tabController.index == 2,
+                )
+              : const SizedBox.shrink(),
         ),
       ],
     );
@@ -81,12 +115,17 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
 }
 
 class _PoiTabItem extends StatelessWidget {
-  const _PoiTabItem(
-      {required this.title, this.isActive, this.onTap, this.count,});
   final bool? isActive;
   final VoidCallback? onTap;
   final String title;
   final int? count;
+
+  const _PoiTabItem({
+    required this.title,
+    this.isActive,
+    this.onTap,
+    this.count,
+  });
 
   @override
   Widget build(BuildContext context) => Container(
@@ -121,14 +160,11 @@ class _PoiTabItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .footNoteBold
-                          .copyWith(
-                            color: isActive ?? false
-                                ? context.color.textAndIconsBasePrimary
-                                : context.color.textAndIconsBasePrimary.withOpacity(0.5),
-                          ),
+                      style: context.textStyle.footNoteBold.copyWith(
+                        color: isActive ?? false
+                            ? context.color.textAndIconsBasePrimary
+                            : context.color.textAndIconsBasePrimary.withOpacity(0.5),
+                      ),
                     ),
                     if (count != null)
                       Padding(
@@ -142,23 +178,16 @@ class _PoiTabItem extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             // Fix shape for big numbers
-                            borderRadius:
-                                count! < 100 ? null : BorderRadius.circular(50),
-                            shape: count! < 100
-                                ? BoxShape.circle
-                                : BoxShape.rectangle,
-                            color: isActive ?? false
-                                ? context.color.strokeAccent
-                                : NonThemeColor.color72.withOpacity(0.3),
+                            borderRadius: count! < 100 ? null : BorderRadius.circular(50),
+                            shape: count! < 100 ? BoxShape.circle : BoxShape.rectangle,
+                            color:
+                                isActive ?? false ? context.color.strokeAccent : NonThemeColor.color72.withOpacity(0.3),
                           ),
                           child: Text(
                             '$count',
-                            style: Theme.of(context)
-                                .extension<ThemeTextStyles>()!
-                                .caption
-                                .copyWith(
-                                  color: Colors.white,
-                                ),
+                            style: context.textStyle.caption.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),

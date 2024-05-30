@@ -13,13 +13,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 class EventsHomeCard extends StatelessWidget {
   final AppColorScheme colorScheme;
+
+  final VoidCallback? onShowAll;
+  final ValueChanged<SearchEventsItem>? onItemTap;
 
   const EventsHomeCard({
     super.key,
     required this.colorScheme,
+    this.onShowAll,
+    this.onItemTap,
   });
 
   @override
@@ -47,6 +51,7 @@ class EventsHomeCard extends StatelessWidget {
           return Column(
             //   mainAxisSize: MainAxisSize.min,
             children: [
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
@@ -61,15 +66,12 @@ class EventsHomeCard extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        NavigationService.navigatorKey.currentState!
-                            .pushNamed(RouteName.eventsMainPage);
+                        onShowAll?.call();
+                        NavigationService.navigatorKey.currentState!.pushNamed(RouteName.eventsMainPage);
                       },
                       child: Text(
                         "show_all".tr(),
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()
-                            ?.footNoteBold
-                            .copyWith(
+                        style: Theme.of(context).extension<ThemeTextStyles>()?.footNoteBold.copyWith(
                               color: const Color(0xFF1E2A36).withOpacity(0.5),
                             ),
                       ),
@@ -85,14 +87,13 @@ class EventsHomeCard extends StatelessWidget {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemCount: ((state.searchItems.length) > 4)
-                      ? 4
-                      : state.searchItems.length,
+                  itemCount: ((state.searchItems.length) > 4) ? 4 : state.searchItems.length,
                   padding: const EdgeInsets.only(
                     left: 16,
                   ),
                   itemBuilder: (context, index) {
                     return EventItemCard(
+                      onItemTap: onItemTap,
                       width: MediaQuery.of(context).size.width - 60,
                       padding: const EdgeInsets.only(right: 16),
                       item: state.searchItems[index],

@@ -8,6 +8,7 @@
         "dgis/native-sdk/map/OnlineIndoorBuildingFetcher/indoor_base_url": "https://apiservices.balady.gov.sa/v1/urbi-services/catalog-api",
         "Modules/directory/webapi_url": "https://apiservices.balady.gov.sa/v1/urbi-services/catalog-api",
         "dgis/native-sdk/directory/webapi_url": "https://apiservices.balady.gov.sa/v1/urbi-services/catalog-api",
+        "Modules/traffic/regions/regions_base_webapi_url": "https://apiservices.balady.gov.sa/v1/urbi-services/catalog-api/2.0/region",
         "dgis/native-sdk/routing/car_routing_server_url": "https://apiservices.balady.gov.sa/v1/urbi-services",
         "Modules/twins/webapi_url": "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/twins/search/dgis",
         "bss/server_url": "https://s1.bss.urbi.ae/bss/3",
