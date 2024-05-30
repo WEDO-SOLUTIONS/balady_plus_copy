@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -14,6 +15,7 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -93,50 +95,70 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       )
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
-    return NotificationListener<ScrollNotification>(
-      onNotification: _onNotification,
-      child: DgisBottomSheet(
-        showBarrier: false,
-        controller: _dgisSheetController,
-        initialExpansion: Expansion.expanded,
-        availableExpansions: const {
-          Expansion.hidden,
-          Expansion.expanded,
-          Expansion.collapsed,
-        },
-        onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
-        middleHeight: widget.biggestHeight * 0.7,
-        collapsedHeight: widget.biggestHeight * 0.2,
-        scrollableBody: (context, scrollController) {
-          /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
-          /// https://www.youtube.com/watch?v=L_WoOkDAqbM
-          scrollController.addListener(_unfocusOnScroll);
-
-          return ClipRRect(
-            borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
-            child: Material(
-              color: Colors.white,
-              child: SearchScope(
-                named: SearchScopeEnum.map,
-                child: CustomScrollView(
-                  controller: scrollController,
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: MapSearchHeaderDelegate(
-                        requestFocus: widget.initialQuery == null,
-                        onClose: onClose,
-                      ),
-                      pinned: true,
-                    ),
-                    MapSearchContent(scrollController: scrollController),
-                  ],
-                ),
-              ),
+    return Stack(
+      alignment: Alignment.bottomLeft,
+      children: [
+        // TODO: We should add map controlls here
+        SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: widget.biggestHeight * 0.2 + 16, left: 12),
+            child: SearchInArea(
+              visible: false,
+              title: context.l10n.searchInThisArea,
+              onTap: () {
+                ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
+                ref.read(searchInRectProvider.notifier).update();
+              },
             ),
-          );
-        },
-      ),
+          ),
+        ),
+        NotificationListener<ScrollNotification>(
+          onNotification: _onNotification,
+          child: DgisBottomSheet(
+            showBarrier: false,
+            controller: _dgisSheetController,
+            initialExpansion: Expansion.expanded,
+            availableExpansions: const {
+              Expansion.hidden,
+              Expansion.expanded,
+              Expansion.collapsed,
+            },
+            onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
+            middleHeight: widget.biggestHeight * 0.7,
+            collapsedHeight: widget.biggestHeight * 0.2,
+            scrollableBody: (context, scrollController) {
+              /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
+              /// https://www.youtube.com/watch?v=L_WoOkDAqbM
+              scrollController.addListener(_unfocusOnScroll);
+
+              return ClipRRect(
+                borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+                child: Material(
+                  color: Colors.white,
+                  child: SearchScope(
+                    named: SearchScopeEnum.map,
+                    child: CustomScrollView(
+                      controller: scrollController,
+                      physics: const ClampingScrollPhysics(),
+                      slivers: [
+                        SliverPersistentHeader(
+                          delegate: MapSearchHeaderDelegate(
+                            requestFocus: widget.initialQuery == null,
+                            onClose: onClose,
+                          ),
+                          pinned: true,
+                        ),
+                        MapSearchContent(scrollController: scrollController),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
