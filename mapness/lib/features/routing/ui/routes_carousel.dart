@@ -89,12 +89,12 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       },
     );
 
-    ref.read(cameraPositionProvider.notifier).setPadding(
+    ref.read(cameraPositionProvider.notifier)..animateToRoute()..setPadding(
       CameraSetPaddingMessage(
         leftPadding: 0,
         topPadding: 0,
         rightPadding: 0,
-        bottomPadding: 350,
+        bottomPadding: 550,
       ),
     );
 
