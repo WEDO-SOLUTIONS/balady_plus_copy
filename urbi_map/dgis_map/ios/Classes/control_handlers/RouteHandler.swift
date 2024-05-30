@@ -238,7 +238,6 @@ class RouteHandler {
         let padding = Padding(left: dpQuantity, top: dpQuantity, right: dpQuantity, bottom: dpQuantity)
         
         let geometry = ComplexGeometry(geometries: geometries)
-        self.map.camera.padding = padding
         let position = calcPosition(camera: map.camera, geometry: geometry)
         
         self.moveCameraCancellable?.cancel()
