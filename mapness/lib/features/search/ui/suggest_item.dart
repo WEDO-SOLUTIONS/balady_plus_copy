@@ -80,17 +80,18 @@ class SuggestItem extends ConsumerWidget {
   }
 }
 
+const prefixMapping = {
+  ', region': 'منطقة',
+  ', governorate': 'محافظة',
+  ', city': 'مدينة',
+  ', district area': 'محافظة',
+  ', district': 'حى',
+  ', street': 'شارع',
+  ', buildings': 'مبنى',
+  ', park': 'بارك',
+};
+
 String buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
-  final prefixMapping = {
-    ', region': 'منطقة',
-    ', governorate': 'محافظة',
-    ', city': 'مدينة',
-    ', district area': 'محافظة',
-    ', district': 'حى',
-    ', street': 'شارع',
-    ', buildings': 'مبنى',
-    ', park': 'بارك',
-  };
   var title = suggest.title.text;
   prefixMapping.forEach((key, replacement) {
     if (title.contains(key)) {
