@@ -75,10 +75,11 @@ class SearchItem extends StatelessWidget {
                       style: context.textStyle.text,
                     ),
                   ),
-                  if (distanceKm != null) ...[
-                    const SizedBox(width: 12),
-                    Text((distanceKm * 1000).formatDistance(context.l10n)),
-                  ],
+                  if (distanceKm != null)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 12),
+                      child: Text((distanceKm * 1000).formatDistance(context.l10n)),
+                    ),
                 ],
               ),
               const SizedBox(height: 2),
