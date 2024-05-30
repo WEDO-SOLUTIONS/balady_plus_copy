@@ -1,20 +1,24 @@
 import 'package:dgis_map/library.dart';
 
-sealed class SearchState {}
+sealed class SearchState {
+  const SearchState();
+}
 
 class SearchStateHistory extends SearchState {}
 
 class SearchStateEmpty extends SearchState {}
 
 class SearchStateSuggest extends SearchState {
-  SearchStateSuggest(this.suggest);
   final SuggestResultMessage suggest;
+
+  const SearchStateSuggest(this.suggest);
 }
 
 class SearchStateResults extends SearchState {
-  SearchStateResults(this.results, this.searchText);
   final SearchResultMessage results;
   final String searchText;
+
+  const SearchStateResults(this.results, this.searchText);
 }
 
 extension SearchStateMap on SearchState {
