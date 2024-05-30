@@ -1,7 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
@@ -9,6 +9,7 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 import 'package:provider/provider.dart';
 
 class SuggestItem extends ConsumerWidget {
@@ -57,17 +58,23 @@ class SuggestItem extends ConsumerWidget {
 
     final address = object?.item.makeAddress();
 
-    return ContentRow(
-      onTap: _onSuggestTap,
-      options: ContentRowOptions(
-        leadingIcon: Icon(
-          icon,
-          size: 24,
-          color: context.color.textAndIconsBaseTertiary,
+    return Material(
+      color: Colors.transparent,
+      child: SearchTapHandler(
+        onTap: _onSuggestTap,
+        splashColor: context.color.surfaceBaseSecondary,
+        child: ContentRow(
+          options: ContentRowOptions(
+            leadingIcon: Icon(
+              icon,
+              size: 24,
+              color: context.color.textAndIconsBaseTertiary,
+            ),
+            title: buildSuggestTitle(context, suggest),
+            subtitle: address,
+            dividerEnabled: !isLast,
+          ),
         ),
-        title: buildSuggestTitle(context, suggest),
-        subtitle: address,
-        dividerEnabled: !isLast,
       ),
     );
   }
