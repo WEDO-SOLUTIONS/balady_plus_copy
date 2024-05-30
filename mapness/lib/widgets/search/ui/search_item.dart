@@ -9,6 +9,18 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 
+const prefixMapping = {
+  'Region': 'منطقة',
+  'Governorate': 'محافظة',
+  'City': 'مدينة',
+  'District area': 'محافظة',
+  'District': 'حى',
+  'Street': 'شارع',
+  'Buildings': 'مبنى',
+  'Park': 'بارك',
+  'Coffee shop': 'كافيه',
+};
+
 class SearchItem extends StatelessWidget {
   final Language language;
   final GeoPointMessage? myLocation;
@@ -26,17 +38,7 @@ class SearchItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var subtitle = result.subtitle;
-    final prefixMapping = {
-      'Region': 'منطقة',
-      'Governorate': 'محافظة',
-      'City': 'مدينة',
-      'District area': 'محافظة',
-      'District': 'حى',
-      'Street': 'شارع',
-      'Buildings': 'مبنى',
-      'Park': 'بارك',
-      'Coffee shop': 'كافيه',
-    };
+
     if (prefixMapping.containsKey(subtitle)) {
       subtitle = switch (language) {
         Language.english => subtitle,

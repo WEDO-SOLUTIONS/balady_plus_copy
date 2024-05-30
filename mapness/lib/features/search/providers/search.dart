@@ -90,7 +90,7 @@ class Search extends _$Search {
       dgisController.search(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        //   spatialRestriction: saRestrictions,
+        spatialRestriction: getListFromRect(searchRect),
         searchRect: searchRect,
       ),
     );
@@ -116,7 +116,7 @@ class Search extends _$Search {
       dgisController.searchByQuery(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        // spatialRestriction: saRestrictions,
+        spatialRestriction: getListFromRect(searchRect),
         searchRect: searchRect,
       ),
     );
@@ -125,4 +125,16 @@ class Search extends _$Search {
     state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results, text);
     mixpanel?.track('Search: searchByQuery');
   }
+}
+
+List<GeoPointMessage>? getListFromRect(GeoRectMessage? rect) {
+  if (rect == null) {
+    return null;
+  }
+  return [
+    GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.northEast.longitude),
+    GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.southWest.longitude),
+    GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.southWest.longitude),
+    GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.northEast.longitude),
+  ];
 }

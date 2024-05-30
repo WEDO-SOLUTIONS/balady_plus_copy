@@ -19,8 +19,9 @@ class SearchTapHandler extends StatelessWidget {
         borderRadius: BorderRadius.circular(CornerRadius.baseContainer),
         splashColor: splashColor ?? context.color.surfaceContrastLow,
         splashFactory: InkRipple.splashFactory,
-        onTap: () {
-          Future.delayed(const Duration(milliseconds: 300)).then((value) => onTap());
+        onTap: () async {
+          await Future.delayed(const Duration(milliseconds: 300));
+          onTap();
         },
         child: child,
       );

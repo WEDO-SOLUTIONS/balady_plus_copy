@@ -36,7 +36,7 @@ class MapQuickFilters extends ConsumerStatefulWidget {
 }
 
 class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
-  late final _debouncer = Debouncer(milliseconds: 400);
+  final _debouncer = Debouncer(milliseconds: 400);
 
   @override
   void dispose() {
@@ -100,12 +100,8 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
               // remove this when quick filters performance will be fixed
               searchObjectManager.removeAllMarkers();
               ref.read(layersControlsProvider.notifier).disable();
-              ref
-                  .read(quickFiltersRequestSourceScreenProvider.notifier)
-                  .setSourceScreen(widget.id);
-              ref
-                  .read(searchByRubricsQueryProvider.notifier)
-                  .update(quickFilter);
+              ref.read(quickFiltersRequestSourceScreenProvider.notifier).setSourceScreen(widget.id);
+              ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
             }
             Metrics.logEventAdvanced(
               MetricsConstants.exploreKeys.quickFilter,
@@ -134,9 +130,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       selectedQuickFilter: selectedQuickFilter,
       customFilters: widget.customFilters,
       onCustomTap: widget.onCustomTap,
-      padding: widget.forMap
-          ? const EdgeInsets.symmetric(horizontal: 12)
-          : const EdgeInsets.symmetric(horizontal: 16),
+      padding: widget.forMap ? const EdgeInsets.symmetric(horizontal: 12) : const EdgeInsets.symmetric(horizontal: 16),
     );
   }
 }
