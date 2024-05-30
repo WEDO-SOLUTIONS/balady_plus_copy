@@ -1,11 +1,17 @@
+import 'dart:math' as math;
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
+
+import '../../../shared/providers/location.dart';
+import '../../../shared/providers/map/camera_position.dart';
 
 class RoutesCarousel extends StatelessWidget {
   const RoutesCarousel({
@@ -58,6 +64,19 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     );
   }
 
+  double calculateZoom() {
+    final location = ref.read(locationProvider);
+    final double distance = CommonFunctions.distance(
+      location?.latitude ?? 0,
+      location?.longitude ?? 0,
+      widget.points[1]?.latitude ?? 0,
+      widget.points[1]?.longitude ?? 0,
+    );
+    final double scale = distance * 2;
+    final double zoomLevel = 16 - math.log(scale) / math.log(2);
+    return zoomLevel;
+  }
+
   @override
   Widget build(BuildContext context) {
     final routes = ref.watch(
@@ -87,6 +106,53 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
         );
       },
     );
+
+    final cameraController = ref.read(cameraPositionProvider.notifier);
+    final location = ref.read(locationProvider);
+    // Animate to the entrance
+
+    final LatLng center = LatLng(
+      latitude: ((location?.latitude ?? 0) + (widget.points[1]?.latitude ?? 0)) / 2,
+      longitude: ((widget.points[1]?.longitude ?? 0) + (location?.longitude ?? 0)) / 2,
+    );
+    print('-----------------');
+    print(calculateZoom());
+    cameraController
+      ..animateTo(
+        CameraPositionMessage(
+          point: GeoPointMessage(
+            latitude: center.latitude,
+            longitude: center.longitude,
+          ),
+          zoom: calculateZoom() + 1,
+          tilt: 0,
+          bearing: 0,
+        ),
+      )
+      ..animateToRoute(
+        options: CalcPositionOptionsMessage(
+          screenArea: CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: 0,
+            rightPadding: 0,
+            bottomPadding: 0,
+          ),
+          size: ScreenSizeMessage(
+            width: MediaQuery.of(context).size.width.toInt(),
+            height: MediaQuery.of(context).size.height.toInt(),
+          ),
+          tilt: 0,
+          bearing: 0,
+        ),
+      )
+      ..setPadding(
+        CameraSetPaddingMessage(
+          leftPadding: 0,
+          topPadding: 0,
+          rightPadding: 0,
+          bottomPadding: 700,
+        ),
+      );
 
     return widgets.RoutesCarousel(
       navType: widget.navType,
