@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
@@ -72,7 +71,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                         : const Radius.circular(0),
                   ),
                   child: SearchTapHandler(
-                    onTap: widget.onTap(widget.history[index]),
+                    onTap: () => widget.onTap(widget.history[index]),
                     child: ContentRow(
                       options: ContentRowOptions(
                         leadingIcon: AppIcons(
@@ -108,11 +107,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: ContentRow(
-                    onTap: () {
-                      setState(() {
-                        _collapsed = !_collapsed;
-                      });
-                    },
+                    onTap: () => setState(() => _collapsed = !_collapsed),
                     options: ContentRowOptions(
                       leadingIcon: AppIcons(
                         iconData: _collapsed ? SystemIcons.arrowCornerDownL : SystemIcons.arrowCornerUpL,
@@ -125,21 +120,21 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                 ),
               ),
             ],
-            if (!_collapsed) ...[
-              Spacing.verticalPaddingInsideCell.heightBox,
-              Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      buttonColorScheme: ButtonColorScheme.tertiary,
-                      onTap: widget.onClear,
-                      primaryLabel: context.l10n.deleteHistory,
+            if (!_collapsed)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: Spacing.verticalPaddingInsideCell),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        buttonColorScheme: ButtonColorScheme.tertiary,
+                        onTap: widget.onClear,
+                        primaryLabel: context.l10n.deleteHistory,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              Spacing.verticalPaddingInsideCell.heightBox,
-            ],
           ],
         ),
       );

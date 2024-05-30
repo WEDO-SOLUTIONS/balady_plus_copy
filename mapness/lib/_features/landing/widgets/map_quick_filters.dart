@@ -60,7 +60,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       }
       final value = next.unwrapPrevious().value;
       if (value != null) {
-        Debouncer(milliseconds: 200).run(() async {
+        _debouncer.run(() async {
           await computeCameraPosition(
             value,
             ref.read(cameraPositionProvider),
