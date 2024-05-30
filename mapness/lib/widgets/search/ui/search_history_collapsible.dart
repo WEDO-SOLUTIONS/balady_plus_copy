@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 
 class SearchHistoryCollapsible extends ConsumerStatefulWidget {
   const SearchHistoryCollapsible({
@@ -70,17 +71,19 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                         ? const Radius.circular(CornerRadius.baseContainer)
                         : const Radius.circular(0),
                   ),
-                  child: ContentRow(
-                    onTap: () => widget.onTap(widget.history[index]),
-                    options: ContentRowOptions(
-                      leadingIcon: AppIcons(
-                        iconData: GeneralIcons.time,
-                        color: context.color.textAndIconsBaseSecondary,
-                        size: 24,
+                  child: SearchTapHandler(
+                    onTap: widget.onTap(widget.history[index]),
+                    child: ContentRow(
+                      options: ContentRowOptions(
+                        leadingIcon: AppIcons(
+                          iconData: GeneralIcons.time,
+                          color: context.color.textAndIconsBaseSecondary,
+                          size: 24,
+                        ),
+                        title: widget.history[index].title,
+                        subtitle: widget.history[index].address,
+                        dividerEnabled: index != widget.history.length - 1 || widget.history.length > 10,
                       ),
-                      title: widget.history[index].title,
-                      subtitle: widget.history[index].address,
-                      dividerEnabled: index != widget.history.length - 1 || widget.history.length > 10,
                     ),
                   ),
                 ),

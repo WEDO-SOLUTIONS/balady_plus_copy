@@ -7,6 +7,7 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
+import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 
 class SearchItem extends StatelessWidget {
   final Language language;
@@ -55,8 +56,7 @@ class SearchItem extends StatelessWidget {
     return Material(
       color: context.color.surfaceBaseSecondary,
       shape: smoothBorder(CornerRadius.baseContainer),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(CornerRadius.baseContainer),
+      child: SearchTapHandler(
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -88,7 +88,7 @@ class SearchItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: context.textStyle.footNote,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               Text(
                 result.makeAddress(),
                 maxLines: 2,
