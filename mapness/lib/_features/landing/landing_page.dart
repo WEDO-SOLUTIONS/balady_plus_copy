@@ -299,7 +299,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       curve: Curves.linear,
     );
 
-    ref.read(mapControlsProvider.notifier)
-        .update(MapControlsStateIdle(),);
+    ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
   }
 }
