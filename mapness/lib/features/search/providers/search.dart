@@ -16,6 +16,12 @@ List<GeoPointMessage> saRestrictions = [
   GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
 ];
 
+enum SearchType {
+  fetchSuggest,
+  searchByText,
+  searchByQuery,
+}
+
 @riverpod
 class SearchQuery extends _$SearchQuery {
   @override
@@ -34,6 +40,9 @@ class SearchQuery extends _$SearchQuery {
 
 @riverpod
 class Search extends _$Search {
+  SearchType? previousType;
+  String? previousQuery;
+  SearchQueryMessage? prevSearchQueryMessage;
   @override
   SearchState build(String scope) {
     ref.listen(searchQueryProvider(scope), (_, next) {
@@ -47,9 +56,14 @@ class Search extends _$Search {
 
   void clear() {
     state = SearchStateHistory();
+    previousType = null;
+    previousQuery = null;
+    prevSearchQueryMessage = null;
   }
 
   Future<void> fetchSuggest(String query) async {
+    previousType = SearchType.fetchSuggest;
+    previousQuery = query;
     Metrics.logEvent(
       'fetchSuggest',
       object: runtimeType,
@@ -75,6 +89,8 @@ class Search extends _$Search {
   }
 
   Future<void> searchByText(String query) async {
+    previousType = SearchType.searchByText;
+    previousQuery = query;
     final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
     Metrics.logEvent(
       'searchByText',
@@ -101,6 +117,9 @@ class Search extends _$Search {
   }
 
   Future<void> searchByQuery(SearchQueryMessage query, String text) async {
+    previousType = SearchType.searchByQuery;
+    previousQuery = text;
+    prevSearchQueryMessage = query;
     final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
 
     Metrics.logEvent(
@@ -124,6 +143,22 @@ class Search extends _$Search {
     final results = await searchOperation.value;
     state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results, text);
     mixpanel?.track('Search: searchByQuery');
+  }
+
+  void searchInThisArea() {
+    switch (previousType) {
+      case null:
+        break;
+      case SearchType.fetchSuggest:
+        fetchSuggest(previousQuery!);
+        break;
+      case SearchType.searchByText:
+        searchByText(previousQuery!);
+        break;
+      case SearchType.searchByQuery:
+        searchByQuery(prevSearchQueryMessage!, previousQuery!);
+        break;
+    }
   }
 }
 
