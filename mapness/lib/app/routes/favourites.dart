@@ -48,12 +48,11 @@ class FavouritesSearchRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => SearchScope(
-        named: 'MapSearch',
+        named: SearchScopeEnum.map,
         child: Material(
           child: FavouritesSearch(
             markerType: FavouriteItemMarkerType.values.firstWhere(
-              (element) =>
-                  element.name == state.uri.queryParameters['marker-type'],
+              (element) => element.name == state.uri.queryParameters['marker-type'],
               orElse: () => FavouriteItemMarkerType.place,
             ),
           ),
@@ -65,14 +64,12 @@ class FavouritesDeleteAllRoute extends GoRouteData {
   // static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<bool> buildPage(BuildContext context, GoRouterState state) =>
-      CustomTransitionPage(
+  Page<bool> buildPage(BuildContext context, GoRouterState state) => CustomTransitionPage(
         child: DeleteAllContent(
           onConfirm: () => context.pop(true),
           onCancel: () => context.pop(false),
         ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            child,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) => child,
       );
 
   Future<bool?> push(BuildContext context) => context.push<bool>(location);
@@ -84,8 +81,7 @@ class FavouritesPickerRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const FavouritesPicker();
+  Widget build(BuildContext context, GoRouterState state) => const FavouritesPicker();
 }
 
 final $favouritesRoutes = $appRoutes;
