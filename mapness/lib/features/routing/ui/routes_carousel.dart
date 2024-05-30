@@ -89,6 +89,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       },
     );
 
+    // As a temporary solution because there is no controller on the bottom sheet to know its height
     ref.read(cameraPositionProvider.notifier)..animateToRoute()..setPadding(
       CameraSetPaddingMessage(
         leftPadding: 0,
