@@ -185,9 +185,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
             children: [
               ValueListenableBuilder(
                 valueListenable: _onScroll,
-                builder: (context, value, child) => controls.MapControls(
+                builder: (context, _, __) => controls.MapControls(
                   draggableScrollableController: _draggableScrollableController,
-                  onScroll: value,
                 ),
               ),
               LayoutBuilder(

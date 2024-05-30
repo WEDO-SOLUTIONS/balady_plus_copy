@@ -22,19 +22,20 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
-class MapControls extends ConsumerWidget {
+class MapControls extends StatelessWidget {
   final DraggableScrollableController draggableScrollableController;
-  final bool onScroll;
 
   const MapControls({
     required this.draggableScrollableController,
-    required this.onScroll,
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controlsState = ref.watch(mapControlsProvider);
+  Widget build(BuildContext context) {
+    // Calculate the topbar and bottom padding
+    const screenPadding = 70 + 80;
+
+    final double screenHeight = MediaQuery.of(context).size.height;
 
     bool hideControls = false;
     double bottomPadding = 16;
@@ -48,14 +49,13 @@ class MapControls extends ConsumerWidget {
       hideControls = locationBottomSheet;
     }
 
-    // Update Padding for the bottom sheet size
-    if (!onScroll && draggableScrollableController.isAttached) {
-      final double screenHeight = MediaQuery.of(context).size.height;
-      final double padding = currentSize * screenHeight;
+    final double padding = currentSize * screenHeight;
 
+    // Update Padding for the bottom sheet size
+    if (draggableScrollableController.isAttached) {
       if (currentSize > 0.28 && currentSize < 0.4) {
         // for a new feature you need to change and replace the magic number, now these numbers are taken by taking into account all the indents, the height of the bottom nav bar
-        bottomPadding = 16 + padding - 74 - 80;
+        bottomPadding = 16 + padding - screenPadding;
       } else {
         bottomPadding = 16;
       }
@@ -74,7 +74,8 @@ class MapControls extends ConsumerWidget {
               Directionality(
                 textDirection: TextDirection.ltr,
                 child: Expanded(
-                  child: Padding(
+                  child: AnimatedPadding(
+                    duration: const Duration(milliseconds: 400),
                     padding: EdgeInsets.only(
                       left: 12,
                       top: 12,
@@ -94,32 +95,34 @@ class MapControls extends ConsumerWidget {
                             const Spacer(),
                             const IndoorControl(),
                             const Spacer(),
-                            Row(
-                              children: [
-                                MapButton(
-                                  child: SvgPicture.asset(
-                                    'assets/icons/svg/ic_controls_qibla.svg',
-                                    semanticsLabel: 'MinApps Screen',
-                                    package: 'mapness',
-                                  ),
-                                  onTap: () async {
-                                    Metrics.logEventAdvanced(
-                                      MetricsConstants.exploreKeys.qibla,
-                                      action: MetricAction.tap.name,
-                                      group: MetricsConstants.exploreTag,
-                                    );
-                                    final location = ref.read(locationProvider.notifier);
+                            Consumer(
+                              builder: (context, ref, _) => Row(
+                                children: [
+                                  MapButton(
+                                    child: SvgPicture.asset(
+                                      'assets/icons/svg/ic_controls_qibla.svg',
+                                      semanticsLabel: 'MinApps Screen',
+                                      package: 'mapness',
+                                    ),
+                                    onTap: () async {
+                                      Metrics.logEventAdvanced(
+                                        MetricsConstants.exploreKeys.qibla,
+                                        action: MetricAction.tap.name,
+                                        group: MetricsConstants.exploreTag,
+                                      );
+                                      final location = ref.read(locationProvider.notifier);
 
-                                    await location.checkLocationPermission().then((allowed) {
-                                      if (allowed) {
-                                        const KiblahRoute().push(context);
-                                      }
-                                    });
-                                  },
-                                ),
-                                const SizedBox(width: 12),
-                                const SearchInArea(),
-                              ],
+                                      await location.checkLocationPermission().then((allowed) {
+                                        if (allowed) {
+                                          const KiblahRoute().push(context);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const SearchInArea(),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -147,19 +150,25 @@ class MapControls extends ConsumerWidget {
                   ),
                 ),
               ),
-              AnimatedOpacity(
-                opacity: controlsState is MapControlsStateIdle ? 1 : 0,
-                duration: const Duration(milliseconds: 250),
-                child: Directionality(
-                  textDirection: ref.watch(uiDirectionProvider),
-                  child: const Padding(
-                    padding: EdgeInsets.only(bottom: 12),
-                    child: MapQuickFilters(
-                      forMap: true,
-                      id: QuickFilterScreen.controls,
+              Consumer(
+                builder: (context, ref, _) {
+                  final controlsState = ref.watch(mapControlsProvider);
+
+                  return AnimatedOpacity(
+                    opacity: controlsState is MapControlsStateIdle ? 1 : 0,
+                    duration: const Duration(milliseconds: 250),
+                    child: Directionality(
+                      textDirection: ref.watch(uiDirectionProvider),
+                      child: const Padding(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: MapQuickFilters(
+                          forMap: true,
+                          id: QuickFilterScreen.controls,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
               const SizedBox(height: 74),
             ],
