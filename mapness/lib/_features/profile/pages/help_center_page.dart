@@ -6,31 +6,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/widgets/profile/contact_info.dart';
 
-class HelpCenterPage extends ConsumerWidget {
+class HelpCenterPage extends ConsumerStatefulWidget {
   const HelpCenterPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
-      AnnotatedRegion<SystemUiOverlayStyle>(
+  ConsumerState<HelpCenterPage> createState() => _HelpCenterPageState();
+}
+
+class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
+  int tapsToGo = 7;
+
+  @override
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Directionality(
           textDirection: Directionality.of(context),
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding:
-                  const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
+              padding: const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
                   title: context.l10n.helpCenter,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     onPressed: () => context.pop(),
-                    icon: context.isLTR
-                        ? SystemIcons.arrowCornerLeftL
-                        : SystemIcons.arrowCornerRightL,
+                    icon: context.isLTR ? SystemIcons.arrowCornerLeftL : SystemIcons.arrowCornerRightL,
                   ),
                 ),
                 body: Padding(
@@ -46,8 +50,7 @@ class HelpCenterPage extends ConsumerWidget {
                         color: context.color.surfaceBaseSecondary,
                         children: [
                           ContentRow(
-                            onTap: () =>
-                                const MomraWebsitePageRoute().push(context),
+                            onTap: () => const MomraWebsitePageRoute().push(context),
                             options: ContentRowOptions(
                               title: context.l10n.baladyWebsite,
                               leadingIcon: GeneralIcons.globe.icon(
@@ -56,12 +59,10 @@ class HelpCenterPage extends ConsumerWidget {
                               actionWidget: ContentRowActionOptions(
                                 actionIcon: context.isLTR
                                     ? SystemIcons.arrowCornerRightS.icon(
-                                        color: context
-                                            .color.textAndIconsBaseSecondary,
+                                        color: context.color.textAndIconsBaseSecondary,
                                       )
                                     : SystemIcons.arrowCornerLeftS.icon(
-                                        color: context
-                                            .color.textAndIconsBaseSecondary,
+                                        color: context.color.textAndIconsBaseSecondary,
                                       ),
                               ),
                             ),
@@ -74,10 +75,23 @@ class HelpCenterPage extends ConsumerWidget {
                         colorEnd: context.color.textAndIconsStatusAccent,
                       ),
                       Spacing.verticalGapBetweenChips.heightBox,
-                      Text(context.l10n.foInquiriesAndTheLatestNews,
-                          style: context.textStyle.caption.copyWith(
-                            color: context.color.textAndIconsBaseTertiary,
-                          )),
+                      GestureDetector(
+                        onTap: () {
+                          ///TODO: UNCOMMENT AFTER TESTING WHEN ADD VARIABLE TO CI
+                          // if (const bool.fromEnvironment('URBI_DEBUG')) {
+                            setState(() {
+                              tapsToGo -= 1;
+                            });
+                            if (tapsToGo == 0) {
+                              ref.read(debugStateProvider.notifier).enable();
+                            }
+                          // }
+                        },
+                        child: Text(context.l10n.foInquiriesAndTheLatestNews,
+                            style: context.textStyle.caption.copyWith(
+                              color: context.color.textAndIconsBaseTertiary,
+                            )),
+                      ),
                     ],
                   ),
                 ),
