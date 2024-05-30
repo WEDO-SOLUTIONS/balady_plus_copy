@@ -16,6 +16,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_by_rubrics.g.dart';
 
+// TODO(Sergei): remove index from state, this will allow to select filter without information about index
+//  and allow to not be tied to order of filters
 @riverpod
 class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   @override

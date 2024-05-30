@@ -593,6 +593,11 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun showRoutes(result: Messages.Result<Void>?) {
+        routeHandler?.setRoutesVisible(true)
+        result?.success(null)
+    }
+
     override fun startNavigation(result: Messages.Result<Void>?) {
         val routeHandler = routeHandler ?: kotlin.run {
             result?.error(Exception("RouteHandler not initialized"))

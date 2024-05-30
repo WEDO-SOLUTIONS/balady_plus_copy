@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/controls.dart' as controls;
 import 'package:mapness/_features/landing/dashboard.dart';
+import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
@@ -228,6 +229,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         ///Close Esri Layers page
         if (context.mounted) {
           context.pop();
+          return;
         }
       }
       if (event is ObjectTapEvent) {
@@ -292,9 +294,11 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     }
 
     _draggableScrollableController.animateTo(
-      0.1,
+      0.09,
       duration: const Duration(milliseconds: 250),
       curve: Curves.linear,
     );
+
+    ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
   }
 }

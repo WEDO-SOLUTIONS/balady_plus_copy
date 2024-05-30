@@ -15,7 +15,7 @@ import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
 // Map controls builder type
 typedef MapControlsBuilder = Widget Function(
   BuildContext context,
-  ScrollController scrollController,
+  ValueNotifier<double> bottomSheetHeight,
   double biggestHeight,
   double smallestHeight,
 );
@@ -194,6 +194,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     implements DgisDraggableScrollableListener {
   static const _velocityFlingThreshold = 1000;
   static const _deltaThreshold = 100;
+  final ValueNotifier<double> _bottomSheetHeightListener = ValueNotifier(0);
 
   double _visibleHeight = 0;
 
@@ -367,6 +368,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   @override
   void dispose() {
     _animationController?.dispose();
+    _bottomSheetHeightListener.dispose();
     super.dispose();
   }
 
@@ -384,7 +386,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
         if (widget.mapControlsBuilder != null)
           widget.mapControlsBuilder!.call(
             context,
-            _scrollController,
+            _bottomSheetHeightListener,
             _maxVisibleHeight,
             _minVisibleHeight,
           ),
@@ -891,5 +893,6 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   void _notifyExpansion(Expansion expansion, {required bool byUser}) {
     widget.onExpansionChanged?.call(expansion, byUser: byUser);
     widget.controller?._currentExpansion = expansion;
+    _bottomSheetHeightListener.value = _visibleHeightByExpansion(expansion);
   }
 }
