@@ -232,11 +232,7 @@ class RouteHandler {
                 PointGeometry(point: entry.value)
             }
         }.flatMap { $0 }
-        
-        let density = UIScreen.main.scale
-        let dpQuantity = UInt32(50 * density)
-        let padding = Padding(left: dpQuantity, top: dpQuantity, right: dpQuantity, bottom: dpQuantity)
-        
+
         let geometry = ComplexGeometry(geometries: geometries)
         let position = calcPosition(camera: map.camera, geometry: geometry)
         
