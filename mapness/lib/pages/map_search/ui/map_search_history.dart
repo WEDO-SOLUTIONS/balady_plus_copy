@@ -41,6 +41,7 @@ class MapSearchHistory extends ConsumerWidget {
             PoiMapRoute.open(
               ref.read(goRouterProvider),
               int.parse(item.objectId!),
+              zoom: 18,
             );
             // ignore: avoid_catches_without_on_clauses
           } catch (e) {

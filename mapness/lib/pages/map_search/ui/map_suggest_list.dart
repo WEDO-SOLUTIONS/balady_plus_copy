@@ -35,7 +35,11 @@ class MapSuggestList extends ConsumerWidget {
             },
           );
 
-          PoiMapRoute.open(ref.read(goRouterProvider), object.id!.objectId);
+          PoiMapRoute.open(
+            ref.read(goRouterProvider),
+            object.id!.objectId,
+            zoom: 18,
+          );
         },
       ),
       itemCount: suggests.length,
