@@ -186,7 +186,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
         const landingPage = '/landing';
-        if (next?.previousPath == landingPage && next?.currentPath != landingPage) {
+        const poiMapPage = '/poi-map';
+        if (next?.previousPath == landingPage && next?.currentPath != landingPage && next?.currentPath != poiMapPage) {
           ref.read(cameraPositionProvider.notifier).setPadding(
                 CameraSetPaddingMessage(
                   leftPadding: 0,
