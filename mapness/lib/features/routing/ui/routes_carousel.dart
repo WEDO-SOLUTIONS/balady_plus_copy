@@ -6,7 +6,6 @@ import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
-import '../../../shared/providers/map/camera_position.dart';
 
 class RoutesCarousel extends StatelessWidget {
   const RoutesCarousel({
@@ -87,16 +86,6 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           },
         );
       },
-    );
-
-    // As a temporary solution because there is no controller on the bottom sheet to know its height
-    ref.read(cameraPositionProvider.notifier)..animateToRoute()..setPadding(
-      CameraSetPaddingMessage(
-        leftPadding: 0,
-        topPadding: 0,
-        rightPadding: 0,
-        bottomPadding: 550,
-      ),
     );
 
     return widgets.RoutesCarousel(
