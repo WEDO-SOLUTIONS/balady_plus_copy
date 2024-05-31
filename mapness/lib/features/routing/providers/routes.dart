@@ -5,6 +5,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../../shared/providers/map/camera_position.dart';
 
 part 'routes.g.dart';
 
@@ -40,6 +41,16 @@ class Routes extends _$Routes {
     });
 
     await dgisController.value?.setRouteParams(params);
+    final camera = ref.read(cameraPositionProvider.notifier);
+
+    await camera.setPadding(
+      CameraSetPaddingMessage(
+        leftPadding: 0,
+        topPadding: 0,
+        rightPadding: 0,
+        bottomPadding: 350,
+      ),
+    );
 
     return routesCompleter.future;
   }
