@@ -135,6 +135,33 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     });
   }
 
+  void _calculatePadding() {
+    final cameraController = ref.read(cameraPositionProvider.notifier);
+
+    final pixelSize = MediaQuery.of(context).devicePixelRatio;
+    final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
+    final int qfilterPadding = (48 * pixelSize).floor();
+
+    if (_onScroll.value && !_draggableScrollableController.isAttached) {
+      return;
+    }
+
+    final bottomSheetSize = _draggableScrollableController.size <= 0.7 ? _draggableScrollableController.size : 0.7;
+
+    // calculate bottom padding for camera
+    final padding =
+        (bottomSheetSize * MediaQuery.of(context).size.height * pixelSize) + (navbarSize * pixelSize) + qfilterPadding;
+
+    cameraController.setPadding(
+      CameraSetPaddingMessage(
+        leftPadding: 0,
+        topPadding: 0,
+        rightPadding: 0,
+        bottomPadding: padding.floor(),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _draggableScrollableController.dispose();
@@ -168,6 +195,10 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   bottomPadding: 0,
                 ),
               );
+        } else if (next?.currentPath == landingPage) {
+          Future.delayed(const Duration(milliseconds: 250), () {
+            _calculatePadding();
+          });
         }
       })
 

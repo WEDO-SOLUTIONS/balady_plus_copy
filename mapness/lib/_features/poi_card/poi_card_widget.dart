@@ -122,6 +122,21 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     );
 
     _bottomSheetController = DgisBottomSheetController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final sizeOfScreen = MediaQuery.of(context).size;
+      final screenRatio = MediaQuery.of(context).devicePixelRatio;
+      final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
+
+      ref.read(cameraPositionProvider.notifier).setPadding(
+            CameraSetPaddingMessage(
+              leftPadding: 0,
+              topPadding: 0,
+              rightPadding: 0,
+              bottomPadding:
+                  ((PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight + 80) * screenRatio).floor(),
+            ),
+          );
+    });
   }
 
   @override
@@ -147,7 +162,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         left: horizontalPadding,
         right: horizontalPadding,
         top: Markers.defaultHeight + safeArea.top,
-        bottom: PoiCardMapControls.bottomPadding + sheetSizes.middleHeight,
+        bottom: PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight,
       ),
       sizeOfScreen: sizeOfScreen,
     );
