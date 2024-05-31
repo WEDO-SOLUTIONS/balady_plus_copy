@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../../shared/providers/map/camera_position.dart';
 
 part 'routes.g.dart';
 
