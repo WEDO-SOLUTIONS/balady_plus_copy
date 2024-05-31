@@ -45,10 +45,10 @@ class Routes extends _$Routes {
 
     await camera.setPadding(
       CameraSetPaddingMessage(
-        leftPadding: 0,
-        topPadding: 0,
-        rightPadding: 0,
-        bottomPadding: 350,
+        leftPadding: 50,
+        topPadding: 50,
+        rightPadding: 50,
+        bottomPadding: 650,
       ),
     );
 
