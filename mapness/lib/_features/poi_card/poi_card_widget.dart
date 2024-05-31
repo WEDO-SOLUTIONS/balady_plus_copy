@@ -178,12 +178,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final data = poiCardState?.gisObjectIdMessage;
     final objectId = data?.id?.objectId;
 
-    ref.listen(viewModelProvider, (_, next) {
-      if (next.value != null && next.value?.gisObjectIdMessage != null) {
-        _toggleEntrances(next.value!.gisObjectIdMessage!);
-      }
-    });
-
     if (widget.closestPoint != null) {
       final closestPoint = widget.closestPoint!;
       data?.markerPosition = GeoPointWithElevationMessage(
