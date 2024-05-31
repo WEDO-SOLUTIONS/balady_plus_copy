@@ -133,7 +133,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   await cameraPosition.animateTo(
     CameraPositionMessage(
       point: cameraPoint,
-      zoom: cameraConfig?.zoom ?? cameraZoom ?? 17 ,
+      zoom: isInViewZone ? cameraConfig?.zoom ?? cameraZoom ?? 17 : 17,
       tilt: 0,
       bearing: bearing ?? 0,
     ),
