@@ -117,21 +117,21 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         return;
       }
 
-      final bottomSheetSize = _draggableScrollableController.size <= 0.7 ? _draggableScrollableController.size : 0.7;
+      // final bottomSheetSize = _draggableScrollableController.size <= 0.7 ? _draggableScrollableController.size : 0.7;
 
       // calculate bottom padding for camera
-      final padding = (bottomSheetSize * MediaQuery.of(context).size.height * pixelSize) +
-          (navbarSize * pixelSize) +
-          qfilterPadding;
+      // final padding = (bottomSheetSize * MediaQuery.of(context).size.height * pixelSize) +
+      //     (navbarSize * pixelSize) +
+      //     qfilterPadding;
 
-      cameraController.setPadding(
-        CameraSetPaddingMessage(
-          leftPadding: 0,
-          topPadding: 0,
-          rightPadding: 0,
-          bottomPadding: padding.floor(),
-        ),
-      );
+      // cameraController.setPadding(
+      //   CameraSetPaddingMessage(
+      //     leftPadding: 0,
+      //     topPadding: 0,
+      //     rightPadding: 0,
+      //     bottomPadding: padding.floor(),
+      //   ),
+      // );
     });
   }
 

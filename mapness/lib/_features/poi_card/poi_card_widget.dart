@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -123,19 +126,26 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     _bottomSheetController = DgisBottomSheetController();
     Future.delayed(const Duration(microseconds: 400), () {
-      final sizeOfScreen = MediaQuery.of(context).size;
-      final screenRatio = MediaQuery.of(context).devicePixelRatio;
-      final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
+      final pixelSize = MediaQuery.of(context).devicePixelRatio;
+      final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
+      final int qfilterPadding = (48 * pixelSize).floor();
 
-      ref.read(cameraPositionProvider.notifier).setPadding(
-            CameraSetPaddingMessage(
-              leftPadding: 0,
-              topPadding: 0,
-              rightPadding: 0,
-              bottomPadding:
-                  ((PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight + 120) * screenRatio).floor(),
-            ),
-          );
+      final initBottomSize = Platform.isIOS ? .3 : .38;
+
+      // TODO(someone): Move this logic in new uikit bottom sheet
+      // calculate intitial padding for camera
+      final initPadding =
+          (initBottomSize * MediaQuery.of(context).size.height * pixelSize) + (navbarSize * pixelSize) + qfilterPadding;
+
+      final cameraController = ref.read(cameraPositionProvider.notifier);
+      unawaited(cameraController.setPadding(
+        CameraSetPaddingMessage(
+          leftPadding: 0,
+          topPadding: 0,
+          rightPadding: 0,
+          bottomPadding: initPadding.floor(),
+        ),
+      ));
     });
   }
 
