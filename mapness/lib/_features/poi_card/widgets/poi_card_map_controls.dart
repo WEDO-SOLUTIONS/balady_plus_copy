@@ -15,6 +15,7 @@ import 'package:mapness/app/routes/weather.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
@@ -112,10 +113,15 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                                   semanticsLabel: 'MinApps Screen',
                                   package: 'mapness',
                                 ),
-                                onTap: () {
+                                onTap: () async {
                                   Metrics.logEventAdvanced(MetricsConstants.exploreKeys.qibla,
                                       action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
-                                  const KiblahRoute().pushReplacement(context);
+                                  // hotfix: We should move it to dispose of POI card but logic is too complex
+                                  // so we will do it here only for this edge case
+                                  await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
+                                  if (context.mounted) {
+                                    const KiblahRoute().pushReplacement(context);
+                                  }
                                 },
                               ),
                             ],
