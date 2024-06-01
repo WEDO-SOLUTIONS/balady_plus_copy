@@ -172,7 +172,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         left: horizontalPadding,
         right: horizontalPadding,
         top: Markers.defaultHeight + safeArea.top,
-        bottom: PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight,
+        bottom: PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5,
       ),
       sizeOfScreen: sizeOfScreen,
     );
