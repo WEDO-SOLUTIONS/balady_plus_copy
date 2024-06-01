@@ -113,6 +113,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                     address: '',
                     objectId: null,
                     entranceId: null,
+                    createdAt: DateTime.timestamp().toIso8601String(),
                   ),
                 );
           }
