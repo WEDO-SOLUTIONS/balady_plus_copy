@@ -113,7 +113,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         leftPadding: 0,
         topPadding: 0,
         rightPadding: 0,
-        bottomPadding: initPadding.floor(),
+        bottomPadding: Platform.isAndroid ? initPadding.floor() : 0,
       ),
     ));
   }

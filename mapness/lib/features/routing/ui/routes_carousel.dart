@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,13 +24,13 @@ class RoutesCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) => _RoutesCarousel(
-      points: points,
-      startNavigation: startNavigation,
-      biggestWidth: constraints.biggest.width,
-      navType: navType,
-    ),
-  );
+        builder: (context, constraints) => _RoutesCarousel(
+          points: points,
+          startNavigation: startNavigation,
+          biggestWidth: constraints.biggest.width,
+          navType: navType,
+        ),
+      );
 }
 
 class _RoutesCarousel extends ConsumerStatefulWidget {
@@ -69,9 +71,11 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       ),
     );
 
+    final cameraProvider = ref.read(cameraPositionProvider.notifier);
+
     ref.listen(
       activeRouteProvider,
-          (prev, next) {
+      (prev, next) {
         setState(() {
           _animating = true;
         });
@@ -82,7 +86,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           curve: Curves.linear,
         )
             .then(
-              (value) {
+          (value) {
             _animating = false;
           },
         );
@@ -90,29 +94,32 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     );
 
     if (routes.hasValue) {
-      ref.read(cameraPositionProvider.notifier)
-        ..animateToRoute(
-          options: CalcPositionOptionsMessage(
-            screenArea: CameraSetPaddingMessage(
-              leftPadding: 50,
-              topPadding: 50,
-              rightPadding: 50,
-              bottomPadding: 440,
-            ),
-            size: ScreenSizeMessage(
-              width: MediaQuery.of(context).size.width.toInt(),
-              height: MediaQuery.of(context).size.height.toInt(),
-            ),
+      ///TODO(ayat): Now we can animate to route only on Android, ios crashes with this method
+      /// Guess, we can animate only to the active routes on ios
+      /// Pls, double check this
+      if (Platform.isAndroid) {
+        cameraProvider.animateToRoute(
+            options: CalcPositionOptionsMessage(
+          screenArea: CameraSetPaddingMessage(
+            leftPadding: 50,
+            topPadding: 50,
+            rightPadding: 50,
+            bottomPadding: 440,
           ),
-        )
-        ..setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: (220 * MediaQuery.of(context).devicePixelRatio).toInt(),
+          size: ScreenSizeMessage(
+            width: MediaQuery.of(context).size.width.toInt(),
+            height: MediaQuery.of(context).size.height.toInt(),
           ),
-        );
+        ));
+      }
+      cameraProvider.setPadding(
+        CameraSetPaddingMessage(
+          leftPadding: 0,
+          topPadding: 0,
+          rightPadding: 0,
+          bottomPadding: Platform.isAndroid ? (220 * MediaQuery.of(context).devicePixelRatio).toInt() : 0,
+        ),
+      );
     }
 
     return widgets.RoutesCarousel(
