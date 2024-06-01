@@ -89,14 +89,31 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       },
     );
 
-    ref.read(cameraPositionProvider.notifier)..animateToRoute()..setPadding(
-      CameraSetPaddingMessage(
-        leftPadding: 50,
-        topPadding: 50,
-        rightPadding: 50,
-        bottomPadding: (220 * MediaQuery.of(context).devicePixelRatio).toInt(),
-      ),
-    );
+    if (routes.hasValue) {
+      ref.read(cameraPositionProvider.notifier)
+        ..animateToRoute(
+          options: CalcPositionOptionsMessage(
+            screenArea: CameraSetPaddingMessage(
+              leftPadding: 50,
+              topPadding: 50,
+              rightPadding: 50,
+              bottomPadding: 440,
+            ),
+            size: ScreenSizeMessage(
+              width: MediaQuery.of(context).size.width.toInt(),
+              height: MediaQuery.of(context).size.height.toInt(),
+            ),
+          ),
+        )
+        ..setPadding(
+          CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: 0,
+            rightPadding: 0,
+            bottomPadding: (220 * MediaQuery.of(context).devicePixelRatio).toInt(),
+          ),
+        );
+    }
 
     return widgets.RoutesCarousel(
       navType: widget.navType,
