@@ -316,18 +316,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   void _hideDashboard(TapEvent event) {
-    if (event is ObjectTapEvent) {
-      ref.read(cameraPositionProvider.notifier).animateTo(CameraPositionMessage(
-            point: GeoPointMessage(
-              latitude: event.latLng.latitude,
-              longitude: event.latLng.longitude,
-            ),
-            zoom: 17,
-            tilt: 0,
-            bearing: 0,
-          ));
-    }
-
     _draggableScrollableController.animateTo(
       0.09,
       duration: const Duration(milliseconds: 250),

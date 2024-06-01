@@ -68,12 +68,6 @@ class PoiCardProvider extends _$PoiCardProvider {
 
     final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
 
-    // ref.onDispose(() {
-    //   ref
-    //       .read(cameraPositionProvider.notifier)
-    //       .setPadding(CameraSetPaddingMessage(leftPadding: 0, topPadding: 0, rightPadding: 0, bottomPadding: 0));
-    // });
-
     final result = await ref
         .watch(
       pointOfInterestProvider(
