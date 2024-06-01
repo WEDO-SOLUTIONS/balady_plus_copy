@@ -46,7 +46,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
-  final settings = MapObjectManagerSettings.search();
+  final settings = MapObjectManagerSettings.mappness();
 
   ClusteringMapObjectManager? _clustering;
 
@@ -91,7 +91,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         //
         // TODO: [Product question] Do we need clusterization or generalization?
         // TODO: [Development] Why clusterization draws points above marker pin even if we pass `layerId`?
-        //clustering: _clustering,
+        clustering: widget.withClustering ? _clustering : null,
       ).notifier,
     );
     ref
