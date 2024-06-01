@@ -8,7 +8,6 @@ import 'package:mapness/_features/poi_card/domain/model/poi_padding_config.dart'
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -68,12 +67,6 @@ class PoiCardProvider extends _$PoiCardProvider {
     }
 
     final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
-
-    ref.onDispose(() {
-      ref
-          .read(cameraPositionProvider.notifier)
-          .setPadding(CameraSetPaddingMessage(leftPadding: 0, topPadding: 0, rightPadding: 0, bottomPadding: 0));
-    });
 
     final result = await ref
         .watch(

@@ -14,7 +14,6 @@ import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
-import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteEditorSource
 import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.RouteMapObjectCalloutLabelDisplayMode
@@ -196,12 +195,7 @@ class RouteHandler(
             .map { entry ->
                 PointGeometry(entry.value)
             }
-        val density = Resources.getSystem().displayMetrics.density
-        val padding = (50 * density).toInt().let { dpQuantity ->
-            Padding(dpQuantity, dpQuantity, dpQuantity, dpQuantity)
-        }
         ComplexGeometry(geometries).apply {
-            this@RouteHandler.map.camera.padding = padding
             this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
         }
 
@@ -251,12 +245,7 @@ class RouteHandler(
                             PointGeometry(entry.value)
                         }
                 }.flatten()
-            val density = Resources.getSystem().displayMetrics.density
-            val padding = (50 * density).toInt().let { dpQuantity ->
-                Padding(dpQuantity, dpQuantity, dpQuantity, dpQuantity)
-            }
             ComplexGeometry(geometries).apply {
-                this@RouteHandler.map.camera.padding = padding
                 this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
             }
 

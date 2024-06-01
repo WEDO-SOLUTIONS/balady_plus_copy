@@ -322,6 +322,25 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       widget.availableExpansions.contains(widget.initialExpansion),
       'initialExpansion should contains in availableExpansions',
     );
+
+    _scrollController.addListener(() {
+      // Calculate if we scroll up for more than 10 pixels
+      if (_scrollController.position.pixels > 10) {
+        if (_expansion == Expansion.expanded) {
+          widget.onExpansionChanged?.call(
+            Expansion.fullHidePhoto,
+            byUser: true,
+          );
+        }
+      } else {
+        if (_expansion == Expansion.fullHidePhoto) {
+          widget.onExpansionChanged?.call(
+            Expansion.expanded,
+            byUser: true,
+          );
+        }
+      }
+    });
   }
 
   @override
