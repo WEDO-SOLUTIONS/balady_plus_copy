@@ -120,7 +120,9 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                                   // hotfix: We should move it to dispose of POI card but logic is too complex
                                   // so we will do it here only for this edge case
                                   await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-                                  const KiblahRoute().pushReplacement(context);
+                                  if (context.mounted) {
+                                    const KiblahRoute().pushReplacement(context);
+                                  }
                                 },
                               ),
                             ],
