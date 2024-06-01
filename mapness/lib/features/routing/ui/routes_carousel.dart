@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
@@ -21,13 +22,13 @@ class RoutesCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => _RoutesCarousel(
-          points: points,
-          startNavigation: startNavigation,
-          biggestWidth: constraints.biggest.width,
-          navType: navType,
-        ),
-      );
+    builder: (context, constraints) => _RoutesCarousel(
+      points: points,
+      startNavigation: startNavigation,
+      biggestWidth: constraints.biggest.width,
+      navType: navType,
+    ),
+  );
 }
 
 class _RoutesCarousel extends ConsumerStatefulWidget {
@@ -70,7 +71,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
     ref.listen(
       activeRouteProvider,
-      (prev, next) {
+          (prev, next) {
         setState(() {
           _animating = true;
         });
@@ -81,11 +82,20 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           curve: Curves.linear,
         )
             .then(
-          (value) {
+              (value) {
             _animating = false;
           },
         );
       },
+    );
+
+    ref.read(cameraPositionProvider.notifier)..animateToRoute()..setPadding(
+      CameraSetPaddingMessage(
+        leftPadding: 50,
+        topPadding: 50,
+        rightPadding: 50,
+        bottomPadding: (220 * MediaQuery.of(context).devicePixelRatio).toInt(),
+      ),
     );
 
     return widgets.RoutesCarousel(
