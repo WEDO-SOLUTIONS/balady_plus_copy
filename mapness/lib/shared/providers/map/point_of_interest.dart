@@ -56,10 +56,19 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final highlightController = ref.read(highlightProvider.notifier);
   await highlightController.removeAll();
-  await highlightController.addHighlight(objectId);
+
+  if (directoryObject != null) {
+    for (final entrance in directoryObject.entrances) {
+      if (entrance != null) {
+        await highlightController.addHighlight(entrance.id);
+      }
+    }
+  }
+
   ref.onDispose(() async {
     await highlightController.removeAll();
   });
+
   if (isMarkerPositionIsNull) {
     return null;
   }
@@ -120,14 +129,15 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   // b) tilt set to 0 in all cases
   // c) zoom set to 17 if point is not in view zone or if zoom is not set
   // d) bearing set to 0 if not set
-  await ref.read(cameraPositionProvider.notifier).animateTo(
-        CameraPositionMessage(
-          point: cameraPoint,
-          zoom: isInViewZone ? cameraZoom ?? 17 : 17,
-          tilt: 0,
-          bearing: bearing ?? 0,
-        ),
-      );
+  final cameraPosition = ref.read(cameraPositionProvider.notifier);
+  await cameraPosition.animateTo(
+    CameraPositionMessage(
+      point: cameraPoint,
+      zoom: isInViewZone ? cameraConfig?.zoom ?? cameraZoom ?? 17 : 17,
+      tilt: 0,
+      bearing: bearing ?? 0,
+    ),
+  );
   return directoryObject;
 }
 
