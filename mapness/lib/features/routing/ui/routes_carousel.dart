@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
@@ -21,13 +22,13 @@ class RoutesCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => _RoutesCarousel(
-          points: points,
-          startNavigation: startNavigation,
-          biggestWidth: constraints.biggest.width,
-          navType: navType,
-        ),
-      );
+    builder: (context, constraints) => _RoutesCarousel(
+      points: points,
+      startNavigation: startNavigation,
+      biggestWidth: constraints.biggest.width,
+      navType: navType,
+    ),
+  );
 }
 
 class _RoutesCarousel extends ConsumerStatefulWidget {
@@ -70,7 +71,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
     ref.listen(
       activeRouteProvider,
-      (prev, next) {
+          (prev, next) {
         setState(() {
           _animating = true;
         });
@@ -81,12 +82,38 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           curve: Curves.linear,
         )
             .then(
-          (value) {
+              (value) {
             _animating = false;
           },
         );
       },
     );
+
+    if (routes.hasValue) {
+      ref.read(cameraPositionProvider.notifier)
+        ..animateToRoute(
+          options: CalcPositionOptionsMessage(
+            screenArea: CameraSetPaddingMessage(
+              leftPadding: 50,
+              topPadding: 50,
+              rightPadding: 50,
+              bottomPadding: 440,
+            ),
+            size: ScreenSizeMessage(
+              width: MediaQuery.of(context).size.width.toInt(),
+              height: MediaQuery.of(context).size.height.toInt(),
+            ),
+          ),
+        )
+        ..setPadding(
+          CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: 0,
+            rightPadding: 0,
+            bottomPadding: (220 * MediaQuery.of(context).devicePixelRatio).toInt(),
+          ),
+        );
+    }
 
     return widgets.RoutesCarousel(
       navType: widget.navType,

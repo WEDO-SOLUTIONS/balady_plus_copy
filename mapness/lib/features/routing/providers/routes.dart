@@ -40,7 +40,6 @@ class Routes extends _$Routes {
     });
 
     await dgisController.value?.setRouteParams(params);
-
     return routesCompleter.future;
   }
 }
@@ -70,9 +69,9 @@ class BetterRoute extends _$BetterRoute {
     final betterRouteSubscription = dgisController.value?.betterRouteInfoEvents.listen((event) {
       state = event.route != null
           ? PathNavBetterRoute(
-              route: event.route!,
-              durationProfit: event.durationProfit,
-            )
+        route: event.route!,
+        durationProfit: event.durationProfit,
+      )
           : null;
     });
 
