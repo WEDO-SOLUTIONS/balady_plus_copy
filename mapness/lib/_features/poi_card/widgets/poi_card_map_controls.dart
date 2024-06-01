@@ -47,9 +47,6 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
   }
 
   void _scrollListener() {
-    // final cameraController = ref.read(cameraPositionProvider.notifier);
-    // final pixelSize = MediaQuery.of(context).devicePixelRatio;
-
     Future.delayed(Duration.zero, () {
       final double screenHeight = MediaQuery.of(context).size.height;
 
