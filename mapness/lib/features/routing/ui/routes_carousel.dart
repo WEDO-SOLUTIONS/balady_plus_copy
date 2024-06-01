@@ -53,6 +53,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   late PageController _pageController;
   bool _animating = false;
 
+  static const _bottomSheetHeight = 220;
+
   @override
   void initState() {
     super.initState();
@@ -117,7 +119,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           leftPadding: 0,
           topPadding: 0,
           rightPadding: 0,
-          bottomPadding: Platform.isAndroid ? (220 * MediaQuery.of(context).devicePixelRatio).toInt() : 0,
+          bottomPadding:
+              Platform.isAndroid ? (_bottomSheetHeight * MediaQuery.of(context).devicePixelRatio).toInt() : 0,
         ),
       );
     }
