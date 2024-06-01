@@ -15,22 +15,31 @@ class MomraWebsitePage extends ConsumerStatefulWidget {
 }
 
 class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
-  late WebViewController controller;
+  late WebViewController _controller;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     final language = ref.read(appLanguageProvider);
 
-    controller = WebViewController()
+    _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(NonThemeColor.color70)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (progress) {},
-          onPageStarted: (url) {},
+          onPageStarted: (url) {
+            setState(() {
+              _isLoading = false;
+            });
+          },
           onPageFinished: (url) {},
-          onWebResourceError: (error) {},
+          onWebResourceError: (error) {
+            setState(() {
+              _isLoading = false;
+            });
+          },
         ),
       )
       ..loadRequest(
@@ -62,13 +71,13 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                       : SystemIcons.arrowCornerLeftL,
                 ),
               ),
-              body: Column(
+              body: _isLoading ? const Center(child: Loading()) : Column(
                 children: [
                   const SizedBox(
                     width: 28,
                   ),
                   Expanded(
-                    child: WebViewWidget(controller: controller),
+                    child: WebViewWidget(controller: _controller),
                   ),
                 ],
               ),
