@@ -3,16 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/entities/search/models/search_history.dart';
-import 'package:mapness/features/search/models/search_scope.dart';
-import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
-import 'package:provider/provider.dart';
 
 class MapSearchResults extends ConsumerWidget {
   const MapSearchResults({
@@ -26,7 +22,6 @@ class MapSearchResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scope = context.read<SearchScope>();
     final language = ref.watch(appLanguageProvider);
     final myLocation = ref.watch(locationProvider);
     return SearchResults(
@@ -53,10 +48,6 @@ class MapSearchResults extends ConsumerWidget {
               'object': item.id!.objectId,
             },
           );
-
-          ref.read(searchHistoryProvider(scope.value).notifier).put(
-                SearchHistoryItem.fromDirectoryObject(item),
-              );
           PoiMapRoute.open(
             ref.read(goRouterProvider),
             item.id!.objectId,
