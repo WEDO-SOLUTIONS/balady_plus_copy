@@ -143,7 +143,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           leftPadding: 0,
           topPadding: 0,
           rightPadding: 0,
-          bottomPadding: initPadding.floor(),
+          bottomPadding: Platform.isAndroid ? initPadding.floor() : 0,
         ),
       ));
     });
