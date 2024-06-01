@@ -57,7 +57,11 @@ class MapSearchResults extends ConsumerWidget {
           ref.read(searchHistoryProvider(scope.value).notifier).put(
                 SearchHistoryItem.fromDirectoryObject(item),
               );
-          PoiMapRoute.open(ref.read(goRouterProvider), item.id!.objectId);
+          PoiMapRoute.open(
+            ref.read(goRouterProvider),
+            item.id!.objectId,
+            zoom: 18,
+          );
         },
       ),
     );

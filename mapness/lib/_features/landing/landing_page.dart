@@ -90,6 +90,11 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   Future<void> setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
+
+    _calculatePadding();
+  }
+
+  void _calculatePadding() {
     final cameraController = ref.read(cameraPositionProvider.notifier);
 
     final pixelSize = MediaQuery.of(context).devicePixelRatio;
@@ -111,28 +116,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         bottomPadding: initPadding.floor(),
       ),
     ));
-
-    _onScroll.addListener(() {
-      if (_onScroll.value && !_draggableScrollableController.isAttached) {
-        return;
-      }
-
-      final bottomSheetSize = _draggableScrollableController.size <= 0.7 ? _draggableScrollableController.size : 0.7;
-
-      // calculate bottom padding for camera
-      final padding = (bottomSheetSize * MediaQuery.of(context).size.height * pixelSize) +
-          (navbarSize * pixelSize) +
-          qfilterPadding;
-
-      cameraController.setPadding(
-        CameraSetPaddingMessage(
-          leftPadding: 0,
-          topPadding: 0,
-          rightPadding: 0,
-          bottomPadding: padding.floor(),
-        ),
-      );
-    });
   }
 
   @override
@@ -159,7 +142,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
         const landingPage = '/landing';
-        if (next?.previousPath == landingPage && next?.currentPath != landingPage) {
+        const poiMapPage = '/poi-map';
+        if (next?.previousPath == landingPage && next?.currentPath != landingPage && next?.currentPath != poiMapPage) {
           ref.read(cameraPositionProvider.notifier).setPadding(
                 CameraSetPaddingMessage(
                   leftPadding: 0,
@@ -168,6 +152,10 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   bottomPadding: 0,
                 ),
               );
+        } else if (next?.currentPath == landingPage) {
+          Future.delayed(const Duration(milliseconds: 250), () {
+            _calculatePadding();
+          });
         }
       })
 
@@ -284,18 +272,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   void _hideDashboard(TapEvent event) {
-    if (event is ObjectTapEvent) {
-      ref.read(cameraPositionProvider.notifier).animateTo(CameraPositionMessage(
-            point: GeoPointMessage(
-              latitude: event.latLng.latitude,
-              longitude: event.latLng.longitude,
-            ),
-            zoom: 17,
-            tilt: 0,
-            bearing: 0,
-          ));
-    }
-
     _draggableScrollableController.animateTo(
       0.09,
       duration: const Duration(milliseconds: 250),

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -122,6 +125,28 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     );
 
     _bottomSheetController = DgisBottomSheetController();
+    Future.delayed(const Duration(milliseconds: 250), () {
+      final pixelSize = MediaQuery.of(context).devicePixelRatio;
+      final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
+      final int qfilterPadding = (48 * pixelSize).floor();
+
+      final initBottomSize = Platform.isIOS ? .3 : .38;
+
+      // TODO(someone): Move this logic in new uikit bottom sheet
+      // calculate intitial padding for camera
+      final initPadding =
+          (initBottomSize * MediaQuery.of(context).size.height * pixelSize) + (navbarSize * pixelSize) + qfilterPadding;
+
+      final cameraController = ref.read(cameraPositionProvider.notifier);
+      unawaited(cameraController.setPadding(
+        CameraSetPaddingMessage(
+          leftPadding: 0,
+          topPadding: 0,
+          rightPadding: 0,
+          bottomPadding: initPadding.floor(),
+        ),
+      ));
+    });
   }
 
   @override
@@ -147,7 +172,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         left: horizontalPadding,
         right: horizontalPadding,
         top: Markers.defaultHeight + safeArea.top,
-        bottom: PoiCardMapControls.bottomPadding + sheetSizes.middleHeight,
+        // Calculate the bottom padding for the camera, use multiplier to calculate the padding
+        bottom: PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5,
       ),
       sizeOfScreen: sizeOfScreen,
     );
@@ -162,12 +188,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final poiCardState = state.valueOrNull;
     final data = poiCardState?.gisObjectIdMessage;
     final objectId = data?.id?.objectId;
-
-    ref.listen(viewModelProvider, (_, next) {
-      if (next.value != null && next.value?.gisObjectIdMessage != null) {
-        _toggleEntrances(next.value!.gisObjectIdMessage!);
-      }
-    });
 
     if (widget.closestPoint != null) {
       final closestPoint = widget.closestPoint!;
