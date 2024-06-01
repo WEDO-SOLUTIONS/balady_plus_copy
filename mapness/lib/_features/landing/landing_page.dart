@@ -136,30 +136,52 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   }
 
   void _calculatePadding() {
+    // final cameraController = ref.read(cameraPositionProvider.notifier);
+
+    // final pixelSize = MediaQuery.of(context).devicePixelRatio;
+    // final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
+    // final int qfilterPadding = (48 * pixelSize).floor();
+
+    // if (_onScroll.value && !_draggableScrollableController.isAttached) {
+    //   return;
+    // }
+
+    // final bottomSheetSize = _draggableScrollableController.size <= 0.7 ? _draggableScrollableController.size : 0.7;
+
+    // // calculate bottom padding for camera
+    // final padding =
+    //     (bottomSheetSize * MediaQuery.of(context).size.height * pixelSize) + (navbarSize * pixelSize) + qfilterPadding;
+
+    // cameraController.setPadding(
+    //   CameraSetPaddingMessage(
+    //     leftPadding: 0,
+    //     topPadding: 0,
+    //     rightPadding: 0,
+    //     bottomPadding: padding.floor(),
+    //   ),
+    // );
+
     final cameraController = ref.read(cameraPositionProvider.notifier);
 
     final pixelSize = MediaQuery.of(context).devicePixelRatio;
     final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
     final int qfilterPadding = (48 * pixelSize).floor();
 
-    if (_onScroll.value && !_draggableScrollableController.isAttached) {
-      return;
-    }
+    final initBottomSize = Platform.isIOS ? .3 : .38;
 
-    final bottomSheetSize = _draggableScrollableController.size <= 0.7 ? _draggableScrollableController.size : 0.7;
+    // TODO(someone): Move this logic in new uikit bottom sheet
+    // calculate intitial padding for camera
+    final initPadding =
+        (initBottomSize * MediaQuery.of(context).size.height * pixelSize) + (navbarSize * pixelSize) + qfilterPadding;
 
-    // calculate bottom padding for camera
-    final padding =
-        (bottomSheetSize * MediaQuery.of(context).size.height * pixelSize) + (navbarSize * pixelSize) + qfilterPadding;
-
-    cameraController.setPadding(
+    unawaited(cameraController.setPadding(
       CameraSetPaddingMessage(
         leftPadding: 0,
         topPadding: 0,
         rightPadding: 0,
-        bottomPadding: padding.floor(),
+        bottomPadding: initPadding.floor(),
       ),
-    );
+    ));
   }
 
   @override
