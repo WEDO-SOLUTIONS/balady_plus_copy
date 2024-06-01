@@ -125,7 +125,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     );
 
     _bottomSheetController = DgisBottomSheetController();
-    Future.delayed(const Duration(microseconds: 400), () {
+    Future.delayed(const Duration(milliseconds: 250), () {
       final pixelSize = MediaQuery.of(context).devicePixelRatio;
       final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
       final int qfilterPadding = (48 * pixelSize).floor();
@@ -172,6 +172,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         left: horizontalPadding,
         right: horizontalPadding,
         top: Markers.defaultHeight + safeArea.top,
+        // Calculate the bottom padding for the camera, use multiplier to calculate the padding
         bottom: PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5,
       ),
       sizeOfScreen: sizeOfScreen,
