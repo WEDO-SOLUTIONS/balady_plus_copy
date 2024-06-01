@@ -14,6 +14,7 @@ class SearchHistoryItem {
     required this.address,
     required this.objectId,
     required this.entranceId,
+    this.createdAt,
   });
 
   factory SearchHistoryItem.fromDirectoryObject(
@@ -24,6 +25,7 @@ class SearchHistoryItem {
         address: object.makeAddress(),
         objectId: object.id?.objectId.toString(),
         entranceId: object.id?.entranceId.toString(),
+        createdAt: DateTime.timestamp().toIso8601String(),
       );
 
   factory SearchHistoryItem.fromQuery({
@@ -34,6 +36,7 @@ class SearchHistoryItem {
         address: '',
         objectId: null,
         entranceId: null,
+        createdAt: DateTime.timestamp().toIso8601String(),
       );
   @HiveField(0)
   final String title;
@@ -47,6 +50,10 @@ class SearchHistoryItem {
 
   @HiveField(3)
   final String? entranceId;
+
+  /// Should be timestamp
+  @HiveField(4)
+  final String? createdAt;
 
   String get hashKey =>
       'history-${objectId ?? 0}-${entranceId ?? 0}-${sha1.convert(utf8.encode(title))}-${sha1.convert(utf8.encode(address))}';

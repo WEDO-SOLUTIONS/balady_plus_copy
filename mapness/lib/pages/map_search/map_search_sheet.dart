@@ -46,7 +46,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
-  final settings = MapObjectManagerSettings.search();
+  final settings = MapObjectManagerSettings.mappness();
 
   ClusteringMapObjectManager? _clustering;
 
@@ -84,7 +84,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       mapObjectManagerProvider(
         named: settings.name,
         layerId: settings.layerId,
-        clustering: _clustering,
+        // If we add `_clustering` we use `MapObjectManager.withClustering` which draws points above marker pin
+        // and in all cases is above all other markers that has been created by ` MapObjectManager.withGeneralization`
+        // So we need to use `MapObjectManager.withGeneralization` to draw points below marker pin
+        // Also we don't know do we need clusterization now, so we fix the problem of drawing points above marker pin just by not using clustering
+        //
+        // TODO: [Product question] Do we need clusterization or generalization?
+        // TODO: [Development] Why clusterization draws points above marker pin even if we pass `layerId`?
+        clustering: widget.withClustering ? _clustering : null,
       ).notifier,
     );
     ref
