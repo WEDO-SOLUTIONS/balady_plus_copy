@@ -22,7 +22,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
-class MapControls extends StatelessWidget {
+class MapControls extends ConsumerWidget {
   // Calculate the topbar and bottom padding
   static const screenPadding = 80 + 70;
 
@@ -34,7 +34,8 @@ class MapControls extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controlsState = ref.watch(mapControlsProvider);
     final double screenHeight = MediaQuery.of(context).size.height;
 
     bool hideControls = false;
@@ -150,25 +151,19 @@ class MapControls extends StatelessWidget {
                   ),
                 ),
               ),
-              Consumer(
-                builder: (context, ref, _) {
-                  final controlsState = ref.watch(mapControlsProvider);
-
-                  return AnimatedOpacity(
-                    opacity: controlsState is MapControlsStateIdle ? 1 : 0,
-                    duration: const Duration(milliseconds: 250),
-                    child: Directionality(
-                      textDirection: ref.watch(uiDirectionProvider),
-                      child: const Padding(
-                        padding: EdgeInsets.only(bottom: 12),
-                        child: MapQuickFilters(
-                          forMap: true,
-                          id: QuickFilterScreen.controls,
-                        ),
-                      ),
+              AnimatedOpacity(
+                opacity: controlsState is MapControlsStateIdle ? 1 : 0,
+                duration: const Duration(milliseconds: 250),
+                child: Directionality(
+                  textDirection: ref.watch(uiDirectionProvider),
+                  child: const Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: MapQuickFilters(
+                      forMap: true,
+                      id: QuickFilterScreen.controls,
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
               const SizedBox(height: 74),
             ],
