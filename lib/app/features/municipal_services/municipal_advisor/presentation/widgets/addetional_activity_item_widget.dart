@@ -6,18 +6,37 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../domain/entities/activity_details_entity.dart';
 
-class AddetionalActivityItemWidget extends StatelessWidget {
+
+class AddetionalActivityItemWidget extends StatefulWidget {
   final ActivityDetailsEntity item;
   final Function onDelete;
   final Function onChangedArea;
   const AddetionalActivityItemWidget(
       {super.key,
-      required this.item,
-      required this.onDelete,
-      required this.onChangedArea});
+        required this.item,
+        required this.onDelete,
+        required this.onChangedArea});
+
+  @override
+  State<AddetionalActivityItemWidget> createState() => _AddetionalActivityItemState();
+}
+
+
+class _AddetionalActivityItemState extends State<AddetionalActivityItemWidget>  {
+
+  final _controller = TextEditingController();
+
+
+  @override
+  initState() {
+    super.initState();
+    _controller.text = widget.item.inputArea ??
+        '';
+  }
 
   @override
   Widget build(BuildContext context) {
+    //_controller.text = item.inputArea?? '';
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12),
@@ -31,7 +50,7 @@ class AddetionalActivityItemWidget extends StatelessWidget {
             children: [
               Flexible(
                 child: CustomTextWidget(
-                  item.activityName,
+                  widget.item.activityName,
                   fontSize: 16,
                   maxLines: 10,
                   fontWeight: AppFontWeight.bold,
@@ -40,17 +59,21 @@ class AddetionalActivityItemWidget extends StatelessWidget {
               ),
               IconButton(
                   onPressed: () {
-                    onDelete();
+                    widget.onDelete();
                   },
                   icon: Icon(Icons.close))
             ],
           ),
+
+
           const SizedBox(
             height: 16,
           ),
           CustomTextFieldWidget(
-            label: 'area'.tr(),
-            hintText: 'area'.tr(),
+            controller: _controller,
+
+            label: 'additional_area'.tr(),
+            hintText: 'additional_area'.tr(),
             isDigitsOnly: true,
             keyboardType: TextInputType.number,
             suffixIcon: CustomTextWidget(
@@ -61,7 +84,7 @@ class AddetionalActivityItemWidget extends StatelessWidget {
             ),
             bottomMargin: 24,
             onChanged: (value) {
-              onChangedArea(value);
+              widget.onChangedArea(value);
             },
           ),
         ],
