@@ -4,6 +4,7 @@ import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
@@ -1324,8 +1325,28 @@ class CommonFunctions {
 
   static void openCreateCompliance() {
     //أصدر الشهادة
-    NavigationService.navigatorKey.currentState!
-        .pushNamed(RouteName.createCompliancePage);
+
+    if (CommonProperties.isLoggedIn){
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.createCompliancePage);
+  }
+
+    else
+      {
+      showDialog(
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (ctx) => NeedLoginDialog(
+      onSuccessLogin:
+      (bool? isSuccess) async {
+      if (isSuccess ?? false) {
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.createCompliancePage);
+      }
+      }));
+      }
+
+
+
   }
 
   static void openRatingBuilding() {
