@@ -55,7 +55,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
         () async {
-          ref.read(layersControlsProvider.notifier).handleTap(LayerType.joy);
+          if (ref.read(layersControlsProvider).selectedType != LayerType.joy) {
+            ref.read(layersControlsProvider.notifier).handleTap(LayerType.joy);
+          }
           try {
             await ref.read(cameraPositionProvider.notifier).animateTo(
                   CameraPositionMessage(
