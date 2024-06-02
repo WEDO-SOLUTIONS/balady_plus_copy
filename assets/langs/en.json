@@ -126,7 +126,7 @@
   "_servicesComment": "Anything about services",
   "public_services": "Public services",
   "municipal_services": "Individual Services",
-  "azkar": "Azkar",
+  "azkar": "Athkar",
   "damaged_cars": "Damaged cars",
   "damaged_cars1": "Damaged cars",
   "fee_calculator": "Fees Calculator",
@@ -547,6 +547,7 @@
   "location": "Location",
   "confirmLocation": "Confirm location",
   "area": "Area",
+  "additional_area": "Additional Activity Area",
   "m2": "m2",
   "from": "From",
   "to": "To",
@@ -4296,5 +4297,6 @@
   "most_selected_ownershipType": "Please enter the ownership deed data",
   "redircetionMessage1": "To reserve appointment in ",
   "redircetionMessage2": " please click the",
-  "here": "link here"
+  "here": "link here",
+  "done_download_open_moments": "Done download, will open in moments"
 }
