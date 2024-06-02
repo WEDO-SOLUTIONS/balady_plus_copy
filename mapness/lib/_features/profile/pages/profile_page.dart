@@ -102,14 +102,25 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
+                                    GeneralIcons.settings,
+                                    color: context.color.textAndIconsStatusAccent,
+                                  ),
+                                  title: context.l10n.settings,
+                                ),
+                                onTap: () => const SettingsRoute().push(context),
+                              ),
+                              ContentRow(
+                                options: ContentRowOptions(
+                                  actionWidget: ContentRowActionOptions(
+                                    actionIcon: actionIcon,
+                                  ),
+                                  leadingIcon: Icon(
                                     GeneralIcons.questionCircleLTR,
-                                    color:
-                                        context.color.textAndIconsStatusAccent,
+                                    color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.helpCenter,
                                 ),
-                                onTap: () =>
-                                    const HelpCenterRoute().push(context),
+                                onTap: () => const HelpCenterRoute().push(context),
                               ),
                               ContentRow(
                                 options: ContentRowOptions(
@@ -118,8 +129,7 @@ class ProfilePage extends ConsumerWidget {
                                   ),
                                   leadingIcon: Icon(
                                     GeneralIcons.infoCircleFill,
-                                    color:
-                                        context.color.textAndIconsStatusAccent,
+                                    color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.aboutApp,
                                 ),
@@ -134,8 +144,7 @@ class ProfilePage extends ConsumerWidget {
                                   ),
                                   leadingIcon: Icon(
                                     GeneralIcons.starSolid,
-                                    color:
-                                        context.color.textAndIconsStatusAccent,
+                                    color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.rateBaladyApp,
                                 ),
@@ -163,8 +172,7 @@ class ProfilePage extends ConsumerWidget {
                                       leadingIcon: leadingIcon(language),
                                     ),
                                     content: const LanguagePicker(),
-                                    expandIconColor:
-                                        context.color.textAndIconsBaseSecondary,
+                                    expandIconColor: context.color.textAndIconsBaseSecondary,
                                   ),
                                 ],
                               );
@@ -189,15 +197,13 @@ class ProfilePage extends ConsumerWidget {
                                 options: ContentRowOptions(
                                     leadingIcon: AppIcons(
                                       iconData: GeneralIcons.darkMode,
-                                      color: context
-                                          .color.textAndIconsStatusAccent,
+                                      color: context.color.textAndIconsStatusAccent,
                                       size: 24,
                                     ),
                                     title: context.l10n.darkMap,
                                     actionWidget: ContentRowActionOptions(
                                       enabledToggle: true,
-                                      toggleInitialValue:
-                                          ref.watch(darkModeProvider),
+                                      toggleInitialValue: ref.watch(darkModeProvider),
                                     )),
                                 onToggle: (_) {
                                   ref.read(darkModeProvider.notifier).toggle();
@@ -229,29 +235,23 @@ class ProfilePage extends ConsumerWidget {
                                       width: double.infinity,
                                       child: AppButton(
                                         primaryLabel: context.l10n.logOut,
-                                        buttonColorScheme:
-                                            ButtonColorScheme.tertiary,
+                                        buttonColorScheme: ButtonColorScheme.tertiary,
                                         onTap: () async {
                                           await showDialog(
                                             context: context,
                                             builder: (ctx) => LogoutDialog(
-                                              onCancel: () =>
-                                                  Navigator.of(ctx).pop(),
+                                              onCancel: () => Navigator.of(ctx).pop(),
                                               onLogout: () async {
-                                                await ref
-                                                    .read(authProvider.notifier)
-                                                    .logOut();
+                                                await ref.read(authProvider.notifier).logOut();
                                                 context.pop();
                                               },
-                                              title: context.l10n
-                                                  .areYouSureYouWantToLogOutOfYourAccount,
+                                              title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
                                               logOutText: context.l10n.logOut,
                                               cancelText: context.l10n.cancel,
                                             ),
                                           );
                                         },
-                                        textColor: context
-                                            .color.textAndIconsStatusNegative,
+                                        textColor: context.color.textAndIconsStatusNegative,
                                         trailing: SvgPicture.asset(
                                           'assets/icons/svg/ic_profile_logout.svg',
                                           height: 24,
