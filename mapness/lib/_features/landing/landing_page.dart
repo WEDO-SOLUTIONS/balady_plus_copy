@@ -55,7 +55,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
         () async {
-          ref.read(layersControlsProvider.notifier).handleTap(LayerType.joy);
+          if (ref.read(layersControlsProvider).selectedType != LayerType.joy) {
+            ref.read(layersControlsProvider.notifier).handleTap(LayerType.joy);
+          }
           try {
             await ref.read(cameraPositionProvider.notifier).animateTo(
                   CameraPositionMessage(
@@ -79,7 +81,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         }();
       case LangingFocusMaker.mosques:
         Future.delayed(Duration.zero, () {
-          ref.read(searchByRubricsQueryProvider.notifier).selectFilter(QuickFilterType.mosques);
+          ref
+              .read(searchByRubricsQueryProvider.notifier)
+              .selectFilter(QuickFilterType.mosques);
         });
       // ignore: no_default_cases
       default:
@@ -89,7 +93,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   Future<void> setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
+    _streamSubscription =
+        dgisController.objectTapEvents.listen(_objectTapListener);
 
     _calculatePadding();
   }
@@ -106,7 +111,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     // TODO(someone): Move this logic in new uikit bottom sheet
     // calculate intitial padding for camera
     final initPadding =
-        (initBottomSize * MediaQuery.of(context).size.height * pixelSize) + (navbarSize * pixelSize) + qfilterPadding;
+        (initBottomSize * MediaQuery.of(context).size.height * pixelSize) +
+            (navbarSize * pixelSize) +
+            qfilterPadding;
 
     unawaited(cameraController.setPadding(
       CameraSetPaddingMessage(
@@ -143,7 +150,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       ..listen(currentRouteProvider, (_, next) {
         const landingPage = '/landing';
         const poiMapPage = '/poi-map';
-        if (next?.previousPath == landingPage && next?.currentPath != landingPage && next?.currentPath != poiMapPage) {
+        if (next?.previousPath == landingPage &&
+            next?.currentPath != landingPage &&
+            next?.currentPath != poiMapPage) {
           ref.read(cameraPositionProvider.notifier).setPadding(
                 CameraSetPaddingMessage(
                   leftPadding: 0,
@@ -156,13 +165,19 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           Future.delayed(const Duration(milliseconds: 250), () {
             _calculatePadding();
           });
+          _onScroll
+            ..value = true
+            ..value = false;
         }
       })
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
-      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
+      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId)
+          .notifier)
       // ref.watch(iwishMarkersProvider.select((value) => null));
-      ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
+      ..watch(mapObjectManagerProvider(
+              named: mappness.name, layerId: mappness.layerId)
+          .notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -189,7 +204,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
                   ///TODO: change while Dashboard refactoring
                   initWithMinSize:
-                      widget.focusMaker == LangingFocusMaker.iwish || widget.focusMaker == LangingFocusMaker.mosques,
+                      widget.focusMaker == LangingFocusMaker.iwish ||
+                          widget.focusMaker == LangingFocusMaker.mosques,
                 ),
               ),
             ],
@@ -207,7 +223,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
     ///TODO: need to refactor after Dashboard refactoring to designSystem
     ///Ignore hide dashboard tap from other pages
-    if (_draggableScrollableController.size > 0.13 && currentRoute?.currentPath == landingPagePath) {
+    if (_draggableScrollableController.size > 0.13 &&
+        currentRoute?.currentPath == landingPagePath) {
       _hideDashboard(event);
     } else {
       final goRouter = ref.read(goRouterProvider);
@@ -260,7 +277,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
             ref.read(goRouterProvider),
             -1,
             latLng: userLocation != null
-                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                ? LatLng(
+                    latitude: userLocation.latitude,
+                    longitude: userLocation.longitude)
                 : event.latLng,
             zoom: 17,
             bearing: 0,
