@@ -34,20 +34,27 @@ class SuggestItem extends ConsumerWidget {
 
     IconData? icon;
     if (incompleteText != null) {
-      icon = GeneralIcons.placeholder;
+      icon = GeneralIcons.placeHolder;
     } else if (performSearch != null) {
-      icon = GeneralIcons.search;
+      icon = SystemIcons.search;
     } else if (object != null) {
-      icon = GeneralIcons.pinSolid;
+      icon = GeneralIcons.pin;
     }
 
     void _onSuggestTap() {
       if (incompleteText != null) {
-        ref.read(searchQueryProvider(scope.value).notifier).update(incompleteText.queryText);
+        ref
+            .read(searchQueryProvider(scope.value).notifier)
+            .update(incompleteText.queryText);
       } else if (performSearch != null) {
-        ref.read(searchProvider(scope.value).notifier).searchByQuery(performSearch.searchQuery, suggest.title.text);
-        final historyObject = SearchHistoryItem.fromQuery(query: suggest.title.text);
-        ref.read(searchHistoryProvider(scope.value).notifier).put(historyObject);
+        ref
+            .read(searchProvider(scope.value).notifier)
+            .searchByQuery(performSearch.searchQuery, suggest.title.text);
+        final historyObject =
+            SearchHistoryItem.fromQuery(query: suggest.title.text);
+        ref
+            .read(searchHistoryProvider(scope.value).notifier)
+            .put(historyObject);
       } else if (object != null) {
         final objectItem = object.item;
         final historyItem = SearchHistoryItem.fromDirectoryObject(objectItem);

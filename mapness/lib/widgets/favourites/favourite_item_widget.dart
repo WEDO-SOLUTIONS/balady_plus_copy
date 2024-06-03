@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_positional_boolean_parameters
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class FavouriteItemWidget extends StatefulWidget {
   final bool isEditing;
   final bool isDeletable;
   final bool? isSelected;
-  final Function(bool)? onSelect;
+  final Function(bool value)? onSelect;
   final VoidCallback? onDelete;
   final VoidCallback? onRouteTap;
   final VoidCallback? onShareTap;
@@ -44,7 +45,9 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
           if (widget.isEditing)
             BaladyCheckBox(
               key: UniqueKey(),
-              state: widget.isSelected == true ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked,
+              state: widget.isSelected == true
+                  ? BaladyCheckBoxState.checked
+                  : BaladyCheckBoxState.unchecked,
               disable: false,
               onChanged: (value) {
                 switch (value) {
@@ -69,7 +72,8 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
               child: InkWell(
                 onTap: () {
                   if (widget.isEditing) {
-                    setState(() => widget.onSelect?.call(widget.isSelected == true));
+                    setState(
+                        () => widget.onSelect?.call(widget.isSelected == true));
                   } else {
                     widget.onTap();
                   }
@@ -102,7 +106,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                           onTap: () => widget.onShareTap?.call(),
                           child: PopupMenuWidget(
                             title: context.l10n.share,
-                            icon: GeneralIcons.share.icon(
+                            icon: SystemIcons.share.icon(
                               color: color.textAndIconsBasePrimary,
                             ),
                           ),
@@ -133,7 +137,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                 },
                 child: ContentRow(
                   options: ContentRowOptions(
-                    leadingIcon: GeneralIcons.bookmarkSolid.icon(
+                    leadingIcon: SystemIcons.bookmarkFill.icon(
                       color: context.color.textAndIconsStatusAccent,
                     ),
                     title: widget.item.title,

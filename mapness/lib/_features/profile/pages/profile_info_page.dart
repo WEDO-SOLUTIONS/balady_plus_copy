@@ -34,8 +34,8 @@ class ProfileInfoPage extends ConsumerWidget {
                     text: context.l10n.back,
                     onPressed: () => context.pop(),
                     icon: context.isLTR
-                        ? SystemIcons.arrowCornerRightL
-                        : SystemIcons.arrowCornerLeftL,
+                        ? SystemIcons.arrowCornerRightSmall
+                        : SystemIcons.arrowCornerLeftSmall,
                   ),
                 ),
                 body: ListView(

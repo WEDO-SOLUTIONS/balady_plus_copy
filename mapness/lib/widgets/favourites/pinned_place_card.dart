@@ -54,18 +54,22 @@ class PinnedPlaceCard extends StatelessWidget {
                     width: 56,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
-                      color: isAdded ? context.color.surfaceBasePrimary : context.color.surfaceStatusContrastAccent,
+                      color: isAdded
+                          ? context.color.surfaceBasePrimary
+                          : context.color.surfaceStatusContrastAccent,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: SizedBox(
-                          height: 32,
-                          width: 32,
-                          child: isAdded
-                              ? iconData.icon(color: context.color.textAndIconsStatusAccent)
-                              : GeneralIcons.zoomPlus.icon(
-                                  color: context.color.strokeAccent,
-                                )),
+                        height: 32,
+                        width: 32,
+                        child: isAdded
+                            ? iconData.icon(
+                                color: context.color.textAndIconsStatusAccent)
+                            : SystemIcons.zoomPlus.icon(
+                                color: context.color.strokeAccent,
+                              ),
+                      ),
                     ),
                   ),
                 ),
@@ -75,7 +79,8 @@ class PinnedPlaceCard extends StatelessWidget {
                 Text(
                   title,
                   textAlign: TextAlign.right,
-                  style: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
+                  style: context.textStyle.heading2
+                      .copyWith(color: context.color.textAndIconsBasePrimary),
                 ),
                 const SizedBox(
                   height: NumericBase.$0_5x,
@@ -85,7 +90,8 @@ class PinnedPlaceCard extends StatelessWidget {
                   textAlign: TextAlign.right,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: context.textStyle.caption.copyWith(color: context.color.textAndIconsBaseSecondary),
+                  style: context.textStyle.caption
+                      .copyWith(color: context.color.textAndIconsBaseSecondary),
                 ),
               ],
             ),
@@ -105,13 +111,13 @@ class PinnedPlaceCard extends StatelessWidget {
                     // ),
                     PopupModel(
                       title: context.l10n.share,
-                      icon: GeneralIcons.share,
+                      icon: SystemIcons.share,
                       onTap: onTapShare,
                       color: context.color.textAndIconsBasePrimary,
                     ),
                     PopupModel(
                       title: context.l10n.change,
-                      icon: GeneralIcons.bookmarkAdd,
+                      icon: SystemIcons.bookmarkAdd,
                       onTap: onTapChange,
                       color: context.color.textAndIconsBasePrimary,
                     ),
@@ -125,7 +131,7 @@ class PinnedPlaceCard extends StatelessWidget {
                       onTap: onDelete,
                     ),
                   ],
-                  child: GeneralIcons.ellipsis.icon(
+                  child: SystemIcons.ellipsis.icon(
                     color: context.color.textAndIconsStatusAccent,
                   ),
                 ),

@@ -48,8 +48,8 @@ class FavoriteCard extends ConsumerWidget {
             ),
             const Spacer(),
             Icon(context.isLTR
-                ? SystemIcons.arrowCornerRightS
-                : SystemIcons.arrowCornerLeftS),
+                ? SystemIcons.arrowCornerRightSmall
+                : SystemIcons.arrowCornerLeftSmall),
           ],
         ),
       );

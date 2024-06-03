@@ -19,11 +19,13 @@ class ProfileMenu extends StatelessWidget {
         itemBuilder: (context) => [
           PopupMenuItem(
             onTap: onTapInfo?.call,
-            child: Text(context.l10n.view_info_short, style: context.textStyle.text),
+            child: Text(context.l10n.view_info_short,
+                style: context.textStyle.text),
           ),
           PopupMenuItem(
             onTap: onTapChangeAvatar?.call,
-            child: Text(context.l10n.change_avatar, style: context.textStyle.text),
+            child:
+                Text(context.l10n.change_avatar, style: context.textStyle.text),
           ),
 
           /// This code is commented because the logout dialog didn't liked by the client
@@ -51,7 +53,7 @@ class ProfileMenu extends StatelessWidget {
           //     }),
         ],
         icon: AppIcons(
-          iconData: GeneralIcons.ellipsis,
+          iconData: SystemIcons.ellipsis,
           color: context.color.textAndIconsBaseSecondary,
         ),
         padding: EdgeInsets.zero,

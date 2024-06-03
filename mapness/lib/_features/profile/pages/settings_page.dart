@@ -24,14 +24,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
+              padding:
+                  const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
                   title: context.l10n.settings,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     onPressed: () => context.pop(),
-                    icon: context.isLTR ? SystemIcons.arrowCornerLeftL : SystemIcons.arrowCornerRightL,
+                    icon: context.isLTR
+                        ? SystemIcons.arrowCornerLeftSmall
+                        : SystemIcons.arrowCornerRightSmall,
                   ),
                 ),
                 body: Padding(

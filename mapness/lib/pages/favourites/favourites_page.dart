@@ -29,7 +29,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
 
   void toggleEditing() {
     setState(() {
-      if(isEditing) {
+      if (isEditing) {
         selectedItems.clear();
       }
       isEditing = !isEditing;
@@ -67,7 +67,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
         return Material(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.only(top: Spacing.verticalBaseToTopSafezone),
+            padding:
+                const EdgeInsets.only(top: Spacing.verticalBaseToTopSafezone),
             child: Scaffold(
               appBar: BaladyTopBar(
                 leading: InkWell(
@@ -90,7 +91,9 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         ),
                       if (!isEditing)
                         Icon(
-                          ctx.isLTR ? SystemIcons.arrowCornerLeftL : SystemIcons.arrowCornerRightL,
+                          ctx.isLTR
+                              ? SystemIcons.arrowCornerLeftSmall
+                              : SystemIcons.arrowCornerRightSmall,
                           color: ctx.color.textAndIconsStatusAccent,
                         ),
                       if (!isEditing)
@@ -152,8 +155,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                 ),
                 child: CustomScrollView(
                   slivers: [
-                    SliverToBoxAdapter(child: FavouritesToggle(isEditing: isEditing)),
-                    SliverToBoxAdapter(child: Spacing.verticalBaseToTopModal.heightBox),
+                    SliverToBoxAdapter(
+                        child: FavouritesToggle(isEditing: isEditing)),
+                    SliverToBoxAdapter(
+                        child: Spacing.verticalBaseToTopModal.heightBox),
                     SliverToBoxAdapter(
                       child: Row(
                         children: [
@@ -196,7 +201,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 },
                                 onTap: home == null
                                     ? () => const FavouritesSearchRoute(
-                                          markerType: FavouriteItemMarkerType.home,
+                                          markerType:
+                                              FavouriteItemMarkerType.home,
                                         ).push(ctx)
                                     : () => PoiMapRoute(
                                           dgisObjectId: int.parse(id),
@@ -216,8 +222,9 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 child: PinnedPlaceCard(
                                   key: Key('work${work?.id}'),
                                   title: workTitle,
-                                  address: work?.subtitle ?? ctx.l10n.addAddress,
-                                  iconData: GeneralIcons.caseIcon,
+                                  address:
+                                      work?.subtitle ?? ctx.l10n.addAddress,
+                                  iconData: GeneralIcons.briefcase,
                                   isEditing: isEditing && work != null,
                                   isAdded: work != null,
                                   onDelete: () => _deleteItem(work),
@@ -245,7 +252,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   },
                                   onTap: work == null
                                       ? () => const FavouritesSearchRoute(
-                                            markerType: FavouriteItemMarkerType.work,
+                                            markerType:
+                                                FavouriteItemMarkerType.work,
                                           ).push(ctx)
                                       : () => PoiMapRoute(
                                             dgisObjectId: int.parse(id),
@@ -271,20 +279,26 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             child: Column(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(Spacing.verticalPaddingInsideWrapper),
+                                  padding: const EdgeInsets.all(
+                                      Spacing.verticalPaddingInsideWrapper),
                                   child: Text(
-                                    context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
+                                    context.l10n
+                                        .toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
                                     textAlign: TextAlign.center,
                                     style: context.textStyle.text.copyWith(
-                                      color: context.staticColor.textAndIconsBaseInversePrimary,
+                                      color: context.staticColor
+                                          .textAndIconsBaseInversePrimary,
                                     ),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                    left: Spacing.horizontalPaddingInsideWrapper,
-                                    right: Spacing.horizontalPaddingInsideWrapper,
-                                    bottom: Spacing.verticalPaddingInsideWrapper,
+                                    left:
+                                        Spacing.horizontalPaddingInsideWrapper,
+                                    right:
+                                        Spacing.horizontalPaddingInsideWrapper,
+                                    bottom:
+                                        Spacing.verticalPaddingInsideWrapper,
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
@@ -310,8 +324,12 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               borderRadius: BorderRadius.only(
                                 topLeft: index == 0 ? radius : Radius.zero,
                                 topRight: index == 0 ? radius : Radius.zero,
-                                bottomLeft: index == state.items.length - 1 ? radius : Radius.zero,
-                                bottomRight: index == state.items.length - 1 ? radius : Radius.zero,
+                                bottomLeft: index == state.items.length - 1
+                                    ? radius
+                                    : Radius.zero,
+                                bottomRight: index == state.items.length - 1
+                                    ? radius
+                                    : Radius.zero,
                               )),
                           child: FavouriteItemWidget(
                             isSelected: selectedItems.containsKey(item.id),
