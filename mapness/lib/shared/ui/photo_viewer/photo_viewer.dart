@@ -93,7 +93,7 @@ class _PhotoViewerState extends State<PhotoViewer> {
                       return PhotoViewGalleryPageOptions(
                         imageProvider: NetworkImage(photo),
                         initialScale: PhotoViewComputedScale.contained * 1,
-                        minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+                        minScale: PhotoViewComputedScale.contained * 1,
                         maxScale: PhotoViewComputedScale.covered * 4.1,
                         heroAttributes: PhotoViewHeroAttributes(tag: photo),
                       );
