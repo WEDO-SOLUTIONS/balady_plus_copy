@@ -29,10 +29,8 @@ class DashboardProfile extends ConsumerWidget {
       child: userData.maybeWhen(
         orElse: () => Text(
           _greeting(context),
-          style: Theme.of(context)
-              .extension<ThemeTextStyles>()!
-              .heading2
-              .apply(color: context.color.strokeAccent),
+          style: context.textStyle.heading1
+              .copyWith(color: context.color.textAndIconsStatusAccent),
           textAlign: TextAlign.end,
         ),
         data: (userInfo) {

@@ -28,7 +28,11 @@ export 'src/events/visible_rect_events.dart' show VisibleRectEvent, VisibleRect;
 export 'src/events/marker_tap_event.dart' show MarkerWithPhotoTapEvent;
 
 export 'src/events/route_changed_events.dart'
-    show ActiveRouteChangedEvent, RoutesInfoChangedEvent, RouteInfo;
+    show
+        ActiveRouteChangedEvent,
+        RoutesInfoChangedEvent,
+        RouteInfo,
+        BetterRouteInfoEvent;
 
 export 'src/events/models/lat_lng.dart' show LatLng;
 

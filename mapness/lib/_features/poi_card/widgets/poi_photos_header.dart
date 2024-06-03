@@ -11,6 +11,7 @@ class PoiPhotosHeader extends ConsumerWidget {
     required this.objectId,
     super.key,
   });
+
   final ValueListenable<Expansion> expansion;
   final int objectId;
 
@@ -18,39 +19,34 @@ class PoiPhotosHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final photos = ref.watch(poiPhotoProvider(objectId));
 
-    /// two crossfades since we have 4 states. And it looks more smooth than animated container imo
+    final bool = !photos.hasValue || photos.requireValue.items.isEmpty;
     return ValueListenableBuilder(
       valueListenable: expansion,
       builder: (context, expansion, child) => AnimatedCrossFade(
-        firstCurve: Curves.easeInOut,
-        secondCurve: Curves.easeInOut,
-        sizeCurve: Curves.easeInOut,
-        duration: const Duration(milliseconds: 300),
-        firstChild: const SizedBox.shrink(),
-        secondChild: Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: AnimatedCrossFade(
-            firstCurve: Curves.easeInOut,
-            secondCurve: Curves.easeInOut,
-            sizeCurve: Curves.easeInOut,
-            duration: const Duration(milliseconds: 300),
-            crossFadeState: expansion == Expansion.middle
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            firstChild: SizedBox(height: 150, child: child),
-            secondChild: SizedBox(height: 100, child: child),
+          crossFadeState: bool || expansion == Expansion.hidden|| expansion == Expansion.fullHidePhoto ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          firstCurve: Curves.easeInOut,
+          secondCurve: Curves.easeInOut,
+          sizeCurve: Curves.easeInOut,
+          firstChild: const SizedBox.shrink(),
+          secondChild: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            height: bool
+                ? 0
+                : switch (expansion) {
+                    Expansion.fullHidePhoto => 0,
+                    Expansion.hidden => 100,
+                    Expansion.expanded => 150,
+                    Expansion.collapsed || Expansion.middle => 100,
+                  },
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 4.0),
+              child: PoiPhotosRow(
+                objectId: objectId,
+              ),
+            ),
           ),
+          duration: const Duration(milliseconds: 300),
         ),
-        crossFadeState: !photos.hasValue ||
-                photos.requireValue.items.isEmpty ||
-                expansion == Expansion.hidden ||
-                expansion == Expansion.expanded
-            ? CrossFadeState.showFirst
-            : CrossFadeState.showSecond,
-      ),
-      child: PoiPhotosRow(
-        objectId: objectId,
-      ),
     );
   }
 }

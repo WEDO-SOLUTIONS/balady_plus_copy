@@ -14,9 +14,9 @@ import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
-import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteEditorSource
 import ru.dgis.sdk.map.RouteMapObject
+import ru.dgis.sdk.map.RouteMapObjectCalloutLabelDisplayMode
 import ru.dgis.sdk.map.Source
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.map.createRasterTileDataSource
@@ -28,6 +28,7 @@ class RouteHandler(
     sdkContext: Context,
     private val eventSink: EventChannel.EventSink,
     private val locationSource: FusedLocationSource,
+    private val navigationHandler: NavigationHandler,
 ) : AutoCloseable {
     private val closables = mutableListOf<AutoCloseable>()
 
@@ -51,7 +52,7 @@ class RouteHandler(
     init {
         val routesEditor = RouteEditor(sdkContext)
         this.routeEditorSource = RouteEditorSource(
-            sdkContext, routesEditor,
+            sdkContext, routesEditor, calloutLabelDisplayMode = RouteMapObjectCalloutLabelDisplayMode.RELATIVE_TO_ACTIVE_ROUTE_VALUES
         )
         this.trafficRouter = TrafficRouter(sdkContext)
 
@@ -139,7 +140,6 @@ class RouteHandler(
             mutableListOf()
         )
         routesEditor.setRouteParams(routeEditorParams)
-        routeEditorSource.setRoutesVisible(true)
         routeEditorSource.setShowOnlyActiveRoute(routeEditorParams.routeSearchOptions.isPublicTransport)
     }
 
@@ -152,7 +152,11 @@ class RouteHandler(
     }
 
     fun onRouteTap(route: RouteMapObject) {
-        this.routesEditor.setActiveRouteIndex(route.routeIndex)
+        if (navigationHandler.isNavigating) {
+            navigationHandler.onRouteTap(route)
+        } else {
+            this.routesEditor.setActiveRouteIndex(route.routeIndex)
+        }
     }
 
     private fun getRouteSearchOptions(opts: Messages.RouteSearchOptionsMessage): RouteSearchOptions {
@@ -191,12 +195,7 @@ class RouteHandler(
             .map { entry ->
                 PointGeometry(entry.value)
             }
-        val density = Resources.getSystem().displayMetrics.density
-        val padding = (50 * density).toInt().let { dpQuantity ->
-            Padding(dpQuantity, dpQuantity, dpQuantity, dpQuantity)
-        }
         ComplexGeometry(geometries).apply {
-            this@RouteHandler.map.camera.padding = padding
             this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
         }
 
@@ -208,6 +207,35 @@ class RouteHandler(
         )
     }
 
+    companion object {
+        private fun getPedestrianRouteData(route: Route): Triple<Int, Int, List<Int>> {
+            return Triple(
+                    first = route.roadSubtypes.entries.filter { it.value == RoadSubtype.STAIRWAY_DOWN || it.value == RoadSubtype.STAIRWAY_UP }.size,
+                    second = route.obstacles.entries.size,
+                    third = route.altitudes.entries.map { it.value.toInt() }
+            )
+        }
+
+        fun mapRouteInfo(route: TrafficRoute): Map<String, Any> {
+            val (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
+
+            val distance = route.route.geometry.last?.point?.distance?.meters ?: 0.0
+            val duration = route.route.geometry.first?.point?.let {
+                route.traffic.durations.calculateDuration(
+                        it
+                ).inSeconds
+            } ?: 0
+
+            return mapOf(
+                    "distance" to distance,
+                    "duration" to duration,
+                    "stairwayCount" to stairwayCount,
+                    "gateCount" to gateCount,
+                    "altitudes" to altitudes
+            )
+        }
+    }
+
     private fun onRoutesInfoChanged(routesInfo: RouteEditorRoutesInfo) {
         if (routesInfo.routes.isNotEmpty()) {
             val geometries = routesInfo.routes
@@ -217,33 +245,11 @@ class RouteHandler(
                             PointGeometry(entry.value)
                         }
                 }.flatten()
-            val density = Resources.getSystem().displayMetrics.density
-            val padding = (50 * density).toInt().let { dpQuantity ->
-                Padding(dpQuantity, dpQuantity, dpQuantity, dpQuantity)
-            }
             ComplexGeometry(geometries).apply {
-                this@RouteHandler.map.camera.padding = padding
                 this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
             }
 
-            val mappedRoutes = routesInfo.routes.map { route ->
-                val (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
-
-                val distance = route.route.geometry.last?.point?.distance?.meters ?: 0.0
-                val duration = route.route.geometry.first?.point?.let {
-                    route.traffic.durations.calculateDuration(
-                            it
-                    ).inSeconds
-                } ?: 0
-
-                mapOf(
-                    "distance" to distance,
-                    "duration" to duration,
-                    "stairwayCount" to stairwayCount,
-                    "gateCount" to gateCount,
-                    "altitudes" to altitudes
-                )
-            }
+            val mappedRoutes = routesInfo.routes.map(::mapRouteInfo)
 
             eventSink.success(
                 mapOf(
@@ -252,14 +258,6 @@ class RouteHandler(
                 )
             )
         }
-    }
-
-    private fun getPedestrianRouteData(route: Route): Triple<Int, Int, List<Int>> {
-        return Triple(
-            first = route.roadSubtypes.entries.filter { it.value == RoadSubtype.STAIRWAY_DOWN || it.value == RoadSubtype.STAIRWAY_UP }.size,
-            second = route.obstacles.entries.size,
-            third = route.altitudes.entries.map { it.value.toInt() }
-        )
     }
 
     fun getActivePublicTransportRoute(): TrafficRoute? {

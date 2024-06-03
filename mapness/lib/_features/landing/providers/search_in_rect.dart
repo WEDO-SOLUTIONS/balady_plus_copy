@@ -17,8 +17,7 @@ class SearchInRect extends _$SearchInRect {
 
     final dgisController = ref.watch(dgisControllerProvider).value;
 
-    final subscription =
-        dgisController?.visibleRectEvents.listen((event) async {
+    final subscription = dgisController?.visibleRectEvents.listen((event) async {
       state = (
         state.$1,
         _buttonVisible(
@@ -32,12 +31,7 @@ class SearchInRect extends _$SearchInRect {
     });
 
     return (
-      ref
-          .read(dgisControllerProvider.notifier)
-          .visibleRectSubject
-          .value
-          ?.visibleRect
-          .geoRectMessage(),
+      ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect.geoRectMessage(),
       false,
     );
   }
@@ -45,10 +39,7 @@ class SearchInRect extends _$SearchInRect {
   void update() {
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
-    state = (
-      dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
-      false
-    );
+    state = (dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(), false);
   }
 
   bool _buttonVisible(GeoRectMessage? oldRect, GeoRectMessage newRect) {

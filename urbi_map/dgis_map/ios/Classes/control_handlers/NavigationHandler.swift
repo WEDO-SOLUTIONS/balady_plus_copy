@@ -6,6 +6,7 @@ class NavigationHandler {
         // event name
         static let navigationEvent = "navigationEvent"
         static let routeOptionsEvent = "routeOptionsEvent"
+        static let betterRouteEvent = "betterRouteEvent"
 
         // event values
         static let stateFinished = "finished"
@@ -29,6 +30,8 @@ class NavigationHandler {
     private let dashboardControlModel: DashboardControlModel
     private let messageControlModel: MessageControlModel
     private let maneuverControlModel: ManeuverControlModel
+    
+    private(set) var isNavigating: Bool = false
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
         let context = try! sdk.context
@@ -37,8 +40,8 @@ class NavigationHandler {
         self.eventChannel = eventChannel
         
         self.navigationManager = try! NavigationManager(platformContext: context)
-        navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled = false
+        self.navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
+        self.navigationManager.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
         self.navigationManager.mapManager.addMap(map: self.map)
         
         self.voiceManager = getVoiceManager(context: context)
@@ -76,6 +79,10 @@ class NavigationHandler {
         self.cancelable.append(
             self.navigationManager.uiModel.routeChannel.sink(receiveValue: routeInfoListener)
         )
+        
+        self.cancelable.append(
+            self.navigationManager.uiModel.betterRouteChannel.sink(receiveValue: betterRouteListener)
+        )
     }
     
     private func stateChannelListener(_ state: State) {
@@ -85,14 +92,26 @@ class NavigationHandler {
                 "event": Events.navigationEvent,
                 "state": Events.stateDisabled
             ])
+            self.isNavigating = false
         case State.finished:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateFinished
             ])
+            self.isNavigating = false
             stopNavigation()
-        default:
-            return
+        case State.navigation:
+            self.isNavigating = true
+        case State.routeSearch:
+            self.isNavigating = true
+        }
+    }
+    
+    func onRouteTap(_ route: RouteMapObject) {
+        let trafficRoute = route.route
+        if !route.isActive {
+            self.navigationManager.alternativeRouteSelector.selectAlternativeRoute(trafficRoute: trafficRoute)
+            betterRouteResponse(response: .accept)
         }
     }
     
@@ -102,6 +121,57 @@ class NavigationHandler {
             "hasOptions": routeInfo.routeBuildOptions != nil
         ])
     }
+    
+    
+    private func betterRouteListener(_ routeInfo: BetterRouteInfo?) {
+        let activeRouteDuration = navigationManager.uiModel.duration
+        var betterRouteDuration: TimeInterval? = nil
+        let durationProfit: Int
+        if let first = routeInfo?.trafficRoute.route.geometry.first {
+            betterRouteDuration = routeInfo!.trafficRoute.traffic.durations.calculateDuration(routePoint: first.point).rounded()
+        }
+        if let activeRouteDuration = activeRouteDuration, let betterRouteDuration = betterRouteDuration {
+            durationProfit = Int(activeRouteDuration - betterRouteDuration)
+        } else {
+            durationProfit = 0
+        }
+        self.eventChannel.success([
+            "event": Events.betterRouteEvent,
+            "route": routeInfo != nil ? RouteHandler.mapRouteInfo(routeInfo!.trafficRoute) : nil,
+            "durationProfit": durationProfit
+        ])
+    }
+    
+    func betterRouteResponse(response: BetterRouteResponseMessage) {
+        switch response {
+        case .accept:
+            self.navigationManager.uiModel.betterRouteResponse(response: .accept)
+        case .reject:
+            self.navigationManager.uiModel.betterRouteResponse(response: .reject)
+        case .timeout:
+            self.navigationManager.uiModel.betterRouteResponse(response: .timeout)
+        }
+    }
+    
+    func getBetterRouteSettings(completion: @escaping (BetterRouteSettingsMessage?, FlutterError?) -> Void) {
+        let settings = self.navigationManager.alternativeRoutesProviderSettings
+        completion(
+            BetterRouteSettingsMessage.make(
+                withBetterRouteTimeCostThreshold: NSNumber(value: Int(settings.betterRouteTimeCostThreshold)),
+                betterRouteLengthThreshold: NSNumber(value: settings.betterRouteLengthThreshold.millimeters),
+                routeSearchDelay: NSNumber(value: Int(settings.routeSearchDelay))
+            ),
+            nil
+        )
+    }
+    
+    func setBetterRouteSettings(settings: BetterRouteSettingsMessage) {
+        self.navigationManager.alternativeRoutesProviderSettings.routeSearchDelay = settings.routeSearchDelay.doubleValue
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = settings.betterRouteTimeCostThreshold.doubleValue
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: settings.betterRouteLengthThreshold.int64Value)
+    }
+    
+    
 
     func cancel() {
         cancelable.forEach { $0.cancel() }

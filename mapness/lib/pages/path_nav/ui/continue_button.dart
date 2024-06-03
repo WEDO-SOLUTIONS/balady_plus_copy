@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_continue_trip.dart';
 
@@ -15,6 +17,12 @@ class ContinueButton extends ConsumerWidget {
       child: PathNavContinueTrip(
         eta: eta,
         onPressed: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.navigationKeys.continueTrip,
+            group: MetricsConstants.navigationTag,
+            action: MetricAction.tap.toString(),
+          );
+
           ref.read(dgisControllerProvider).value?.startNavigation();
         },
       ),

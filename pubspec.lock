@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.2.0"
+  another_transformer_page_view:
+    dependency: transitive
+    description:
+      name: another_transformer_page_view
+      sha256: "8a7386a29aca372a2fbd1f44aba9205ec98f2f725fd8aa91d9d63f9163128331"
+      url: "https://baladyapp-unpub.urbi.ae"
+    source: hosted
+    version: "2.2.0"
   app_links:
     dependency: transitive
     description:
@@ -109,10 +117,10 @@ packages:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: f2125c526a142a1c69f8f60a4623dc01cfc5e50518b5043befc2696bb82ecc9d
+      sha256: "0041fef1de9177f5e2c8d572fd92d82289869d5a9763a6cc5424a72fb59acada"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.2.3"
+    version: "1.2.4"
   bloc:
     dependency: transitive
     description:
@@ -1086,10 +1094,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_staggered_grid_view
-      sha256: "1312314293acceb65b92754298754801b0e1f26a1845833b740b30415bbbcf07"
+      sha256: "19e7abb550c96fbfeb546b23f3ff356ee7c59a019a651f8f102a4ba9b7349395"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.2"
+    version: "0.7.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -1477,6 +1485,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
+  infinite_scroll_pagination:
+    dependency: transitive
+    description:
+      name: infinite_scroll_pagination
+      sha256: b68bce20752fcf36c7739e60de4175494f74e99e9a69b4dd2fe3a1dd07a7f16a
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   inspector:
     dependency: transitive
     description:
@@ -2164,6 +2180,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  scrollable_positioned_list:
+    dependency: "direct main"
+    description:
+      name: scrollable_positioned_list
+      sha256: "1b54d5f1329a1e263269abc9e2543d90806131aa14fe7c6062a8054d57249287"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.8"
   sentry:
     dependency: transitive
     description:

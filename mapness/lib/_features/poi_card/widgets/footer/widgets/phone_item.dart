@@ -1,4 +1,4 @@
-part of '../footer.dart';
+part of '../poi_card_footer.dart';
 
 class _PhoneItem extends StatelessWidget {
   final bool hasContacts;
@@ -20,6 +20,7 @@ class _PhoneItem extends StatelessWidget {
       flex: flex,
       assetName: 'assets/icons/svg/ic_phone_poi.svg',
       onTap: onTap,
+      colorIcon: context.color.textAndIconsStatusAccent,
     );
   }
 }

@@ -23,13 +23,13 @@ class _IwishEntity extends _$IwishEntity {
   }
 
   Future<bool> submitFeedback(IwishFeedbackEntity feedback) async {
-    ref
-        .read(urbiMetricsProvider.notifier)
-        .logEvent('IwishFeedbackEntity/submitFeedback', {
-      'feedback': feedback.mood.toString(),
-      'tags': feedback.tags.toString(),
-      'comment': feedback.comment,
-    });
+    Metrics.logEvent('IwishFeedbackEntity/submitFeedback',
+        object: runtimeType,
+        extras: {
+          'feedback': feedback.mood.toString(),
+          'tags': feedback.tags.toString(),
+          'comment': feedback.comment,
+        });
     mixpanel?.timeEvent('IwishFeedbackEntity: submitFeedback');
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = pb.IWishFeedbackRequest(

@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart' as uiKit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,19 +12,25 @@ import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/weather/widgets/weather_control.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/weather.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class PoiCardMapControls extends ConsumerStatefulWidget {
-
   const PoiCardMapControls({
     required this.biggestHeight,
-    required this.scrollController,
+    required this.bottomSheetSize,
     super.key,
   });
   final double biggestHeight;
-  final ScrollController scrollController;
+  final ValueNotifier<double> bottomSheetSize;
+
+  static const horizontalPadding = uiKit.NumericBase.$3x;
+  static const topPadding = uiKit.NumericBase.$3x;
+  static const bottomPadding = uiKit.NumericBase.$4x;
 
   @override
   ConsumerState<PoiCardMapControls> createState() => _PoiCardMapControlsState();
@@ -31,125 +38,137 @@ class PoiCardMapControls extends ConsumerStatefulWidget {
 
 class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
   late double bottomExtent;
+  bool hideControls = false;
 
   @override
   void initState() {
     super.initState();
     bottomExtent = footerHeight + headerHeight;
-    widget.scrollController.addListener(_scrollListener);
+    widget.bottomSheetSize.addListener(_scrollListener);
   }
 
   void _scrollListener() {
     Future.delayed(Duration.zero, () {
-      final size = widget.scrollController.position.maxScrollExtent -
-          widget.scrollController.position.pixels;
-      final sizeFixed = double.parse(size.toStringAsFixed(2));
+      final double screenHeight = MediaQuery.of(context).size.height;
 
-      if (sizeFixed == .1) {
-        final extent = widget.biggestHeight * sizeFixed;
-        setState(() {
-          bottomExtent = extent;
-        });
-      } else {
-        setState(() {
-          bottomExtent = footerHeight + headerHeight;
-        });
-      }
+      final size = widget.bottomSheetSize.value;
+      final extendSize = screenHeight - size;
+
+      final currentSize = 1 - (extendSize / screenHeight);
+
+      final double padding = currentSize * screenHeight;
+
+      // Hide controls when the bottom sheet is expanded
+      final locationBottomSheet = currentSize > 0.75;
+
+      setState(() {
+        hideControls = locationBottomSheet;
+        if (currentSize > 0.2 && currentSize < 0.4) {
+          // for a new feature you need to change and replace the magic number, now these numbers are taken by taking into account all the indents, the height of the bottom nav bar
+          bottomExtent = footerHeight + headerHeight + padding - 74 - 80;
+        } else {
+          bottomExtent = footerHeight + headerHeight - 40;
+        }
+      });
     });
   }
 
   @override
-  Widget build(BuildContext context) => Directionality(
-        textDirection: TextDirection.ltr,
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 12,
-                    top: 12,
-                    right: 12,
-                    bottom: 16,
-                  ),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          WeatherControl(
-                              onTap: () => const WeatherRoute().push(context),),
-                          const SizedBox(height: 8),
-                          const HappinesControl(),
-                          const Spacer(),
-                          const IndoorControl(),
-                          const Spacer(),
-                          // MapButton(
-                          //   child: Image.asset(
-                          //     "assets/images/beta_icon.png",
-                          //     height: 44,
-                          //   ),
-                          //   onTap: () {
-                          //     Stories.showOnboarding(
-                          //         context, StoryTypes.route, 'route');
-                          //   },
-                          // ),
-                          // const SizedBox(height: 8),
-                          MapButton(
-                            child: SvgPicture.asset(
-                              'assets/icons/svg/ic_controls_qibla.svg',
-                              semanticsLabel: 'MinApps Screen',
-                              package: 'mapness',
-                            ),
-                            onTap: () {
-                              const KiblahRoute().pushReplacement(context);
-                            },
-                          ),
-                        ],
+  Widget build(BuildContext context) => IgnorePointer(
+        ignoring: hideControls,
+        child: AnimatedOpacity(
+          opacity: hideControls ? 0 : 1,
+          duration: const Duration(milliseconds: 250),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: PoiCardMapControls.horizontalPadding,
+                        top: PoiCardMapControls.topPadding,
+                        right: PoiCardMapControls.horizontalPadding,
+                        bottom: PoiCardMapControls.bottomPadding,
                       ),
-                      const Spacer(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          const LayersControl(),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Consumer(
-                            builder: (context, ref, _) {
-                              final navi = ref.watch(appFeaturesProvider);
-                              return Visibility(
-                                visible: navi.naviEnabled,
-                                replacement: const SizedBox.square(
-                                  dimension: 28,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              WeatherControl(
+                                onTap: () => const WeatherRoute().push(context),
+                              ),
+                              const SizedBox(height: 8),
+                              const HappinesControl(),
+                              const Spacer(),
+                              const IndoorControl(),
+                              const Spacer(),
+                              MapButton(
+                                child: SvgPicture.asset(
+                                  'assets/icons/svg/ic_controls_qibla.svg',
+                                  semanticsLabel: 'MinApps Screen',
+                                  package: 'mapness',
                                 ),
-                                child: const TrafficControl(),
-                              );
-                            },
+                                onTap: () async {
+                                  Metrics.logEventAdvanced(MetricsConstants.exploreKeys.qibla,
+                                      action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
+                                  // hotfix: We should move it to dispose of POI card but logic is too complex
+                                  // so we will do it here only for this edge case
+                                  await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
+                                  if (context.mounted) {
+                                    const KiblahRoute().pushReplacement(context);
+                                  }
+                                },
+                              ),
+                            ],
                           ),
                           const Spacer(),
-                          const ZoomControl(),
-                          const Spacer(),
-                          const CompassControl(),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          const FollowControl(
-                            //TODO(scroollocker): Double check this
-                            onlyFollowDirection: true,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const LayersControl(),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final navi = ref.watch(appFeaturesProvider);
+                                  return Visibility(
+                                    visible: navi.naviEnabled,
+                                    replacement: const SizedBox.square(
+                                      dimension: 28,
+                                    ),
+                                    child: const TrafficControl(),
+                                  );
+                                },
+                              ),
+                              const Spacer(),
+                              const ZoomControl(),
+                              const Spacer(),
+                              const CompassControl(),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              const FollowControl(
+                                //TODO(scroollocker): Double check this
+                                onlyFollowDirection: true,
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    height: bottomExtent,
+                  ),
+                ],
               ),
-              SizedBox(
-                height: bottomExtent,
-              ),
-            ],
+            ),
           ),
         ),
       );

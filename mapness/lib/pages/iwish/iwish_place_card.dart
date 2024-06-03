@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
@@ -22,6 +23,7 @@ import 'package:mapness/widgets/iwish/ui/iwish_state_label.dart';
 
 class IwishPlaceCard extends ConsumerWidget {
   const IwishPlaceCard({required this.iwishId, super.key});
+
   final String iwishId;
 
   @override
@@ -48,8 +50,7 @@ class IwishPlaceCard extends ConsumerWidget {
             final metadata = entity.metadata;
             final showMetadata = entity.parkSize != ParkSize.unknown ||
                 metadata.areaSize != 0 ||
-                metadata.openingDate !=
-                    DateTime.fromMillisecondsSinceEpoch(0) ||
+                metadata.openingDate != DateTime.fromMillisecondsSinceEpoch(0) ||
                 metadata.areaName != '';
 
             final minSheetSize = entity.photos.isEmpty ? 0.25 : 0.4;
@@ -74,8 +75,7 @@ class IwishPlaceCard extends ConsumerWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             color: context.color.surfaceBasePrimary,
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12)),
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                           ),
                           child: ListView(
                             controller: scrollController,
@@ -95,8 +95,7 @@ class IwishPlaceCard extends ConsumerWidget {
                                   ),
                                 ),
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
                                     Align(
                                       alignment: Alignment.topCenter,
@@ -108,8 +107,7 @@ class IwishPlaceCard extends ConsumerWidget {
                                         width: 40,
                                         decoration: BoxDecoration(
                                           color: Colors.grey[300],
-                                          borderRadius:
-                                              BorderRadius.circular(2),
+                                          borderRadius: BorderRadius.circular(2),
                                         ),
                                       ),
                                     ),
@@ -126,7 +124,6 @@ class IwishPlaceCard extends ConsumerWidget {
                                       children: [
                                         Expanded(
                                           child: LabeledElevatedButton(
-                                            enabled: !entity.feedbackSent,
                                             padding: const EdgeInsets.symmetric(
                                               vertical: 8,
                                               horizontal: 9,
@@ -147,37 +144,25 @@ class IwishPlaceCard extends ConsumerWidget {
                                           ),
                                         ),
                                         BriefRouteButton(
-                                          padding:
-                                              const EdgeInsetsDirectional.only(
-                                            start: 8,
-                                          ),
-                                          foreground: context
-                                              .color.textAndIconsBasePrimary,
+                                          padding: const EdgeInsetsDirectional.only(start: 8),
+                                          foreground: context.color.textAndIconsBasePrimary,
                                           background: NonThemeColor.color60,
-                                          finishPoint: RouteSearchPointMessage(
+                                          finishPoint: RouteSearchPoint(
                                             coordinates: GeoPointMessage(
-                                              latitude:
-                                                  entity.location.latitude,
-                                              longitude:
-                                                  entity.location.longitude,
+                                              latitude: entity.location.latitude,
+                                              longitude: entity.location.longitude,
                                             ),
-                                            objectId: DgisObjectIdMessage(
-                                              objectId: 0,
-                                              entranceId: 0,
-                                            ),
+                                            dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
                                           ),
                                           onTap: () {
                                             RoutingRoutesRoute(
                                               finishLabel: entity.title,
-                                              finishLatitude:
-                                                  entity.location.latitude,
-                                              finishLongitude:
-                                                  entity.location.longitude,
-                                              finishObjectId: null,
-                                              finishEntranceId: null,
+                                              finishLatitude: entity.location.latitude,
+                                              finishLongitude: entity.location.longitude,
+                                              finishObjectId: 0,
+                                              finishEntranceId: 0,
                                               finishLevelId: null,
-                                              startLabel:
-                                                  context.l10n.myLocation,
+                                              startLabel: context.l10n.myLocation,
                                               startLatitude: null,
                                               startLongitude: null,
                                               startObjectId: null,
@@ -185,8 +170,7 @@ class IwishPlaceCard extends ConsumerWidget {
                                               startLevelId: null,
                                             ).pushReplacement(context);
                                           },
-                                          routeType:
-                                              RouteSearchOptionsMessage.car,
+                                          routeType: RouteSearchOptionsMessage.car,
                                         ),
                                       ],
                                     ),

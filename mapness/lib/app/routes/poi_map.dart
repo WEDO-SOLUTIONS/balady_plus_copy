@@ -22,6 +22,7 @@ class PoiMapRoute extends GoRouteData {
     this.lat,
     this.lng,
   });
+
   static const path = '/poi-map';
   final int dgisObjectId;
   final double? zoom;
@@ -54,24 +55,26 @@ class PoiMapRoute extends GoRouteData {
       lat: latLng?.latitude,
       lng: latLng?.longitude,
     );
-    // final router = GoRouter.of(context);
-    final matches = router.routerDelegate.currentConfiguration.matches;
-    if (matches.last.matchedLocation.contains(IwishCardRoute.path) ||
-        matches.last.matchedLocation == (PoiMapRoute.path)) {
+    if (PoiMapRoute.isSameRoute(router)) {
       router.pushReplacement(poiMapRoute.location);
     } else {
       router.push(poiMapRoute.location);
     }
   }
 
-  PoiCameraConfig? get cameraConfig =>
-      zoom != null || bearing != null || tilt != null
-          ? PoiCameraConfig(
-              zoom: zoom,
-              bearing: bearing,
-              tilt: tilt,
-            )
-          : null;
+  static bool isSameRoute(GoRouter router) {
+    final matches = router.routerDelegate.currentConfiguration.matches;
+    return matches.last.matchedLocation.contains(IwishCardRoute.path) ||
+        matches.last.matchedLocation == (PoiMapRoute.path);
+  }
+
+  PoiCameraConfig? get cameraConfig => zoom != null || bearing != null || tilt != null
+      ? PoiCameraConfig(
+          zoom: zoom,
+          bearing: bearing,
+          tilt: tilt,
+        )
+      : null;
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {

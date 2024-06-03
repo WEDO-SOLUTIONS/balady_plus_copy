@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,23 +15,29 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/profile/authorized_widget.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
+import 'package:mapness/widgets/profile/logout_dialog.dart';
 import 'package:mapness/widgets/profile/unathorized_profile.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
 class ProfilePage extends ConsumerWidget {
+  // According to task BALADY-416 to hide flags we temporary hide it with boolean flag
+  // We don't delete it because this goes against the design of this feature
+  static const showFlags = false;
+
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
-    final actionIcon = context.isLtr
-        ? SystemIcons.arrowCornerLeftS.icon(
+    final actionIcon = context.isLTR
+        ? SystemIcons.arrowCornerRightS.icon(
             color: context.color.textAndIconsBaseSecondary,
           )
-        : SystemIcons.arrowCornerRightS.icon(
+        : SystemIcons.arrowCornerLeftS.icon(
             color: context.color.textAndIconsBaseSecondary,
           );
+
     return WillPopScope(
       onWillPop: () async {
         StatefulNavigationShell.of(context).goBranch(
@@ -61,10 +66,10 @@ class ProfilePage extends ConsumerWidget {
                       ),
                       child: Consumer(
                         builder: (context, ref, child) {
-                          final userData = ref.watch(authProvider);
                           final userUnauthorized = UnautorizedProfile(
                             onConnect: ref.read(authProvider.notifier).doAuth,
                           );
+                          final userData = ref.watch(authProvider);
                           return userData.maybeWhen(
                             orElse: () => userUnauthorized,
                             data: (userData) => userData == null
@@ -91,6 +96,19 @@ class ProfilePage extends ConsumerWidget {
                           ContentWrapper(
                             color: context.color.surfaceBaseSecondary,
                             children: [
+                              ContentRow(
+                                options: ContentRowOptions(
+                                  actionWidget: ContentRowActionOptions(
+                                    actionIcon: actionIcon,
+                                  ),
+                                  leadingIcon: Icon(
+                                    GeneralIcons.settings,
+                                    color: context.color.textAndIconsStatusAccent,
+                                  ),
+                                  title: context.l10n.settings,
+                                ),
+                                onTap: () => const SettingsRoute().push(context),
+                              ),
                               ContentRow(
                                 options: ContentRowOptions(
                                   actionWidget: ContentRowActionOptions(
@@ -151,14 +169,7 @@ class ProfilePage extends ConsumerWidget {
                                     options: ContentRowOptions(
                                       title: context.l10n.language,
                                       subtitle: language.title,
-                                      leadingIcon: SvgPicture.asset(
-                                        language == Language.arabic
-                                            ? 'assets/icons/svg/sa_flag.svg'
-                                            : 'assets/icons/svg/uk_flag.svg',
-                                        height: 16,
-                                        width: 22,
-                                        package: PackageConfig.packageName,
-                                      ),
+                                      leadingIcon: leadingIcon(language),
                                     ),
                                     content: const LanguagePicker(),
                                     expandIconColor: context.color.textAndIconsBaseSecondary,
@@ -173,7 +184,7 @@ class ProfilePage extends ConsumerWidget {
                           Text(
                             context.l10n.chooseTheLanguageOfAll,
                             style: context.textStyle.caption.copyWith(
-                              color: const Color(0xFF1E2A36).withOpacity(0.36),
+                              color: context.color.textAndIconsBaseTertiary,
                             ),
                           ),
                           const SizedBox(
@@ -209,10 +220,49 @@ class ProfilePage extends ConsumerWidget {
                               color: const Color(0xFF1E2A36).withOpacity(0.36),
                             ),
                           ),
-                const SizedBox(
-                            height: Spacing.verticalGapBetweenChips,
+                          const SizedBox(
+                            height: 32,
                           ),
-                          const NotificationsSettingCell()
+                          Consumer(builder: (context, ref, _) {
+                            final userData = ref.watch(authProvider);
+                            const emptyBox = SizedBox.shrink();
+
+                            return userData.maybeWhen(
+                              orElse: () => emptyBox,
+                              data: (data) => data == null
+                                  ? emptyBox
+                                  : SizedBox(
+                                      width: double.infinity,
+                                      child: AppButton(
+                                        primaryLabel: context.l10n.logOut,
+                                        buttonColorScheme: ButtonColorScheme.tertiary,
+                                        onTap: () async {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (ctx) => LogoutDialog(
+                                              onCancel: () => Navigator.of(ctx).pop(),
+                                              onLogout: () async {
+                                                await ref.read(authProvider.notifier).logOut();
+                                                context.pop();
+                                              },
+                                              title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
+                                              logOutText: context.l10n.logOut,
+                                              cancelText: context.l10n.cancel,
+                                            ),
+                                          );
+                                        },
+                                        textColor: context.color.textAndIconsStatusNegative,
+                                        trailing: SvgPicture.asset(
+                                          'assets/icons/svg/ic_profile_logout.svg',
+                                          height: 24,
+                                          width: 24,
+                                          matchTextDirection: true,
+                                          package: PackageConfig.packageName,
+                                        ),
+                                      ),
+                                    ),
+                            );
+                          })
                         ],
                       ),
                     ),
@@ -225,4 +275,16 @@ class ProfilePage extends ConsumerWidget {
       ),
     );
   }
+
+  Widget? leadingIcon(Language language) => showFlags
+      ? SvgPicture.asset(
+          switch (language) {
+            Language.arabic => 'assets/icons/svg/sa_flag.svg',
+            Language.english => 'assets/icons/svg/uk_flag.svg',
+          },
+          height: 16,
+          width: 22,
+          package: PackageConfig.packageName,
+        )
+      : null;
 }

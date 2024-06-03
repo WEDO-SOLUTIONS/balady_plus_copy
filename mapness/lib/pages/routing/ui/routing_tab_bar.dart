@@ -1,0 +1,73 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
+import 'package:urbi_utils/urbi_utils.dart';
+
+class RouteTabBar extends ConsumerStatefulWidget {
+  final void Function(RouteSearchOptionsMessage) onChanged;
+  final RouteSearchOptionsMessage active;
+  final List<RouteParamsPoint?> points;
+
+  const RouteTabBar({
+    required this.onChanged,
+    required this.active,
+    required this.points,
+    super.key,
+  });
+
+  @override
+  ConsumerState<RouteTabBar> createState() => _RouteTabBarState();
+}
+
+class _RouteTabBarState extends ConsumerState<RouteTabBar> {
+  @override
+  Widget build(BuildContext context) {
+    final routes = ref
+            .watch(
+              routesProvider(
+                startPoint: widget.points[0],
+                finishPoint: widget.points[1],
+                navType: widget.active,
+              ),
+            )
+            .unwrapPrevious()
+            .valueOrNull ??
+        [];
+    final activeRoute = ref.watch(activeRouteProvider);
+    final routeDuration = routes.isEmpty ? null : routes[activeRoute].duration;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.verticalPaddingInsideWrapper),
+      child: Row(
+        children: [
+          RouteSearchOptionsMessage.car,
+          RouteSearchOptionsMessage.pedestrian,
+        ]
+            .map<Widget>((e) {
+              final isSelected = widget.active == e;
+              final isOverflowed = (routeDuration ?? 0) > 60 * 60 && isSelected;
+              return Expanded(
+                flex: isOverflowed ? 4 : 3,
+                child: Chips(
+                  onTap: () => widget.onChanged(e),
+                  style: ChipsStyle.whiteBackground,
+                  leadingIcon: ChipIconData(e.icon(context)),
+                  title: isSelected ? routeDuration?.formatDuration(context.l10n) : null,
+                  isSelected: isSelected,
+                  size: ChipsSize.medium,
+                ),
+              );
+            })
+            .insertBetween(Spacing.horizontalGapBetweenChips.widthBox)
+            .toList(),
+      ),
+    );
+  }
+}

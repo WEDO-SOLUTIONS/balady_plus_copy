@@ -1,4 +1,5 @@
-import 'dart:math' as math;
+import 'dart:async';
+import 'dart:io';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -6,33 +7,42 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/_features/poi_card/enums/pot_tabs_type.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_padding_config.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
+import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
+import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
 import 'package:mapness/_features/poi_card/widgets/favourites.dart';
-import 'package:mapness/_features/poi_card/widgets/footer/footer.dart';
+import 'package:mapness/_features/poi_card/widgets/footer/poi_card_footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
 import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
@@ -50,20 +60,16 @@ class PoiCardWidget extends StatelessWidget {
   });
 
   @override
-  // ignore: prefer_expression_function_bodies
-  Widget build(BuildContext context) {
-    // ref.read(poiCardProviderProvider.notifier).getDgisObject(objectId);
-    return LayoutBuilder(
-      builder: (context, constraints) => _Content(
-        objectId: objectId,
-        cameraConfig: cameraConfig,
-        biggestHeight: constraints.biggest.height,
-        biggestWidth: constraints.biggest.width,
-        closestPoint: closestPoint,
-        // directoryObject: result,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) => _Content(
+          objectId: objectId,
+          cameraConfig: cameraConfig,
+          biggestHeight: constraints.biggest.height,
+          biggestWidth: constraints.biggest.width,
+          closestPoint: closestPoint,
+          // directoryObject: result,
+        ),
+      );
 }
 
 class _Content extends ConsumerStatefulWidget {
@@ -74,6 +80,7 @@ class _Content extends ConsumerStatefulWidget {
     required this.closestPoint,
     this.cameraConfig,
   });
+
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
 
@@ -86,9 +93,8 @@ class _Content extends ConsumerStatefulWidget {
 }
 
 class _ContentState extends ConsumerState<_Content> with SingleTickerProviderStateMixin {
-  bool showEntrances = false;
-
   final _expansion = ValueNotifier(Expansion.middle);
+
   late final TabController _tabController;
   late final ValueNotifier<PoiTabsType> _tabType;
 
@@ -98,7 +104,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
   void initState() {
     super.initState();
     _tabController = TabController(
-      length: 2,
+      length: 3,
       vsync: this,
     );
 
@@ -111,17 +117,40 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               _tabType.value = PoiTabsType.info;
             case 1:
               _tabType.value = PoiTabsType.photos;
+            case 2:
+              _tabType.value = PoiTabsType.inBuilding;
           }
         }
       },
     );
 
     _bottomSheetController = DgisBottomSheetController();
+    Future.delayed(const Duration(milliseconds: 250), () {
+      final pixelSize = MediaQuery.of(context).devicePixelRatio;
+      final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
+      final int qfilterPadding = (48 * pixelSize).floor();
+
+      final initBottomSize = Platform.isIOS ? .3 : .38;
+
+      // TODO(someone): Move this logic in new uikit bottom sheet
+      // calculate intitial padding for camera
+      final initPadding =
+          (initBottomSize * MediaQuery.of(context).size.height * pixelSize) + (navbarSize * pixelSize) + qfilterPadding;
+
+      final cameraController = ref.read(cameraPositionProvider.notifier);
+      unawaited(cameraController.setPadding(
+        CameraSetPaddingMessage(
+          leftPadding: 0,
+          topPadding: 0,
+          rightPadding: 0,
+          bottomPadding: Platform.isAndroid ? initPadding.floor() : 0,
+        ),
+      ));
+    });
   }
 
   @override
   void dispose() {
-    resetPadding();
     _tabController.dispose();
     _tabType.dispose();
     _bottomSheetController.dispose();
@@ -131,10 +160,28 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
   @override
   Widget build(BuildContext context) {
     final viewModel = PoiCardViewModel(ref: ref);
+
+    final sizeOfScreen = MediaQuery.of(context).size;
+    final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
+
+    final safeArea = MediaQuery.of(context).padding;
+    const horizontalPadding = PoiCardMapControls.horizontalPadding + Markers.defaultWidth + MapButton.defaultSize;
+
+    final paddingConfig = PoiPaddingConfig(
+      paddingOfCamera: EdgeInsets.only(
+        left: horizontalPadding,
+        right: horizontalPadding,
+        top: Markers.defaultHeight + safeArea.top,
+        // Calculate the bottom padding for the camera, use multiplier to calculate the padding
+        bottom: PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5,
+      ),
+      sizeOfScreen: sizeOfScreen,
+    );
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
+      paddingConfig: paddingConfig,
     );
     final state = ref.watch(viewModelProvider);
 
@@ -182,7 +229,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           const Spacer(flex: 3),
           ErrorSheet(
             onRetry: () => ref.invalidate(
-              pointOfInterestProvider(widget.objectId),
+              directoryObjectFromDgisIdProvider(widget.objectId),
             ),
           ),
         ],
@@ -209,7 +256,9 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           About(
             title: data.address?.buildingName ?? data.title,
             exits: data.entrances.length,
-            onEntranceTap: () => showEntrance(data),
+            onEntranceTap: () {
+              _toggleEntrances(data);
+            },
           ),
           if (about.isNotEmpty)
             Description(
@@ -235,21 +284,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       ),
     );
     final language = ref.watch(appLanguageProvider);
-    final heightOfScreen = MediaQuery.of(context).size.height;
-
-    const collapsedHeight = 300.0;
-    const hiddenHeight = 100.0;
-
-    /// The middle height should be higher than the collapsed height
-    /// if [availableExpansions] contains [Expansion.middle] and [Expansion.collapsed]
-    final middleHeight = math.max(heightOfScreen / 3, collapsedHeight + 1);
-
-    setPaddingToCamera(switch (_expansion.value) {
-      Expansion.collapsed => collapsedHeight,
-      Expansion.expanded => heightOfScreen / 2,
-      Expansion.hidden => hiddenHeight,
-      Expansion.middle => middleHeight,
-    });
+    final photos = ref.watch(poiPhotoProvider(objectId));
 
     return Directionality(
       textDirection: switch (language) {
@@ -258,14 +293,17 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       },
       child: DgisBottomSheet(
         showBarrier: false,
-        availableExpansions: Expansion.values.toSet(),
-        initialExpansion: Expansion.middle,
-        collapsedHeight: collapsedHeight,
-        middleHeight: middleHeight,
-        hiddenHeight: hiddenHeight,
+        availableExpansions: const {
+          Expansion.collapsed,
+          Expansion.expanded,
+          Expansion.hidden,
+        },
+        initialExpansion: Expansion.collapsed,
+        collapsedHeight: sheetSizes.collapsedHeight + (photos.hasValue == true ? 100.0 : .0),
+        hiddenHeight: sheetSizes.hiddenHeight,
         controller: _bottomSheetController,
-        mapControlsBuilder: (context, scrollController, biggestHeight, smallestHeight) => PoiCardMapControls(
-          scrollController: scrollController,
+        mapControlsBuilder: (context, bottomSheetSize, biggestHeight, smallestHeight) => PoiCardMapControls(
+          bottomSheetSize: bottomSheetSize,
           biggestHeight: biggestHeight,
         ),
         onExpansionChanged: (expansion, {byUser = false}) => setState(() {
@@ -275,21 +313,47 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           objectId: objectId,
           expansion: _expansion,
         ),
-        actions: PoiCardFooter2(
+        actions: PoiCardFooter(
           data: data,
-          share: () => viewModel.share(
-            objectId: objectId,
-            markerCoords: widget.closestPoint,
-          ),
-          callPhone: () => viewModel.callPhone(data: data),
-          onEntranceTap: () => showEntrance(data),
+          share: () {
+            Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'object_id': data.id?.objectId,
+                  'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                });
+
+            viewModel.share(
+              objectId: objectId,
+              markerCoords: widget.closestPoint,
+            );
+          },
+          callPhone: () {
+            Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'objectId': objectId,
+                });
+
+            viewModel.callPhone(data: data);
+          },
+          onEntranceTap: () => _toggleEntrances(data),
         ),
         scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
           controller: controller,
           header: PoiHeader(
+            poiCardState: poiCardState,
             tabController: _tabController,
             data: data,
             onTapClose: () {
+              Metrics.logEventAdvanced(
+                MetricsConstants.poiKeys.exitButton,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+              );
+
               ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
               ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
               context.pop();
@@ -305,6 +369,10 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                       directoryObjectMessage: data,
                     ),
                   ),
+                PoiTabsType.inBuilding => InBuildingWidget(
+                    state: poiCardState,
+                    objectId: widget.objectId,
+                  ),
               },
             ),
           ],
@@ -313,29 +381,26 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     );
   }
 
-  Future<void> showEntrance(DirectoryObjectMessage data) async {
-    setState(() {
-      showEntrances = !showEntrances;
-    });
+  Future<void> _toggleEntrances(DirectoryObjectMessage data) async {
+    Metrics.logEventAdvanced(MetricsConstants.poiKeys.entrances,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'poi_id': data.id?.objectId,
+          'show_entrances': true,
+        });
 
-    final highlightController = ref.read(highlightProvider.notifier);
+    final highlightController = ref.watch(highlightProvider.notifier);
 
-    if (showEntrances) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _bottomSheetController.animateTo(Expansion.collapsed);
-      });
-      for (final entrance in data.entrances) {
-        await highlightController.addHighlight(entrance!.id);
-      }
-
-      await _animateToEntrance([
-        ...data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList()
-      ]);
-    } else {
-      for (final entrance in data.entrances) {
-        await highlightController.removeHighlight(entrance!.id);
+    for (final entrance in data.entrances) {
+      if (entrance != null) {
+        await highlightController.addHighlight(entrance.id);
       }
     }
+
+    await _animateToEntrance(
+        data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList());
+    _bottomSheetController.animateTo(Expansion.collapsed);
   }
 
   Future<void> _animateToEntrance(List<GeoPointMessage?> data) async {
@@ -372,7 +437,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     final cameraController = ref.read(cameraPositionProvider.notifier);
     final cameraPosition = ref.read(cameraPositionProvider);
-
     // Animate to the entrance
     await cameraController.animateTo(
       CameraPositionMessage(
@@ -385,30 +449,5 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         bearing: cameraPosition?.tilt ?? 0,
       ),
     );
-  }
-
-  void setPaddingToCamera(double size) {
-    final pixelSize = MediaQuery.of(context).devicePixelRatio;
-    final navbarSize = MediaQuery.of(context).viewPadding.bottom;
-
-    ref.watch(cameraPositionProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: (size * pixelSize - navbarSize * pixelSize).floor(),
-          ),
-        );
-  }
-
-  void resetPadding() {
-    ref.watch(cameraPositionProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: 0,
-          ),
-        );
   }
 }

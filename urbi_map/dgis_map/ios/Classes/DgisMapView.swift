@@ -107,12 +107,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             eventChannel: eventChannel
         )
         
-        self.routeHandler = RouteHandler(
-            map: map,
-            sdk: self.sdk,
-            eventChannel: eventChannel,
-            positioningService: self.positioningService
-        )
         
         self.navigationHandler = NavigationHandler(
             map: map,
@@ -120,6 +114,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             sdk: self.sdk,
             eventChannel: eventChannel,
             view: self._view
+        )
+        
+        self.routeHandler = RouteHandler(
+            map: map,
+            sdk: self.sdk,
+            eventChannel: eventChannel,
+            navigationHandler: navigationHandler!,
+            positioningService: self.positioningService
         )
         
         self.searchHandler = SearchHandler(
@@ -819,6 +821,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.map = map
         
         let mapView = mapFactory.mapView
+        
+        // This gesture is temporarily disabled as it conflicts with MapObjectTappedCallback
+        mapView.gestureView?.doubleTapAndPanGestureRecognizer?.isEnabled = false
+        
         mapView.translatesAutoresizingMaskIntoConstraints = false
         self._view.addSubview(mapView)
         NSLayoutConstraint.activate([
@@ -880,6 +886,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func hideRoutes(completion: @escaping (FlutterError?) -> Void) {
         self.routeHandler?.setRoutesVisible(false)
+        completion(nil);
+    }
+
+    func showRoutes(completion: @escaping (FlutterError?) -> Void) {
+        self.routeHandler?.setRoutesVisible(true)
+        completion(nil);
     }
     
     func startNavigation(completion: @escaping (FlutterError?) -> Void) {
@@ -1056,5 +1068,19 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         _ message: WeatherMapMessage,
         completion: @escaping (NSNumber?, FlutterError?) -> Void) {
         weatherHandler?.toggleHeatmap(message,completion: completion)
+    }
+    
+    func betterRouteResponseResponse(_ response: BetterRouteResponseMessage, completion: @escaping (FlutterError?) -> Void) {
+        navigationHandler?.betterRouteResponse(response: response)
+        completion(nil)
+    }
+    
+    func getBetterRouteSettings(completion: @escaping (BetterRouteSettingsMessage?, FlutterError?) -> Void) {
+        navigationHandler?.getBetterRouteSettings(completion: completion)
+    }
+    
+    func setBetterRouteSettingsMessage(_ message: BetterRouteSettingsMessage, completion: @escaping (FlutterError?) -> Void) {
+        navigationHandler?.setBetterRouteSettings(settings: message)
+        completion(nil)
     }
 }

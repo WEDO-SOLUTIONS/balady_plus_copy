@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,8 +21,7 @@ class MapObjectManagerSettings {
 
   const MapObjectManagerSettings._({required this.name, required this.layerId});
 
-  factory MapObjectManagerSettings.favourites() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.favourites() => const MapObjectManagerSettings._(
         name: 'favourite-markers',
         layerId: MapObjectLayers.defaultLayerId,
       );
@@ -30,18 +30,15 @@ class MapObjectManagerSettings {
         layerId: MapObjectLayers.defaultLayerId,
       );
 
-  factory MapObjectManagerSettings.mappness() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.mappness() => const MapObjectManagerSettings._(
         name: MapnessConsts.mapLayerName,
         layerId: MapObjectLayers.defaultLayerId,
       );
-  factory MapObjectManagerSettings.quickFilter() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.quickFilter() => const MapObjectManagerSettings._(
         name: 'QuickFilters',
         layerId: MapObjectLayers.defaultLayerId,
       );
-  factory MapObjectManagerSettings.myLocation() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.myLocation() => const MapObjectManagerSettings._(
         name: 'my_location',
         layerId: MapObjectLayers.priorityLayerId,
       );
@@ -56,8 +53,7 @@ class MapObjectManagerSettings {
         layerId: MapObjectLayers.defaultLayerId,
       );
 
-  factory MapObjectManagerSettings.selectedMarker() =>
-      const MapObjectManagerSettings._(
+  factory MapObjectManagerSettings.selectedMarker() => const MapObjectManagerSettings._(
         name: 'selected-marker',
         layerId: MapObjectLayers.defaultLayerId,
       );
@@ -72,7 +68,14 @@ class MapObjectManager extends _$MapObjectManager {
     ClusteringMapObjectManager? clustering,
   }) async {
     final dgisController = await ref.watch(dgisControllerProvider.future);
-
+    await dgisController.setMarkerOptions(
+      MarkerOptionsMessageOld(
+        svgAsset: LayersSvgPaths.basicMarker,
+        width: 24.0,
+        height: 24.0,
+        iconWidth: 16,
+      ),
+    );
     final manager = clustering != null
         ? await dgisController.createMapObjectManagerWithClustering(
             clustering,
