@@ -54,28 +54,20 @@ class _PhotoViewerState extends State<PhotoViewer> {
         builder: (context, isAppBarVisible, child) => Material(
           color: backgroundColor,
           child: Material(
-            color: isAppBarVisible
-                ? context.color.surfaceContrastHigh
-                : Colors.transparent,
+            color: isAppBarVisible ? context.color.surfaceContrastHigh : Colors.transparent,
             child: Scaffold(
               appBar: isAppBarVisible
                   // TODO: Update when BaladyTopBar starts supporting background color
                   ? BaladyTopBar(
-                      textStyle: context.textStyle.callout
-                          .copyWith(color: Colors.white),
+                      textStyle: context.textStyle.callout.copyWith(color: Colors.white),
                       title: context.l10n.photos,
 
                       /// TODO(ui_kit): Fix leading in UIKIT
                       leading: Container(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: NumericBase.$4x),
-                        alignment: context.isLTR
-                            ? Alignment.centerLeft
-                            : Alignment.centerRight,
+                        padding: const EdgeInsetsDirectional.only(start: NumericBase.$4x),
+                        alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
                         child: Icon(
-                          context.isLTR
-                              ? SystemIcons.arrowCornerLeftSmall
-                              : SystemIcons.arrowCornerRightSmall,
+                          context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
                           color: Colors.white,
                         ),
                       ),
@@ -101,15 +93,13 @@ class _PhotoViewerState extends State<PhotoViewer> {
                       return PhotoViewGalleryPageOptions(
                         imageProvider: NetworkImage(photo),
                         initialScale: PhotoViewComputedScale.contained * 1,
-                        minScale: PhotoViewComputedScale.contained *
-                            (0.5 + index / 10),
+                        minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
                         maxScale: PhotoViewComputedScale.covered * 4.1,
                         heroAttributes: PhotoViewHeroAttributes(tag: photo),
                       );
                     },
                     itemCount: widget.photoPaths?.length ?? 0,
-                    backgroundDecoration:
-                        const BoxDecoration(color: backgroundColor),
+                    backgroundDecoration: const BoxDecoration(color: backgroundColor),
                     pageController: pageController,
                   ),
                 ],

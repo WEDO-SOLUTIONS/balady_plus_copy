@@ -23,12 +23,10 @@ class ScaffoldWithNestedNavigation extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
 
   @override
-  ConsumerState<ScaffoldWithNestedNavigation> createState() =>
-      _ScaffoldWithNestedNavigationState();
+  ConsumerState<ScaffoldWithNestedNavigation> createState() => _ScaffoldWithNestedNavigationState();
 }
 
-class _ScaffoldWithNestedNavigationState
-    extends ConsumerState<ScaffoldWithNestedNavigation> {
+class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNestedNavigation> {
   static const _tag = MetricsConstants.exploreTag;
 
   int currentTab = 0;
@@ -60,10 +58,10 @@ class _ScaffoldWithNestedNavigationState
           };
 
           Metrics.logEventAdvanced(
-              MetricsConstants.exploreKeys
-                  .navbarClick(pageTitle[selected] ?? 'Unknown'),
-              group: _tag,
-              action: MetricAction.tap.name);
+            MetricsConstants.exploreKeys.navbarClick(pageTitle[selected] ?? 'Unknown'),
+            group: _tag,
+            action: MetricAction.tap.name,
+          );
           if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
             final isShowRoute = await ref.read(routeOnboardingProvider.future);
             if (isShowRoute) {
@@ -77,9 +75,7 @@ class _ScaffoldWithNestedNavigationState
                 StoryTypes.route,
                 'route',
                 onClose: () async {
-                  await ref
-                      .read(routeOnboardingProvider.notifier)
-                      .setShown(true);
+                  await ref.read(routeOnboardingProvider.notifier).setShown(true);
                   _goToPage(selected);
                 },
               );
@@ -109,8 +105,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
     final direction = ref.watch(uiDirectionProvider);
 
     final landingIndex = appFeatures.naviEnabled ? 3 : 2;
-    final bottomNavigationDirection =
-        direction == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr;
+    final bottomNavigationDirection = direction == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr;
 
     return Directionality(
       textDirection: direction,
@@ -152,9 +147,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                         selected: currentIndex == 0,
                         iconBuilder: (context, selected) => ProfileImageWidget(
                           dimension: 24,
-                          color: selected
-                              ? context.color.strokeAccent
-                              : context.color.textAndIconsBaseTertiary,
+                          color: selected ? context.color.strokeAccent : context.color.textAndIconsBaseTertiary,
                         ),
                         label: context.l10n.nav_profile,
                       ),
@@ -247,9 +240,7 @@ class _DefaultIcon extends StatelessWidget {
   Widget build(BuildContext context) => Icon(
         icon,
         size: 24,
-        color: selected
-            ? context.color.strokeAccent
-            : context.color.textAndIconsBaseTertiary,
+        color: selected ? context.color.strokeAccent : context.color.textAndIconsBaseTertiary,
       );
 }
 
@@ -266,9 +257,7 @@ class _DefaultLabel extends StatelessWidget {
   Widget build(BuildContext context) => Text(
         label,
         style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(
-              color: selected
-                  ? context.color.strokeAccent
-                  : context.color.textAndIconsBaseTertiary,
+              color: selected ? context.color.strokeAccent : context.color.textAndIconsBaseTertiary,
             ),
       );
 }

@@ -54,9 +54,7 @@ class PinnedPlaceCard extends StatelessWidget {
                     width: 56,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
-                      color: isAdded
-                          ? context.color.surfaceBasePrimary
-                          : context.color.surfaceStatusContrastAccent,
+                      color: isAdded ? context.color.surfaceBasePrimary : context.color.surfaceStatusContrastAccent,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8),
@@ -64,8 +62,7 @@ class PinnedPlaceCard extends StatelessWidget {
                         height: 32,
                         width: 32,
                         child: isAdded
-                            ? iconData.icon(
-                                color: context.color.textAndIconsStatusAccent)
+                            ? iconData.icon(color: context.color.textAndIconsStatusAccent)
                             : SystemIcons.zoomPlus.icon(
                                 color: context.color.strokeAccent,
                               ),
@@ -79,8 +76,7 @@ class PinnedPlaceCard extends StatelessWidget {
                 Text(
                   title,
                   textAlign: TextAlign.right,
-                  style: context.textStyle.heading2
-                      .copyWith(color: context.color.textAndIconsBasePrimary),
+                  style: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
                 ),
                 const SizedBox(
                   height: NumericBase.$0_5x,
@@ -90,8 +86,7 @@ class PinnedPlaceCard extends StatelessWidget {
                   textAlign: TextAlign.right,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: context.textStyle.caption
-                      .copyWith(color: context.color.textAndIconsBaseSecondary),
+                  style: context.textStyle.caption.copyWith(color: context.color.textAndIconsBaseSecondary),
                 ),
               ],
             ),

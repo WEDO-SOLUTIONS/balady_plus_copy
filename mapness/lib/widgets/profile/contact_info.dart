@@ -22,15 +22,13 @@ class ContactInfo extends StatefulWidget {
   State<ContactInfo> createState() => _ContactInfoState();
 }
 
-class _ContactInfoState extends State<ContactInfo>
-    with SingleTickerProviderStateMixin {
+class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Color?> _animation;
 
   @override
   void initState() {
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1500));
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
 
     _animation = TweenSequence<Color?>(
       <TweenSequenceItem<Color?>>[
@@ -83,8 +81,7 @@ class _ContactInfoState extends State<ContactInfo>
                 title: context.isLTR ? '@$momrahTwitter' : '$momrahTwitter@',
                 subtitle: context.l10n.twitterAccount,
               ),
-              onTap: () =>
-                  CommonFunctions.launch('https://twitter.com/Balady_CS'),
+              onTap: () => CommonFunctions.launch('https://twitter.com/Balady_CS'),
             ),
             ContentRow(
               options: ContentRowOptions(
@@ -109,8 +106,7 @@ class _ContactInfoState extends State<ContactInfo>
                         ScaffoldMessenger.of(context).showSnackBar(
                           ToastMessageFactory.toastWithIconAction(
                             onPressed: () {
-                              ScaffoldMessenger.of(context)
-                                  .hideCurrentSnackBar();
+                              ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             },
                             icon: SystemIcons.close,
                             text: context.l10n.emailHasBeenCopied,
@@ -118,8 +114,7 @@ class _ContactInfoState extends State<ContactInfo>
                           ),
                         );
 
-                        if (_animationController.status ==
-                            AnimationStatus.completed) {
+                        if (_animationController.status == AnimationStatus.completed) {
                           await _animationController.reverse();
                         } else {
                           await _animationController.forward();

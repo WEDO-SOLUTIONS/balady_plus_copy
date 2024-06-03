@@ -62,19 +62,15 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                 colorEnabled: context.color.textAndIconsStatusAccent,
                 leading: ActionModel(
                   onPressed: () => context.pop(),
-                  icon: context.isLTR
-                      ? SystemIcons.arrowCornerLeftSmall
-                      : SystemIcons.arrowCornerRightSmall,
+                  icon: context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
                 ),
               ),
               body: ListView(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(
-                        Spacing.horizontalPaddingInsideWrapper),
+                    padding: const EdgeInsets.all(Spacing.horizontalPaddingInsideWrapper),
                     child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(CornerRadius.smallContainer),
+                      borderRadius: BorderRadius.circular(CornerRadius.smallContainer),
                       // ignore: prefer_const_constructors
                       child: YoutubePlayer(
                         controller: _controller,

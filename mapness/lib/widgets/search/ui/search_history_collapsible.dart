@@ -22,12 +22,10 @@ class SearchHistoryCollapsible extends ConsumerStatefulWidget {
   final Function(models.SearchHistoryItem) onDelete;
 
   @override
-  ConsumerState<SearchHistoryCollapsible> createState() =>
-      _MapSearchHistoryCollapsibleState();
+  ConsumerState<SearchHistoryCollapsible> createState() => _MapSearchHistoryCollapsibleState();
 }
 
-class _MapSearchHistoryCollapsibleState
-    extends ConsumerState<SearchHistoryCollapsible> {
+class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryCollapsible> {
   bool _collapsed = true;
 
   @override
@@ -58,8 +56,7 @@ class _MapSearchHistoryCollapsibleState
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Text(
                           context.l10n.delete,
-                          style: context.textStyle.footNote
-                              .copyWith(color: Colors.white),
+                          style: context.textStyle.footNote.copyWith(color: Colors.white),
                         ),
                       ),
                     ),
@@ -68,10 +65,8 @@ class _MapSearchHistoryCollapsibleState
                 child: Material(
                   color: context.color.surfaceBaseSecondary,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(
-                        index == 0 ? CornerRadius.baseContainer : 0),
-                    bottom: index == widget.history.length - 1 &&
-                            widget.history.length <= 10
+                    top: Radius.circular(index == 0 ? CornerRadius.baseContainer : 0),
+                    bottom: index == widget.history.length - 1 && widget.history.length <= 10
                         ? const Radius.circular(CornerRadius.baseContainer)
                         : const Radius.circular(0),
                   ),
@@ -86,16 +81,13 @@ class _MapSearchHistoryCollapsibleState
                         ),
                         title: widget.history[index].title,
                         subtitle: widget.history[index].address,
-                        dividerEnabled: index != widget.history.length - 1 ||
-                            widget.history.length > 10,
+                        dividerEnabled: index != widget.history.length - 1 || widget.history.length > 10,
                       ),
                     ),
                   ),
                 ),
               ),
-              itemCount: _collapsed
-                  ? min(10, widget.history.length)
-                  : widget.history.length,
+              itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
             ),
             if (widget.history.length > 10) ...[
               Container(
@@ -111,23 +103,18 @@ class _MapSearchHistoryCollapsibleState
               ),
               Material(
                 color: context.color.surfaceBaseSecondary,
-                borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(CornerRadius.baseContainer)),
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(CornerRadius.baseContainer)),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: ContentRow(
                     onTap: () => setState(() => _collapsed = !_collapsed),
                     options: ContentRowOptions(
                       leadingIcon: AppIcons(
-                        iconData: _collapsed
-                            ? SystemIcons.arrowCornerDownSmall
-                            : SystemIcons.arrowCornerUpSmall,
+                        iconData: _collapsed ? SystemIcons.arrowCornerDownSmall : SystemIcons.arrowCornerUpSmall,
                         color: context.color.textAndIconsBaseSecondary,
                         size: 24,
                       ),
-                      title: _collapsed
-                          ? context.l10n.showMore
-                          : context.l10n.showLess,
+                      title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
                     ),
                   ),
                 ),
@@ -135,8 +122,7 @@ class _MapSearchHistoryCollapsibleState
             ],
             if (!_collapsed)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: Spacing.verticalPaddingInsideCell),
+                padding: const EdgeInsets.symmetric(vertical: Spacing.verticalPaddingInsideCell),
                 child: Row(
                   children: [
                     Expanded(

@@ -27,17 +27,14 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding:
-                  const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
+              padding: const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
                   title: context.l10n.helpCenter,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     onPressed: () => context.pop(),
-                    icon: context.isLTR
-                        ? SystemIcons.arrowCornerLeftSmall
-                        : SystemIcons.arrowCornerRightSmall,
+                    icon: context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
                   ),
                 ),
                 body: Padding(
@@ -53,8 +50,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                         color: context.color.surfaceBaseSecondary,
                         children: [
                           ContentRow(
-                            onTap: () =>
-                                const MomraWebsitePageRoute().push(context),
+                            onTap: () => const MomraWebsitePageRoute().push(context),
                             options: ContentRowOptions(
                               title: context.l10n.baladyWebsite,
                               leadingIcon: GeneralIcons.web.icon(
@@ -63,12 +59,10 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                               actionWidget: ContentRowActionOptions(
                                 actionIcon: context.isLTR
                                     ? SystemIcons.arrowCornerRightSmall.icon(
-                                        color: context
-                                            .color.textAndIconsBaseSecondary,
+                                        color: context.color.textAndIconsBaseSecondary,
                                       )
                                     : SystemIcons.arrowCornerLeftSmall.icon(
-                                        color: context
-                                            .color.textAndIconsBaseSecondary,
+                                        color: context.color.textAndIconsBaseSecondary,
                                       ),
                               ),
                             ),

@@ -17,12 +17,8 @@ class ZoomControl extends ConsumerWidget {
       children: [
         MapButton(
           disabled: !zoomState.zoomInEnabled,
-          onTapUp: (_) => zoomState.zoomInEnabled
-              ? zoomNotifier.onTapUp(ZoomControlType.zoomIn)
-              : null,
-          onTapDown: (_) => zoomState.zoomInEnabled
-              ? zoomNotifier.onTapDown(ZoomControlType.zoomIn)
-              : null,
+          onTapUp: (_) => zoomState.zoomInEnabled ? zoomNotifier.onTapUp(ZoomControlType.zoomIn) : null,
+          onTapDown: (_) => zoomState.zoomInEnabled ? zoomNotifier.onTapDown(ZoomControlType.zoomIn) : null,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
@@ -30,12 +26,8 @@ class ZoomControl extends ConsumerWidget {
           child: const AppIcons(iconData: SystemIcons.zoomPlus),
         ),
         MapButton(
-          onTapUp: (_) => zoomState.zoomOutEnabled
-              ? zoomNotifier.onTapUp(ZoomControlType.zoomOut)
-              : null,
-          onTapDown: (_) => zoomState.zoomOutEnabled
-              ? zoomNotifier.onTapDown(ZoomControlType.zoomOut)
-              : null,
+          onTapUp: (_) => zoomState.zoomOutEnabled ? zoomNotifier.onTapUp(ZoomControlType.zoomOut) : null,
+          onTapDown: (_) => zoomState.zoomOutEnabled ? zoomNotifier.onTapDown(ZoomControlType.zoomOut) : null,
           disabled: !zoomState.zoomOutEnabled,
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(10),

@@ -45,9 +45,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
           if (widget.isEditing)
             BaladyCheckBox(
               key: UniqueKey(),
-              state: widget.isSelected == true
-                  ? BaladyCheckBoxState.checked
-                  : BaladyCheckBoxState.unchecked,
+              state: widget.isSelected == true ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked,
               disable: false,
               onChanged: (value) {
                 switch (value) {
@@ -72,8 +70,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
               child: InkWell(
                 onTap: () {
                   if (widget.isEditing) {
-                    setState(
-                        () => widget.onSelect?.call(widget.isSelected == true));
+                    setState(() => widget.onSelect?.call(widget.isSelected == true));
                   } else {
                     widget.onTap();
                   }

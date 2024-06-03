@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 extension RouteSearchOptionsMessageIcon on RouteSearchOptionsMessage {
   IconData icon(BuildContext context) => switch (this) {
         RouteSearchOptionsMessage.pedestrian =>
-          Directionality.of(context) == TextDirection.ltr
-              ? TransportIcons.pedestrianLTR
-              : TransportIcons.pedestrianRTL,
+          Directionality.of(context) == TextDirection.ltr ? TransportIcons.pedestrianLTR : TransportIcons.pedestrianRTL,
         RouteSearchOptionsMessage.car => TransportIcons.car,
         _ => TransportIcons.car,
       };
