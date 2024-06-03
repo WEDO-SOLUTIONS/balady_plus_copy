@@ -798,16 +798,22 @@ class CommonFunctions {
     }
   }
 
+  static bool locationDialogShowed = false;
+
   static Future<bool> checkLocationSettings(BuildContext context) async {
     ServiceStatus serviceStatus = await Permission.location.serviceStatus;
+
     if (serviceStatus != ServiceStatus.disabled) {
       var status = await Permission.location.request();
 
       if (status == PermissionStatus.permanentlyDenied) {
-        showDialog(
-          context: context,
-          builder: (ctx) => const LocationPermissionDialog(),
-        );
+        if (!locationDialogShowed) {
+          locationDialogShowed = true;
+          showDialog(
+            context: context,
+            builder: (ctx) => const LocationPermissionDialog(),
+          ).then((value) => locationDialogShowed = false);
+        }
         return false;
       } else if (status != PermissionStatus.granted) {
         Permission.location.request();
@@ -816,10 +822,12 @@ class CommonFunctions {
         return true;
       }
     } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => const LocationServiceDialog(),
-      );
+      if (!locationDialogShowed) {
+        showDialog(
+          context: context,
+          builder: (ctx) => const LocationServiceDialog(),
+        ).then((value) => locationDialogShowed = false);
+      }
 
       return false;
     }

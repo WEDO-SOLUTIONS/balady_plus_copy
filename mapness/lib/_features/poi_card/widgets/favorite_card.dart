@@ -22,7 +22,7 @@ class FavoriteCard extends ConsumerWidget {
             action: MetricAction.tap.toString(),
           );
 
-          const FavouritesRoute().pushToRoot(context);
+          const FavouritesRoute().push(context);
         },
         child: Row(
           children: [

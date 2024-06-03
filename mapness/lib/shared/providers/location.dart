@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/router.dart';
@@ -48,9 +49,14 @@ class _Location extends _$Location {
       final status = await perm.Permission.location.request();
 
       if (status == perm.PermissionStatus.permanentlyDenied) {
-        unawaited(
-          router.push(LocationErrorSheet(routeOnClose: routeOnClose).location),
-        );
+        if (!CommonFunctions.locationDialogShowed) {
+          CommonFunctions.locationDialogShowed = true;
+          unawaited(
+            router
+                .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
+                .then((value) => CommonFunctions.locationDialogShowed = false),
+          );
+        }
         return false;
       } else if (status != perm.PermissionStatus.granted) {
         unawaited(perm.Permission.location.request());
@@ -59,9 +65,14 @@ class _Location extends _$Location {
         return true;
       }
     } else {
-      unawaited(
-        router.push(LocationErrorSheet(routeOnClose: routeOnClose).location),
-      );
+      if (!CommonFunctions.locationDialogShowed) {
+        CommonFunctions.locationDialogShowed = true;
+        unawaited(
+          router
+              .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
+              .then((value) => CommonFunctions.locationDialogShowed = true),
+        );
+      }
     }
 
     return false;
