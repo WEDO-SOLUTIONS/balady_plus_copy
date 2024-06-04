@@ -54,6 +54,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   final _navigationState = ValueNotifier(PathNavState.running);
   final _betterRouteDurationProfit = ValueNotifier<int?>(null);
   double heightOfEta = 90.0;
+  final _expansionNotifier = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -104,117 +105,131 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
       textDirection: TextDirection.ltr,
       child: SafeArea(
         bottom: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+        child: Stack(
           children: [
-            const SizedBox(height: 6, width: double.maxFinite),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.verticalBaseToTopSafezone),
-              child: Directionality(
-                // Here we set the text direction according to the current locale to display the correct direction of the widget.
-                textDirection: Directionality.of(context),
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final message = ref.watch(pathNavMessageProvider);
-                    final maneuver = ref.watch(pathNavManeuverProvider);
-                    final isPedestrian = widget.navType == RouteSearchOptionsMessage.pedestrian;
-                    final info = ref.watch(pathNavSpeedInfoProvider);
+            Expanded(child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                final value = _expansionNotifier.value;
+                if (value) {
+                  _expansionNotifier.value = !value;
+                }
+              },
+            )),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const SizedBox(height: 6, width: double.maxFinite),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.verticalBaseToTopSafezone),
+                  child: Directionality(
+                    // Here we set the text direction according to the current locale to display the correct direction of the widget.
+                    textDirection: Directionality.of(context),
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final message = ref.watch(pathNavMessageProvider);
+                        final maneuver = ref.watch(pathNavManeuverProvider);
+                        final isPedestrian = widget.navType == RouteSearchOptionsMessage.pedestrian;
+                        final info = ref.watch(pathNavSpeedInfoProvider);
 
-                    // This made to remove yellow lines under the text
-                    return Material(
-                      type: MaterialType.transparency,
-                      color: Colors.transparent,
-                      child: uikit.BaladyManeuverAndLimit(
-                        isPedestrian: isPedestrian,
-                        speedInfo: uikit.LimitsModel(
-                          speed: info.speed,
-                          speedExceed: info.speedExceed,
-                          speedLimit: info.speedLimit,
-                        ),
-                        maneuver: maneuver != null
-                            ? uikit.BaladyManeuverModel(
-                                distance: maneuver.distance,
-                                instruction: maneuver.instruction?.toUIKit(),
-                                roadName: maneuver.roadName,
-                                unit: maneuver.unit,
-                              )
-                            : null,
-                        message: message != null
-                            ? uikit.ManeuverMessageModel(
-                                comment: message.state.toMessage(context.l10n),
-                                state: message.state.toUIKit(),
-                              )
-                            : null,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: padding,
-              child: Consumer(
-                builder: (context, ref, _) {
-                  final navi = ref.watch(appFeaturesProvider);
-                  return Visibility(
-                    visible: navi.naviEnabled,
-                    replacement: const SizedBox.square(
-                      dimension: 28,
-                    ),
-                    child: const TrafficControl(),
-                  );
-                },
-              ),
-            ),
-            const Spacer(),
-            const Padding(
-              padding: padding,
-              child: ZoomControl(),
-            ),
-            const Spacer(),
-            const Padding(
-              padding: padding,
-              child: CompassControl(),
-            ),
-            const SizedBox(height: 8),
-            const Padding(
-              padding: padding,
-              child: PathNavFollowControl(),
-            ),
-            const SizedBox(height: 12),
-            Directionality(
-              // Here we set the text direction according to the current locale to display the correct direction of the widget.
-              textDirection: Directionality.of(context),
-              child: ValueListenableBuilder(
-                  valueListenable: _navigationState,
-                  builder: (context, state, child) {
-                    switch (state) {
-                      case PathNavState.running:
-                        return Align(
-                          alignment: Alignment.bottomCenter,
-                          child: EtaSheet(
-                            onEndTripPressed: _endTripAndShowHome,
-                            onRoutePressed: _onShowRoutePressed,
-                            onBetterRouteAccept: () => _acceptBetterRoute(context),
-                            onBetterRouteReject: () => _rejectBetterRoute(context),
-                            betterRouteDurationProfit: _betterRouteDurationProfit,
-                            onSizeChanged: _onSizeChanged,
+                        // This made to remove yellow lines under the text
+                        return Material(
+                          type: MaterialType.transparency,
+                          color: Colors.transparent,
+                          child: uikit.BaladyManeuverAndLimit(
+                            isPedestrian: isPedestrian,
+                            speedInfo: uikit.LimitsModel(
+                              speed: info.speed,
+                              speedExceed: info.speedExceed,
+                              speedLimit: info.speedLimit,
+                            ),
+                            maneuver: maneuver != null
+                                ? uikit.BaladyManeuverModel(
+                                    distance: maneuver.distance,
+                                    instruction: maneuver.instruction?.toUIKit(),
+                                    roadName: maneuver.roadName,
+                                    unit: maneuver.unit,
+                                  )
+                                : null,
+                            message: message != null
+                                ? uikit.ManeuverMessageModel(
+                                    comment: message.state.toMessage(context.l10n),
+                                    state: message.state.toUIKit(),
+                                  )
+                                : null,
                           ),
                         );
-                      case PathNavState.paused:
-                        return EtaContinue(
-                          onTap: _onContinuePressed,
-                          onSizeChanged: _onSizeChanged,
-                        );
-                      case PathNavState.finished:
-                        return EtaFinished(
-                          onEndTripPressed: _endTripAndShowHome,
-                          onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
-                          onSizeChanged: _onSizeChanged,
-                        );
-                    }
-                  }),
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: padding,
+                  child: Consumer(
+                    builder: (context, ref, _) {
+                      final navi = ref.watch(appFeaturesProvider);
+                      return Visibility(
+                        visible: navi.naviEnabled,
+                        replacement: const SizedBox.square(
+                          dimension: 28,
+                        ),
+                        child: const TrafficControl(),
+                      );
+                    },
+                  ),
+                ),
+                const Spacer(),
+                const Padding(
+                  padding: padding,
+                  child: ZoomControl(),
+                ),
+                const Spacer(),
+                const Padding(
+                  padding: padding,
+                  child: CompassControl(),
+                ),
+                const SizedBox(height: 8),
+                const Padding(
+                  padding: padding,
+                  child: PathNavFollowControl(),
+                ),
+                const SizedBox(height: 12),
+                Directionality(
+                  // Here we set the text direction according to the current locale to display the correct direction of the widget.
+                  textDirection: Directionality.of(context),
+                  child: ValueListenableBuilder(
+                      valueListenable: _navigationState,
+                      builder: (context, state, child) {
+                        switch (state) {
+                          case PathNavState.running:
+                            return Align(
+                              alignment: Alignment.bottomCenter,
+                              child: EtaSheet(
+                                onEndTripPressed: _endTripAndShowHome,
+                                onRoutePressed: _onShowRoutePressed,
+                                onBetterRouteAccept: () => _acceptBetterRoute(context),
+                                onBetterRouteReject: () => _rejectBetterRoute(context),
+                                betterRouteDurationProfit: _betterRouteDurationProfit,
+                                onSizeChanged: _onSizeChanged,
+                              ),
+                            );
+                          case PathNavState.paused:
+                            return EtaContinue(
+                              onTap: _onContinuePressed,
+                              onSizeChanged: _onSizeChanged,
+                            );
+                          case PathNavState.finished:
+                            return EtaFinished(
+                              expansionNotifier: _expansionNotifier,
+                              onEndTripPressed: _endTripAndShowHome,
+                              onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                              onSizeChanged: _onSizeChanged,
+                            );
+                        }
+                      }),
+                ),
+              ],
             ),
           ],
         ),

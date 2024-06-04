@@ -33,7 +33,7 @@ final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
     TypedStatefulShellBranch<RoutingBranch>(
       routes: <TypedGoRoute<GoRouteData>>[
         TypedGoRoute<RoutingRoute>(
-          path: '/routing',
+          path: RoutingRoute.path,
         ),
       ],
     ),
@@ -90,8 +90,8 @@ class RoutingBranch extends StatefulShellBranchData {
 }
 
 class RoutingRoute extends GoRouteData {
+  static const path = '/routing';
   const RoutingRoute({this.collapseInitially = false});
-
   /// open page with collapsed bottom sheet
   final bool collapseInitially;
 
@@ -159,7 +159,7 @@ RouteBase homeShellRoute({required bool naviEnabled}) => StatefulShellRouteData.
           StatefulShellBranchData.$branch(
             routes: [
               GoRouteData.$route(
-                path: '/routing',
+                path: RoutingRoute.path,
                 factory: $RoutingRouteExtension._fromState,
               ),
             ],
