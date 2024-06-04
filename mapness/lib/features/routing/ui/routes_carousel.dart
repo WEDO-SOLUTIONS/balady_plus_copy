@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
@@ -74,6 +75,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     );
 
     final cameraProvider = ref.read(cameraPositionProvider.notifier);
+    final cameraPadding = ref.read(cameraPaddingProvider.notifier);
 
     ref.listen(
       activeRouteProvider,
@@ -114,7 +116,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           ),
         ));
       }
-      cameraProvider.setPadding(
+      cameraPadding.setPadding(
         CameraSetPaddingMessage(
           leftPadding: 0,
           topPadding: 0,
