@@ -46,7 +46,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
-  final settings = MapObjectManagerSettings.mappness();
+  final settings = MapObjectManagerSettings.search();
 
   ClusteringMapObjectManager? _clustering;
 
