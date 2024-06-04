@@ -1,5 +1,4 @@
-import 'package:balady_uikit/core/icons/general_icons.dart';
-import 'package:balady_uikit/core/icons/transport_icons.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
@@ -16,12 +15,12 @@ extension LayerTypeExt on LayerType {
       };
 
   IconData iconData() => switch (this) {
-        LayerType.favourites => GeneralIcons.bookmark,
+        LayerType.favourites => SystemIcons.bookmark,
         LayerType.invest => GeneralIcons.invest,
         LayerType.buildings => GeneralIcons.buildings,
         LayerType.fencing => GeneralIcons.fence,
         LayerType.joy => GeneralIcons.joy,
-        LayerType.parking => TransportIcons.parkingV2,
+        LayerType.parking => TransportIcons.parkingEnable,
       };
 
   String titleLocale(AppLocalizations l10n) => switch (this) {

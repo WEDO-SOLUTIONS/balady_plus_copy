@@ -31,10 +31,10 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
     final actionIcon = context.isLTR
-        ? SystemIcons.arrowCornerRightS.icon(
+        ? SystemIcons.arrowCornerRightSmall.icon(
             color: context.color.textAndIconsBaseSecondary,
           )
-        : SystemIcons.arrowCornerLeftS.icon(
+        : SystemIcons.arrowCornerLeftSmall.icon(
             color: context.color.textAndIconsBaseSecondary,
           );
 
@@ -102,7 +102,7 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.settings,
+                                    SystemIcons.settings,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.settings,
@@ -115,7 +115,7 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.questionCircleLTR,
+                                    GeneralIcons.questionCircle,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.helpCenter,
@@ -128,7 +128,7 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.infoCircleFill,
+                                    GeneralIcons.infoCircle,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.aboutApp,
@@ -143,7 +143,7 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.starSolid,
+                                    General16Icons.starSolidAlt,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.rateBaladyApp,

@@ -34,11 +34,11 @@ class SuggestItem extends ConsumerWidget {
 
     IconData? icon;
     if (incompleteText != null) {
-      icon = GeneralIcons.placeholder;
+      icon = GeneralIcons.placeHolder;
     } else if (performSearch != null) {
-      icon = GeneralIcons.search;
+      icon = SystemIcons.search;
     } else if (object != null) {
-      icon = GeneralIcons.pinSolid;
+      icon = GeneralIcons.pin;
     }
 
     void _onSuggestTap() {

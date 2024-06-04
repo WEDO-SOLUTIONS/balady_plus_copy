@@ -33,7 +33,7 @@ class KiblahPage extends ConsumerWidget {
           child: Row(
             children: [
               Icon(
-                isArabic ? SystemIcons.arrowCornerRightL : SystemIcons.arrowCornerLeftL,
+                isArabic ? SystemIcons.arrowCornerRightSmall : SystemIcons.arrowCornerLeftSmall,
                 color: context.color.textAndIconsBaseInversePrimary,
               ),
               const SizedBox(width: NumericBase.$0_5x),
@@ -62,7 +62,7 @@ class KiblahPage extends ConsumerWidget {
                 bottom: MediaQuery.of(context).padding.bottom + NumericBase.$0_5x,
               ),
               child: AppButton(
-                primaryIcon: GeneralIcons.mosq2,
+                primaryIcon: GeneralIcons.mosq,
                 primaryLabel: context.l10n.mosquesNearYou,
                 buttonColorScheme: ButtonColorScheme.primary,
                 onTap: () {

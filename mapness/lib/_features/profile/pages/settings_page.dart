@@ -31,7 +31,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     onPressed: () => context.pop(),
-                    icon: context.isLTR ? SystemIcons.arrowCornerLeftL : SystemIcons.arrowCornerRightL,
+                    icon: context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
                   ),
                 ),
                 body: Padding(

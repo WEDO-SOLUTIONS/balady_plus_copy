@@ -24,8 +24,7 @@ class ProfileInfoPage extends ConsumerWidget {
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding:
-                  const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
+              padding: const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
                   title: context.l10n.profileInfo,
@@ -33,9 +32,7 @@ class ProfileInfoPage extends ConsumerWidget {
                   leading: ActionModel(
                     text: context.l10n.back,
                     onPressed: () => context.pop(),
-                    icon: context.isLTR
-                        ? SystemIcons.arrowCornerRightL
-                        : SystemIcons.arrowCornerLeftL,
+                    icon: context.isLTR ? SystemIcons.arrowCornerRightSmall : SystemIcons.arrowCornerLeftSmall,
                   ),
                 ),
                 body: ListView(
@@ -44,8 +41,7 @@ class ProfileInfoPage extends ConsumerWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          if (userData != null)
-                            PersonalData(userInfo: userData),
+                          if (userData != null) PersonalData(userInfo: userData),
                         ],
                       ),
                     ),

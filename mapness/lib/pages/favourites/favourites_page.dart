@@ -29,7 +29,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
 
   void toggleEditing() {
     setState(() {
-      if(isEditing) {
+      if (isEditing) {
         selectedItems.clear();
       }
       isEditing = !isEditing;
@@ -90,7 +90,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         ),
                       if (!isEditing)
                         Icon(
-                          ctx.isLTR ? SystemIcons.arrowCornerLeftL : SystemIcons.arrowCornerRightL,
+                          ctx.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
                           color: ctx.color.textAndIconsStatusAccent,
                         ),
                       if (!isEditing)
@@ -217,7 +217,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   key: Key('work${work?.id}'),
                                   title: workTitle,
                                   address: work?.subtitle ?? ctx.l10n.addAddress,
-                                  iconData: GeneralIcons.caseIcon,
+                                  iconData: GeneralIcons.briefcase,
                                   isEditing: isEditing && work != null,
                                   isAdded: work != null,
                                   onDelete: () => _deleteItem(work),

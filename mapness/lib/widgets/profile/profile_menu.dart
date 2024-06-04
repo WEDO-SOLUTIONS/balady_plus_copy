@@ -51,7 +51,7 @@ class ProfileMenu extends StatelessWidget {
           //     }),
         ],
         icon: AppIcons(
-          iconData: GeneralIcons.ellipsis,
+          iconData: SystemIcons.ellipsis,
           color: context.color.textAndIconsBaseSecondary,
         ),
         padding: EdgeInsets.zero,
