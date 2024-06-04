@@ -305,6 +305,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         final item = state.items[index];
                         const radius = Radius.circular(12);
                         return Container(
+                          clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                               color: context.color.surfaceBaseSecondary,
                               borderRadius: BorderRadius.only(
@@ -314,6 +315,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 bottomRight: index == state.items.length - 1 ? radius : Radius.zero,
                               )),
                           child: FavouriteItemWidget(
+                            isFirst: index == 0,
+                            isLast: index == state.items.length - 1,
                             isSelected: selectedItems.containsKey(item.id),
                             onSelect: (isSelected) {
                               setState(() {
