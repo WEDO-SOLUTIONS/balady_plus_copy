@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_expression_function_bodies
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
@@ -69,7 +70,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   @override
   void dispose() {
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
+    if (Platform.isIOS) {
+      ref.read(cameraPaddingProvider.notifier).resetPadding(
+            defaultPadding: CameraSetPaddingMessage(
+              leftPadding: 0,
+              topPadding: 0,
+              rightPadding: 0,
+              bottomPadding: 0,
+            ),
+            applyForIos: true,
+          );
+    } else {
+      ref.read(cameraPaddingProvider.notifier).resetPadding();
+    }
+
     _naviEventsListener?.cancel();
     WakelockPlus.disable();
     super.dispose();
