@@ -51,12 +51,13 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   void initState() {
     super.initState();
 
+    _draggableScrollableController = DraggableScrollableController();
+    setupTapListener();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
-      setupTapListener();
+      _calculatePadding();
     });
-
-    _draggableScrollableController = DraggableScrollableController();
 
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
@@ -98,8 +99,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   Future<void> setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
-
-    _calculatePadding();
   }
 
   void _calculatePadding() {
