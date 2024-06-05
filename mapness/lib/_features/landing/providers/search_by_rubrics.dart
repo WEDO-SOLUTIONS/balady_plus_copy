@@ -88,7 +88,7 @@ class SearchByRubrics extends _$SearchByRubrics {
   }
 
   Future<List<Marker>?> _showAndReturnMarkers(SearchResultMessage value) async {
-    final mapSetting = MapObjectManagerSettings.quickFilter();
+    final mapSetting = MapObjectManagerSettings.search();
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
         named: mapSetting.name,

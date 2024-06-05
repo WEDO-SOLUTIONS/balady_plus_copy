@@ -47,7 +47,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
   @override
   Widget build(BuildContext context) {
     final selectedQuickFilter = ref.watch(searchByRubricsQueryProvider);
-    final settings = MapObjectManagerSettings.quickFilter();
+    final settings = MapObjectManagerSettings.search();
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
         named: settings.name,
