@@ -314,7 +314,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.Compliance_Certificate_Open_Select_EngOffice_Event);
     }
-    if (e.selectedLicense != null) { 
+    if (e.selectedLicense != null && state.requestId != null) {
       add(const GetRequestDetails(updateCurrentRequest: true)); 
     }
   }
