@@ -27,7 +27,6 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
 enum LangingFocusMaker { iwish, mosques }
@@ -55,7 +54,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     setupTapListener();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
       _calculatePadding();
     });
 

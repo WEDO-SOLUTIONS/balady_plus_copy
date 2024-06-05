@@ -107,7 +107,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initDeepLinks();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Update MediaQueryInfoProvider
+      // Update MediaQueryInfoProvider with the initial MediaQuery
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
     });
   }
