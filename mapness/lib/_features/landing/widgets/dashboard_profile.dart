@@ -1,5 +1,3 @@
-import 'package:balady_plus/app/features/_shared_features/notifications_count/widgets/notifications_count_icon.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -27,42 +25,30 @@ class DashboardProfile extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: userData.maybeWhen(
-        orElse: () => Text(
-          _greeting(context),
-          style: context.textStyle.heading1
-              .copyWith(color: context.color.textAndIconsStatusAccent),
+          orElse: () => Text(
+                _greeting(context),
+          style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsStatusAccent),
           textAlign: TextAlign.end,
         ),
         data: (userInfo) {
           String? name;
-          if (userInfo != null) {
-            final localizedName = switch (lang) {
-              Language.arabic => userInfo.arName,
-              _ => userInfo.enName,
+            if (userInfo != null) {
+              final localizedName = switch (lang) {
+                Language.arabic => userInfo.arName,
+                _ => userInfo.enName,
+              }
+                  ?.split(' ')
+                  .first;
+              if (localizedName != null && localizedName.isNotEmpty) {
+                name = '${_greeting(context)}, $localizedName';
+              }
             }
-                ?.split(' ')
-                .first;
-            if (localizedName != null && localizedName.isNotEmpty) {
-              name = '${_greeting(context)}, $localizedName';
-            }
-          }
-          return Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                name ?? _greeting(context),
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .heading2
-                    .apply(color: context.color.strokeAccent),
-                textAlign: TextAlign.end,
-              ),
-              const Spacer(),
-              const NotificationsCountIcon(),
-            ],
-          );
-        },
-      ),
+            return Text(
+              name ?? _greeting(context),
+              style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsStatusAccent),
+              textAlign: TextAlign.end,
+            );
+          },),
     );
   }
 }

@@ -29,7 +29,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
 
   void toggleEditing() {
     setState(() {
-      if(isEditing) {
+      if (isEditing) {
         selectedItems.clear();
       }
       isEditing = !isEditing;
@@ -90,7 +90,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         ),
                       if (!isEditing)
                         Icon(
-                          ctx.isLTR ? SystemIcons.arrowCornerLeftL : SystemIcons.arrowCornerRightL,
+                          ctx.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
                           color: ctx.color.textAndIconsStatusAccent,
                         ),
                       if (!isEditing)
@@ -217,7 +217,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   key: Key('work${work?.id}'),
                                   title: workTitle,
                                   address: work?.subtitle ?? ctx.l10n.addAddress,
-                                  iconData: GeneralIcons.caseIcon,
+                                  iconData: GeneralIcons.briefcase,
                                   isEditing: isEditing && work != null,
                                   isAdded: work != null,
                                   onDelete: () => _deleteItem(work),
@@ -305,6 +305,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         final item = state.items[index];
                         const radius = Radius.circular(12);
                         return Container(
+                          clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                               color: context.color.surfaceBaseSecondary,
                               borderRadius: BorderRadius.only(
@@ -314,6 +315,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 bottomRight: index == state.items.length - 1 ? radius : Radius.zero,
                               )),
                           child: FavouriteItemWidget(
+                            isFirst: index == 0,
+                            isLast: index == state.items.length - 1,
                             isSelected: selectedItems.containsKey(item.id),
                             onSelect: (isSelected) {
                               setState(() {

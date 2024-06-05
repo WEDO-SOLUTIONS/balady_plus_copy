@@ -59,13 +59,14 @@ class PinnedPlaceCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: SizedBox(
-                          height: 32,
-                          width: 32,
-                          child: isAdded
-                              ? iconData.icon(color: context.color.textAndIconsStatusAccent)
-                              : GeneralIcons.zoomPlus.icon(
-                                  color: context.color.strokeAccent,
-                                )),
+                        height: 32,
+                        width: 32,
+                        child: isAdded
+                            ? iconData.icon(color: context.color.textAndIconsStatusAccent)
+                            : SystemIcons.zoomPlus.icon(
+                                color: context.color.strokeAccent,
+                              ),
+                      ),
                     ),
                   ),
                 ),
@@ -105,13 +106,13 @@ class PinnedPlaceCard extends StatelessWidget {
                     // ),
                     PopupModel(
                       title: context.l10n.share,
-                      icon: GeneralIcons.share,
+                      icon: SystemIcons.share,
                       onTap: onTapShare,
                       color: context.color.textAndIconsBasePrimary,
                     ),
                     PopupModel(
                       title: context.l10n.change,
-                      icon: GeneralIcons.bookmarkAdd,
+                      icon: SystemIcons.bookmarkAdd,
                       onTap: onTapChange,
                       color: context.color.textAndIconsBasePrimary,
                     ),
@@ -125,7 +126,7 @@ class PinnedPlaceCard extends StatelessWidget {
                       onTap: onDelete,
                     ),
                   ],
-                  child: GeneralIcons.ellipsis.icon(
+                  child: SystemIcons.ellipsis.icon(
                     color: context.color.textAndIconsStatusAccent,
                   ),
                 ),

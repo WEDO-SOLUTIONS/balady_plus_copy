@@ -41,7 +41,11 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.2.4
+    version: ^1.3.1
+
+  urbi_utils:
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: ^0.1.0
 
   collection: ^1.17.1
   flutter_localizations:
@@ -109,7 +113,7 @@ dev_dependencies:
   random_string: ^2.3.1
   flutter_lints: ^2.0.3
   # a tool for running code generators
-  build_runner: ^2.4.9
+  build_runner: 2.4.6
   # the code generator
   riverpod_generator: 2.3.3
   # riverpod_lint makes it easier to work with Riverpod

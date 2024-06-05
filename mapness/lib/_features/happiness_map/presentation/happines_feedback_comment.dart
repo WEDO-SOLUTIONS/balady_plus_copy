@@ -45,25 +45,28 @@ class _HappinessFeedbackCommentState
     /// keep provider alive
     ref.watch(happinessManagerProvider.select((value) => null));
 
-    return LabeledDraggableSheet(
-      onClose: onClose,
-      title: context.l10n.shareYourFeelings,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IwishTextEditingField(
-            onChanged: (text) => _comment = text,
-            initialValue: _comment,
-          ),
-          const SizedBox(height: 16),
-          LabeledElevatedButton(
-            onPressed: onSubmit,
-            label: context.l10n.ready,
-          ),
-          const SizedBox(height: 20),
-          SizedBox(height: bottomPadding),
-        ],
+    return SafeArea(
+      bottom: false,
+      child: LabeledDraggableSheet(
+        onClose: onClose,
+        title: context.l10n.shareYourFeelings,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IwishTextEditingField(
+              onChanged: (text) => _comment = text,
+              initialValue: _comment,
+            ),
+            const SizedBox(height: 16),
+            LabeledElevatedButton(
+              onPressed: onSubmit,
+              label: context.l10n.ready,
+            ),
+            const SizedBox(height: 20),
+            SizedBox(height: bottomPadding),
+          ],
+        ),
       ),
     );
   }

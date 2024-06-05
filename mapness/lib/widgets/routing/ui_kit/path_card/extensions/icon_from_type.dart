@@ -4,7 +4,6 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status
 
 extension PathBadgeIcon on PathCardStatusType {
   IconData icon(BuildContext context) {
-    final isLTR = Directionality.of(context) == TextDirection.ltr;
     switch (this) {
       case PathCardStatusType.shortest:
         return General16Icons.starSolid;
@@ -13,7 +12,7 @@ extension PathBadgeIcon on PathCardStatusType {
       case PathCardStatusType.paid:
         return EventsOnTheRoute.tollRoadEn;
       case PathCardStatusType.incline:
-        return isLTR ? EventsOnTheRoute.ascentLtr : EventsOnTheRoute.ascentRtl;
+        return EventsOnTheRoute.ascentLTR;
     }
   }
 }

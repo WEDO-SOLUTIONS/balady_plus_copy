@@ -113,7 +113,7 @@ class PathCard extends StatelessWidget {
                   children: <Widget>[
                     if (calories != null) ...[
                       _IconAndTextBlock(
-                        icon: EventsOnTheRoute.calories,
+                        icon: EventsOnTheRoute.callories,
                         value: calories!.toInt(),
                         label: localizations.calories,
                       ),
@@ -139,9 +139,9 @@ class PathCard extends StatelessWidget {
 
   IconData getStepIcon(BuildContext context) {
     if (Directionality.of(context) == TextDirection.ltr) {
-      return EventsOnTheRoute.stepPedestrianLtr;
+      return TransportIcons.pedestrianLTR;
     } else {
-      return EventsOnTheRoute.stepPedestrianRtl;
+      return TransportIcons.pedestrianRTL;
     }
   }
 }

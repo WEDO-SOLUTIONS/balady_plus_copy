@@ -110,7 +110,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                     onTap: () => setState(() => _collapsed = !_collapsed),
                     options: ContentRowOptions(
                       leadingIcon: AppIcons(
-                        iconData: _collapsed ? SystemIcons.arrowCornerDownL : SystemIcons.arrowCornerUpL,
+                        iconData: _collapsed ? SystemIcons.arrowCornerDownSmall : SystemIcons.arrowCornerUpSmall,
                         color: context.color.textAndIconsBaseSecondary,
                         size: 24,
                       ),
