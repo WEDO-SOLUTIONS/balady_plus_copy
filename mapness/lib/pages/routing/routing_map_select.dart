@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +12,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/dgis_handle.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
@@ -31,14 +30,7 @@ class RoutingMapSelect extends ConsumerStatefulWidget {
 class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
   @override
   void deactivate() {
-    ref.read(cameraPositionProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: 0,
-          ),
-        );
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
     super.deactivate();
   }
 
@@ -120,9 +112,9 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                 final double screenHeight = MediaQuery.of(context).size.height;
                 final extendSize = screenHeight - value.height;
                 // TODO(Sergei): refactor this (we need additional research)
-                final additionalPadding = Platform.isAndroid ? extendSize / 2 - 80 : 0;
+                final additionalPadding = extendSize / 2 - 80;
 
-                ref.read(cameraPositionProvider.notifier).setPadding(
+                ref.read(cameraPaddingProvider.notifier).setPadding(
                       CameraSetPaddingMessage(
                         leftPadding: 0,
                         topPadding: (topPadding * pixelSize).floor(),
