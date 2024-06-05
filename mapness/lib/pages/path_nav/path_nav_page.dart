@@ -72,14 +72,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   void dispose() {
     if (Platform.isIOS) {
       ref.read(cameraPaddingProvider.notifier).resetPadding(
-            defaultPadding: CameraSetPaddingMessage(
-              leftPadding: 0,
-              topPadding: 0,
-              rightPadding: 0,
-              bottomPadding: 0,
-            ),
-            applyForIos: true,
-          );
+              defaultPadding: CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: 0,
+            rightPadding: 0,
+            bottomPadding: 0,
+          ));
     } else {
       ref.read(cameraPaddingProvider.notifier).resetPadding();
     }
@@ -330,7 +328,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
             rightPadding: 0,
             bottomPadding: (pixelSize * padding).floor(),
           ),
-          applyForIos: true,
         );
   }
 

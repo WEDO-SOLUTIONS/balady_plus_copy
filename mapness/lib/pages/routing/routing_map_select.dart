@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -114,7 +112,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                 final double screenHeight = MediaQuery.of(context).size.height;
                 final extendSize = screenHeight - value.height;
                 // TODO(Sergei): refactor this (we need additional research)
-                final additionalPadding = Platform.isAndroid ? extendSize / 2 - 80 : 0;
+                final additionalPadding = extendSize / 2 - 80;
 
                 ref.read(cameraPaddingProvider.notifier).setPadding(
                       CameraSetPaddingMessage(

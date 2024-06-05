@@ -85,13 +85,13 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
                 final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
 
                 cameraPaddingController.setPadding(
-                    CameraSetPaddingMessage(
-                      leftPadding: 0,
-                      topPadding: 0,
-                      rightPadding: 0,
-                      bottomPadding: (height * maxHeight * pixelSize - navbarSize * pixelSize).floor(),
-                    ),
-                    applyForIos: true);
+                  CameraSetPaddingMessage(
+                    leftPadding: 0,
+                    topPadding: 0,
+                    rightPadding: 0,
+                    bottomPadding: (height * maxHeight * pixelSize - navbarSize * pixelSize).floor(),
+                  ),
+                );
                 Future.delayed(
                   Duration.zero,
                   () => this.height.value = height * maxHeight,

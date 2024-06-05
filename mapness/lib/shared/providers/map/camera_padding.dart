@@ -12,9 +12,9 @@ class CameraPadding extends _$CameraPadding {
   @override
   CameraSetPaddingMessage? build() => null;
 
-  Future<void> resetPadding({CameraSetPaddingMessage? defaultPadding, bool applyForIos = false}) async {
+  Future<void> resetPadding({CameraSetPaddingMessage? defaultPadding}) async {
     if (defaultPadding != null) {
-      await setPadding(defaultPadding, applyForIos: applyForIos);
+      await setPadding(defaultPadding);
     } else {
       final mediaQuery = ref.read(mediaQueryInfoProvider);
 
@@ -35,23 +35,12 @@ class CameraPadding extends _$CameraPadding {
         bottomPadding: initPadding.toInt(),
       );
 
-      await setPadding(padding, applyForIos: applyForIos);
+      await setPadding(padding);
     }
   }
 
-  Future<void> setPadding(CameraSetPaddingMessage padding, {bool applyForIos = false}) async {
+  Future<void> setPadding(CameraSetPaddingMessage padding) async {
     final cameraProvider = ref.watch(cameraPositionProvider.notifier);
-    if (applyForIos == false && Platform.isIOS) {
-      await cameraProvider.setPadding(
-        CameraSetPaddingMessage(
-          bottomPadding: 0,
-          topPadding: 0,
-          leftPadding: 0,
-          rightPadding: 0,
-        ),
-      );
-      return;
-    }
 
     state = padding;
 
