@@ -83,7 +83,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final tappableRect = _getRectWithPaddings(visibleRect, paddingConfig);
 
   // Check if point is in viewport
-  var isInViewZone = await _isInViewZone(visibleRect, dgisController, markerPoint);
+  final isInViewZone = await _isInViewZone(visibleRect, dgisController, markerPoint);
 
   // Check if point is in tappable zone
   final isInTappableZone = await _isInViewZone(tappableRect, dgisController, markerPoint);
