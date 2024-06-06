@@ -106,7 +106,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
       );
     }
 
-    if (requestState is AsyncLoading || requestState.requireValue == true) {
+    if (requestState is AsyncLoading || requestState.requireValue) {
       return Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
