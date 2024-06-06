@@ -122,7 +122,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   // If point is in view zone, we do nothing or we slightly move to point of the camera if needed
   // Else we animate to marker point (we will see the marker on the screen and the camera will be centered on it)
-  // If you want to center the map, you must pass the sum value to PoiCameraConfig
+  // If you want to center the map, you must pass the zoom value to PoiCameraConfig
   final cameraPoint = isInViewZone && newPoint != null && cameraConfig?.zoom == null ? newPoint : markerPoint;
 
   // Act like 2GIS app: if point is in view zone, we do:
