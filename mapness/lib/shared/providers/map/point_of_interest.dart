@@ -122,13 +122,15 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   // If point is in view zone, we do nothing or we slightly move to point of the camera if needed
   // Else we animate to marker point (we will see the marker on the screen and the camera will be centered on it)
-  final cameraPoint = isInViewZone && newPoint != null ? newPoint : markerPoint;
+  // If you want to center the map, you must pass the zoom value to PoiCameraConfig
+  final cameraPoint = isInViewZone && newPoint != null && cameraConfig?.zoom == null ? newPoint : markerPoint;
 
   // Act like 2GIS app: if point is in view zone, we do:
   // a) slightly animate to point if it's not in tappable zone but in view zone
   // b) tilt set to 0 in all cases
   // c) zoom set to 17 if point is not in view zone or if zoom is not set
   // d) bearing set to 0 if not set
+
   final cameraPosition = ref.read(cameraPositionProvider.notifier);
   await cameraPosition.animateTo(
     CameraPositionMessage(
