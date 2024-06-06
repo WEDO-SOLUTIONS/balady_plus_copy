@@ -59,21 +59,34 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   void initState() {
     super.initState();
 
-    ref.read(dgisControllerProvider).value?.setNavigatorVoice(
-          ref.read(navigatorVoiceProvider),
-        );
-    _naviEventsListener = ref.read(dgisControllerProvider).value?.navigationEvents.listen(_naviEvent);
-    unawaited(ref.read(dgisControllerProvider).value?.startNavigation());
+    _initNavigation();
+
     WakelockPlus.enable();
   }
 
   @override
-  void dispose() {
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
+  void deactivate() {
+    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
 
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
     _naviEventsListener?.cancel();
     WakelockPlus.disable();
     super.dispose();
+  }
+
+  Future<void> _initNavigation() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+
+    await dgisController.setNavigatorVoice(
+      ref.read(navigatorVoiceProvider),
+    );
+    _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
+    await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
+    await dgisController.startNavigation();
   }
 
   @override
@@ -217,7 +230,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
       await ref.read(dgisControllerProvider).value?.stopNavigation();
       _navigationState.value = PathNavState.finished;
     }
-    _setPaddingToCamera(0.0);
     action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();

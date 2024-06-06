@@ -23,7 +23,6 @@ import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.StyleZoom
-import ru.dgis.sdk.map.CameraPositionPoint
 import ru.dgis.sdk.map.Tilt
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.map.styleZToProjectionZ
@@ -112,7 +111,6 @@ class NavigationHandler(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
         )
 
-        map.camera.positionPoint = CameraPositionPoint(x = 0.5f, y = 0.85f)
         navigationManager.mapFollowController.setFollow(true)
     }
 
@@ -131,7 +129,6 @@ class NavigationHandler(
         if (this.prevCameraBehaviour != null) {
             map.camera.setBehaviour(this.prevCameraBehaviour!!)
         }
-        map.camera.positionPoint = CameraPositionPoint(x = 0.5f, y = 0.5f)
     }
 
     override fun close() {
