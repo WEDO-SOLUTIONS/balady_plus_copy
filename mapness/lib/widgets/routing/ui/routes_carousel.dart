@@ -26,7 +26,7 @@ class RoutesCarousel extends ConsumerWidget {
   final RouteSearchOptionsMessage navType;
   final PageController pageController;
   final AsyncValue<List<RouteInfo>> routes;
-  final Function(int) onActiveChanged;
+  final ValueChanged<int> onActiveChanged;
   final Function() startNavigation;
   final Function() refresh;
 
@@ -38,6 +38,7 @@ class RoutesCarousel extends ConsumerWidget {
             pageController: pageController,
             routes: routes,
             height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
+            onActiveChanged: onActiveChanged,
             itemBuilder: (context, index) {
               final route = routes[index];
               final distanceInMeters = route.distance;
@@ -130,6 +131,7 @@ class _CarouselWrapper extends StatelessWidget {
   final double height;
   final PageController pageController;
   final List<RouteInfo> routes;
+  final ValueChanged<int> onActiveChanged;
   final Widget Function(BuildContext, int) itemBuilder;
 
   const _CarouselWrapper({
@@ -137,6 +139,7 @@ class _CarouselWrapper extends StatelessWidget {
     required this.routes,
     required this.height,
     required this.pageController,
+    required this.onActiveChanged,
   });
 
   @override
@@ -148,6 +151,7 @@ class _CarouselWrapper extends StatelessWidget {
       height: height,
       child: PageView.builder(
         controller: pageController,
+        onPageChanged: onActiveChanged,
         padEnds: false,
         itemBuilder: itemBuilder,
         itemCount: routes.length,
