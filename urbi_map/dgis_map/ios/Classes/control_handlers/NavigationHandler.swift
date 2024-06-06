@@ -198,6 +198,8 @@ class NavigationHandler {
         self.map.camera.setBehaviour(
             behaviour: self.navigationManager.mapFollowController.cameraBehaviour
         )
+        
+        try? self.map.camera.setPositionPoint(positionPoint: CameraPositionPoint(x: 0.5, y: 0.85))
         self.navigationManager.mapFollowController.setFollow(follow: true)
     }
     
@@ -216,6 +218,8 @@ class NavigationHandler {
         if let prevCameraBehaviour {
             self.map.camera.setBehaviour(behaviour: prevCameraBehaviour)
         }
+
+        try? self.map.camera.setPositionPoint(positionPoint: CameraPositionPoint(x: 0.5, y: 0.5))
     }
     
     func startNavigation(
