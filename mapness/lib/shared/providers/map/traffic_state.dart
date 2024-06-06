@@ -1,43 +1,38 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'traffic_state.g.dart';
 
-@riverpod
-class _TrafficState extends _$TrafficState {
+@Riverpod(keepAlive: true)
+class TrafficState extends _$TrafficState {
+  StreamSubscription<TrafficStateEvent>? _trafficSubscription;
+  DgisMapController? _dgisController;
   @override
   TrafficStateEvent build() {
-    final dgisController = ref.watch(dgisControllerProvider);
-    final trafficSubscription = dgisController
-        .value?.naviTrafficParkingController.trafficStateEvents
-        .listen(_trafficListener);
-    dgisController.value?.naviTrafficParkingController.onAttached();
+    _initListeners();
+
+    return const TrafficStateEvent(status: TrafficControlStatus.hidden, score: 0);
+  }
+
+  Future<void> _initListeners() async {
+    _dgisController = await ref.read(dgisControllerProvider.future);
+
+    await _dgisController?.naviTrafficParkingController.onAttached();
+    _trafficSubscription =
+        _dgisController?.naviTrafficParkingController.trafficStateEvents.listen((event) => state = event);
 
     ref.onDispose(
       () {
-        trafficSubscription?.cancel();
-        dgisController.value?.naviTrafficParkingController.onDetached();
+        _trafficSubscription?.cancel();
+        _dgisController?.naviTrafficParkingController.onDetached();
       },
     );
-
-    return const TrafficStateEvent(
-      score: 0,
-      status: TrafficControlStatus.hidden,
-    );
-  }
-
-  void _trafficListener(TrafficStateEvent event) {
-    state = event;
   }
 
   void onTrafficTap() {
-    ref
-        .watch(dgisControllerProvider)
-        .value
-        ?.naviTrafficParkingController
-        .onTrafficClicked();
+    _dgisController?.naviTrafficParkingController.onTrafficClicked();
   }
 }
-
-final trafficStateProvider = _trafficStateProvider;

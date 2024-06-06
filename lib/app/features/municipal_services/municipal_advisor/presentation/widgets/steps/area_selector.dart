@@ -12,6 +12,8 @@ import '../../../municipal_advisor_exports.dart'
         MunicipalAdvisorBloc,
         MunicipalAdvisorSelectAreaEvent,
         MunicipalAdvisorState;
+import '../../municipal_advisor_bloc/municipal_advisor_bloc.dart';
+import '../addetional_activity_item_widget.dart';
 
 class AreaSelector extends StatefulWidget {
   final bool partOfLicenseCost;
@@ -24,9 +26,11 @@ class AreaSelector extends StatefulWidget {
   State<AreaSelector> createState() => _AreaSelectorState();
 }
 
+
 class _AreaSelectorState extends State<AreaSelector> {
   final _controller = TextEditingController();
 
+  bool isTextValide = false;
   @override
   initState() {
     super.initState();
@@ -40,6 +44,7 @@ class _AreaSelectorState extends State<AreaSelector> {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
       builder: (context, state) {
         return Column(
@@ -47,10 +52,14 @@ class _AreaSelectorState extends State<AreaSelector> {
           children: [
             SizedBox(height: widget.partOfLicenseCost ? 16 : 4),
             if (widget.partOfLicenseCost)
-              CustomTextWidget(
-                'area'.tr(),
-                textStyle: AppStyle.dropDownTitleTextStyle,
-              )
+
+
+
+                CustomTextWidget(
+                  'municipalAdvisorAreaHint'.tr(),
+                  textStyle: AppStyle.dropDownTitleTextStyle,
+                )
+
             else
               CustomTextWidget(
                 'municipalAdvisorAreaHint'.tr(),
@@ -70,20 +79,43 @@ class _AreaSelectorState extends State<AreaSelector> {
                 FilteringTextInputFormatter.digitsOnly,
               ],
               onValidate: (value) {
-                if (value!.isEmpty ||
-                    double.parse(value) < state.activityDetails!.minimumArea ||
-                    double.parse(value) > state.activityDetails!.maximumArea) {
-                  final min =
-                      state.activityDetails!.minimumArea.toStringAsFixed(0);
-                  String max = '';
-                  if (state.activityDetails!.maximumArea != double.infinity) {
-                    max =
-                        '${'to'.tr()} ${state.activityDetails!.maximumArea.toStringAsFixed(0)}';
-                  }
-                  return '${'municipalAdvisorAreaError'.tr()} $min $max ${'m2'.tr()}';
-                }
 
-                return null;
+                return onValidate(value,state);
+                // if (value!.isEmpty ||
+                //     double.parse(value) < state.activityDetails!.minimumArea ||
+                //     double.parse(value) > state.activityDetails!.maximumArea) {
+                //   final min =
+                //       state.activityDetails!.minimumArea.toStringAsFixed(0);
+                //   String max = '';
+                //   if (state.activityDetails!.maximumArea != double.infinity) {
+                //     max =
+                //         '${'to'.tr()} ${state.activityDetails!.maximumArea.toStringAsFixed(0)}';
+                //   }
+                //   isTextValide = false;
+                //   return '${'municipalAdvisorAreaError'.tr()} $min $max ${'m2'.tr()}';
+                // }
+                // isTextValide = true;
+                // return null;
+              },
+              onChanged: (String value) async {
+
+                if (widget.partOfLicenseCost && value.isNotEmpty)
+                  {
+                    if (onValidate(value,state) == null&&isTextValide == true) {
+                      await Future.delayed(const Duration(seconds: 2));
+                      final area = num.tryParse(_controller.text);
+                      if (area != null ) {
+                        context.read<MunicipalAdvisorBloc>().add(
+                          MunicipalAdvisorSelectAreaEvent(
+                              area: area, isCostingFrees: true),
+                        );
+                        context.read<MunicipalAdvisorBloc>().add(
+                          MunicipalAdvisorCalculateLicenseEvent(),);
+                      }
+                    }
+
+
+                  }
               },
               suffixIcon: CustomTextWidget(
                 'm2'.tr(),
@@ -91,6 +123,32 @@ class _AreaSelectorState extends State<AreaSelector> {
                 textStyle: AppStyle.textFieldSuffixTextStyle,
               ),
             ),
+            const SizedBox(height: 16),
+
+            if (widget.partOfLicenseCost)
+            if (state.selectedAdditionalActivities.isNotEmpty) ...[
+              ...state.selectedAdditionalActivities
+                  .map((e) => AddetionalActivityItemWidget(
+                item: e,
+                onChangedArea: (String? value) {
+                  context.read<MunicipalAdvisorBloc>().add(
+                      ChangeAreaInAddetionalActivityEvent(
+                          activityDetails: e, area: value ?? ""));
+                  context.read<MunicipalAdvisorBloc>().add(
+                    MunicipalAdvisorCalculateLicenseEvent(),);
+
+                },
+                onDelete: () {
+                  context.read<MunicipalAdvisorBloc>().add(
+                      DeleteAddetionalActivityEvent(
+                          activityDetails: e));
+                  context.read<MunicipalAdvisorBloc>().add(
+                    MunicipalAdvisorCalculateLicenseEvent(),);
+                },
+              ))
+                  .toList()
+            ],
+
             const SizedBox(height: 16),
             if (!widget.partOfLicenseCost)
               ElevatedButtonWidget.choose(
@@ -112,4 +170,28 @@ class _AreaSelectorState extends State<AreaSelector> {
       },
     );
   }
+
+  String? onValidate(String? value,MunicipalAdvisorState state)
+  {
+
+
+      if (value!.isEmpty ||
+          double.parse(value) < state.activityDetails!.minimumArea ||
+          double.parse(value) > state.activityDetails!.maximumArea) {
+        final min =
+        state.activityDetails!.minimumArea.toStringAsFixed(0);
+        String max = '';
+        if (state.activityDetails!.maximumArea != double.infinity) {
+          max =
+          '${'to'.tr()} ${state.activityDetails!.maximumArea.toStringAsFixed(0)}';
+        }
+        isTextValide = false;
+        return '${'municipalAdvisorAreaError'.tr()} $min $max ${'m2'.tr()}';
+      }
+      isTextValide = true;
+      return null;
+    }
+
+
+
 }

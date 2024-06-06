@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.11.1+211
-#version: 3.30.2+386
+#version: 3.11.1+211
+version: 3.30.2+390
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -152,7 +152,7 @@ dependencies:
       url: https://github.com/MahmoudBaha/flutter_google_places
   flutter_picker: ^2.1.0
   percent_indicator: ^4.2.3
-  flutter_staggered_grid_view: ^0.6.0
+  flutter_staggered_grid_view: ^0.7.0
   flutter_cached_pdfview: ^0.4.2
   network_info_plus: ^2.1.4+1
   dart_ipify: ^1.1.1
@@ -182,7 +182,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.2.3
+    version: ^1.2.4
 
   mapness:
     path: mapness
@@ -201,6 +201,8 @@ dependencies:
   preload_page_view: ^0.2.0
   flutter_linkify: ^6.0.0
   screenshot: ^2.1.0
+  # To scroll list to specific index and do not calculate width and height by ourselves
+  scrollable_positioned_list: ^0.3.8
 
 
 #  Show App Popup Menu form button in poiation
@@ -271,7 +273,6 @@ flutter:
     - assets/icons/inq/
     - assets/icons/msr/
     - assets/icons/tsr/
-    - assets/images/building/
     - assets/compliance_pdf/images/
     - assets/compliance_pdf/text/
     - assets/athkar/

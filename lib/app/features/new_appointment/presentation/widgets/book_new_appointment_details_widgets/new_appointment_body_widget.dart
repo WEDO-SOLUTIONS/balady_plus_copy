@@ -131,8 +131,19 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           items: model.municipalitiesList,
           value: model.municipalityType,
           onChangeType: (DropDownItem? item) {
-            if (item != null) model.getSubMunicipalities(item);
-            model.validateForm();
+            if (item != null && item.externalSystem==false) {
+              model.getSubMunicipalities(item);
+              model.validateForm();
+            }
+            else if (item != null && item.externalSystem==true)
+            {
+
+                CommonFunctions.showError( "${"redircetionMessage1".tr()}${item.name}${"redircetionMessage2".tr()}"+"<a href=\"${item.externalSystemUrl}\"> ${"here".tr()}</a>",true);
+
+                //
+
+              }
+
           },
           label: ("homeUpComingAppointmentMunicipality").tr(),
           hint: ("bookNewAppointmentMunicipalityDropDownHintWord").tr(),

@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/verify_otp_request.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/use_cases/delete_compliance_request.dart';
+import 'package:balady_plus/app/features/create_compliance/domain/use_cases/get_appointment.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_event.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_state.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
@@ -30,6 +31,7 @@ import '../../domain/entities/compliance_gis_resopnse.dart';
 import '../../domain/entities/complinace_licenses_response.dart';
 import '../../domain/entities/land_subsidy_contract_request.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
+import '../../domain/entities/submit_emtithal_request.dart';
 import '../../domain/use_cases/apply_compliance.dart';
 import '../../domain/use_cases/cancel_compliance_certificate.dart';
 import '../../domain/use_cases/download_compliance_certificate.dart';
@@ -63,6 +65,7 @@ import '../widgets/compliance_submission/fifth_submit_step.dart';
 import '../widgets/compliance_submission/first_submit_step_compliance.dart';
 import '../widgets/compliance_submission/fourth_step_compliance.dart';
 import '../widgets/compliance_submission/second_submit_step_compliance.dart';
+import '../widgets/compliance_submission/seventh_submit_step.dart';
 import '../widgets/compliance_submission/sixth_submit_step.dart';
 import '../widgets/compliance_submission/third_submit_step_compliance.dart';
 import '../widgets/compliance_submission/usage_submit_step_compliance.dart';
@@ -79,6 +82,27 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     FifthComplianceSubmitStep(),
     SixthComplianceSubmitStep(),
     CreateComplianceSummurySection()
+  ];
+
+  List pagesListHimSelfWithAppointments = [
+    FirstComplianceSubmissionWidget(),
+    SecondSubmissonCompliance(),
+
+    ThirdSubmissionCompliance(),
+
+    UsageSubmissionCompliance(),
+
+    FourthStepCompliance(),
+    FifthComplianceSubmitStep(),
+    SixthComplianceSubmitStep(),
+   SeventhSubmitComplianceSubmitStep(),
+    CreateComplianceSummurySection()
+  ];
+
+
+ List pageEditAppointments = [
+
+   SeventhSubmitComplianceSubmitStep(),
   ];
 
   List pagesListEngOffice = [
@@ -117,6 +141,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   final UploadClauseAttachment _uploadClauseAttachment;
   final ValidateComplianceCertificateItem _validateComplianceCertificateItem;
   final CancelComplianceCertificate _cancelComplianceCertificate;
+  final GetComplianceAppointments _getAppointments;
   final bool? showDetails;
 
   ComplianceBloc({this.showDetails})
@@ -150,6 +175,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         _uploadClauseAttachment = UploadClauseAttachment(repository: sl()),
         _validateComplianceCertificateItem =
             ValidateComplianceCertificateItem(repository: sl()),
+        _getAppointments = GetComplianceAppointments(repository: sl()),
         _cancelComplianceCertificate =
             CancelComplianceCertificate(repository: sl()),
         super(ComplianceState(
@@ -196,6 +222,14 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     on<SaveImtethalItemEvent>(_saveImtethalPoint);
     on<CancelComplianceCertificateEvent>(_cancelComplainceCertificate);
     on<ChangeApplicantNotesEvent>(_changeApplicantNotesHandler);
+    on<GetAppointments>(_getAppintmentHandler);
+
+    on<ChangeSelectedAppointmentDay>(_changeSelectedAppointmentDayHandler);
+    on<ChangeSelectedAppointmentSlot>(_changeSelectedAppointmentSlotHandler);
+
+
+
+
   }
 
   Future<void> _pageChangeHandler(ChangePageEvent e, Emitter emitter) async {
@@ -280,6 +314,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.Compliance_Certificate_Open_Select_EngOffice_Event);
     }
+    if (e.selectedLicense != null && state.requestId != null) {
+      add(const GetRequestDetails(updateCurrentRequest: true)); 
+    }
   }
 
   /* Future<void> _radioChangeHandler(RadioSelectEvent e, Emitter emitter) async {
@@ -310,6 +347,26 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         emitter(state.copyWith(gisResponse: r, status: BlocStatus.success));
       },
     );
+  }
+
+  Future<void> _getAppintmentHandler(GetAppointments e, Emitter emitter) async {
+    emitter(state.copyWith(
+      appointmentsStatus: BlocStatus.loading,
+    ));
+    final failOrSuccess = await _getAppointments((
+      state.requestDetails?.locationResponseInfoDto?.x ?? state.gisParams?.x.toString() ?? "",
+      state.requestDetails?.locationResponseInfoDto?.y ?? state.gisParams?.y.toString() ?? ""
+    ));
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        appointmentsStatus: BlocStatus.failure,
+      ));
+    }, (r) async {
+      emitter(state.copyWith(
+          appointmentsStatus: BlocStatus.success, complainceAppointmentResponse: r));
+    });
   }
 
   Future<void> _saveContractData(SaveContractEvent e, Emitter emitter) async {
@@ -396,6 +453,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         pageController.jumpToPage(nextPage);
 
         sendEventPage(nextPage);
+
+           add(GetRequestDetails(updateCurrentRequest: true));
       }
     });
   }
@@ -531,6 +590,26 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         ),
       );
     }, (r) async {
+
+
+      if (event.updateCurrentRequest == true) { 
+
+ComplianceRequestDetails? requestDetails = state.requestDetails; 
+
+requestDetails?.showMomtathelVisitSection = r.showMomtathelVisitSection; 
+requestDetails?.isReadOnly = r.isReadOnly; 
+
+   emitter(
+          state.copyWith(
+              requestDetails: requestDetails,
+              errorMessage: "",
+            
+              detailsStatus: BlocRequestStatus.submissionGetSuccess,
+            ),
+        );
+
+return ; 
+      } 
       if (r.submitterThrough == "BENEFICARY") {
         List<AttachmentData> attachmentData = [];
         List<AttachmentData> viewAttachmentData = [];
@@ -993,7 +1072,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    if (isLastPage()) {
+    if (isLastPage() || state.editOnlyAppointment) {
       add(SubmitComplianceEvent());
     } else if (state.currentStep == 0 && state.benificiaryTypeSelection == 2) {
       add(GetEtmamEntityIdEvent());
@@ -1249,8 +1328,14 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     emitter(state.copyWith(
       status: BlocStatus.loading,
     ));
-    final failOrSuccess = await _submitComplianceRequest(
-        (state.requestId.toString(), state.applicantNotes ?? ""));
+    final failOrSuccess = await _submitComplianceRequest((
+      state.requestId.toString(),
+      SubmitEmtithalRequest(
+          notes: state.applicantNotes,
+          visitDate: state.visitDate?.slotDate,
+          visitTimeFrom: state.visitTimeFrom,
+          visitTimeTo: state.visitTimeTo)
+    ));
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
@@ -1399,11 +1484,20 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     return state.currentStep == (pages().length - 1);
   }
 
-  List<dynamic> pages() =>
-      pagesListHimSelf /*  state.benificiaryTypeSelection == 1
-      ? pagesListHimSelf
-      : pagesListEngOffice*/
-      ;
+  List<dynamic> pages() { 
+if (state.showNewAppointments)  { 
+  return pagesListHimSelfWithAppointments; 
+} 
+    else if (state.editOnlyAppointment ) { 
+
+
+      return pageEditAppointments; 
+    }  else { 
+      return pagesListHimSelf; 
+    }
+  }
+
+    
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
@@ -1415,6 +1509,25 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
     emitter(state.copyWith(agreement: e.isagree, errorMessage: ""));
   }
+
+
+  Future<void> _changeSelectedAppointmentDayHandler(
+      ChangeSelectedAppointmentDay e, Emitter emitter) async {
+    hideKeyboard();
+
+    emitter(state.copyWith(visitDate: e.item, errorMessage: ""));
+  }
+
+  Future<void> _changeSelectedAppointmentSlotHandler(
+      ChangeSelectedAppointmentSlot e, Emitter emitter) async {
+    hideKeyboard();
+
+    emitter(state.copyWith(visitTimeFrom: e.visitFrom, visitTimeTo: e.visitTo, errorMessage: ""));
+  }
+
+
+
+
 
   void sendEventPage(int page) {
     String eventName = "";

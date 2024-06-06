@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -23,8 +24,8 @@ class BriefRouteButton extends ConsumerWidget {
 
   final VoidCallback onTap;
   final RouteSearchOptionsMessage routeType;
-  final RouteSearchPointMessage? startPoint;
-  final RouteSearchPointMessage? finishPoint;
+  final RouteSearchPoint? startPoint;
+  final RouteSearchPoint? finishPoint;
   final EdgeInsetsGeometry? padding;
   final Color? foreground;
   final Color? background;
@@ -75,8 +76,8 @@ class BriefRouteInfo extends ConsumerWidget {
   });
 
   final RouteSearchOptionsMessage routeType;
-  final RouteSearchPointMessage? startPoint;
-  final RouteSearchPointMessage? finishPoint;
+  final RouteSearchPoint? startPoint;
+  final RouteSearchPoint? finishPoint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

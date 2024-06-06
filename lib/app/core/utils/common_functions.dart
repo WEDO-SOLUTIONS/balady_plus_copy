@@ -4,6 +4,7 @@ import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
@@ -17,6 +18,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
+
 // import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, EventTransformer;
@@ -337,6 +339,17 @@ class CommonFunctions {
     return replaceArabicNumberWithEnglish(formattedDate);
   }
 
+  static String getDateNoDash(String? dateStr) {
+    String formattedDate = "";
+  
+  String year = dateStr?.substring(0,4) ?? "";
+  String month = dateStr?.substring(4,6) ?? ""; 
+  String day = dateStr?.substring(6,8) ?? ""; 
+
+  return "$year/$month/$day"; 
+
+  }
+
   static String getMonthName(String? dateStr) {
     String monthName = "";
     try {
@@ -580,10 +593,12 @@ class CommonFunctions {
   }
 
   static bool get isAuthed => sl.isRegistered<AuthData>();
+
   static bool get isAppAR =>
       translator.activeLanguageCode == AppLanguage.ar.name;
 
   static Future<bool> onLogin() async => await sl<EntryPointCubit>().onLogin();
+
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
     return r.allMatches(str).length >= 15;
@@ -799,11 +814,11 @@ class CommonFunctions {
     });
   }
 
-  static showError(String error) {
+  static showError(String error,[bool? isHtml]) {
     if (error.isNotEmpty) {
       if (error.contains("https")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
-            NavigationService.navigatorKey.currentContext!, error);
+            NavigationService.navigatorKey.currentContext!, error,isHtml??false);
       } else {
         try {
           BotToast.showSimpleNotification(
@@ -1310,8 +1325,28 @@ class CommonFunctions {
 
   static void openCreateCompliance() {
     //أصدر الشهادة
-    NavigationService.navigatorKey.currentState!
-        .pushNamed(RouteName.createCompliancePage);
+
+    if (CommonProperties.isLoggedIn){
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.createCompliancePage);
+  }
+
+    else
+      {
+      showDialog(
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (ctx) => NeedLoginDialog(
+      onSuccessLogin:
+      (bool? isSuccess) async {
+      if (isSuccess ?? false) {
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.createCompliancePage);
+      }
+      }));
+      }
+
+
+
   }
 
   static void openRatingBuilding() {
@@ -1405,8 +1440,8 @@ class CommonFunctions {
     int todayDay = today.day;
     int todayMonth = today.month;
     int todayYear = today.year;
-    var allowedDays = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-    if (allowedDays.contains(todayDay) && todayMonth == 4 && todayYear == 2024)
+    var allowedDays = [13, 14, 15, 16, 17, 18, 19, 20];
+    if (allowedDays.contains(todayDay) && todayMonth == 6 && todayYear == 2024)
       return true;
     return false;
   }
@@ -1450,6 +1485,7 @@ class CommonProperties {
       sl<EntryPointCubit>().state.token?.appCookie ?? "";
 
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
+
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
 
@@ -1478,7 +1514,9 @@ class CommonProperties {
   }
 
   static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
+
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
+
   static GISResponse? get userLocationGIS =>
       sl<LocationCubit>().state.gisResponse;
 

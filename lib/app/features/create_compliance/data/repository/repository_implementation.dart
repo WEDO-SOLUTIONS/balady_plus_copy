@@ -13,6 +13,7 @@ import 'package:balady_plus/app/features/create_compliance/data/models/save_loca
 import 'package:balady_plus/app/features/create_compliance/data/models/upload_dms_attachment_response.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/apply_create_compliance_response.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/comliance_request_details.dart';
+import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_appointment_response.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_attachment_request.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_deed_info.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_deed_info_request.dart';
@@ -26,6 +27,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
+import '../../domain/entities/submit_emtithal_request.dart';
 import '../../domain/repositories/repository.dart';
 import '../datasource/create_compliance_remote_data_source.dart';
 
@@ -162,9 +164,9 @@ class CreateComplianceRepositoryImplementation
 
   @override
   Future<Either<Failure, (String, bool?)>> submitRequest(
-      String params, String notes) async {
+      String id, SubmitEmtithalRequest params) async {
     try {
-      final data = await remoteDataSource.submitRequest(params, notes);
+      final data = await remoteDataSource.submitRequest(id, params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
@@ -322,6 +324,18 @@ class CreateComplianceRepositoryImplementation
   Future<Either<Failure, bool>> cancelComplianceCertificate(int params) async {
     try {
       final data = await remoteDataSource.cancelComplianceCertificate(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ComplainceAppointmentResponse>>
+      getComplainceAppointment((String, String) params) async {
+    try {
+      final data =
+          await remoteDataSource.getComplainceAppointment(params.$1, params.$2);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

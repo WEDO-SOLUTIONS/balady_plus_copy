@@ -1,13 +1,16 @@
+import 'dart:io';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
+import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
 
 class RoutesCarousel extends StatelessWidget {
-
   const RoutesCarousel({
     required this.startNavigation,
     required this.points,
@@ -31,7 +34,6 @@ class RoutesCarousel extends StatelessWidget {
 }
 
 class _RoutesCarousel extends ConsumerStatefulWidget {
-
   const _RoutesCarousel({
     required this.navType,
     required this.points,
@@ -51,11 +53,13 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   late PageController _pageController;
   bool _animating = false;
 
+  static const _bottomSheetHeight = 220;
+
   @override
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction: (widget.biggestWidth - 64) / widget.biggestWidth,
+      viewportFraction: PathCardSize.fixedCardWidthWithPadding / widget.biggestWidth,
     );
   }
 
@@ -68,6 +72,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
         navType: widget.navType,
       ),
     );
+
+    final cameraProvider = ref.read(cameraPositionProvider.notifier);
 
     ref.listen(
       activeRouteProvider,
@@ -89,26 +95,51 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       },
     );
 
-    return LayoutBuilder(
-      builder: (context, constraints) => widgets.RoutesCarousel(
-        navType: widget.navType,
-        pageController: _pageController,
-        routes: routes,
-        onActiveChanged: (index) {
-          if (_animating) {
-            return;
-          }
+    if (routes.hasValue) {
+      ///TODO(ayat): Now we can animate to route only on Android, ios crashes with this method
+      /// Guess, we can animate only to the active routes on ios
+      /// Pls, double check this
+      if (Platform.isAndroid) {
+        cameraProvider.animateToRoute(
+            options: CalcPositionOptionsMessage(
+          screenArea: CameraSetPaddingMessage(
+            leftPadding: 50,
+            topPadding: 50,
+            rightPadding: 50,
+            bottomPadding: 440,
+          ),
+          size: ScreenSizeMessage(
+            width: MediaQuery.of(context).size.width.toInt(),
+            height: MediaQuery.of(context).size.height.toInt(),
+          ),
+        ));
+      }
+      cameraProvider.setPadding(
+        CameraSetPaddingMessage(
+          leftPadding: 0,
+          topPadding: 0,
+          rightPadding: 0,
+          bottomPadding:
+              Platform.isAndroid ? (_bottomSheetHeight * MediaQuery.of(context).devicePixelRatio).toInt() : 0,
+        ),
+      );
+    }
 
-          ref
-              .read(dgisControllerProvider)
-              .value
-              ?.setPublicTransportActiveRoute(index);
-        },
-        refresh: () {
-          ref.invalidate(routesProvider);
-        },
-        startNavigation: widget.startNavigation,
-      ),
+    return widgets.RoutesCarousel(
+      navType: widget.navType,
+      pageController: _pageController,
+      routes: routes,
+      onActiveChanged: (index) {
+        if (_animating) {
+          return;
+        }
+
+        ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
+      },
+      refresh: () {
+        ref.invalidate(routesProvider);
+      },
+      startNavigation: widget.startNavigation,
     );
   }
 }

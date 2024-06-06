@@ -38,9 +38,11 @@ class RoutingSearchRoute extends GoRouteData {
 }
 
 @TypedGoRoute<RoutingMapRoute>(
-  path: '/routingMap',
+  path: RoutingMapRoute.path,
 )
 class RoutingMapRoute extends GoRouteData {
+  static const path = '/routingMap';
+
   const RoutingMapRoute();
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;

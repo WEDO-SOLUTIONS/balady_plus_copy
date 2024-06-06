@@ -257,6 +257,7 @@ class CustomPopUpsWidgets {
   static Future<bool> showHTMLErrorMessageDialog(
     BuildContext context,
     String errorText,
+      bool isHtml,
   ) async =>
       (await showGeneralDialog<bool>(
         barrierColor: Colors.black.withOpacity(0.6),
@@ -268,6 +269,7 @@ class CustomPopUpsWidgets {
               child: CustomHTMLAlertDialogWidget(
                 titleMessageType: MessageType.error,
                 contentText: errorText,
+                  isHtml:isHtml
               ),
             ),
           );

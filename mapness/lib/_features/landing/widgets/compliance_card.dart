@@ -12,6 +12,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/routes/esri_layers.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -88,10 +89,14 @@ class ComplianceCard extends ConsumerWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              ref.read(urbiMetricsProvider.notifier).logEvent(
-                                'Compliance/open_compliance',
-                                {'id': 'compliance'},
+                              Metrics.logEventAdvanced(
+                                MetricsConstants
+                                    .layersKeys.complianceOpenCompliance,
+                                group: MetricsConstants.layersTag,
+                                action: MetricAction.tap.toString(),
+                                props: {'id': 'compliance'},
                               );
+
                               EsriLayersRoute.open(context);
                               ref
                                   .read(layersControlsProvider.notifier)
@@ -125,10 +130,14 @@ class ComplianceCard extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(8),
                         child: InkWell(
                           onTap: () {
-                            ref.read(urbiMetricsProvider.notifier).logEvent(
-                              'Compliance/open_create_compliance',
-                              {'id': 'compliance'},
+                            Metrics.logEventAdvanced(
+                              MetricsConstants
+                                  .layersKeys.complianceOpenCreateCompliance,
+                              group: MetricsConstants.layersTag,
+                              action: MetricAction.tap.toString(),
+                              props: {'id': 'compliance'},
                             );
+
                             CommonFunctions.openCreateCompliance();
                           },
                           borderRadius: BorderRadius.circular(8),
@@ -154,10 +163,14 @@ class ComplianceCard extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(8),
                         child: InkWell(
                           onTap: () {
-                            ref.read(urbiMetricsProvider.notifier).logEvent(
-                              'Compliance/open_rating_building',
-                              {'id': 'compliance'},
+                            Metrics.logEventAdvanced(
+                              MetricsConstants
+                                  .layersKeys.complianceOpenRatingBuilding,
+                              group: MetricsConstants.layersTag,
+                              action: MetricAction.tap.toString(),
+                              props: {'id': 'compliance'},
                             );
+
                             CommonFunctions.openRatingBuilding();
                           },
                           borderRadius: BorderRadius.circular(8),

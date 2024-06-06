@@ -4,8 +4,9 @@ import 'package:dgis_map_platform_interface/library.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/camera_state_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/indoor_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/location_event_handler.dart';
-import 'package:dgis_map_platform_interface/src/control_handlers/navigation/maneuver_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/marker_tap_event_handler.dart';
+import 'package:dgis_map_platform_interface/src/control_handlers/navigation/dashboard_event_handler.dart';
+import 'package:dgis_map_platform_interface/src/control_handlers/navigation/maneuver_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/navigation/speed_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/navigation_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/object_tap_event_handler.dart';
@@ -14,12 +15,11 @@ import 'package:dgis_map_platform_interface/src/control_handlers/public_transpor
 import 'package:dgis_map_platform_interface/src/control_handlers/traffic_and_parking_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/visible_rect_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/zoom_event_handler.dart';
-import 'package:dgis_map_platform_interface/src/control_handlers/navigation/dashboard_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
 import 'package:flutter/services.dart';
 
-import 'control_handlers/navigation/message_event_handler.dart';
 import 'control_handlers/navigation/compass_event_handler.dart';
+import 'control_handlers/navigation/message_event_handler.dart';
 import 'control_handlers/route_event_handler.dart';
 import 'proxy_binary_mesenger.dart';
 
@@ -87,6 +87,9 @@ class DgisMapPlugin extends FlutterMapApi {
 
   Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
       _routesEventHandler.routesInfoChangedEvents;
+
+  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents =>
+      _routesEventHandler.betterRouteInfoEvents;
 
   Stream<NavigationEvent> get navigationEvents =>
       _navigationEventHandler.navigationEvents;
@@ -232,6 +235,8 @@ class DgisMapPlugin extends FlutterMapApi {
             return _routesEventHandler.activeRouteChangedEvent(map);
           case RoutesInfoChangedEvent.name:
             return _routesEventHandler.routesInfoChangedEvent(map);
+          case BetterRouteInfoEvent.name:
+            return _routesEventHandler.betterRouteInfoEvent(map);
           case NavigationEvent.name:
             return _navigationEventHandler.handleNavigationEvent(map);
           case IoTapEvent.name:
@@ -692,6 +697,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.hideRoutes();
   }
 
+  Future<void> showRoutes() {
+    return _api.showRoutes();
+  }
+
   Future<void> startNavigation() {
     return _api.startNavigation();
   }
@@ -798,4 +807,13 @@ class DgisMapPlugin extends FlutterMapApi {
 
   Future<bool> toggleHeatmap(WeatherMapMessage message) =>
       _api.toggleHeatmap(message);
+
+  Future<void> betterRouteResponse(BetterRouteResponseMessage response) =>
+      _api.betterRouteResponse(response);
+
+  Future<BetterRouteSettingsMessage> getBetterRouteSettings() =>
+      _api.getBetterRouteSettings();
+
+  Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) =>
+      _api.setBetterRouteSettings(message);
 }

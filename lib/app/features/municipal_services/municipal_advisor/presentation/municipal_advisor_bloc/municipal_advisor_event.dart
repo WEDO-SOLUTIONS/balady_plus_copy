@@ -159,9 +159,11 @@ class MunicipalAdvisorSelectSalamaEvent extends MunicipalAdvisorEvent {
 
 class MunicipalAdvisorSelectAreaEvent extends MunicipalAdvisorEvent {
   final num area;
+  final bool isCostingFrees;
 
   const MunicipalAdvisorSelectAreaEvent({
     required this.area,
+    this.isCostingFrees=false
   });
 
   @override
@@ -288,6 +290,7 @@ class MunicipalAdvisorUpdateCommercialBoardEvent extends MunicipalAdvisorEvent {
 class MunicipalAdvisorCalculateLicenseEvent extends MunicipalAdvisorEvent {
   final bool firstCalculation;
   final bool finalCalculation;
+
 
   const MunicipalAdvisorCalculateLicenseEvent({
     this.firstCalculation = false,

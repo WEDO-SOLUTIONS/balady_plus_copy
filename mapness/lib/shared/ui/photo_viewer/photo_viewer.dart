@@ -1,10 +1,11 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class PhotoViewer extends StatefulWidget {
-
   const PhotoViewer({
     required this.photoPaths,
     required this.currentPhotoIndex,
@@ -35,57 +36,76 @@ class PhotoViewer extends StatefulWidget {
 }
 
 class _PhotoViewerState extends State<PhotoViewer> {
+  static const backgroundColor = Color(0xff0B1218);
+
   late PageController pageController;
+  late ValueNotifier<bool> isAppBarVisible;
 
   @override
   void initState() {
     super.initState();
     pageController = PageController(initialPage: widget.currentPhotoIndex);
+    isAppBarVisible = ValueNotifier(true);
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          leading: Material(
-            color: Colors.white,
-            child: Ink(
-              color: Colors.white,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(8),
-                onTap: () => Navigator.pop(context),
-                child: const Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Icon(
-                    Icons.close,
-                    color: NonThemeColor.color58,
-                  ),
-                ),
-              ),
+  Widget build(BuildContext context) => ValueListenableBuilder(
+        valueListenable: isAppBarVisible,
+        builder: (context, isAppBarVisible, child) => Material(
+          color: backgroundColor,
+          child: Material(
+            color: isAppBarVisible ? context.color.surfaceContrastHigh : Colors.transparent,
+            child: Scaffold(
+              appBar: isAppBarVisible
+                  // TODO: Update when BaladyTopBar starts supporting background color
+                  ? BaladyTopBar(
+                      textStyle: context.textStyle.callout.copyWith(color: Colors.white),
+                      title: context.l10n.photos,
+
+                      /// TODO(ui_kit): Fix leading in UIKIT
+                      leading: Container(
+                        padding: const EdgeInsetsDirectional.only(start: NumericBase.$4x),
+                        alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
+                        child: Icon(
+                          context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onLeadingPressed: () => context.pop(),
+                    )
+                  : null,
+              body: child,
             ),
           ),
         ),
-        body: Stack(
-          children: [
-            PhotoViewGallery.builder(
-              scrollPhysics: const BouncingScrollPhysics(),
-              builder: (ctx, index) {
-                final photo = widget.photoPaths![index];
-                return PhotoViewGalleryPageOptions(
-                  imageProvider: NetworkImage(photo),
-                  initialScale: PhotoViewComputedScale.contained,
-                  minScale:
-                      PhotoViewComputedScale.contained * (0.5 + index / 10),
-                  maxScale: PhotoViewComputedScale.covered * 4.1,
-                  heroAttributes: PhotoViewHeroAttributes(tag: photo),
-                );
-              },
-              itemCount: widget.photoPaths?.length ?? 0,
-              backgroundDecoration: const BoxDecoration(color: Colors.white),
-              pageController: pageController,
+        child: GestureDetector(
+          onTap: () => isAppBarVisible.value = !isAppBarVisible.value,
+          child: Padding(
+            padding: const EdgeInsets.only(top: NumericBase.$4x),
+            child: DecoratedBox(
+              decoration: const BoxDecoration(color: backgroundColor),
+              child: Stack(
+                children: [
+                  PhotoViewGallery.builder(
+                    scrollPhysics: const BouncingScrollPhysics(),
+                    builder: (ctx, index) {
+                      final photo = widget.photoPaths![index];
+                      return PhotoViewGalleryPageOptions(
+                        imageProvider: NetworkImage(photo),
+                        initialScale: PhotoViewComputedScale.contained * 1,
+                        minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+                        maxScale: PhotoViewComputedScale.covered * 4.1,
+                        heroAttributes: PhotoViewHeroAttributes(tag: photo),
+                      );
+                    },
+                    itemCount: widget.photoPaths?.length ?? 0,
+                    backgroundDecoration: const BoxDecoration(color: backgroundColor),
+                    pageController: pageController,
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       );
 }

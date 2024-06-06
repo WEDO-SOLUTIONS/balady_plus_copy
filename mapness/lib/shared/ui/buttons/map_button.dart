@@ -1,8 +1,7 @@
-
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 
 class MapButton extends StatefulWidget {
+  static const double defaultSize = 48;
 
   MapButton({
     required this.child,
@@ -26,24 +25,10 @@ class MapButton extends StatefulWidget {
 }
 
 class _MapButtonState extends State<MapButton> {
-  bool _pressed = false;
-
   @override
-  Widget build(BuildContext context) => GestureDetector(
-      onTap: widget.onTap,
-      onTapUp: (details) {
-        setState(() {
-          _pressed = false;
-        });
-        widget.onTapUp?.call(details);
-      },
-      onTapDown: (details) {
-        setState(() {
-          _pressed = true;
-        });
-        widget.onTapDown?.call(details);
-      },
-      child: Container(
+  Widget build(BuildContext context) => Container(
+        constraints: const BoxConstraints(minWidth: MapButton.defaultSize),
+        height: MapButton.defaultSize,
         decoration: BoxDecoration(
           borderRadius: widget.borderRadius,
           boxShadow: [
@@ -60,12 +45,18 @@ class _MapButtonState extends State<MapButton> {
         ),
         child: Material(
           borderRadius: widget.borderRadius,
-          color: _pressed
-              ? NonThemeColor.color53
-              : Colors.white.withOpacity(0.8),
-          child: Container(
-            constraints: const BoxConstraints(minWidth: 48),
-            height: 48,
+          color: Colors.white,
+          child: InkWell(
+            customBorder: RoundedRectangleBorder(
+              borderRadius: widget.borderRadius,
+            ),
+            onTap: widget.onTap,
+            onTapUp: (details) {
+              widget.onTapUp?.call(details);
+            },
+            onTapDown: (details) {
+              widget.onTapDown?.call(details);
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -74,6 +65,5 @@ class _MapButtonState extends State<MapButton> {
             ),
           ),
         ),
-      ),
-    );
+      );
 }

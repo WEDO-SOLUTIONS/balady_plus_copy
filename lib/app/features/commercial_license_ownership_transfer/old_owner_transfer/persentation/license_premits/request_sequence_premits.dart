@@ -315,14 +315,19 @@ class _ReuestSequencePremitsScreenState
                 ),
                 Container(
                   decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(36),
-                        topRight: Radius.circular(36),
-                      ),
-                      color: Colors.white),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
-                  child: ElevatedButtonWidget.next(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(36),
+                      topRight: Radius.circular(36),
+                    ),
+                    color: Colors.white,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 26,
+                  ),
+                  child: state.status == BlocRequestStatus.submissionGetLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButtonWidget.next(
                     onPressed: () {
                       if (isAgree || permitResponse.term == null) {
                         bloc?.request.selectedPermits = lstPermits;

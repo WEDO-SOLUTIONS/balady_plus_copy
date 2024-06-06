@@ -6,13 +6,12 @@ import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/widgets/routing/ui/search_action.dart';
-
-const _searchScope = 'RoutingSearch';
 
 class RoutingSearchHistory extends ConsumerWidget {
   const RoutingSearchHistory({
@@ -62,8 +61,7 @@ class RoutingSearchHistory extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                   child: InkWell(
                     onTap: () async {
-                      final result =
-                          await const RoutingMapRoute().push(context);
+                      final result = await const RoutingMapRoute().push(context);
 
                       if (result != null) {
                         context.pop(result);
@@ -111,9 +109,7 @@ class RoutingSearchHistory extends ConsumerWidget {
               context.pop(point);
             },
             searchByQuery: (query) {
-              ref
-                  .read(searchQueryProvider(_searchScope).notifier)
-                  .update(query);
+              ref.read(searchQueryProvider(SearchScopeEnum.routes.value).notifier).update(query);
             },
           ),
         ],

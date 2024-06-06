@@ -1,16 +1,19 @@
 import 'dart:async';
+
 import 'package:async/async.dart';
+import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
-import 'package:collection/collection.dart';
-
-import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/features/map_page/data/model/states.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/widgets.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
@@ -21,8 +24,6 @@ import '../../../events/domain/usecase/get_search_events.dart';
 import '../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../vd/domain/entities/gis/gis_response.dart';
 import '../../constants/constants.dart';
-import 'package:flutter/widgets.dart';
-
 import '../../data/data_sources/point_layers_data.dart';
 import '../../data/enums/custom_search_category.dart';
 import '../../data/enums/map_enums.dart';
@@ -403,7 +404,7 @@ class MapViewModel extends BaseViewModel {
     }
     _setupListeners();
 
-    await controller.loadStyles(Constants.mapStyle);
+    // await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
@@ -414,6 +415,7 @@ class MapViewModel extends BaseViewModel {
       ),
     );
     await controller.setZoomRestrictions(min: 5.5);
+    await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 
     try {
       final permission = await Permission.location.request();

@@ -126,7 +126,7 @@
   "_servicesComment": "Anything about services",
   "public_services": "Public services",
   "municipal_services": "Individual Services",
-  "azkar": "Azkar",
+  "azkar": "Athkar",
   "damaged_cars": "Damaged cars",
   "damaged_cars1": "Damaged cars",
   "fee_calculator": "Fees Calculator",
@@ -547,6 +547,7 @@
   "location": "Location",
   "confirmLocation": "Confirm location",
   "area": "Area",
+  "additional_area": "Additional Activity Area",
   "m2": "m2",
   "from": "From",
   "to": "To",
@@ -4293,5 +4294,9 @@
   "ejarAPP": "Dear beneficiary, you can find out about the accredited real estate brokers in the Ejari network through the link  <a href=\"https://www.ejar.sa/ar/certified-offices\">click here</a>   or download the Real Estate Brokers app for iOS or Android.",
   "no_attachments": "No Attachments",
   "required_field_must_number_12_digits": "Sorry, the deed number must contain 12 digits.",
-  "most_selected_ownershipType": "Please enter the ownership deed data"
+  "most_selected_ownershipType": "Please enter the ownership deed data",
+  "redircetionMessage1": "To reserve appointment in ",
+  "redircetionMessage2": " please click the",
+  "here": "link here",
+  "done_download_open_moments": "Done download, will open in moments"
 }

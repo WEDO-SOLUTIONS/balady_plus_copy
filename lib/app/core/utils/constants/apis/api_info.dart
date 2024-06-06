@@ -516,6 +516,10 @@ class ApiUrl {
   static const String complianceLandContract =
       '/v1/compliance-certificate-mobile-services/land-subsidy-contracts';
 
+  static const String complainceAppointments =
+      'v1/compliance-certificate-mobile-services/visit-appointments';
+
+
 // ! Events
 
   static const eventsSearch = '/v1/balady-events-services/events/search';
@@ -905,6 +909,16 @@ class ApiUrl {
   static String commercialLicenseOwnershipServicesUploadAttachments(
       int requestId, int attachTypeId) =>
       'v1/superapp-commercial-ownership-services/transfer/upload-attachment/$attachTypeId/attachments/$requestId';
+
+
+
+
+
+
+
+  static const quranUrlDownload = 'BaladyCDN/Mobile/quran/quran.zip';
+
+
 }
 
 /// It has any header which used inside any API

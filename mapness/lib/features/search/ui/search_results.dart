@@ -43,10 +43,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     final delta = MediaQuery.of(context).size.height * 0.2;
 
     if (max - current <= delta) {
-      ref
-          .read(searchPaginationProvider(widget.results).notifier)
-          .fetchNext()
-          .then(
+      ref.read(searchPaginationProvider(widget.results).notifier).fetchNext().then(
         (hasNext) {
           setState(() {
             _hasNext = hasNext;
@@ -63,7 +60,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     return ListView.separated(
       shrinkWrap: true,
       cacheExtent: 50,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         if (index == results.length) {
@@ -73,9 +70,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
         return widget.itemBuilder(context, results[index]);
       },
       itemCount: results.length + (_hasNext ? 1 : 0),
-      separatorBuilder: (context, index) => const SizedBox(
-          height: 16,
-        ),
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
     );
   }
 }

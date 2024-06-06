@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +14,7 @@ import 'package:mapness/shared/providers/map/suggest.dart';
 
 class FavouritesSearch extends ConsumerStatefulWidget {
   const FavouritesSearch({required this.markerType, super.key});
+
   final FavouriteItemMarkerType markerType;
 
   @override
@@ -63,70 +64,15 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
       itemBuilder: (_, index) {
         final item = searchResult[index];
 
-        return InkWell(
-          onTap: () async => onSearchTap(
-            context,
-            item,
-          ),
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.title,
-                          maxLines: 3,
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .footNote
-                              .copyWith(
-                                  color: context
-                                      .color.textAndIconsBasePrimary),
-                        ),
-                        Text(
-                          item.makeAddress(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .footNote
-                              .copyWith(
-                                  color: context
-                                      .color.textAndIconsBasePrimary),
-                        ),
-                        if (item.workStatus != null)
-                          Text(
-                            item.workStatus!.desc,
-                            style: Theme.of(context)
-                                .extension<ThemeTextStyles>()!
-                                .footNote
-                                .copyWith(
-                                  color: item.workStatus!.isOpen
-                                      ? context.color.strokeAccent
-                                      : context
-                                          .color.textAndIconsBasePrimary,
-                                ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  // Text(
-                  //   "0 ${context.l10n.km}",
-                  //   style: Theme.of(context).extension<ThemeTextStyles>()!.footNote,
-                  // ),
-                ],
-              ),
+        return ContentRow(
+          onTap: () async => onSearchTap(context, item),
+          options: ContentRowOptions(
+            leadingIcon: General16Icons.pin.icon(
+              color: context.color.textAndIconsStatusAccent,
             ),
+            title: item.title,
+            subtitle: item.makeAddress(),
+            subtitleExtra: item.workStatus!.desc,
           ),
         );
       },
@@ -140,9 +86,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
     final favItem = item.mapToFavourite();
     final repo = ref.read(favouriteCacheProvider.notifier);
     await switch (widget.markerType) {
-      FavouriteItemMarkerType.unknown ||
-      FavouriteItemMarkerType.place =>
-        repo.addItem(favItem),
+      FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => repo.addItem(favItem),
       FavouriteItemMarkerType.home => repo.setHome(favItem),
       FavouriteItemMarkerType.work => repo.setWork(favItem),
     };

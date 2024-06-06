@@ -22,11 +22,14 @@ class SearchRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
-      child: MapSearchSheet(
-        initialQuery: initialQuery,
-        withClustering: withClustering,
-      ),
-    );
+        child: LayoutBuilder(
+          builder: (context, constraints) => MapSearchSheet(
+            initialQuery: initialQuery,
+            withClustering: withClustering,
+            biggestHeight: constraints.biggest.height,
+          ),
+        ),
+      );
 }
 
 final $searchRoutes = $appRoutes;

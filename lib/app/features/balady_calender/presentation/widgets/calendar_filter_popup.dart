@@ -62,7 +62,8 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
                   return Selector<BaladyCalendarYearsListViewModel,
                       List<String>>(
                     selector: (p0, p1) => p1.idsSelected,
-                    builder: (context, idsSelected, child) => CheckboxListTile(
+                    builder: (context, idsSelected, child) =>
+                        CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
                       fillColor: const MaterialStatePropertyAll(
                         AppColor.primary600Light,

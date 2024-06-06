@@ -676,6 +676,7 @@ class EkramBookCemetryBloc
         errorMessage: "",
       ));
 
+
       ekramRequestsBloc?.add(GetCemetryRequestsEvent());
 
       NavigationService.navigatorKey.currentState!
@@ -683,6 +684,7 @@ class EkramBookCemetryBloc
               arguments: SuccessScreenArgs(
                 type: PAGE_TYPE.ekramCemetry,
                 thanksMessage: success.data?.result?.message,
+                  idNumber:"${success.data?.result?.requestId}"
               ));
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.SelectAndReserveCemetery_Open_Success_Page_Event);

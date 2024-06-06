@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/features/_shared_features/notifications_count/widgets/notifications_count_icon.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -29,10 +28,8 @@ class DashboardProfile extends ConsumerWidget {
       child: userData.maybeWhen(
         orElse: () => Text(
           _greeting(context),
-          style: Theme.of(context)
-              .extension<ThemeTextStyles>()!
-              .heading2
-              .apply(color: context.color.strokeAccent),
+          style: context.textStyle.heading1
+              .copyWith(color: context.color.textAndIconsStatusAccent),
           textAlign: TextAlign.end,
         ),
         data: (userInfo) {
@@ -53,10 +50,8 @@ class DashboardProfile extends ConsumerWidget {
             children: [
               Text(
                 name ?? _greeting(context),
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .heading2
-                    .apply(color: context.color.strokeAccent),
+                style: context.textStyle.heading1
+                    .copyWith(color: context.color.textAndIconsStatusAccent),
                 textAlign: TextAlign.end,
               ),
               const Spacer(),

@@ -14,6 +14,7 @@ import '../interface/step_interface.dart';
 
 class RequestSequencePledgesScreen extends StatefulWidget {
   StepInterface stepInterface;
+
   RequestSequencePledgesScreen({Key? key, required this.stepInterface})
       : super(key: key);
 
@@ -52,24 +53,15 @@ class _RequestSequencePledgesScreenState
         } else if (state.status.isSubmissionGetSuccess &&
             state.applyRequestDataModel != null) {
           Navigator.of(context).pop(true);
-          Navigator.of(context).pushNamed(
-            RouteName.SucessfullScreen,
-            arguments:
-
-            {
-              "requestId": "${state.applyRequestDataModel?.result}",
-              "isFromRequest": true
-            }
-
-
-          );
+          Navigator.of(context).pushNamed(RouteName.SucessfullScreen,
+              arguments: {
+                "requestId": "${state.applyRequestDataModel?.result}",
+                "isFromRequest": true
+              });
         }
       },
-
-
       builder: (context, state) {
-        return Stack(
-          children:[
+        return Stack(children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +81,8 @@ class _RequestSequencePledgesScreenState
                             const SizedBox(width: 8),
                             Text(
                               "Pledges".tr(),
-                              style: AppStyle.personalInfoParameterValueTextStyle
+                              style: AppStyle
+                                  .personalInfoParameterValueTextStyle
                                   .copyWith(fontSize: 15, height: 1.5),
                             ),
                           ],
@@ -119,7 +112,6 @@ class _RequestSequencePledgesScreenState
                                         isAgree = !isAgree;
                                       });
                                     }),
-
                                 Expanded(
                                   child: Center(
                                     child: Text(
@@ -130,14 +122,11 @@ class _RequestSequencePledgesScreenState
                                     ),
                                   ),
                                 ),
-
                               ],
                             ),
                             AppColor.grayLight,
                             const EdgeInsets.only(
                                 left: 10, right: 10, bottom: 5, top: 5)),
-
-
                       ],
                     ),
                     AppColor.white,
@@ -151,7 +140,8 @@ class _RequestSequencePledgesScreenState
                       topRight: Radius.circular(36),
                     ),
                     color: Colors.white),
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
                 child: Column(
                   children: [
                     getCardView(
@@ -176,30 +166,28 @@ class _RequestSequencePledgesScreenState
                         ),
                         AppColor.grayLight,
                         null),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ElevatedButtonWidget.applyRequest(
-                      onPressed: () {
-                        if (isAgree) {
-                          bloc?.sendToNewOwner(
-                              bloc!.licenseNumber!, bloc!.request);
-                        } else {
-                          CommonFunctions.showError("terms_error".tr());
-                        }
-                      },
-                    ),
+                    const SizedBox(height: 20),
+                    state.status == BlocRequestStatus.submissionGetLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : ElevatedButtonWidget.applyRequest(
+                            onPressed: () {
+                              if (isAgree) {
+                                bloc?.sendToNewOwner(
+                                    bloc!.licenseNumber!, bloc!.request);
+                              } else {
+                                CommonFunctions.showError("terms_error".tr());
+                              }
+                            },
+                          ),
                   ],
                 ),
               ),
             ],
           ),
-            state.status == BlocRequestStatus.submissionGetLoading
-                ? const Center(child:  CircularProgressIndicator())
-                : Container(),
-
-        ]
-        );
+          state.status == BlocRequestStatus.submissionGetLoading
+              ? const Center(child: CircularProgressIndicator())
+              : const SizedBox(),
+        ]);
       },
     );
   }

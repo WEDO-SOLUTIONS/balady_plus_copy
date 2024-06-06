@@ -11,11 +11,17 @@ class RoutesEventHandler {
   Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
       _routesInfoChangedController.stream;
 
+  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents =>
+      _betterRouteInfoController.stream;
+
   final _activeRouteChangedController =
       StreamController<ActiveRouteChangedEvent>.broadcast();
 
   final _routesInfoChangedController =
       StreamController<RoutesInfoChangedEvent>.broadcast();
+
+  final _betterRouteInfoController =
+      StreamController<BetterRouteInfoEvent>.broadcast();
 
   RouteInfo mapRouteInfo(Map<dynamic, dynamic> map) {
     final altitudes = map["altitudes"] as List<Object?>;
@@ -45,6 +51,14 @@ class RoutesEventHandler {
 
     _routesInfoChangedController.add(
       RoutesInfoChangedEvent(routes),
+    );
+  }
+
+  void betterRouteInfoEvent(Map map) {
+    final route = map["route"] != null ? mapRouteInfo(map["route"] as Map) : null;
+    final durationProfit = map["durationProfit"];
+    _betterRouteInfoController.add(
+      BetterRouteInfoEvent(route, durationProfit),
     );
   }
 

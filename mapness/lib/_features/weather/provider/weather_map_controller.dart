@@ -1,7 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/weather/domain/enum/weather_enum.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/search.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -12,8 +12,7 @@ class WeatherMapState {
   final WeatherMapType type;
   final bool? isEnabled;
 
-  WeatherMapState copy({WeatherMapType? type, bool? isEnabled}) =>
-      WeatherMapState(
+  WeatherMapState copy({WeatherMapType? type, bool? isEnabled}) => WeatherMapState(
         type: type ?? this.type,
         isEnabled: isEnabled ?? this.isEnabled,
       );
@@ -26,10 +25,15 @@ class WeatherMapController extends _$WeatherMapController {
   @override
   WeatherMapState build({Function(DgisObjectIdMessage?)? onTap}) {
     final dgisController = ref.read(dgisControllerProvider).value;
-    final searchController = ref.read(searchProvider.notifier);
+    final settings = MapObjectManagerSettings.search();
+    final mapObjectManager = ref.read(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
+    );
 
-    final listener =
-        sub.debounceTime(const Duration(seconds: 1)).listen((value) async {
+    final listener = sub.debounceTime(const Duration(seconds: 1)).listen((value) async {
       final type = value.$1;
       final enable = value.$2;
 
@@ -55,7 +59,7 @@ class WeatherMapController extends _$WeatherMapController {
         //   // }
         // });
       } else {
-        await searchController.removeMarkers();
+        await mapObjectManager.removeAll();
       }
     });
 

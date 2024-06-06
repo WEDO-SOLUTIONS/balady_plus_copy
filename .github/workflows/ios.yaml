@@ -94,6 +94,7 @@ jobs:
           just apply-patches
           just ios_setup
           just prebuild
+          ssh-agent -k
 
       - name: Build app
         run: |

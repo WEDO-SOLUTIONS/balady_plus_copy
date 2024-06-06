@@ -4,9 +4,11 @@ import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.da
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
 import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-class EventsHomeCardWrapper extends StatefulWidget {
-
+class EventsHomeCardWrapper extends ConsumerStatefulWidget {
   const EventsHomeCardWrapper({
     required this.colorScheme,
     super.key,
@@ -14,10 +16,11 @@ class EventsHomeCardWrapper extends StatefulWidget {
   final AppColorScheme colorScheme;
 
   @override
-  State<EventsHomeCardWrapper> createState() => _EventsHomeCardWrapperState();
+  ConsumerState<EventsHomeCardWrapper> createState() =>
+      _EventsHomeCardWrapperState();
 }
 
-class _EventsHomeCardWrapperState extends State<EventsHomeCardWrapper> {
+class _EventsHomeCardWrapperState extends ConsumerState<EventsHomeCardWrapper> {
   @override
   void initState() {
     super.initState();
@@ -27,5 +30,15 @@ class _EventsHomeCardWrapperState extends State<EventsHomeCardWrapper> {
   @override
   Widget build(BuildContext context) => EventsHomeCard(
         colorScheme: widget.colorScheme,
+        onItemTap: (value) => Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.eventsCalendarBanner,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+            props: {'event_id': value.id}),
+        onShowAll: () => Metrics.logEventAdvanced(
+          MetricsConstants.exploreKeys.eventsCalendarViewAll,
+          action: MetricAction.tap.name,
+          group: MetricsConstants.exploreTag,
+        ),
       );
 }

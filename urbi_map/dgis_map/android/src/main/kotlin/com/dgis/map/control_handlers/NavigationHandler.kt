@@ -1,6 +1,5 @@
 package com.dgis.map.control_handlers
 
-import android.content.res.Resources
 import android.view.View
 import com.dgis.map.control_handlers.navigation_controls.DashboardControlModel
 import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
@@ -8,28 +7,27 @@ import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.Messages.BetterRouteResponseMessage
+import com.dgis.map.map_api.Messages.BetterRouteSettingsMessage
 import com.dgis.map.map_api.Messages.Result
 import io.flutter.plugin.common.EventChannel
+import ru.dgis.sdk.Duration
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
+import ru.dgis.sdk.map.CalloutVisualizationMode
 import ru.dgis.sdk.map.CameraBehaviour
-import ru.dgis.sdk.map.CameraPosition
-import ru.dgis.sdk.map.FollowBearing
-import ru.dgis.sdk.map.FollowPosition
-import ru.dgis.sdk.map.FollowStyleZoom
 import ru.dgis.sdk.map.Map
-import ru.dgis.sdk.map.MyLocationController
 import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.Padding
-import ru.dgis.sdk.map.SimpleMapObject
+import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.Tilt
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.map.styleZToProjectionZ
 import ru.dgis.sdk.navigation.*
-import ru.dgis.sdk.positioning.LocationSource
+import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.routing.TrafficRoute
@@ -47,11 +45,15 @@ class NavigationHandler(
 
     private val stateClosable: AutoCloseable
     private val routeInfoCloseable: AutoCloseable
+    private val betterRouteCloseable: AutoCloseable
 
     private val locationSource: MyLocationMapObjectSource
     private var prevLocationSource: MyLocationMapObjectSource? = null
 
     private var prevCameraBehaviour: CameraBehaviour? = null
+
+    var isNavigating: Boolean = false
+        private set
 
     // Models to observe channels and send events to Flutter
     private val speedControlModel = SpeedControlModel(
@@ -74,7 +76,7 @@ class NavigationHandler(
         navigationView.navigationManager = navigationManager
 
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled = false
+        navigationManager.routeSourceSettings.calloutVisualizationMode = CalloutVisualizationMode.MULTIPLE_ROUTES
 
         dashboardControlModel = DashboardControlModel(
             navigationManager.uiModel,
@@ -84,6 +86,7 @@ class NavigationHandler(
 
         stateClosable = navigationManager.uiModel.stateChannel.connect(::stateChannelListener)
         routeInfoCloseable = navigationManager.uiModel.routeChannel.connect(::routeInfoListener)
+        betterRouteCloseable = navigationManager.uiModel.betterRouteChannel.connect(::betterRouteListener)
 
         locationSource = MyLocationMapObjectSource(
             context = sdkContext,
@@ -135,6 +138,7 @@ class NavigationHandler(
         routeInfoCloseable.close()
         speedControlModel.close()
         maneuverControlModel.close()
+        betterRouteCloseable.close()
     }
 
     fun toggleSounds(enabled: Boolean) {
@@ -210,13 +214,15 @@ class NavigationHandler(
 
     private fun stateChannelListener(state: State) {
         when (state) {
-            State.DISABLED -> eventSink.success(
-                mapOf(
-                    "event" to Event.navigationEvent.name,
-                    "state" to Event.stateDisabled
+            State.DISABLED -> {
+                eventSink.success(
+                        mapOf(
+                                "event" to Event.navigationEvent.name,
+                                "state" to Event.stateDisabled
+                        )
                 )
-            )
-
+                isNavigating = false
+            }
             State.FINISHED -> {
                 eventSink.success(
                         mapOf(
@@ -225,9 +231,22 @@ class NavigationHandler(
                         )
                 )
                 stopNavigation()
+                isNavigating = false
             }
+            State.NAVIGATION -> {
+                isNavigating = true
+            }
+            State.ROUTE_SEARCH -> {
+                isNavigating = true
+            }
+        }
+    }
 
-            else -> {}
+    fun onRouteTap(route: RouteMapObject) {
+        val trafficRoute = route.route
+        if (!route.isActive) {
+            this.navigationManager.alternativeRouteSelector.selectAlternativeRoute(trafficRoute)
+            betterRouteResponse(BetterRouteResponseMessage.ACCEPT)
         }
     }
 
@@ -238,6 +257,48 @@ class NavigationHandler(
                 "hasOptions" to (routeInfo.routeBuildOptions != null)
             )
         )
+    }
+
+    private fun betterRouteListener(routeInfo: BetterRouteInfo?) {
+        val activeRouteDuration = navigationManager.uiModel.duration?.inSeconds
+        val betterRouteDuration = routeInfo?.trafficRoute?.route?.geometry?.first?.point?.let {
+            routeInfo.trafficRoute.traffic.durations.calculateDuration(
+                it
+            ).inSeconds
+        }
+        val durationProfit = if (activeRouteDuration != null && betterRouteDuration != null) (activeRouteDuration - betterRouteDuration).toInt() else 0;
+        eventSink.success(
+            mapOf(
+                "event" to Event.betterRouteEvent.name,
+                "route" to if (routeInfo != null) RouteHandler.mapRouteInfo(routeInfo.trafficRoute) else null,
+                "durationProfit" to durationProfit,
+            )
+        )
+    }
+
+    fun betterRouteResponse(response: BetterRouteResponseMessage) {
+        when (response) {
+            BetterRouteResponseMessage.ACCEPT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.ACCEPT)
+            BetterRouteResponseMessage.REJECT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.REJECT)
+            BetterRouteResponseMessage.TIMEOUT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.TIMEOUT)
+        }
+    }
+
+    fun getBetterRouteSettings(result: Result<BetterRouteSettingsMessage>?) {
+        val settings = navigationManager.alternativeRoutesProviderSettings
+        result?.success(
+            BetterRouteSettingsMessage.Builder()
+                .setRouteSearchDelay(settings.routeSearchDelay.inSeconds)
+                .setBetterRouteTimeCostThreshold(settings.betterRouteTimeCostThreshold.inSeconds)
+                .setBetterRouteLengthThreshold(settings.betterRouteLengthThreshold.millimeters)
+                .build()
+        )
+    }
+
+    fun setBetterRouteSettings(settings: BetterRouteSettingsMessage) {
+        navigationManager.alternativeRoutesProviderSettings.routeSearchDelay = Duration.ofSeconds(settings.routeSearchDelay)
+        navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = Duration.ofSeconds(settings.betterRouteTimeCostThreshold)
+        navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(settings.betterRouteLengthThreshold)
     }
 
     fun calcPositionForRoute(
@@ -290,7 +351,8 @@ class NavigationHandler(
 private enum class Event {
     // event name
     navigationEvent,
-    routeOptionsEvent;
+    routeOptionsEvent,
+    betterRouteEvent;
 
     // event values
     companion object {

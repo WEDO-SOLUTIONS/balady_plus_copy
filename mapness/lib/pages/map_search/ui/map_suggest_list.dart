@@ -4,10 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class MapSuggestList extends ConsumerWidget {
   const MapSuggestList({
-    required this.suggest, super.key,
+    required this.suggest,
+    super.key,
   });
 
   final SuggestResultMessage suggest;
@@ -16,24 +19,30 @@ class MapSuggestList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
 
-    return ListView.separated(
+    return ListView.builder(
       shrinkWrap: true,
-      padding: const EdgeInsetsDirectional.only(
-        start: 16,
-        bottom: 16,
-      ),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => SuggestItem(
-          suggest: suggests[index],
-          onObjectTap: (object) {
-            PoiMapRoute.open(ref.read(goRouterProvider), object.id!.objectId);
-          },
-        ),
+        suggest: suggests[index],
+        isLast: index == suggests.length - 1,
+        onObjectTap: (object) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.searchKeys.suggestion,
+            group: MetricsConstants.searchTag,
+            action: MetricAction.tap.toString(),
+            props: {
+              'object': object.id!.objectId,
+            },
+          );
+
+          PoiMapRoute.open(
+            ref.read(goRouterProvider),
+            object.id!.objectId,
+            zoom: 18,
+          );
+        },
+      ),
       itemCount: suggests.length,
-      separatorBuilder: (context, index) => const Padding(
-          padding: EdgeInsetsDirectional.only(start: 52),
-          child: Divider(),
-        ),
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,10 +11,8 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
-import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/profile/authorized_widget.dart';
-import 'package:mapness/widgets/profile/language_picker.dart';
+import 'package:mapness/widgets/profile/logout_dialog.dart';
 import 'package:mapness/widgets/profile/unathorized_profile.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
@@ -26,13 +23,14 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
-    final actionIcon = context.isLtr
-        ? SystemIcons.arrowCornerLeftS.icon(
+    final actionIcon = context.isLTR
+        ? SystemIcons.arrowCornerRightSmall.icon(
             color: context.color.textAndIconsBaseSecondary,
           )
-        : SystemIcons.arrowCornerRightS.icon(
+        : SystemIcons.arrowCornerLeftSmall.icon(
             color: context.color.textAndIconsBaseSecondary,
           );
+
     return WillPopScope(
       onWillPop: () async {
         StatefulNavigationShell.of(context).goBranch(
@@ -61,10 +59,10 @@ class ProfilePage extends ConsumerWidget {
                       ),
                       child: Consumer(
                         builder: (context, ref, child) {
-                          final userData = ref.watch(authProvider);
                           final userUnauthorized = UnautorizedProfile(
                             onConnect: ref.read(authProvider.notifier).doAuth,
                           );
+                          final userData = ref.watch(authProvider);
                           return userData.maybeWhen(
                             orElse: () => userUnauthorized,
                             data: (userData) => userData == null
@@ -97,7 +95,28 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.questionCircleLTR,
+                                    SystemIcons.settings,
+                                    color: context.color.textAndIconsStatusAccent,
+                                  ),
+                                  title: context.l10n.settings,
+                                ),
+                                onTap: () => const SettingsRoute().push(context),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: Spacing.verticalPaddingInsideWrapper,
+                          ),
+                          ContentWrapper(
+                            color: context.color.surfaceBaseSecondary,
+                            children: [
+                              ContentRow(
+                                options: ContentRowOptions(
+                                  actionWidget: ContentRowActionOptions(
+                                    actionIcon: actionIcon,
+                                  ),
+                                  leadingIcon: Icon(
+                                    GeneralIcons.questionCircle,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.helpCenter,
@@ -110,7 +129,7 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.infoCircleFill,
+                                    GeneralIcons.infoCircle,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.aboutApp,
@@ -125,7 +144,7 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.starSolid,
+                                    General16Icons.starSolidAlt,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.rateBaladyApp,
@@ -141,78 +160,46 @@ class ProfilePage extends ConsumerWidget {
                           const SizedBox(
                             height: Spacing.verticalPaddingInsideWrapper,
                           ),
-                          Consumer(
-                            builder: (context, ref, child) {
-                              final language = ref.watch(appLanguageProvider);
-                              return ContentWrapper(
-                                color: context.color.surfaceBaseSecondary,
-                                children: [
-                                  ContentRowExpandable(
-                                    options: ContentRowOptions(
-                                      title: context.l10n.language,
-                                      subtitle: language.title,
-                                      leadingIcon: SvgPicture.asset(
-                                        language == Language.arabic
-                                            ? 'assets/icons/svg/sa_flag.svg'
-                                            : 'assets/icons/svg/uk_flag.svg',
-                                        height: 16,
-                                        width: 22,
-                                        package: PackageConfig.packageName,
+                          Consumer(builder: (context, ref, _) {
+                            final userData = ref.watch(authProvider);
+                            const emptyBox = SizedBox.shrink();
+
+                            return userData.maybeWhen(
+                              orElse: () => emptyBox,
+                              data: (data) => data == null
+                                  ? emptyBox
+                                  : SizedBox(
+                                      width: double.infinity,
+                                      child: AppButton(
+                                        primaryLabel: context.l10n.logOut,
+                                        buttonColorScheme: ButtonColorScheme.tertiary,
+                                        onTap: () async {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (ctx) => LogoutDialog(
+                                              onCancel: () => Navigator.of(ctx).pop(),
+                                              onLogout: () async {
+                                                await ref.read(authProvider.notifier).logOut();
+                                                context.pop();
+                                              },
+                                              title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
+                                              logOutText: context.l10n.logOut,
+                                              cancelText: context.l10n.cancel,
+                                            ),
+                                          );
+                                        },
+                                        textColor: context.color.textAndIconsStatusNegative,
+                                        trailing: SvgPicture.asset(
+                                          'assets/icons/svg/ic_profile_logout.svg',
+                                          height: 24,
+                                          width: 24,
+                                          matchTextDirection: true,
+                                          package: PackageConfig.packageName,
+                                        ),
                                       ),
                                     ),
-                                    content: const LanguagePicker(),
-                                    expandIconColor: context.color.textAndIconsBaseSecondary,
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                          const SizedBox(
-                            height: Spacing.verticalGapBetweenChips,
-                          ),
-                          Text(
-                            context.l10n.chooseTheLanguageOfAll,
-                            style: context.textStyle.caption.copyWith(
-                              color: const Color(0xFF1E2A36).withOpacity(0.36),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
-                          ),
-                          ContentWrapper(
-                            color: context.color.surfaceBaseSecondary,
-                            children: [
-                              ContentRow(
-                                options: ContentRowOptions(
-                                    leadingIcon: AppIcons(
-                                      iconData: GeneralIcons.darkMode,
-                                      color: context.color.textAndIconsStatusAccent,
-                                      size: 24,
-                                    ),
-                                    title: context.l10n.darkMap,
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: ref.watch(darkModeProvider),
-                                    )),
-                                onToggle: (_) {
-                                  ref.read(darkModeProvider.notifier).toggle();
-                                },
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: Spacing.verticalGapBetweenChips,
-                          ),
-                          Text(
-                            context.l10n.changeTheColorSchemeOfAnApp,
-                            style: context.textStyle.caption.copyWith(
-                              color: const Color(0xFF1E2A36).withOpacity(0.36),
-                            ),
-                          ),
-                const SizedBox(
-                            height: Spacing.verticalGapBetweenChips,
-                          ),
-                          const NotificationsSettingCell()
+                            );
+                          })
                         ],
                       ),
                     ),

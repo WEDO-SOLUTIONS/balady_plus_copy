@@ -72,43 +72,42 @@ class _AllServicesPageState extends State<AllServicesPage> {
           title: title,
           actions: [],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                height: 67,
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: CustomTextFieldWidget(
-                  hintText: 'search'.tr(),
-                  fillColor: Color(0xffF5F7FA),
-                  prefixIcon: DrawIconBasedTypeWidget(
-                    icon: Icons.search,
-                    iconSize: 24,
-                    iconColor: textColor ?? Color(0x5C1E2A36),
-                  ),
-                  borderRadius: 8,
-                  textFieldVerticalPadding: 16,
-                  onChanged: (String t) {
-                    query = t;
-                    searchedServices = services
-                        .where((element) => element.title
-                            .tr()
-                            .toLowerCase()
-                            .contains(t.toLowerCase()))
-                        .toList();
+        body: Column(
+          children: [
+            Container(
+              height: 67,
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: CustomTextFieldWidget(
+                hintText: 'search'.tr(),
+                fillColor: Color(0xffF5F7FA),
+                prefixIcon: DrawIconBasedTypeWidget(
+                  icon: Icons.search,
+                  iconSize: 24,
+                  iconColor: textColor ?? Color(0x5C1E2A36),
+                ),
+                borderRadius: 8,
+                textFieldVerticalPadding: 16,
+                onChanged: (String t) {
+                  query = t;
+                  searchedServices = services
+                      .where((element) => element.title
+                      .tr()
+                      .toLowerCase()
+                      .contains(t.toLowerCase()))
+                      .toList();
 
-                    setState(() {});
-                  },
-                  hintStyle: TextStyle(
-                      color: textColor ?? Color(0x5C1E2A36),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                  textFieldStyle: TextStyle(
-                      color: textColor ?? Color(0x5C1E2A36),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                  borderColor: Colors.transparent,
-                  /* suffixIcon: _textEditingController.text.isNotEmpty
+                  setState(() {});
+                },
+                hintStyle: TextStyle(
+                    color: textColor ?? Color(0x5C1E2A36),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400),
+                textFieldStyle: TextStyle(
+                    color: textColor ?? Color(0x5C1E2A36),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400),
+                borderColor: Colors.transparent,
+                /* suffixIcon: _textEditingController.text.isNotEmpty
                   ? InkWell(
                       onTap: () {
                         _textEditingController.text = '';
@@ -120,12 +119,13 @@ class _AllServicesPageState extends State<AllServicesPage> {
                       ),
                     )
                   : null,*/
-                ),
               ),
-              SizedBox(
-                height: 16,
-              ),
-              Padding(
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Expanded(
+              child: Padding(
                 padding: const EdgeInsetsDirectional.only(start: 8),
                 child: GridView.builder(
                   shrinkWrap: true,
@@ -144,9 +144,9 @@ class _AllServicesPageState extends State<AllServicesPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            ),
+            const SizedBox(height: 24),
+          ],
         ),
       ),
     );

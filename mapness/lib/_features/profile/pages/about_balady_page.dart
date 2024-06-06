@@ -1,11 +1,9 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -17,13 +15,15 @@ class AboutBaladyPage extends ConsumerStatefulWidget {
 }
 
 class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
+  ///youtube video id
+  final initialVideoId = '4iRVvB1iZAc';
   late YoutubePlayerController _controller;
 
   @override
   void initState() {
     super.initState();
     _controller = YoutubePlayerController(
-      initialVideoId: '4iRVvB1iZAc',
+      initialVideoId: initialVideoId,
       flags: const YoutubePlayerFlags(
         autoPlay: false,
         enableCaption: false,
@@ -54,97 +54,52 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
         textDirection: Directionality.of(context),
         child: Material(
           color: Colors.white,
-          child: ListView(
-            children: [
-              const SizedBox(
-                width: 12,
+          child: Padding(
+            padding: const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
+            child: Scaffold(
+              appBar: BaladyTopBar.iconAndText(
+                title: context.l10n.aboutApp,
+                colorEnabled: context.color.textAndIconsStatusAccent,
+                leading: ActionModel(
+                  onPressed: () => context.pop(),
+                  icon: context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                ),
               ),
-              SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: Material(
-                          borderRadius: BorderRadius.circular(8),
-                          color: context.color.surfaceBaseSecondary,
-                          child: InkWell(
-                            onTap: () {
-                              context.pop();
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: SvgPicture.asset(
-                                direction == TextDirection.ltr
-                                    ? 'assets/icons/svg/ic_chevron_left.svg'
-                                    : 'assets/icons/svg/ic_chevron_right.svg',
-                                height: 24,
-                                width: 24,
-                                package: PackageConfig.packageName,
-                                colorFilter: ColorFilter.mode(
-                                  context.color.textAndIconsBasePrimary,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
+              body: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(Spacing.horizontalPaddingInsideWrapper),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(CornerRadius.smallContainer),
+                      // ignore: prefer_const_constructors
+                      child: YoutubePlayer(
+                        controller: _controller,
+                        bottomActions: [
+                          CurrentPosition(),
+                          ProgressBar(isExpanded: true),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            context.l10n.weAreHappyToConnectYouWithBaladyTeam,
+                            textDirection: direction,
+                            style: context.textStyle.text.copyWith(
+                              color: context.color.textAndIconsBasePrimary,
                             ),
                           ),
                         ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        context.l10n.aboutApp,
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .callout
-                            .copyWith(color: context.color.textAndIconsBasePrimary),
-                      ),
-                      const Spacer(),
-                      const SizedBox(
-                        width: 40,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  // ignore: prefer_const_constructors
-                  child: YoutubePlayer(
-                    controller: _controller,
-                    bottomActions: [
-                      CurrentPosition(),
-                      ProgressBar(isExpanded: true),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        context.l10n.weAreHappyToConnectYouWithBaladyTeam,
-                        textDirection: direction,
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .text
-                            .copyWith(color: context.color.textAndIconsBasePrimary),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

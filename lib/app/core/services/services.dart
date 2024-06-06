@@ -732,7 +732,7 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "supporter", "description": null, "tag": null},
       "en": {"title": "supporter", "description": null, "tag": null}
     },
-     {
+    {
       "id": 407,
       "icon": "chat_bot",
       "3d_icon": null,

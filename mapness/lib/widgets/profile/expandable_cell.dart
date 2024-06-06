@@ -1,0 +1,130 @@
+import 'dart:math';
+
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:expansion_widget/expansion_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+
+class ExpandableCell extends StatelessWidget {
+  const ExpandableCell({
+    required this.title, required this.icon, required this.content, super.key,
+    this.subtitle,
+    this.count,
+  });
+
+  final String title;
+  final String? subtitle;
+  final int? count;
+  final String icon;
+  final Widget content;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: ExpansionWidget(
+        titleBuilder:
+            (animationValue, easeInValue, isExpanded, toggleFunction) => Material(
+            color: context.color.surfaceBaseSecondary,
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(8),
+              topRight: const Radius.circular(8),
+              bottomLeft: Radius.circular(isExpanded ? 0 : 8),
+              bottomRight: Radius.circular(isExpanded ? 0 : 8),
+            ),
+            child: InkWell(
+              onTap: () => toggleFunction(animated: true),
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(8),
+                topRight: const Radius.circular(8),
+                bottomLeft: Radius.circular(isExpanded ? 0 : 8),
+                bottomRight: Radius.circular(isExpanded ? 0 : 8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      icon,
+                      height: 24,
+                      width: 24,
+                      package: PackageConfig.packageName,
+                      color: context.color.textAndIconsStatusAccent,
+                    ),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: DefaultTextStyle.of(context).style.copyWith(
+                                  fontSize: 16,
+                                  height: 1.4,
+                                  color: context.color.textAndIconsBasePrimary,
+                                ),
+                          ),
+                          if (subtitle != null) ...[
+                            const SizedBox(
+                              height: 2,
+                            ),
+                            Text(
+                              subtitle!,
+                              style: context.textStyle
+                                  .caption
+                                  .copyWith(color: context.color.textAndIconsBasePrimary),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const Spacer(),
+                    if (count != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 2),
+                        child: Text(
+                          '$count',
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .text
+                              .copyWith(color: context.color.textAndIconsBasePrimary),
+                        ),
+                      ),
+                    const SizedBox(
+                      width: 2,
+                    ),
+                    Transform.rotate(
+                      angle: pi * animationValue,
+                      child: SvgPicture.asset(
+                        'assets/icons/svg/ic_chevron_down.svg',
+                        height: 24,
+                        width: 24,
+                        package: PackageConfig.packageName,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        content: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(8),
+              bottomRight: Radius.circular(8),
+            ),
+          ),
+          child: content,
+        ),
+      ),
+    );
+}
