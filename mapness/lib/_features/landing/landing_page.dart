@@ -55,6 +55,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _calculatePadding();
+      _onScroll
+        ..value = true
+        ..value = false;
     });
 
     switch (widget.focusMaker) {

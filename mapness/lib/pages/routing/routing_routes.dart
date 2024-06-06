@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/app/routes/iwish.dart';
+import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
@@ -169,10 +171,12 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     final routes = ref.read(currentRouteProvider);
 
     switch (routes?.previousPath) {
-      case '/poi-map':
-      case '/iwish':
-      case '/landing':
+      case PoiMapRoute.path:
+      case IwishCardRoute.path:
         context.pop();
+        break;
+      case LandingRoute.path:
+        const LandingRoute().go(context);
         break;
       default:
         const RoutingRoute().pushReplacement(context);
