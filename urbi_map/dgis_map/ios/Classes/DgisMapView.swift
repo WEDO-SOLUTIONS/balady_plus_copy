@@ -274,6 +274,33 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         completion(nil)   
     }
+
+    func setCameraPositionPointCameraPosition(
+        _ cameraPosition: CameraPositionPointMessage,
+        completion: @escaping (FlutterError?) -> Void
+    ) {
+        guard let map = self.map else {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        
+        do {
+            try map.camera.setPositionPoint(positionPoint: CameraPositionPoint(x: cameraPosition.x.floatValue, y: cameraPosition.y.floatValue))
+        } catch {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        completion(nil)
+    
+    }
     
     func moveCameraCameraPosition(_ cameraPosition: CameraPositionMessage, duration: NSNumber, animationType: CameraAnimationTypeMessage, completion: @escaping (FlutterError?) -> Void) {
         guard let map = self.map else {

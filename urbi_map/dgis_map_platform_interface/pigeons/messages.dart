@@ -54,6 +54,13 @@ class CameraPositionMessage {
   final double bearing;
 }
 
+class CameraPositionPointMessage {
+  CameraPositionPointMessage(this.x, this.y);
+
+  final double x;
+  final double y;
+}
+
 enum CameraAnimationTypeMessage { default_, linear, showBothPositions }
 
 class DgisObjectIdMessage {
@@ -1081,6 +1088,9 @@ abstract class MapApi {
 
   @async
   void setCameraPosition(CameraPositionMessage cameraPosition);
+
+  @async
+  void setCameraPositionPoint(CameraPositionPointMessage cameraPosition);
 
   @async
   void moveCamera(
