@@ -106,14 +106,14 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
       );
     }
 
-    if (requestState is AsyncLoading || requestState.requireValue) {
+    if (requestState is AsyncLoading || requestState.requireValue == true) {
       return Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
           padding: const EdgeInsets.only(
               top: 16.0, bottom: 24.0, left: 16.0, right: 16.0),
           child: LoadingThanksSheet(
-            isLoading: requestState is AsyncLoading,
+            isLoading: requestState is AsyncLoading || requestState.requireValue == false,
             onComplete: widget.onFeedbackSent,
             onClose: widget.onClose,
             triggerOnComplete: state.feedback == HappinessFeedback.like,
