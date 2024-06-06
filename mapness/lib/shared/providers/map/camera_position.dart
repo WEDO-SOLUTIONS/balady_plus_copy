@@ -13,8 +13,7 @@ class CameraPosition extends _$CameraPosition {
   @override
   CameraPositionMessage? build() {
     final dgisController = ref.watch(dgisControllerProvider);
-    _cameraPositionSubscription ??= dgisController.value?.cameraPositionEvents
-        .listen(_cameraPositionListener);
+    _cameraPositionSubscription ??= dgisController.value?.cameraPositionEvents.listen(_cameraPositionListener);
     ref.onDispose(
       () {
         _cameraPositionSubscription?.cancel();
@@ -88,9 +87,9 @@ class CameraPosition extends _$CameraPosition {
   }
 
   Future<void> setPadding(CameraSetPaddingMessage padding) async {
-    final dgisController = ref.read(dgisControllerProvider);
+    final dgisController = await ref.read(dgisControllerProvider.future);
 
-    await dgisController.value!.setCameraPadding(padding);
+    await dgisController.setCameraPadding(padding);
   }
 
   // ignore: use_setters_to_change_properties
