@@ -40,7 +40,7 @@ final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
     TypedStatefulShellBranch<LandingBranch>(
       routes: <TypedGoRoute<GoRouteData>>[
         TypedGoRoute<LandingRoute>(
-          path: '/landing',
+          path: LandingRoute.path,
         ),
       ],
     ),
@@ -69,18 +69,17 @@ class LandingBranch extends StatefulShellBranchData {
 }
 
 class LandingRoute extends GoRouteData {
+  static const path = '/landing';
 
   const LandingRoute({this.focusMaker});
   final LangingFocusMaker? focusMaker;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: LandingPage(
           focusMaker: focusMaker ??
               LangingFocusMaker.values.firstWhereOrNull(
-                (element) =>
-                    element.name == state.uri.queryParameters['focus-maker'],
+                (element) => element.name == state.uri.queryParameters['focus-maker'],
               ),
         ),
       );
@@ -91,14 +90,13 @@ class RoutingBranch extends StatefulShellBranchData {
 }
 
 class RoutingRoute extends GoRouteData {
-
   const RoutingRoute({this.collapseInitially = false});
+
   /// open page with collapsed bottom sheet
   final bool collapseInitially;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: RoutingPointsPage(
           collapseInitially: collapseInitially,
         ),
@@ -135,12 +133,10 @@ class ProfilesRoute extends GoRouteData {
   const ProfilesRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const ProfilePage();
+  Widget build(BuildContext context, GoRouterState state) => const ProfilePage();
 }
 
-RouteBase homeShellRoute({required bool naviEnabled}) =>
-    StatefulShellRouteData.$route(
+RouteBase homeShellRoute({required bool naviEnabled}) => StatefulShellRouteData.$route(
       factory: $HomeShellRouteExtension._fromState,
       branches: [
         StatefulShellBranchData.$branch(
@@ -171,7 +167,7 @@ RouteBase homeShellRoute({required bool naviEnabled}) =>
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/landing',
+              path: LandingRoute.path,
               factory: $LandingRouteExtension._fromState,
             ),
           ],

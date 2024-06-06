@@ -31,7 +31,7 @@ class CameraPadding extends _$CameraPadding {
   }
 
   Future<void> setPadding(CameraSetPaddingMessage padding) async {
-    final cameraProvider = ref.watch(cameraPositionProvider.notifier);
+    final cameraProvider = ref.read(cameraPositionProvider.notifier);
 
     state = padding;
 
