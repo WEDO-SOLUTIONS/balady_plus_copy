@@ -27,8 +27,7 @@ class RoutingSearchRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: RoutingSearchSheet(
           placeholder: placeholder,
           showMyLocation: showMyLocation,
@@ -48,8 +47,7 @@ class RoutingMapRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
         child: RoutingMapSelect(),
       );
 }
@@ -61,16 +59,31 @@ class RoutingFavouritesRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
         child: RoutingFavouritesPage(),
       );
 }
 
 @TypedGoRoute<RoutingRoutesRoute>(
-  path: '/routingRoutes',
+  path: RoutingRoutesRoute.path,
 )
 class RoutingRoutesRoute extends GoRouteData {
+  static const path = '/routingRoutes';
+
+  final double? startLatitude;
+  final double? startLongitude;
+  final int? startObjectId;
+  final int? startEntranceId;
+  final int? startLevelId;
+  final String startLabel;
+
+  final double? finishLatitude;
+  final double? finishLongitude;
+  final int? finishObjectId;
+  final int? finishEntranceId;
+  final int? finishLevelId;
+  final String finishLabel;
+
   const RoutingRoutesRoute({
     required this.startLatitude,
     required this.startLongitude,
@@ -85,21 +98,6 @@ class RoutingRoutesRoute extends GoRouteData {
     required this.finishLevelId,
     required this.finishLabel,
   });
-
-  // query params in go_router is a fucking mess
-  final double? startLatitude;
-  final double? startLongitude;
-  final int? startObjectId;
-  final int? startEntranceId;
-  final int? startLevelId;
-  final String startLabel;
-
-  final double? finishLatitude;
-  final double? finishLongitude;
-  final int? finishObjectId;
-  final int? finishEntranceId;
-  final int? finishLevelId;
-  final String finishLabel;
 
   RouteParamsPoint? get startPoint {
     if (startLatitude != null && startLongitude != null) {
@@ -132,8 +130,7 @@ class RoutingRoutesRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: RoutingRoutesPage(
           points: [
             startPoint,
