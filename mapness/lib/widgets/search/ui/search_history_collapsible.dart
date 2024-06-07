@@ -75,7 +75,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                     child: ContentRow(
                       options: ContentRowOptions(
                         leadingIcon: AppIcons(
-                          iconData: GeneralIcons.time,
+                          iconData: GeneralIcons.timeQuarter,
                           color: context.color.textAndIconsBaseSecondary,
                           size: 24,
                         ),
