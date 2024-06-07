@@ -102,6 +102,10 @@ class DgisMapController {
     onDetached: _instance.onTrafficAndParkingDetached,
     onTrafficClicked: _instance.onTrafficClicked,
     onParkingClicked: _instance.onParkingClicked,
+    setParkingFilter: (filter) => _instance.setMapAttributeString(
+      NaviTrafficParkingController.parkingFilterAttribute,
+      filter.attributeValue,
+    ),
   );
 
   late NaviFreeRoamController freeRoamController = NaviFreeRoamController(

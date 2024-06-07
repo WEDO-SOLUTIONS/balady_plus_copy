@@ -19,6 +19,7 @@ class TrafficAndParkingControlHandler(
 
     private val closeables = mutableListOf<AutoCloseable>()
     private val parkingAttrName = "parkingOn"
+    private val parkingFilterAttrName = "parkingFilter"
 
     private val trafficControlModel by unsafeLazy {
         TrafficControlModel(map = map)
@@ -40,13 +41,14 @@ class TrafficAndParkingControlHandler(
         }
 
     fun onAttachToMap() {
-        closeables += map.attributes.changed.connect {
-            if (it.contains(parkingAttrName)) {
+        closeables += map.attributes.changed.connect { attributes ->
+            if (attributes.contains(parkingAttrName) || attributes.contains(parkingFilterAttrName)) {
                 eventSink.success(
-                   mapOf(
-                       "event" to Companion.Events.parkingStateChanged.name,
-                       "visible" to map.isParkingOn
-                   )
+                    mapOf(
+                        "event" to Companion.Events.parkingStateChanged.name,
+                        "visible" to map.isParkingOn,
+                        "filterAttribute" to map.attributes.getAttributeValue(parkingFilterAttrName).asString
+                    )
                 )
             }
         }

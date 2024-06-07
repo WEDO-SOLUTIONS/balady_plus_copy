@@ -221,6 +221,16 @@ class DgisMapView(
         result.success(null)
     }
 
+    override fun setMapAttributeBool(name: String, value: Boolean, result: Messages.Result<Void>?) {
+        map?.setAttribute(name, AttributeValue(value))
+        result?.success(null)
+    }
+
+    override fun setMapAttributeString(name: String, value: String, result: Messages.Result<Void>?) {
+        map?.setAttribute(name, AttributeValue(value))
+        result?.success(null)
+    }
+
     override fun moveCamera(
             cameraPosition: CameraPositionMessage,
             duration: Double,

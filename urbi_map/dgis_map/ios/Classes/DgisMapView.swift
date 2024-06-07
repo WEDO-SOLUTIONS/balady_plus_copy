@@ -245,6 +245,16 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
+    func setMapAttributeStringName(_ name: String, value: String, completion: @escaping (FlutterError?) -> Void) {
+        map?.attributes.setAttributeValue(name: name, value: .string(value))
+        completion(nil)
+    }
+
+    func setMapAttributeBoolName(_ name: String, value: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        map?.attributes.setAttributeValue(name: name, value: .boolean(value.boolValue))
+        completion(nil)
+    }
+
     func setCameraPositionCameraPosition(
         _ cameraPosition: CameraPositionMessage,
         completion: @escaping (FlutterError?) -> Void
