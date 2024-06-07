@@ -32,15 +32,6 @@ class SuggestItem extends ConsumerWidget {
     final performSearch = suggest.handler.performSearchHandler;
     final object = suggest.handler.objectHandler;
 
-    IconData? icon;
-    if (incompleteText != null) {
-      icon = GeneralIcons.placeHolder;
-    } else if (performSearch != null) {
-      icon = SystemIcons.search;
-    } else if (object != null) {
-      icon = GeneralIcons.pin;
-    }
-
     void _onSuggestTap() {
       if (incompleteText != null) {
         ref.read(searchQueryProvider(scope.value).notifier).update(incompleteText.queryText);
@@ -66,7 +57,7 @@ class SuggestItem extends ConsumerWidget {
         child: ContentRow(
           options: ContentRowOptions(
             leadingIcon: Icon(
-              icon,
+              SystemIcons.search,
               size: 24,
               color: context.color.textAndIconsBaseTertiary,
             ),
