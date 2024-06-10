@@ -76,6 +76,7 @@ class PoiCardProvider extends _$PoiCardProvider {
         cameraConfig: cameraConfig,
         closestPoint: closestPoint,
         paddingConfig: paddingConfig,
+        onRouting: onRouting,
       ).future,
     )
         .timeout(
