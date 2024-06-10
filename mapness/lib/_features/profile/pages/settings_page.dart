@@ -99,15 +99,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       const SizedBox(
                         height: Spacing.verticalGapBetweenChips,
                       ),
-                      Text(
-                        context.l10n.chooseTheLanguageOfAll,
-                        style: context.textStyle.caption.copyWith(
-                          color: context.color.textAndIconsBaseTertiary,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: Spacing.verticalPaddingInsideWrapper,
-                      ),
                       ContentWrapper(
                         color: context.color.surfaceBaseSecondary,
                         children: [
@@ -132,12 +123,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       const SizedBox(
                         height: Spacing.verticalGapBetweenChips,
                       ),
-                      Text(
-                        context.l10n.changeTheColorSchemeOfAnApp,
-                        style: context.textStyle.caption.copyWith(
-                          color: const Color(0xFF1E2A36).withOpacity(0.36),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -157,5 +142,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           width: 22,
           package: PackageConfig.packageName,
         )
-      : null;
+      : SvgPicture.asset(
+          'assets/icons/svg/ic_language_change.svg',
+          height: 24,
+          width: 24,
+          package: PackageConfig.packageName,
+        );
 }

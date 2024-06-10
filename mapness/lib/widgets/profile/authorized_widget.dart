@@ -86,9 +86,9 @@ class AuthorizedWidget extends ConsumerWidget {
     );
   }
 
-  Future<void> _updateAvatar(WidgetRef ref) async {
+  Future<void> _updateAvatar(ImageSource source, WidgetRef ref) async {
     final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
+    final image = await picker.pickImage(source: source);
     if (image == null) {
       return;
     }
@@ -131,7 +131,18 @@ class AuthorizedWidget extends ConsumerWidget {
                     ContentRow(
                       onTap: () {
                         context.pop();
-                        _updateAvatar(ref);
+                        _updateAvatar(ImageSource.camera, ref);
+                      },
+                      options: ContentRowOptions(
+                        leadingIcon: Icon(GeneralIcons.photo, color: context.color.textAndIconsStatusAccent),
+                        title: context.l10n.takePhoto,
+                        titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                      ),
+                    ),
+                    ContentRow(
+                      onTap: () {
+                        context.pop();
+                        _updateAvatar(ImageSource.gallery, ref);
                       },
                       options: ContentRowOptions(
                         leadingIcon: SvgPicture.asset(
