@@ -29,6 +29,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   PoiPaddingConfig? paddingConfig,
   bool? onRouting,
 }) async {
+  if (onRouting == true) {
+    return null;
+  }
+
   final dgisController = ref.watch(dgisControllerProvider);
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
   final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;

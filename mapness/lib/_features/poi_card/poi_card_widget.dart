@@ -27,6 +27,7 @@ import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
 import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
+import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -162,7 +163,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     // Rewrite the logic to a better one, extract camera movement from the native one and control it yourself
     final currentRoute = ref.watch(currentRouteProvider);
-    const routingRoutes = '/routingRoutes';
+    const routingRoutes = RoutingRoutesRoute.path;
 
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId,
