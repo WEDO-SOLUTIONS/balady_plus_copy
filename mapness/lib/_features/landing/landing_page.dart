@@ -158,15 +158,14 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           child: Stack(
             children: [
               ListenableBuilder(
-                  listenable: _draggableScrollableController,
-                  builder: (context, child) => GestureDetector(
-                        onTap: () {
-                          if (_draggableScrollableController.isAttached &&
-                              _draggableScrollableController.size > dashBoardMinimumSize) {
-                            _hideDashboard();
-                          }
-                        },
-                      )),
+                listenable: _draggableScrollableController,
+                builder: (context, child) => (_draggableScrollableController.isAttached &&
+                        _draggableScrollableController.size > dashBoardMinimumSize)
+                    ? GestureDetector(
+                        onTap: () => _hideDashboard(),
+                      )
+                    : const SizedBox.shrink(),
+              ),
               ValueListenableBuilder(
                 valueListenable: _onScroll,
                 builder: (context, _, __) => controls.MapControls(

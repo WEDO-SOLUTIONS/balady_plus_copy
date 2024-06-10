@@ -174,7 +174,7 @@ class ProfilePage extends ConsumerWidget {
                                 ),
                                 onTap: () {
                                   inAppReview.openStoreListing(
-                                    appStoreId: MapnessConsts.appStoreId,
+                                    appStoreId: MapnessConstants.appStoreId,
                                   );
                                 },
                               ),

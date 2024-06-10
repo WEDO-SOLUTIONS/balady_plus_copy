@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_padding_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
@@ -32,11 +31,8 @@ import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart'
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
-import 'package:mapness/shared/ui/buttons/map_button.dart' as mapButton;
-import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
@@ -135,34 +131,14 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
+
     final sizeOfScreen = MediaQuery.of(context).size;
     final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
 
-    final safeArea = MediaQuery.of(context).padding;
-    const horizontalPadding =
-        PoiCardMapControls.horizontalPadding + Markers.defaultWidth + mapButton.MapButton.defaultSize;
-
-    final paddingConfig = PoiPaddingConfig(
-      paddingOfCamera: EdgeInsets.only(
-        left: horizontalPadding,
-        right: horizontalPadding,
-        top: Markers.defaultHeight + safeArea.top,
-        // Calculate the bottom padding for the camera, use multiplier to calculate the padding
-        bottom: PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5,
-      ),
-      sizeOfScreen: sizeOfScreen,
-    );
-
-    // Rewrite the logic to a better one, extract camera movement from the native one and control it yourself
-    final currentRoute = ref.watch(currentRouteProvider);
-    const routingRoutes = '/routingRoutes';
-
     final viewModelProvider = poiCardProviderProvider(
-      widget.objectId,
+      widget.objectId.objectId,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
-      paddingConfig: paddingConfig,
-      onRouting: currentRoute?.currentPath == routingRoutes
     );
     final state = ref.watch(viewModelProvider);
 
