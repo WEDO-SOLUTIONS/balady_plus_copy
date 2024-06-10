@@ -1,12 +1,25 @@
 import 'package:balady_plus/app/features/entry_point/domain/entities/sso_user_info.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
+@immutable
 class UserProfileData {
-
   const UserProfileData({
     this.imageBase64 = '',
   });
   final String imageBase64;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
+    return other is UserProfileData && other.imageBase64 == imageBase64;
+  }
+
+  @override
+  int get hashCode => imageBase64.hashCode;
 }
 
 extension LocalizedName on SsoUserInfo {
