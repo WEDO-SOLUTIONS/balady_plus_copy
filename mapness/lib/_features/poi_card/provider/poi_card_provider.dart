@@ -61,6 +61,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
     PoiPaddingConfig? paddingConfig,
+    bool? onRouting,
   }) async {
     if (poiCardState != null && poiCardState?.gisObjectIdMessage?.id == objectId) {
       return poiCardState;

@@ -27,6 +27,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   PoiCameraConfig? cameraConfig,
   LatLng? closestPoint,
   PoiPaddingConfig? paddingConfig,
+  bool? onRouting,
 }) async {
   final dgisController = ref.watch(dgisControllerProvider);
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
