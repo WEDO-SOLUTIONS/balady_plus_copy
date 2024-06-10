@@ -89,18 +89,28 @@ class ProfilePage extends ConsumerWidget {
                           ContentWrapper(
                             color: context.color.surfaceBaseSecondary,
                             children: [
-                              ContentRow(
-                                  options: ContentRowOptions(
-                                    actionWidget: ContentRowActionOptions(
-                                      actionIcon: actionIcon,
-                                    ),
-                                    leadingIcon: Icon(
-                                      GeneralIcons.user,
-                                      color: context.color.textAndIconsStatusAccent,
-                                    ),
-                                    title: context.l10n.personalData,
-                                  ),
-                                  onTap: () => const ProfileInfoPageRoute().push(context)),
+                              Consumer(builder: (context, ref, child) {
+                                final userData = ref.watch(authProvider);
+
+                                return userData.maybeWhen(
+                                  orElse: () => const SizedBox.shrink(),
+                                  data: (data) => data == null
+                                      ? const SizedBox.shrink()
+                                      : ContentRow(
+                                          options: ContentRowOptions(
+                                            actionWidget: ContentRowActionOptions(
+                                              actionIcon: actionIcon,
+                                            ),
+                                            leadingIcon: Icon(
+                                              GeneralIcons.user,
+                                              color: context.color.textAndIconsStatusAccent,
+                                            ),
+                                            title: context.l10n.personalData,
+                                          ),
+                                          onTap: () => const ProfileInfoPageRoute().push(context),
+                                        ),
+                                );
+                              }),
                               ContentRow(
                                 options: ContentRowOptions(
                                   actionWidget: ContentRowActionOptions(
