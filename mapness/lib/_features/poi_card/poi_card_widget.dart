@@ -131,6 +131,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
+
     final sizeOfScreen = MediaQuery.of(context).size;
     final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
 
