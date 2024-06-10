@@ -27,11 +27,13 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/deeplink_functionds.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
@@ -112,6 +114,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
       // Init camera position point
       initCameraPositionPoint();
+      clearCache();
     });
   }
 
@@ -208,6 +211,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } catch (ex) {
       debugPrint('Error setting camera position point: $ex');
     }
+  }
+
+  Future<void> clearCache() async {
+    final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
+    await poiBox.clear();
   }
 
   Future<void> initMixpanel() async {

@@ -31,7 +31,7 @@ class MapObjectManagerSettings {
       );
 
   factory MapObjectManagerSettings.mappness() => const MapObjectManagerSettings._(
-        name: MapnessConsts.mapLayerName,
+        name: MapnessConstants.mapLayerName,
         layerId: MapObjectLayers.defaultLayerId,
       );
   factory MapObjectManagerSettings.search() => const MapObjectManagerSettings._(

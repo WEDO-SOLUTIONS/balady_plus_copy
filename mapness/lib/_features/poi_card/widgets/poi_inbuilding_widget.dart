@@ -103,7 +103,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
 
   Future<void> _fetchPage(int pageKey) async {
     final viewModelProvider = poiCardProviderProvider(
-      widget.objectId,
+      widget.objectId.objectId,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
     );

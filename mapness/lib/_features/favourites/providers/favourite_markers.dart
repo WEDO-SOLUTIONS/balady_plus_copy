@@ -18,7 +18,7 @@ class FavouriteToggle extends _$FavouriteToggle {
   @override
   bool build() {
     final sharedPrefs = ref.watch(sharedPrefsProvider);
-    final string = sharedPrefs.getString(MapnessConsts.activeLayerKey);
+    final string = sharedPrefs.getString(MapnessConstants.activeLayerKey);
     final bool = string == LayerType.favourites.name;
     return bool;
   }
@@ -26,7 +26,7 @@ class FavouriteToggle extends _$FavouriteToggle {
   Future<void> enable() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     await sharedPrefs.setString(
-      MapnessConsts.activeLayerKey,
+      MapnessConstants.activeLayerKey,
       LayerType.favourites.name,
     );
     ref.invalidateSelf();
@@ -35,7 +35,7 @@ class FavouriteToggle extends _$FavouriteToggle {
   Future<void> disable() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     await sharedPrefs.remove(
-      MapnessConsts.activeLayerKey,
+      MapnessConstants.activeLayerKey,
     );
     ref.invalidateSelf();
   }
@@ -44,12 +44,12 @@ class FavouriteToggle extends _$FavouriteToggle {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     final name = LayerType.favourites.name;
     final currentState =
-        sharedPrefs.getString(MapnessConsts.activeLayerKey) == name;
+        sharedPrefs.getString(MapnessConstants.activeLayerKey) == name;
     if (currentState) {
-      await sharedPrefs.remove(MapnessConsts.activeLayerKey);
+      await sharedPrefs.remove(MapnessConstants.activeLayerKey);
     } else {
       await sharedPrefs.setString(
-        MapnessConsts.activeLayerKey,
+        MapnessConstants.activeLayerKey,
         name,
       );
     }
