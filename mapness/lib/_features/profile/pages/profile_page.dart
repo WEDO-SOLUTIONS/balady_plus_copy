@@ -156,7 +156,7 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    General16Icons.starSolidAlt,
+                                    GeneralIcons.star,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.rateBaladyApp,

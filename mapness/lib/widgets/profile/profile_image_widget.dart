@@ -21,26 +21,21 @@ class ProfileImageWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileImage = ref.watch(profileImageProvider);
 
-    return Builder(builder: (context) {
-      final defaultImage = Icon(
-        GeneralIcons.user,
-        size: dimension,
-        color: color ?? NonThemeColor.color40,
-      );
-      final Widget imageWidget = profileImage.when(
-        data: (data) {
-          if (data.imageBase64.isEmpty) {
-            return defaultImage;
-          }
-          return Picture.large(
-            size: dimension,
-            imgBytes: base64Decode(data.imageBase64),
-          );
-        },
-        error: (error, trace) => defaultImage,
-        loading: () => defaultImage,
-      );
-      return imageWidget;
-    });
+    final Widget defaultImage = Icon(
+      GeneralIcons.user,
+      size: dimension,
+      color: color ?? NonThemeColor.color40,
+    );
+
+    return profileImage.maybeWhen(
+      data: (data) => data.imageBase64.isEmpty
+          ? defaultImage
+          : Picture.large(
+              key: ValueKey(data.imageBase64),
+              size: dimension,
+              imgBytes: base64Decode(data.imageBase64),
+            ),
+      orElse: () => defaultImage,
+    );
   }
 }
