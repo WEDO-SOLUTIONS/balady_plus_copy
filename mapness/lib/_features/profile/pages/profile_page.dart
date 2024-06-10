@@ -186,6 +186,8 @@ class ProfilePage extends ConsumerWidget {
                                         ContentRow(
                                           onTap: () => _logOut(context, ref),
                                           options: ContentRowOptions(
+                                            titleStyle: context.textStyle.text
+                                                .copyWith(color: context.color.textAndIconsStatusNegative),
                                             title: context.l10n.logOut,
                                             leadingIcon: SvgPicture.asset(
                                               'assets/icons/svg/ic_profile_logout.svg',
