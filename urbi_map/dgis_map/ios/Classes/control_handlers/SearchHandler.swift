@@ -3,32 +3,6 @@ import Foundation
 import DGis
 import CoreLocation
 
-
-struct ApiResponse: Decodable {
-    var meta: ResponseMeta
-    var result: TwinsResult
-}
-
-struct ResponseMeta: Decodable {
-    var code: Int
-}
-
-struct TwinsResult: Decodable {
-    var items: [TwinsItem]
-}
-
-struct TwinsItem: Decodable {
-    var twins: [Twin]
-}
-
-struct Twin: Decodable {
-    var partnerId: String
-    
-    enum CodingKeys: String, CodingKey {
-        case partnerId = "partner_id"
-    }
-}
-
 class SearchHandler: NSObject {
     private let map: Map
     private let sdkContext: Container
@@ -90,57 +64,10 @@ class SearchHandler: NSObject {
                 return
             }
             
-            guard let twinsApiUrl = self.vendorConfig?.overrides[CustomOverrides.twinsApi.rawValue] else {
-                completion(
-                    response.toMessage(
-                        externalIds: nil
-                    ),
-                    nil
-                )
-                
-                return
-            }
-            
-            var url = URLComponents(string: twinsApiUrl)!
-            url.queryItems = [
-                URLQueryItem(name: "dgis_id", value: String(objectId.objectId)),
-                URLQueryItem(name: "partner_code", value: "momrah"),
-                URLQueryItem(name: "key", value: "28ed92f1-de4b-4060-b159-2dc19e9b8bf5")
-            ]
-
-            let request = URLRequest(url: url.url!)
-            URLSession.shared.dataTask(with: request) { data, _, error in
-                guard error == nil, let data = data else {
-                    completion(
-                        response.toMessage(
-                            externalIds: nil
-                        ),
-                        nil
-                    )
-                    return
-                }
-                
-                let twinsResponse = try? self.jsonDecoder.decode(ApiResponse.self, from: data)
-                
-                guard let twinsResponse = twinsResponse, twinsResponse.meta.code == 200 else {
-                    completion(
-                        response.toMessage(
-                            externalIds: nil
-                        ),
-                        nil
-                    )
-                    return
-                }
-                
-                completion(
-                    response.toMessage(
-                        externalIds: twinsResponse.result.items.first?.twins.map {
-                            $0.partnerId
-                        }
-                    ),
-                    nil
-                )
-            }.resume()
+            completion(
+                response.toMessage(),
+                nil
+            )
         } failure: { error in
             completion(nil, FlutterError(code: "FutureError", message: error.description, details: nil))
         }
