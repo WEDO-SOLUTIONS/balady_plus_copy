@@ -22,6 +22,8 @@ FutureOr<Map<int, String>> generateTitleMap(List<UiMarkerInfoMessage?>? uiMarker
 extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _invalidMarkerId = 'invalid';
   static const _propertyKey = 'objectId';
+  static const _poiMapFont = 'Noto Sans Arabic Regular';
+
   Future<List<Marker>> getMarkers({
     required GoRouter router,
     MarkerIconMessage? icon,
@@ -50,9 +52,9 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
               textStyle: MarkerTextStyleMessage(
                 color: 0xff1E2A36,
                 fontSize: 13,
-                fontName: 'Noto Naskh Arabic Regular',
-                textOffset: 6,
-                strokeColor: 0xFFFFFFFF,
+                fontName: _poiMapFont,
+                textOffset: 4,
+                strokeColor: 0xD3FFFFFF,
                 strokeWidth: 2,
                 textPlacement: MarkerTextPlacementMessage(
                   placement: TextPlacementMessage.rightCenter,
