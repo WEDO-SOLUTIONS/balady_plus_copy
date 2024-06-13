@@ -16,17 +16,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_by_rubrics.g.dart';
 
-FutureOr<Map<String, String>> generateTitleMap(List<UiMarkerInfoMessage?>? uiMarkers) {
-  final titleMap = <String, String>{};
-  for (final uiMarker in uiMarkers ?? List<UiMarkerInfoMessage?>.empty()) {
-    if (uiMarker?.objectId == null || uiMarker?.label == null) {
-      continue;
-    }
-    titleMap[uiMarker!.objectId!.objectId.toString()] = uiMarker.label!;
-  }
-  return titleMap;
-}
-
 // TODO(Sergei): remove index from state, this will allow to select filter without information about index
 //  and allow to not be tied to order of filters
 @riverpod
