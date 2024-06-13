@@ -30,13 +30,7 @@ class PreviousNextButtons extends StatelessWidget {
             btnPressed: isButtonDisabled
                 ? () {}
                 : () {
-                    if (!isLastPage) {
-                      context
-                          .read<NewHealthCertificateBloc>()
-                          .add(GoToNextPageEvent());
-                    } else {
-                      onConfirm();
-                    }
+                 onConfirm();
                   },
             btnRadius: 8,
             btnText: isLastPage ? ("confirm").tr() : ("next").tr(),

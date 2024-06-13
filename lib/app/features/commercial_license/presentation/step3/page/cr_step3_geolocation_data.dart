@@ -153,12 +153,17 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                   ),
                 ),
               ),
-              CRPreviousNextButtons(
-                isBtnDisabled: !state.isFormValid(),
-                onPressed: () {
-                  context.read<MapBloc>().add(const SaveLocationDataEvent());
-                },
-              ),
+
+              (state.status.isSubmissionLoading)
+                  ? const Center(child: CustomCircularLoadingWidget())
+                  : CRPreviousNextButtons(
+                      isBtnDisabled: !state.isFormValid(),
+                      onPressed: () {
+                        context
+                            .read<MapBloc>()
+                            .add(const SaveLocationDataEvent());
+                      },
+                    ),
             ],
           ),
           if (state.status.isSubmissionLoading)

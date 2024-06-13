@@ -21,8 +21,8 @@ class LoadMoreServices extends ServicesEvent {
   LoadMoreServices();
 }
 
-class GetServicesEvent extends ServicesEvent { 
-  String? name; 
+class GetServicesEvent extends ServicesEvent {
+  String? name;
 
-GetServicesEvent({this.name});
+  GetServicesEvent({this.name});
 }

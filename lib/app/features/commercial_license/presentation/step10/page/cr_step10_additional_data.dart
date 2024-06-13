@@ -202,7 +202,9 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                   ),
                 ),
               ),
-              CRPreviousNextButtons(
+              (state.status.isSubmissionLoading)
+                  ? const Center(child: CustomCircularLoadingWidget())
+                  : CRPreviousNextButtons(
                   onPressed: () {
                     context.read<CRStep10AddetionalDataCubit>().save();
                   },

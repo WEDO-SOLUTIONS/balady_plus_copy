@@ -83,15 +83,15 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
                     if (cancellationRequest != null) {
                       navigator.popAndPushNamed(
                         RouteName.commercialLicenseCancel,
-                        arguments: CommercialLicenseCancelBloc(
-                          webService: sl(),
-                          requestId: cancellationRequest.requestId,
-                          availableCloseDate:
+                        arguments: {
+                          "from": "licenses",
+                          "requestId": cancellationRequest.requestId,
+                          "reasonCancel": viewModel.reasonCancel,
+                          "availableCloseDate":
                               cancellationRequest.availableCloseDate,
-                          crNumber: viewModel.submitterInfo.crNumber,
-                          crType: viewModel.submitterInfo.crType!,
-                          reasonCancel: viewModel.reasonCancel,
-                        ),
+                          "crNumber": viewModel.submitterInfo.crNumber ?? "",
+                          "crType": viewModel.submitterInfo.crType!,
+                        },
                       );
                       CommonFunctions.sendUXCamEvent(
                           UXCamEvents.startServiceCancelLicenseService);

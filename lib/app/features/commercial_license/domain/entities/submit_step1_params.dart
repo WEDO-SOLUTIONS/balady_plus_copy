@@ -14,11 +14,10 @@ class SubmitStep1Params {
   });
 
   Map<String, dynamic> toJson() => {
-    "crNumber": crNumber,
-    "entityType": entityType,
-    "crType": crType,
-    "identityIdForEtmam": identityIdForEtmam,
-    "consultationId": consultationId,
-  };
-
+        "crNumber": crNumber,
+        "entityType": entityType,
+        "crType": crType,
+        "identityIdForEtmam": identityIdForEtmam,
+        "consultationId": consultationId,
+      };
 }

@@ -6,7 +6,9 @@ import 'package:mapness/features/sso_auth/data/token_provider.dart';
 
 class AuthTokenInterceptor {
   static QueuedInterceptorsWrapper tokenInterceptor(
-          AutoDisposeAsyncNotifierProviderRef ref, BaseOptions baseOptions,) =>
+    AutoDisposeAsyncNotifierProviderRef ref,
+    BaseOptions baseOptions,
+  ) =>
       QueuedInterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await ref.read(tokenProvider.future);
@@ -42,11 +44,16 @@ class AuthTokenInterceptor {
               );
               handler.resolve(response);
             }
+            // ignore: avoid_catches_without_on_clauses
           } catch (e) {
             if (e is DioException && e.response?.statusCode == 401) {
-              //LogOut and Redirect to login
-              await ref.read(authProvider.notifier).tokenExpireLogout();
-              await ref.read(goRouterProvider).push('/signin');
+              // LogOut and Redirect to login
+              // TODO: remove this crunch
+              if (!e.requestOptions.uri.origin
+                  .contains('momrah-balady.public-poc.urbi.ae')) {
+                await ref.read(authProvider.notifier).tokenExpireLogout();
+                await ref.read(goRouterProvider).push('/signin');
+              }
             } else if (e is DioException) {
               handler.reject(e);
             } else {

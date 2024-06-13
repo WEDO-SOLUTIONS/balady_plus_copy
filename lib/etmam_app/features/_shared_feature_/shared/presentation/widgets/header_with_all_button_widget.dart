@@ -44,7 +44,7 @@ class HeaderWithAllButtonWidget extends StatelessWidget {
             visible: showAllButton,
             child: GestureDetector(
               onTap: allOnPressed,
-              child:  CustomTextWidget(
+              child: CustomTextWidget(
                 trans("show_all"),
                 fontWeight: AppFontWeight.bold,
                 fontColor: AppColor.primary900Light,

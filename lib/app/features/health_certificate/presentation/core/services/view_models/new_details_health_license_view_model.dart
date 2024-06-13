@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/selected_location.dart';
+import '../../../dialogs/health_cert_message_riyadh_dialog.dart';
 import '../../../widgets/map_screen.dart';
 import '../../models/cr_information.dart';
 import '../../models/license_for_health_information_response.dart';
@@ -71,6 +73,7 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
 
   void init({bool isRenew = false}) {
     dataModel.init(isRenew: isRenew);
+    isFormValid = false;
     address = StreamController<String?>.broadcast();
   }
 
@@ -129,17 +132,38 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
               response.item3?.isSuccessfull != null &&
               response.item3!.isSuccessfull!) {
             isGISSuccess = true;
+            //   dataModel.gisLocationResult = response.item3!;
           }
+          print("HFRSDFVDSVCDSVDSVDS");
           if (isGISSuccess) {
             bool isValidMunicipality =
                 await dataModel.validateHealthCertificate(response.item3);
 
             bool isCitiesRetrived = isCenterRequired()
-                ? await getCities(
-                    gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "")
+                ? await getCities(response.item3?.MUNICIPALITYUNIQUECODE ?? "")
                 : true;
 
-            if (isGISSuccess && isValidMunicipality && isCitiesRetrived) {
+            bool isInRiyadh = response.item3?.adminMunicipalityId == "004";
+
+            if (isInRiyadh) {
+              showDialog(
+                  context: NavigationService.navigatorKey.currentState!.context,
+                  barrierDismissible: true,
+                  builder: (ctx) => Dialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
+                      child: HealthCertMessageRiyadhDialog(
+                        isRenew: dataModel.isRenew,
+                      ))).then((value) {
+                if (value == true) {
+                  navigation.currentState?.pop();
+                  navigation.currentState?.pop();
+                }
+              });
+            } else if (isGISSuccess &&
+                isValidMunicipality &&
+                isCitiesRetrived &&
+                !isInRiyadh) {
               this.selectedLocation = selectedLocation;
               shopHasLicense = "0";
               noLicenseReason = "0";

@@ -1,5 +1,3 @@
-
-
 List<RequestAllowedActions> requestAllowedActionsListFromJson(List list) =>
     List<RequestAllowedActions>.from(
       list.map(
@@ -18,7 +16,8 @@ class RequestAllowedActions {
     required this.name,
   });
 
-  factory RequestAllowedActions.fromJson(Map<String, dynamic> json) => RequestAllowedActions(
+  factory RequestAllowedActions.fromJson(Map<String, dynamic> json) =>
+      RequestAllowedActions(
         // ename: json["ename"],
         id: json["id"],
         name: json["actionName"],
@@ -30,4 +29,3 @@ class RequestAllowedActions {
         "name": name,
       };
 }
-

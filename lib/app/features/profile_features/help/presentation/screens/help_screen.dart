@@ -9,7 +9,7 @@ class HelpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  DefaultAppBarWidget(title: "المساعدة"),
+      appBar: DefaultAppBarWidget(title: "المساعدة"),
       body: Container(
         margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         decoration: const BoxDecoration(

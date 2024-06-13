@@ -17,17 +17,20 @@ import '../../data/repositories/repository_implementation.dart';
 import '../../domain/use_cases/get_construction_license_inquery_data.dart';
 import '../bloc/construction_license_inquery_details_cubit.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/enhanced_widgets/pickers/hijri_picker/hijri_picker.dart'
-as hijri_picker;
+    as hijri_picker;
+
 class ConstructionLicenseInqueryScreen extends StatefulWidget {
   const ConstructionLicenseInqueryScreen({Key? key}) : super(key: key);
 
   @override
-  State<ConstructionLicenseInqueryScreen> createState() => _ConstructionLicenseInqueryScreenState();
+  State<ConstructionLicenseInqueryScreen> createState() =>
+      _ConstructionLicenseInqueryScreenState();
 }
 
-class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseInqueryScreen> {
-
-  final TextEditingController _licenseNumberController = TextEditingController();
+class _ConstructionLicenseInqueryScreenState
+    extends State<ConstructionLicenseInqueryScreen> {
+  final TextEditingController _licenseNumberController =
+      TextEditingController();
 
   final TextEditingController _licenseDateController = TextEditingController();
   final FocusNode _licenseNumberDescFocusNode = FocusNode();
@@ -47,14 +50,10 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
       appBar: DefaultAppBarWidget(
         title: "back".tr(),
         showBack: true,
-
       ),
       body: getBody(),
-
-
     );
   }
-
 
   Widget getBody() {
     return Column(
@@ -62,7 +61,6 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
         Expanded(
           child: SingleChildScrollView(
             child: Column(
-
               children: [
                 Container(
                   padding: const EdgeInsets.only(
@@ -72,14 +70,11 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
-
-
                       children: [
                         CustomTextWidget(
                           "commercial_licenseـquery_title".tr(),
                           textStyle: AppStyle.complianceTitleStyle,
                           maxLines: 4,
-
                         ),
                         const SizedBox(
                           height: 10,
@@ -97,35 +92,27 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
                           ],
                           fillColor: Colors.transparent,
                           onValidate: (text) {
-                            if (text
-                                .toString()
-                                .isEmpty) {
+                            if (text.toString().isEmpty) {
                               return ("unified_license_number_error").tr();
                             }
                             return null;
                           },
-
                           textInputAction: TextInputAction.done,
                           spacerSize: 10,
                         ),
-
-
-
-
-
                         CustomTextFieldWidget(
-                            label:"${"license_issue_date".tr()} *",
+                            label: "${"license_issue_date".tr()} *",
                             controller: _licenseDateController,
                             fillColor: Colors.transparent,
                             onTap: () {
                               hijri_picker.Picker(
                                 isAr: CommonFunctions.isAppAR,
                                 confirmTextStyle:
-                                AppStyle.textButtonStyle.copyWith(
+                                    AppStyle.textButtonStyle.copyWith(
                                   color: AppColor.primary900Light,
                                 ),
                                 cancelTextStyle:
-                                AppStyle.textButtonStyle.copyWith(
+                                    AppStyle.textButtonStyle.copyWith(
                                   color: AppColor.primary900Light,
                                 ),
                                 headercolor: AppColor.paleGrey,
@@ -133,35 +120,30 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
                                 confirmText: 'choose'.tr(),
                                 title: CustomTextWidget(
                                   'license_issue_date'.tr(),
-                                  textStyle:
-                                  AppStyle.dropDownTitleTextStyle,
+                                  textStyle: AppStyle.dropDownTitleTextStyle,
                                 ),
                                 hideHeader: false,
-                                adapter: hijri_picker
-                                    .DateTimePickerAdapter(
+                                adapter: hijri_picker.DateTimePickerAdapter(
                                   // minValue: HijriCalendar.fromDate(DateTime.now()),
-                                  maxValue: HijriCalendar.fromDate(
-                                      DateTime.now()),
-                                  customColumnType:
-                                  CommonFunctions.isAppAR
+                                  maxValue:
+                                      HijriCalendar.fromDate(DateTime.now()),
+                                  customColumnType: CommonFunctions.isAppAR
                                       ? [2, 1, 0]
                                       : [0, 1, 2],
-                                  value: HijriCalendar.fromDate(
-                                      DateTime.now()),
+                                  value: HijriCalendar.fromDate(DateTime.now()),
                                 ),
                                 selectedTextStyle: const TextStyle(
                                     color: AppColor.primary900Light),
                                 onConfirm: (picker, value) {
                                   final date = (picker.adapter
-                                  as hijri_picker
-                                      .DateTimePickerAdapter)
+                                          as hijri_picker.DateTimePickerAdapter)
                                       .value;
                                   if (date != null) {
-
                                     setState(() {
-
                                       setState(() {
-                                        _licenseDateController.text = "${date.hYear}/${date.hMonth.toString().padLeft(2,'0')}/${date.hDay.toString().padLeft(2,'0')}";;
+                                        _licenseDateController.text =
+                                            "${date.hYear}/${date.hMonth.toString().padLeft(2, '0')}/${date.hDay.toString().padLeft(2, '0')}";
+                                        ;
                                       });
                                     });
 
@@ -188,18 +170,13 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
                             //controller: bloc.controller,
                             readOnly: true,
                             disabledColor: Colors.transparent,
-
-                            onValidate: (date) =>
-                            date?.isNotEmpty ?? false
+                            onValidate: (date) => date?.isNotEmpty ?? false
                                 ? null
-                                : "license_date_error".tr()
-                        ),
-
+                                : "license_date_error".tr()),
                       ],
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -211,8 +188,7 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
                 topRight: Radius.circular(36),
               ),
               color: Colors.white),
-          padding: const EdgeInsets.symmetric(
-              horizontal: 18, vertical: 26),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
           child: CustomElevatedButtonWidget(
             btnColor: AppColor.primary800Light,
             textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -224,25 +200,23 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
             text: "query".tr(),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-
                 NavigatorState navigator = Navigator.of(context);
 
-                String date =  _licenseDateController.text.toString().replaceAll("/", "");
+                String date =
+                    _licenseDateController.text.toString().replaceAll("/", "");
                 navigator.pushNamed(
                   RouteName.constructionLicenseInqueryDetails,
                   arguments: ConstructionLicenseInqueryDetailsCubit(
-                    GetConstructionLicenseInqueryData(
-                      repository: ConstructionLicenseInqueryRepositoryImplementation(
-                          remoteDataSource:
-                          ConstructionLicenseInqueryRemoteDataSourceImplementation(
-                              webService: sl())),
-                    ),
+                      GetConstructionLicenseInqueryData(
+                        repository:
+                            ConstructionLicenseInqueryRepositoryImplementation(
+                                remoteDataSource:
+                                    ConstructionLicenseInqueryRemoteDataSourceImplementation(
+                                        webService: sl())),
+                      ),
                       int.parse(_licenseNumberController.text),
-                      date
-                  ),
+                      date),
                 );
-
-
               }
             },
           ),

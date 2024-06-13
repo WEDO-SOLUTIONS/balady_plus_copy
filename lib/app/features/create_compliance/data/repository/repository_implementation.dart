@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/apply_create_compliance_request_model.dart';
+import 'package:balady_plus/app/features/create_compliance/data/models/compliance_certificate_item_request.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/compliance_certificate_items_request.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/compliance_engoffice_details_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/complinace_engoffice_response_model.dart';
@@ -8,8 +10,10 @@ import 'package:balady_plus/app/features/create_compliance/data/models/complinac
 import 'package:balady_plus/app/features/create_compliance/data/models/ownership_doc_type_response_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/save_contract_info_request.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/save_location_compliance_request.dart';
+import 'package:balady_plus/app/features/create_compliance/data/models/upload_dms_attachment_response.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/apply_create_compliance_response.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/comliance_request_details.dart';
+import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_appointment_response.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_attachment_request.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_deed_info.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_deed_info_request.dart';
@@ -23,6 +27,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
+import '../../domain/entities/submit_emtithal_request.dart';
 import '../../domain/repositories/repository.dart';
 import '../datasource/create_compliance_remote_data_source.dart';
 
@@ -158,9 +163,10 @@ class CreateComplianceRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, (String, bool?)>> submitRequest(String params) async {
+  Future<Either<Failure, (String, bool?)>> submitRequest(
+      String id, SubmitEmtithalRequest params) async {
     try {
-      final data = await remoteDataSource.submitRequest(params);
+      final data = await remoteDataSource.submitRequest(id, params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
@@ -275,6 +281,64 @@ class CreateComplianceRepositoryImplementation
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,
           errorCode: error.errorCode, statusCode: error.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> saveComplianceCertificateItem(
+      ComplianceCertificateItemRequest params) async {
+    try {
+      final data = await remoteDataSource.saveComplianceCertificateItem(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UploadDmsAttachmentResponse>> uploadClauseAttachment(
+      FileDataItem params, int requestId) async {
+    try {
+      final data =
+          await remoteDataSource.uploadClauseAttachment(params, requestId);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> validateComplianceCertificateItem(
+      int params) async {
+    try {
+      final data =
+          await remoteDataSource.validateComplianceCertificateItem(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> cancelComplianceCertificate(int params) async {
+    try {
+      final data = await remoteDataSource.cancelComplianceCertificate(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ComplainceAppointmentResponse>>
+      getComplainceAppointment((String, String) params) async {
+    try {
+      final data =
+          await remoteDataSource.getComplainceAppointment(params.$1, params.$2);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
     }
   }
 }

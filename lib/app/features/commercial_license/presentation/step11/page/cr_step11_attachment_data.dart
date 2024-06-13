@@ -99,7 +99,10 @@ class _CRStep11AttachmentDataState extends State<CRStep11AttachmentData> {
                     ),
                   ),
                 ),
-                CRPreviousNextButtons(
+                (state.attachmentStatus.isSubmissionLoading ||
+                    state.status.isSubmissionLoading)
+                    ? const Center(child: CustomCircularLoadingWidget())
+                    :  CRPreviousNextButtons(
                     onPressed: () {
                       context.read<CRStep11AttachmentCubit>().save();
                     },

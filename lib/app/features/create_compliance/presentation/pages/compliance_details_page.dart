@@ -31,6 +31,7 @@ import '../widgets/summery_widgets/step2_summury_widget.dart';
 import '../widgets/summery_widgets/step3_summury_widget.dart';
 import '../widgets/summery_widgets/step4_summury_widget.dart';
 import '../widgets/summery_widgets/step5_summury_widget.dart';
+import '../widgets/summery_widgets/step6_1_summury_widget.dart';
 import '../widgets/summery_widgets/step6_summury_widget.dart';
 import '../widgets/summery_widgets/step7_summury_widget.dart';
 import 'complete_compliance_page.dart';
@@ -78,7 +79,8 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                         .read<ComplianceBloc>()
                         .add(DownloadCertificateEvent())
                     : null,
-                procedures: (state.requestDetails?.statusId == 1)
+                procedures: (state.requestDetails?.statusId == 1 ||
+                        state.requestDetails?.statusId == 28)
                     ? () async {
                         await BottomSheetDialog.showDraggableSheet(context,
                             isFullHeight: false,
@@ -191,6 +193,8 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                               Step5SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                             Step6SummeryWidget(),
+                            CustomVerticalSpace(height: 16),
+                            Step6_1SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                             Step7SummeryWidget(),
                             CustomVerticalSpace(height: 16),

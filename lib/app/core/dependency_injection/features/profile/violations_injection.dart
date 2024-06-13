@@ -17,8 +17,7 @@ class ViolationsInjection {
 
     //! Data Sources
     sl.registerLazySingleton<ViolationsRemoteDataSource>(
-      () => ViolationsRemoteDataSourceImplementation(
-          webService: sl()),
+      () => ViolationsRemoteDataSourceImplementation(webService: sl()),
     );
   }
 }

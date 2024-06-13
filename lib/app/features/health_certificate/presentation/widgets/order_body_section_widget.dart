@@ -182,15 +182,27 @@ class _CertificateDataDataWidget extends StatelessWidget {
         ),
         CustomVerticalSpace(height: 8),
         FieldData(
-          title: Helpers.translatingWord("health_cert_date"),
+          title: Helpers.translatingWord("health_cert_h_date"),
           subTitle: model
               .requestDetails?.data?.result?.healthCertificateInfo?.issueDate,
         ),
         CustomVerticalSpace(height: 8),
         FieldData(
-          title: Helpers.translatingWord("health_cert_end"),
+          title: Helpers.translatingWord("health_cert_h_end"),
           subTitle: model
               .requestDetails?.data?.result?.healthCertificateInfo?.expiryDate,
+        ),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_cert_g_date"),
+          subTitle: model
+              .requestDetails?.data?.result?.healthCertificateInfo?.issueDateG,
+        ),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_cert_g_end"),
+          subTitle: model
+              .requestDetails?.data?.result?.healthCertificateInfo?.expiryDateG,
         ),
         CustomVerticalSpace(height: 8),
         FieldData(

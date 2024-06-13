@@ -7,12 +7,16 @@ import 'package:balady_plus/app/features/commercial_license_cancel/presentation/
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_application_successfully_cancel.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_rating_cancel_screen.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/pages/commercial_license_details_page.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/screens/approval_sequence_main_screen.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/pages/request_ownership_transfer_details_page.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
 import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/jod_services/presentation/tobacco_list/pages/jod_donation_page.dart';
+import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_details_screen.dart';
+import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_list_screen.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/dc_details.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/incident_details.dart';
 import 'package:balady_plus/app/features/profile_features/about_balady/presentation/screens/about_balady_screen.dart';
@@ -78,6 +82,9 @@ import '../../features/commercial_license/presentation/submit_application_succes
 import '../../features/commercial_license_inquery/persentation/commercial_license_overview/commercial_license_overview_screen.dart';
 import '../../features/commercial_license_inquery/persentation/commercial_license_query/commercial_license_query_screen.dart';
 import '../../features/commercial_license_inquery/persentation/commercial_license_query_Details/commercial_license_query_details.dart';
+import '../../features/commercial_license_ownership_transfer/old_owner_transfer/persentation/commercail_license_tranfer_overview/commercial_license_transfer_overview_screen.dart';
+import '../../features/commercial_license_ownership_transfer/old_owner_transfer/persentation/license_premits/request_sequence_home.dart';
+import '../../features/commercial_license_ownership_transfer/old_owner_transfer/persentation/license_premits/sucessfull_page.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_overview/construction_license_overview_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query_Details/construction_license_inquery_details.dart';
@@ -770,6 +777,45 @@ class Routes {
 
         RouteName.chatbot: (context) => const ChatBotScreen(),
 
+        RouteName.commercialLicenseOverView: (context) =>
+            const CommercialLicenseOverviewScreen(),
+        RouteName.commercialLicenseQuery: (context) =>
+            const CommercialLicenseQueryScreen(),
+        RouteName.commercialLicenseQueryDetails: (context) =>
+            const CommercialLicenseQueryDetails(),
+
+        RouteName.surveyReportInqueryOverView: (context) =>
+            const SurveyReportOverviewScreen(),
+        RouteName.surveyReportInquery: (context) =>
+            const SurveyReportInqueryScreen(),
+        RouteName.surveyReportInqueryDetails: (context) =>
+            const SurveyReportInqueryDetails(),
+
+        RouteName.constructionLicenseOverView: (context) =>
+            const ConstructionLicenseOverviewScreen(),
+        RouteName.constructionLicenseInquery: (context) =>
+            const ConstructionLicenseInqueryScreen(),
+        RouteName.constructionLicenseInqueryDetails: (context) =>
+            const ConstructionLicenseInqueryDetails(),
+
+        ///////////////////////////////////
+
+
+        RouteName.approvalSequenceMainScreen: (context) =>
+            const ApprovalSequenceMainScreen(),
+
+        RouteName.requestOwnershipTransferDetailsPage: (context) =>
+            const RequestOwnershipTransferDetailsPage(),
+
+        RouteName.commercialLicenseTransferOverView: (context) =>
+            const CommercialLicenseTransferOverviewScreen(),
+        // RouteName.transferLicensePermits: (context) => const PremitsScreen(),
+        RouteName.SucessfullScreen: (context) => SucessfullScreen(),
+        RouteName.homeSequence: (context) => const RequestSequenceHomeScreen(),
+
+
+
+
         RouteName.commercialLicenseOverView: (context) => const CommercialLicenseOverviewScreen(),
         RouteName.commercialLicenseQuery: (context) => const CommercialLicenseQueryScreen(),
        RouteName.commercialLicenseQueryDetails: (context) => const CommercialLicenseQueryDetails(),
@@ -778,12 +824,18 @@ class Routes {
         RouteName.surveyReportInquery: (context) => const SurveyReportInqueryScreen(),
         RouteName.surveyReportInqueryDetails: (context) => const SurveyReportInqueryDetails(),
 
-    RouteName.constructionLicenseOverView: (context) => const ConstructionLicenseOverviewScreen(),
-    RouteName.constructionLicenseInquery: (context) => const ConstructionLicenseInqueryScreen(),
-    RouteName.constructionLicenseInqueryDetails: (context) => const ConstructionLicenseInqueryDetails(),
 
-
-  };
+        RouteName.constructionLicenseOverView: (context) =>
+            const ConstructionLicenseOverviewScreen(),
+        RouteName.constructionLicenseInquery: (context) =>
+            const ConstructionLicenseInqueryScreen(),
+        RouteName.constructionLicenseInqueryDetails: (context) =>
+            const ConstructionLicenseInqueryDetails(),
+        RouteName.notificationsListScreen: (context) =>
+            const NotificationsListScreen(),
+        RouteName.notificationsDetailsScreen: (context) =>
+            const NotificationsDetailsScreen(),
+      };
 }
 
 class AppRouter1 {

@@ -224,12 +224,6 @@ class DeceasedInfoDto extends Equatable {
   }
 }
 
-
- 
-
-  /*String getReligion() {
+/*String getReligion() {
     return (muslimReligion == false) ? ("non_muslim").tr() : ("muslim").tr();
   }*/
-
- 
-

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,23 +56,25 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ContentWrapper(
                         color: context.color.surfaceBaseSecondary,
                         children: [
-                          ContentRow(
-                            options: ContentRowOptions(
-                                leadingIcon: AppIcons(
-                                  iconData: SystemIcons.notification,
-                                  color: context.color.textAndIconsStatusAccent,
-                                  size: 24,
-                                ),
-                                title: context.l10n.notifications,
-                                actionWidget: const ContentRowActionOptions(
-                                  enabledToggle: true,
-                                  // Initial toggle value
-                                  toggleInitialValue: true,
-                                )),
-                            onToggle: (_) {
-                              // Do something when the toggle is changed
-                            },
-                          )
+                          // ContentRow(
+                          //   options: ContentRowOptions(
+                          //       leadingIcon: AppIcons(
+                          //         iconData: SystemIcons.notification,
+                          //         color: context.color.textAndIconsStatusAccent,
+                          //         size: 24,
+                          //       ),
+                          //       title: context.l10n.notifications,
+                          //       actionWidget: const ContentRowActionOptions(
+                          //         enabledToggle: true,
+                          //         // Initial toggle value
+                          //         toggleInitialValue: true,
+                          //       )),
+                          //   onToggle: (_) {
+                          //     // Do something when the toggle is changed
+                          //   },
+                          // )
+
+                          NotificationsSettingCell(),
                         ],
                       ),
                       const SizedBox(

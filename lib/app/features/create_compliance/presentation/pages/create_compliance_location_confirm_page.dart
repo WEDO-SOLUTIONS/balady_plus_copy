@@ -41,7 +41,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startCardServiceComplianceCertificate);
 
-            CommonFunctions.sendUXCamEvent(
+    CommonFunctions.sendUXCamEvent(
         UXCamEvents.Compliance_Certificate_Open_Service_Card_Event);
   }
 

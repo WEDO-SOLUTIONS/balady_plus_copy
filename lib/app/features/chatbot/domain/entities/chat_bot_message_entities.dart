@@ -22,8 +22,7 @@ class ChatBotMessageEntities extends Equatable {
   }) : timeStampSend = timeStampSend ?? DateTime.now();
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         question,
         answer.length,
         haveError,
@@ -45,7 +44,6 @@ class ChatBotMessageEntities extends Equatable {
         haveError: haveError ?? this.haveError,
         timeStampReceived: timeStampReceived ?? this.timeStampReceived,
         timeStampSend: timeStampSend,
-        sectionId: sectionId
-    );
+        sectionId: sectionId);
   }
 }

@@ -14,8 +14,11 @@ import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/enums.dart';
+import '../../../_shared_features/rating_feature/models/rating_request.dart';
+import '../../../_shared_features/rating_feature/widgets/submit_rating_widget.dart';
 import '../../data/entities/success_screen_args.dart';
 import '../buttons/elevated_button_widgets.dart';
+import '../dialogs/bottom_sheet_dialogs.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
@@ -264,6 +267,37 @@ class SuccessBody extends StatelessWidget {
               // const CustomVerticalSpace(
               //   height: 48,
               // ),
+
+
+              successScreenArgs?.idNumber != null && successScreenArgs?.type == PAGE_TYPE.ekramCemetry?
+              CustomElevatedButtonWidget(
+                btnColor: Colors.transparent,
+                textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                  color: AppColor.blueSkyLight800,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                  decoration: TextDecoration.underline,
+                ),
+                btnHeight: 56,
+                text: "service_evaluation".tr(),
+                onPressed: () {
+                  BottomSheetDialog.showSheet(
+                    context,
+                    child: SubmitRatingSheet(
+                      title: 'service_evaluation'.tr(),
+                      ratingRequest: RatingRequest(
+                        requestId: int.parse(successScreenArgs!.idNumber!),
+                      ),
+                    ),
+                    isFullHeight: false,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.white,
+                    height: MediaQuery.of(context).size.height * 0.6,
+                  );
+                },
+              ):Container(),
+
+
             ],
           ),
         ),

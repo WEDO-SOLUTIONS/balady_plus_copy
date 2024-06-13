@@ -12,7 +12,7 @@ class SaveConsultationProgressParamsModel extends Equatable {
   final String latitude;
   final String? mapNo;
   final String? landNo;
-  final num shopArea;
+  final num mainActivityArea;
   final int activityId;
   final bool? atmFeesOption;
   final int? unitCount;
@@ -28,7 +28,7 @@ class SaveConsultationProgressParamsModel extends Equatable {
     required this.latitude,
     required this.mapNo,
     required this.landNo,
-    required this.shopArea,
+    required this.mainActivityArea,
     required this.activityId,
     required this.atmFeesOption,
     required this.unitCount,
@@ -46,7 +46,7 @@ class SaveConsultationProgressParamsModel extends Equatable {
         latitude,
         mapNo,
         landNo,
-        shopArea,
+        mainActivityArea,
         activityId,
         atmFeesOption,
         unitCount,
@@ -64,7 +64,7 @@ class SaveConsultationProgressParamsModel extends Equatable {
       'latitude': latitude,
       'mapNo': mapNo,
       'landNo': landNo,
-      'shopArea': shopArea,
+      'mainActivityArea': mainActivityArea,
       'activityId': activityId,
       'atmFeesOption': atmFeesOption,
       'unitCount': unitCount,

@@ -19,20 +19,19 @@ class EkramBookCemetryStartService extends StatefulWidget {
   const EkramBookCemetryStartService({super.key});
 
   @override
-  State<EkramBookCemetryStartService> createState() => _EkramBookCemetryStartServiceState();
+  State<EkramBookCemetryStartService> createState() =>
+      _EkramBookCemetryStartServiceState();
 }
 
-class _EkramBookCemetryStartServiceState extends State<EkramBookCemetryStartService> {
-
-
+class _EkramBookCemetryStartServiceState
+    extends State<EkramBookCemetryStartService> {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-  
-    CommonFunctions.sendUXCamEvent(
-        UXCamEvents.SelectAndReserveCemetery_Create_Condolence_Enter_Page_Event);
+    CommonFunctions.sendUXCamEvent(UXCamEvents
+        .SelectAndReserveCemetery_Create_Condolence_Enter_Page_Event);
   }
 
   @override

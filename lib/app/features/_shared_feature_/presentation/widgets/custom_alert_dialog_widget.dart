@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import 'package:url_launcher/url_launcher.dart';
@@ -194,6 +195,7 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
   final String? primaryBtnText;
   final VoidCallback? secondaryBtnPressed;
   final String? secondaryBtnText;
+  final bool? isHtml;
   const CustomHTMLAlertDialogWidget({
     super.key,
     this.backgroundColor,
@@ -230,6 +232,7 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
     this.primaryBtnText,
     this.secondaryBtnPressed,
     this.secondaryBtnText,
+    this.isHtml
   });
 
   @override
@@ -256,30 +259,43 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
                 child: Icon(Icons.close),
               ),
             ),
+
+        if (isHtml == false)
             Flexible(
               child: content ??
-                  Html(
-                    shrinkWrap: true,
-                    data: contentText ?? "",
-                    onLinkTap:
-                        (String? url, Map<String, String> attributes, element) {
-                      //open URL in webview, or launch URL in browser, or any other logic here
-                      if (url != null) {
-                        CommonFunctions.openBaladyWebView(url);
-                      }
-                    },
-                    style: {
-                      "body": Style(
-                          fontSize: FontSize(14.0),
-                          fontWeight: FontWeight.w600,
-                          lineHeight: const LineHeight(1.4),
-                          textAlign: TextAlign.start,
-                          maxLines: 50,
-                          color: contentTextColor,
-                          fontFamily: Constants.appFontType),
-                    },
-                  ),
+                  Linkify(
+                      onOpen: (link) =>
+                          CommonFunctions.openBaladyWebView(link.url),
+                      text:contentText ?? "",
+                      softWrap: true,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                        color: contentTextColor,
+                        fontFamily: Constants.appFontType,
+                      ))
             ),
+
+    if (isHtml == true)
+      Flexible(
+    child: content ??
+        Html(
+            onLinkTap: (url, attributes, element) =>
+        CommonFunctions.openBaladyWebView(url),
+            data:contentText ?? "",
+          style: {
+            "body": Style(
+                fontSize: FontSize(14.0),
+                fontWeight: FontWeight.w600,
+                lineHeight: const LineHeight(1.4),
+                textAlign: TextAlign.start,
+                color: AppColor.primary500Light,
+                fontFamily: Constants.appFontType),
+          },
+        )
+    ),
           ],
         ),
       ),

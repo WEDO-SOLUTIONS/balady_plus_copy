@@ -13,7 +13,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
@@ -22,10 +21,12 @@ class ConstructionLicenseOverviewScreen extends StatefulWidget {
   const ConstructionLicenseOverviewScreen({Key? key}) : super(key: key);
 
   @override
-  State<ConstructionLicenseOverviewScreen> createState() => _ConstructionLicenseOverviewScreenState();
+  State<ConstructionLicenseOverviewScreen> createState() =>
+      _ConstructionLicenseOverviewScreenState();
 }
 
-class _ConstructionLicenseOverviewScreenState extends State<ConstructionLicenseOverviewScreen> {
+class _ConstructionLicenseOverviewScreenState
+    extends State<ConstructionLicenseOverviewScreen> {
   @override
   void initState() {
     // TODO: implement initState
@@ -37,11 +38,8 @@ class _ConstructionLicenseOverviewScreenState extends State<ConstructionLicenseO
 
   @override
   Widget build(BuildContext context) {
-
-
     return MultiProvider(
       providers: [
-
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
@@ -65,12 +63,9 @@ class _ConstructionLicenseOverviewScreenState extends State<ConstructionLicenseO
                 onPressed: () async {
                   NavigatorState navigator = Navigator.of(context);
 
-                    navigator.pushNamed(RouteName.constructionLicenseInquery);
-                    // CommonFunctions.sendUXCamEvent(
-                    //     UXCamEvents.startServiceQueryLicenseService);
-
-
-
+                  navigator.pushNamed(RouteName.constructionLicenseInquery);
+                  // CommonFunctions.sendUXCamEvent(
+                  //     UXCamEvents.startServiceQueryLicenseService);
                 },
               ),
             )

@@ -21,7 +21,6 @@ class SelectCityEvent extends EkramOrgnizationCemetryEvent {
   const SelectCityEvent({required this.item});
 }
 
-
 class ClearEvent extends EkramOrgnizationCemetryEvent {
   const ClearEvent();
 }

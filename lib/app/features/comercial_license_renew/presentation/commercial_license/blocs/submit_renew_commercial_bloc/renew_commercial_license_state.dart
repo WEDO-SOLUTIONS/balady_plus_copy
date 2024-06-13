@@ -54,11 +54,12 @@ class RenewCommercialLicenseState extends Equatable {
   final RenewRequestDetails? renewRequestDetails;
   final bool? salamaExists;
   final bool? insidePetrolStation;
-  final bool? disableInsidePetrolStation; 
+  final bool? disableInsidePetrolStation;
 
   Cr700Validation get deedOwnerIdValidator => deedInfoRequst?.ownerId == null
       ? Cr700Validation.pure()
       : Cr700Validation.dirty(value: deedInfoRequst?.ownerId);
+
   String? get deedOwnerIdValidatorErrorText =>
       deedOwnerIdValidator.error?.message != null
           ? (deedOwnerIdValidator.error?.message ?? "").tr()
@@ -110,7 +111,8 @@ class RenewCommercialLicenseState extends Equatable {
       this.renewRequestDetails,
       this.deedVerified,
       this.deedInfoRequst,
-      this.insidePetrolStation, this.disableInsidePetrolStation});
+      this.insidePetrolStation,
+      this.disableInsidePetrolStation});
 
   @override
   List<Object?> get props => [
@@ -155,7 +157,8 @@ class RenewCommercialLicenseState extends Equatable {
         deedInfoRequst,
         calculateInfoRequestStatus,
         salamaExists,
-        insidePetrolStation, disableInsidePetrolStation
+        insidePetrolStation,
+        disableInsidePetrolStation
       ];
 
   RenewCommercialLicenseState copyWith(
@@ -200,11 +203,8 @@ class RenewCommercialLicenseState extends Equatable {
       final RenewRequestDetails? renewRequestDetails,
       final DeedInfoRequest? deedInfoRequst,
       final Nullable<bool?>? salamaExists,
-      final bool? insidePetrolStation, 
-      final bool? disableInsidePetrolStation
-      
-      
-      }) {
+      final bool? insidePetrolStation,
+      final bool? disableInsidePetrolStation}) {
     return RenewCommercialLicenseState(
         status: status ?? this.status,
         calculateInfoRequestStatus:
@@ -285,10 +285,9 @@ class RenewCommercialLicenseState extends Equatable {
         deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst,
         salamaExists:
             salamaExists == null ? this.salamaExists : salamaExists.value,
-        insidePetrolStation: insidePetrolStation ?? this.insidePetrolStation, 
-        disableInsidePetrolStation: disableInsidePetrolStation ?? this.disableInsidePetrolStation
-        
-        );
+        insidePetrolStation: insidePetrolStation ?? this.insidePetrolStation,
+        disableInsidePetrolStation:
+            disableInsidePetrolStation ?? this.disableInsidePetrolStation);
   }
 
   bool showSalamaReport() {
@@ -465,7 +464,8 @@ class RenewCommercialLicenseState extends Equatable {
   }
 
   bool showSalmaExists() {
-    return showSalamaPermit() && (showSalamaReport() || showSalamaBill());
+    return showSalamaPermit() ||
+        (showSalamaPermit() && (showSalamaReport() || showSalamaBill()));
   }
 
   bool isFormValid() {
@@ -482,6 +482,19 @@ class RenewCommercialLicenseState extends Equatable {
     if (crContractOption == CRContractOption.service &&
         crContractType == CRContractType.ejar &&
         ejarVerified == false) return false;
+
+
+    // All Salma validation
+    if (showSalmaExists() && salamaExists == null) return false;
+    if ((showSalamaReport() && !showSalmaExists()) ||
+        (showSalamaReport() && salamaExists == false) &&
+            (salamaReportNumber?.isEmpty ?? true)) return false;
+    if ((showSalamaBill() && !showSalmaExists()) ||
+        (showSalamaBill() && salamaExists == false) &&
+            (salamaBillNumber?.isEmpty ?? true)) return false;
+    if ((showSalamaPermit() && !showSalmaExists()) ||
+        (showSalamaPermit() && salamaExists == true) &&
+            (salamaPermitNumber?.isEmpty ?? true)) return false;
 
     return true;
   }

@@ -47,14 +47,15 @@ class RemoteConfig {
 
   static EnvType get env => sl<EnvType>();
 
-  static  List<String> get MSRAllowedMuncipalites =>
+  static List<String> get MSRAllowedMuncipalites =>
       _RemoteConfig.MSRAllowedMuncipalites[env]!;
-
 
   static Map<String, dynamic> get MunicipalServicesIDs =>
       _RemoteConfig.municipal_services_IDS[env]!;
 
   static String get ewaaUrl => _RemoteConfig.ewaaUrl[env]!;
+
+  static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
 }
 
 //! First solution
@@ -65,6 +66,14 @@ class _RemoteConfig {
     preVal: "https://gisappstg.momra.gov.sa",
     prodVal: "https://gisapps.momra.gov.sa",
     urbiPreVal: "https://gisappstg.momra.gov.sa",
+  );
+
+  static final uxCamKey = _initValues<String>(
+    devVal: "",
+    stgVal: "",
+    preVal: "3i45abbyrbljp32",
+    prodVal: "2w1otnta9bvvhzo",
+    urbiPreVal: "",
   );
   static final hmCode = _initValues<String>(
     devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
@@ -362,87 +371,56 @@ class _RemoteConfig {
     ],
   );
 
-
   static final municipal_services_IDS = _initValues<Map<String, dynamic>>(
     devVal: {
-
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
     stgVal: {
-
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
     preVal: {
-
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
     prodVal: {
-
       "survey_report_inquery": {
         "id": 11632,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
     urbiPreVal: {
-
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
   );
 

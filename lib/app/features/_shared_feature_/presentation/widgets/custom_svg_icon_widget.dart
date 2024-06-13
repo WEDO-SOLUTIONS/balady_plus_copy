@@ -49,6 +49,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
   final BoxFit imageFit;
   final Widget? placeHolderWidget;
   final bool ssoAuth;
+  final bool sso; 
 
   const CustomNetworkImageWidget(this.imagePath,
       {Key? key,
@@ -58,7 +59,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
       this.imageAlignment = Alignment.center,
       this.imageFit = BoxFit.cover,
       this.placeHolderWidget,
-      this.ssoAuth = false})
+      this.ssoAuth = false,  this.sso = false})
       : super(key: key);
 
   @override
@@ -92,7 +93,12 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                 width: widget.imageWidth,
                 height: widget.imageHeight,
                 fit: widget.imageFit,
-                headers: widget.ssoAuth
+                headers: widget.sso ? {
+                       
+
+                         "Authorization":
+                             "Bearer ${CommonProperties.token}"
+                      } :  widget.ssoAuth
                     ? //null
                     {
                         "verifyingKEY":

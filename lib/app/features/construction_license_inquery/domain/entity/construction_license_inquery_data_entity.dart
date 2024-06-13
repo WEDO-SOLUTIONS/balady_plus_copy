@@ -1,5 +1,3 @@
-
-
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/common_functions.dart';
@@ -8,7 +6,7 @@ import '../../../survey_license_inquery_report/domain/entity/survey_inquery_data
 
 class ConstructionLicenseData {
   int? licenseId;
-  String? oldLicenseId;
+  String? oldLicenseId; //null
   String? licenseIssueDate;
   int? statusId;
   String? statusName;
@@ -19,7 +17,6 @@ class ConstructionLicenseData {
   String? licenseIssueDateDesc;
   String? x;
   String? y;
-
 
   ConstructionLicenseData({
     this.licenseId,
@@ -34,14 +31,7 @@ class ConstructionLicenseData {
     this.x,
     this.y,
     this.surveyReport,
-
   });
-
-
-
-
-
-
 }
 
 class SurveyReport {
@@ -64,7 +54,6 @@ class SurveyReport {
   String? districtName;
   String? mapNumber;
 
-
   SurveyReport({
     this.licenseId,
     this.oldLicenseId,
@@ -84,11 +73,5 @@ class SurveyReport {
     this.districtId,
     this.districtName,
     this.mapNumber,
-
   });
-
 }
-
-
-
-

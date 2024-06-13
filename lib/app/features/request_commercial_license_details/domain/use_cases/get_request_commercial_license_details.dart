@@ -6,15 +6,15 @@ import 'package:balady_plus/app/features/request_commercial_license_details/data
 import 'package:balady_plus/app/features/request_commercial_license_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
-
-
-class GetRequestCommercialLicenseDetails extends UseCase<RequestCommercialLicenseDetailsModel,int> {
+class GetRequestCommercialLicenseDetails
+    extends UseCase<RequestCommercialLicenseDetailsModel, int> {
   final RequestCommercialLicenseDetailsRepository repository;
 
   GetRequestCommercialLicenseDetails({required this.repository});
 
   @override
-  Future<Either<Failure, RequestCommercialLicenseDetailsModel>> call(requestId) async {
+  Future<Either<Failure, RequestCommercialLicenseDetailsModel>> call(
+      requestId) async {
     return await repository.getRequestCommercialLicenseDetails(requestId);
   }
 }

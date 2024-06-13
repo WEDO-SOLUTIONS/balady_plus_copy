@@ -6,12 +6,9 @@ class RequestTypeEntity extends Equatable {
   final String? nameAr;
   final String? nameEn;
 
-  const RequestTypeEntity({
-    this.id,
-    this.nameAr, this.nameEn
-  });
+  const RequestTypeEntity({this.id, this.nameAr, this.nameEn});
 
-   String?  get name => CommonFunctions.isAppAR ? nameAr : nameEn; 
+  String? get name => CommonFunctions.isAppAR ? nameAr : nameEn;
 
   @override
   List<Object?> get props => [id, nameEn, nameAr];

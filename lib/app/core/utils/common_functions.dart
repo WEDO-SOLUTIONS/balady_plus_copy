@@ -4,6 +4,7 @@ import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
@@ -17,6 +18,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
+
 // import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, EventTransformer;
@@ -40,8 +42,11 @@ import 'package:url_launcher/url_launcher.dart'
     show LaunchMode, canLaunchUrl, launchUrl;
 import 'package:uuid/uuid.dart';
 
+import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
+import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
@@ -49,6 +54,7 @@ import '../../features/_shared_feature_/presentation/widgets/custom_popups_widge
 import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/events/presentation/bloc/events_bloc.dart';
+import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
@@ -61,6 +67,7 @@ import './utils_exports.dart'
         AppLanguage,
         BlocStatus,
         EnvType,
+        GeneralKey,
         MimeType,
         RouteName,
         UIHelper,
@@ -178,6 +185,24 @@ Map<String, String> carEnPlateLetters = {
 };
 
 class CommonFunctions {
+  static void updateNotificationSettings(String fcm) async {
+    NotificationManager manager = sl();
+
+    DeviceDetails details = sl();
+    Device device = Device();
+    device.typeId = GeneralKey.typeId;
+    device.id = details.deviceId;
+    device.osTypeId = details.deviceOs;
+
+    PackageDetails info = sl();
+    NotificationRequest request = NotificationRequest();
+    request.fcmToken = fcm;
+    request.appId = GeneralKey.appId;
+    request.device = device;
+    request.appVersion = info.version;
+    manager.updateNotificationSettings(request);
+  }
+
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
       (events, mapper) =>
           events.debounce(duration ?? UIHelper.duration).switchMap(mapper);
@@ -312,6 +337,17 @@ class CommonFunctions {
               .toString();
     } catch (e) {}
     return replaceArabicNumberWithEnglish(formattedDate);
+  }
+
+  static String getDateNoDash(String? dateStr) {
+    String formattedDate = "";
+  
+  String year = dateStr?.substring(0,4) ?? "";
+  String month = dateStr?.substring(4,6) ?? ""; 
+  String day = dateStr?.substring(6,8) ?? ""; 
+
+  return "$year/$month/$day"; 
+
   }
 
   static String getMonthName(String? dateStr) {
@@ -557,10 +593,12 @@ class CommonFunctions {
   }
 
   static bool get isAuthed => sl.isRegistered<AuthData>();
+
   static bool get isAppAR =>
       translator.activeLanguageCode == AppLanguage.ar.name;
 
   static Future<bool> onLogin() async => await sl<EntryPointCubit>().onLogin();
+
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
     return r.allMatches(str).length >= 15;
@@ -723,21 +761,21 @@ class CommonFunctions {
       {String? adminMunicipalityId,
       String? municipalityName,
       bool? isVDExcepted}) {
-    if (adminMunicipalityId == "003" && municipalityName == "العلا") {
+    /* if (adminMunicipalityId == "003" && municipalityName == "العلا") {
       try {
         String error = ("ola_incident_error").tr(); //MMTr;
         showError(error);
       } catch (ex) {}
 
       return true;
-    } else {
-      if (isVDExcepted ?? false) {
-        String error = ("inc_vd_excepted").tr();
+    } else {*/
+    if (isVDExcepted ?? false) {
+      String error = ("inc_vd_excepted").tr();
 
-        showError(error);
-        return true;
-      }
+      showError(error);
+      return true;
     }
+    // }
 
     return false;
   }
@@ -776,11 +814,11 @@ class CommonFunctions {
     });
   }
 
-  static showError(String error) {
+  static showError(String error,[bool? isHtml]) {
     if (error.isNotEmpty) {
       if (error.contains("https")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
-            NavigationService.navigatorKey.currentContext!, error);
+            NavigationService.navigatorKey.currentContext!, error,isHtml??false);
       } else {
         try {
           BotToast.showSimpleNotification(
@@ -1104,7 +1142,7 @@ class CommonFunctions {
       });
 
 // UX Cam Events
-      if (sl<EnvType>().isProd) {
+      if (RemoteConfig.uxCamKey.isNotEmpty) {
         Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ??
                 response?.requestOptions.headers) ??
             {};
@@ -1287,8 +1325,28 @@ class CommonFunctions {
 
   static void openCreateCompliance() {
     //أصدر الشهادة
-    NavigationService.navigatorKey.currentState!
-        .pushNamed(RouteName.createCompliancePage);
+
+    if (CommonProperties.isLoggedIn){
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.createCompliancePage);
+  }
+
+    else
+      {
+      showDialog(
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (ctx) => NeedLoginDialog(
+      onSuccessLogin:
+      (bool? isSuccess) async {
+      if (isSuccess ?? false) {
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.createCompliancePage);
+      }
+      }));
+      }
+
+
+
   }
 
   static void openRatingBuilding() {
@@ -1376,6 +1434,18 @@ class CommonFunctions {
     return RemoteConfig.apigeeURL + "/v1/dms-mobile/files/$id";
   }
 
+  static bool changeSpalsh() {
+    DateTime today = DateTime.now();
+
+    int todayDay = today.day;
+    int todayMonth = today.month;
+    int todayYear = today.year;
+    var allowedDays = [13, 14, 15, 16, 17, 18, 19, 20];
+    if (allowedDays.contains(todayDay) && todayMonth == 6 && todayYear == 2024)
+      return true;
+    return false;
+  }
+
   static bool isFoundationDay() {
     return false;
     DateTime today = DateTime.now();
@@ -1415,6 +1485,7 @@ class CommonProperties {
       sl<EntryPointCubit>().state.token?.appCookie ?? "";
 
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
+
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
 
@@ -1443,7 +1514,9 @@ class CommonProperties {
   }
 
   static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
+
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
+
   static GISResponse? get userLocationGIS =>
       sl<LocationCubit>().state.gisResponse;
 

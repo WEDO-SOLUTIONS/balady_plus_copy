@@ -3,7 +3,7 @@ import 'dart:convert';
 String eventsCountInyearsParamsToJson(EventsCommonParams data) =>
     json.encode(data.toJson());
 
-enum UserType {owner,delegator,agency}
+enum UserType { owner, delegator, agency }
 
 class EventsCommonParams {
   UserType typeUser;

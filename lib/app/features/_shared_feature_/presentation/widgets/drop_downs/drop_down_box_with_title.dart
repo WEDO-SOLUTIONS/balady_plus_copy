@@ -57,12 +57,14 @@ class DropDownWithTitle extends StatelessWidget {
                     title,
                     textStyle: AppStyle.dropDownTitleTextStyle,
                   ),
-                  isRequired ? CustomTextWidget(
-                    '*'.tr(),
-                    textStyle: AppStyle.dropDownTitleTextStyle.copyWith(
-                      color: Colors.red.shade700,
-                    ),
-                  ) : const SizedBox(),
+                  isRequired
+                      ? CustomTextWidget(
+                          '*'.tr(),
+                          textStyle: AppStyle.dropDownTitleTextStyle.copyWith(
+                            color: Colors.red.shade700,
+                          ),
+                        )
+                      : const SizedBox(),
                 ],
               ),
             const SizedBox(height: 8),

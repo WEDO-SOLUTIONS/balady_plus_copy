@@ -1,13 +1,10 @@
 part of 'construction_license_inquery_details_cubit.dart';
 
-
-
 class ConstructionLicenseInqueryDetailsState extends Equatable {
   final BlocRequestStatus status;
   final ConstructionLicenseDataModel? licenceQueryDetails;
   //error message
   final String? errorMessage;
-
 
   const ConstructionLicenseInqueryDetailsState({
     this.status = BlocRequestStatus.initial,
@@ -31,14 +28,8 @@ class ConstructionLicenseInqueryDetailsState extends Equatable {
 
   @override
   List<Object?> get props => [
-    status,
-    licenceQueryDetails,
-    errorMessage,
-  ];
-
-
-
-
-
-
+        status,
+        licenceQueryDetails,
+        errorMessage,
+      ];
 }

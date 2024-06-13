@@ -15,17 +15,17 @@ class PrayerTimeRangeResponseModel extends PrayerTimeRangeEntity {
     String? year,
     String? zuhr,
   }) : super(
-          asr: asr ??"",
+          asr: asr ?? "",
           day: day ?? '',
           fajr: fajr ?? '',
           gharobAlQamar: gharobAlQamar ?? '',
           isha: isha ?? '',
-          magrib: magrib ??'',
-          month: month ??'',
+          magrib: magrib ?? '',
+          month: month ?? '',
           sharoqAlQamar: sharoqAlQamar ?? '',
           shqaroq: shqaroq ?? '',
           timezone: timezone ?? '',
-          year: year ??'',
+          year: year ?? '',
           zuhr: zuhr ?? '',
         );
 

@@ -21,8 +21,7 @@ class Initializer {
     // di: dependency injection
 
     // Initialize hive and open all needed boxes
-    await HiveManager.initializeHive();
-
+    // await HiveManager.initializeHive();
     await registerDeviceDetails();
     await registerPackageDetails();
 

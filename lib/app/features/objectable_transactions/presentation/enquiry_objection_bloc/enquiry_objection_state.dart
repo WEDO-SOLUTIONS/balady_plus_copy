@@ -9,14 +9,15 @@ class EnquiryObjectionState extends Equatable {
   final ObjectionEnquiryDetails? details;
   final EnquiryObjectionReplyDetails? requestDetails;
 
-  EnquiryObjectionState(
-      {this.status = BlocStatus.initial,
-      this.file,
-      this.errorMessage,
-      this.notes,
-      this.details,
-      this.requestDetails,
-      required this.item,});
+  EnquiryObjectionState({
+    this.status = BlocStatus.initial,
+    this.file,
+    this.errorMessage,
+    this.notes,
+    this.details,
+    this.requestDetails,
+    required this.item,
+  });
 
   IncidentDescValidation get incidentDescValidator => notes == null
       ? IncidentDescValidation.pure()

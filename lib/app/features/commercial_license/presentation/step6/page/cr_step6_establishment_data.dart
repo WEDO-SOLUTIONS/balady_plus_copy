@@ -496,7 +496,9 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                     ),
                   ),
                 ),
-                CRPreviousNextButtons(
+                (state.status.isSubmissionLoading)
+                    ? const Center(child: CustomCircularLoadingWidget())
+                    : CRPreviousNextButtons(
                     onPressed: () {
                       context.read<CRStep6EstablishmentCubit>().save();
                     },

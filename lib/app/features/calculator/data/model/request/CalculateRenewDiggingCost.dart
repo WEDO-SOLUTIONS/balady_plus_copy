@@ -21,7 +21,8 @@ class CalculateRenewDiggingCost {
   Map<String, dynamic> toJson() => _$CalculateRenewDiggingCostToJson(this);
 }
 
-CalculateRenewDiggingCost _$CalculateRenewDiggingCostFromJson(Map<String, dynamic> json) {
+CalculateRenewDiggingCost _$CalculateRenewDiggingCostFromJson(
+    Map<String, dynamic> json) {
   return CalculateRenewDiggingCost(
     cityId: json["CityId"],
     subServiceId: json["SubServiceId"],
@@ -33,13 +34,14 @@ CalculateRenewDiggingCost _$CalculateRenewDiggingCostFromJson(Map<String, dynami
   );
 }
 
-
-Map<String, dynamic> _$CalculateRenewDiggingCostToJson(CalculateRenewDiggingCost instance) => <String, dynamic>{
-  "CityId": instance.cityId,
-  "SubServiceId": instance.subServiceId,
-  "LastDiggingLicenseCost": instance.lastDiggingLicenseCost,
-  "LastDiggingLicensePeriod": instance.lastDiggingLicensePeriod,
-  "LastDiggingLicenseDistance": instance.lastDiggingLicenseDistance,
-  "DiggingRemainingDistance": instance.diggingRemainingDistance,
-  "RenewDiggingLicensePeriod": instance.renewDiggingLicensePeriod
-};
+Map<String, dynamic> _$CalculateRenewDiggingCostToJson(
+        CalculateRenewDiggingCost instance) =>
+    <String, dynamic>{
+      "CityId": instance.cityId,
+      "SubServiceId": instance.subServiceId,
+      "LastDiggingLicenseCost": instance.lastDiggingLicenseCost,
+      "LastDiggingLicensePeriod": instance.lastDiggingLicensePeriod,
+      "LastDiggingLicenseDistance": instance.lastDiggingLicenseDistance,
+      "DiggingRemainingDistance": instance.diggingRemainingDistance,
+      "RenewDiggingLicensePeriod": instance.renewDiggingLicensePeriod
+    };

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/compliance_engoffice_details_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/complinace_engoffice_response_model.dart';
@@ -10,6 +11,8 @@ import 'package:balady_plus/app/features/create_compliance/domain/entities/compl
 import 'package:balady_plus/app/features/create_compliance/domain/entities/land_subsidy_contract_request.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/verify_otp_request.dart';
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart' as http;
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
@@ -25,12 +28,15 @@ import '../../../../core/utils/constants/apis/api_info.dart';
 import '../../../transaction_inquiry/customer_voice_exports.dart';
 import '../../../vd/data/model/create_incident/create_incident_response_model.dart';
 import '../../../vd/domain/entities/gis/gis_params.dart';
+import '../../create_compliance_exports.dart';
+import '../../domain/entities/compliance_appointment_response.dart';
 import '../../domain/entities/compliance_deed_info_request.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
 import '../../domain/entities/send_otp_response.dart';
 import '../models/apply_create_compliance_request_model.dart';
 import '../models/apply_create_compliance_response_model.dart';
 import '../models/comliance_request_details_model.dart';
+import '../models/compliance_certificate_item_request.dart';
 import '../models/compliance_certificate_items_request.dart';
 import '../models/compliance_deed_info_model.dart';
 import '../models/compliance_gis_resopnseـmodel.dart';
@@ -38,6 +44,7 @@ import '../models/complinace_licenses_response_model.dart';
 import '../models/save_contract_info_request.dart';
 import '../models/save_location_compliance_request.dart';
 import '../../../../core/remote_services/web_service.dart' as web;
+import '../models/upload_dms_attachment_response.dart';
 
 abstract class CreateComplianceRemoteDataSource {
   Future<ApplyCreateComplianceResponseModel> applyCreateCompliance(
@@ -59,9 +66,12 @@ abstract class CreateComplianceRemoteDataSource {
     ComplianceCertificateItemsRequest params,
   );
 
-  Future<(String, bool?)> submitRequest(
-    String params,
+  Future<bool> saveComplianceCertificateItem(
+    ComplianceCertificateItemRequest params,
   );
+
+  Future<(String, bool?)> submitRequest(
+      String id, SubmitEmtithalRequest params);
 
   Future<ComplinaceLookUpResponseModel> getOwnerShipDocTypeResponse();
 
@@ -91,6 +101,15 @@ abstract class CreateComplianceRemoteDataSource {
   Future<ComplianceDeedInfoModel> getDeedInfo(ComplianceDeedInfoRequest params);
   Future<LandSubsidyContractModel> getLandContract(
       LandSubsidyContractRequest params);
+
+  Future<UploadDmsAttachmentResponse> uploadClauseAttachment(
+      FileDataItem params, int requestId);
+
+  Future<bool> validateComplianceCertificateItem(int params);
+  Future<bool> cancelComplianceCertificate(int params);
+
+  Future<ComplainceAppointmentResponse> getComplainceAppointment(
+      String x, String y);
 }
 
 class CreateComplianceRemoteDataSourceImpl
@@ -174,6 +193,7 @@ class CreateComplianceRemoteDataSourceImpl
         dioError: error,
       );
     } catch (ex) {
+      print(ex);
       if (ex is ServerException)
         throw ex;
       else {
@@ -318,12 +338,13 @@ class CreateComplianceRemoteDataSourceImpl
   }
 
   @override
-  Future<(String, bool?)> submitRequest(String params) async {
+  Future<(String, bool?)> submitRequest(
+      String id, SubmitEmtithalRequest params) async {
     var response;
 
     try {
       response = await webService.dio
-          .post(ApiUrl.submitComplianceRequest + params, data: params);
+          .post(ApiUrl.submitComplianceRequest + id, data: params.toMap());
 
       final data = response.data;
 
@@ -1030,6 +1051,303 @@ class CreateComplianceRemoteDataSourceImpl
       return LandSubsidyContractModel.fromJson(result);
     } on DioError catch (error) {
       var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool> saveComplianceCertificateItem(
+      ComplianceCertificateItemRequest params) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+          ApiUrl.saveComplianceCertificateItem(params.requestId!),
+          data: params.toMap());
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return true;
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<UploadDmsAttachmentResponse> uploadClauseAttachment(
+      FileDataItem params, int requestId) async {
+    var response;
+
+    try {
+      String contentTyp = lookupMimeType(params.filePath)!;
+      final formData = FormData.fromMap(
+        {
+          "file": await MultipartFile.fromFile(
+            params.filePath,
+            filename: params.fileName,
+            contentType: http.MediaType.parse(contentTyp),
+          ),
+        },
+      );
+      response = await webService.dio.post(
+        ApiUrl.uploadComplianceAttachment(
+          requestId,
+        ),
+        data: formData,
+        options: Options(
+          headers: {
+            "X-Content-Type": contentTyp,
+          },
+        ),
+      );
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return UploadDmsAttachmentResponse.fromJson(result);
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool> validateComplianceCertificateItem(int params) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.validateComplianceCertificate(params),
+      );
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return true;
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool> cancelComplianceCertificate(int params) async {
+    var response;
+
+    try {
+      response = await webService.dio.delete(
+        ApiUrl.cancelComplianceCertificate(params),
+      );
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return true;
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<ComplainceAppointmentResponse> getComplainceAppointment(
+      String x, String y) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .get(ApiUrl.complainceAppointments, queryParameters: {
+        "latitude": y,
+        "longitude": x,
+      });
+
+      final data = response.data;
+
+      ComplainceAppointmentResponse parsedResult =
+          ComplainceAppointmentResponse.fromJson(data["data"]);
+      //  final result = ResponseBodyModel<ComplainceAppointmentResponse>.fromMap(data, parsedResult: parsedResult).data?.result;
+
+      return parsedResult;
+    } on DioError catch (error) {
+      var errorCode;
+     /* Map<String, dynamic> data = {
+"statusDetails": {
+"code": 200,
+"message": "Ok"
+},
+"data": {
+"responseCode": "1",
+"responseMessage": "success",
+"responseId": "02-10721-8998559-4",
+"result": [
+{
+"Slots": [
+{
+"EndTime": "11AM",
+"StartTime": "8AM"
+},
+{
+"EndTime": "12PM",
+"StartTime": "9AM"
+},
+{
+"EndTime": "4PM",
+"StartTime": "1PM"
+}
+],
+"SlotDate": "20240506",
+"pxListSubscript": "1",
+"Day": "Mon"
+},
+{
+"Slots": [
+{
+"EndTime": "2PM",
+"StartTime": "11AM"
+},
+{
+"EndTime": "1PM",
+"StartTime": "10AM"
+},
+{
+"EndTime": "3PM",
+"StartTime": "12PM"
+}
+],
+"SlotDate": "20240507",
+"pxListSubscript": "2",
+"Day": "Tue"
+}]}}; 
+  try {
+      ComplainceAppointmentResponse parsedResult =
+          ComplainceAppointmentResponse.fromJson(data["data"]);
+      //  final result = ResponseBodyModel<ComplainceAppointmentResponse>.fromMap(data, parsedResult: parsedResult).data?.result;
+
+      return parsedResult;
+  }
+  catch(ex){
+    print(ex);
+  }*/
       try {
         final decodedResponse = ResponseBodyModel.fromMap(
           error.response?.data,

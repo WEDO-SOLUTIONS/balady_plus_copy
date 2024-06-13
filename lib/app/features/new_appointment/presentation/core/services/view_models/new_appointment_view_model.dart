@@ -27,6 +27,7 @@ import '../../models/department_model.dart';
 import '../../models/lookup_list_model.dart';
 import '../../models/main_class_response.dart';
 import '../../models/municipality_model.dart';
+import '../../models/request_real_state_response_model.dart';
 import '../../models/save_appointment_reseponse.dart';
 import '../../models/service_config_reseponse.dart';
 import '../../models/sub_class_response.dart';
@@ -40,6 +41,12 @@ class NewAppointmentViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();
   final TextEditingController descController = TextEditingController();
   final TextEditingController transactionNoController = TextEditingController();
+  final TextEditingController realEstateSurveyIdController =
+      TextEditingController();
+  final TextEditingController realEstateIdController = TextEditingController();
+  final TextEditingController realEstateRequestIdController =
+      TextEditingController();
+
   final TextEditingController otherServiceNameController =
       TextEditingController();
 
@@ -106,6 +113,7 @@ class NewAppointmentViewModel extends BaseViewModel {
 
   bool? isSpecialConditionChecked = false;
   bool isUserOld = false;
+  bool? requestRealStateVerified = false;
 
 // attachments
 
@@ -121,10 +129,18 @@ class NewAppointmentViewModel extends BaseViewModel {
   LookUpList? specialConditionTypeList;
   List<VisitType>? appointmentTypeList;
 
+  String? realEstateSurveyId;
+  String? realEstateId;
+  String? realEstateRequestId;
+
   init() {
     editedItem = null;
     descController.text = "";
     transactionNoController.text = "";
+    realEstateSurveyIdController.text = "";
+    realEstateIdController.text = "";
+    realEstateRequestIdController.text = "";
+
     // municipalitiesResponse = null;
     municipalityType = null;
     selectedMunicipalityItem = null;
@@ -145,6 +161,11 @@ class NewAppointmentViewModel extends BaseViewModel {
 
     //notes = null;
     appointmentDetails = null;
+
+    realEstateSurveyId = null;
+    realEstateId = null;
+    realEstateRequestId = null;
+
     transactionNo = null;
     serviceName = null;
     appointmentTypeItem = null;
@@ -181,6 +202,7 @@ class NewAppointmentViewModel extends BaseViewModel {
     atttachmentItems = [];
     isSpecialConditionChecked = false;
     isUserOld = false;
+    requestRealStateVerified = false;
     notifyListeners();
   }
 
@@ -213,7 +235,7 @@ class NewAppointmentViewModel extends BaseViewModel {
   void setMunicipalities(Municipality? data) {
     municipalitiesResponse = data;
     municipalitiesList = municipalitiesResponse!.data!.result!
-        .map<DropDownItem>((e) => DropDownItem(id: e.id, name: e.name ?? ""))
+        .map<DropDownItem>((e) => DropDownItem(id: e.id, name: e.name ?? "",externalSystemUrl: e.externalSystemUrl??"",externalSystem: e.externalSystem??false))
         .toList();
   }
 
@@ -328,6 +350,24 @@ class NewAppointmentViewModel extends BaseViewModel {
     return false;
   }
 
+  Future<bool> checkRealStateRequest() async {
+    if (realEstateRequestId?.isEmpty ?? true) return false;
+    showLoading();
+    Tuple3<bool?, String?, RequeestRealStateResponseModel?> response =
+        await _repository.checkRealStateRequest(realEstateRequestId ?? "");
+    hideLoading();
+    if (response.item1 != null && response.item1!) {
+      requestRealStateVerified = true;
+      notifyListeners();
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    requestRealStateVerified = false;
+    notifyListeners();
+
+    return false;
+  }
   /*Future<bool> getAvailableTimes(int serviceId, String date) async {
     showLoading();
     Tuple3<bool?, String?, AvailableTimesResponse?> response =
@@ -420,7 +460,13 @@ class NewAppointmentViewModel extends BaseViewModel {
       "visitLinked": withPreviousTransaction,
       "visitTime": selectedTime!.timeKey,
       "visitTopic": "",
-      "visitType": appointmentTypeItem!.id
+      "visitType": appointmentTypeItem!.id,
+
+      if (isRealEstate()) ...{
+        "realEstateSurveyId": realEstateSurveyId,
+        "realEstateId": realEstateId,
+        "realEstateRequestId": realEstateRequestId
+      }
     });
     hideLoading();
     if (response.item1 != null &&
@@ -478,7 +524,12 @@ class NewAppointmentViewModel extends BaseViewModel {
         "visitLinked": withPreviousTransaction,
         "visitTime": selectedTime!.timeKey,
         "visitTopic": "",
-        "visitType": appointmentTypeItem!.id
+        "visitType": appointmentTypeItem!.id,
+        if (isRealEstate()) ...{
+          "realEstateSurveyId": realEstateSurveyId,
+          "realEstateId": realEstateId,
+          "realEstateRequestId": realEstateRequestId
+        }
       }, editedItem!.id!);
       hideLoading();
       if (response.item1 == true) {
@@ -728,11 +779,16 @@ class NewAppointmentViewModel extends BaseViewModel {
 
       transactionNo = editedItem?.prevTrnNo;
       appointmentDetails = editedItem?.appointmentDetails;
-
+      realEstateSurveyId = editedItem?.realEstateSurveyId;
+      realEstateId = editedItem?.realEstateId;
+      realEstateRequestId = editedItem?.realEstateRequestId;
       descController.text = appointmentDetails ?? "";
       transactionNoController.text = transactionNo ?? "";
 
-      print("aaaaaaaaaa ${editedItem?.attachments?.length}");
+      realEstateSurveyIdController.text = realEstateSurveyId ?? "";
+      realEstateIdController.text = realEstateId ?? "";
+      realEstateRequestIdController.text = realEstateRequestId ?? "";
+
       atttachmentItems = editedItem?.attachments?.map((e) {
             return AttachmentItemModel(
                 attachmentBase64: Uint8List(1),
@@ -742,7 +798,6 @@ class NewAppointmentViewModel extends BaseViewModel {
                 updatable: e.updatable);
           }).toList() ??
           [];
-      print("aaaaaaaaaa dd ${editedItem?.attachments?.length}");
 
       if (editedItem?.specialConditionId != null) {
         if (editedItem?.specialConditionId.toString() ==
@@ -861,5 +916,12 @@ class NewAppointmentViewModel extends BaseViewModel {
       NavigationService.navigatorKey.currentContext!,
       message,
     );
+  }
+
+  bool isRealEstate() {
+    return serviceConfigResponse?.data?.result?.firstOrNull?.realEstate == true;
+    /*&&
+        selectedMunicipalityItem?.id == "-1"*/
+    ;
   }
 }

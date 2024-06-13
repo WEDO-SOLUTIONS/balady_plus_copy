@@ -7,7 +7,6 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 class CloseChatBotPopup extends StatelessWidget {
   const CloseChatBotPopup({super.key});
 

@@ -9,7 +9,6 @@ import 'package:dartz/dartz.dart';
 
 ///////////////////////////////////////////////////
 
-
 class ChatBotRepositoryImplementation implements ChatBotRepository {
   final ChatBotDataSources remoteDataSource;
 
@@ -39,8 +38,6 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
     }
   }
 
-
-
   @override
   Future<Either<Failure, Stream>> sendQuestionMessageSSE(
       {required String question}) async {
@@ -64,7 +61,6 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
     }
   }
 
-
   @override
   Future<Either<Failure, bool>> chatBotIsEnabled() async {
     try {
@@ -75,7 +71,6 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
     }
   }
 
-
   // void _sendEvent(DateTime dateSendData,Map<String,dynamic> dataEvent) {
   //   Duration duration = DateTime.now().difference(dateSendData);
   //   dataEvent["Answer_End_Duration"] = duration.inMilliseconds;
@@ -84,6 +79,4 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
   //     dataEvent,
   //   );
   // }
-
-
 }

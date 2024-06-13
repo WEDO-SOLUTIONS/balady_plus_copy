@@ -10,6 +10,7 @@ abstract class ReplyRetrieveVehiclesEvent extends Equatable {
 class GetMyVehiclesEvent extends ReplyRetrieveVehiclesEvent {
   GetMyVehiclesEvent();
 }
+
 class ChangeIssueDescEvent extends ReplyRetrieveVehiclesEvent {
   final String? text;
   ChangeIssueDescEvent({this.text});
@@ -21,7 +22,6 @@ class UploadFileEvent extends ReplyRetrieveVehiclesEvent {
 }
 
 class SubmitIncidentEvent extends ReplyRetrieveVehiclesEvent {
-
   SubmitIncidentEvent();
 }
 

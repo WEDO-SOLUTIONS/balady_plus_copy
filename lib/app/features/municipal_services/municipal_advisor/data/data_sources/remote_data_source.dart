@@ -1172,7 +1172,10 @@ class MunicipalAdvisorRemoteDataSourceImplementation
                 "additionalActivities": params.ids
                     .map((e) => {"activityId": e.$1, "area": e.$2})
                     .toList(),
-                "hasSalamaPermit": params.hasSalamaPermit
+                "hasSalamaPermit": params.hasSalamaPermit,
+                "mainActivityArea": params.mainActivityArea,
+                "shopArea": params.shopArea
+
               },
               options: Options(headers: {"Content-Type": "application/json"}));
 

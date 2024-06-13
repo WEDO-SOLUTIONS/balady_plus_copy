@@ -449,7 +449,8 @@ class ObjectionsData extends StatelessWidget {
                   Navigator.of(context).pushNamed(
                     RouteName.objectionsDetailsPage,
                     arguments: {
-                      "objectionRequestNumber": state.details?.objectionRequestNumber ?? "",
+                      "objectionRequestNumber":
+                          state.details?.objectionRequestNumber ?? "",
                     },
                   );
                 },

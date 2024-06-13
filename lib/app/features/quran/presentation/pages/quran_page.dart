@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
@@ -53,84 +54,82 @@ class _QuranPageState extends State<QuranPage> {
             child: Directionality(
               textDirection: TextDirection.rtl,
               child: Scaffold(
-                  appBar: AppBar(
-                    elevation: 0,
-                    title: CustomTextWidget(
-                      state.currentTitle ?? "",
-                      fontColor: AppColor.white,
-                      fontSize: 20,
-                      fontFamily: "uthmanic",
-                      textAlign: TextAlign.center,
-                    ),
-                    leading: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        NavigationService.navigatorKey.currentState?.pop();
-                      },
-                      child: Icon(Icons.arrow_back_ios),
-                    ),
-                    flexibleSpace: Stack(
-                      children: [
-                        Container(
-                          padding:
-                              EdgeInsets.only(bottom: 40, left: 16, right: 16),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            image: DecorationImage(
-                              image: AssetImage(ImagePath.zmzmBackground),
-                              fit: BoxFit.cover,
-                            ),
-                            boxShadow: Constants.appBarBoxShadow,
-                          ),
-                          alignment: AlignmentDirectional.bottomCenter,
-                        ),
-                      ],
-                    ),
-                    actions: [],
-                    systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-                      statusBarBrightness: Brightness.light,
-                    ),
+                appBar: AppBar(
+                  elevation: 0,
+                  title: CustomTextWidget(
+                    state.currentTitle ?? "",
+                    fontColor: AppColor.white,
+                    fontSize: 20,
+                    fontFamily: "uthmanic",
+                    textAlign: TextAlign.center,
                   ),
-                  body: Container(
-                    child: Stack(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            context.read<QuranBloc>().add(ToggleDetailsEvent());
-                          },
-                          onPanEnd: (details) {
-                            print(details);
-                            // Swiping in right direction.
-                            if (details.velocity.pixelsPerSecond.dx > 0) {
-                              context
-                                  .read<QuranBloc>()
-                                  .add(GoToNextPageEvent());
-                            }
+                  leading: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      NavigationService.navigatorKey.currentState?.pop();
+                    },
+                    child: Icon(Icons.arrow_back_ios),
+                  ),
+                  flexibleSpace: Stack(
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.only(bottom: 40, left: 16, right: 16),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          image: DecorationImage(
+                            image: AssetImage(ImagePath.zmzmBackground),
+                            fit: BoxFit.cover,
+                          ),
+                          boxShadow: Constants.appBarBoxShadow,
+                        ),
+                        alignment: AlignmentDirectional.bottomCenter,
+                      ),
+                    ],
+                  ),
+                  actions: [],
+                  systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+                    statusBarBrightness: Brightness.light,
+                  ),
+                ),
+                body: Container(
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          context.read<QuranBloc>().add(ToggleDetailsEvent());
+                        },
+                        onPanEnd: (details) {
+                          print(details);
+                          // Swiping in right direction.
+                          if (details.velocity.pixelsPerSecond.dx > 0) {
+                            context.read<QuranBloc>().add(GoToNextPageEvent());
+                          }
 
-                            // Swiping in left direction.
-                            if (details.velocity.pixelsPerSecond.dx < 0) {
-                              context
-                                  .read<QuranBloc>()
-                                  .add(GoToPreviousPageEvent());
-                            }
+                          // Swiping in left direction.
+                          if (details.velocity.pixelsPerSecond.dx < 0) {
+                            context
+                                .read<QuranBloc>()
+                                .add(GoToPreviousPageEvent());
+                          }
+                        },
+                        child: PageView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: context.read<QuranBloc>().controller,
+                          onPageChanged: (int page) {
+                            context
+                                .read<QuranBloc>()
+                                .add(ChangePageEvent(page: page));
                           },
-                          child: PageView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            controller: context.read<QuranBloc>().controller,
-                            onPageChanged: (int page) {
-                              context
-                                  .read<QuranBloc>()
-                                  .add(ChangePageEvent(page: page));
-                            },
-                            itemCount: state.suras?.length ?? 0,
-                            itemBuilder: ((context, i) {
-                              return Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  // padding: EdgeInsets.all(8),
-                                  child: SvgPicture.file(context
-                                      .read<QuranBloc>()
-                                      .getImagePath((i + 1).toString()))
-                                  /*: ListView(children: [
+                          itemCount: state.suras?.length ?? 0,
+                          itemBuilder: ((context, i) {
+                            return Container(
+                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                // padding: EdgeInsets.all(8),
+                                child: SvgPicture.file(context
+                                    .read<QuranBloc>()
+                                    .getImagePath((i + 1).toString()))
+                                /*: ListView(children: [
                                           for (int index = 0;
                                               (index <
                                                   (state.suras?[i + 1]?.values
@@ -187,24 +186,45 @@ class _QuranPageState extends State<QuranPage> {
                                             fontWeight: AppFontWeight.bold,
                                           )
                                         ])*/
-                                  );
-                            }),
-                          ),
+                                );
+                          }),
                         ),
-                        if (state.showDetails == true) ...[
-                          QuranHeader(
-                            jozz: state.currentJozz ?? 0,
-                            suraName: state.currentTitle ?? "",
-                            pageNumber: state.currentPageValue,
-                          ),
-                          QuranFooter()
-                        ],
-                        BookMarkSign(),
-                        if (state.status == BlocStatus.loading)
-                          CustomCircularLoadingWidget()
+                      ),
+                      if (state.showDetails == true) ...[
+                        QuranHeader(
+                          jozz: state.currentJozz ?? 0,
+                          suraName: state.currentTitle ?? "",
+                          pageNumber: state.currentPageValue,
+                        ),
+                        QuranFooter()
                       ],
-                    ),
-                  )),
+                      BookMarkSign(),
+                      if (state.status == BlocStatus.loading)
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                const CustomCircularLoadingWidget(),
+                                const SizedBox(
+                                  width: double.maxFinite,
+                                  height: 16,
+                                ),
+                                Text(
+                                  state.progressDownload >= 100
+                                      ? "done_download_open_moments".tr()
+                                      : "${state.progressDownload} %",
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              ),
             ),
           );
         },

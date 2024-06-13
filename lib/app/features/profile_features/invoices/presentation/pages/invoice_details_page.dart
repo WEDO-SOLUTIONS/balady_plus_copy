@@ -11,7 +11,7 @@ class InvoiceDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     Map data = ModalRoute.of(context)!.settings.arguments as Map;
+    Map data = ModalRoute.of(context)!.settings.arguments as Map;
 
     return BlocProvider(
       create: (context) => sl<InvoiceDetailsCubit>(),

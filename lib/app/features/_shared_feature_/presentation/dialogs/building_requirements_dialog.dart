@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -12,9 +13,7 @@ import '../../shared_feature_exports.dart';
 import 'dialog_header.dart';
 
 class BuildingRequirementsDialog extends StatefulWidget {
-  const BuildingRequirementsDialog({
-    super.key,
-  });
+  const BuildingRequirementsDialog({super.key});
 
   @override
   State<BuildingRequirementsDialog> createState() =>
@@ -37,7 +36,7 @@ class _BuildingRequirementsDialogState
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFFF5F8FA),
+      color: const Color(0xFFF5F8FA),
       padding: EdgeInsets.only(
         right: UIHelper.mediumPadding,
         left: UIHelper.mediumPadding,
@@ -79,100 +78,6 @@ class _BuildingRequirementsDialogState
               ),
               child: Column(
                 children: [
-                  /* BuildingReqCard(
-                    title:
-                        "تعديل استخدام المواقف المعتمدة في قبو  المبنى، وفق الترخيص الصادر له من الأمانة/البلدية",
-                    imgPath: ImagePath.buildingReq4,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        'عدم تنفيذ منحدر للأشخاص ذوي الإعاقة وفق (الدليل المبسط لمعايير الوصول الشامل للمنشآت)',
-                    imgPath: ImagePath.buildingReq1,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        'عدم توفير ممر الوصول الجانبي أمام المنحدر الخاص لذوي الإعاقة وفق (الدليل المبسط لمعايير الوصول الشامل للمنشآت) للمباني التجارية',
-                    imgPath: ImagePath.buildingReq2,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "عدم تغطية خزانات الصرف الصحي بأغطية واقية وسليمة وفق الاشتراطات البلدية",
-                    imgPath: ImagePath.buildingReq8,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود أرصفة منفذة من قبل مالك المبنى أو مالك حق الانتفاع به متهالكة أو غير مكتملة -جهة الشارع التجاري",
-                    imgPath: ImagePath.buildingReq9,
-                  ),
-                  BuildingReqCard(
-                    title: "وجود أسوار متهالكة أو غير مكتملة",
-                    imgPath: ImagePath.buildingReq13,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود حواجز مشوهه (أشاير حديد / شينكو) على سور الارتداد أو السطح",
-                    imgPath: ImagePath.buildingReq7,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود وحدات تكييف منفصلة في كامل واجهة المبنى المطل على الشـــارع التجاري",
-                    imgPath: ImagePath.buildingReq3,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود تمديدات (كهربائية – صحية - ميكانيكية) ظاهرة في كامل واجهة المبنى المطل على الشارع التجاري",
-                    imgPath: ImagePath.buildingReq5,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود تشققات أو تلف (دهانات، تكسيات) أو صدأ على المواد المعدنية في كامل واجهة المبنى بإجمالي مساحة تزيد عن متر مربع",
-                    imgPath: ImagePath.buildingReq12,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود أطباق الأقمار الصناعية على الشرفات أو كامل واجهة المبنى المطل على الشارع التجاري",
-                    imgPath: ImagePath.buildingReq14,
-                  ),
-                  BuildingReqCard(
-                    title: "وجود مظلات أو هناجر خارج حدود الملكية",
-                    imgPath: ImagePath.buildingReq15,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "تغطية الشرفات دون الحصول على التراخيص اللازمة من الأمانة/البلدية",
-                    imgPath: ImagePath.buildingReq6,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود كتابات مخالفة على كامل واجهة المبنى المطل على الشارع التجاري",
-                    imgPath: ImagePath.buildingReq11,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وضع المداخن على واجهة المبنى من دون أن تكون في جانب المبنى، أو أن يتجاوز ارتفاعها في جانب المبنى عن البناء أكثر من (2) متر",
-                    imgPath: ImagePath.buildingReq16,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "عدم مطابقة اللوحات التجارية الخاصة بالمحلات للاشتراطات البلدية",
-                    imgPath: ImagePath.buildingReq17,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود لوحات إعلانية لمحلات تجارية مغلقة بتراخيص غير سارية أو منتهية، أو وجود الأساسات الحديدية لتثبيت اللوحات المزاله",
-                    imgPath: ImagePath.buildingReq19,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود ملصقات إعلانية قديمة أو متهالكة على واجهة المبنى",
-                    imgPath: ImagePath.buildingReq10,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود مخلفات ومواد بناء تعيق الحركة على الرصيف الخاص بالمبنى",
-                    imgPath: ImagePath.buildingReq18,
-                  ),*/
-
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: data2.length,
@@ -195,7 +100,7 @@ class _BuildingRequirementsDialogState
                     ),
                     child: CustomTextWidget(
                       "building_requirements_warning".tr(),
-                      fontColor: Color(0xFF52525B),
+                      fontColor: const Color(0xFF52525B),
                       fontSize: 14,
                       maxLines: 5,
                       fontWeight: AppFontWeight.bold,
@@ -247,7 +152,7 @@ class BuildingReqCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(8)),
-        color: Color(0xFFE6EFEF).withOpacity(0.5),
+        color: const Color(0xFFE6EFEF).withOpacity(0.5),
       ),
       child: Column(
         children: [
@@ -274,10 +179,30 @@ class BuildingReqCard extends StatelessWidget {
           if (imgPath != null)
             ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(16)),
-              child: Image.asset(
-                imgPath!,
+              child: CachedNetworkImage(
+                imageUrl: imgPath!,
                 width: MediaQuery.sizeOf(context).width,
                 height: 190,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                      // colorFilter: const ColorFilter.mode(
+                      //   Colors.red,
+                      //   BlendMode.colorBurn,
+                      // ),
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) => const Center(
+                  child: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
         ],
@@ -285,84 +210,3 @@ class BuildingReqCard extends StatelessWidget {
     );
   }
 }
-
-// class BuildingRequirementsCard extends StatelessWidget {
-//   const BuildingRequirementsCard({
-//     super.key,
-//     required this.requirements,
-//     required this.title,
-//     required this.iconPath,
-//   });
-//
-//   final List<String> requirements;
-//   final String title;
-//   final String iconPath;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.all(16),
-//       decoration: BoxDecoration(
-//         borderRadius: const BorderRadius.all(Radius.circular(8)),
-//         color: AppColor.primary50Light.withOpacity(0.5),
-//       ),
-//       child: Column(
-//         children: [
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.start,
-//             children: [
-//               CustomSvgIconWidget(
-//                 iconPath,
-//                 iconSize: 24,
-//                 iconColor: AppColor.primary700Light,
-//               ),
-//               const SizedBox(width: 6),
-//               CustomTextWidget(
-//                 title,
-//                 fontSize: 15,
-//                 fontWeight: AppFontWeight.bold,
-//                 fontColor: AppColor.blackModern600Light,
-//               ),
-//             ],
-//           ),
-//           const SizedBox(height: 14),
-//           ListView.separated(
-//             itemCount: requirements.length,
-//             shrinkWrap: true,
-//             physics: const NeverScrollableScrollPhysics(),
-//             separatorBuilder: (_, __) => const Padding(
-//               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-//               child: Divider(
-//                 color: AppColor.white5,
-//               ),
-//             ),
-//             itemBuilder: (_, index) => Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 16),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.start,
-//                 children: [
-//                   const CustomSvgIconWidget(
-//                     IconPath.checked,
-//                     iconSize: 10,
-//                     iconColor: AppColor.primary700Light,
-//                   ),
-//                   const SizedBox(width: 4),
-//                   Flexible(
-//                     child: CustomTextWidget(
-//                       requirements[index],
-//                       fontSize: 12,
-//                       maxLines: null,
-//                       height: 1.5,
-//                       fontWeight: AppFontWeight.bold,
-//                       fontColor: AppColor.blackModern600Light,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

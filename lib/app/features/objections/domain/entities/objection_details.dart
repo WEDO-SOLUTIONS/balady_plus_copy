@@ -21,11 +21,12 @@ class ObjectionDetails {
   final RequestSubmitterData? requestSubmitterData;
   final String? objectionTypeId;
   final List<ObjectionReason>? objectionReasonsList;
-final List<EnquiryItem>? enquiryList; 
+  final List<EnquiryItem>? enquiryList;
   final String? requestStatusId;
   final String? objectionServiceName;
   String? hashingRequestNumber;
   String? serviceTypeId;
+  final String? sessionID; 
 
   ObjectionDetails(
       {this.subMunicipalityId,
@@ -49,9 +50,8 @@ final List<EnquiryItem>? enquiryList;
       this.requestStatusId,
       this.objectionServiceName,
       this.hashingRequestNumber,
-      this.serviceTypeId, this.enquiryList
-      
-      });
+      this.serviceTypeId,
+      this.enquiryList, this.sessionID});
 
   String get getLastUpdatedDate =>
       lastUpdatedDate != null ? DateFormat.yMd().format(lastUpdatedDate!) : "";
@@ -62,6 +62,8 @@ final List<EnquiryItem>? enquiryList;
 }
 
 class CommitteeDecision {
+  final DecisionPdf? decisionPdf;
+
   final String? decisionId;
   final String? decisionDate;
   final String? decision;
@@ -70,7 +72,20 @@ class CommitteeDecision {
     this.decisionId,
     this.decisionDate,
     this.decision,
+    this.decisionPdf,
+    
   });
+}
+
+class DecisionPdf {
+  final String? contentLocation;
+  final String? fileName;
+
+  DecisionPdf({
+    this.contentLocation,
+    this.fileName,
+  });
+
 }
 
 class RequestSubmitterData {
@@ -121,6 +136,11 @@ class ReasonAttachment {
   String? getUrl() {
     return RemoteConfig.apigeeURL +
         "/v1/dms-mobile/files/${contentLocation?.split("/").last}";
+  }
+
+    String? getV2Url(String sessionId) {
+    return RemoteConfig.apigeeURL +
+        "/v2/dms-mobile/files/${contentLocation?.split("/").last}?sessionId=$sessionId";
   }
 }
 

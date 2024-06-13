@@ -570,7 +570,7 @@ class WebService {
           request.headers[ApiHeaders.xUserProfileId] =
               EtmamCommonProperties.CommonProperties.profileId!;
 
-        request.headers["Accept-Language"] = "ar";
+        request.headers["Accept-Language"] = translator.activeLanguageCode;
       }
 
       request.fields.addAll(fields ?? {});

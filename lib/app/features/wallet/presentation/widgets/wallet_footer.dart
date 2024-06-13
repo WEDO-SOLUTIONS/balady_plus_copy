@@ -20,7 +20,8 @@ class WalletFooter extends StatelessWidget {
             : Positioned(
                 bottom: 0,
                 child: Container(
-                  padding: EdgeInsets.all(MediaQuery.sizeOf(context).height * 0.04 ),
+                  padding:
+                      EdgeInsets.all(MediaQuery.sizeOf(context).height * 0.04),
                   height: MediaQuery.sizeOf(context).height / 1.8,
                   width: MediaQuery.sizeOf(context).width,
                   decoration: const BoxDecoration(

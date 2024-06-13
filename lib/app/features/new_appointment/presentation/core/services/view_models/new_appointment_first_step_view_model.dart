@@ -333,6 +333,16 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         isValid = false;
       }*/
 
+      if (dataModel.isRealEstate()) {
+        if (dataModel.requestRealStateVerified == false) {
+          isValid = false;
+        }
+
+        /* if (dataModel.realEstateId?.isEmpty ?? true) {
+          isValid = false;
+        }*/
+      }
+
       if (isFormValid != isValid) {
         isFormValid = isValid;
         notifyListeners();
@@ -417,6 +427,12 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
     attachmentPath = null;
     attachmentBase64 = null;
     attachmentUuid = null;*/
+  }
+
+  void checkRealStateRequest() async {
+    await dataModel.checkRealStateRequest();
+    print("HERE");
+    notifyListeners();
   }
 
   void saveAttachment(

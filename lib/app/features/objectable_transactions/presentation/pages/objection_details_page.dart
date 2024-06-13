@@ -114,7 +114,7 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                                                     width: 32),
                                                 Expanded(
                                                   child: ElevatedButtonWidget
-                                                      .primaryCustomBorder(
+                                                      .primaryCustomBorder( 
                                                           text: "cancelButton"
                                                               .tr(),
                                                           onPressed: () {
@@ -310,6 +310,22 @@ class CommiteDetails extends StatelessWidget {
                 title: ("objection_details_commite_desc").tr(),
                 subTitle: state.details?.committeeDecision?.decision,
               ),
+              SizedBox(
+                height: 8,
+              ),
+              if (state.details?.committeeDecision?.decisionPdf
+                      ?.contentLocation !=
+                  null)
+                ObjectionAttachmentItem(
+                    width: double.infinity,
+                    name: "objection_download_commite_decision".tr(),
+                    file: ReasonAttachment(
+                        contentLocation: state.details?.committeeDecision
+                                ?.decisionPdf?.contentLocation ??
+                            "",
+                        fileName: state.details?.committeeDecision?.decisionPdf
+                                ?.fileName ??
+                            ""))
             ]);
       },
     );
@@ -369,7 +385,8 @@ class ObjectionReaason extends StatelessWidget {
                                   file: state
                                       .details!
                                       .objectionReasonsList![index]
-                                      .reasonAttachment![i]);
+                                      .reasonAttachment![i], sessionId:state
+                                      .details!.sessionID ,);
                             },
                           ),
                         ),
@@ -440,13 +457,13 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
   Widget build(BuildContext context) {
     return BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
       builder: (context, state) {
-        return (state.details?.enquiryList?.isNotEmpty ?? false)
-            ? CustomExpansionPanelWidget(
-                underline: false,
-                title: ("objection_enquiry_requests").tr(),
-                leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                children: [
-                  MediaQuery.removePadding(
+        return CustomExpansionPanelWidget(
+          underline: false,
+          title: ("objection_enquiry_requests").tr(),
+          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+          children: [
+            ((state.details?.enquiryList?.isNotEmpty ?? false))
+                ? MediaQuery.removePadding(
                     context: context,
                     removeTop: true,
                     child: ListView.builder(
@@ -473,13 +490,14 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
                                   ));
                             },
                           );
-
-                          ;
                         }),
                   )
-                ],
-              )
-            : Container();
+                : CustomTextWidget(
+                    "objection_enquiry_none".tr(),
+                    fontColor: AppColor.blackModern500Light,
+                  )
+          ],
+        );
       },
     );
   }

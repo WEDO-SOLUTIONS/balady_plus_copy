@@ -7,6 +7,6 @@ class AttachmentParams extends AttachmentParamsModel {
     required super.contractOption,
     required super.contractType,
     required super.hasBrand,
-     super.hasShopImage = true,
+    super.hasShopImage = true,
   });
 }

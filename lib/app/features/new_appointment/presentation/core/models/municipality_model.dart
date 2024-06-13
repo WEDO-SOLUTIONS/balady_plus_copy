@@ -61,17 +61,24 @@ class MunicipalityItem {
     this.id,
     this.amanaId,
     this.name,
+    this.externalSystemUrl,
+    this.externalSystem,
   });
 
   String? id;
   dynamic amanaId;
   String? name;
+  String? externalSystemUrl;
+  bool? externalSystem;
 
   factory MunicipalityItem.fromJson(Map<String, dynamic> json) =>
       MunicipalityItem(
         id: json["id"],
         amanaId: json["amanaId"],
         name: json["name"],
+        externalSystemUrl: json["externalSystemUrl"],
+        externalSystem: json["externalSystem"],
+
       );
 
   Map<String, dynamic> toJson() => {

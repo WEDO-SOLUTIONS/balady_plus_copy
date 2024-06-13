@@ -1,4 +1,3 @@
-
 /*
 class TopRatedProviderResponseModel extends TopRatedProviderResponse {
   TopRatedProviderResponseModel(

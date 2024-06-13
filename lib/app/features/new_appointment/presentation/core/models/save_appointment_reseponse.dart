@@ -7,32 +7,22 @@ import 'dart:convert';
 SaveAppointmentResponse saveAppointmentResponseFromJson(String str) =>
     SaveAppointmentResponse.fromJson(json.decode(str));
 
-String saveAppointmentResponseToJson(SaveAppointmentResponse data) =>
-    json.encode(data.toJson());
-
 class SaveAppointmentResponse {
   SaveAppointmentResponse({
     this.statusDetails,
     this.data,
   });
 
-  List<StatusDetail>? statusDetails;
+  StatusDetail? statusDetails;
   Data? data;
 
   factory SaveAppointmentResponse.fromJson(Map<String, dynamic> json) =>
       SaveAppointmentResponse(
         statusDetails: json["statusDetails"] != null
-            ? List<StatusDetail>.from(
-                json["statusDetails"].map((x) => StatusDetail.fromJson(x)))
+            ? StatusDetail.fromJson(json["statusDetails"])
             : null,
         data: json["data"] != null ? Data.fromJson(json["data"]) : null,
       );
-
-  Map<String, dynamic> toJson() => {
-        "statusDetails":
-            List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
-        "data": data!.toJson(),
-      };
 }
 
 class Data {

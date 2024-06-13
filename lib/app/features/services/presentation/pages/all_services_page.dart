@@ -1,8 +1,10 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/utils_exports.dart'
@@ -57,14 +59,20 @@ class _AllServicesPageState extends State<AllServicesPage> {
     }
     Color? textColor =
         CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) : null;
-    return Scaffold(
-      backgroundColor: AppColor.white,
-      appBar: EnhancedAppBar(
-        title: title,
-        actions: [],
+    return ChangeNotifierProvider(
+      create: (context) => ChatBotProvider(
+        sl(),
+        // Make The Section id to send with all question in the Section and send to
+        // rating API switch the request id
+        sectionId: DateTime.now().millisecondsSinceEpoch,
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      child: Scaffold(
+        backgroundColor: AppColor.white,
+        appBar: EnhancedAppBar(
+          title: title,
+          actions: [],
+        ),
+        body: Column(
           children: [
             Container(
               height: 67,
@@ -83,9 +91,9 @@ class _AllServicesPageState extends State<AllServicesPage> {
                   query = t;
                   searchedServices = services
                       .where((element) => element.title
-                          .tr()
-                          .toLowerCase()
-                          .contains(t.toLowerCase()))
+                      .tr()
+                      .toLowerCase()
+                      .contains(t.toLowerCase()))
                       .toList();
 
                   setState(() {});
@@ -100,39 +108,41 @@ class _AllServicesPageState extends State<AllServicesPage> {
                     fontWeight: FontWeight.w400),
                 borderColor: Colors.transparent,
                 /* suffixIcon: _textEditingController.text.isNotEmpty
-                ? InkWell(
-                    onTap: () {
-                      _textEditingController.text = '';
-                      context.read<ServicesCubit>().toggleSearchField();
-                    },
-                    child: const DrawIconBasedTypeWidget(
-                      icon: Icons.close,
-                      iconColor: AppColor.blackModern600Light,
-                    ),
-                  )
-                : null,*/
+                  ? InkWell(
+                      onTap: () {
+                        _textEditingController.text = '';
+                        context.read<ServicesCubit>().toggleSearchField();
+                      },
+                      child: const DrawIconBasedTypeWidget(
+                        icon: Icons.close,
+                        iconColor: AppColor.blackModern600Light,
+                      ),
+                    )
+                  : null,*/
               ),
             ),
             SizedBox(
               height: 16,
             ),
-            Padding(
-              padding: const EdgeInsetsDirectional.only(start: 8),
-              child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: searchedServices.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  mainAxisSpacing: 40.0,
-                  crossAxisSpacing: 5.0,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(start: 8),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: searchedServices.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 40.0,
+                    crossAxisSpacing: 5.0,
+                  ),
+                  itemBuilder: (_, index) {
+                    return ServiceIcon(
+                      service: searchedServices[index],
+                      width: 72,
+                      backgroundColor: Color(0xffF5F7FA),
+                    );
+                  },
                 ),
-                itemBuilder: (_, index) {
-                  return ServiceIcon(
-                    service: searchedServices[index],
-                    width: 72,
-                    backgroundColor: Color(0xffF5F7FA),
-                  );
-                },
               ),
             ),
             const SizedBox(height: 24),

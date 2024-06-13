@@ -3,12 +3,10 @@
 /// data -> models
 /// data -> repositories
 
-
 //! domain
 /// domain -> entities
 /// domain -> repositories
 /// domain -> use cases
-
 
 //! presentation
 /// presentation -> cubits

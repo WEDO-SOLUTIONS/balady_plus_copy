@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColorsTheme;
+import '../../../../../core/utils/utils_exports.dart' show AppColorsTheme;
 import '../../shared_feature_exports.dart' show CustomSvgIconWidget;
 
 class BtnIconPrimaryIconWidget extends StatelessWidget {
@@ -34,7 +33,7 @@ class BtnIconPrimaryIconWidget extends StatelessWidget {
             iconPath,
             iconFit: BoxFit.fill,
             iconSize: iconSize,
-          //  iconColor: AppColorsTheme.primary700,
+            //  iconColor: AppColorsTheme.primary700,
           ))),
     );
   }

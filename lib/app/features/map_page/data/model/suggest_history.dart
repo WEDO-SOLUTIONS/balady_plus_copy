@@ -1,6 +1,5 @@
 import 'package:dgis_map/library.dart';
 
-
 class SuggestHistory {
   GeoPointWithElevationMessage markerPosition;
   DgisObjectIdMessage id;
@@ -14,8 +13,7 @@ class SuggestHistory {
     required this.subtitle,
   });
 
-  factory SuggestHistory.fromJson(Map<String, dynamic> json) =>
-      SuggestHistory(
+  factory SuggestHistory.fromJson(Map<String, dynamic> json) => SuggestHistory(
         markerPosition: GeoPointWithElevationMessage(
           longitude: json["markerPosition"]['latitude'],
           latitude: json["markerPosition"]['latitude'],
@@ -29,8 +27,7 @@ class SuggestHistory {
         subtitle: json['subtitle'] ?? '',
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         "markerPosition": {
           'latitude': markerPosition.latitude,
           'longitude': markerPosition.longitude,

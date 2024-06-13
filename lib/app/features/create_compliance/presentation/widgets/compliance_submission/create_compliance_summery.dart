@@ -18,6 +18,7 @@ import '../summery_widgets/step2_summury_widget.dart';
 import '../summery_widgets/step3_summury_widget.dart';
 import '../summery_widgets/step4_summury_widget.dart';
 import '../summery_widgets/step5_summury_widget.dart';
+import '../summery_widgets/step6_1_summury_widget.dart';
 import '../summery_widgets/step6_summury_widget.dart';
 import 'previous_next_buttons.dart';
 
@@ -70,6 +71,8 @@ class _CreateComplianceSummurySectionState
                       Step5SummeryWidget(),
                       CustomVerticalSpace(height: 16),
                       Step6SummeryWidget(),
+                      CustomVerticalSpace(height: 16),
+                      Step6_1SummeryWidget(),
                       CustomVerticalSpace(height: 16),
                       PledgesSummuryWidget()
                     ],

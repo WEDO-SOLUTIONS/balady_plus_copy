@@ -38,6 +38,7 @@ abstract class RequestsRemoteDataSource {
   );
 
   Future<UploadFileResponse> uploadFile({required UploadFileParams params});
+  Future<UploadFileResponse> uploadFileV2({required UploadFileParams params});
 
   Future<CreateObjectionResponseModel> createObjection(
       {required CreateObjectionParams params});
@@ -307,6 +308,46 @@ class RequestsRemoteDataSourceImplementation
       }
     }
   }
+
+    @override
+  Future<UploadFileResponse> uploadFileV2(
+      {required UploadFileParams params}) async {
+    var response;
+    try {
+      response = await webService.dio.post(ApiUrl.uploadFileV2,
+          data: params.toMap(), options: Options(headers: {"X-Service-Id": 2}));
+
+      var data = response.data["data"]["result"]["Documents"][0]["Document"][0];
+
+      var parsedResult =
+          data != null ? UploadFileResponse.fromJson(data) : null;
+      parsedResult?.index = params.index;
+
+      return parsedResult!.toFuture();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
 
   @override
   Future<ObjectionDetailsModel> getObjectionDetails(String id) async {

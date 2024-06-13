@@ -1,4 +1,3 @@
-
 /*
 class TopRatedProviderItemModel extends TopRatedProviderItem {
   TopRatedProviderItemModel(

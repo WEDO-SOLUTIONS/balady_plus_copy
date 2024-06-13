@@ -18,7 +18,6 @@ class ViolationsParamsModel extends Equatable {
   final String? licenseNumber;
   final SortType sort;
 
-
   const ViolationsParamsModel({
     this.unifiedNationalNumber,
     this.identityNumber,
@@ -32,7 +31,6 @@ class ViolationsParamsModel extends Equatable {
     this.licenseNumber,
     this.violationLastApplyDate,
     this.sort = SortType.desc,
-
   });
 
   Map<String, dynamic> toMap() {
@@ -57,10 +55,8 @@ class ViolationsParamsModel extends Equatable {
     };
   }
 
-
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         page,
         size,
         unifiedNationalNumber,

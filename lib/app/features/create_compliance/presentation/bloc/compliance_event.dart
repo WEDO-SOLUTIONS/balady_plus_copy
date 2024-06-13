@@ -2,7 +2,10 @@ import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart'
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/utils/enums/date_form.dart';
+import '../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../data/models/compliance_certificate_item_request.dart';
 import '../../domain/entities/comliance_request_details.dart';
+import '../../domain/entities/compliance_appointment_response.dart';
 import '../../domain/entities/complinace_engoffice_response.dart';
 import '../../domain/entities/complinace_licenses_response.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
@@ -35,7 +38,8 @@ class GetLicensesEvent extends ComplianceEvent {
 class GetRequestDetails extends ComplianceEvent {
   final String? requestId;
   final String? redirectUrl;
-  const GetRequestDetails({this.requestId,this.redirectUrl});
+  final bool? updateCurrentRequest; 
+  const GetRequestDetails({this.requestId, this.redirectUrl, this.updateCurrentRequest});
 }
 
 class GetMainUsagesEvent extends ComplianceEvent {
@@ -195,4 +199,36 @@ class GetComplianceDeedInfoEvent extends ComplianceEvent {
 
 class GetComplianceLandContractEvent extends ComplianceEvent {
   const GetComplianceLandContractEvent();
+}
+
+class SaveImtethalItemEvent extends ComplianceEvent {
+  final EmtithalItem item;
+  final int index;
+
+  const SaveImtethalItemEvent({required this.item, required this.index});
+}
+
+class CancelComplianceCertificateEvent extends ComplianceEvent {
+  const CancelComplianceCertificateEvent();
+}
+
+class ChangeApplicantNotesEvent extends ComplianceEvent {
+  final String? text;
+
+  const ChangeApplicantNotesEvent({this.text});
+}
+
+class GetAppointments extends ComplianceEvent {
+  const GetAppointments();
+}
+
+class ChangeSelectedAppointmentDay extends ComplianceEvent { 
+  final DayItem? item; 
+    const ChangeSelectedAppointmentDay({this.item});
+}
+
+class ChangeSelectedAppointmentSlot extends ComplianceEvent { 
+  final String? visitFrom; 
+  final String? visitTo; 
+    const ChangeSelectedAppointmentSlot({this.visitFrom, this.visitTo});
 }

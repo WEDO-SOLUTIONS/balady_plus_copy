@@ -4,7 +4,16 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../violations_exports.dart'
-    show InvoiceStatusFilter, ObjectionLastApplyDateFilter, SearchWithLicenseNumberEvent, SearchWithViolationNumberEvent, ViolationIssueDateDateFilter, ViolationsBloc, ViolationsSortFilter, ViolationsState, ViolationsStatusesFilter;
+    show
+        InvoiceStatusFilter,
+        ObjectionLastApplyDateFilter,
+        SearchWithLicenseNumberEvent,
+        SearchWithViolationNumberEvent,
+        ViolationIssueDateDateFilter,
+        ViolationsBloc,
+        ViolationsSortFilter,
+        ViolationsState,
+        ViolationsStatusesFilter;
 
 class ViolationsFilterBottomSheet extends StatelessWidget {
   final ViolationsBloc requestsBloc;
@@ -30,10 +39,10 @@ class ViolationsFilterBottomSheet extends StatelessWidget {
                     initialValue: state.licenseNumberQuery,
                     onChanged: (value) {
                       context.read<ViolationsBloc>().add(
-                        SearchWithLicenseNumberEvent(
-                          query: value,
-                        ),
-                      );
+                            SearchWithLicenseNumberEvent(
+                              query: value,
+                            ),
+                          );
                     },
                   ),
                   FilterTextField(
@@ -41,10 +50,10 @@ class ViolationsFilterBottomSheet extends StatelessWidget {
                     initialValue: state.invoiceNumberQuery,
                     onChanged: (value) {
                       context.read<ViolationsBloc>().add(
-                        SearchWithViolationNumberEvent(
-                          query: value,
-                        ),
-                      );
+                            SearchWithViolationNumberEvent(
+                              query: value,
+                            ),
+                          );
                     },
                   ),
                   const ViolationsStatusesFilter(),

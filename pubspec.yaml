@@ -16,7 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.9.6+201
+#version: 3.11.1+211
+version: 3.30.2+390
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -203,6 +204,14 @@ dependencies:
   # To scroll list to specific index and do not calculate width and height by ourselves
   scrollable_positioned_list: ^0.3.8
 
+
+#  Show App Popup Menu form button in poiation
+  app_popup_menu: ^1.0.0
+
+  jiffy:
+  gif: ^2.3.0
+
+
 dependency_overrides:
   geolocator_android: ^4.2.2
   # for dio_http_cache
@@ -210,6 +219,7 @@ dependency_overrides:
   dio: ^5.0.0
 
 dev_dependencies:
+  build_runner: ^2.4.9
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
@@ -263,7 +273,6 @@ flutter:
     - assets/icons/inq/
     - assets/icons/msr/
     - assets/icons/tsr/
-    - assets/images/building/
     - assets/compliance_pdf/images/
     - assets/compliance_pdf/text/
     - assets/athkar/

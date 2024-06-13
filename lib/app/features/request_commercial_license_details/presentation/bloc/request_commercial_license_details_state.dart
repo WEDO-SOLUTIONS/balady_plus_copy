@@ -21,7 +21,8 @@ class RequestCommercialLicenseDetailsState extends Equatable {
   }) {
     return RequestCommercialLicenseDetailsState(
       status: status ?? this.status,
-      requestCommercialLicenseDetails: commercialLicenceDetails ?? this.requestCommercialLicenseDetails,
+      requestCommercialLicenseDetails:
+          commercialLicenceDetails ?? this.requestCommercialLicenseDetails,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -29,7 +30,7 @@ class RequestCommercialLicenseDetailsState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-    requestCommercialLicenseDetails,
+        requestCommercialLicenseDetails,
         errorMessage,
       ];
 }

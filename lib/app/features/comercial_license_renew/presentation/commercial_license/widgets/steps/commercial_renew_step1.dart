@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -528,7 +529,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       ]),
                     if (state.showSalmaExists())
                       YesNoRadioGroupWidget(
-                        groupName: "step4groupName4".tr(),
+                        groupName: "renew_salama_permit_question".tr(),
                         currentValue: state.salamaExists,
                         onChanged: (value) {
                           context
@@ -541,6 +542,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         (state.showSalamaReport() &&
                             state.salamaExists == false))
                       CustomTextFieldWidget(
+                        key: Key("slamaReportNumber"),
                         label: "slamaReportNumber".tr(),
                         hintText: "slamaReportNumber".tr(),
                         isDigitsOnly: true,
@@ -567,6 +569,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if ((state.showSalamaBill() && !state.showSalmaExists()) ||
                         (state.showSalamaBill() && state.salamaExists == false))
                       CustomTextFieldWidget(
+                        key: Key("slamaBillNumber"),
                         label: "bill_number_name".tr(),
                         hintText: "bill_number_name".tr(),
                         isDigitsOnly: true,
@@ -590,6 +593,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         (state.showSalamaPermit() &&
                             state.salamaExists == true))
                       CustomTextFieldWidget(
+                        key: Key("slamaNumber"),
                         label: "salamaIssueNo".tr(),
                         hintText: "salamaIssueNo".tr(),
                         bottomMargin: 24,
@@ -601,7 +605,9 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                     IsShopInsidePetroStationWidget(),
-                    CRPreviousNextButtons(
+                    (state.status.isSubmissionLoading)
+                        ? const Center(child: CustomCircularLoadingWidget())
+                        : CRPreviousNextButtons(
                       isBtnDisabled: !state.isFormValid(),
                       onPressed: () {
                         context

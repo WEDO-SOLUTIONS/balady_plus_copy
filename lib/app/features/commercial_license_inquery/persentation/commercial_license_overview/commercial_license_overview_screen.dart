@@ -13,7 +13,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
@@ -22,10 +21,12 @@ class CommercialLicenseOverviewScreen extends StatefulWidget {
   const CommercialLicenseOverviewScreen({Key? key}) : super(key: key);
 
   @override
-  State<CommercialLicenseOverviewScreen> createState() => _CommercialLicenseOverviewScreenState();
+  State<CommercialLicenseOverviewScreen> createState() =>
+      _CommercialLicenseOverviewScreenState();
 }
 
-class _CommercialLicenseOverviewScreenState extends State<CommercialLicenseOverviewScreen> {
+class _CommercialLicenseOverviewScreenState
+    extends State<CommercialLicenseOverviewScreen> {
   @override
   void initState() {
     // TODO: implement initState
@@ -37,11 +38,8 @@ class _CommercialLicenseOverviewScreenState extends State<CommercialLicenseOverv
 
   @override
   Widget build(BuildContext context) {
-
-
     return MultiProvider(
       providers: [
-
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
@@ -65,12 +63,10 @@ class _CommercialLicenseOverviewScreenState extends State<CommercialLicenseOverv
                 onPressed: () async {
                   NavigatorState navigator = Navigator.of(context);
 
-                    navigator.pushNamed(RouteName.commercialLicenseQuery);
-                    // CommonFunctions.sendUXCamEvent(
-                    //     UXCamEvents.startServiceQueryLicenseService);
-
-
-
+                  //CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+                  navigator.pushNamed(RouteName.commercialLicenseQuery);
+                  // CommonFunctions.sendUXCamEvent(
+                  //     UXCamEvents.startServiceQueryLicenseService);
                 },
               ),
             )

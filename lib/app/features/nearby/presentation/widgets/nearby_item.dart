@@ -35,19 +35,23 @@ class NearbyItem extends StatelessWidget {
         return Column(
           children: [
             Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: AppColor.primary50Light,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                ),
-                height: constraints.maxHeight * 0.55,
-                child: Center(
-                  child: SvgPicture.asset(icon,width: 25,height: 25,),
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: AppColor.primary50Light,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
                 ),
               ),
+              height: constraints.maxHeight * 0.55,
+              child: Center(
+                child: SvgPicture.asset(
+                  icon,
+                  width: 25,
+                  height: 25,
+                ),
+              ),
+            ),
             Expanded(
               child: Container(
                 width: double.infinity,

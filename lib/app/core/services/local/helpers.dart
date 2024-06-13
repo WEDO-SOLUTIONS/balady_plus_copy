@@ -28,6 +28,7 @@ import '../../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_c
 import '../../../features/transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../dependency_injection/injection_container.dart';
 import '../../utils/constants/constants.dart';
+import '../../utils/constants/remote_config.dart';
 
 // use it insead of print() or debugPrint()
 extension Log<T extends Object> on T {
@@ -351,7 +352,7 @@ class Helpers {
       );
       Sentry.captureEvent(event);
 
-      if (sl<EnvType>().isProd) {
+      if (RemoteConfig.uxCamKey.isNotEmpty) {
         String data = body != null ? body.toString() : "";
 
         String queryString = qeuryParms ?? "";

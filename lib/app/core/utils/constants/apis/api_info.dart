@@ -9,6 +9,7 @@ class ApiUrl {
   static const apigeeToken = '/oauth/v1/token';
   static const forceUpdate = '/v1/force-update-apps/version';
   static const uploadFile = '/v1/dms-mobile/upload';
+  static const uploadFileV2 = '/v2/dms-mobile/upload';
 
   //! Services
   //! Public Services
@@ -135,7 +136,7 @@ class ApiUrl {
       '/v1/balady-dashboard/objectable-requests';
 
   static const postObjection =
-      '/v1/objection-services/submit-objection-requests';
+      '/v2/objection-services/submit-objection-requests';
 
   static const objectionRequestDetails =
       '/v1/objection-services/objection-details';
@@ -312,6 +313,9 @@ class ApiUrl {
   static String saveShopDetails(int requestId) =>
       'v1/balady-commercial-services/new-request/$requestId/shop-details';
 
+  static String ComercialLicenseTransferShopInfo(int requestId) =>
+      'v1/superapp-commercial-ownership-services/transfer/shop-ownership-info/$requestId';
+
   static String validateApprovals(int requestId) =>
       'v1/balady-commercial-services/validate-approvals/request/$requestId';
 
@@ -458,6 +462,17 @@ class ApiUrl {
   static const String saveComplianceCertificateItems =
       '/v1/compliance-certificate-mobile-services/save-compliance-certificate-items/';
 
+  static String saveComplianceCertificateItem(int requestId) =>
+      "/v1/compliance-certificate-mobile-services/requests/$requestId/compliance-clauses";
+
+  static String validateComplianceCertificate(int requestId) =>
+      "/v1/compliance-certificate-mobile-services/requests/$requestId/compliance-clauses/validate";
+
+  static String cancelComplianceCertificate(int requestId) =>
+      "/v1/compliance-certificate-mobile-services/requests/$requestId";
+
+  static String uploadComplianceAttachment(int requestId) =>
+      "/v1/compliance-certificate-mobile-services/requests/$requestId/files/upload";
   static const String submitComplianceRequest =
       '/v1/compliance-certificate-mobile-services/submit-request/';
   static const String deleteComplianceRequest =
@@ -500,6 +515,10 @@ class ApiUrl {
 
   static const String complianceLandContract =
       '/v1/compliance-certificate-mobile-services/land-subsidy-contracts';
+
+  static const String complainceAppointments =
+      'v1/compliance-certificate-mobile-services/visit-appointments';
+
 
 // ! Events
 
@@ -770,12 +789,12 @@ class ApiUrl {
       "v1/joodeskan-services/generate-donation-url";
   static String joodEskanRegions = "v1/joodeskan-services/regions";
 
-
   static const paymentURL = 'v1/payment-gateway/payment';
 
   static const chatBot = 'v1/chatbot-services/chat'; // not use this now
   static const chatBotStream = 'v1/chatbot-services/chat-stream';
   static const chatBotEnabled = 'v1/chatbot-services/service-enabled';
+
 
   static const String submitRating =
       '/v1/balady-commercial-services/rating/submit';
@@ -787,14 +806,57 @@ class ApiUrl {
           int licenseNumber, unifiedFacilityNumber) =>
       '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
 
-
   //Construction License Inquery
-  static String getConstructionLicenseData(int licenseNumber,String date) =>
+  static String getConstructionLicenseData(int licenseNumber, String date) =>
       '/v1/balady-construction-services/mobile/inquiry/building-licenses/$licenseNumber/$date';
 
+  //Noification APIS
+
+  static String updateNotificationSettings() => '/v1/iam-services/ext/devices';
+
   //Survey license inquery
-  static String getSurveyLicenseData(int licenseNumber,String date) =>
+  static String getSurveyLicenseData(int licenseNumber, String date) =>
       '/v1/balady-construction-services/mobile/inquiry/area-reports/$licenseNumber/$date';
+  //Noification APIS
+
+//! commercial ownership services
+
+  static String getOwnershipCommercialRequestDetails(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/request/$requestId';
+
+  static String acceptCommercialRequestTransfer(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/accept/by-new-owner/$requestId';
+
+  static String rejectCommercialRequestTransfer(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/reject/by-new-owner/$requestId';
+
+  static String getRequestPermits(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/selected/permits/$requestId';
+  static String saveSelectedRequestPermits(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/selected-permits/by-new-owner/$requestId';
+  static String transferShopInfo(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/shop-info/$requestId';
+
+  static String submitApprovel(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/submit/by-new-owner/$requestId';
+
+
+  static String transferRequestAttachments(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/attachments/$requestId';
+  static String transferUploadAttachments(int requestId) =>
+      '}/v1/superapp-commercial-ownership-services/transfer/upload-attachment/2/attachments/$requestId';
+
+  static String getLicensePermits(String licenseNumber) =>
+      '/v1/superapp-commercial-ownership-services/license/permits/$licenseNumber';
+
+  static String validateNewOwner(String licenseNumber, String crNumber) =>
+      '/v1/superapp-commercial-ownership-services/transfer/validate-new-owner/$licenseNumber?crNumber=$crNumber';
+
+  static String validateLicenseTrnasfer(String licenseNumber) =>
+      "/v1/superapp-commercial-ownership-services/transfer/validate-license/$licenseNumber";
+
+  static String sendToNewOwner(String licenseNumber) =>
+      "/v1/superapp-commercial-ownership-services/transfer/send-to-new-owner/$licenseNumber";
 
   //! Balady Calednar
 
@@ -810,11 +872,53 @@ class ApiUrl {
   static const baladyCalendarEvents =
       'v1/balady-calendar-services/events/by-year';
 
+
+
+
+
+
+  //! Notifications
+  static const notificationsUnreadMessages = 'v1/notifications-hub-services/fe/unread-messages';
+  static const notificationsMessagesList = 'v1/notifications-hub-services/fe/messages-list';
+  static const notificationsMarkRead = 'v1/notifications-hub-services/fe/messages/mark-read';
+  static const notificationsDeletedMessages = 'v1/notifications-hub-services/fe/deleted-messages';
+  static const notificationsProducts = 'v1/notifications-hub-services/fe/products';
+  static const notificationsServices = 'v1/notifications-hub-services/fe/services';
+  static const notificationsSettingsList = 'v1/notifications-hub-services/fe/profiles';
+  static const setProductsNotificationsSettings = 'v1/notifications-hub-services/fe/profile/products';
+  static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
+//! Appointments New APIs
+  static getAppointmentById(String id) =>
+      'v1/appointments-mobile-services/appointments/$id';
+
+  static const saveAppointment = "v1/appointments-mobile-services/appointments";
+  static validateRealEstate(String id) =>
+      'v1/appointments-mobile-services/validate-real-estate/$id';
+
+
   //! POST
 
   //! Delete
 
   //! Patch
+
+  static const getJoodShowStatus = 'v1/joodeskan-services/service-enabled';
+
+
+
+  static String commercialLicenseOwnershipServicesUploadAttachments(
+      int requestId, int attachTypeId) =>
+      'v1/superapp-commercial-ownership-services/transfer/upload-attachment/$attachTypeId/attachments/$requestId';
+
+
+
+
+
+
+
+  static const quranUrlDownload = 'BaladyCDN/Mobile/quran/quran.zip';
+
+
 }
 
 /// It has any header which used inside any API
