@@ -74,7 +74,7 @@ class SearchByRubrics extends _$SearchByRubrics {
         searchRect: searchRect,
 
         /// TODO: Check if we need to set pageSize to better performance
-        // pageSize: 15000,
+        pageSize: 15000,
       );
     } else {
       searchResults = await dgisController.searchByRubrics(
@@ -83,7 +83,7 @@ class SearchByRubrics extends _$SearchByRubrics {
         searchRect: searchRect,
 
         /// TODO: Check if we need to set pageSize to better performance
-        // pageSize: 15000,
+        pageSize: 15000,
       );
     }
 
