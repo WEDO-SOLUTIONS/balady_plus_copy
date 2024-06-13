@@ -39,8 +39,7 @@ class StoryFrameWidget extends StatefulWidget {
   State<StoryFrameWidget> createState() => _StoryFrameWidgetState();
 }
 
-class _StoryFrameWidgetState extends State<StoryFrameWidget>
-    with SingleTickerProviderStateMixin {
+class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _progress;
   late final StoryFrameData _frame;
@@ -155,8 +154,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   }
 
   void _onTapUp(VoidCallback action) {
-    if (DateTime.now().difference(_lastTap) <
-        const Duration(milliseconds: 150)) {
+    if (DateTime.now().difference(_lastTap) < const Duration(milliseconds: 150)) {
       action();
     } else {
       _resumeProgress();
@@ -202,6 +200,24 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                             orientation: Axis.vertical,
                             title: StoryLocalization.of(context)?.l10n.loading,
                           ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 2,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          stops: const [0, 0.8, 1],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            const Color(0xff000000).withOpacity(0.4),
+                            const Color(0xff000000).withOpacity(0.06),
+                            const Color(0xff000000).withOpacity(0)
+                          ],
                         ),
                       ),
                     ),
@@ -260,12 +276,10 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                       child: AppButton(
                         color: widget.frame.action?.backgroundColor,
                         textColor: widget.frame.action?.textStyle?.color,
-                        buttonColorScheme:
-                            widget.frame.action?.backgroundColor == null ||
-                                    widget.frame.action?.textStyle?.color ==
-                                        null
-                                ? ButtonColorScheme.primary
-                                : ButtonColorScheme.onColor,
+                        buttonColorScheme: widget.frame.action?.backgroundColor == null ||
+                                widget.frame.action?.textStyle?.color == null
+                            ? ButtonColorScheme.primary
+                            : ButtonColorScheme.onColor,
                         primaryLabel: _actionTitleOrFailback,
                         onTap: _onActionPressed,
                       ),

@@ -39,6 +39,7 @@ import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart'
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -158,11 +159,17 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       ),
       sizeOfScreen: sizeOfScreen,
     );
+
+    // Rewrite the logic to a better one, extract camera movement from the native one and control it yourself
+    final currentRoute = ref.watch(currentRouteProvider);
+    const routingRoutes = '/routingRoutes';
+
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
       paddingConfig: paddingConfig,
+      onRouting: currentRoute?.currentPath == routingRoutes
     );
     final state = ref.watch(viewModelProvider);
 

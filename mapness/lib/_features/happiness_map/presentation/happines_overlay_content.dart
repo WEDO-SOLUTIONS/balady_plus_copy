@@ -56,6 +56,13 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
         final maxHeight = constraints.biggest.height;
         return Stack(
           children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  context.pop();
+                },
+              ),
+            ),
             ValueListenableBuilder(
               valueListenable: height,
               builder: (context, height, child) => Positioned.fill(
