@@ -36,6 +36,12 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
   void _updateInternetStatus(BuildContext context, bool haveInternet) {
     if (context.mounted) {
       setState(() {
