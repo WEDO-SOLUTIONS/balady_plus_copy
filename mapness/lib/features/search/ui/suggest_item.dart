@@ -50,7 +50,7 @@ class SuggestItem extends ConsumerWidget {
         );
       }
     } else if (suggest.subtitle.text.isNotEmpty) {
-      subtitle = brunchFromString(suggest.subtitle.text, context);
+      subtitle = _brunchFromString(suggest.subtitle.text, context);
     }
 
     void _onSuggestTap() {
@@ -83,7 +83,7 @@ class SuggestItem extends ConsumerWidget {
             actionWidget: distanceKm != null
                 ? ContentRowActionOptions(actionText: (distanceKm * 1000).formatDistance(context.l10n))
                 : null,
-            title: buildSuggestTitle(context, suggest),
+            title: _buildSuggestTitle(context, suggest),
             subtitle: subtitle,
             dividerEnabled: !isLast,
           ),
@@ -93,7 +93,7 @@ class SuggestItem extends ConsumerWidget {
   }
 }
 
-const prefixMapping = {
+const _prefixMapping = {
   ', region': 'منطقة',
   ', governorate': 'محافظة',
   ', city': 'مدينة',
@@ -104,9 +104,9 @@ const prefixMapping = {
   ', park': 'بارك',
 };
 
-String buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
+String _buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
   var title = suggest.title.text;
-  prefixMapping.forEach((key, replacement) {
+  _prefixMapping.forEach((key, replacement) {
     if (title.contains(key)) {
       title = "$replacement ${title.replaceAll(key, "")}";
     }
@@ -115,12 +115,12 @@ String buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
   return title;
 }
 
-String brunchFromString(String engString, BuildContext context) {
+String _brunchFromString(String engString, BuildContext context) {
   final subtitleSplit = engString.split(' ');
 
   String? result;
-  result ??= _stringWithOneWord(subtitleSplit, context);
-  result ??= _stringWithSameFirstAndSecondWords(subtitleSplit, context);
+  result ??= _ifSubtitleWithOneWord(subtitleSplit, context);
+  result ??= _ifSubtitleWithSameFirstAndSecondWords(subtitleSplit, context);
   result ??= engString;
 
   return result;
@@ -128,23 +128,23 @@ String brunchFromString(String engString, BuildContext context) {
 
 /// In most cases we can see it in arabic search
 /// Return null if condition is not true
-String? _stringWithOneWord(List<String> subtitleSplit, BuildContext context) {
+String? _ifSubtitleWithOneWord(List<String> subtitleSplit, BuildContext context) {
   if (subtitleSplit.length == 1 && int.tryParse(subtitleSplit[0]) != null) {
     final amountOfBrunches = int.parse(subtitleSplit[0]);
-    final brunchLocalized_ = brunch(amountOfBrunches, context.l10n);
-    return '$amountOfBrunches $brunchLocalized_';
+    final brunchLocalized = brunch(amountOfBrunches, context.l10n);
+    return '$amountOfBrunches $brunchLocalized';
   }
   return null;
 }
 
 /// In most cases we can see it in english search
 /// Return null if condition is not true
-String? _stringWithSameFirstAndSecondWords(List<String> subtitleSplit, BuildContext context) {
+String? _ifSubtitleWithSameFirstAndSecondWords(List<String> subtitleSplit, BuildContext context) {
   if (subtitleSplit.length >= 2 && subtitleSplit[0] == subtitleSplit[1]) {
     final amountOfBrunches = int.tryParse(subtitleSplit[0]);
     if (amountOfBrunches != null) {
-      final brunchLocalized_ = brunch(amountOfBrunches, context.l10n);
-      return '$amountOfBrunches $brunchLocalized_';
+      final brunchLocalized = brunch(amountOfBrunches, context.l10n);
+      return '$amountOfBrunches $brunchLocalized';
     }
 
     subtitleSplit.removeAt(0);
