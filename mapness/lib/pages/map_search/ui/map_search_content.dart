@@ -62,7 +62,6 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
           child: MapLostInternet(
             onTap: () {
               _watchInternet(context, false);
-              ref.read(searchProvider(scope.value).notifier).refresh();
             },
           ),
         ),

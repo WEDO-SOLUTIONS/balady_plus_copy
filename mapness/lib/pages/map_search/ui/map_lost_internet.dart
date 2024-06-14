@@ -9,7 +9,7 @@ class MapLostInternet extends StatelessWidget {
     super.key,
   });
 
-  final Function() onTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) => Column(

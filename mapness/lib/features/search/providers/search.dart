@@ -61,10 +61,6 @@ class Search extends _$Search {
     prevSearchQueryMessage = null;
   }
 
-  void refresh() {
-    ref.invalidateSelf();
-  }
-
   Future<void> fetchSuggest(String query) async {
     previousType = SearchType.fetchSuggest;
     previousQuery = query;
