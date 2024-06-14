@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -10,18 +12,41 @@ final GeoPointMessage kaabaLocation =
 
 @riverpod
 class KaabaBearing extends _$KaabaBearing {
+  Timer? _timer;
+
+  void _updateKaabState() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 15), (timer) {
+      if (state == null) {
+        ref.invalidate(locationProvider);
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
   @override
   double? build() {
     final dgisController = ref.watch(dgisControllerProvider);
-    ref.listen(
-      locationProvider,
-      (previous, next) async {
-        if (next != null) {
-          state = await dgisController.value!.pointBearing(next, kaabaLocation);
-        }
-      },
-    );
 
+    ref
+      ..invalidate(locationProvider)
+      ..listen(
+        locationProvider,
+        (_, next) async {
+          if (next != null) {
+            state =
+                await dgisController.value!.pointBearing(next, kaabaLocation);
+          } else {
+            _updateKaabState();
+          }
+        },
+      )
+      ..onDispose(() {
+        _timer?.cancel();
+      });
+
+    _updateKaabState();
     return null;
   }
 }
