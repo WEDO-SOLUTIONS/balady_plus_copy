@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +28,7 @@ class MapSearchContent extends ConsumerStatefulWidget {
 
 class _MapSearchContentState extends ConsumerState<MapSearchContent> {
   bool _isLostInternet = false;
+  Timer? _debounceTimer;
 
   @override
   void initState() {
@@ -33,12 +36,24 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
     super.initState();
   }
 
-  void _watchInternet(BuildContext context, haveInternet) {
+  void _updateInternetStatus(BuildContext context, bool haveInternet) {
     if (context.mounted) {
       setState(() {
         _isLostInternet = haveInternet;
       });
     }
+  }
+
+  void _debouncedUpdate(BuildContext context, ConnectivityResult next) {
+    _debounceTimer?.cancel();
+
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      final bool noInternet = next == ConnectivityResult.none;
+
+      if (noInternet) {
+        _updateInternetStatus(context, noInternet);
+      }
+    });
   }
 
   @override
@@ -49,9 +64,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
     ref.listen(
       networkStatusProvider,
       (previous, next) {
-        if (next == ConnectivityResult.none) {
-          _watchInternet(context, true);
-        }
+        _debouncedUpdate(context, next);
       },
     );
 
@@ -60,8 +73,11 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         child: SafeArea(
           top: false,
           child: MapLostInternet(
-            onTap: () {
-              _watchInternet(context, false);
+            onTap: () async {
+              _updateInternetStatus(
+                context,
+                ref.read(networkStatusProvider) == ConnectivityResult.none,
+              );
             },
           ),
         ),
