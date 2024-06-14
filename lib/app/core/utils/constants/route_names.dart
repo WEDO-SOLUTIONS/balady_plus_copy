@@ -1,6 +1,5 @@
 class RouteName {
   static const baladyCalendarPage = '/baladyCalendarPage';
-  static const splash = '/splash';
   static const signIn = '/signIn';
   static const signUp = '/signUp';
   static const otp = '/otp';

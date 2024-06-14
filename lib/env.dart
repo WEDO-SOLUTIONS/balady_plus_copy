@@ -63,7 +63,7 @@ abstract class AppEnv {
       assetsDirectory: AppConfig.appLanguagesPath,
     );
 
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid && type == EnvType.dev) {
       await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
     }
     HijriCalendar.setLocal(translator.activeLanguageCode);

@@ -60,10 +60,11 @@ class App extends StatelessWidget {
         ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
-          value: sl<EntryPointCubit>()..onLoadingApp(),
-          child: AppWidget(
-            key: materialAppKey,
-          )),
+        value: sl<EntryPointCubit>()..onLoadingApp(),
+        child: AppWidget(
+          key: materialAppKey,
+        ),
+      ),
     );
   }
 }
@@ -110,7 +111,7 @@ class _AppWidgetState extends State<AppWidget> {
             ..add(CountryLocalizations.delegate), // Android + iOS Delegates
           locale: translator.activeLocale, // Active locale
           supportedLocales: translator.locals(), // Locals list
-          initialRoute: RouteName.splash,
+          initialRoute: RouteName.bottomNavigation,
           routes: Routes.routes(),
         ),
       ),
