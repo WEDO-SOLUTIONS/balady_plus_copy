@@ -8,6 +8,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 
 class MapSearchResults extends ConsumerWidget {
@@ -22,6 +23,14 @@ class MapSearchResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = MapObjectManagerSettings.search();
+    final searchObjectManager = ref.watch(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
+    );
+
     final language = ref.watch(appLanguageProvider);
     final myLocation = ref.watch(locationProvider);
     return SearchResults(
@@ -48,6 +57,8 @@ class MapSearchResults extends ConsumerWidget {
               'object': item.id!.objectId,
             },
           );
+          searchObjectManager.removeAllMarkers();
+
           PoiMapRoute.open(
             ref.read(goRouterProvider),
             item.id!.objectId,

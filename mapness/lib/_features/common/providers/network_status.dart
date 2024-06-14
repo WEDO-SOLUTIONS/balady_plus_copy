@@ -17,4 +17,9 @@ class NetworkStatus extends _$NetworkStatus {
   void _connectivityListener(ConnectivityResult event) {
     state = event;
   }
+
+  void checkConnectivity(ConnectivityResult event) async {
+    final result = await Connectivity().checkConnectivity();
+    state = result;
+  }
 }
