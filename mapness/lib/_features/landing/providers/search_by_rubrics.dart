@@ -98,7 +98,7 @@ class SearchByRubrics extends _$SearchByRubrics {
 
     final selectedFilter = ref.watch(searchByRubricsQueryProvider);
     final icon = (selectedFilter == null ? LayersSvgPaths.basicMarker : 'packages/mapness/${selectedFilter.mapIcon}')
-        .markerIcon();
+        .markerIcon(size: 32);
     final markers = await value.getMarkers(router: ref.read(goRouterProvider), icon: icon);
 
     await searchObjectManager.removeAllMarkers();
