@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,33 +9,25 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_padding_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
+import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
-import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
+import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
-import 'package:mapness/_features/poi_card/widgets/about.dart';
-import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
-import 'package:mapness/_features/poi_card/widgets/description.dart';
-import 'package:mapness/_features/poi_card/widgets/favourites.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/poi_card_footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
-import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
+import 'package:mapness/_features/poi_card/widgets/info_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
-import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
-import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -42,7 +35,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
-import 'package:mapness/shared/ui/buttons/map_button.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart' as mapButton;
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
@@ -68,7 +61,6 @@ class PoiCardWidget extends StatelessWidget {
           biggestHeight: constraints.biggest.height,
           biggestWidth: constraints.biggest.width,
           closestPoint: closestPoint,
-          // directoryObject: result,
         ),
       );
 }
@@ -143,13 +135,12 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = PoiCardViewModel(ref: ref);
-
     final sizeOfScreen = MediaQuery.of(context).size;
     final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
 
     final safeArea = MediaQuery.of(context).padding;
-    const horizontalPadding = PoiCardMapControls.horizontalPadding + Markers.defaultWidth + MapButton.defaultSize;
+    const horizontalPadding =
+        PoiCardMapControls.horizontalPadding + Markers.defaultWidth + mapButton.MapButton.defaultSize;
 
     final paddingConfig = PoiPaddingConfig(
       paddingOfCamera: EdgeInsets.only(
@@ -227,54 +218,14 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     }
 
     /// has value
-    final qrTradeLicense = poiCardState?.qrTradeLicense;
-    final tradeLicense = poiCardState?.tradeLicense;
-
-    final about = data.about;
     final name = data.buildingInfo.buildingName;
     if (name != null) {
       data.title = name;
     }
 
-    // TODO(scroollocker): move it to widget
-    final infoBody = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Favourites(data),
-          About(
-            title: data.address?.buildingName ?? data.title,
-            exits: data.entrances.length,
-            onEntranceTap: () {
-              _toggleEntrances(data);
-            },
-          ),
-          if (about.isNotEmpty)
-            Description(
-              text: about,
-            ),
-          if (data.openingHours != null)
-            OpeningHours(
-              data.getOpeningHoursModel(
-                context.l10n,
-              ),
-            ),
-          ContactsInfo(
-            viewModel: viewModel,
-            data: data,
-          ),
-          if (qrTradeLicense != null) QrLicenseInfo(qrTradeLicense),
-          if (tradeLicense != null) TradeLicense(tradeLicense),
-          const SafeArea(
-            top: false,
-            child: SizedBox(height: footerHeight),
-          ),
-        ],
-      ),
-    );
     final language = ref.watch(appLanguageProvider);
     final photos = ref.watch(poiPhotoProvider(objectId));
+    final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     return Directionality(
       textDirection: switch (language) {
@@ -314,7 +265,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                   'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
                 });
 
-            viewModel.share(
+            poiActions.share(
               objectId: objectId,
               markerCoords: widget.closestPoint,
             );
@@ -327,9 +278,17 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                   'objectId': objectId,
                 });
 
-            viewModel.callPhone(data: data);
+            final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
+                  (element) => element.type == ContactsInfoType.phone,
+                );
+
+            poiActions.callPhone(value: phoneNumber?.value);
           },
-          onEntranceTap: () => _toggleEntrances(data),
+          onEntranceTap: () => poiActions.toggleEntrances(
+            data,
+            () => _bottomSheetController.animateTo(Expansion.collapsed),
+            widget.closestPoint,
+          ),
         ),
         scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
           controller: controller,
@@ -353,7 +312,14 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             ValueListenableBuilder(
               valueListenable: _tabType,
               builder: (context, tabType, _) => switch (tabType) {
-                PoiTabsType.info => infoBody,
+                PoiTabsType.info => InfoWidget(
+                    callback: () => poiActions.toggleEntrances(
+                      data,
+                      () => _bottomSheetController.animateTo(Expansion.collapsed),
+                      widget.closestPoint,
+                    ),
+                    poiCardState: poiCardState,
+                  ),
                 PoiTabsType.photos => PoiPhotoCard(
                     model: PoiModel(
                       directoryObjectMessage: data,
@@ -367,76 +333,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Future<void> _toggleEntrances(DirectoryObjectMessage data) async {
-    Metrics.logEventAdvanced(MetricsConstants.poiKeys.entrances,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-        props: {
-          'poi_id': data.id?.objectId,
-          'show_entrances': true,
-        });
-
-    final highlightController = ref.watch(highlightProvider.notifier);
-
-    for (final entrance in data.entrances) {
-      if (entrance != null) {
-        await highlightController.addHighlight(entrance.id);
-      }
-    }
-
-    await _animateToEntrance(
-        data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList());
-    _bottomSheetController.animateTo(Expansion.collapsed);
-  }
-
-  Future<void> _animateToEntrance(List<GeoPointMessage?> data) async {
-    if (data.isEmpty) {
-      return;
-    }
-
-    // Remove all null values
-    final points = data.where((element) => element != null);
-
-    if (points.isEmpty) {
-      return;
-    }
-
-    double minDistance = double.infinity;
-    GeoPointMessage? minCoords;
-    // Find the minimum distance to entrance
-    for (final point in points) {
-      final distance = CommonFunctions.distance(
-        point!.latitude,
-        point.longitude,
-        widget.closestPoint?.latitude ?? 0,
-        widget.closestPoint?.longitude ?? 0,
-      );
-      if (distance <= minDistance) {
-        minDistance = distance;
-        minCoords = point;
-      }
-    }
-
-    if (minCoords == null) {
-      return;
-    }
-
-    final cameraController = ref.read(cameraPositionProvider.notifier);
-    final cameraPosition = ref.read(cameraPositionProvider);
-    // Animate to the entrance
-    await cameraController.animateTo(
-      CameraPositionMessage(
-        point: GeoPointMessage(
-          latitude: minCoords.latitude,
-          longitude: minCoords.longitude,
-        ),
-        zoom: 18,
-        tilt: cameraPosition?.tilt ?? 0,
-        bearing: cameraPosition?.tilt ?? 0,
       ),
     );
   }

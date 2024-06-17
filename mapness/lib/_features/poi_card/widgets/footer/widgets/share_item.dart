@@ -31,11 +31,11 @@ class _ShareItem extends StatelessWidget {
       );
     }
     return FooterIconButton(
+      onTap: onTap,
       flex: flex,
-
       assetName: 'assets/icons/svg/ic_share.svg',
       colorIcon: context.color.textAndIconsStatusAccent,
-      onTap: onTap,
+      colorButton: context.staticColor.surfaceStatusContrastAccent,
     );
   }
 }

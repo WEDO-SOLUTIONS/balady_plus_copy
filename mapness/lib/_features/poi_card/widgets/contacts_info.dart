@@ -1,112 +1,109 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
-import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
-import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
+import 'package:mapness/_features/poi_card/extensions/contacts_info_ext.dart';
+import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:urbi_utils/urbi_utils.dart';
 
-class ContactsInfo extends StatefulWidget {
+class ContactsInfo extends ConsumerWidget {
   const ContactsInfo({
-    required this.viewModel,
     required this.data,
     super.key,
   });
-  final PoiCardViewModel viewModel;
-  final DirectoryObjectMessage data;
 
-  @override
-  State<ContactsInfo> createState() => _ContactsInfoState();
-}
+  final List<ContactInfoMessage?> data;
 
-class _ContactsInfoState extends State<ContactsInfo> {
-  @override
-  Widget build(BuildContext context) {
-    final contactInfoWidgets = prepareWidgets();
+  Widget build(BuildContext context, ref) {
+    final list = data
+        .whereNotNull()
+        .map(
+          (e) => e.contactsInfo(),
+        )
+        .toList();
 
-    return contactInfoWidgets.isEmpty
-        ? const SizedBox.shrink()
-        : CardContent(
-            child: ListView.separated(
+    final phone = list.firstWhereOrNull((element) => element.type == ContactsInfoType.phone);
+    final socials = list.where((element) => element.type != ContactsInfoType.phone);
+
+    if (data.isEmpty) {
+      return const SizedBox.shrink();
+    } else {
+      final isLtr = Directionality.of(context) == TextDirection.ltr;
+      return CardContent(
+          padding: EdgeInsets.zero,
+          child: ListView(
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemBuilder: (ctx, i) => contactInfoWidgets[i],
-              separatorBuilder: (ctx, index) => const Divider(indent: 24),
-              itemCount: contactInfoWidgets.length,
-            ),
-          );
-  }
-
-  List<Widget> prepareWidgets() => widget.data.getContactsInfoModels().map((contactsModel) {
-        final text = contactsModel.displayText;
-        var displayText = text;
-        if (contactsModel.type == ContactsInfoType.website) {
-          if (text != null) {
-            displayText = RegExp('^(?:https?://)?(?:ftp://)?(?:www.)?([^/]+)').stringMatch(text);
-          }
-        }
-
-        return GestureDetector(
-          onTap: () {
-            final value = contactsModel.value;
-            if (value != null) {
-              if (contactsModel.type == ContactsInfoType.phone) {
-                widget.viewModel.callPhone(data: widget.data);
-              } else if (contactsModel.type == ContactsInfoType.email) {
-                widget.viewModel.sendEmail(value);
-              } else {
-                widget.viewModel.launch(value);
-              }
-            }
-          },
-          child: SizedBox(
-            width: double.infinity,
-            child: Row(
               children: [
-                SvgPicture.asset(
-                  contactsModel.type.getIconResource(),
-                  package: PackageConfig.packageName,
-                  height: 16,
-                  width: 16,
-                  colorFilter: ColorFilter.mode(context.color.strokeAccent, BlendMode.srcIn),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: StyleText(
-                          text: displayText,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: context.color.textAndIconsBasePrimary,
-                          maxLines: 1,
-                        ),
+                if (phone != null)
+                  ContentRow(
+                    onTap: () {
+                      ref.read(poiCardActionsProvider.notifier).callPhone(value: phone.value);
+                    },
+                    options: ContentRowOptions(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Spacing.horizontalPaddingInsideWrapper,
+                        vertical: Spacing.verticalPaddingInsideCell,
                       ),
-                      Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: StyleText(
-                          maxLines: 1,
-                          text: contactsModel.comment,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: context.color.textAndIconsBasePrimary.withOpacity(.5),
-                        ),
-                      ),
-                    ],
+                      leadingIcon: phone.type.getIconResource(isLtr).icon(
+                            color: context.color.textAndIconsStatusAccent,
+                          ),
+                      title: phone.type == ContactsInfoType.phone ? phone.displayText : null,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList();
+                Spacing.verticalGapBetweenStories.heightBox,
+                Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: Spacing.verticalPaddingInsideCell,
+                    left: Spacing.horizontalPaddingInsideWrapper,
+                    right: Spacing.horizontalPaddingInsideWrapper,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      ...socials
+                          .map((e) => Material(
+                                color: context.color.surfaceBaseSecondary,
+                                borderRadius: BorderRadius.circular(CornerRadius.toastBorderRadius),
+                                child: InkWell(
+                                  highlightColor: context.color.surfaceOverlayPressed,
+                                  splashColor: context.color.surfaceOverlayPressed,
+                                  onTap: () {
+                                    final value = e.value;
+                                    if (value == null) {
+                                      return;
+                                    }
+                                    if (e.type == ContactsInfoType.email) {
+                                      ref.read(poiCardActionsProvider.notifier).sendEmail(value);
+                                    } else {
+                                      ref.read(poiCardActionsProvider.notifier).launch(value);
+                                    }
+                                  },
+                                  borderRadius: BorderRadius.circular(CornerRadius.toastBorderRadius),
+                                  child: SizedBox(
+                                      height: 36,
+                                      width: 36,
+                                      child: Icon(
+                                        e.type.getIconResource(isLtr),
+                                        size: 24,
+                                        color: context.color.textAndIconsStatusAccent,
+                                      )),
+                                ),
+                              ))
+                          .toList(),
+                    ]
+                        .insertBetween(
+                          Spacing.verticalGapBetweenChips.widthBox,
+                        )
+                        .toList(),
+                  ),
+                )
+              ]));
+    }
+  }
 }
