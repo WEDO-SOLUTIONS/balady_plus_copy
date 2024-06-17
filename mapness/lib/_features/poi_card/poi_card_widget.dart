@@ -106,7 +106,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               _tabType.value = PoiTabsType.info;
             case 1:
               _tabType.value = PoiTabsType.photos;
-                _expansion.value = Expansion.fullHidePhoto;
+              _expansion.value = Expansion.fullHidePhoto;
             case 2:
               _tabType.value = PoiTabsType.inBuilding;
               _expansion.value = Expansion.fullHidePhoto;
@@ -131,7 +131,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-
     final sizeOfScreen = MediaQuery.of(context).size;
     final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
 
