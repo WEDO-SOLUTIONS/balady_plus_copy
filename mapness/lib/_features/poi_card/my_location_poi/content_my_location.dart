@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
-import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
+import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
@@ -44,7 +44,6 @@ class ContentMyLocation extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = PoiCardViewModel(ref: ref);
     final language = ref.watch(appLanguageProvider);
     _cameraAnimation(ref);
 
@@ -88,13 +87,13 @@ class ContentMyLocation extends ConsumerWidget {
                 },
                 switch (locationType) {
                   LocationType.myLocation => MyLocationPoiActions(
-                      onShare: () => viewModel.shareMyLocation(closestPoint),
-                      onCopy: () => viewModel.copyToClipboard(closestPoint),
+                      onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
+                      onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
                     ),
                   LocationType.deeplinkLocation => PoiDeeplinkPersonActions(
-                      onShare: () => viewModel.shareMyLocation(closestPoint),
+                      onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
                       onGo: () {
-                        viewModel
+                        ref.read(poiCardActionsProvider.notifier)
                             .goRoute(
                               startLabel: context.l10n.myLocation,
                               finishLabel: context.l10n.pointToMap,
