@@ -18,12 +18,14 @@ enum QuickFilterType {
   schools,
 }
 
+const _pathPrefix = 'assets/icons/svg/places';
+
 const quickFilters = [
   QuickFilter(
     type: QuickFilterType.restaurants,
     rubrics: [161, 165, 161, 9786, 162, 469, 58871],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_restaurants.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/restaurants_pin.svg',
+    mapIcon: '$_pathPrefix/ic_restaurant.svg',
   ),
   QuickFilter(
     type: QuickFilterType.markets,
@@ -52,25 +54,25 @@ const quickFilters = [
       398,
     ],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_markets.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/markets_pin.svg',
+    mapIcon: '$_pathPrefix/ic_markets.svg',
   ),
   QuickFilter(
     type: QuickFilterType.hotels,
     rubrics: [269],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_hotels.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/hotels_pin.svg',
+    mapIcon: '$_pathPrefix/ic_hotels.svg',
   ),
   QuickFilter(
     type: QuickFilterType.mosques,
     rubrics: [13374],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_mosques.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
+    mapIcon: '$_pathPrefix/ic_mosques.svg',
   ),
   QuickFilter(
     type: QuickFilterType.gasStation,
     rubrics: [18547],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_gas_station.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/gas_pin.svg',
+    mapIcon: '$_pathPrefix/ic_gasstation_ltr.svg',
   ),
   QuickFilter(
     type: QuickFilterType.carServices,
@@ -115,25 +117,25 @@ const quickFilters = [
       1156,
     ],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_car_services.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/cars_pin.svg',
+    mapIcon: '$_pathPrefix/ic_car_services.svg',
   ),
   QuickFilter(
     type: QuickFilterType.hospitals,
     rubrics: [201],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_hospital.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/hospitals_pin.svg',
+    mapIcon: '$_pathPrefix/ic_hospital_place.svg',
   ),
   QuickFilter(
     type: QuickFilterType.dentalCenters,
     rubrics: [222],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_dental.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/dental_pin.svg',
+    mapIcon: '$_pathPrefix/ic_tooth.svg',
   ),
   QuickFilter(
     type: QuickFilterType.pharmacies,
     rubrics: [207],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_medicine.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/pharmacies_pin.svg',
+    mapIcon: '$_pathPrefix/ic_medicine_ltr.svg',
   ),
   QuickFilter(
     type: QuickFilterType.sportClubs,
@@ -154,14 +156,14 @@ const quickFilters = [
       110498,
     ],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_sport_clubs.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/sport_pin.svg',
+    mapIcon: '$_pathPrefix/ic_gym.svg',
   ),
   QuickFilter(
     type: QuickFilterType.parks,
     rubrics: [],
     query: 'parks',
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_park.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/parks_pin.svg',
+    mapIcon: '$_pathPrefix/ic_park.svg',
   ),
   QuickFilter(
     type: QuickFilterType.recreationCenters,
@@ -182,6 +184,7 @@ const quickFilters = [
       110358,
     ],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_recreation.svg',
+    // TODO: We do not have this icons in new pack. Check do we use it?
     mapIcon: 'assets/icons/svg/quick_filters/recreation_pin.svg',
   ),
   QuickFilter(
@@ -205,19 +208,21 @@ const quickFilters = [
       51009,
     ],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_beauty.svg',
+    // TODO: We do not have this icons in new pack. Check do we use it?
     mapIcon: 'assets/icons/svg/quick_filters/beauty_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.salons,
     rubrics: [110352],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_salons.svg',
+    // TODO: We do not have this icons in new pack. Check do we use it?
     mapIcon: 'assets/icons/svg/quick_filters/salons_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.schools,
     rubrics: [245],
     uiIcon: 'assets/icons/svg/quick_filters/ic_quick_school.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/schools_pin.svg',
+    mapIcon: '$_pathPrefix/ic_school_ltr.svg',
   ),
   // QuickFilter(
   //   rubrics: [],
