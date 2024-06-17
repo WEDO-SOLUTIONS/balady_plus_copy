@@ -29,6 +29,7 @@ class QuickFilter {
   final QuickFilterType type;
   final String? query;
   final List<int> rubrics;
+  @Deprecated('This filed will be removed in the future. Do not use it')
   final String uiIcon;
   final String mapIcon;
 
