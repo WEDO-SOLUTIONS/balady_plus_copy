@@ -162,6 +162,16 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   void _onClose() {
+    final mapSetting = MapObjectManagerSettings.search();
+    ref
+        .read(
+          mapObjectManagerProvider(
+            named: mapSetting.name,
+            layerId: mapSetting.layerId,
+          ).notifier,
+        )
+        .setMapObjectManagerIsVisible(isVisible: true);
+
     Metrics.logEventAdvanced(
       MetricsConstants.routesKeys.routeSelectionBack,
       group: MetricsConstants.routesTag,
