@@ -37,8 +37,6 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
   }
 }
 
-// TODO(@smitsk): Move it to anywhere where we need it
-
 /// According to the icons that we have in our pack and which we can show on the map as marker
 enum MapMarkersType {
   markets,
