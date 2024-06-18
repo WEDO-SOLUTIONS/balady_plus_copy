@@ -171,7 +171,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   Future<void> _drawSearchMarkers(SearchState searchState) async {
     if (searchState is SearchStateResults) {
-      final icon = LayersSvgPaths.basicMarker.markerIcon(size: 16);
+      final markerIconPath = searchState.markerType?.iconPath;
+      final icon = markerIconPath != null
+          ? markerIconPath.markerIcon(size: 32)
+          : LayersSvgPaths.basicMarker.markerIcon(size: 16);
       final markers = await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon);
 
       await searchObjectManager?.removeAllMarkers();

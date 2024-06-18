@@ -59,14 +59,14 @@ enum MapMarkersType {
   schools,
 }
 
-extension IconPathFromMapMarkersType on MapMarkersType? {
-  static const _pathPrefix = 'assets/icons/svg/places';
+extension IconPathFromMapMarkersType on MapMarkersType {
+  static const _pathPrefix = 'packages/mapness/assets/icons/svg/places';
 
   /// We can get svg icon for the map to draw marker with special icon
   /// Or we can get null if [MapMarkersType] is null
   ///
   /// It's easy to use because we can use this extension right in the build method of the marker
-  String? iconPath() => switch (this) {
+  String get iconPath => switch (this) {
         MapMarkersType.markets => '$_pathPrefix/ic_markets.svg',
         MapMarkersType.beach => '$_pathPrefix/ic_beach.svg',
         MapMarkersType.gym => '$_pathPrefix/ic_gym.svg',
@@ -83,6 +83,5 @@ extension IconPathFromMapMarkersType on MapMarkersType? {
         MapMarkersType.wc => '$_pathPrefix/ic_wc.svg',
         MapMarkersType.dentalCenters => '$_pathPrefix/ic_tooth.svg',
         MapMarkersType.schools => '$_pathPrefix/ic_school_ltr.svg',
-        _ => null,
       };
 }

@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/extensions/markers_from_search.dart';
 
 sealed class SearchState {
   const SearchState();
@@ -17,8 +18,9 @@ class SearchStateSuggest extends SearchState {
 class SearchStateResults extends SearchState {
   final SearchResultMessage results;
   final String searchText;
+  final MapMarkersType? markerType;
 
-  const SearchStateResults(this.results, this.searchText);
+  const SearchStateResults(this.results, this.searchText, {this.markerType});
 }
 
 extension SearchStateMap on SearchState {
