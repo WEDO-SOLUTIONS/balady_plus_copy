@@ -5,7 +5,7 @@ import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.Camera
 import ru.dgis.sdk.map.calcPosition
 
-fun SearchResult.toMessage(pageId: String, camera: Camera, items: List<ItemMarkerInfo>?): SearchResultMessage {
+fun SearchResult.toMessage(pageId: String, camera: Camera, items: List<ItemMarkerInfo>?, labels: List<UIMarkerInfo>?): SearchResultMessage {
     return SearchResultMessage.Builder()
         .setFirstPage(this.firstPage?.toMessage(pageId))
         .setRepresentativeArea(this.representativeArea?.toMessage())
@@ -19,6 +19,10 @@ fun SearchResult.toMessage(pageId: String, camera: Camera, items: List<ItemMarke
                     .setBearing(cameraPosition.bearing.value)
                     .build()
         })
+
+        .setMarkersWithLabel(labels?.map {
+            it.toMessage()
+        })
         .setItemMarkerInfos(items?.map {
             it.toMessage()
         })
@@ -27,6 +31,13 @@ fun SearchResult.toMessage(pageId: String, camera: Camera, items: List<ItemMarke
             it.toMessage()
         })
         .setAutoUseFirstResult(this.autoUseFirstResult)
+        .build()
+}
+
+fun UIMarkerInfo.toMessage(): UiMarkerInfoMessage {
+    return UiMarkerInfoMessage.Builder()
+        .setObjectId(objectId?.toMessage())
+        .setLabel(label)
         .build()
 }
 

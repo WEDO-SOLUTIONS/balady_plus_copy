@@ -74,14 +74,21 @@ class SearchByRubrics extends _$SearchByRubrics {
         category,
         sortingType: SortingTypeMessage.byRelevance,
         searchRect: searchRect,
+
+        /// TODO: Check if we need to set pageSize to better performance
+        pageSize: 15000,
       );
     } else {
       searchResults = await dgisController.searchByRubrics(
         filter.rubrics,
         sortingType: SortingTypeMessage.byRelevance,
         searchRect: searchRect,
+
+        /// TODO: Check if we need to set pageSize to better performance
+        pageSize: 15000,
       );
     }
+
     final currentFilter = ref.watch(searchByRubricsQueryProvider);
     if (currentFilter?.type == filter.type) {
       final markers = await _showAndReturnMarkers(searchResults);
@@ -106,6 +113,7 @@ class SearchByRubrics extends _$SearchByRubrics {
 
     await searchObjectManager.removeAllMarkers();
     await searchObjectManager.addMarkers(markers);
+
     return markers;
   }
 
