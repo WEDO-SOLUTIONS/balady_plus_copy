@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/happiness_map/happines_map_bottom_sheet.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
 
 class HappinesOverlayContent extends ConsumerStatefulWidget {
   const HappinesOverlayContent({required this.isBottomSheetOpened, super.key});
@@ -15,20 +15,18 @@ class HappinesOverlayContent extends ConsumerStatefulWidget {
   final bool isBottomSheetOpened;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _HapinessOverlayContentState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HapinessOverlayContentState();
 }
 
-class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
-    with TickerProviderStateMixin {
+class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent> with TickerProviderStateMixin {
   final ValueNotifier<double> height = ValueNotifier(100);
 
   late final AnimationController confettiController;
 
   final ConfettiGeneratorConfig config = ConfettiGeneratorConfig.confetti();
 
-  void playConfettiAnimation() => confettiController.animateTo(1,
-      duration: config.animationDuration, curve: config.animationCurve);
+  void playConfettiAnimation() =>
+      confettiController.animateTo(1, duration: config.animationDuration, curve: config.animationCurve);
 
   @override
   void initState() {
@@ -45,26 +43,26 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
 
   @override
   void deactivate() {
-    ref.read(cameraPositionProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
-            bottomPadding: 0,
-          ),
-        );
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
     super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
-    final cameraController = ref.watch(cameraPositionProvider.notifier);
+    final cameraPaddingController = ref.watch(cameraPaddingProvider.notifier);
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final maxHeight = constraints.biggest.height;
         return Stack(
           children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  context.pop();
+                },
+              ),
+            ),
             ValueListenableBuilder(
               valueListenable: height,
               builder: (context, height, child) => Positioned.fill(
@@ -91,17 +89,14 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
               isOpenedInitially: widget.isBottomSheetOpened,
               onHeightChange: (height) {
                 final pixelSize = MediaQuery.of(context).devicePixelRatio;
-                final navbarSize =
-                    48 + MediaQuery.of(context).viewPadding.bottom;
+                final navbarSize = 48 + MediaQuery.of(context).viewPadding.bottom;
 
-                cameraController.setPadding(
+                cameraPaddingController.setPadding(
                   CameraSetPaddingMessage(
                     leftPadding: 0,
                     topPadding: 0,
                     rightPadding: 0,
-                    bottomPadding: (height * maxHeight * pixelSize -
-                            navbarSize * pixelSize)
-                        .floor(),
+                    bottomPadding: (height * maxHeight * pixelSize - navbarSize * pixelSize).floor(),
                   ),
                 );
                 Future.delayed(
@@ -117,9 +112,7 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
                 // widget.onClose();
                 context.pop();
               },
-              onFeedbackSent: () {
-
-              },
+              onFeedbackSent: () {},
             ),
           ],
         );

@@ -67,7 +67,7 @@ class _PhotoViewerState extends State<PhotoViewer> {
                         padding: const EdgeInsetsDirectional.only(start: NumericBase.$4x),
                         alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
                         child: Icon(
-                          context.isLTR ? SystemIcons.arrowCornerLeftL : SystemIcons.arrowCornerRightL,
+                          context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
                           color: Colors.white,
                         ),
                       ),
@@ -93,7 +93,7 @@ class _PhotoViewerState extends State<PhotoViewer> {
                       return PhotoViewGalleryPageOptions(
                         imageProvider: NetworkImage(photo),
                         initialScale: PhotoViewComputedScale.contained * 1,
-                        minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+                        minScale: PhotoViewComputedScale.contained * 1,
                         maxScale: PhotoViewComputedScale.covered * 4.1,
                         heroAttributes: PhotoViewHeroAttributes(tag: photo),
                       );

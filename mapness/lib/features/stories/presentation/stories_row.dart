@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:balady_uikit/balady_uikit.dart' show Spacing, Stories;
+import 'package:balady_uikit/balady_uikit.dart' show NumericBase, Spacing, Stories;
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/features/stories/domain/story_data.dart';
@@ -28,7 +28,7 @@ class StoriesRow extends StatelessWidget {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.horizontalBaseToDeviceViewBox,
+                    horizontal: NumericBase.$4x,
                   ),
                   itemCount: stories.length,
                   itemBuilder: (context, i) {
@@ -41,8 +41,7 @@ class StoriesRow extends StatelessWidget {
                       isWatched: story.isViewed,
                     );
                   },
-                  separatorBuilder: (context, index) => const SizedBox(
-                      width: Spacing.horizontalGapBetweenStories),
+                  separatorBuilder: (context, index) => const SizedBox(width: Spacing.horizontalGapBetweenStories),
                 ),
               ),
             ),

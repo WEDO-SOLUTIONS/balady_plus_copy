@@ -47,9 +47,7 @@ class FavoriteCard extends ConsumerWidget {
                   .copyWith(color: context.color.textAndIconsBasePrimary),
             ),
             const Spacer(),
-            Icon(context.isLTR
-                ? SystemIcons.arrowCornerRightS
-                : SystemIcons.arrowCornerLeftS),
+            Icon(context.isLTR ? SystemIcons.arrowCornerRightSmall : SystemIcons.arrowCornerLeftSmall),
           ],
         ),
       );

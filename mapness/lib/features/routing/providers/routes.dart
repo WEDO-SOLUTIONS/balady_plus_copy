@@ -69,9 +69,9 @@ class BetterRoute extends _$BetterRoute {
     final betterRouteSubscription = dgisController.value?.betterRouteInfoEvents.listen((event) {
       state = event.route != null
           ? PathNavBetterRoute(
-        route: event.route!,
-        durationProfit: event.durationProfit,
-      )
+              route: event.route!,
+              durationProfit: event.durationProfit,
+            )
           : null;
     });
 
@@ -86,7 +86,7 @@ class BetterRoute extends _$BetterRoute {
 class BetterRouteSettings extends _$BetterRouteSettings {
   static final prod = BetterRouteSettingsMessage(
     routeSearchDelay: 20,
-    betterRouteTimeCostThreshold: 5 * 60,
+    betterRouteTimeCostThreshold: 2 * 60,
     betterRouteLengthThreshold: 500 * 1000,
   );
 

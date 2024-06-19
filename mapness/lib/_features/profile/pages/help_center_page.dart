@@ -27,14 +27,14 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.verticalBaseToTopModal),
+              padding: const EdgeInsets.only(top: NumericBase.$4x),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
                   title: context.l10n.helpCenter,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     onPressed: () => context.pop(),
-                    icon: context.isLTR ? SystemIcons.arrowCornerLeftL : SystemIcons.arrowCornerRightL,
+                    icon: context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
                   ),
                 ),
                 body: Padding(
@@ -53,15 +53,15 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                             onTap: () => const MomraWebsitePageRoute().push(context),
                             options: ContentRowOptions(
                               title: context.l10n.baladyWebsite,
-                              leadingIcon: GeneralIcons.globe.icon(
+                              leadingIcon: GeneralIcons.web.icon(
                                 color: context.color.textAndIconsStatusAccent,
                               ),
                               actionWidget: ContentRowActionOptions(
                                 actionIcon: context.isLTR
-                                    ? SystemIcons.arrowCornerRightS.icon(
+                                    ? SystemIcons.arrowCornerRightSmall.icon(
                                         color: context.color.textAndIconsBaseSecondary,
                                       )
-                                    : SystemIcons.arrowCornerLeftS.icon(
+                                    : SystemIcons.arrowCornerLeftSmall.icon(
                                         color: context.color.textAndIconsBaseSecondary,
                                       ),
                               ),
@@ -79,12 +79,12 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                         onTap: () {
                           ///TODO: UNCOMMENT AFTER TESTING WHEN ADD VARIABLE TO CI
                           // if (const bool.fromEnvironment('URBI_DEBUG')) {
-                            setState(() {
-                              tapsToGo -= 1;
-                            });
-                            if (tapsToGo == 0) {
-                              ref.read(debugStateProvider.notifier).enable();
-                            }
+                          setState(() {
+                            tapsToGo -= 1;
+                          });
+                          if (tapsToGo == 0) {
+                            ref.read(debugStateProvider.notifier).enable();
+                          }
                           // }
                         },
                         child: Text(context.l10n.foInquiriesAndTheLatestNews,

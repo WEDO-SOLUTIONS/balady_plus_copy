@@ -94,7 +94,6 @@ class QuickFilters extends ConsumerWidget {
       ...data.quickFilters.map(
         (filter) => FilterItem(
             filterType: FilterType.quick,
-            icon: filter.uiIcon,
             title: filter.title(context.l10n),
             selected: filter.type == selectedQuickFilter?.type,
             onTap: () {

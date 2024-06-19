@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/sheets/location_required_sheet.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -42,6 +43,7 @@ class _Location extends _$Location {
   }
 
   Future<bool> checkLocationPermission({String? routeOnClose}) async {
+    const routeLocation = '/request_location';
     final serviceStatus = await perm.Permission.location.serviceStatus;
     final router = ref.read(goRouterProvider);
 
@@ -49,14 +51,18 @@ class _Location extends _$Location {
       final status = await perm.Permission.location.request();
 
       if (status == perm.PermissionStatus.permanentlyDenied) {
-        if (!CommonFunctions.locationDialogShowed) {
-          CommonFunctions.locationDialogShowed = true;
-          unawaited(
-            router
-                .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
-                .then((value) => CommonFunctions.locationDialogShowed = false),
-          );
+        if (CommonFunctions.locationDialogShowed) {
+          return false;
         }
+        if (ref.read(currentRouteProvider)?.currentPath == routeLocation) {
+          return false;
+        }
+        CommonFunctions.locationDialogShowed = true;
+        unawaited(
+          router
+            .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
+            .then((value) => CommonFunctions.locationDialogShowed = false),
+        );
         return false;
       } else if (status != perm.PermissionStatus.granted) {
         unawaited(perm.Permission.location.request());
@@ -65,14 +71,18 @@ class _Location extends _$Location {
         return true;
       }
     } else {
-      if (!CommonFunctions.locationDialogShowed) {
-        CommonFunctions.locationDialogShowed = true;
-        unawaited(
-          router
-              .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
-              .then((value) => CommonFunctions.locationDialogShowed = true),
-        );
+      if (CommonFunctions.locationDialogShowed) {
+        return false;
       }
+      if (ref.read(currentRouteProvider)?.currentPath == routeLocation) {
+        return false;
+      }
+      CommonFunctions.locationDialogShowed = true;
+      unawaited(
+        router
+          .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
+          .then((value) => CommonFunctions.locationDialogShowed = false),
+      );
     }
 
     return false;

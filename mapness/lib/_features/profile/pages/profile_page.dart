@@ -11,30 +11,23 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
-import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/profile/authorized_widget.dart';
-import 'package:mapness/widgets/profile/language_picker.dart';
 import 'package:mapness/widgets/profile/logout_dialog.dart';
 import 'package:mapness/widgets/profile/unathorized_profile.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
 class ProfilePage extends ConsumerWidget {
-  // According to task BALADY-416 to hide flags we temporary hide it with boolean flag
-  // We don't delete it because this goes against the design of this feature
-  static const showFlags = false;
-
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
     final actionIcon = context.isLTR
-        ? SystemIcons.arrowCornerRightS.icon(
+        ? SystemIcons.arrowCornerRightSmall.icon(
             color: context.color.textAndIconsBaseSecondary,
           )
-        : SystemIcons.arrowCornerLeftS.icon(
+        : SystemIcons.arrowCornerLeftSmall.icon(
             color: context.color.textAndIconsBaseSecondary,
           );
 
@@ -96,26 +89,56 @@ class ProfilePage extends ConsumerWidget {
                           ContentWrapper(
                             color: context.color.surfaceBaseSecondary,
                             children: [
+                              Consumer(builder: (context, ref, child) {
+                                final userData = ref.watch(authProvider);
+
+                                return userData.maybeWhen(
+                                  orElse: () => const SizedBox.shrink(),
+                                  data: (data) => data == null
+                                      ? const SizedBox.shrink()
+                                      : ContentRow(
+                                          options: ContentRowOptions(
+                                            actionWidget: ContentRowActionOptions(
+                                              actionIcon: actionIcon,
+                                            ),
+                                            leadingIcon: Icon(
+                                              GeneralIcons.user,
+                                              color: context.color.textAndIconsStatusAccent,
+                                            ),
+                                            title: context.l10n.personalData,
+                                          ),
+                                          onTap: () => const ProfileInfoPageRoute().push(context),
+                                        ),
+                                );
+                              }),
                               ContentRow(
                                 options: ContentRowOptions(
                                   actionWidget: ContentRowActionOptions(
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.settings,
+                                    SystemIcons.settings,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.settings,
                                 ),
                                 onTap: () => const SettingsRoute().push(context),
                               ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: Spacing.verticalPaddingInsideWrapper,
+                          ),
+                          ContentWrapper(
+                            color: context.color.surfaceBaseSecondary,
+                            children: [
                               ContentRow(
                                 options: ContentRowOptions(
                                   actionWidget: ContentRowActionOptions(
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.questionCircleLTR,
+                                    GeneralIcons.questionCircle,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.helpCenter,
@@ -128,7 +151,7 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.infoCircleFill,
+                                    GeneralIcons.infoCircle,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.aboutApp,
@@ -143,7 +166,7 @@ class ProfilePage extends ConsumerWidget {
                                     actionIcon: actionIcon,
                                   ),
                                   leadingIcon: Icon(
-                                    GeneralIcons.starSolid,
+                                    GeneralIcons.star,
                                     color: context.color.textAndIconsStatusAccent,
                                   ),
                                   title: context.l10n.rateBaladyApp,
@@ -159,70 +182,6 @@ class ProfilePage extends ConsumerWidget {
                           const SizedBox(
                             height: Spacing.verticalPaddingInsideWrapper,
                           ),
-                          Consumer(
-                            builder: (context, ref, child) {
-                              final language = ref.watch(appLanguageProvider);
-                              return ContentWrapper(
-                                color: context.color.surfaceBaseSecondary,
-                                children: [
-                                  ContentRowExpandable(
-                                    options: ContentRowOptions(
-                                      title: context.l10n.language,
-                                      subtitle: language.title,
-                                      leadingIcon: leadingIcon(language),
-                                    ),
-                                    content: const LanguagePicker(),
-                                    expandIconColor: context.color.textAndIconsBaseSecondary,
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                          const SizedBox(
-                            height: Spacing.verticalGapBetweenChips,
-                          ),
-                          Text(
-                            context.l10n.chooseTheLanguageOfAll,
-                            style: context.textStyle.caption.copyWith(
-                              color: context.color.textAndIconsBaseTertiary,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
-                          ),
-                          ContentWrapper(
-                            color: context.color.surfaceBaseSecondary,
-                            children: [
-                              ContentRow(
-                                options: ContentRowOptions(
-                                    leadingIcon: AppIcons(
-                                      iconData: GeneralIcons.darkMode,
-                                      color: context.color.textAndIconsStatusAccent,
-                                      size: 24,
-                                    ),
-                                    title: context.l10n.darkMap,
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: ref.watch(darkModeProvider),
-                                    )),
-                                onToggle: (_) {
-                                  ref.read(darkModeProvider.notifier).toggle();
-                                },
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: Spacing.verticalGapBetweenChips,
-                          ),
-                          Text(
-                            context.l10n.changeTheColorSchemeOfAnApp,
-                            style: context.textStyle.caption.copyWith(
-                              color: const Color(0xFF1E2A36).withOpacity(0.36),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 32,
-                          ),
                           Consumer(builder: (context, ref, _) {
                             final userData = ref.watch(authProvider);
                             const emptyBox = SizedBox.shrink();
@@ -231,35 +190,25 @@ class ProfilePage extends ConsumerWidget {
                               orElse: () => emptyBox,
                               data: (data) => data == null
                                   ? emptyBox
-                                  : SizedBox(
-                                      width: double.infinity,
-                                      child: AppButton(
-                                        primaryLabel: context.l10n.logOut,
-                                        buttonColorScheme: ButtonColorScheme.tertiary,
-                                        onTap: () async {
-                                          await showDialog(
-                                            context: context,
-                                            builder: (ctx) => LogoutDialog(
-                                              onCancel: () => Navigator.of(ctx).pop(),
-                                              onLogout: () async {
-                                                await ref.read(authProvider.notifier).logOut();
-                                                context.pop();
-                                              },
-                                              title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
-                                              logOutText: context.l10n.logOut,
-                                              cancelText: context.l10n.cancel,
+                                  : ContentWrapper(
+                                      color: context.color.surfaceBaseSecondary,
+                                      children: [
+                                        ContentRow(
+                                          onTap: () => _logOut(context, ref),
+                                          options: ContentRowOptions(
+                                            titleStyle: context.textStyle.text
+                                                .copyWith(color: context.color.textAndIconsStatusNegative),
+                                            title: context.l10n.logOut,
+                                            leadingIcon: SvgPicture.asset(
+                                              'assets/icons/svg/ic_profile_logout.svg',
+                                              height: 24,
+                                              width: 24,
+                                              matchTextDirection: true,
+                                              package: PackageConfig.packageName,
                                             ),
-                                          );
-                                        },
-                                        textColor: context.color.textAndIconsStatusNegative,
-                                        trailing: SvgPicture.asset(
-                                          'assets/icons/svg/ic_profile_logout.svg',
-                                          height: 24,
-                                          width: 24,
-                                          matchTextDirection: true,
-                                          package: PackageConfig.packageName,
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                             );
                           })
@@ -276,15 +225,22 @@ class ProfilePage extends ConsumerWidget {
     );
   }
 
-  Widget? leadingIcon(Language language) => showFlags
-      ? SvgPicture.asset(
-          switch (language) {
-            Language.arabic => 'assets/icons/svg/sa_flag.svg',
-            Language.english => 'assets/icons/svg/uk_flag.svg',
-          },
-          height: 16,
-          width: 22,
-          package: PackageConfig.packageName,
-        )
-      : null;
+  Future<void> _logOut(BuildContext context, WidgetRef ref) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) => LogoutDialog(
+        onCancel: () => Navigator.of(ctx).pop(),
+        onLogout: () async {
+          if (!context.mounted) {
+            return;
+          }
+          await ref.read(authProvider.notifier).logOut();
+          context.pop();
+        },
+        title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
+        logOutText: context.l10n.logOut,
+        cancelText: context.l10n.cancel,
+      ),
+    );
+  }
 }

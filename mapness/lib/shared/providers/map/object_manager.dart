@@ -34,8 +34,8 @@ class MapObjectManagerSettings {
         name: MapnessConsts.mapLayerName,
         layerId: MapObjectLayers.defaultLayerId,
       );
-  factory MapObjectManagerSettings.quickFilter() => const MapObjectManagerSettings._(
-        name: 'QuickFilters',
+  factory MapObjectManagerSettings.search() => const MapObjectManagerSettings._(
+        name: 'balady_search',
         layerId: MapObjectLayers.defaultLayerId,
       );
   factory MapObjectManagerSettings.myLocation() => const MapObjectManagerSettings._(
@@ -45,11 +45,6 @@ class MapObjectManagerSettings {
 
   factory MapObjectManagerSettings.jobs() => const MapObjectManagerSettings._(
         name: 'jobs',
-        layerId: MapObjectLayers.defaultLayerId,
-      );
-
-  factory MapObjectManagerSettings.search() => const MapObjectManagerSettings._(
-        name: 'mapSearchManager',
         layerId: MapObjectLayers.defaultLayerId,
       );
 
@@ -107,6 +102,10 @@ class MapObjectManager extends _$MapObjectManager {
           markers,
           toManager: await future,
         );
+  }
+
+  Future<void> setMapObjectManagerIsVisible({required bool isVisible}) async {
+    await ref.read(dgisControllerProvider).value?.setMapObjectManagerIsVisible(isVisible, await future);
   }
 
   Future<void> removeMarkerById(String markerId) async {

@@ -1,37 +1,23 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class MapSearchEmpty extends StatelessWidget {
   const MapSearchEmpty({super.key});
 
   @override
-  Widget build(BuildContext context) => Container(
-        color: Colors.white,
-        child: Column(
-          children: [
-            SvgPicture.asset(
-              'assets/images_svg/empty_search.svg',
-              package: PackageConfig.packageName,
-              width: 240,
-              height: 140,
+  Widget build(BuildContext context) => Column(
+        children: [
+          NumericBase.$12x.heightBox,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: NumericBase.$10x),
+            child: Text(
+              context.l10n.weCouldntFindAnythingTryToSearchForDifferentLocation,
+              textAlign: TextAlign.center,
+              style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
             ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: 279,
-              child: Text(
-                context.l10n.weCouldntFindAnythingTryChangingYourRequest,
-                textDirection: TextDirection.ltr,
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .heading2
-                    .copyWith(color: context.color.textAndIconsBasePrimary),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       );
 }

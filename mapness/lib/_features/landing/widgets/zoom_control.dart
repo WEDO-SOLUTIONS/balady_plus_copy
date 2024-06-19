@@ -1,5 +1,4 @@
-import 'package:balady_uikit/core/icons/app_icons.dart';
-import 'package:balady_uikit/core/icons/general_icons.dart';
+import 'package:balady_uikit/balady_uikit.dart' hide MapButton;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,31 +17,23 @@ class ZoomControl extends ConsumerWidget {
       children: [
         MapButton(
           disabled: !zoomState.zoomInEnabled,
-          onTapUp: (_) => zoomState.zoomInEnabled
-              ? zoomNotifier.onTapUp(ZoomControlType.zoomIn)
-              : null,
-          onTapDown: (_) => zoomState.zoomInEnabled
-              ? zoomNotifier.onTapDown(ZoomControlType.zoomIn)
-              : null,
+          onTapUp: (_) => zoomState.zoomInEnabled ? zoomNotifier.onTapUp(ZoomControlType.zoomIn) : null,
+          onTapDown: (_) => zoomState.zoomInEnabled ? zoomNotifier.onTapDown(ZoomControlType.zoomIn) : null,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           ),
-          child: const AppIcons(iconData: GeneralIcons.zoomPlus),
+          child: const AppIcons(iconData: SystemIcons.zoomPlus),
         ),
         MapButton(
-          onTapUp: (_) => zoomState.zoomOutEnabled
-              ? zoomNotifier.onTapUp(ZoomControlType.zoomOut)
-              : null,
-          onTapDown: (_) => zoomState.zoomOutEnabled
-              ? zoomNotifier.onTapDown(ZoomControlType.zoomOut)
-              : null,
+          onTapUp: (_) => zoomState.zoomOutEnabled ? zoomNotifier.onTapUp(ZoomControlType.zoomOut) : null,
+          onTapDown: (_) => zoomState.zoomOutEnabled ? zoomNotifier.onTapDown(ZoomControlType.zoomOut) : null,
           disabled: !zoomState.zoomOutEnabled,
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(10),
             bottomRight: Radius.circular(10),
           ),
-          child: const AppIcons(iconData: GeneralIcons.zoomMinus),
+          child: const AppIcons(iconData: SystemIcons.zoomMinus),
         ),
       ],
     );

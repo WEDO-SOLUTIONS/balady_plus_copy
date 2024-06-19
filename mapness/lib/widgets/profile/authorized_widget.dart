@@ -2,10 +2,10 @@ import 'dart:typed_data';
 
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
 import 'package:mapness/app/router.dart';
@@ -14,98 +14,155 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
-import 'profile_menu.dart';
-
 class AuthorizedWidget extends ConsumerWidget {
   const AuthorizedWidget({required this.userData, super.key});
 
   final SsoUserInfo userData;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Material(
-        shape: smoothBorder(CornerRadius.smallContainer),
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final textDirection = Directionality.of(context);
-
-                /// top position of the profile image
-                /// all "magic" numbers are calculated based on the design
-                /// was found by selecting options
-                final topPosition = constraints.maxWidth / 30;
-                final isLTR = textDirection == TextDirection.ltr;
-                final leftRightPosition = constraints.maxWidth / 30;
-                final dimension = constraints.maxWidth / 3.5;
-                return Stack(
-                  fit: StackFit.passthrough,
-                  children: [
-                    Directionality(
-                      textDirection: isLTR ? TextDirection.rtl : TextDirection.ltr,
-                      child: SvgPicture.asset(
-                        'assets/images_svg/profile_header_bg.svg',
-                        matchTextDirection: true,
-                        package: PackageConfig.packageName,
-                        width: constraints.maxWidth,
-                        color: context.color.surfaceBaseSecondary,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                    Positioned(
-                      top: topPosition,
-                      left: isLTR ? leftRightPosition : null,
-                      right: isLTR ? null : leftRightPosition,
-                      child: ProfileImageWidget(
-                        dimension: dimension,
-                      ),
-                    ),
-                    Positioned(
-                      right: isLTR ? 0 : null,
-                      left: isLTR ? null : 0,
-                      child: Center(
-                        child: ProfileMenu(
-                          // Disabled in BSA-331 Keep an old design for logout page
-                          // onTapLogout: () async {
-                          //   await ref.read(authProvider.notifier).logOut();
-                          //   context.pop();
-                          // },
-                          onTapChangeAvatar: () async {
-                            final picker = ImagePicker();
-                            final image = await picker.pickImage(source: ImageSource.gallery);
-                            if (image == null) {
-                              return;
-                            }
-                            final bytes = await image.readAsBytes();
-                            final Uint8List? croppedBytes = await ref.read(goRouterProvider).push(
-                                  const ImageEditorRoute().location,
-                                  extra: bytes,
-                                );
-                            if (croppedBytes != null) {
-                              await ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes);
-                            }
-                          },
-                          onTapInfo: () => const ProfileInfoPageRoute().push(context),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: isLTR ? 0 : null,
-                      right: isLTR ? null : 0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(NumericBase.$5x),
-                        child: Text(
-                          userData.getFirstAndLastName(),
-                          style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsBasePrimary),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
+  // ignore: prefer_expression_function_bodies
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, bottom: 18),
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(end: 16.0),
+              child: Text(
+                userData.getFirstAndLastName(),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsBasePrimary),
+              ),
             ),
-          ],
+          ),
+          GestureDetector(
+            onTap: () => _showBottomSheet(context, ref),
+            child: Stack(
+              children: [
+                const ProfileImageWidget(
+                  dimension: 80,
+                ),
+                PositionedDirectional(
+                    start: 0,
+                    bottom: 0,
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xff000000).withOpacity(.08),
+                                blurRadius: 4,
+                                offset: const Offset(0, 1),
+                              ),
+                              BoxShadow(
+                                color: const Color(0xff000000).withOpacity(.04),
+                                spreadRadius: .5,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                            color: context.color.surfaceBasePrimary,
+                          ),
+                          child: Icon(SystemIcons.edit, size: 16, color: context.color.textAndIconsBaseTertiary),
+                        ),
+                      ),
+                    ))
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _updateAvatar(WidgetRef ref) async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return;
+    }
+    final bytes = await image.readAsBytes();
+    final Uint8List? croppedBytes = await ref.read(goRouterProvider).push(
+          const ImageEditorRoute().location,
+          extra: bytes,
+        );
+    if (croppedBytes != null) {
+      await ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes);
+    }
+  }
+
+  Future<void> _showBottomSheet(BuildContext context, WidgetRef ref) async {
+    await showModalBottomSheet(
+        backgroundColor: context.color.surfaceBaseSecondary,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        context: context,
+        builder: (context) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const _Dragger(),
+                ContentRow(
+                  options: ContentRowOptions(
+                    title: context.l10n.profilePhoto,
+                    titleStyle: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
+                    customActionWidget: AppButton.close(
+                      color: context.color.surfaceContrastLow,
+                      onTap: context.pop,
+                      innerPadding: const EdgeInsets.all(Spacing.verticalGapBetweenStories),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ContentWrapper(color: context.color.surfaceBasePrimary, children: [
+                    ContentRow(
+                      onTap: () {
+                        context.pop();
+                        _updateAvatar(ref);
+                      },
+                      options: ContentRowOptions(
+                        leadingIcon: SvgPicture.asset(
+                          'assets/icons/svg/photo_gallery.svg',
+                          colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
+                          package: PackageConfig.packageName,
+                        ),
+                        title: context.l10n.change_avatar,
+                        titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                      ),
+                    ),
+                  ]),
+                ),
+                const SizedBox(height: 32),
+              ],
+            ));
+  }
+}
+
+//TODO: Romove this Widget and use ui-kit bottom sheet implementation
+class _Dragger extends StatelessWidget {
+  const _Dragger({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(top: 8),
+        width: 40,
+        height: 4,
+        decoration: BoxDecoration(
+          color: const Color(0x14141417),
+          borderRadius: BorderRadius.circular(2),
         ),
       );
 }

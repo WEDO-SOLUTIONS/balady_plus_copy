@@ -65,15 +65,15 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
             ContentRow(
               options: ContentRowOptions(
                 leadingIcon: AppIcons(
-                  iconData: SocialIcons.twitterNew,
+                  iconData: SocialIcons.twitter,
                   color: context.color.textAndIconsStatusAccent,
                 ),
                 actionWidget: ContentRowActionOptions(
                   actionIcon: context.isLTR
-                      ? SystemIcons.arrowCornerRightS.icon(
+                      ? SystemIcons.arrowCornerRightSmall.icon(
                           color: context.color.textAndIconsBaseSecondary,
                         )
-                      : SystemIcons.arrowCornerLeftS.icon(
+                      : SystemIcons.arrowCornerLeftSmall.icon(
                           color: context.color.textAndIconsBaseSecondary,
                         ),
                 ),

@@ -1,6 +1,8 @@
 import Foundation
+
 import DGis
 import CoreLocation
+
 
 struct ApiResponse: Decodable {
     var meta: ResponseMeta
@@ -37,6 +39,9 @@ class SearchHandler: NSObject {
     private var searchCancelable: Cancellable?
     private var itemMarkerInfosCancellable: Cancellable?
     private var suggestCancelable: Cancellable?
+    private var objectLabelsJob: Operation?
+
+    private var labelCancellables = Set<Cancellable>()
     
     private var pages: [String:Page] = [:]
     private var queries: [String:SearchQuery] = [:]
@@ -69,6 +74,8 @@ class SearchHandler: NSObject {
         self.searchCancelable?.cancel()
         self.suggestCancelable?.cancel()
         self.itemMarkerInfosCancellable?.cancel()
+        self.objectLabelsJob?.cancel()
+        self.labelCancellables.forEach { $0.cancel() }
     }
 
     func searchByDirectoryObjectId(objectId: DgisObjectId, completion: @escaping (DirectoryObjectMessage?, FlutterError?) -> Void) {
@@ -303,6 +310,40 @@ class SearchHandler: NSObject {
         performSearch(query, completion: completion)
     }
 
+   private func resolveMarkerTitle(response: SearchResult, objectIds: [DgisObjectId], completion: @escaping (Result<[UIMarkerInfo], Error>) -> Void) {
+        let futures = response.markerTitles(objectIds: objectIds)
+        var results: [Result<[UIMarkerInfo], Error>] = []
+        let group = DispatchGroup()
+        
+        for future in futures {
+            group.enter()
+            let c = future
+                .sink(receiveValue: { markerInfoList in
+                    results.append(.success(markerInfoList))
+                    group.leave()
+                }, failure: { error in
+                    results.append(.failure(error))
+                    group.leave()
+                })
+            self.labelCancellables.insert(c)    
+        }
+        
+        group.notify(queue: .global()) {
+            var allMarkerInfo: [UIMarkerInfo] = []
+            for result in results {
+                switch result {
+                case .success(let markerInfoList):
+                    allMarkerInfo.append(contentsOf: markerInfoList)
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                }
+            }
+            completion(.success(allMarkerInfo))
+        }
+    }
+
+
     func performSearch(
         _ query: SearchQuery,
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
@@ -320,10 +361,37 @@ class SearchHandler: NSObject {
                     self.pages[pageId] = page
                 }
 
-                completion(
-                    response.toMessage(withId: pageId, camera: self.map.camera, items: itemMarkerInfos),
-                    nil
-                )
+                guard let markersInfo = itemMarkerInfos else {
+                    completion(
+                        response.toMessage(withId: pageId, camera: self.map.camera, items: nil, labels: []),
+                        nil
+                    )
+                    return
+                }
+
+                let operationQueue = OperationQueue()
+
+                let operation = BlockOperation {
+                    
+                    let objectIds = markersInfo.compactMap { $0.objectId }
+
+                    self.resolveMarkerTitle(response: response, objectIds: objectIds) { resolveResult in
+                        switch resolveResult {
+                        case .success(let uiMarkerInfo):
+                            DispatchQueue.main.async {
+                                completion(response.toMessage(withId: pageId, camera: self.map.camera, items: markersInfo, labels: uiMarkerInfo), nil)
+                            }
+                        case .failure(let error):
+                            DispatchQueue.main.async {
+                                completion(response.toMessage(withId: pageId, camera: self.map.camera, items: markersInfo, labels: []), nil)
+                            }
+                            print("Error resolving marker titles: \(error)")
+                        }
+                    }
+                }
+                
+                self.objectLabelsJob = operation
+                operationQueue.addOperation(operation)
             }, failure: { error in
                 completion(
                     nil,

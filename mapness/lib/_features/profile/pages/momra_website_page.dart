@@ -66,21 +66,21 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                 leading: ActionModel(
                   text: context.l10n.back,
                   onPressed: () => context.pop(),
-                  icon: context.isLTR
-                      ? SystemIcons.arrowCornerRightL
-                      : SystemIcons.arrowCornerLeftL,
+                  icon: context.isLTR ? SystemIcons.arrowCornerRightSmall : SystemIcons.arrowCornerLeftSmall,
                 ),
               ),
-              body: _isLoading ? const Center(child: Loading()) : Column(
-                children: [
-                  const SizedBox(
-                    width: 28,
-                  ),
-                  Expanded(
-                    child: WebViewWidget(controller: _controller),
-                  ),
-                ],
-              ),
+              body: _isLoading
+                  ? const Center(child: Loading())
+                  : Column(
+                      children: [
+                        const SizedBox(
+                          width: 28,
+                        ),
+                        Expanded(
+                          child: WebViewWidget(controller: _controller),
+                        ),
+                      ],
+                    ),
             ),
           ),
         ),

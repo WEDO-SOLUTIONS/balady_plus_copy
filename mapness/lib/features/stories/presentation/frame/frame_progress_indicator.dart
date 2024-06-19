@@ -1,6 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FrameProgressIndicator extends AnimatedWidget {
   final VoidCallback? onClose;
@@ -23,6 +22,9 @@ class FrameProgressIndicator extends AnimatedWidget {
 
   Animation<double> get _progress => listenable as Animation<double>;
 
+  //TODO: Replace from ui-kit - icon/primaryOnColor
+  static const _iconPrimaryOnColor = Colors.white;
+
   List<Widget> get _framesIndicators => List.generate(
         framesLength,
         (index) {
@@ -36,13 +38,9 @@ class FrameProgressIndicator extends AnimatedWidget {
             );
           }
           if (index < frameIndex) {
-            return ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: const LinearProgressIndicator(value: 1));
+            return ClipRRect(borderRadius: BorderRadius.circular(15), child: const LinearProgressIndicator(value: 1));
           } else {
-            return ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: const LinearProgressIndicator(value: 0));
+            return ClipRRect(borderRadius: BorderRadius.circular(15), child: const LinearProgressIndicator(value: 0));
           }
         },
       )
@@ -68,10 +66,9 @@ class FrameProgressIndicator extends AnimatedWidget {
                 Expanded(
                   child: ProgressIndicatorTheme(
                     data: ProgressIndicatorThemeData(
-                      linearTrackColor:
-                          context.color.textAndIconsBaseInverseTertiary,
+                      linearTrackColor: _iconPrimaryOnColor.withOpacity(0.2),
                       linearMinHeight: 2,
-                      color: context.color.textAndIconsBaseInversePrimary,
+                      color: _iconPrimaryOnColor,
                     ),
                     child: Row(
                       children: _framesIndicators,
@@ -81,9 +78,10 @@ class FrameProgressIndicator extends AnimatedWidget {
                 const SizedBox(width: Spacing.verticalGapBetweenLoading),
                 AppButton.close(
                   onTap: onClose,
+                  buttonColorScheme: ButtonColorScheme.primary,
                   padding: EdgeInsets.zero,
-                  innerPadding:
-                      const EdgeInsets.all(Spacing.verticalGapBetweenStories),
+                  color: _iconPrimaryOnColor.withOpacity(.08),
+                  innerPadding: const EdgeInsets.all(Spacing.verticalGapBetweenStories),
                 ),
               ],
             ),
