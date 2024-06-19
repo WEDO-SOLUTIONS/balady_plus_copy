@@ -1,31 +1,31 @@
 class OrganizationItem {
-  int? timezoneOffset;
-  Flags? flags;
-  Stat? stat;
-  List<Rubrics>? rubrics;
-  String? regionId;
-  List<AdmDiv>? admDiv;
-  String? locale;
-  Links? links;
-  Reviews? reviews;
-  Address? address;
-  String? addressName;
-  String? addressComment;
-  String? name;
-  Point? point;
-  NameEx? nameEx;
-  List<ExternalContent>? externalContent;
-  String? segmentId;
-  bool? isDeleted;
-  String? poiCategory;
-  Schedule? schedule;
-  String? type;
-  Org? org;
-  String? cityAlias;
-  bool? hasDiscount;
-  String? id;
+  final int? timezoneOffset;
+  final Flags? flags;
+  final Stat? stat;
+  final List<Rubrics>? rubrics;
+  final String? regionId;
+  final List<AdmDiv>? admDiv;
+  final String? locale;
+  final Links? links;
+  final Reviews? reviews;
+  final Address? address;
+  final String? addressName;
+  final String? addressComment;
+  final String? name;
+  final Point? point;
+  final NameEx? nameEx;
+  final List<ExternalContent>? externalContent;
+  final String? segmentId;
+  final bool? isDeleted;
+  final String? poiCategory;
+  final Schedule? schedule;
+  final String? type;
+  final Org? org;
+  final String? cityAlias;
+  final bool? hasDiscount;
+  final String? id;
 
-  OrganizationItem({
+  const OrganizationItem({
     this.timezoneOffset,
     this.flags,
     this.stat,
@@ -53,51 +53,58 @@ class OrganizationItem {
     this.id,
   });
 
-  OrganizationItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    timezoneOffset = json['timezone_offset'];
-    flags = json['flags'] != null ? Flags.fromJson(json['flags']) : null;
-    stat = json['stat'] != null ? Stat.fromJson(json['stat']) : null;
+  factory OrganizationItem.fromJson(Map<String, dynamic> json) {
+    final rubricsFromJson = <Rubrics>[];
     if (json['rubrics'] != null) {
-      rubrics = <Rubrics>[];
       json['rubrics'].forEach((v) {
-        rubrics!.add(Rubrics.fromJson(v));
+        rubricsFromJson.add(Rubrics.fromJson(v));
       });
     }
-    regionId = json['region_id'];
+
+    final admDivFromJson = <AdmDiv>[];
     if (json['adm_div'] != null) {
-      admDiv = <AdmDiv>[];
       json['adm_div'].forEach((v) {
-        admDiv!.add(AdmDiv.fromJson(v));
+        admDivFromJson.add(AdmDiv.fromJson(v));
       });
     }
-    locale = json['locale'];
-    links = json['links'] != null ? Links.fromJson(json['links']) : null;
-    reviews = json['reviews'] != null ? Reviews.fromJson(json['reviews']) : null;
-    address = json['address'] != null ? Address.fromJson(json['address']) : null;
-    addressName = json['address_name'];
-    addressComment = json['address_comment'];
-    name = json['name'];
-    point = json['point'] != null ? Point.fromJson(json['point']) : null;
-    nameEx = json['name_ex'] != null ? NameEx.fromJson(json['name_ex']) : null;
+    final externalContentFromJson = <ExternalContent>[];
     if (json['external_content'] != null) {
-      externalContent = <ExternalContent>[];
       json['external_content'].forEach((v) {
-        externalContent!.add(ExternalContent.fromJson(v));
+        externalContentFromJson.add(ExternalContent.fromJson(v));
       });
     }
-    segmentId = json['segment_id'];
-    isDeleted = json['is_deleted'];
-    poiCategory = json['poi_category'];
-    schedule = json['schedule'] != null ? Schedule.fromJson(json['schedule']) : null;
-    type = json['type'];
-    org = json['org'] != null ? Org.fromJson(json['org']) : null;
-    cityAlias = json['city_alias'];
-    hasDiscount = json['has_discount'];
+
+    return OrganizationItem(
+      id: json['id'],
+      timezoneOffset: json['timezone_offset'],
+      flags: json['flags'] != null ? Flags.fromJson(json['flags']) : null,
+      stat: json['stat'] != null ? Stat.fromJson(json['stat']) : null,
+      rubrics: rubricsFromJson,
+      regionId: json['region_id'],
+      admDiv: admDivFromJson,
+      locale: json['locale'],
+      links: json['links'] != null ? Links.fromJson(json['links']) : null,
+      reviews: json['reviews'] != null ? Reviews.fromJson(json['reviews']) : null,
+      address: json['address'] != null ? Address.fromJson(json['address']) : null,
+      addressName: json['address_name'],
+      addressComment: json['address_comment'],
+      name: json['name'],
+      point: json['point'] != null ? Point.fromJson(json['point']) : null,
+      nameEx: json['name_ex'] != null ? NameEx.fromJson(json['name_ex']) : null,
+      externalContent: externalContentFromJson,
+      segmentId: json['segment_id'],
+      isDeleted: json['is_deleted'],
+      poiCategory: json['poi_category'],
+      schedule: json['schedule'] != null ? Schedule.fromJson(json['schedule']) : null,
+      type: json['type'],
+      org: json['org'] != null ? Org.fromJson(json['org']) : null,
+      cityAlias: json['city_alias'],
+      hasDiscount: json['has_discount'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['timezone_offset'] = timezoneOffset;
     if (flags != null) {
       data['flags'] = flags!.toJson();
@@ -151,19 +158,18 @@ class OrganizationItem {
 }
 
 class Flags {
-  bool? photos;
+  final bool? photos;
+  final bool? isDefault;
 
-  bool? isDefault;
+  const Flags({this.isDefault, this.photos});
 
-  Flags({this.isDefault});
-
-  Flags.fromJson(Map<String, dynamic> json) {
-    isDefault = json['is_default'];
-    photos = json['photos'];
-  }
+  factory Flags.fromJson(Map<String, dynamic> json) => Flags(
+        isDefault: json['is_default'],
+        photos: json['photos'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['photos'] = photos;
     data['is_default'] = isDefault;
     return data;
@@ -184,7 +190,7 @@ class Stat {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['is_advertised'] = isAdvertised;
     data['match_type'] = matchType;
     data['source_type'] = sourceType;
@@ -193,26 +199,33 @@ class Stat {
 }
 
 class Rubrics {
-  String? name;
-  String? parentId;
-  int? shortId;
-  String? alias;
-  String? id;
-  String? kind;
+  final String? name;
+  final String? parentId;
+  final int? shortId;
+  final String? alias;
+  final String? id;
+  final String? kind;
 
-  Rubrics({this.name, this.parentId, this.shortId, this.alias, this.id, this.kind});
+  const Rubrics({
+    required this.name,
+    required this.parentId,
+    required this.shortId,
+    required this.alias,
+    required this.id,
+    required this.kind,
+  });
 
-  Rubrics.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    parentId = json['parent_id'];
-    shortId = json['short_id'];
-    alias = json['alias'];
-    id = json['id'];
-    kind = json['kind'];
-  }
+  factory Rubrics.fromJson(Map<String, dynamic> json) => Rubrics(
+        name: json['name'],
+        parentId: json['parent_id'],
+        shortId: json['short_id'],
+        alias: json['alias'],
+        id: json['id'],
+        kind: json['kind'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['name'] = name;
     data['parent_id'] = parentId;
     data['short_id'] = shortId;
@@ -224,26 +237,32 @@ class Rubrics {
 }
 
 class AdmDiv {
-  String? id;
-  String? name;
-  String? type;
-  bool? isDefault;
-  Flags? flags;
-  String? cityAlias;
+  final String? id;
+  final String? name;
+  final String? type;
+  final bool? isDefault;
+  final Flags? flags;
+  final String? cityAlias;
 
-  AdmDiv({this.id, this.name, this.type, this.isDefault, this.flags, this.cityAlias});
+  const AdmDiv({
+    this.id,
+    this.name,
+    this.type,
+    this.isDefault,
+    this.flags,
+    this.cityAlias,
+  });
 
-  AdmDiv.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    type = json['type'];
-    isDefault = json['is_default'];
-    flags = json['flags'] != null ? Flags.fromJson(json['flags']) : null;
-    cityAlias = json['city_alias'];
-  }
+  factory AdmDiv.fromJson(Map<String, dynamic> json) => AdmDiv(
+      id: json['id'],
+      name: json['name'],
+      type: json['type'],
+      isDefault: json['is_default'],
+      flags: json['flags'] != null ? Flags.fromJson(json['flags']) : null,
+      cityAlias: json['city_alias']);
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
     data['type'] = type;
@@ -257,35 +276,44 @@ class AdmDiv {
 }
 
 class Links {
-  List<Entrances>? databaseEntrances;
-  List<Entrances>? entrances;
-  List<NearestParking>? nearestParking;
+  final List<Entrances>? databaseEntrances;
+  final List<Entrances>? entrances;
+  final List<NearestParking>? nearestParking;
 
-  Links({this.databaseEntrances, this.entrances, this.nearestParking});
+  const Links({
+    this.databaseEntrances,
+    this.entrances,
+    this.nearestParking,
+  });
 
-  Links.fromJson(Map<String, dynamic> json) {
+  factory Links.fromJson(Map<String, dynamic> json) {
+    final databaseEntrances = <Entrances>[];
     if (json['database_entrances'] != null) {
-      databaseEntrances = <Entrances>[];
       json['database_entrances'].forEach((v) {
-        databaseEntrances!.add(Entrances.fromJson(v));
+        databaseEntrances.add(Entrances.fromJson(v));
       });
     }
+    final entrances = <Entrances>[];
     if (json['entrances'] != null) {
-      entrances = <Entrances>[];
       json['entrances'].forEach((v) {
-        entrances!.add(Entrances.fromJson(v));
+        entrances.add(Entrances.fromJson(v));
       });
     }
+    final nearestParking = <NearestParking>[];
     if (json['nearest_parking'] != null) {
-      nearestParking = <NearestParking>[];
       json['nearest_parking'].forEach((v) {
-        nearestParking!.add(NearestParking.fromJson(v));
+        nearestParking.add(NearestParking.fromJson(v));
       });
     }
+    return Links(
+      databaseEntrances: databaseEntrances,
+      entrances: entrances,
+      nearestParking: nearestParking,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     if (databaseEntrances != null) {
       data['database_entrances'] = databaseEntrances!.map((v) => v.toJson()).toList();
     }
@@ -300,22 +328,27 @@ class Links {
 }
 
 class Entrances {
-  Geometry? geometry;
-  String? id;
-  bool? isPrimary;
-  bool? isVisibleOnMap;
+  final Geometry? geometry;
+  final String? id;
+  final bool? isPrimary;
+  final bool? isVisibleOnMap;
 
-  Entrances({this.geometry, this.id, this.isPrimary, this.isVisibleOnMap});
+  const Entrances({
+    this.geometry,
+    this.id,
+    this.isPrimary,
+    this.isVisibleOnMap,
+  });
 
-  Entrances.fromJson(Map<String, dynamic> json) {
-    geometry = json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null;
-    id = json['id'];
-    isPrimary = json['is_primary'];
-    isVisibleOnMap = json['is_visible_on_map'];
-  }
+  factory Entrances.fromJson(Map<String, dynamic> json) => Entrances(
+        geometry: json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null,
+        id: json['id'],
+        isPrimary: json['is_primary'],
+        isVisibleOnMap: json['is_visible_on_map'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     if (geometry != null) {
       data['geometry'] = geometry!.toJson();
     }
@@ -327,20 +360,24 @@ class Entrances {
 }
 
 class Geometry {
-  List<String>? normals;
-  List<String>? points;
-  List<String>? vectors;
+  final List<String>? normals;
+  final List<String>? points;
+  final List<String>? vectors;
 
-  Geometry({this.normals, this.points, this.vectors});
+  const Geometry({
+    this.normals,
+    this.points,
+    this.vectors,
+  });
 
-  Geometry.fromJson(Map<String, dynamic> json) {
-    normals = json['normals'].cast<String>();
-    points = json['points'].cast<String>();
-    vectors = json['vectors'].cast<String>();
-  }
+  factory Geometry.fromJson(Map<String, dynamic> json) => Geometry(
+        normals: json['normals'].cast<String>(),
+        points: json['points'].cast<String>(),
+        vectors: json['vectors'].cast<String>(),
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['normals'] = normals;
     data['points'] = points;
     data['vectors'] = vectors;
@@ -349,41 +386,48 @@ class Geometry {
 }
 
 class NearestParking {
-  String? id;
+  final String? id;
 
-  NearestParking({this.id});
+  const NearestParking({this.id});
 
-  NearestParking.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-  }
+  factory NearestParking.fromJson(Map<String, dynamic> json) => NearestParking(
+        id: json['id'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['id'] = id;
     return data;
   }
 }
 
 class Reviews {
-  bool? isReviewable;
-  bool? isReviewableOnFlamp;
-  List<Items>? items;
+  final bool? isReviewable;
+  final bool? isReviewableOnFlamp;
+  final List<Items>? items;
 
-  Reviews({this.isReviewable, this.isReviewableOnFlamp, this.items});
+  const Reviews({
+    this.isReviewable,
+    this.isReviewableOnFlamp,
+    this.items,
+  });
 
-  Reviews.fromJson(Map<String, dynamic> json) {
-    isReviewable = json['is_reviewable'];
-    isReviewableOnFlamp = json['is_reviewable_on_flamp'];
+  factory Reviews.fromJson(Map<String, dynamic> json) {
+    final _items = <Items>[];
     if (json['items'] != null) {
-      items = <Items>[];
       json['items'].forEach((v) {
-        items!.add(Items.fromJson(v));
+        _items.add(Items.fromJson(v));
       });
     }
+    return Reviews(
+      isReviewable: json['is_reviewable'],
+      isReviewableOnFlamp: json['is_reviewable_on_flamp'],
+      items: _items,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['is_reviewable'] = isReviewable;
     data['is_reviewable_on_flamp'] = isReviewableOnFlamp;
     if (items != null) {
@@ -394,18 +438,18 @@ class Reviews {
 }
 
 class Items {
-  bool? isReviewable;
-  String? tag;
+  final bool? isReviewable;
+  final String? tag;
 
-  Items({this.isReviewable, this.tag});
+  const Items({this.isReviewable, this.tag});
 
-  Items.fromJson(Map<String, dynamic> json) {
-    isReviewable = json['is_reviewable'];
-    tag = json['tag'];
-  }
+  factory Items.fromJson(Map<String, dynamic> json) => Items(
+        isReviewable: json['is_reviewable'],
+        tag: json['tag'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['is_reviewable'] = isReviewable;
     data['tag'] = tag;
     return data;
@@ -413,25 +457,28 @@ class Items {
 }
 
 class Address {
-  String? buildingId;
-  List<Components>? components;
-  String? makani;
+  final String? buildingId;
+  final List<Components>? components;
+  final String? makani;
 
-  Address({this.buildingId, this.components, this.makani});
+  const Address({this.buildingId, this.components, this.makani});
 
-  Address.fromJson(Map<String, dynamic> json) {
-    buildingId = json['building_id'];
+  factory Address.fromJson(Map<String, dynamic> json) {
+    final _components = <Components>[];
     if (json['components'] != null) {
-      components = <Components>[];
       json['components'].forEach((v) {
-        components!.add(Components.fromJson(v));
+        _components.add(Components.fromJson(v));
       });
     }
-    makani = json['makani'];
+    return Address(
+      buildingId: json['building_id'],
+      components: _components,
+      makani: json['makani'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['building_id'] = buildingId;
     if (components != null) {
       data['components'] = components!.map((v) => v.toJson()).toList();
@@ -442,22 +489,22 @@ class Address {
 }
 
 class Components {
-  String? number;
-  String? street;
-  String? streetId;
-  String? type;
+  final String? number;
+  final String? street;
+  final String? streetId;
+  final String? type;
 
-  Components({this.number, this.street, this.streetId, this.type});
+  const Components({this.number, this.street, this.streetId, this.type});
 
-  Components.fromJson(Map<String, dynamic> json) {
-    number = json['number'];
-    street = json['street'];
-    streetId = json['street_id'];
-    type = json['type'];
-  }
+  factory Components.fromJson(Map<String, dynamic> json) => Components(
+        number: json['number'],
+        street: json['street'],
+        streetId: json['street_id'],
+        type: json['type'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['number'] = number;
     data['street'] = street;
     data['street_id'] = streetId;
@@ -467,18 +514,18 @@ class Components {
 }
 
 class Point {
-  double? lat;
-  double? lon;
+  final double? lat;
+  final double? lon;
 
-  Point({this.lat, this.lon});
+  const Point({this.lat, this.lon});
 
-  Point.fromJson(Map<String, dynamic> json) {
-    lat = json['lat'];
-    lon = json['lon'];
-  }
+  factory Point.fromJson(Map<String, dynamic> json) => Point(
+        lat: json['lat'],
+        lon: json['lon'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     data['lat'] = lat;
     data['lon'] = lon;
     return data;
@@ -486,20 +533,20 @@ class Point {
 }
 
 class NameEx {
-  String? extension;
-  String? primary;
-  String? shortName;
+  final String? extension;
+  final String? primary;
+  final String? shortName;
 
-  NameEx({this.extension, this.primary, this.shortName});
+  const NameEx({this.extension, this.primary, this.shortName});
 
-  NameEx.fromJson(Map<String, dynamic> json) {
-    extension = json['extension'];
-    primary = json['primary'];
-    shortName = json['short_name'];
-  }
+  factory NameEx.fromJson(Map<String, dynamic> json) => NameEx(
+        extension: json['extension'],
+        primary: json['primary'],
+        shortName: json['short_name'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['extension'] = extension;
     data['primary'] = primary;
     data['short_name'] = shortName;
@@ -508,22 +555,22 @@ class NameEx {
 }
 
 class ExternalContent {
-  int? count;
-  String? url;
-  String? subtype;
-  String? type;
+  final int? count;
+  final String? url;
+  final String? subtype;
+  final String? type;
 
-  ExternalContent({this.count, this.url, this.subtype, this.type});
+  const ExternalContent({this.count, this.url, this.subtype, this.type});
 
-  ExternalContent.fromJson(Map<String, dynamic> json) {
-    count = json['count'];
-    url = json['url'];
-    subtype = json['subtype'];
-    type = json['type'];
-  }
+  factory ExternalContent.fromJson(Map<String, dynamic> json) => ExternalContent(
+        count: json['count'],
+        url: json['url'],
+        subtype: json['subtype'],
+        type: json['type'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['count'] = count;
     data['url'] = url;
     data['subtype'] = subtype;
@@ -533,28 +580,28 @@ class ExternalContent {
 }
 
 class Schedule {
-  Thu? thu;
-  Thu? sat;
-  Thu? tue;
-  Thu? sun;
-  Thu? mon;
-  Thu? wed;
-  Thu? fri;
+  final DayOfWeek? thu;
+  final DayOfWeek? sat;
+  final DayOfWeek? tue;
+  final DayOfWeek? sun;
+  final DayOfWeek? mon;
+  final DayOfWeek? wed;
+  final DayOfWeek? fri;
 
-  Schedule({this.thu, this.sat, this.tue, this.sun, this.mon, this.wed, this.fri});
+  const Schedule({this.thu, this.sat, this.tue, this.sun, this.mon, this.wed, this.fri});
 
-  Schedule.fromJson(Map<String, dynamic> json) {
-    thu = json['Thu'] != null ? Thu.fromJson(json['Thu']) : null;
-    sat = json['Sat'] != null ? Thu.fromJson(json['Sat']) : null;
-    tue = json['Tue'] != null ? Thu.fromJson(json['Tue']) : null;
-    sun = json['Sun'] != null ? Thu.fromJson(json['Sun']) : null;
-    mon = json['Mon'] != null ? Thu.fromJson(json['Mon']) : null;
-    wed = json['Wed'] != null ? Thu.fromJson(json['Wed']) : null;
-    fri = json['Fri'] != null ? Thu.fromJson(json['Fri']) : null;
-  }
+  factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
+        thu: json['Thu'] != null ? DayOfWeek.fromJson(json['Thu']) : null,
+        sat: json['Sat'] != null ? DayOfWeek.fromJson(json['Sat']) : null,
+        tue: json['Tue'] != null ? DayOfWeek.fromJson(json['Tue']) : null,
+        sun: json['Sun'] != null ? DayOfWeek.fromJson(json['Sun']) : null,
+        mon: json['Mon'] != null ? DayOfWeek.fromJson(json['Mon']) : null,
+        wed: json['Wed'] != null ? DayOfWeek.fromJson(json['Wed']) : null,
+        fri: json['Fri'] != null ? DayOfWeek.fromJson(json['Fri']) : null,
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (thu != null) {
       data['Thu'] = thu!.toJson();
     }
@@ -580,22 +627,23 @@ class Schedule {
   }
 }
 
-class Thu {
-  List<WorkingHours>? workingHours;
+class DayOfWeek {
+  final List<WorkingHours>? workingHours;
 
-  Thu({this.workingHours});
+  const DayOfWeek({this.workingHours});
 
-  Thu.fromJson(Map<String, dynamic> json) {
+  factory DayOfWeek.fromJson(Map<String, dynamic> json) {
+    final _workingHours = <WorkingHours>[];
     if (json['working_hours'] != null) {
-      workingHours = <WorkingHours>[];
       json['working_hours'].forEach((v) {
-        workingHours!.add(WorkingHours.fromJson(v));
+        _workingHours.add(WorkingHours.fromJson(v));
       });
     }
+    return DayOfWeek(workingHours: _workingHours);
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (workingHours != null) {
       data['working_hours'] = workingHours!.map((v) => v.toJson()).toList();
     }
@@ -604,18 +652,18 @@ class Thu {
 }
 
 class WorkingHours {
-  String? from;
-  String? to;
+  final String? from;
+  final String? to;
 
-  WorkingHours({this.from, this.to});
+  const WorkingHours({this.from, this.to});
 
-  WorkingHours.fromJson(Map<String, dynamic> json) {
-    from = json['from'];
-    to = json['to'];
-  }
+  factory WorkingHours.fromJson(Map<String, dynamic> json) => WorkingHours(
+        from: json['from'],
+        to: json['to'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['from'] = from;
     data['to'] = to;
     return data;
@@ -623,20 +671,24 @@ class WorkingHours {
 }
 
 class Org {
-  int? branchCount;
-  String? id;
-  String? name;
+  final int? branchCount;
+  final String? id;
+  final String? name;
 
-  Org({this.branchCount, this.id, this.name});
+  const Org({
+    this.branchCount,
+    this.id,
+    this.name,
+  });
 
-  Org.fromJson(Map<String, dynamic> json) {
-    branchCount = json['branch_count'];
-    id = json['id'];
-    name = json['name'];
-  }
+  factory Org.fromJson(Map<String, dynamic> json) => Org(
+        branchCount: json['branch_count'],
+        id: json['id'],
+        name: json['name'],
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['branch_count'] = branchCount;
     data['id'] = id;
     data['name'] = name;

@@ -137,7 +137,7 @@ class LayersControls extends _$LayersControls {
 
   LayerType? _getLayerState() {
     final sharedPrefs = ref.watch(sharedPrefsProvider);
-    final string = sharedPrefs.getString(MapnessConsts.activeLayerKey);
+    final string = sharedPrefs.getString(MapnessConstants.activeLayerKey);
 
     final layerState = LayerTypeEx.stringToType(string);
     return layerState == LayerType.favourites ? layerState : null;
@@ -145,13 +145,13 @@ class LayersControls extends _$LayersControls {
 
   Future<void> _saveLayersState(LayerType type) async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
-    await sharedPrefs.setString(MapnessConsts.activeLayerKey, type.name);
+    await sharedPrefs.setString(MapnessConstants.activeLayerKey, type.name);
   }
 
   Future<void> _removeLayersState() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     await sharedPrefs.remove(
-      MapnessConsts.activeLayerKey,
+      MapnessConstants.activeLayerKey,
     );
   }
 
@@ -169,12 +169,12 @@ class LayersControls extends _$LayersControls {
 
     final name = type.name;
     final currentState =
-        sharedPrefs.getString(MapnessConsts.activeLayerKey) == name;
+        sharedPrefs.getString(MapnessConstants.activeLayerKey) == name;
     if (currentState) {
-      await sharedPrefs.remove(MapnessConsts.activeLayerKey);
+      await sharedPrefs.remove(MapnessConstants.activeLayerKey);
     } else {
       await sharedPrefs.setString(
-        MapnessConsts.activeLayerKey,
+        MapnessConstants.activeLayerKey,
         name,
       );
     }
