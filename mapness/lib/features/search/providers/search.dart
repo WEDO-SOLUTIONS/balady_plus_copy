@@ -11,13 +11,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search.g.dart';
 
-List<GeoPointMessage> saRestrictions = [
-  GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
-  GeoPointMessage(latitude: 32.568765, longitude: 32.61185),
-  GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
-  GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
-];
-
 enum SearchType {
   fetchSuggest,
   searchByText,
@@ -43,6 +36,14 @@ class SearchQuery extends _$SearchQuery {
 
 @riverpod
 class Search extends _$Search {
+  /// Search area limit
+  static final _saRestrictions = [
+    GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    GeoPointMessage(latitude: 32.568765, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
+  ];
+
   SearchType? _previousType;
   String? _previousQuery;
   SearchQueryMessage? _previousSearchQueryMessage;
@@ -113,7 +114,7 @@ class Search extends _$Search {
       dgisController.search(
         searchQuery,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: getListFromRect(searchRect),
+        spatialRestriction: _saRestrictions,
         searchRect: searchRect,
       ),
     );
@@ -147,7 +148,7 @@ class Search extends _$Search {
       dgisController.search(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: getListFromRect(searchRect),
+        spatialRestriction: _saRestrictions,
         searchRect: searchRect,
       ),
     );
@@ -176,7 +177,7 @@ class Search extends _$Search {
       dgisController.searchByQuery(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: getListFromRect(searchRect),
+        spatialRestriction: _saRestrictions,
         searchRect: searchRect,
       ),
     );
@@ -204,16 +205,4 @@ class Search extends _$Search {
         break;
     }
   }
-}
-
-List<GeoPointMessage>? getListFromRect(GeoRectMessage? rect) {
-  if (rect == null) {
-    return null;
-  }
-  return [
-    GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.northEast.longitude),
-    GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.southWest.longitude),
-    GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.southWest.longitude),
-    GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.northEast.longitude),
-  ];
 }

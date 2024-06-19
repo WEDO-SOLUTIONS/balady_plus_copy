@@ -91,7 +91,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         },
       ),
       onQuickFilterTap: (quickFilter) {
-        ref.read(goRouterProvider).push(const SearchRoute().location);
+        ref.read(goRouterProvider).push(const SearchRoute(requestFocus: false).location);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
         });
