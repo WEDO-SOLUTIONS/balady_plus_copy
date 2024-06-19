@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/favourites.dart';
-import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
@@ -89,31 +91,36 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         },
       ),
       onQuickFilterTap: (quickFilter) {
-        _debouncer.run(
-          () {
-            final isSame = quickFilter.type == selectedQuickFilter?.type;
-            if (isSame) {
-              ref.read(searchByRubricsQueryProvider.notifier).update(null);
-              searchObjectManager.removeAllMarkers();
-            } else {
-              // TODO(Sergei): we should call removeAllMarkers() because quick filter updating in sdk is slow,
-              // remove this when quick filters performance will be fixed
-              searchObjectManager.removeAllMarkers();
-              ref.read(layersControlsProvider.notifier).disable();
-              ref.read(quickFiltersRequestSourceScreenProvider.notifier).setSourceScreen(widget.id);
-              ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
-            }
-            Metrics.logEventAdvanced(
-              MetricsConstants.exploreKeys.quickFilter,
-              action: MetricAction.tap.name,
-              group: MetricsConstants.exploreTag,
-              props: {
-                'filter': quickFilter.title,
-                'toggle_state': isSame,
-              },
-            );
-          },
-        );
+        ref.read(goRouterProvider).push(const SearchRoute(requestFocus: false).location);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
+        });
+        // TODO(Sergei): remove commented code when quick search feature is approved
+        // _debouncer.run(
+        //   () {
+        //     final isSame = quickFilter.type == selectedQuickFilter?.type;
+        //     if (isSame) {
+        //       ref.read(searchByRubricsQueryProvider.notifier).update(null);
+        //       searchObjectManager.removeAllMarkers();
+        //     } else {
+        //       // TODO(Sergei): we should call removeAllMarkers() because quick filter updating in sdk is slow,
+        //       // remove this when quick filters performance will be fixed
+        //       searchObjectManager.removeAllMarkers();
+        //       ref.read(layersControlsProvider.notifier).disable();
+        //       ref.read(quickFiltersRequestSourceScreenProvider.notifier).setSourceScreen(widget.id);
+        //       ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
+        //     }
+        //     Metrics.logEventAdvanced(
+        //       MetricsConstants.exploreKeys.quickFilter,
+        //       action: MetricAction.tap.name,
+        //       group: MetricsConstants.exploreTag,
+        //       props: {
+        //         'filter': quickFilter.title,
+        //         'toggle_state': isSame,
+        //       },
+        //     );
+        //   },
+        // );
       },
       onFavouritesTap: () {
         _debouncer.run(() {

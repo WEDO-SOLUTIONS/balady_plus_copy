@@ -222,6 +222,9 @@ class DgisMapController {
   }
 
   /// Runs directory search by [queryText] query.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
   Future<SearchResultMessage> search(
     String queryText, {
     List<SearchCategoryMessage>? categories,
@@ -243,6 +246,9 @@ class DgisMapController {
   }
 
   /// Runs directory search by [SearchQueryMessage] query.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
   Future<SearchResultMessage> searchByQuery(
     SearchQueryMessage query, {
     List<GeoPointMessage>? spatialRestriction,
@@ -262,6 +268,9 @@ class DgisMapController {
   }
 
   /// Runs directory search by [SearchCategoryMessage] category.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
   Future<SearchResultMessage> searchByCategory(
     SearchCategoryMessage category, {
     List<GeoPointMessage>? spatialRestriction,
@@ -281,6 +290,9 @@ class DgisMapController {
   }
 
   /// Runs directory search by rubrics.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
   Future<SearchResultMessage> searchByRubrics(
     List<int> rubrics, {
     List<GeoPointMessage>? spatialRestriction,

@@ -118,7 +118,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         controller: _controller,
         hintText: context.l10n.search,
       ),
-      onBackButtonPressed: widget.onClose,
+      onBackButtonPressed: () {
+        searcher.clear();
+        widget.onClose();
+      },
     );
   }
 }
