@@ -6,6 +6,7 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/location.dart';
 
 class MapSuggestList extends ConsumerWidget {
   const MapSuggestList({
@@ -18,12 +19,13 @@ class MapSuggestList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
-
+    final myLocation = ref.watch(locationProvider);
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => SuggestItem(
         suggest: suggests[index],
+        myLocation: myLocation,
         isLast: index == suggests.length - 1,
         onObjectTap: (object) {
           Metrics.logEventAdvanced(
