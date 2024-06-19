@@ -250,7 +250,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     searchObjectManager?.removeAllMarkers().then((value) {
       ref.read(searchInRectProvider.notifier).update();
       searchObjectManager = null;
-      context.pop();
     });
+    context.pop();
   }
 }
