@@ -82,9 +82,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     return BaladySearchWithBackButton(
       searchInput: BaladyInput.search(
         focusNode: _focusNode,
-        onTap: () {
-          searcher.clear();
-        },
         onChanged: (query) {
           ref.read(searchQueryProvider(scope.value).notifier).update(query);
           Metrics.logEventAdvanced(
