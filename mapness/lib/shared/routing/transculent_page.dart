@@ -129,7 +129,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
   }
 
   @override
-  Widget build(BuildContext context) => AnimatedBuilder(
+  Widget build(BuildContext context) =>  AnimatedBuilder(
       animation: widget.route.restorationScopeId,
       builder: (context, child) {
         assert(child != null);
