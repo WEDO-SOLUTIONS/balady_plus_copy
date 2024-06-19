@@ -273,6 +273,14 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.moveCamera(cameraPosition, duration, animationType);
   }
 
+  Future<void> setMapAttributeString(String name, String value) {
+    return _api.setMapAttributeString(name, value);
+  }
+
+  Future<void> setMapAttributeBool(String name, bool value) {
+    return _api.setMapAttributeBool(name, value);
+  }
+
   Future<CameraPositionMessage> calcPositionForRoute(CalcPositionOptionsMessage options) {
     return _api.calcPositionForRoute(options);
   }

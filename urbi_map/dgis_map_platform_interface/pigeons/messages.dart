@@ -1371,6 +1371,12 @@ abstract class MapApi {
   void setCameraPadding(CameraSetPaddingMessage cameraPadding);
 
   @async
+  void setMapAttributeString(String name, String value);
+
+  @async
+  void setMapAttributeBool(String name, bool value);
+
+  @async
   List<BriefRouteInfoMessage?> findBriefRouteInfos(
     RouteSearchOptionsMessage routeSearchOptions,
     RouteSearchPointMessage? startPoint,
