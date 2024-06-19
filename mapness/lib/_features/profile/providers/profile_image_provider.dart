@@ -53,13 +53,9 @@ class ProfileImage extends _$ProfileImage {
 
   Future<void> changeUserProfileImageByBytes(Uint8List bytes) async {
     try {
-      final imgUrl = await _uploadImage(bytes);
-      final updatedImgBytes = await _downloadProfileImageToBytes(url: imgUrl);
-      final imgBase64 = await _saveImageBytes(updatedImgBytes);
+      await _uploadImage(bytes);
 
-      if (imgBase64 != null) {
-        state = AsyncData(UserProfileData(imageBase64: imgBase64));
-      }
+      await updateImageFromBackend();
     } catch (error, trace) {
       _log(error, trace);
     }
@@ -99,9 +95,7 @@ class ProfileImage extends _$ProfileImage {
       final response = await dio.post(
         '/profile/photo',
         data: compressedBytes,
-        options: Options(
-            sendTimeout: const Duration(seconds: 35),
-            receiveTimeout: const Duration(seconds: 35)),
+        options: Options(sendTimeout: const Duration(seconds: 35), receiveTimeout: const Duration(seconds: 35)),
       );
 
       final result = proto.Profile_Photo.fromBuffer(response.data as List<int>);
@@ -120,8 +114,7 @@ class ProfileImage extends _$ProfileImage {
     try {
       if (imgUrl.isEmpty) {
         final profileResponse = await dio.get('/profile');
-        final profileData =
-            proto.ProfileResponse.fromBuffer(profileResponse.data as List<int>);
+        final profileData = proto.ProfileResponse.fromBuffer(profileResponse.data as List<int>);
         imgUrl = profileData.profile.photo.image.url;
       }
 

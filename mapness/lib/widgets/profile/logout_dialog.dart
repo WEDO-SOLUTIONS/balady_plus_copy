@@ -1,6 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class LogoutDialog extends StatelessWidget {
   final Function? onLogout;
@@ -27,26 +27,29 @@ class LogoutDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              decoration: BoxDecoration(color: const Color(0xffB3B3B3), borderRadius: BorderRadius.circular(14)),
+              decoration: BoxDecoration(color: const Color(0xffFFFFFF), borderRadius: BorderRadius.circular(14)),
               width: double.infinity,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text(title),
+                    child: Text(title,
+                        textAlign: TextAlign.center,
+                        style: context.textStyle.footNote.copyWith(color: context.color.textAndIconsBaseSecondary)),
                   ),
                   const Divider(
-                    color: Color(0xff3c3c435c),
+                    color: Color(0x3c3c435c),
                   ),
                   InkWell(
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(logOutText,
-                          style: const TextStyle(
-                            fontSize: 17,
-                            color: Color(0xffFF3B30),
-                          )),
+                      padding: const EdgeInsets.all(16.0).copyWith(top: 8),
+                      child: Text(
+                        logOutText,
+                        style: context.textStyle.callout.copyWith(
+                          color: context.color.textAndIconsStatusNegative,
+                        ),
+                      ),
                     ),
                     onTap: () => onLogout?.call(),
                   ),
@@ -58,16 +61,15 @@ class LogoutDialog extends StatelessWidget {
             ),
             InkWell(
               child: Container(
-                decoration: BoxDecoration(color: const Color(0xffB3B3B3), borderRadius: BorderRadius.circular(14)),
+                decoration: BoxDecoration(color: const Color(0xffFFFFFF), borderRadius: BorderRadius.circular(14)),
                 alignment: Alignment.center,
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     cancelText,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      color: Color(0xff007AFF),
+                    style: context.textStyle.callout.copyWith(
+                      color: context.color.textAndIconsBasePrimary,
                     ),
                   ),
                 ),

@@ -19,9 +19,9 @@ class InBuildingWidget extends ConsumerStatefulWidget {
   final LatLng? closestPoint;
 
   const InBuildingWidget({
-    super.key,
     required this.state,
     required this.objectId,
+    super.key,
     this.cameraConfig,
     this.closestPoint,
   });

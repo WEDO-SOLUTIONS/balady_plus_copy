@@ -27,7 +27,12 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   PoiCameraConfig? cameraConfig,
   LatLng? closestPoint,
   PoiPaddingConfig? paddingConfig,
+  bool? onRouting,
 }) async {
+  if (onRouting == true) {
+    return null;
+  }
+
   final dgisController = ref.watch(dgisControllerProvider);
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
   final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
@@ -56,6 +61,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final highlightController = ref.read(highlightProvider.notifier);
   await highlightController.removeAll();
+  await highlightController.addHighlight(objectId);
 
   if (directoryObject != null) {
     for (final entrance in directoryObject.entrances) {
