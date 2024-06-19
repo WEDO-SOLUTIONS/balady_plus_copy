@@ -83,8 +83,10 @@ class SuggestItem extends ConsumerWidget {
             actionWidget: distanceKm != null
                 ? ContentRowActionOptions(actionText: (distanceKm * 1000).formatDistance(context.l10n))
                 : null,
-            title: _buildSuggestTitle(context, suggest),
+            title: suggest.title.text,
+            titleMatchedParts: _getSpans(suggest.title),
             subtitle: subtitle,
+            subtitleMatchedParts: _getSpans(suggest.subtitle),
             dividerEnabled: !isLast,
           ),
         ),
@@ -93,27 +95,14 @@ class SuggestItem extends ConsumerWidget {
   }
 }
 
-const _prefixMapping = {
-  ', region': 'منطقة',
-  ', governorate': 'محافظة',
-  ', city': 'مدينة',
-  ', district area': 'محافظة',
-  ', district': 'حى',
-  ', street': 'شارع',
-  ', buildings': 'مبنى',
-  ', park': 'بارك',
-};
-
-String _buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
-  var title = suggest.title.text;
-  _prefixMapping.forEach((key, replacement) {
-    if (title.contains(key)) {
-      title = "$replacement ${title.replaceAll(key, "")}";
-    }
-  });
-
-  return title;
-}
+List<UIMarkedUpTextSpan> _getSpans(MarkedUpTextMessage message) => message.matchedParts.nonNulls
+    .map(
+      (e) => UIMarkedUpTextSpan(
+        length: e.length,
+        offset: e.offset,
+      ),
+    )
+    .toList();
 
 String _brunchFromString(String engString, BuildContext context) {
   final subtitleSplit = engString.split(' ');
