@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CardContent extends StatelessWidget {
-
   const CardContent({
-    required this.child, super.key,
+    required this.child,
+    super.key,
     this.onTap,
+    this.padding,
   });
+
   final Widget child;
   final void Function()? onTap;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class CardContent extends StatelessWidget {
           onTap: onTap,
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: padding??const EdgeInsets.all(16),
             decoration: const ShapeDecoration(
               shape: RoundedRectangleBorder(
                 borderRadius: borderRadius,

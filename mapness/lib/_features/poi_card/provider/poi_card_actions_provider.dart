@@ -1,30 +1,32 @@
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
-import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
-import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/deeplink_functionds.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PoiCardViewModel {
-  PoiCardViewModel({
-    required this.ref,
-  });
-  final WidgetRef ref;
+part 'poi_card_actions_provider.g.dart';
 
-  void onError() => Future(() =>
-      ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()));
+@riverpod
+class PoiCardActions extends _$PoiCardActions {
+  @override
+  void build() {}
+
+  void onError() => Future(() => ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()));
 
   Future<void> onEntranceTap(DirectoryObjectMessage? objectMessage) async {
     final controller = await ref.read(dgisControllerProvider.future);
     if (objectMessage != null) {
-      final list =
-          objectMessage.entrances.map((e) => e?.id).whereNotNull().toList();
+      final list = objectMessage.entrances.map((e) => e?.id).whereNotNull().toList();
       await controller.setHighlighted(list);
     }
   }
@@ -110,12 +112,8 @@ class PoiCardViewModel {
   }
 
   Future<void> callPhone({
-    DirectoryObjectMessage? data,
+    String? value,
   }) async {
-    final phoneNumber = data?.getContactsInfoModels().firstWhereOrNull(
-          (element) => element.type == ContactsInfoType.phone,
-        );
-    final value = phoneNumber?.value;
     if (value != null) {
       await launchUrl(Uri(scheme: 'tel', path: value));
     }
@@ -125,5 +123,77 @@ class PoiCardViewModel {
     ref.read(mapControlsProvider.notifier).update(
           MapControlsStateIdle(),
         );
+  }
+
+  Future<void> toggleEntrances(DirectoryObjectMessage data, VoidCallback callBack, LatLng? closestPoint) async {
+    Metrics.logEventAdvanced(MetricsConstants.poiKeys.entrances,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'poi_id': data.id?.objectId,
+          'show_entrances': true,
+        });
+
+    final highlightController = ref.watch(highlightProvider.notifier);
+
+    for (final entrance in data.entrances) {
+      if (entrance != null) {
+        await highlightController.addHighlight(entrance.id);
+      }
+    }
+
+    await _animateToEntrance(
+      data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList(),
+      closestPoint,
+    );
+    callBack.call();
+  }
+
+  Future<void> _animateToEntrance(List<GeoPointMessage?> data, LatLng? closestPoint) async {
+    if (data.isEmpty) {
+      return;
+    }
+
+    // Remove all null values
+    final points = data.where((element) => element != null);
+
+    if (points.isEmpty) {
+      return;
+    }
+
+    double minDistance = double.infinity;
+    GeoPointMessage? minCoords;
+    // Find the minimum distance to entrance
+    for (final point in points) {
+      final distance = CommonFunctions.distance(
+        point!.latitude,
+        point.longitude,
+        closestPoint?.latitude ?? 0,
+        closestPoint?.longitude ?? 0,
+      );
+      if (distance <= minDistance) {
+        minDistance = distance;
+        minCoords = point;
+      }
+    }
+
+    if (minCoords == null) {
+      return;
+    }
+
+    final cameraController = ref.read(cameraPositionProvider.notifier);
+    final cameraPosition = ref.read(cameraPositionProvider);
+    // Animate to the entrance
+    await cameraController.animateTo(
+      CameraPositionMessage(
+        point: GeoPointMessage(
+          latitude: minCoords.latitude,
+          longitude: minCoords.longitude,
+        ),
+        zoom: 18,
+        tilt: cameraPosition?.tilt ?? 0,
+        bearing: cameraPosition?.tilt ?? 0,
+      ),
+    );
   }
 }

@@ -25,6 +25,7 @@ class _FavoriteItem extends ConsumerWidget {
       flex: flex,
       assetName: assetName,
       colorIcon: context.color.textAndIconsStatusAccent,
+      colorButton: context.staticColor.surfaceStatusContrastAccent,
       onTap: () =>
           _onFavTap(context: context, favouriteItem: favouriteItem, ref: ref),
     );
