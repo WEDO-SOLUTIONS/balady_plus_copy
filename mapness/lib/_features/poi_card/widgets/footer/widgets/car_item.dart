@@ -16,13 +16,26 @@ class _CarItem extends ConsumerWidget {
     if (objectMessage == null) {
       return const SizedBox.shrink();
     }
+
     return Flexible(
       flex: flex,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: BriefRouteButton(
           routeType: RouteSearchOptionsMessage.car,
-          onTap: () => _openRoutingRoutes(context, ref),
+          onTap: () {
+            final mapSetting = MapObjectManagerSettings.search();
+            ref
+                .read(
+                  mapObjectManagerProvider(
+                    named: mapSetting.name,
+                    layerId: mapSetting.layerId,
+                  ).notifier,
+                )
+                .setMapObjectManagerIsVisible(isVisible: false);
+
+            _openRoutingRoutes(context, ref);
+          },
           finishPoint: finishPoint,
         ),
       ),
