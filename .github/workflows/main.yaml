@@ -120,10 +120,10 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: "Setup just"
-        uses: extractions/setup-just@v2
-        with:
-          just-version: "1.25.2"
+      - name: Add Android ABI filter
+        run: |
+          git apply .github/workflows/abi_filter.patch
+          git apply mapness/scripts/disable-force-update.patch
 
       - name: 🤖🔨 Download strings from Localazy
         uses: localazy/download@v1
@@ -139,18 +139,32 @@ jobs:
           mkdir -p lib/l10n/generated
           flutter gen-l10n
 
-      - name: "Prebuild"
+      - name: 🤖🔨 Development setup dgis_map_platform_interface
+        run: |
+          cd urbi_map/dgis_map_platform_interface
+          mkdir lib/src/pigeons/
+          mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
+          flutter pub get
+          flutter pub run pigeon --input pigeons/messages.dart
+
+      - name: 🤖🔨 Development setup dgis_map
+        env: # Set the secret as an environment variable
+          BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
+        run: |
+          cd urbi_map/dgis_map
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 🤖🔨 Development setup mapness
         env:
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
         run: |
           eval $(ssh-agent -s)
           ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
 
-          cp /usr/bin/env /usr/bin/fvm
-          just apply-patches
-          just pubget
-          just build_pigeon
-          just codegen
+          cd mapness
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
           ssh-agent -k
 
       - name: 🤖🔨 Build Android app
