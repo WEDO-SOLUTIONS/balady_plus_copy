@@ -406,6 +406,9 @@ class TRoute<T> extends ModalRoute<T> {
 
   @override
   Duration get transitionDuration => Duration.zero;
+  
+  @override
+  bool get popGestureEnabled => true;
 }
 
 class TransculentPage<T> extends Page<T> {
