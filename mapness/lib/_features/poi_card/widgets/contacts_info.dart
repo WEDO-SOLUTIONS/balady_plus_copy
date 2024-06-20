@@ -19,7 +19,8 @@ class ContactsInfo extends ConsumerWidget {
 
   final List<ContactInfoMessage?> data;
 
-  Widget build(BuildContext context, ref) {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final list = data
         .whereNotNull()
         .map(
