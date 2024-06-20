@@ -105,7 +105,7 @@ jobs:
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.10.3"
+          flutter-version: "3.22.2"
           channel: "stable"
           cache: true
 
@@ -124,6 +124,20 @@ jobs:
         run: |
           git apply .github/workflows/abi_filter.patch
           git apply mapness/scripts/disable-force-update.patch
+
+      - name: 🤖🔨 Download strings from Localazy
+        uses: localazy/download@v1
+        with:
+          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
+          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
+
+      - name: 🤖🔨 Generate dart locale bindings
+        run: |
+          cd mapness
+          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
+          sudo chown github:github -R lib/l10n
+          mkdir -p lib/l10n/generated
+          flutter gen-l10n
 
       - name: 🤖🔨 Development setup dgis_map_platform_interface
         run: |
@@ -152,20 +166,6 @@ jobs:
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
           ssh-agent -k
-
-      - name: 🤖🔨 Download strings from Localazy
-        uses: localazy/download@v1
-        with:
-          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
-          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
-
-      - name: 🤖🔨 Generate dart locale bindings
-        run: |
-          cd mapness
-          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
-          sudo chown github:github -R lib/l10n
-          mkdir -p lib/l10n/generated
-          flutter gen-l10n
 
       - name: 🤖🔨 Build Android app
         run: |
