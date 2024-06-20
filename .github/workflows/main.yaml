@@ -146,7 +146,7 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
 
-          alias fvm=''
+          cp /usr/bin/env /usr/bin/fvm
           just apply-patches
           just pubget
           just build_pigeon
