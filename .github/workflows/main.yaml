@@ -131,6 +131,14 @@ jobs:
           read_key: ${{ secrets.LOCALAZY_READ_KEY }}
           write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
 
+      - name: 🤖🔨 Generate dart locale bindings
+        run: |
+          cd mapness
+          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
+          sudo chown github:github -R lib/l10n
+          mkdir -p lib/l10n/generated
+          flutter gen-l10n
+
       - name: "Prebuild"
         env:
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
@@ -140,7 +148,7 @@ jobs:
 
           alias fvm=''
           just apply-patches
-          just pubget 
+          just pubget
           just build_pigeon
           just codegen
           ssh-agent -k
