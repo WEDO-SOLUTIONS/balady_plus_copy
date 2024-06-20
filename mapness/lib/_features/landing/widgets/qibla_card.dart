@@ -49,7 +49,7 @@ class QiblaCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
+                        padding: const EdgeInsets.only(top: 12.0, left: 16, right: 2),
                         child: Text(
                           context.l10n.qibla,
                           style: context.textStyleV3.h2Medium.copyWith(
@@ -59,7 +59,7 @@ class QiblaCard extends ConsumerWidget {
                       ),
                       const Spacer(),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+                        padding: const EdgeInsets.only(bottom: 16, left: 16, right: 2),
                         child: Text(
                           context.l10n.showDirection,
                           style: context.textStyleV3.captionLargeRegular.copyWith(
