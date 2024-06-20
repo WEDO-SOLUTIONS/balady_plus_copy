@@ -364,7 +364,6 @@ class Routes {
             const AppointmentsListScreen(),
 
         RouteName.baladyCalendarPage: (context) => const BaladyCalendarPage(),
-        RouteName.splash: (context) => const SplashPage(),
         RouteName.etmamMainPage: (context) => const EtmamMainPage(),
         RouteName.etmamMainPageCitySelector: (context) =>
             const EtmamMainCityPage(),
@@ -770,20 +769,27 @@ class Routes {
 
         RouteName.chatbot: (context) => const ChatBotScreen(),
 
-        RouteName.commercialLicenseOverView: (context) => const CommercialLicenseOverviewScreen(),
-        RouteName.commercialLicenseQuery: (context) => const CommercialLicenseQueryScreen(),
-       RouteName.commercialLicenseQueryDetails: (context) => const CommercialLicenseQueryDetails(),
+        RouteName.commercialLicenseOverView: (context) =>
+            const CommercialLicenseOverviewScreen(),
+        RouteName.commercialLicenseQuery: (context) =>
+            const CommercialLicenseQueryScreen(),
+        RouteName.commercialLicenseQueryDetails: (context) =>
+            const CommercialLicenseQueryDetails(),
 
-        RouteName.surveyReportInqueryOverView: (context) => const SurveyReportOverviewScreen(),
-        RouteName.surveyReportInquery: (context) => const SurveyReportInqueryScreen(),
-        RouteName.surveyReportInqueryDetails: (context) => const SurveyReportInqueryDetails(),
+        RouteName.surveyReportInqueryOverView: (context) =>
+            const SurveyReportOverviewScreen(),
+        RouteName.surveyReportInquery: (context) =>
+            const SurveyReportInqueryScreen(),
+        RouteName.surveyReportInqueryDetails: (context) =>
+            const SurveyReportInqueryDetails(),
 
-    RouteName.constructionLicenseOverView: (context) => const ConstructionLicenseOverviewScreen(),
-    RouteName.constructionLicenseInquery: (context) => const ConstructionLicenseInqueryScreen(),
-    RouteName.constructionLicenseInqueryDetails: (context) => const ConstructionLicenseInqueryDetails(),
-
-
-  };
+        RouteName.constructionLicenseOverView: (context) =>
+            const ConstructionLicenseOverviewScreen(),
+        RouteName.constructionLicenseInquery: (context) =>
+            const ConstructionLicenseInqueryScreen(),
+        RouteName.constructionLicenseInqueryDetails: (context) =>
+            const ConstructionLicenseInqueryDetails(),
+      };
 }
 
 class AppRouter1 {

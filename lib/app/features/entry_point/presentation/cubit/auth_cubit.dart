@@ -77,6 +77,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _getGisData = getGisData,
         super(const EntryPointState());
 
+  void hideSplash() {
+    emit(
+      state.copyWith(showSplash: false),
+    );
+  }
+
   Future<void> onLoadingApp() async {
     emit(state.copyWith(status: AuthStatus.loading));
     sl<LocationCubit>().getLocationInit();
