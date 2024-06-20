@@ -1,8 +1,8 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
 import 'package:mapness/features/stories/presentation/story_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class StoryFrameContent extends StatelessWidget {
   const StoryFrameContent({
@@ -22,16 +22,14 @@ class StoryFrameContent extends StatelessWidget {
         Text(
           frame.titleOrFailback(l10n),
           style: context.textStyle.heading1.copyWith(
-            color: frame.titleStyle?.color ??
-                context.color.textAndIconsBaseInversePrimary,
+            color: frame.titleStyle?.color ?? context.color.textAndIconsBaseInversePrimary,
           ),
         ),
         if (frame.subtitle != null)
           Text(
             frame.subtitle!,
             style: context.textStyle.heading2.copyWith(
-              color: frame.titleStyle?.color ??
-                  context.color.textAndIconsBaseInversePrimary,
+              color: frame.titleStyle?.color ?? context.color.textAndIconsBaseInversePrimary,
             ),
           ),
         const SizedBox(height: 12),
@@ -39,8 +37,7 @@ class StoryFrameContent extends StatelessWidget {
           Text(
             frame.descriptionOrFailback(l10n) ?? '',
             style: context.textStyle.footNote.copyWith(
-              color: frame.descriptionStyle?.color ??
-                  context.color.textAndIconsBaseInversePrimary,
+              color: frame.descriptionStyle?.color ?? context.color.textAndIconsBaseInversePrimary,
             ),
           ),
       ],

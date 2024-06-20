@@ -168,8 +168,7 @@ class LayersControls extends _$LayersControls {
     final sharedPrefs = ref.read(sharedPrefsProvider);
 
     final name = type.name;
-    final currentState =
-        sharedPrefs.getString(MapnessConsts.activeLayerKey) == name;
+    final currentState = sharedPrefs.getString(MapnessConsts.activeLayerKey) == name;
     if (currentState) {
       await sharedPrefs.remove(MapnessConsts.activeLayerKey);
     } else {
@@ -333,6 +332,27 @@ class LayersControls extends _$LayersControls {
     } else {
       setSelection(selectedType: LayerType.parking);
       await _showParking();
+    }
+  }
+
+  Future<void> toggleJoyParks() async {
+    final layers = ref.watch(layersControlsProvider.notifier);
+    final currentState = state.selectedType;
+    await viewPortSubscription?.cancel();
+
+    if (currentState == LayerType.joy) {
+      await ref
+          .read(mapObjectManagerProvider(
+            named: esriMapObjectSettings.name,
+            layerId: esriMapObjectSettings.layerId,
+          ).notifier)
+          .removeAllMarkers();
+      layers
+        ..setSelection()
+        ..update(isLoading: false);
+    } else {
+      setSelection(selectedType: LayerType.joy);
+      await _showJoyParks();
     }
   }
 
@@ -582,9 +602,7 @@ class LayersControls extends _$LayersControls {
     update(isLoading: true);
     // await _removeAll();
     const duration = Duration(seconds: 10);
-    final markers = await ref
-        .read(iwishMarkersProvider.future)
-        .onError((error, stackTrace) {
+    final markers = await ref.read(iwishMarkersProvider.future).onError((error, stackTrace) {
       onError();
       return [];
     }).timeout(
@@ -608,6 +626,10 @@ class LayersControls extends _$LayersControls {
 
   Future<void> _showParking() async {
     // TODO: Implement parking in future tasks
+  }
+
+  Future<void> _showJoyParks() async {
+    // TODO: Implement showing closest joy park in future tasks
   }
 
   void onError() {

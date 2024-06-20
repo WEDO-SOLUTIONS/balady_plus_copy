@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,11 +33,13 @@ class BriefRouteButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appFeatures = ref.watch(appFeaturesProvider);
-    final briefInfo = ref.watch(briefRouteInfoProvider(
-      startPoint: startPoint,
-      finishPoint: finishPoint,
-      navType: routeType,
-    ),);
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(
+        startPoint: startPoint,
+        finishPoint: finishPoint,
+        navType: routeType,
+      ),
+    );
 
     return appFeatures.naviEnabled
         ? Padding(
@@ -82,11 +84,13 @@ class BriefRouteInfo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appFeatures = ref.watch(appFeaturesProvider);
-    final briefInfo = ref.watch(briefRouteInfoProvider(
-      startPoint: startPoint,
-      finishPoint: finishPoint,
-      navType: routeType,
-    ),);
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(
+        startPoint: startPoint,
+        finishPoint: finishPoint,
+        navType: routeType,
+      ),
+    );
 
     return (briefInfo != null && appFeatures.naviEnabled)
         ? _BriefRouteInfo(
@@ -134,12 +138,9 @@ class _BriefRouteInfo extends StatelessWidget {
             ),
             Text(
               getBriefRouteDescription(briefInfo!, context.l10n),
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .footNoteBold
-                  .copyWith(
-                    color: textColor,
-                  ),
+              style: context.textStyle.footNoteBold.copyWith(
+                color: textColor,
+              ),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               textAlign: TextAlign.right,
@@ -149,7 +150,9 @@ class _BriefRouteInfo extends StatelessWidget {
       );
 
   String getBriefRouteDescription(
-      List<BriefRouteInfoMessage> briefInfo, AppLocalizations l10n,) {
+    List<BriefRouteInfoMessage> briefInfo,
+    AppLocalizations l10n,
+  ) {
     final int = briefInfo.first.duration.toInt();
     final duration = Duration(seconds: int);
     final inMinutes = duration.inMinutes;

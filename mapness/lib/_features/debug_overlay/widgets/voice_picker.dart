@@ -1,12 +1,10 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_packages.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 
@@ -25,7 +23,8 @@ class VoicePicker extends ConsumerWidget {
 
 class VoiceRow extends ConsumerWidget {
   const VoiceRow({
-    required this.package, super.key,
+    required this.package,
+    super.key,
   });
 
   final PackageMessage package;
@@ -64,9 +63,7 @@ class VoiceRow extends ConsumerWidget {
           child: Row(
             children: [
               SvgPicture.asset(
-                package.id == selectedVoice
-                    ? 'assets/icons/svg/ic_radio_on.svg'
-                    : 'assets/icons/svg/ic_radio_off.svg',
+                package.id == selectedVoice ? 'assets/icons/svg/ic_radio_on.svg' : 'assets/icons/svg/ic_radio_off.svg',
                 height: 24,
                 width: 24,
                 package: PackageConfig.packageName,
@@ -74,14 +71,10 @@ class VoiceRow extends ConsumerWidget {
               const SizedBox(
                 width: 12,
               ),
-              if (packageInfo.updateStatus ==
-                  PackageUpdateStatusMessage.inProgress)
+              if (packageInfo.updateStatus == PackageUpdateStatusMessage.inProgress)
                 Text(
                   '$progress%',
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()
-                      ?.caption
-                      .copyWith(color: context.color.textAndIconsBasePrimary),
+                  style: context.textStyle.caption.copyWith(color: context.color.textAndIconsBasePrimary),
                 ),
               const Spacer(),
               Column(
@@ -89,20 +82,13 @@ class VoiceRow extends ConsumerWidget {
                 children: [
                   Text(
                     packageInfo.name,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.text
-                        .copyWith(color: context.color.textAndIconsBasePrimary),
+                    style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
                   ),
                   Text(
                     "${packageInfo.installed ? "Installed" : "Not installed"}${packageInfo.hasUpdate ? " · Update available" : ""}",
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.caption
-                        .copyWith(
-                            color: packageInfo.installed
-                                ? context.color.strokeAccent
-                                : NonThemeColor.color1,),
+                    style: context.textStyle.caption.copyWith(
+                      color: packageInfo.installed ? context.color.strokeAccent : NonThemeColor.color1,
+                    ),
                   ),
                 ],
               ),

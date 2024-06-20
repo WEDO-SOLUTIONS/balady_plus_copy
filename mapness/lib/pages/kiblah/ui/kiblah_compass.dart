@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
@@ -43,9 +44,7 @@ class KiblahCompass extends ConsumerWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: correct
-                        ? context.color.surfaceStatusPositive
-                        : context.color.surfaceStatusAccent,
+                    color: correct ? context.color.surfaceStatusPositive : context.color.surfaceStatusAccent,
                     width: strokeWidth,
                   ),
                 ),
@@ -57,15 +56,12 @@ class KiblahCompass extends ConsumerWidget {
                         backgroundColor: Colors.transparent,
                         radarColor: correct
                             ? NonThemeColor.color3.withOpacity(radarOpacity)
-                            : context.color.textAndIconsBasePrimary
-                                .withOpacity(0.9),
+                            : context.color.textAndIconsBasePrimary.withOpacity(0.9),
                       ),
                       CenterCompassWidget(
                         backgroundColor: correct
-                            ? context.staticColor.surfaceStatusPositive
-                                .withOpacity(compassBackgroundOpacity)
-                            : context.staticColor.surfaceStatusAccent
-                                .withOpacity(compassBackgroundOpacity),
+                            ? context.staticColor.surfaceStatusPositive.withOpacity(compassBackgroundOpacity)
+                            : context.staticColor.surfaceStatusAccent.withOpacity(compassBackgroundOpacity),
                       ),
                     ],
                   ),
@@ -77,10 +73,8 @@ class KiblahCompass extends ConsumerWidget {
               child: isReady
                   ? Align(
                       alignment: Alignment(
-                        cos(CommonFunctions.convertDegreesToRadiansAndShift(
-                            kaabaBearing - userBearing)),
-                        sin(CommonFunctions.convertDegreesToRadiansAndShift(
-                            kaabaBearing - userBearing)),
+                        cos(CommonFunctions.convertDegreesToRadiansAndShift(kaabaBearing - userBearing)),
+                        sin(CommonFunctions.convertDegreesToRadiansAndShift(kaabaBearing - userBearing)),
                       ),
                       child: KaabaIcon(isCorrect: correct),
                     )
@@ -88,12 +82,9 @@ class KiblahCompass extends ConsumerWidget {
             ),
             if (isReady) ...[
               DirectionText(title: context.l10n.north, bearing: -userBearing),
-              DirectionText(
-                  title: context.l10n.east, bearing: 90 - userBearing),
-              DirectionText(
-                  title: context.l10n.south, bearing: 180 - userBearing),
-              DirectionText(
-                  title: context.l10n.west, bearing: 270 - userBearing),
+              DirectionText(title: context.l10n.east, bearing: 90 - userBearing),
+              DirectionText(title: context.l10n.south, bearing: 180 - userBearing),
+              DirectionText(title: context.l10n.west, bearing: 270 - userBearing),
             ],
           ],
         ),

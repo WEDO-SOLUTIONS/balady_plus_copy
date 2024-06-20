@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,7 +8,6 @@ import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ContactsInfo extends StatefulWidget {
   const ContactsInfo({
@@ -41,14 +41,12 @@ class _ContactsInfoState extends State<ContactsInfo> {
           );
   }
 
-  List<Widget> prepareWidgets() =>
-      widget.data.getContactsInfoModels().map((contactsModel) {
+  List<Widget> prepareWidgets() => widget.data.getContactsInfoModels().map((contactsModel) {
         final text = contactsModel.displayText;
         var displayText = text;
         if (contactsModel.type == ContactsInfoType.website) {
           if (text != null) {
-            displayText = RegExp('^(?:https?://)?(?:ftp://)?(?:www.)?([^/]+)')
-                .stringMatch(text);
+            displayText = RegExp('^(?:https?://)?(?:ftp://)?(?:www.)?([^/]+)').stringMatch(text);
           }
         }
 
@@ -74,8 +72,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                   package: PackageConfig.packageName,
                   height: 16,
                   width: 16,
-                  colorFilter: ColorFilter.mode(
-                      context.color.strokeAccent, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(context.color.strokeAccent, BlendMode.srcIn),
                 ),
                 const SizedBox(
                   width: 12,
@@ -101,8 +98,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                           text: contactsModel.comment,
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
-                          color: context.color.textAndIconsBasePrimary
-                              .withOpacity(.5),
+                          color: context.color.textAndIconsBasePrimary.withOpacity(.5),
                         ),
                       ),
                     ],

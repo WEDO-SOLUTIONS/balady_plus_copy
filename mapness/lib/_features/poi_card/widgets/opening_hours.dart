@@ -1,6 +1,5 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-
 import 'package:mapness/_features/poi_card/domain/model/opening_hours_model.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
@@ -8,7 +7,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/expandable_widget/expandable_widget.dart';
 
 class OpeningHours extends StatefulWidget {
-
   const OpeningHours(this.model, {super.key});
   final OpeningHoursModel? model;
 
@@ -37,48 +35,45 @@ class _OpeningHoursState extends State<OpeningHours> {
   }
 
   List<Widget>? convertWeekTimeInterval(
-      BuildContext context, List<OpenHours>? openingHours,) => openingHours?.map((e) {
-      final weekDay = e.weekDay;
+    BuildContext context,
+    List<OpenHours>? openingHours,
+  ) =>
+      openingHours?.map((e) {
+        final weekDay = e.weekDay;
 
-      final textStyle = Theme.of(context)
-          .extension<ThemeTextStyles>()!
-          .text
-          .copyWith(color: context.color.textAndIconsBasePrimary);
-      return Row(
-        children: [
-          Expanded(
-            child: Text(
-              weekDay,
-              style: textStyle,
+        final textStyle = context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary);
+        return Row(
+          children: [
+            Expanded(
+              child: Text(
+                weekDay,
+                style: textStyle,
+              ),
             ),
-          ),
-          Expanded(
-            child: e.isWeekend
-                ? Text(
-                    context.l10n.weekend,
-                    style: textStyle,
-                  )
-                : Row(
-                    children: [
-                      Text(e.openHour!, style: textStyle),
-                      Text('-', style: textStyle),
-                      Text(e.closeHour!, style: textStyle),
-                    ],
-                  ),
-          ),
-        ],
-      );
-    }).toList();
+            Expanded(
+              child: e.isWeekend
+                  ? Text(
+                      context.l10n.weekend,
+                      style: textStyle,
+                    )
+                  : Row(
+                      children: [
+                        Text(e.openHour!, style: textStyle),
+                        Text('-', style: textStyle),
+                        Text(e.closeHour!, style: textStyle),
+                      ],
+                    ),
+            ),
+          ],
+        );
+      }).toList();
 
   @override
   Widget build(BuildContext context) {
     final todayOpeningInfo = widget.model?.getTodayOpeningInfo(context.l10n);
     final isWeekend = todayOpeningInfo?.isWeekend ?? false;
 
-    final fontStyle = Theme.of(context)
-        .extension<ThemeTextStyles>()!
-        .text
-        .copyWith(color: context.color.textAndIconsBasePrimary);
+    final fontStyle = context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary);
     final widgets = convertWeekTimeInterval(context, openingHours);
 
     return is24x7 || isOpenSameTime
@@ -107,10 +102,7 @@ class _OpeningHoursState extends State<OpeningHours> {
   }
 
   Widget _buildTitle() {
-    final style = Theme.of(context)
-        .extension<ThemeTextStyles>()!
-        .text
-        .copyWith(color: context.color.textAndIconsBasePrimary);
+    final style = context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary);
 
     final openHours = widget.model?.openingHours?.first;
 

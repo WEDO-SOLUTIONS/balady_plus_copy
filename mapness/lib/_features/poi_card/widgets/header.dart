@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
@@ -11,7 +12,6 @@ import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 class PoiHeader extends ConsumerWidget {

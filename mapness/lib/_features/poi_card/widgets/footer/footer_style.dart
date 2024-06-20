@@ -1,8 +1,8 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 const colorShadow = NonThemeColor.color71;
 const colorIconPositive = NonThemeColor.color3;
@@ -36,8 +36,7 @@ class FooterIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final description = desc;
-    final defaultBgColor =
-        context.color.textAndIconsBasePrimary.withOpacity(0.05);
+    final defaultBgColor = context.color.textAndIconsBasePrimary.withOpacity(0.05);
     return Flexible(
       flex: flex,
       child: Padding(

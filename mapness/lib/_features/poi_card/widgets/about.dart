@@ -1,5 +1,5 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -28,8 +28,7 @@ class _AboutState extends State<About> {
           children: [
             Text(
               widget.title,
-              style: context.textStyle.text
-                  .copyWith(color: context.color.textAndIconsBasePrimary),
+              style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
               overflow: TextOverflow.ellipsis,
               maxLines: 5,
               textAlign: TextAlign.start,
@@ -49,8 +48,7 @@ class _AboutState extends State<About> {
                     ),
                     child: Text(
                       '${context.l10n.exits} ${widget.exits ?? ''}',
-                      style: context.textStyle.footNoteBold.copyWith(
-                          color: context.color.textAndIconsBasePrimary),
+                      style: context.textStyle.footNoteBold.copyWith(color: context.color.textAndIconsBasePrimary),
                     ),
                   ),
                 ),

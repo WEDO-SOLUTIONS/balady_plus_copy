@@ -1,8 +1,8 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 enum RoutePointType { object, myLocation }
 
@@ -52,8 +52,7 @@ class RoutePointMyLocation extends RoutePoint {
   String? title(AppLocalizations locale) => locale.myLocation;
 
   @override
-  Color titleColor(BuildContext context) =>
-      context.color.textAndIconsBasePrimary;
+  Color titleColor(BuildContext context) => context.color.textAndIconsBasePrimary;
 }
 
 class RoutePointCoordinates extends RoutePoint {
@@ -86,8 +85,7 @@ class RoutePointCoordinates extends RoutePoint {
       '${coords.latitude.toStringAsFixed(5)}, ${coords.longitude.toStringAsFixed(5)}';
 
   @override
-  Color titleColor(BuildContext context) =>
-      context.color.textAndIconsBasePrimary;
+  Color titleColor(BuildContext context) => context.color.textAndIconsBasePrimary;
 }
 
 class RoutePointDirectoryObject extends RoutePoint {
@@ -119,9 +117,8 @@ class RoutePointDirectoryObject extends RoutePoint {
   String? title(AppLocalizations locale) => object?.title;
 
   @override
-  Color titleColor(BuildContext context) => object == null
-      ? context.color.textAndIconsBaseTertiary
-      : context.color.textAndIconsBasePrimary;
+  Color titleColor(BuildContext context) =>
+      object == null ? context.color.textAndIconsBaseTertiary : context.color.textAndIconsBasePrimary;
 }
 
 class RoutePointFavouriteItem extends RoutePoint {
@@ -153,7 +150,6 @@ class RoutePointFavouriteItem extends RoutePoint {
   String? title(AppLocalizations locale) => item?.title;
 
   @override
-  Color titleColor(BuildContext context) => item == null
-      ? context.color.textAndIconsBaseTertiary
-      : context.color.textAndIconsBasePrimary;
+  Color titleColor(BuildContext context) =>
+      item == null ? context.color.textAndIconsBaseTertiary : context.color.textAndIconsBasePrimary;
 }

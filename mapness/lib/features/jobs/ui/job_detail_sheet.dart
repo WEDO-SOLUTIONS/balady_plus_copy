@@ -1,11 +1,10 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_detail.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_detail_header.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class JobDetailSheet extends ConsumerStatefulWidget {
-
   const JobDetailSheet({
     required this.jobId,
     required this.biggestHeight,
@@ -50,7 +49,7 @@ class _JobDetailSheetState extends ConsumerState<JobDetailSheet> {
         builder: (context, scrollController) => Directionality(
           textDirection: Directionality.of(context),
           child: Container(
-            decoration:  BoxDecoration(
+            decoration: BoxDecoration(
               color: context.color.surfaceBasePrimary,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(16),
@@ -65,8 +64,7 @@ class _JobDetailSheetState extends ConsumerState<JobDetailSheet> {
                 SliverPersistentHeader(
                   delegate: JobDetailHeaderDelegate(
                     jobId: widget.jobId,
-                    draggableScrollableController:
-                        _draggableScrollableController,
+                    draggableScrollableController: _draggableScrollableController,
                   ),
                 ),
                 SliverToBoxAdapter(

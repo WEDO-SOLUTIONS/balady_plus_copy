@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,7 +9,6 @@ import 'package:mapness/_features/weather/data/models/weather_model.dart';
 import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -25,7 +24,10 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent,) =>
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) =>
       DashboardHeader(
         draggableScrollableController: draggableScrollableController,
       );
@@ -89,7 +91,6 @@ class DashboardHeader extends ConsumerWidget {
 }
 
 class Data extends ConsumerWidget {
-
   const Data({
     required this.onTap,
     required this.allWeatherInfo,
@@ -102,8 +103,7 @@ class Data extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dateTime = DateFormat('h:mm a, d MMMM, E', locale.languageCode)
-        .format(DateTime.now());
+    final dateTime = DateFormat('h:mm a, d MMMM, E', locale.languageCode).format(DateTime.now());
     final windMph = allWeatherInfo?.current?.windMph?.toStringAsPrecision(2);
     final humidity = allWeatherInfo?.current?.humidity?.toStringAsPrecision(2);
     final pressureMb = allWeatherInfo?.current?.pressureMb?.toStringAsFixed(0);
@@ -138,169 +138,164 @@ class Data extends ConsumerWidget {
             const SizedBox(
               height: 6,
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              ///close
-              _closeButton(onTap: () async {
-                await ref.switchOffWeatherLayers();
-                context.pop();
-              },),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ///close
+                _closeButton(
+                  onTap: () async {
+                    await ref.switchOffWeatherLayers();
+                    context.pop();
+                  },
+                ),
 
-              ///settings
-              ///cityname
-              Text(
-                placeName,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .heading2
-                    .copyWith(fontSize: 19, color: Colors.black),
-              ),
-            ],),
+                ///settings
+                ///cityname
+                Text(
+                  placeName,
+                  style: context.textStyle.heading2.copyWith(fontSize: 19, color: Colors.black),
+                ),
+              ],
+            ),
             const SizedBox(
               height: 16,
             ),
             GestureDetector(
               onTap: onTap,
               child: Container(
-                  decoration: BoxDecoration(
-                      color: context.color.surfaceBaseSecondary,
-                      borderRadius: BorderRadius.circular(16),),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                          top: 16,
-                          right: 16,
-                        ),
-                        child: Row(
-                          textDirection: TextDirection.ltr,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ///icon
-                            SizedBox(
-                              height: 100,
-                              width: 110,
-                              child: Center(
-                                child: SvgPicture.asset(
-                                  isDay == true
-                                      ? 'assets/icons/svg/weather/Sun_new.svg'
-                                      : 'assets/icons/svg/weather/Moon.svg',
-                                  package: PackageConfig.packageName,
-                                  height: 75,
-                                  width: 75,
-                                ),
+                decoration: BoxDecoration(
+                  color: context.color.surfaceBaseSecondary,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        top: 16,
+                        right: 16,
+                      ),
+                      child: Row(
+                        textDirection: TextDirection.ltr,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ///icon
+                          SizedBox(
+                            height: 100,
+                            width: 110,
+                            child: Center(
+                              child: SvgPicture.asset(
+                                isDay == true
+                                    ? 'assets/icons/svg/weather/Sun_new.svg'
+                                    : 'assets/icons/svg/weather/Moon.svg',
+                                package: PackageConfig.packageName,
+                                height: 75,
+                                width: 75,
                               ),
                             ),
+                          ),
 
-                            ///weather info
-                            Expanded(
-                              child: Align(
-                                alignment: AlignmentDirectional.centerEnd,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ///date
-                                    Text(
-                                      dateTime,
-                                      textAlign: TextAlign.end,
-                                      style: Theme.of(context)
-                                          .extension<ThemeTextStyles>()!
-                                          .caption
-                                          .copyWith(
-                                            color: context.color.textAndIconsBasePrimary.withOpacity(0.5),
-                                          ),
+                          ///weather info
+                          Expanded(
+                            child: Align(
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ///date
+                                  Text(
+                                    dateTime,
+                                    textAlign: TextAlign.end,
+                                    style: context.textStyle.caption.copyWith(
+                                      color: context.color.textAndIconsBasePrimary.withOpacity(0.5),
                                     ),
-                                    const SizedBox(height: 16),
+                                  ),
+                                  const SizedBox(height: 16),
 
-                                    ///temperature
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ConstrainedBox(
-                                          constraints: const BoxConstraints(
-                                            maxHeight: 70,
-                                            minHeight: 65,
-                                          ),
-                                          child: Text(
-                                            tempC,
-                                            style: Theme.of(context)
-                                                .extension<ThemeTextStyles>()!
-                                                .heading2
-                                                .copyWith(
-                                                  height: 1,
-                                                  fontSize: 64,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: context.color
-                                                      .textAndIconsBasePrimary,
-                                                ),
-                                          ),
+                                  ///temperature
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ConstrainedBox(
+                                        constraints: const BoxConstraints(
+                                          maxHeight: 70,
+                                          minHeight: 65,
                                         ),
-                                        Text(
-                                          '℃',
-                                          style:
-                                              context.textStyle.heading2.copyWith(
-                                            fontSize: 27,
+                                        child: Text(
+                                          tempC,
+                                          style: context.textStyle.heading2.copyWith(
                                             height: 1,
-                                            fontWeight: FontWeight.w600,
-                                            color: context.color
-                                                .textAndIconsBasePrimary,
+                                            fontSize: 64,
+                                            fontWeight: FontWeight.w400,
+                                            color: context.color.textAndIconsBasePrimary,
                                           ),
                                         ),
-                                      ],
-                                    ),
-
-                                    ///condition
-                                    AutoSizeText(
-                                      condition,
-                                      maxLines: 1,
-                                      style: context.textStyle.callout.copyWith(
-                                        fontWeight: FontWeight.w700,
-                                        color: context
-                                            .color.textAndIconsBasePrimary,
                                       ),
+                                      Text(
+                                        '℃',
+                                        style: context.textStyle.heading2.copyWith(
+                                          fontSize: 27,
+                                          height: 1,
+                                          fontWeight: FontWeight.w600,
+                                          color: context.color.textAndIconsBasePrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  ///condition
+                                  AutoSizeText(
+                                    condition,
+                                    maxLines: 1,
+                                    style: context.textStyle.callout.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: context.color.textAndIconsBasePrimary,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Row(children: [
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        children: [
                           buildButton(
-                              desc: Text(
-                                '${windMph}Mph',
-                                style: textStyle,
-                                maxLines: 1,
-                              ),
-                              assetName: 'assets/icons/svg/weather/wind.svg',),
+                            desc: Text(
+                              '${windMph}Mph',
+                              style: textStyle,
+                              maxLines: 1,
+                            ),
+                            assetName: 'assets/icons/svg/weather/wind.svg',
+                          ),
                           buildButton(
-                              desc: Text(
-                                '${pressureMb}Mb',
-                                style: textStyle,
-                                maxLines: 1,
-                              ),
-                              assetName:
-                                  'assets/icons/svg/weather/pressure.svg',),
+                            desc: Text(
+                              '${pressureMb}Mb',
+                              style: textStyle,
+                              maxLines: 1,
+                            ),
+                            assetName: 'assets/icons/svg/weather/pressure.svg',
+                          ),
                           buildButton(
-                              desc: Text(
-                                '$humidity%',
-                                style: textStyle,
-                                maxLines: 1,
-                              ),
-                              assetName:
-                                  'assets/icons/svg/weather/humidity.svg',),
-                        ],),
+                            desc: Text(
+                              '$humidity%',
+                              style: textStyle,
+                              maxLines: 1,
+                            ),
+                            assetName: 'assets/icons/svg/weather/humidity.svg',
+                          ),
+                        ],
                       ),
-                    ],
-                  ),),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -393,9 +388,7 @@ class Data extends ConsumerWidget {
                   height: 24,
                   width: 24,
                   colorFilter: ColorFilter.mode(
-                    colorIcon ??
-                        context.color.textAndIconsBasePrimary
-                            .withOpacity(0.7),
+                    colorIcon ?? context.color.textAndIconsBasePrimary.withOpacity(0.7),
                     BlendMode.srcIn,
                   ),
                   package: PackageConfig.packageName,
