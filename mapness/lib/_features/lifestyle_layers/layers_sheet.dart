@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,7 +62,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
       children: [
         GestureDetector(
           onTap: () {
-        context.pop();
+            context.pop();
           },
         ),
         const MapControls(),

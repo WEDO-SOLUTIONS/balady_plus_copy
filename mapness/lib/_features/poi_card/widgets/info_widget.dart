@@ -42,7 +42,7 @@ class InfoWidget extends ConsumerWidget {
           if (data != null)
             FullAddress(
               data: data,
-              title: data.address?.buildingName ?? data.title ?? '',
+              title: data.address?.buildingName ?? data.title,
               subtitle: subTitle,
               exits: data.entrances.length,
               onEntranceTap: callback,

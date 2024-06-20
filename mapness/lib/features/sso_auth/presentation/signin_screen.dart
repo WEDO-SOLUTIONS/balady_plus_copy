@@ -1,5 +1,5 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -54,10 +54,7 @@ class SigninScreen extends ConsumerWidget {
                   children: [
                     Text(
                       context.l10n.signInToUnlock,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .text
-                          .apply(color: Colors.white),
+                      style: context.textStyle.text.apply(color: Colors.white),
                     ),
                     const SizedBox(height: 16),
                     Padding(

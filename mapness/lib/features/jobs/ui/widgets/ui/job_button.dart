@@ -1,11 +1,9 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class JobButton extends StatelessWidget {
-
   const JobButton({
     required this.label,
     required this.asset,
@@ -49,10 +47,7 @@ class JobButton extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               label,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()
-                  ?.text
-                  .copyWith(color: textColor ?? Colors.white),
+              style: context.textStyle.text.copyWith(color: textColor ?? Colors.white),
             ),
           ],
         ),

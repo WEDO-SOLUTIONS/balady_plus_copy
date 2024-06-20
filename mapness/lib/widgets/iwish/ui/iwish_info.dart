@@ -1,14 +1,15 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class IwishInfo extends StatelessWidget {
-
   const IwishInfo({
-    required this.iwish, required this.distance, required this.onClose, super.key,
+    required this.iwish,
+    required this.distance,
+    required this.onClose,
+    super.key,
   });
   final IwishEntity iwish;
   final String distance;
@@ -33,17 +34,11 @@ class IwishInfo extends StatelessWidget {
                   Text(
                     iwish.title,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .heading1
-                        .copyWith(color: black),
+                    style: context.textStyle.heading1.copyWith(color: black),
                   ),
                   Text(
                     'JOY Park',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .footNote
-                        .copyWith(color: grey),
+                    style: context.textStyle.footNote.copyWith(color: grey),
                   ),
                 ],
               ),
@@ -58,17 +53,14 @@ class IwishInfo extends StatelessWidget {
             Expanded(
               child: Text(
                 iwish.subtitle,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .footNote
-                    .copyWith(color: black),
+                style: context.textStyle.footNote.copyWith(color: black),
               ),
             ),
             const SizedBox(width: 12),
             // Text(
             //   distance,
             //   overflow: TextOverflow.ellipsis,
-            //   style: Theme.of(context).extension<ThemeTextStyles>()!.footNote.copyWith(color: grey),
+            //   style: context.textStyle!.footNote.copyWith(color: grey),
             // ),
           ],
         ),

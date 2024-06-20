@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +8,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
 class FavouriteTextField extends ConsumerStatefulWidget {
-  const FavouriteTextField({super.key,this.hintText});
+  const FavouriteTextField({super.key, this.hintText});
   final String? hintText;
 
   @override
@@ -60,7 +61,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
               decoration: InputDecoration(
                 filled: true,
                 // isDense: true,
-                hintText: widget.hintText??context.l10n.search,
+                hintText: widget.hintText ?? context.l10n.search,
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.only(
                   //   // horizontal: 8,

@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -25,30 +26,31 @@ class DashboardProfile extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: userData.maybeWhen(
-          orElse: () => Text(
-                _greeting(context),
+        orElse: () => Text(
+          _greeting(context),
           style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsStatusAccent),
           textAlign: TextAlign.end,
         ),
         data: (userInfo) {
           String? name;
-            if (userInfo != null) {
-              final localizedName = switch (lang) {
-                Language.arabic => userInfo.arName,
-                _ => userInfo.enName,
-              }
-                  ?.split(' ')
-                  .first;
-              if (localizedName != null && localizedName.isNotEmpty) {
-                name = '${_greeting(context)}, $localizedName';
-              }
+          if (userInfo != null) {
+            final localizedName = switch (lang) {
+              Language.arabic => userInfo.arName,
+              _ => userInfo.enName,
             }
-            return Text(
-              name ?? _greeting(context),
-              style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsStatusAccent),
-              textAlign: TextAlign.end,
-            );
-          },),
+                ?.split(' ')
+                .first;
+            if (localizedName != null && localizedName.isNotEmpty) {
+              name = '${_greeting(context)}, $localizedName';
+            }
+          }
+          return Text(
+            name ?? _greeting(context),
+            style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsStatusAccent),
+            textAlign: TextAlign.end,
+          );
+        },
+      ),
     );
   }
 }
