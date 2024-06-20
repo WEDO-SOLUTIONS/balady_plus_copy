@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 
 class CalendarHomeItemCard extends StatelessWidget {
   final SearchCalendarItem item;
@@ -110,8 +110,7 @@ class SaudiContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final remainingStyle =
-        context.textStyle.footNote.copyWith(color: Colors.white);
+    final remainingStyle = context.textStyle.footNote.copyWith(color: Colors.white);
     final timerStyle = context.textStyle.callout.copyWith(color: Colors.white);
     final buttonTextStyle = context.textStyle.callout.copyWith(
       color: context.color.textAndIconsStatusAccent,

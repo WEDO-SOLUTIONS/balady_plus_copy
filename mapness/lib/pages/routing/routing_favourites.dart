@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,10 +27,7 @@ class RoutingFavouritesPage extends ConsumerWidget {
                   ),
                   child: Text(
                     context.l10n.favourites,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .callout
-                        .copyWith(color: Colors.white),
+                    style: context.textStyle.callout.copyWith(color: Colors.white),
                   ),
                 ),
                 Align(

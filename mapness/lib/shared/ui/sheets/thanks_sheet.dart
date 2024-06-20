@@ -1,15 +1,14 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class ThanksSheet extends StatelessWidget {
-
   const ThanksSheet({super.key, this.onClose, this.buttonLabel});
+
   /// action when leave the sheet (default: pop)
   final VoidCallback? onClose;
 
@@ -18,36 +17,32 @@ class ThanksSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding:
-            const EdgeInsets.only(left: 16, right: 16, bottom: 40, top: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: AppCloseButton(
-                onPressed: onClose ?? () => context.pop(),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 40, top: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: AppCloseButton(
+                  onPressed: onClose ?? () => context.pop(),
+                ),
               ),
-            ),
-            SvgPicture.asset(
-              'assets/images_svg/illustration_thanks.svg',
-              package: PackageConfig.packageName,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              context.l10n.thanksForYourFeedback,
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .heading2
-                  .copyWith(color: context.color.textAndIconsBasePrimary),
-            ),
-          ],
+              SvgPicture.asset(
+                'assets/images_svg/illustration_thanks.svg',
+                package: PackageConfig.packageName,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                context.l10n.thanksForYourFeedback,
+                textAlign: TextAlign.center,
+                style: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
 }

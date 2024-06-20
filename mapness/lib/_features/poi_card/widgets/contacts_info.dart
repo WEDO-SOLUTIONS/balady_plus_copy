@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -8,7 +9,6 @@ import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/_features/poi_card/extensions/contacts_info_ext.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class ContactsInfo extends ConsumerWidget {

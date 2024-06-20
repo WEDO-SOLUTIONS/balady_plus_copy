@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -136,36 +137,34 @@ class _BriefRouteInfo extends StatelessWidget {
       };
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SvgPicture.asset(
-          'assets/icons/svg/ic_car_poi.svg',
-          height: iconSize,
-          width: iconSize,
-          package: PackageConfig.packageName,
-          matchTextDirection: true,
-          colorFilter: ColorFilter.mode(
-            iconColor,
-            BlendMode.srcATop,
-          ),
-        ),
-        if (briefInfo != null) ...[
-          const SizedBox(
-            width: 4,
-          ),
-          Text(
-            obtainText(context),
-            style: context.textStyle.footNoteBold.copyWith(
-              color: textColor,
+  Widget build(BuildContext context) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/svg/ic_car_poi.svg',
+            height: iconSize,
+            width: iconSize,
+            package: PackageConfig.packageName,
+            matchTextDirection: true,
+            colorFilter: ColorFilter.mode(
+              iconColor,
+              BlendMode.srcATop,
             ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            textAlign: TextAlign.right,
           ),
+          if (briefInfo != null) ...[
+            const SizedBox(
+              width: 4,
+            ),
+            Text(
+              obtainText(context),
+              style: context.textStyle.footNoteBold.copyWith(
+                color: textColor,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              textAlign: TextAlign.right,
+            ),
+          ],
         ],
-      ],
-    );
-  }
+      );
 }

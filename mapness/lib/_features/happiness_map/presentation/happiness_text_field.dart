@@ -1,8 +1,7 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/_features/happiness_map/data/happines_manager.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -33,11 +32,10 @@ class HappinessTextField extends ConsumerWidget {
         fillColor: context.color.surfaceBasePrimary,
         filled: true,
         border: border,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         focusedBorder: border,
         isDense: true,
-        hintStyle: Theme.of(context).extension<ThemeTextStyles>()!.text.copyWith(color: NonThemeColor.color38),
+        hintStyle: context.textStyle.text.copyWith(color: NonThemeColor.color38),
       ),
     );
   }

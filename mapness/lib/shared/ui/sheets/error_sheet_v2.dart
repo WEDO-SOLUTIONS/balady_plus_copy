@@ -1,17 +1,15 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class ErrorSheetV2 extends StatelessWidget {
-
   const ErrorSheetV2({
-    required this.onRetry, super.key,
+    required this.onRetry,
+    super.key,
     this.buttonLabel,
     this.onClose,
     this.errorTitle,
@@ -19,6 +17,7 @@ class ErrorSheetV2 extends StatelessWidget {
     this.assetImage,
     this.package,
   });
+
   /// action how to recover state
   final VoidCallback onRetry;
 
@@ -38,10 +37,8 @@ class ErrorSheetV2 extends StatelessWidget {
     Text styledText(String text, {bool isTitle = false}) => Text(
           text,
           textAlign: TextAlign.center,
-          style: (isTitle
-                  ? Theme.of(context).extension<ThemeTextStyles>()?.heading1
-                  : Theme.of(context).extension<ThemeTextStyles>()?.text)
-              ?.copyWith(color: context.color.textAndIconsBasePrimary),
+          style: (isTitle ? context.textStyle.heading1 : context.textStyle.text)
+              .copyWith(color: context.color.textAndIconsBasePrimary),
         );
 
     final isLtr = Directionality.of(context) == TextDirection.ltr;
