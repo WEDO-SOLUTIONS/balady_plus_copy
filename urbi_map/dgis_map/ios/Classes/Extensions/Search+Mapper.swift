@@ -42,7 +42,7 @@ extension Page {
         PageMessage.make(
             withId: PageIdMessage.make(withId: id),
             items: self.items.map {
-                $0.toMessage(externalIds: nil)
+                $0.toMessage()
             }
         )
     }

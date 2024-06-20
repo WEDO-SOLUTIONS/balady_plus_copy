@@ -49,7 +49,7 @@ fun Page.toMessage(id: String): PageMessage {
                 .build()
         )
         .setItems(this.items.map {
-            it.toMessage(null)
+            it.toMessage()
         })
         .build()
 }
