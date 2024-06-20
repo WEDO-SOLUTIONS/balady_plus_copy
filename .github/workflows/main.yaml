@@ -125,6 +125,12 @@ jobs:
         with:
           just-version: "1.25.2"
 
+      - name: 🤖🔨 Download strings from Localazy
+        uses: localazy/download@v1
+        with:
+          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
+          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
+
       - name: "Prebuild"
         env:
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
@@ -133,7 +139,9 @@ jobs:
           ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
 
           just apply-patches
-          just prebuild
+          just pubget 
+          just build_pigeon
+          just codegen
           ssh-agent -k
 
       - name: 🤖🔨 Build Android app
