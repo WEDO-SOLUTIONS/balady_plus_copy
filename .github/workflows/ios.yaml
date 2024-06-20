@@ -92,6 +92,7 @@ jobs:
           ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
 
           just apply-patches
+          just locale_gen
           just ios_setup
           just prebuild
           ssh-agent -k
