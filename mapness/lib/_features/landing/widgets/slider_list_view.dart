@@ -2,7 +2,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:vibration/vibration.dart';
 
 class SliderListView<T> extends StatefulWidget {
   final List<T> items;
@@ -41,11 +40,6 @@ class _SliderListViewState<T> extends State<SliderListView<T>> {
           SizedBox(
             height: widget.contentHeight,
             child: PageView.builder(
-              onPageChanged: (value) {
-                if (widget.vibrateOnChange) {
-                  Vibration.vibrate(duration: 1, amplitude: 50);
-                }
-              },
               physics: const BouncingScrollPhysics(),
               controller: controller,
               itemCount: widget.items.length,
