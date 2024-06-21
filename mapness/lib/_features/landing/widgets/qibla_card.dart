@@ -15,82 +15,77 @@ class QiblaCard extends ConsumerWidget {
   const QiblaCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final rightPadding = context.isLTR ? Spacing.none : Spacing.$4x;
-    final leftPadding = context.isLTR ? Spacing.$4x : Spacing.none;
+  Widget build(BuildContext context, WidgetRef ref) => ClipRRect(
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
+        child: GestureDetector(
+          onTap: () async {
+            Metrics.logEventAdvanced(
+              MetricsConstants.exploreKeys.qibla,
+              action: MetricAction.tap.name,
+              group: MetricsConstants.exploreTag,
+            );
+            final location = ref.read(locationProvider.notifier);
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(RadiusBorder.xl),
-      child: GestureDetector(
-        onTap: () async {
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.qibla,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-          );
-          final location = ref.read(locationProvider.notifier);
-
-          await location.checkLocationPermission().then((allowed) {
-            if (allowed) {
-              const KiblahRoute().push(context);
-            }
-          });
-        },
-        child: SizedBox(
-          height: 118,
-          child: DecoratedBox(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF525252), Color(0xFF1B1B1B)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: Spacing.$3x, left: leftPadding, right: rightPadding),
-                      child: Text(
-                        context.l10n.qibla,
-                        style: context.textStyleV3.h2Medium.copyWith(
-                          color: context.colorsV2.staticWhite,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: Spacing.$4x, left: leftPadding, right: rightPadding),
-                      child: Text(
-                        context.l10n.showDirection,
-                        style: context.textStyleV3.captionLargeRegular.copyWith(
-                          color: context.colorsV2.staticWhite,
-                        ),
-                      ),
-                    ),
-                  ],
+            await location.checkLocationPermission().then((allowed) {
+              if (allowed) {
+                const KiblahRoute().push(context);
+              }
+            });
+          },
+          child: SizedBox(
+            height: 118,
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF525252), Color(0xFF1B1B1B)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Transform(
-                    alignment: Alignment.center,
-                    transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
-                    child: Image.asset(
-                      'assets/images/qibla.png',
-                      package: PackageConfig.packageName,
-                      fit: BoxFit.fitHeight,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, start: Spacing.$4x),
+                        child: Text(
+                          context.l10n.qibla,
+                          style: context.textStyleV3.h2Medium.copyWith(
+                            color: context.colorsV2.staticWhite,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
+                        child: Text(
+                          context.l10n.showDirection,
+                          style: context.textStyleV3.captionLargeRegular.copyWith(
+                            color: context.colorsV2.staticWhite,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                      child: Image.asset(
+                        'assets/images/qibla.png',
+                        package: PackageConfig.packageName,
+                        fit: BoxFit.fitHeight,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

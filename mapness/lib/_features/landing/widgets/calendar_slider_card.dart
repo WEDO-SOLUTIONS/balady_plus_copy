@@ -102,7 +102,7 @@ class _CalendarCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: Spacing.$5x, left: Spacing.$6x, right: Spacing.$6x),
+                padding: const EdgeInsetsDirectional.only(top: Spacing.$5x, start: Spacing.$6x),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,

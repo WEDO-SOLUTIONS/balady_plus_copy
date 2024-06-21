@@ -33,7 +33,7 @@ class JoyParksCard extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 25, top: 27, right: 25),
+                      padding: const EdgeInsetsDirectional.only(top: 27, start: 25),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,

@@ -50,9 +50,6 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
     final conditionLabel = weatherData?.current?.condition?.text?.toString() ?? '-';
     final currentTemperature = weatherData?.current?.tempC?.toInt();
 
-    final rightPadding = context.isLTR ? Spacing.none : Spacing.$4x;
-    final leftPadding = context.isLTR ? Spacing.$4x : Spacing.none;
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(RadiusBorder.xl),
       child: GestureDetector(
@@ -83,7 +80,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: Spacing.$3x, left: leftPadding, right: rightPadding),
+                        padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, start: Spacing.$4x),
                         child: Text(
                           '${currentTemperature ?? '-'}°',
                           style: context.textStyleV3.h2Medium.copyWith(
@@ -93,7 +90,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
                       ),
                       const Spacer(),
                       Padding(
-                        padding: EdgeInsets.only(bottom: Spacing.$4x, left: leftPadding, right: rightPadding),
+                        padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
                         child: Text(
                           '$conditionLabel\n'
                           '${context.l10n.weatherTemperature(

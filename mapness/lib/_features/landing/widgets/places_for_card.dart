@@ -38,7 +38,7 @@ class PlacesForCart extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: Spacing.$4x, left: Spacing.$4x, right: Spacing.$4x),
+                    padding: const EdgeInsetsDirectional.only(top: Spacing.$4x, start: Spacing.$4x),
                     child: Transform(
                       alignment: Alignment.center,
                       transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
@@ -52,7 +52,7 @@ class PlacesForCart extends ConsumerWidget {
                   ),
                   const Spacer(),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: Spacing.$4x, left: Spacing.$4x, right: Spacing.$4x),
+                    padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
                     child: Text(title, style: context.textStyleV3.bodyLargeMedium),
                   ),
                 ],

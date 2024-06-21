@@ -127,7 +127,7 @@ class PrayerCard extends StatelessWidget {
                                               return Icon(
                                                 SystemIcons.notification,
                                                 color: isNotificationDisabled
-                                                    ? context.colorsV2.foregroundSoft
+                                                    ? context.colorsV2.foregroundMuted
                                                     : Colors.white,
                                               );
                                             },
