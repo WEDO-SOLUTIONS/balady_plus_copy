@@ -74,45 +74,7 @@ class SearchHandler(
                     return@onResult
                 }
 
-                if (vendorConfig == null || vendorConfig.overrides[CustomOverrides.TWINS_API.key] == null) {
-                    result?.success(response.toMessage(null))
-                    return@onResult
-                }
-
-                thread {
-                    try {
-                        val url = URL(
-                            "${vendorConfig.overrides[CustomOverrides.TWINS_API.key]}?dgis_id=${objectId.objectId}&partner_code=momrah&key=28ed92f1-de4b-4060-b159-2dc19e9b8bf5"
-                        )
-                        val twinsResponse = JSONTokener(url.readText()).nextValue() as JSONObject
-                        val code = twinsResponse.getJSONObject("meta").getInt("code")
-
-                        if (code != 200) {
-                            Log.d(
-                                "2Gis",
-                                "TwinsAPI Error: ${
-                                    twinsResponse.getJSONObject("meta").getString("message")
-                                }"
-                            )
-                            result?.success(response.toMessage(null))
-                            return@thread
-                        }
-
-                        val items = twinsResponse.getJSONObject("result").getJSONArray("items")
-                        if (items.length() == 1) {
-                            val twinsArray = items.getJSONObject(0).getJSONArray("twins")
-                            val twins = Array<String>(twinsArray.length()) { i ->
-                                twinsArray.getJSONObject(i).getString("partner_id")
-                            }.toList()
-                            result?.success(response.toMessage(twins))
-                        } else {
-                            result?.success(response.toMessage(null))
-                        }
-                    } catch (e: Exception) {
-                        Log.d("2Gis", "TwinsAPI Error: ${e.localizedMessage}")
-                        result?.success(response.toMessage(null))
-                    }
-                }
+                result?.success(response.toMessage())
             }
             onError { result?.error(it) }
         }

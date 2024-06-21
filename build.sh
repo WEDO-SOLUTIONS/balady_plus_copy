@@ -14,7 +14,7 @@ brew cleanup localazy
 brew install localazy
 brew tap leoafarias/fvm
 brew install fvm
-fvm install 3.10.3
+fvm install 3.22.2
 cd ../..
 cd  mapness
 flutter pub run build_runner build --delete-conflicting-outputs

@@ -20,7 +20,6 @@ import '../../data/model/white_lands.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'event_card_widget.dart';
-import 'general_card_widget.dart';
 import 'map_cards/ImtethalMapCard_map_card.dart';
 import 'map_cards/investment_map_card.dart';
 import 'map_cards/land_map_card.dart';
