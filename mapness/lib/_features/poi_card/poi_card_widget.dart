@@ -203,111 +203,114 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final photos = ref.watch(poiPhotoProvider(objectId));
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
-    return Directionality(
-      textDirection: switch (language) {
-        Language.arabic => TextDirection.rtl,
-        Language.english => TextDirection.ltr,
-      },
-      child: DgisBottomSheet(
-        showBarrier: false,
-        availableExpansions: const {
-          Expansion.collapsed,
-          Expansion.expanded,
-          Expansion.hidden,
+    return BackdropFilter(
+      filter: ColorFilter.mode(Colors.black.withAlpha(90),BlendMode.screen,),
+      child: Directionality(
+        textDirection: switch (language) {
+          Language.arabic => TextDirection.rtl,
+          Language.english => TextDirection.ltr,
         },
-        initialExpansion: Expansion.collapsed,
-        collapsedHeight: sheetSizes.collapsedHeight + (photos.hasValue == true ? 100.0 : .0),
-        hiddenHeight: sheetSizes.hiddenHeight,
-        controller: _bottomSheetController,
-        mapControlsBuilder: (context, bottomSheetSize, biggestHeight, smallestHeight) => PoiCardMapControls(
-          bottomSheetSize: bottomSheetSize,
-          biggestHeight: biggestHeight,
-        ),
-        onExpansionChanged: (expansion, {byUser = false}) => setState(() {
-          _expansion.value = expansion;
-        }),
-        scrollHeader: PoiPhotosHeader(
-          objectId: objectId,
-          expansion: _expansion,
-        ),
-        actions: PoiCardFooter(
-          data: data,
-          share: () {
-            Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {
-                  'object_id': data.id?.objectId,
-                  'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
-                });
-
-            poiActions.share(
-              objectId: objectId,
-              markerCoords: widget.closestPoint,
-            );
+        child: DgisBottomSheet(
+          showBarrier: false,
+          availableExpansions: const {
+            Expansion.collapsed,
+            Expansion.expanded,
+            Expansion.hidden,
           },
-          callPhone: () {
-            Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {
-                  'objectId': objectId,
-                });
+          initialExpansion: Expansion.collapsed,
+          collapsedHeight: sheetSizes.collapsedHeight + (photos.hasValue == true ? 100.0 : .0),
+          hiddenHeight: sheetSizes.hiddenHeight,
+          controller: _bottomSheetController,
+          mapControlsBuilder: (context, bottomSheetSize, biggestHeight, smallestHeight) => PoiCardMapControls(
+            bottomSheetSize: bottomSheetSize,
+            biggestHeight: biggestHeight,
+          ),
+          onExpansionChanged: (expansion, {byUser = false}) => setState(() {
+            _expansion.value = expansion;
+          }),
+          scrollHeader: PoiPhotosHeader(
+            objectId: objectId,
+            expansion: _expansion,
+          ),
+          actions: PoiCardFooter(
+            data: data,
+            share: () {
+              Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
+                    'object_id': data.id?.objectId,
+                    'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                  });
 
-            final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
-                  (element) => element.type == ContactsInfoType.phone,
+              poiActions.share(
+                objectId: objectId,
+                markerCoords: widget.closestPoint,
+              );
+            },
+            callPhone: () {
+              Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
+                    'objectId': objectId,
+                  });
+
+              final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
+                    (element) => element.type == ContactsInfoType.phone,
+                  );
+
+              poiActions.callPhone(value: phoneNumber?.value);
+            },
+            onEntranceTap: () => poiActions.toggleEntrances(
+              data,
+              () => _bottomSheetController.animateTo(Expansion.collapsed),
+              widget.closestPoint,
+            ),
+          ),
+          scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
+            controller: controller,
+            header: PoiHeader(
+              poiCardState: poiCardState,
+              tabController: _tabController,
+              data: data,
+              onTapClose: () {
+                Metrics.logEventAdvanced(
+                  MetricsConstants.poiKeys.exitButton,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
                 );
 
-            poiActions.callPhone(value: phoneNumber?.value);
-          },
-          onEntranceTap: () => poiActions.toggleEntrances(
-            data,
-            () => _bottomSheetController.animateTo(Expansion.collapsed),
-            widget.closestPoint,
-          ),
-        ),
-        scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
-          controller: controller,
-          header: PoiHeader(
-            poiCardState: poiCardState,
-            tabController: _tabController,
-            data: data,
-            onTapClose: () {
-              Metrics.logEventAdvanced(
-                MetricsConstants.poiKeys.exitButton,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-              );
-
-              ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-              ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-              context.pop();
-            },
-          ),
-          body: [
-            ValueListenableBuilder(
-              valueListenable: _tabType,
-              builder: (context, tabType, _) => switch (tabType) {
-                PoiTabsType.info => InfoWidget(
-                    callback: () => poiActions.toggleEntrances(
-                      data,
-                      () => _bottomSheetController.animateTo(Expansion.collapsed),
-                      widget.closestPoint,
-                    ),
-                    poiCardState: poiCardState,
-                  ),
-                PoiTabsType.photos => PoiPhotoCard(
-                    model: PoiModel(
-                      directoryObjectMessage: data,
-                    ),
-                  ),
-                PoiTabsType.inBuilding => InBuildingWidget(
-                    state: poiCardState,
-                    objectId: widget.objectId,
-                  ),
+                ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+                ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+                context.pop();
               },
             ),
-          ],
+            body: [
+              ValueListenableBuilder(
+                valueListenable: _tabType,
+                builder: (context, tabType, _) => switch (tabType) {
+                  PoiTabsType.info => InfoWidget(
+                      callback: () => poiActions.toggleEntrances(
+                        data,
+                        () => _bottomSheetController.animateTo(Expansion.collapsed),
+                        widget.closestPoint,
+                      ),
+                      poiCardState: poiCardState,
+                    ),
+                  PoiTabsType.photos => PoiPhotoCard(
+                      model: PoiModel(
+                        directoryObjectMessage: data,
+                      ),
+                    ),
+                  PoiTabsType.inBuilding => InBuildingWidget(
+                      state: poiCardState,
+                      objectId: widget.objectId,
+                    ),
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
