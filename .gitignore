@@ -20,7 +20,7 @@ migrate_working_dir/
 .classpath
 .project
 .settings/
-.vscode/*
+.vscode/
 
 # Flutter repo-specific
 /bin/cache/
@@ -56,7 +56,7 @@ analysis_benchmark.json
 .pub/
 /build/
 /android/app/build/
-**/.fvm
+**/.fvm/flutter_sdk
 
 # Android related
 **/android/**/gradle-wrapper.jar
