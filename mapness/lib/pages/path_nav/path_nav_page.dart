@@ -107,15 +107,23 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
         bottom: false,
         child: Stack(
           children: [
-            Expanded(child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                final value = _expansionNotifier.value;
-                if (value) {
-                  _expansionNotifier.value = !value;
-                }
-              },
-            )),
+            ValueListenableBuilder(
+                valueListenable: _navigationState,
+                builder: (context, state, child) {
+                  if (state == PathNavState.finished) {
+                    return GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        final value = _expansionNotifier.value;
+                        if (value) {
+                          _expansionNotifier.value = !value;
+                        }
+                      },
+                      child: const SizedBox.expand(),
+                    );
+                  }
+                  return const SizedBox();
+                }),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
