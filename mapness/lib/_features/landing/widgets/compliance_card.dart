@@ -25,28 +25,28 @@ class ComplianceCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
           child: SizedBox(
             height: 237,
             child: ColoredBox(
               color: context.colorsV2.backgroundSurface1,
               child: Padding(
-                padding: const EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.only(top: Spacing.$5x),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
                       child: Text(
                         context.l10n.complianceCardTitle,
                         style: context.textStyleV3.h4SemiBold,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: Spacing.$1x + Spacing.$0_5x),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
                       child: Text(
                         context.l10n.complianceCardDescription,
                         style: context.textStyleV3.captionLargeRegular.copyWith(
@@ -54,19 +54,19 @@ class ComplianceCard extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: Spacing.$5x + Spacing.$0_5x),
                     _RowButton(
                       svgImageName: 'sertificate',
                       onTap: createCompliance,
                       label: context.l10n.createCompliance,
                     ),
-                    const Divider(height: 1, indent: 63),
+                    const Divider(height: Spacing.px, indent: 63),
                     _RowButton(
                       svgImageName: 'question',
                       onTap: CommonFunctions.openComplianceFaq,
                       label: context.l10n.complianceFAQ,
                     ),
-                    const Divider(height: 1, indent: 63),
+                    const Divider(height: Spacing.px, indent: 63),
                     _RowButton(
                       svgImageName: 'document',
                       onTap: CommonFunctions.openComplianceTerms,
@@ -94,14 +94,14 @@ class _RowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: Material(
           color: context.colorsV2.backgroundSurface1,
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(RadiusBorder.m),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(Spacing.$2x),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -111,10 +111,10 @@ class _RowButton extends StatelessWidget {
                       SvgPicture.asset(
                         'assets/images_svg/$svgImageName.svg',
                         package: PackageConfig.packageName,
-                        height: 24,
-                        width: 24,
+                        height: Spacing.$6x,
+                        width: Spacing.$6x,
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: Spacing.$4x),
                       Text(label, style: context.textStyleV3.bodySmallRegular),
                     ],
                   ),

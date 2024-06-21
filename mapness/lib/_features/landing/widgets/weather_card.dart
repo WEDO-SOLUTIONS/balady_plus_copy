@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,11 +50,8 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
     final conditionLabel = weatherData?.current?.condition?.text?.toString() ?? '-';
     final currentTemperature = weatherData?.current?.tempC?.toInt();
 
-    final rightPadding = context.isLTR ? 0.0 : 16.0;
-    final leftPadding = context.isLTR ? 16.0 : 0.0;
-
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(RadiusBorder.xl),
       child: GestureDetector(
         onTap: () {
           Metrics.logEventAdvanced(
@@ -82,7 +80,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: 12.0, left: leftPadding, right: rightPadding),
+                        padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, start: Spacing.$4x),
                         child: Text(
                           '${currentTemperature ?? '-'}°',
                           style: context.textStyleV3.h2Medium.copyWith(
@@ -92,7 +90,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
                       ),
                       const Spacer(),
                       Padding(
-                        padding: EdgeInsets.only(bottom: 16, left: leftPadding, right: rightPadding),
+                        padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
                         child: Text(
                           '$conditionLabel\n'
                           '${context.l10n.weatherTemperature(

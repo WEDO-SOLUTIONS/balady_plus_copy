@@ -10,9 +10,8 @@ import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_eve
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_state.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_shimmer_widget.dart';
-import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -38,7 +37,7 @@ class CalendarSliderCard extends StatelessWidget {
             if (state.status == BlocStatus.loading) {
               return const CustomShimmerWidget(
                 childHeight: 132,
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
               );
             }
 
@@ -80,7 +79,7 @@ class _CalendarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
         child: DecoratedBox(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -103,7 +102,7 @@ class _CalendarCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 24, right: 24),
+                padding: const EdgeInsetsDirectional.only(top: Spacing.$5x, start: Spacing.$6x),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -115,7 +114,7 @@ class _CalendarCard extends StatelessWidget {
                         color: context.colorsV2.staticWhite,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: Spacing.$1x + Spacing.$0_5x),
                     Text(
                       item.startDate?.toWrittenDate() ?? '',
                       maxLines: 2,
@@ -129,7 +128,7 @@ class _CalendarCard extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
+                  padding: const EdgeInsets.only(left: Spacing.$6x, right: Spacing.$6x, bottom: Spacing.$6x),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -149,7 +148,7 @@ class _CalendarCard extends StatelessWidget {
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                               color: context.colorsV2.staticWhite.withOpacity(0.25),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(RadiusBorder.m),
                             ),
                             child: const Center(
                               child: Icon(SystemIcons.calendarPlus, color: Colors.white),

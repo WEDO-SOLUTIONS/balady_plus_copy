@@ -27,6 +27,10 @@ class VoiceRow extends ConsumerWidget {
     super.key,
   });
 
+  static const installed = 'Installed';
+  static const notInstalled = 'Not installed';
+  static const updateAvailable = ' · Update available';
+
   final PackageMessage package;
 
   @override
@@ -40,8 +44,6 @@ class VoiceRow extends ConsumerWidget {
         ref.read(navigatorVoiceProvider.notifier).update(package.id);
       }
     });
-
-    print(package.id);
 
     return Material(
       color: Colors.white,
@@ -85,7 +87,8 @@ class VoiceRow extends ConsumerWidget {
                     style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
                   ),
                   Text(
-                    "${packageInfo.installed ? "Installed" : "Not installed"}${packageInfo.hasUpdate ? " · Update available" : ""}",
+                    '${packageInfo.installed ? installed : notInstalled}'
+                    '${packageInfo.hasUpdate ? updateAvailable : ''}',
                     style: context.textStyle.caption.copyWith(
                       color: packageInfo.installed ? context.color.strokeAccent : NonThemeColor.color1,
                     ),

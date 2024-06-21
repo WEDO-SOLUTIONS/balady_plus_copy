@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -52,7 +53,7 @@ class _SliderListViewState<T> extends State<SliderListView<T>> {
                 final item = widget.items[index];
 
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                   child: GestureDetector(
                     onTap: () => widget.onTap?.call(item),
                     child: widget.itemBuilder(item),
@@ -61,7 +62,7 @@ class _SliderListViewState<T> extends State<SliderListView<T>> {
               },
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: Spacing.$3x),
           SmoothPageIndicator(
             onDotClicked: (index) {
               controller.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.decelerate);

@@ -14,7 +14,7 @@ class SnapAndSendCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const horizontalPadding = 16.0;
+    const horizontalPadding = Spacing.$4x;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -22,7 +22,7 @@ class SnapAndSendCard extends ConsumerWidget {
           height: 188,
           width: double.infinity,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(RadiusBorder.xl),
             child: ColoredBox(
               color: context.colorsV2.backgroundSurface1,
               child: Stack(
@@ -49,7 +49,7 @@ class SnapAndSendCard extends ConsumerWidget {
                   Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 26.0),
+                      padding: const EdgeInsets.only(top: Spacing.$6x + Spacing.$0_5x),
                       child: SvgPicture.asset(
                         'assets/images_svg/marker_photo.svg',
                         package: PackageConfig.packageName,
@@ -59,7 +59,7 @@ class SnapAndSendCard extends ConsumerWidget {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsets.all(Spacing.$6x),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -72,7 +72,7 @@ class SnapAndSendCard extends ConsumerWidget {
                                   context.l10n.snapAndSendTitle,
                                   style: context.textStyleV3.h4SemiBold,
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: Spacing.$1x),
                                 Text(
                                   context.l10n.snapAndSendDescription,
                                   style: context.textStyleV3.captionLargeRegular.copyWith(

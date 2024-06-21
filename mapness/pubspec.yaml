@@ -41,11 +41,16 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.3.3
+    version: ^1.3.4
 
   urbi_utils:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: ^0.1.0
+
+  localize_and_translate:
+    git:
+      url: https://github.com/Demezy/localize_and_translate
+      ref: 4.1.2-dev-fixes
 
   collection: ^1.17.1
   flutter_localizations:

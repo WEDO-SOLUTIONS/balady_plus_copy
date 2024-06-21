@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,7 @@ class QiblaCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
         child: GestureDetector(
           onTap: () async {
             Metrics.logEventAdvanced(
@@ -49,7 +50,7 @@ class QiblaCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 12.0, left: 16, right: 2),
+                        padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, start: Spacing.$4x),
                         child: Text(
                           context.l10n.qibla,
                           style: context.textStyleV3.h2Medium.copyWith(
@@ -59,7 +60,7 @@ class QiblaCard extends ConsumerWidget {
                       ),
                       const Spacer(),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 16, left: 16, right: 2),
+                        padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
                         child: Text(
                           context.l10n.showDirection,
                           style: context.textStyleV3.captionLargeRegular.copyWith(
