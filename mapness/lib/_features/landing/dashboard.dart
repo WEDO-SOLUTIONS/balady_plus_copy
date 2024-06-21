@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,6 +39,7 @@ class Dashboard extends ConsumerStatefulWidget {
   final double biggestHeight;
   final double biggestWidth;
   final bool initWithMinSize;
+  // ignore: avoid_positional_boolean_parameters
   final Function(bool) onScroll;
 
   @override
@@ -123,15 +125,15 @@ class _DashboardState extends ConsumerState<Dashboard> {
             textDirection: direction,
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(16),
-                topLeft: Radius.circular(16),
+                topRight: Radius.circular(RadiusBorder.xl),
+                topLeft: Radius.circular(RadiusBorder.xl),
               ),
               child: Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(RadiusBorder.xl),
+                    topLeft: Radius.circular(RadiusBorder.xl),
                   ),
                 ),
                 child: CustomScrollView(
@@ -150,24 +152,24 @@ class _DashboardState extends ConsumerState<Dashboard> {
                         Container(
                           color: context.colorsV2.backgroundSurface4,
                           padding: const EdgeInsets.only(
-                            top: 16,
+                            top: Spacing.$4x,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const JoyParksCard(),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: Spacing.$3x),
                               const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
                                 child: Row(
                                   children: [
                                     Expanded(child: WeatherCard()),
-                                    SizedBox(width: 12),
+                                    SizedBox(width: Spacing.$3x),
                                     Expanded(child: QiblaCard()),
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: Spacing.$8x),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                 child: Row(
@@ -188,15 +190,15 @@ class _DashboardState extends ConsumerState<Dashboard> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: Spacing.$8x),
                               const PlacePreview(),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: Spacing.$8x),
                               const SnapAndSendCard(),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: Spacing.$8x),
                               const ComplianceCard(),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: Spacing.$8x),
                               const PrayerCard(),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: Spacing.$8x),
                               CalendarSliderCard(
                                 colorScheme: ref.read(colorSchemeProvider),
                                 onShowAll: () => Metrics.logEventAdvanced(
@@ -206,7 +208,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                                 ),
                               ),
                               const SizedBox(
-                                height: 32,
+                                height: Spacing.$8x,
                               ),
                             ],
                           ),

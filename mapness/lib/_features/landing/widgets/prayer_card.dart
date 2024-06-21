@@ -21,9 +21,9 @@ class PrayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: Material(
             child: Ink.image(
               alignment: Alignment.topCenter,
@@ -55,8 +55,8 @@ class PrayerCard extends StatelessWidget {
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 24,
+                        vertical: Spacing.$5x,
+                        horizontal: Spacing.$6x,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +115,7 @@ class PrayerCard extends StatelessWidget {
                                     Provider.of<PrayerTimesCubit>(context, listen: false).prayerSettingsOnOff();
                                   },
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(RadiusBorder.m),
                                     child: BackdropFilter(
                                       filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
                                       child: ColoredBox(

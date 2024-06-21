@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,7 @@ class _PlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
         child: Stack(
           children: [
             ShaderMask(
@@ -100,9 +101,9 @@ class _PlaceCard extends StatelessWidget {
                           'assets/images_svg/sad_face.svg',
                           package: PackageConfig.packageName,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: Spacing.$4x),
                         Text(context.l10n.somethingWentWrong, style: context.textStyleV3.h2Medium),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: Spacing.$1x),
                         Text(context.l10n.pleaseTryAgainLater),
                       ],
                     ),
@@ -113,7 +114,7 @@ class _PlaceCard extends StatelessWidget {
             Align(
               alignment: context.isLTR ? Alignment.bottomLeft : Alignment.bottomRight,
               child: Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(Spacing.$6x),
                 child: Text(
                   item.titleOrFallback(locale: AppLocalizationsEn()),
                   style: context.textStyleV3.h2SemiBold.copyWith(

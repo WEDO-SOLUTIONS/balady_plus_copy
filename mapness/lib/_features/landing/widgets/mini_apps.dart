@@ -8,6 +8,13 @@ import 'package:mapness/shared/config/package_config.dart';
 class MiniAppsList extends ConsumerWidget {
   const MiniAppsList({super.key});
 
+  static const appCatalog = 'Mini-apps catalogue';
+
+  static const go = 'Yandex Go';
+  static const domino = 'Domino\'s Pizza';
+  static const taxi = 'Taxi app';
+  static const foodDelivery = 'food delivery';
+
   @override
   Widget build(BuildContext context, WidgetRef ref) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,7 +28,7 @@ class MiniAppsList extends ConsumerWidget {
               left: 16,
             ),
             child: Text(
-              'Mini-apps catalogue',
+              appCatalog,
               style: context.textStyle.heading2.copyWith(
                 color: context.color.textAndIconsBasePrimary,
               ),
@@ -43,11 +50,11 @@ class MiniAppsList extends ConsumerWidget {
                 onTap: () {
                   MiniAppRoute(
                     index.isEven ? MiniAppPresentation.bottomSheet : MiniAppPresentation.fullScreen,
-                    index.isEven ? 'Yandex Go' : 'Domino\'s Pizza',
+                    index.isEven ? go : domino,
                   ).push(context);
                 },
-                title: index.isEven ? 'Yandex Go' : 'Domino\'s Pizza',
-                subtitle: index.isEven ? 'Taxi app' : 'food delivery',
+                title: index.isEven ? go : domino,
+                subtitle: index.isEven ? taxi : foodDelivery,
                 image: index.isEven ? 'assets/images/yango.png' : 'assets/images/domino.png',
               ),
             ),

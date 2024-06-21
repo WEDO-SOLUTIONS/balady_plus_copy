@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +20,7 @@ class PlacesForCart extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
         child: GestureDetector(
           onTap: () {
             ref.read(goRouterProvider).push(const SearchRoute(requestFocus: false).location);
@@ -37,7 +38,7 @@ class PlacesForCart extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                    padding: const EdgeInsets.only(top: Spacing.$4x, left: Spacing.$4x, right: Spacing.$4x),
                     child: Transform(
                       alignment: Alignment.center,
                       transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
@@ -51,7 +52,7 @@ class PlacesForCart extends ConsumerWidget {
                   ),
                   const Spacer(),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+                    padding: const EdgeInsets.only(bottom: Spacing.$4x, left: Spacing.$4x, right: Spacing.$4x),
                     child: Text(title, style: context.textStyleV3.bodyLargeMedium),
                   ),
                 ],
