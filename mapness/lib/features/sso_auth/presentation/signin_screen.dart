@@ -54,6 +54,7 @@ class SigninScreen extends ConsumerWidget {
                   children: [
                     Text(
                       context.l10n.signInToUnlock,
+                      textAlign: TextAlign.center,
                       style: context.textStyle.text.apply(color: Colors.white),
                     ),
                     const SizedBox(height: 16),
