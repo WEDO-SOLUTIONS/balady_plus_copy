@@ -55,6 +55,7 @@ class QiblaCard extends ConsumerWidget {
                           context.l10n.qibla,
                           style: context.textStyleV3.h2Medium.copyWith(
                             color: context.colorsV2.staticWhite,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
