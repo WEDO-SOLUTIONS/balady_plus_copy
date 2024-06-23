@@ -47,6 +47,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final highlightController = ref.read(highlightProvider.notifier);
   await highlightController.removeAll();
+  await highlightController.addHighlight(objectId);
 
   if (directoryObject != null) {
     for (final entrance in directoryObject.entrances) {

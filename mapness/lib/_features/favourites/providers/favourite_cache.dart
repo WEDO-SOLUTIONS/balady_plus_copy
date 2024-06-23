@@ -355,7 +355,7 @@ class _FavouriteCache extends _$FavouriteCache {
 
   @override
   Future<FavouritesState> build() async {
-    final authState = await ref.read(authProvider.future);
+    final authState = await ref.watch(authProvider.future);
     if (authState == null) {
       return const FavouritesState(items: []);
     }
