@@ -46,15 +46,17 @@ class FullAddress extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: context.textStyle.callout.copyWith(color: context.color.textAndIconsBasePrimary),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 5,
-                textAlign: TextAlign.start,
+              Flexible(
+                child: Text(
+                  title,
+                  style: context.textStyle.callout.copyWith(color: context.color.textAndIconsBasePrimary),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 5,
+                  textAlign: TextAlign.start,
+                ),
               ),
-              const Spacer(),
               Text(
                 briefInfo?.first.getBriefRouteDistanceDescription(context.l10n) ?? '',
                 style: context.textStyle.footNoteBold.copyWith(
@@ -72,11 +74,12 @@ class FullAddress extends ConsumerWidget {
             textAlign: TextAlign.start,
           ),
           const SizedBox(height: 8),
-          Row(children: [
-            if (exits != null && exits != 0) ...[
-              const SizedBox(height: 8),
-              Material(
-                color: context.staticColor.surfaceStatusContrastAccent,
+          if (exits != null && exits != 0)
+            Row(
+              children: [
+                const SizedBox(height: 8),
+                Material(
+                  color: context.staticColor.surfaceStatusContrastAccent,
                 borderRadius: borderRadius,
                 child: InkWell(
                   onTap: onEntranceTap,
@@ -105,8 +108,8 @@ class FullAddress extends ConsumerWidget {
                   ),
                 ),
               ),
-            ],
-          ]),
+              ],
+            ),
         ],
       ),
     );
