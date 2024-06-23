@@ -56,7 +56,11 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Map data = ModalRoute.of(context)!.settings.arguments as Map;
+
+
+
+    final data = ModalRoute.of(context)!.settings.arguments as Map;
+
 
     return BlocProvider(
       create: (context) => ComplianceBloc(showDetails: true)

@@ -615,7 +615,11 @@ class SuccessButtons extends StatelessWidget {
     switch (pageType) {
       case PAGE_TYPE.emtethal:
         Navigator.pushNamed(context, RouteName.complianceDetailsPage,
-            arguments: (requestId, ""));
+            arguments: {
+              "requestNumber": requestId,
+              "redirectUrl": "",
+            },
+            );
         break;
 
       /*

@@ -16,7 +16,9 @@ class PreviousNextButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
-        bool isButtonDisabled = !state.isNextButtonEnabled();
+        bool isButtonDisabled = !state.isNextButtonEnabled() ||
+            (state.appointmentsStatus == BlocStatus.failure &&
+                state.responseCode == "CIS-401");
         bool isLastPage = context.read<ComplianceBloc>().isLastPage();
         return Container(
           color: Colors.transparent,

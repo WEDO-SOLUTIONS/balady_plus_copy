@@ -32,6 +32,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -104,6 +105,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     super.initState();
     initMixpanel();
     initDeepLinks();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Update MediaQueryInfoProvider with the initial MediaQuery
+      ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
+    });
   }
 
   @override

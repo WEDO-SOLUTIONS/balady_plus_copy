@@ -24,6 +24,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -68,7 +69,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   @override
   void dispose() {
-    _setPaddingToCamera(0.0);
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
+
     _naviEventsListener?.cancel();
     WakelockPlus.disable();
     super.dispose();
@@ -308,7 +310,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   // Set padding to the camera to avoid the sheet overlaying the map
   void _setPaddingToCamera(double padding) {
     final pixelSize = MediaQuery.of(context).devicePixelRatio;
-    ref.watch(cameraPositionProvider.notifier).setPadding(
+    ref.read(cameraPaddingProvider.notifier).setPadding(
           CameraSetPaddingMessage(
             leftPadding: 0,
             topPadding: 0,
