@@ -30,7 +30,6 @@ class CalculateCost {
 CalculateCost _$CalculateCostFromJson(Map<String, dynamic> json) {
   return CalculateCost(
     cityId: json["cityId"],
-
     subactivityId: json["subactivityId"],
     value: json["value"],
     accommodationTypeId: json["accommodationTypeId"],
@@ -43,17 +42,16 @@ CalculateCost _$CalculateCostFromJson(Map<String, dynamic> json) {
   );
 }
 
-
-Map<String, dynamic> _$CalculateCostToJson(CalculateCost instance) => <String, dynamic>{
-
-  "cityId": instance.cityId,
-  "subactivityId": instance.subactivityId,
-  "value": instance.value,
-  "accommodationTypeId": instance.accommodationTypeId,
-  "period": instance.period,
-  "unit": instance.unit,
-  "isDividedArea": instance.isDividedArea,
-  "isAccommodation": instance.isAccommodation,
-  "isVisit": instance.isVisit,
-  "RenewYearsCount": instance.renewYearsCount,
-};
+Map<String, dynamic> _$CalculateCostToJson(CalculateCost instance) =>
+    <String, dynamic>{
+      "cityId": instance.cityId,
+      "subactivityId": instance.subactivityId,
+      "value": instance.value,
+      "accommodationTypeId": instance.accommodationTypeId,
+      "period": instance.period,
+      "unit": instance.unit,
+      "isDividedArea": instance.isDividedArea,
+      "isAccommodation": instance.isAccommodation,
+      "isVisit": instance.isVisit,
+      "RenewYearsCount": instance.renewYearsCount,
+    };

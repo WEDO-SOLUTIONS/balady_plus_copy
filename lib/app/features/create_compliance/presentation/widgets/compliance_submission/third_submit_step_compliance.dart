@@ -87,6 +87,8 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                         context
                             .read<ComplianceBloc>()
                             .add(UpdateFieldsEvent(documentTypeSelection: 1));
+
+                        context.read<ComplianceBloc>().add(GetLicensesEvent());
                       },
                     ),
                     SingleRatioOption(

@@ -34,10 +34,10 @@ class IndoorControl extends StatelessWidget {
             width: _indoorItemSize,
             child: hasLevels
                 ? _LevelsControl(
-              levelNames: levelNames,
-              activeIndex: activeIndex,
-              onLevelTaped: onLevelTaped,
-            )
+                    levelNames: levelNames,
+                    activeIndex: activeIndex,
+                    onLevelTaped: onLevelTaped,
+                  )
                 : null,
           ),
           secondChild: const SizedBox(
@@ -157,9 +157,9 @@ class _LevelsControlState extends State<_LevelsControl> {
                   width: _indoorItemSize,
                   height: _indoorItemSize,
                   color:
-                  index == widget.levelNames[widget.activeIndex].levelIndex
-                      ? Colors.lightBlueAccent
-                      : Colors.white,
+                      index == widget.levelNames[widget.activeIndex].levelIndex
+                          ? Colors.lightBlueAccent
+                          : Colors.white,
                   padding: const EdgeInsets.all(4),
                   child: Center(
                     child: Text(widget.levelNames[index].name),

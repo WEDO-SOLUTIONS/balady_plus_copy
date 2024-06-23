@@ -48,7 +48,7 @@ class _HealthLicenseDetailsScreenState
         return Scaffold(
           backgroundColor: AppColor.white2,
           appBar: DetailsHeader(
-            title: ("").tr(),
+            title: (""),
             onPrint: (provider.requestDetails?.data?.result?.printable ?? false)
                 ? () {
                     provider.checkHealthCertificatePhoto();
@@ -86,18 +86,14 @@ class _HealthLicenseDetailsScreenState
                                   RouteName.healthLicenseDetailsScreen,
                               child: ConfirmCancelLicenseDialog(
                             onCancel: () {
-                              HealthRequestDetailsViewModel model =
-                                  Provider.of<HealthRequestDetailsViewModel>(
-                                      context,
-                                      listen: false);
-                              int? certicateId = model
+                              int? certicateId = provider
                                   .requestDetails
                                   ?.data
                                   ?.result
                                   ?.healthCertificateInfo
                                   ?.certificateId;
                               if (certicateId != null) {
-                                model.cancelHealthCertificate(certicateId);
+                                provider.cancelHealthCertificate(certicateId);
                               }
                             },
                           ));

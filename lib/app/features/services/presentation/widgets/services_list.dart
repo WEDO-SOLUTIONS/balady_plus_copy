@@ -2,7 +2,9 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/utils/utils_exports.dart'
     show AppStyle, CommonFunctions, RouteName;
@@ -63,7 +65,21 @@ class ServicesList extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: services.map((e) => ServiceIcon(service: e)).toList(),
+              children: services
+                  .map(
+                    (e) => e.iconName == "chat_bot"
+                        ? Selector<ChatBotProvider, bool>(
+                            selector: (_, provider) =>
+                                provider.isEnabled,
+                            builder: (_, isLoading, __) {
+                              return isLoading
+                                  ? ServiceIcon(service: e)
+                                  : const SizedBox();
+                            },
+                          )
+                        : ServiceIcon(service: e),
+                  )
+                  .toList(),
             ),
           ),
 

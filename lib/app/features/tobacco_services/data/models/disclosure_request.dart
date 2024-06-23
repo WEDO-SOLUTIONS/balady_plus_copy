@@ -1,4 +1,3 @@
-
 import 'package:balady_plus/app/features/tobacco_services/data/models/facility.dart';
 import 'package:balady_plus/app/features/tobacco_services/data/models/tobacco_schedule.dart';
 
@@ -22,17 +21,17 @@ class DisclosureRequest {
   });
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> data =  {
+    Map<String, dynamic> data = {
       "disclosureScheduleId": disclosureSchedule.disclosureScheduleId,
       "registrationNumber": facility.registrationNumber,
       // "identityNumber": identityNumber,
       "disclosureAmount": disclosureAmount ?? 0.0,
       "attachmentId": attachmentId,
     };
-    if(removeDisclosureReasonId != null) {
+    if (removeDisclosureReasonId != null) {
       data['removeDisclosureReasonId'] = removeDisclosureReasonId.toString();
     }
-    if(removeDisclosureComments != null) {
+    if (removeDisclosureComments != null) {
       data['removeDisclosureComments'] = removeDisclosureComments;
     }
     return data;

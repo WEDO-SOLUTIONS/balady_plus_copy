@@ -6,7 +6,10 @@ class AthkarContentAndEntitiesParams {
   final AthkarEntityContentParams athkarContentParams;
   final AthkarEntitiesParams athkarEntitiesParams;
 
-  AthkarContentAndEntitiesParams(String name, AthkarEntity athkarEntity, int currentPage, {
+  AthkarContentAndEntitiesParams(
+    String name,
+    AthkarEntity athkarEntity,
+    int currentPage, {
     required this.athkarContentParams,
     required this.athkarEntitiesParams,
   });

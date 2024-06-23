@@ -13,16 +13,16 @@ class LabelIconSubtitleComponent extends StatelessWidget {
   final String? icon;
   final double? iconSize;
   final Function? onPress;
-  EdgeInsetsDirectional ? padding;
+  EdgeInsetsDirectional? padding;
 
-   LabelIconSubtitleComponent(
+  LabelIconSubtitleComponent(
       {required this.text,
       this.subtitle,
       this.subWidget,
       this.icon,
       this.onPress,
       this.iconSize,
-        this.padding,
+      this.padding,
       super.key});
 
   @override
@@ -35,7 +35,6 @@ class LabelIconSubtitleComponent extends StatelessWidget {
           color: AppColor.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,

@@ -4,11 +4,13 @@ class UpdateDriverLocationParams {
   double y;
 
   UpdateDriverLocationParams(
-      {//required this.deadInfoRecordId, 
-      
-      required this.x, required this.y});
+      { //required this.deadInfoRecordId,
 
-  Map<String, dynamic> toMap() =>
-      {//"deadInfoRecordId": deadInfoRecordId,
-       "x": x, "y": y};
+      required this.x,
+      required this.y});
+
+  Map<String, dynamic> toMap() => {
+        //"deadInfoRecordId": deadInfoRecordId,
+        "x": x, "y": y
+      };
 }

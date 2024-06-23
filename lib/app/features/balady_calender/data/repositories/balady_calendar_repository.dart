@@ -66,8 +66,7 @@ class BaladyCalendarRepositoryImpl implements BaladyCalendarRepository {
   Future<Either<Failure, EventsDetails>> getEventsDetails(
       {required EventsDetailsParams params}) async {
     try {
-      final data =
-          await remoteDataSource.getEventsDetails(params: params);
+      final data = await remoteDataSource.getEventsDetails(params: params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -78,5 +77,4 @@ class BaladyCalendarRepositoryImpl implements BaladyCalendarRepository {
       ));
     }
   }
-
 }

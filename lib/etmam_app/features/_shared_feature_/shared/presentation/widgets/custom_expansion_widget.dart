@@ -32,9 +32,9 @@ class _ExpansionItemWidgetState extends State<ExpansionItemWidget> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(12)),
-         color: AppColor.primary50.withOpacity(0.9),
+        color: AppColor.primary50.withOpacity(0.9),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -54,11 +54,7 @@ class _ExpansionItemWidgetState extends State<ExpansionItemWidget> {
             child: widget.isExpanded
                 ? Padding(
                     padding: const EdgeInsets.only(
-                      left: 12,
-                      right: 12,
-                      bottom: 16,
-                      top: 8
-                    ),
+                        left: 12, right: 12, bottom: 16, top: 8),
                     child: CustomTextWidget(
                       widget.subTitle,
                       fontSize: 12,
@@ -98,7 +94,7 @@ class ExpansionItemHeaderWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => onPress(),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),
           color: AppColor.primary50,

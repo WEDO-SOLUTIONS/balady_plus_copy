@@ -204,6 +204,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         } catch (ex) {}
       }
     });
+
+    if (CommonProperties.fcmToken != null &&
+        CommonProperties.fcmToken!.isNotEmpty) {
+      CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+    }
+
     EasyLoading.dismiss();
     // getUserLocationData();
     //MM   sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
@@ -212,30 +218,44 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> refreshToken(String refreshToken) async {
-    final failureOrSuccess = await _refreshToken(refreshToken);
+    SSOToken? token = state.token;
 
-    return await failureOrSuccess.fold((failure) {}, (success) async {
-      SSOToken token = SSOToken(
-          token: success.accessToken,
-          refreshToken: success.refreshToken,
-          idToken: success.idToken,
-          expirationTime: success.accessTokenExpirationDateTime.toString());
-      final failureOrSuccess = await _saveAuth(token);
-      failureOrSuccess.fold((f) {
-        emit(state.copyWith(
-          status: AuthStatus.notAuthenticated,
-          errorMessage: ("errors_server_error_1".tr()),
-        ));
-        return false;
-      }, (s) {
-        emit(state.copyWith(
-          status: AuthStatus.notAuthenticated,
-          token: token,
-          errorMessage: "",
-        ));
-        return true;
+    if (token != null && token.token != null && token.token!.isNotEmpty) {
+      final failureOrSuccess = await _refreshToken(refreshToken);
+
+      return await failureOrSuccess.fold((failure) async {
+        await autoLogout();
+      }, (success) async {
+        SSOToken token = SSOToken(
+            token: success.accessToken,
+            refreshToken: success.refreshToken,
+            idToken: success.idToken,
+            expirationTime: success.accessTokenExpirationDateTime.toString());
+        final failureOrSuccess = await _saveAuth(token);
+        failureOrSuccess.fold((f) {
+          emit(state.copyWith(
+            status: AuthStatus.notAuthenticated,
+            errorMessage: ("errors_server_error_1".tr()),
+          ));
+          return false;
+        }, (s) {
+          emit(state.copyWith(
+            status: AuthStatus.notAuthenticated,
+            token: token,
+            errorMessage: "",
+          ));
+
+          if (CommonProperties.fcmToken != null &&
+              CommonProperties.fcmToken!.isNotEmpty) {
+            CommonFunctions.updateNotificationSettings(
+                CommonProperties.fcmToken!);
+          }
+          return true;
+        });
       });
-    });
+    } else {
+      await autoLogout();
+    }
   }
 
   Future<bool> refreshAPIGeeToken() async {
@@ -276,7 +296,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
-    //await _logout(NoParams());
+    await _logout(NoParams());
     sl<DelegatorsCubit>().clearDelegators();
     final failureOrSuccess = await _clearAuth(NoParams());
 
@@ -294,6 +314,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         status: AuthStatus.notAuthenticated,
       ));
     });
+
+    if (CommonProperties.fcmToken != null &&
+        CommonProperties.fcmToken!.isNotEmpty) {
+      CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+    }
   }
 
   Future<void> autoLogout() async {
@@ -312,6 +337,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
     // Fix White screen on startup
     // Helpers.backToHome();
+
+    if (CommonProperties.fcmToken != null &&
+        CommonProperties.fcmToken!.isNotEmpty) {
+      CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+    }
     CommonFunctions.showError("session_ended_error".tr());
   }
 

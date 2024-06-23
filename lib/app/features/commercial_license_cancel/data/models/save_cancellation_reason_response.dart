@@ -1,4 +1,3 @@
-
 class SaveCancellationReasonResponse {
   CalculatorResponse calculatorResponse;
   String endorsementText;
@@ -18,16 +17,17 @@ class SaveCancellationReasonResponse {
     required this.typeName,
   });
 
-  factory SaveCancellationReasonResponse.fromJson(Map<String, dynamic> json) => SaveCancellationReasonResponse(
-    calculatorResponse: CalculatorResponse.fromJson(json["calculatorResponse"]),
-    endorsementText: json["endorsementText"] ?? '',
-    requestId: json["requestId"] ?? 0,
-    statusId: json["statusId"] ?? 0,
-    statusName: json["statusName"] ?? '',
-    typeId: json["typeId"] ?? 0,
-    typeName: json["typeName"] ?? '',
-  );
-
+  factory SaveCancellationReasonResponse.fromJson(Map<String, dynamic> json) =>
+      SaveCancellationReasonResponse(
+        calculatorResponse:
+            CalculatorResponse.fromJson(json["calculatorResponse"]),
+        endorsementText: json["endorsementText"] ?? '',
+        requestId: json["requestId"] ?? 0,
+        statusId: json["statusId"] ?? 0,
+        statusName: json["statusName"] ?? '',
+        typeId: json["typeId"] ?? 0,
+        typeName: json["typeName"] ?? '',
+      );
 }
 
 class CalculatorResponse {
@@ -47,15 +47,21 @@ class CalculatorResponse {
     required this.totalCost,
   });
 
-  factory CalculatorResponse.fromJson(Map<String, dynamic> json) => CalculatorResponse(
-    paymentYearsCount: json["PaymentYearsCount"] ?? 0,
-    renewYearsCount: json["RenewYearsCount"] ?? 0,
-    activitiesCostDetailes: json["ActivitiesCostDetailes"] != null ? List<ActivitiesCostDetaile>.from(json["ActivitiesCostDetailes"].map((x) => ActivitiesCostDetaile.fromJson(x))) : null,
-    costsInfo: List<CostsInfo>.from(json["CostsInfo"].map((x) => CostsInfo.fromJson(x))),
-    detailedCostList: json["DetailedCostList"] != null ? List<String>.from(json["DetailedCostList"].map((x) => x)) : [],
-    totalCost: (json["TotalCost"]??0) + 0.0,
-  );
-
+  factory CalculatorResponse.fromJson(Map<String, dynamic> json) =>
+      CalculatorResponse(
+        paymentYearsCount: json["PaymentYearsCount"] ?? 0,
+        renewYearsCount: json["RenewYearsCount"] ?? 0,
+        activitiesCostDetailes: json["ActivitiesCostDetailes"] != null
+            ? List<ActivitiesCostDetaile>.from(json["ActivitiesCostDetailes"]
+                .map((x) => ActivitiesCostDetaile.fromJson(x)))
+            : null,
+        costsInfo: List<CostsInfo>.from(
+            json["CostsInfo"].map((x) => CostsInfo.fromJson(x))),
+        detailedCostList: json["DetailedCostList"] != null
+            ? List<String>.from(json["DetailedCostList"].map((x) => x))
+            : [],
+        totalCost: (json["TotalCost"] ?? 0) + 0.0,
+      );
 }
 
 class ActivitiesCostDetaile {
@@ -69,12 +75,12 @@ class ActivitiesCostDetaile {
     required this.refrence,
   });
 
-  factory ActivitiesCostDetaile.fromJson(Map<String, dynamic> json) => ActivitiesCostDetaile(
-    activtyCost:   (json["ActivtyCost"] ?? 0) + 0.0,
-    cleaningCost:   (json["CleaningCost"] ?? 0) + 0.0,
-    refrence: json["Refrence"] ?? '',
-  );
-
+  factory ActivitiesCostDetaile.fromJson(Map<String, dynamic> json) =>
+      ActivitiesCostDetaile(
+        activtyCost: (json["ActivtyCost"] ?? 0) + 0.0,
+        cleaningCost: (json["CleaningCost"] ?? 0) + 0.0,
+        refrence: json["Refrence"] ?? '',
+      );
 }
 
 class CostsInfo {
@@ -89,9 +95,8 @@ class CostsInfo {
   });
 
   factory CostsInfo.fromJson(Map<String, dynamic> json) => CostsInfo(
-    costItemDescription: json["CostItemDescription"] ?? '',
-    costItemTypeId: json["CostItemTypeId"],
-    costItemValue: (json["CostItemValue"] ?? 0) + 0.0,
-  );
-
+        costItemDescription: json["CostItemDescription"] ?? '',
+        costItemTypeId: json["CostItemTypeId"],
+        costItemValue: (json["CostItemValue"] ?? 0) + 0.0,
+      );
 }

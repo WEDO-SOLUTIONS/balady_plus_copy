@@ -20,7 +20,9 @@ class ComplainceGISResponse extends Equatable {
   final String? regionCode;
   final dynamic imageUrl;
   final String? guid;
-
+  final bool? targetBuilding;
+  // Local Variable
+  bool? isEmtithalMand;
   ComplainceGISResponse(
       {this.amanaCode,
       this.amanaName,
@@ -39,28 +41,32 @@ class ComplainceGISResponse extends Equatable {
       this.region,
       this.regionCode,
       this.imageUrl,
-      this.guid});
+      this.guid,
+      this.targetBuilding,
+      this.isEmtithalMand});
 
   factory ComplainceGISResponse.fromJson(Map<String, dynamic> json) {
     return ComplainceGISResponse(
-        amanaCode: json["Amana_code"],
-        amanaName: json["Amana_Name"],
-        municipalityCode: json["MunicipalityCode"],
-        municipalityName: json["MunicipalityName"],
-        districtCode: json["DistrictCode"],
-        districtName: json["DistrictName"],
-        streetName: json["StreetName"],
-        streetCode: json["StreetCode"],
-        city: json["City"],
-        cityCode: json["CityCode"],
-        planName: json["PlanName"],
-        planNo: json["PlanNO"],
-        parcelNo: json["ParcelNo"],
-        area: json["Area"],
-        region: json["Region"],
-        regionCode: json["RegionCode"],
-        imageUrl: json["ImageUrl"],
-        guid: json["ParcelBuilding"]?[0]?["GUID"]);
+      amanaCode: json["Amana_code"],
+      amanaName: json["Amana_Name"],
+      municipalityCode: json["MunicipalityCode"],
+      municipalityName: json["MunicipalityName"],
+      districtCode: json["DistrictCode"],
+      districtName: json["DistrictName"],
+      streetName: json["StreetName"],
+      streetCode: json["StreetCode"],
+      city: json["City"],
+      cityCode: json["CityCode"],
+      planName: json["PlanName"],
+      planNo: json["PlanNO"],
+      parcelNo: json["ParcelNo"],
+      area: json["Area"],
+      region: json["Region"],
+      regionCode: json["RegionCode"],
+      imageUrl: json["ImageUrl"],
+      targetBuilding: json["TargetBuilding"],
+      guid: json["ParcelBuilding"]?[0]?["GUID"],
+    );
   }
 
   @override
@@ -82,7 +88,9 @@ class ComplainceGISResponse extends Equatable {
         region,
         regionCode,
         imageUrl,
-        guid
+        guid,
+        targetBuilding,
+        isEmtithalMand
       ];
 
   String getFullAddress({

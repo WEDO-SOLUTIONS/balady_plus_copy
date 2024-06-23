@@ -22,7 +22,7 @@ class LocationPermissionDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-              padding: const EdgeInsets.symmetric(horizontal: 26,vertical: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 24),
               decoration: BoxDecoration(
                   color: AppColor.white,
                   borderRadius: BorderRadius.circular(12)),
@@ -83,7 +83,6 @@ class LocationPermissionDialog extends StatelessWidget {
                   EnhancedCustomElevatedButtonWidget(
                     btnPressed: () {
                       Navigator.of(context).pop();
-
                     },
                     btnText: ("notNow").tr(),
                     btnTextSize: 16,

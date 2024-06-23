@@ -10,6 +10,7 @@ class FileDataItem extends Equatable {
   final Uint8List? bytes;
   final String? id;
   final int sizeInMB;
+  final dynamic? fileKey;
 
   const FileDataItem(
       {required this.fileBase64,
@@ -18,7 +19,8 @@ class FileDataItem extends Equatable {
       this.isUploaded = false,
       this.id,
       this.sizeInMB = 0,
-      this.bytes});
+      this.bytes,
+      this.fileKey});
 
   FileDataItem initialState() => const FileDataItem(
         fileBase64: "",
@@ -29,28 +31,29 @@ class FileDataItem extends Equatable {
         sizeInMB: 0,
       );
 
-  FileDataItem copyWith({
-    String? fileName,
-    String? filePath,
-    String? fileBase64,
-    bool? isUploaded,
-    String? id,
-    int? sizeInMB,
-     Uint8List? bytes
-  }) {
+  FileDataItem copyWith(
+      {String? fileName,
+      String? filePath,
+      String? fileBase64,
+      bool? isUploaded,
+      String? id,
+      int? sizeInMB,
+      Uint8List? bytes,
+      String? fileKey}) {
     return FileDataItem(
-      fileBase64: fileBase64 ?? this.fileBase64,
-      fileName: fileName ?? this.fileName,
-      filePath: filePath ?? this.filePath,
-      isUploaded: isUploaded ?? this.isUploaded,
-      id: id ?? this.id,
-      sizeInMB: sizeInMB ?? this.sizeInMB,
-      bytes: bytes ?? this.bytes
-    );
+        fileBase64: fileBase64 ?? this.fileBase64,
+        fileName: fileName ?? this.fileName,
+        filePath: filePath ?? this.filePath,
+        isUploaded: isUploaded ?? this.isUploaded,
+        id: id ?? this.id,
+        sizeInMB: sizeInMB ?? this.sizeInMB,
+        fileKey: fileKey ?? this.fileKey,
+        bytes: bytes ?? this.bytes);
   }
 
   @override
-  List<Object?> get props => [id, isUploaded, filePath, fileName, sizeInMB];
+  List<Object?> get props =>
+      [id, isUploaded, filePath, fileName, sizeInMB, fileKey];
 
   @override
   String toString() {

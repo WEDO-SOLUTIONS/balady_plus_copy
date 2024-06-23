@@ -7,7 +7,7 @@ import '../entity/construction_license_inquery_data_entity.dart';
 import '../repository/repository.dart';
 
 class GetConstructionLicenseInqueryData
-    extends UseCase<ResponseBodyModel<ConstructionLicenseData>, (int,String)> {
+    extends UseCase<ResponseBodyModel<ConstructionLicenseData>, (int, String)> {
   final ConstructionLicenseInqueryRepository repository;
 
   GetConstructionLicenseInqueryData({required this.repository});

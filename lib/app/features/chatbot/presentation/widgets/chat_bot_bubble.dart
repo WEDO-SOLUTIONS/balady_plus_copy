@@ -24,9 +24,8 @@ class ChatBotBubble extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(
-        crossAxisAlignment: isResponse
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
+        crossAxisAlignment:
+            isResponse ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
@@ -36,12 +35,8 @@ class ChatBotBubble extends StatelessWidget {
                   ? AppColor.blackModern50Light
                   : AppColor.primary800Light,
               borderRadius: BorderRadiusDirectional.only(
-                topEnd: isResponse
-                    ? Radius.zero
-                    : const Radius.circular(10),
-                topStart: isResponse
-                    ? const Radius.circular(10)
-                    : Radius.zero,
+                topEnd: isResponse ? Radius.zero : const Radius.circular(10),
+                topStart: isResponse ? const Radius.circular(10) : Radius.zero,
                 bottomStart: const Radius.circular(10),
                 bottomEnd: const Radius.circular(10),
               ),
@@ -61,7 +56,7 @@ class ChatBotBubble extends StatelessWidget {
               child: body,
             ),
           ),
-          const SizedBox(height: 4,width: double.maxFinite),
+          const SizedBox(height: 4, width: double.maxFinite),
           CustomTextWidget(
             timeStamp?.toTime() ?? "",
             textStyle: AppStyle.dateTextStyle,

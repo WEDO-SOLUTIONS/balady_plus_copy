@@ -3,12 +3,11 @@ import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_mo
 import 'package:dartz/dartz.dart';
 
 abstract class ChatBotRepository {
+  Future<Either<Failure, ChatBotMessageModel>> sendQuestionMessage(
+      {required String question});
 
-  Future<Either<Failure, ChatBotMessageModel>> sendQuestionMessage( {required String question});
-
-
-  Future<Either<Failure, Stream>> sendQuestionMessageSSE( {required String question});
+  Future<Either<Failure, Stream>> sendQuestionMessageSSE(
+      {required String question});
 
   Future<Either<Failure, bool>> chatBotIsEnabled();
-
-  }
+}

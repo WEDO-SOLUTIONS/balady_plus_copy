@@ -17,7 +17,7 @@ class ApplyCancelViewModel extends BaseViewModel {
   final int licenseId;
   final SubmitterInfo submitterInfo;
   final ReasonCancel reasonCancel;
-  String? messageHtml ;
+  String? messageHtml;
   ApplyCancelViewModel({
     required this.webService,
     required this.licenseId,
@@ -43,14 +43,14 @@ class ApplyCancelViewModel extends BaseViewModel {
       isLoading = false;
       notifyListeners();
       return CancellationRequestResponse.fromJson(result);
-    }  on Exception catch (exception) {
+    } on Exception catch (exception) {
       CommonFunctions.sendEvent(
         dioError: exception is DioException ? exception : null,
         response: response,
         ex: exception,
       );
       String message = exception.toString();
-      if(message.contains('href')) {
+      if (message.contains('href')) {
         messageHtml = message;
       } else {
         showError(message);
@@ -68,4 +68,3 @@ class ApplyCancelViewModel extends BaseViewModel {
     return null;
   }
 }
-

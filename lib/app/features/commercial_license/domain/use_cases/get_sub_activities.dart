@@ -8,8 +8,7 @@ class GetSubActivities extends UseCase<List<SubActivityEntity>, String> {
 
   GetSubActivities({required this.repository});
   @override
-  Future<Either<Failure, List<SubActivityEntity>>> call(
-      String params) async {
+  Future<Either<Failure, List<SubActivityEntity>>> call(String params) async {
     return await repository.getSubActivities(isicCode: params);
   }
 }

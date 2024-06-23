@@ -11,7 +11,8 @@ class GetRequestFlow extends UseCase<List<RequestStepModel>, KeyParamsModel> {
   GetRequestFlow(this.repository);
 
   @override
-  Future<Either<Failure, List<RequestStepModel>>> call(KeyParamsModel params) async {
+  Future<Either<Failure, List<RequestStepModel>>> call(
+      KeyParamsModel params) async {
     return await repository.getRequestFlow(params);
   }
 }

@@ -37,47 +37,47 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => provider,
-        child: Scaffold(
-          body: Column(
-            children: [
-              const AppBarChatBot(),
-              Expanded(
-                child: Selector<ChatBotProvider, bool>(
-                  selector: (_, provider) => provider.isLoadingEnabled,
-                  builder: (_, isLoading, __) {
-                    return isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : provider.isEnabled
-                            ? const Column(
-                                children: [
-                                  ChatBotList(),
-                                  SendMessageCardChatBot(),
-                                ],
-                              )
-                            : Padding(
+      create: (context) => provider,
+      child: Scaffold(
+        body: Column(
+          children: [
+            const AppBarChatBot(),
+            Expanded(
+              child: Selector<ChatBotProvider, bool>(
+                selector: (_, provider) => provider.isLoadingEnabled,
+                builder: (_, isLoading, __) {
+                  return isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : provider.isEnabled
+                          ? const Column(
+                              children: [
+                                ChatBotList(),
+                                SendMessageCardChatBot(),
+                              ],
+                            )
+                          : Padding(
                               padding: const EdgeInsets.all(18.0),
                               child: Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'chat_bot_not_working_title'.tr(),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Text(
-                                        'chat_bot_not_working_message'.tr(),
-                                      ),
-                                    ],
-                                  ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'chat_bot_not_working_title'.tr(),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      'chat_bot_not_working_message'.tr(),
+                                    ),
+                                  ],
                                 ),
+                              ),
                             );
-                  },
-                ),
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   @override

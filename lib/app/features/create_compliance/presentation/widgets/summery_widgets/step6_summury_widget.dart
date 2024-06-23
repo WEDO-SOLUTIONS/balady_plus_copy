@@ -24,7 +24,7 @@ class Step6SummeryWidget extends StatelessWidget {
           leading: SvgPicture.asset(IconPath.vdSummuryPhoto),
           children: [
             AttachmentListWidget(
-              attachments: state.attachments
+              attachments: state.viewAttachments
                       ?.where((element) => element.isUploaded)
                       .toList() ??
                   [],

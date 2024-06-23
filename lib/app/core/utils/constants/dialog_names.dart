@@ -168,4 +168,7 @@ class DialogName {
   static const howToApplySheetDialog = '/howToApplySheetDialog';
   static const requirementsSheetDialog = '/howToApplySheetDialog';
   static const requirementsFinesSheetDialog = '/howToApplySheetDialog';
+
+  static const notificationsProductsDialog = '/notificationsProductsDialog';
+  static const notificationsServicesDialog = '/notificationsServicesDialog';
 }

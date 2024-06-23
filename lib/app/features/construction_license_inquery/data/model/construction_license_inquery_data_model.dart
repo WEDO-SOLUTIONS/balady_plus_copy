@@ -1,4 +1,3 @@
-
 import '../../../survey_license_inquery_report/data/model/survey_inquery_data_model.dart';
 import '../../domain/entity/construction_license_inquery_data_entity.dart';
 
@@ -15,8 +14,8 @@ class ConstructionLicenseDataModel extends ConstructionLicenseData {
     super.buildingTypeName,
     super.x,
     super.y,
-    super.surveyReport,});
-
+    super.surveyReport,
+  });
 
   ConstructionLicenseDataModel.fromJson(dynamic json) {
     licenseId = json['licenseId'];
@@ -30,14 +29,13 @@ class ConstructionLicenseDataModel extends ConstructionLicenseData {
     buildingTypeName = json['buildingTypeName'];
     x = json['x'];
     y = json['y'];
-    surveyReport = json['surveyReport'] != null ? SurveyReportDataModel.fromJson(json['surveyReport']) : null;
+    surveyReport = json['surveyReport'] != null
+        ? SurveyReportDataModel.fromJson(json['surveyReport'])
+        : null;
   }
-
- 
 }
 
-
-class SurveyReportDataModel  extends SurveyReport{
+class SurveyReportDataModel extends SurveyReport {
   SurveyReportDataModel({
     super.licenseId,
     super.oldLicenseId,
@@ -57,7 +55,6 @@ class SurveyReportDataModel  extends SurveyReport{
     super.districtId,
     super.districtName,
     super.mapNumber,
-
   });
 
   SurveyReportDataModel.fromJson(dynamic json) {
@@ -84,13 +81,5 @@ class SurveyReportDataModel  extends SurveyReport{
     districtId = json['districtId'];
     districtName = json['districtName'];
     mapNumber = json['mapNumber'];
-
   }
-
-
-
-
 }
-
-
-

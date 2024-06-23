@@ -4,9 +4,11 @@
 
 import 'dart:convert';
 
-CancelAppointmentResponse cancelAppointmentModelFromJson(String str) => CancelAppointmentResponse.fromJson(json.decode(str));
+CancelAppointmentResponse cancelAppointmentModelFromJson(String str) =>
+    CancelAppointmentResponse.fromJson(json.decode(str));
 
-String CancelAppointmentResponseToJson(CancelAppointmentResponse data) => json.encode(data.toJson());
+String CancelAppointmentResponseToJson(CancelAppointmentResponse data) =>
+    json.encode(data.toJson());
 
 class CancelAppointmentResponse {
   CancelAppointmentResponse({
@@ -17,15 +19,21 @@ class CancelAppointmentResponse {
   List<StatusDetail>? statusDetails;
   Data? data;
 
-  factory CancelAppointmentResponse.fromJson(Map<String, dynamic> json) => CancelAppointmentResponse(
-    statusDetails: json["statusDetails"] == null ? null : List<StatusDetail>.from(json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+  factory CancelAppointmentResponse.fromJson(Map<String, dynamic> json) =>
+      CancelAppointmentResponse(
+        statusDetails: json["statusDetails"] == null
+            ? null
+            : List<StatusDetail>.from(
+                json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "statusDetails": statusDetails == null ? null : List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
-    "data": data == null ? null : data!.toJson(),
-  };
+        "statusDetails": statusDetails == null
+            ? null
+            : List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
+        "data": data == null ? null : data!.toJson(),
+      };
 }
 
 class Data {
@@ -40,16 +48,18 @@ class Data {
   bool? result;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    responseCode: json["responseCode"] == null ? null : json["responseCode"],
-    responseMessage: json["responseMessage"] == null ? null : json["responseMessage"],
-    result: json["result"] == null ? null : json["result"],
-  );
+        responseCode:
+            json["responseCode"] == null ? null : json["responseCode"],
+        responseMessage:
+            json["responseMessage"] == null ? null : json["responseMessage"],
+        result: json["result"] == null ? null : json["result"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "responseCode": responseCode == null ? null : responseCode,
-    "responseMessage": responseMessage == null ? null : responseMessage,
-    "result": result == null ? null : result,
-  };
+        "responseCode": responseCode == null ? null : responseCode,
+        "responseMessage": responseMessage == null ? null : responseMessage,
+        "result": result == null ? null : result,
+      };
 }
 
 class StatusDetail {
@@ -62,12 +72,12 @@ class StatusDetail {
   String? message;
 
   factory StatusDetail.fromJson(Map<String, dynamic> json) => StatusDetail(
-    code: json["code"] == null ? null : json["code"],
-    message: json["message"] == null ? null : json["message"],
-  );
+        code: json["code"] == null ? null : json["code"],
+        message: json["message"] == null ? null : json["message"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "code": code == null ? null : code,
-    "message": message == null ? null : message,
-  };
+        "code": code == null ? null : code,
+        "message": message == null ? null : message,
+      };
 }

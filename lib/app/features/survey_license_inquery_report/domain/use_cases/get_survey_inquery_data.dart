@@ -7,13 +7,13 @@ import '../entity/survey_inquery_data_entity.dart';
 import '../repository/repository.dart';
 
 class GetSurveyInqueryData
-    extends UseCase<ResponseBodyModel<SurveyInqueryData>, (int,String)> {
+    extends UseCase<ResponseBodyModel<SurveyInqueryData>, (int, String)> {
   final SurveyInqueryRepository repository;
 
   GetSurveyInqueryData({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<SurveyInqueryData>>> call(
-      (int,String) params) async {
+      (int, String) params) async {
     return await repository.getLicenseData(params.$1, params.$2);
   }
 }

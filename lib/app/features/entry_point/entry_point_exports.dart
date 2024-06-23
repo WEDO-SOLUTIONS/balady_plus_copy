@@ -41,11 +41,6 @@ export 'domain/use_cases/get_cookie.dart';
 export 'domain/use_cases/get_apigee_token.dart';
 export 'domain/use_cases/get_payment_url.dart';
 
-
-
-
-
-
 //! presentation
 /// presentation -> blocs
 

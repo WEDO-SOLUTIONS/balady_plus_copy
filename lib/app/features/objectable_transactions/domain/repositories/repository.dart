@@ -34,6 +34,9 @@ abstract class RequestsRepository {
   Future<Either<Failure, UploadFileResponse>> uploadFile(
       {required UploadFileParams params});
 
+      Future<Either<Failure, UploadFileResponse>> uploadFileV2(
+      {required UploadFileParams params});
+
   Future<Either<Failure, CreateObjectionResponse>> createObjection(
       {required CreateObjectionParams params});
 

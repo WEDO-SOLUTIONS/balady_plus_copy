@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/extensions/arabic_number_text_input_formatter.dart';
 import '../../../../_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../_shared_feature_/presentation/widgets/check_boxes/text_field_with_check_btn.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
@@ -20,7 +19,7 @@ import '../book_new_appointment_widgets/book_appointment_attachments_widget_new.
 import '../book_new_appointment_widgets/book_appointment_special_needs_widget.dart';
 
 class NewAppointmentBody extends StatefulWidget {
-  NewAppointmentBody({Key? key}) : super(key: key);
+  const NewAppointmentBody({Key? key}) : super(key: key);
 
   @override
   _NewAppointmentBody createState() => _NewAppointmentBody();
@@ -56,7 +55,7 @@ class _NewAppointmentBody extends State<NewAppointmentBody> {
 
                 const CustomVerticalSpace(height: 30.0),
 
-                AppointmentAttachmentSection(),
+                const AppointmentAttachmentSection(),
 
                 Constants.verticalSpaceMedium,
                 // special needs
@@ -102,6 +101,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
 
   @override
   Widget build(BuildContext context) {
+    print("HERRR");
     NewAppointmentFirstStepViewModel model =
         Provider.of<NewAppointmentFirstStepViewModel>(context, listen: true);
     return Column(
@@ -112,8 +112,8 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               'bookNewAppointmentAppointmentInformationWord'),
           img: "titleItemsIconAppointment@3x.png",
         ),*/
-        CustomVerticalSpace(height: 16),
-        if (model.categoriesList != null && model.categoriesList.isNotEmpty)
+        const CustomVerticalSpace(height: 16),
+        if (model.categoriesList.isNotEmpty)
           CustomTapWidgetForLongDialog(
             items: model.categoriesList,
             value: model.catetgoryType,
@@ -131,10 +131,21 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           items: model.municipalitiesList,
           value: model.municipalityType,
           onChangeType: (DropDownItem? item) {
-            if (item != null) model.getSubMunicipalities(item);
-            model.validateForm();
+            if (item != null && item.externalSystem==false) {
+              model.getSubMunicipalities(item);
+              model.validateForm();
+            }
+            else if (item != null && item.externalSystem==true)
+            {
+
+                CommonFunctions.showError( "${"redircetionMessage1".tr()}${item.name}${"redircetionMessage2".tr()}"+"<a href=\"${item.externalSystemUrl}\"> ${"here".tr()}</a>",true);
+
+                //
+
+              }
+
           },
-          label: ("homeUpComingAppointmentMunicipalityWord").tr(),
+          label: ("homeUpComingAppointmentMunicipality").tr(),
           hint: ("bookNewAppointmentMunicipalityDropDownHintWord").tr(),
           searchHint: ("search_for_municipality").tr(),
         ),
@@ -145,7 +156,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (item != null) model.getMainClassifications(item);
             model.validateForm();
           },
-          label: ("homeUpComingAppointmentMunicipalWord").tr(),
+          label: ("homeUpComingAppointmentMunicipalEntity").tr(),
           hint: ("bookNewAppointmentMunicipalDropDownHintWord").tr(),
           searchHint: ("search_for_sub_municipality").tr(),
           errorText: ('select_municipality_first').tr(),
@@ -214,7 +225,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               model.validateForm();
             },
           ),*/
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         CustomTextFieldWidgetWithOptinal(
           controller: model.dataModel.transactionNoController,
           focusNode: _transactionNoFocusNode,
@@ -228,7 +239,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           onSaved: (_) {
             FocusScope.of(context).requestFocus(_descFocusNode);
           },
-          inputFormatter: [new LengthLimitingTextInputFormatter(10)],
+          inputFormatter: [LengthLimitingTextInputFormatter(10)],
           validator: (text) {
             if (text.toString().isEmpty) {
               return ('text_field_error').tr();
@@ -240,12 +251,75 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             model.validateForm();
           },
         ),
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         if (model.serviceConfigResponse?.getDepartmentName() != null)
           FieldData(
               title: ("bookNewAppointmentAppointmentAreaWord").tr(),
               subTitle: model.serviceConfigResponse?.getDepartmentName()),
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
+
+        if (model.dataModel.isRealEstate()) ...[
+          TextWithCheckBtn(
+            title: "realEstateRequestId".tr(),
+            hint: "realEstateRequestId".tr(),
+            textInputType: TextInputType.text,
+            backgroundColor: Colors.transparent,
+            controller: model.dataModel.realEstateRequestIdController,
+            validate: (String? t) {},
+            isValidate: model.dataModel.requestRealStateVerified ?? false,
+            currentValue: model.dataModel.realEstateRequestId,
+            verify: () {
+              model.checkRealStateRequest();
+            },
+            onTextChanged: (value) {
+              model.dataModel.realEstateRequestId = value;
+              model.dataModel.requestRealStateVerified = false;
+              model.validateForm();
+            },
+            showToolTip: true,
+            toolTipMessage: "realEstateRequestIdNote".tr(),
+          ),
+          const CustomVerticalSpace(height: 16),
+          CustomTextFieldWidget(
+            controller: model.dataModel.realEstateSurveyIdController,
+            fillColor: Colors.transparent,
+            label: ("realEstateSurveyId").tr(),
+            hintText: ("realEstateSurveyId").tr(),
+            maxLines: 1,
+            keyboardType: TextInputType.text,
+            inputFormatters: const [],
+            onValidate: (text) {
+              if (text.toString().isEmpty) {
+                return ('text_field_error').tr();
+              }
+              return null;
+            },
+            textInputAction: TextInputAction.done,
+            onChanged: (text) {
+              model.dataModel.realEstateSurveyId = text;
+              model.validateForm();
+            },
+          ),
+          const CustomVerticalSpace(height: 16),
+          CustomTextFieldWidget(
+            controller: model.dataModel.realEstateIdController,
+            fillColor: Colors.transparent,
+            label: ("realEstateId").tr(),
+            hintText: ("realEstateId").tr(),
+            maxLines: 1,
+            keyboardType: TextInputType.text,
+            inputFormatters: const [],
+            onValidate: (text) {
+              return null;
+            },
+            textInputAction: TextInputAction.done,
+            onChanged: (text) {
+              model.dataModel.realEstateId = text;
+              model.validateForm();
+            },
+          ),
+          const CustomVerticalSpace(height: 16),
+        ],
 
         CustomTextFieldWidget(
           controller: model.dataModel.descController,

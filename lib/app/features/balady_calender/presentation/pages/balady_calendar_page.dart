@@ -79,9 +79,7 @@ class BaladyCalendarPage extends StatelessWidget {
                       child: Text(
                         "balady_calendar".tr(),
                         style: AppStyle.appBarTitleTextStyle.copyWith(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 16
-                        ),
+                            fontWeight: FontWeight.w900, fontSize: 16),
                       ),
                     ),
                     const ActionShowTypeDateWidget(),

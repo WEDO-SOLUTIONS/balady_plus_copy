@@ -15,6 +15,8 @@ class UploadFile extends UseCase<UploadFileResponse, AttachmentItem> {
         attachStream: item.base64, filePath: item.filePath, index: item.index);
     String fileName = params.filePath?.split('/').last ?? "";
     String memo = fileName;
+    // fileName = fileName.replaceAll("أ", "ا");
+    ;
     int extensionIndex = fileName.lastIndexOf(".");
     if (extensionIndex != -1 && extensionIndex != 0) {
       memo = fileName.substring(0, extensionIndex);

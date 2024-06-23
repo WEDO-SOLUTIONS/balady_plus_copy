@@ -64,7 +64,9 @@ class _CRStep9WorkTimesState extends State<CRStep9WorkTimes> {
                   ),
                 ),
               ),
-              CRPreviousNextButtons(
+              (state.status.isSubmissionLoading)
+                  ? const Center(child: CustomCircularLoadingWidget())
+                  : CRPreviousNextButtons(
                 onPressed: () {
                   context.read<WorkTimesCubit>().save();
 

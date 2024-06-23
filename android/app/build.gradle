@@ -58,8 +58,8 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [
-           //     'appAuthRedirectScheme': 'com.momra.balady',
-               'appAuthRedirectScheme': 'com.balady'
+                //     'appAuthRedirectScheme': 'com.momra.balady',
+                'appAuthRedirectScheme': 'com.balady'
         ]
 
     }
@@ -82,27 +82,43 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : null
-            applicationVariants.all { variant ->
-                variant.outputs.all { output ->
-                    output.outputFileName = "app-release.apk"
-                }
-            }
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile(
                     'proguard-android-optimize.txt'),
-                    'proguard-rules.pro'            
+                    'proguard-rules.pro'
         }
-         debug {
+        debug {
             minifyEnabled true
             proguardFiles getDefaultProguardFile(
                     'proguard-android-optimize.txt'),
                     'proguard-rules.pro'
         }
-    }    
+    }
+
+
+    flavorDimensions "default"
+    productFlavors {
+        stg {
+            dimension "default"
+            resValue "string", "app_name", "App Staging"
+            versionCode 1000 + android.defaultConfig.versionCode
+//            versionNameSuffix ".stg"
+//            applicationIdSuffix ".stg"
+//            applicationId  "com.balady.balady_app"
+        }
+        prod {
+            dimension "default"
+            resValue "string", "app_name", "بلدي"
+        }
+        pre {
+            dimension "default"
+            resValue "string", "app_name", "بلدي"
+        }
+    }
 
     lintOptions {
-       checkReleaseBuilds false
-       abortOnError false
+        checkReleaseBuilds false
+        abortOnError false
     }
 
 }
@@ -115,7 +131,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4" 
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
 
 }
 apply plugin: 'com.google.gms.google-services'

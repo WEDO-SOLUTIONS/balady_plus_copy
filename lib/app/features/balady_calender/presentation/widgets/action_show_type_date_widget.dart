@@ -53,10 +53,10 @@ class ActionShowTypeDateWidget extends StatelessWidget {
               selector: (_, provider) => provider.params.hijri,
               builder: (BuildContext context, hijri, Widget? child) {
                 return Text(
-                  hijri ? "balady_calendar_hijri".tr() : "balady_calendar_gregorian".tr(),
-                  style: AppStyle.mainTextStyle.copyWith(
-                    fontSize: 10
-                  ),
+                  hijri
+                      ? "balady_calendar_hijri".tr()
+                      : "balady_calendar_gregorian".tr(),
+                  style: AppStyle.mainTextStyle.copyWith(fontSize: 10),
                 );
               },
             ),

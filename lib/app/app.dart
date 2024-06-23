@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/features/_shared_features/notifications_count/cubit_notification_count/notifications_item_cubit.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
@@ -36,17 +38,17 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FlutterUxConfig config = FlutterUxConfig(
-        enableAdvancedGestureRecognition: true,
-        enableCrashHandling: true,
-        enableMultiSessionRecord: true,
-        enableNetworkLogging: true,
-        userAppKey: "2w1otnta9bvvhzo",
-        enableAutomaticScreenNameTagging: false);
-    FlutterUxcam.optIntoSchematicRecordings();
-
-    FlutterUxcam.startWithConfiguration(config);
-
+    if (RemoteConfig.uxCamKey.isNotEmpty) {
+      FlutterUxConfig config = FlutterUxConfig(
+          enableAdvancedGestureRecognition: true,
+          enableCrashHandling: true,
+          enableMultiSessionRecord: true,
+          enableNetworkLogging: true,
+          userAppKey: RemoteConfig.uxCamKey,
+          enableAutomaticScreenNameTagging: false);
+      FlutterUxcam.optIntoSchematicRecordings();
+      FlutterUxcam.startWithConfiguration(config);
+    }
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(

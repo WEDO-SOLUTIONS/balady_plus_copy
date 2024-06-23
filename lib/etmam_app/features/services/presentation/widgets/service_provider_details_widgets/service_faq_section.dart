@@ -7,10 +7,8 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentat
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/etmam_app/features/services/presentation/blocs/service_details_bloc/service_details_bloc.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show AppFontWeight, trans;
+import '../../../../../core/utils/utils_exports.dart' show AppFontWeight, trans;
 import '../../../../_shared_feature_/shared/presentation/widgets/custom_expansion_widget.dart';
-
 
 class ServiceFaqSection extends StatelessWidget {
   const ServiceFaqSection({
@@ -27,58 +25,57 @@ class ServiceFaqSection extends StatelessWidget {
             const SizedBox(height: 16),
             (state.response.service?.faqs?.length ?? 0) > 0
                 ? Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 16),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                color: AppColor.white,
-                boxShadow: Constants.boxShadow,
-              ),
-              child: Column(
-                children: [
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    separatorBuilder: (_, __) =>
-                    const SizedBox(height: 8),
-                    itemCount:
-                    (state.response.service?.faqs?.length ?? 0) > 3
-                        ? 3
-                        : (state.response.service?.faqs?.length ?? 0),
-                    itemBuilder: (_, index) =>ExpansionItemWidget(
-                      title:
-                      state.response.service?.faqs?[index].question ??
-                          "",
-                      subTitle:
-                      state.response.service?.faqs?[index].answer ??
-                          "",
-                      isExpanded: index == 0,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 16),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      color: AppColor.white,
+                      boxShadow: Constants.boxShadow,
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  if ((state.response.service?.faqs?.length ?? 0) >
-                      3)
-                    CustomElevatedButtonWidget(
-                      btnText:  trans("show_all"),
-                      btnTextColor: AppColor.primary900Light,
-                      btnTextSize: 12,
-                      btnTextWeight: AppFontWeight.bold,
-                      btnHeight: 42,
-                      btnRadius: 8,
-                      btnBorderWidth: 1,
-                      btnColor: AppColor.white,
-                      btnBorderColor: AppColor.primary900Light,
-                      btnPadding:
-                      const EdgeInsets.symmetric(horizontal: 16),
-                      btnPressed: () {
-                        NavigationService.pushNamed(
-                            routeName: EtmamRoutesNames.faqPage,
-                            args: state.response.service?.faqs);
-                      },
+                    child: Column(
+                      children: [
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 8),
+                          itemCount:
+                              (state.response.service?.faqs?.length ?? 0) > 3
+                                  ? 3
+                                  : (state.response.service?.faqs?.length ?? 0),
+                          itemBuilder: (_, index) => ExpansionItemWidget(
+                            title:
+                                state.response.service?.faqs?[index].question ??
+                                    "",
+                            subTitle:
+                                state.response.service?.faqs?[index].answer ??
+                                    "",
+                            isExpanded: index == 0,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        if ((state.response.service?.faqs?.length ?? 0) > 3)
+                          CustomElevatedButtonWidget(
+                            btnText: trans("show_all"),
+                            btnTextColor: AppColor.primary900Light,
+                            btnTextSize: 12,
+                            btnTextWeight: AppFontWeight.bold,
+                            btnHeight: 42,
+                            btnRadius: 8,
+                            btnBorderWidth: 1,
+                            btnColor: AppColor.white,
+                            btnBorderColor: AppColor.primary900Light,
+                            btnPadding:
+                                const EdgeInsets.symmetric(horizontal: 16),
+                            btnPressed: () {
+                              NavigationService.pushNamed(
+                                  routeName: EtmamRoutesNames.faqPage,
+                                  args: state.response.service?.faqs);
+                            },
+                          ),
+                      ],
                     ),
-                ],
-              ),
-            )
+                  )
                 : const SizedBox(),
           ],
         );
@@ -86,7 +83,6 @@ class ServiceFaqSection extends StatelessWidget {
     );
   }
 }
-
 
 // class ServiceFaqSection extends StatelessWidget {
 //   const ServiceFaqSection({Key? key}) : super(key: key);

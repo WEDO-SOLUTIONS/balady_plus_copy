@@ -1,8 +1,11 @@
 import 'package:balady_plus/app/core/utils/enums/message_types.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import 'custom_alert_dialog_widget.dart';
 
 class CustomPopUpsWidgets {
@@ -254,6 +257,7 @@ class CustomPopUpsWidgets {
   static Future<bool> showHTMLErrorMessageDialog(
     BuildContext context,
     String errorText,
+      bool isHtml,
   ) async =>
       (await showGeneralDialog<bool>(
         barrierColor: Colors.black.withOpacity(0.6),
@@ -265,6 +269,7 @@ class CustomPopUpsWidgets {
               child: CustomHTMLAlertDialogWidget(
                 titleMessageType: MessageType.error,
                 contentText: errorText,
+                  isHtml:isHtml
               ),
             ),
           );
@@ -279,6 +284,34 @@ class CustomPopUpsWidgets {
       )) ??
       false;
 
+  static Future<dynamic> showBottomSheetWithBlock(
+      BuildContext context, RequestOwnershipTransferDetailsCubit? bloc,
+      {required Widget child,
+      bool isFullHeight = true,
+      double? height,
+      double? radius}) async {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenStatusBarHeight = MediaQuery.of(context).padding.top + 5;
+    return (showModalBottomSheet(
+          context: context,
+          isDismissible: true,
+          isScrollControlled: true,
+          enableDrag: false,
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.vertical(top: Radius.circular(radius ?? 10)),
+          ),
+          builder: (context) => SizedBox(
+            // height: height ?? screenHeight * 0.90, // 90% from screenHeight
+            height: isFullHeight
+                ? height ?? screenHeight - screenStatusBarHeight
+                : null,
+            child: BlocProvider.value(value: bloc!, child: child),
+          ),
+        )) ??
+        false;
+  }
+
   static Future<dynamic> showBottomSheet(BuildContext context,
       {required Widget child,
       bool isFullHeight = true,
@@ -286,7 +319,7 @@ class CustomPopUpsWidgets {
       double? radius}) async {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenStatusBarHeight = MediaQuery.of(context).padding.top + 5;
-    return (await showModalBottomSheet(
+    return (showModalBottomSheet(
           context: context,
           isDismissible: true,
           isScrollControlled: true,

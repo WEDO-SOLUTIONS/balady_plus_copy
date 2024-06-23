@@ -4,7 +4,7 @@ class EventsCountInYearsItem extends Equatable {
   final int year;
   final int eventsCount;
 
-  const EventsCountInYearsItem({required this.year,required this.eventsCount});
+  const EventsCountInYearsItem({required this.year, required this.eventsCount});
 
   factory EventsCountInYearsItem.fromJson(Map<String, dynamic> json) =>
       EventsCountInYearsItem(

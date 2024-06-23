@@ -144,7 +144,6 @@ class SelectOrgnizationEvent extends EkramAddDeceasedEvent {
   SelectOrgnizationEvent({this.item});
 }
 
-
 class GetBaquieApprovalEvent extends EkramAddDeceasedEvent {
   GetBaquieApprovalEvent();
 }

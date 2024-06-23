@@ -1,17 +1,22 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../../core/errors/exceptions.dart';
 import '../../../../../../core/remote_services/api_constants.dart';
 import '../../../../../../core/remote_services/web_service.dart';
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/utils/common_functions.dart';
+import '../../../../../../core/utils/constants/apis/api_info.dart';
 import '../../../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 import '../../../../../new_appointment/presentation/core/models/cancel_appointment_response.dart';
 import '../../../../../new_appointment/presentation/core/models/confirm_appointment_response.dart';
 import '../../../../../new_appointment/presentation/core/models/my_appointments_response.dart';
 import '../../../../../new_appointment/presentation/core/models/save_appointment_reseponse.dart';
+import '../../../../../../core/services/global/web_service.dart' as web;
 
 class AppointmentRepository {
   final webServices = locator<WebService>();
@@ -57,30 +62,26 @@ class AppointmentRepository {
   Future<Tuple3<bool?, String?, AppointmentDetails?>> getAppointmentDetails(
       int appointmentId) async {
     String query = appointmentId.toString();
-    final body = await webServices
-        .getApigeeRequest(ApiConstants.AppointmentDetails, relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
 
-    AppointmentDetails? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    var res;
+
     try {
-      AppointmentDetails response =
-          AppointmentDetails.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
+      res =
+          await sl<web.WebService>().dio.get(ApiUrl.getAppointmentById(query));
+
+      AppointmentDetails response = AppointmentDetails.fromJson(res.data);
+
+      return Tuple3<bool?, String?, AppointmentDetails?>(true, "", response);
+    } on DioException catch (error) {
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentDetails,
-            qeuryParms: query,
-            data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+      return Tuple3<bool?, String?, AppointmentDetails?>(
+          false, ex.toString(), null);
     }
-    return Tuple3<bool?, String?, AppointmentDetails?>(state, error, result);
   }
 
   Future<Tuple4<bool?, String?, Uint8List?, String?>> printAppointment(

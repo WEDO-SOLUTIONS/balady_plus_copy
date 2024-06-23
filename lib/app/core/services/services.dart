@@ -117,9 +117,7 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "weather", "description": null, "tag": null}
     },*/
   ],
-  "municipal_services":
-  [
-
+  "municipal_services": [
     {
       "id": 11124,
       "icon": "license_query",
@@ -128,7 +126,10 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "requireLogin": false,
       "isImportant": false,
-      "action": {"type": "page", "value": RouteName.constructionLicenseOverView},
+      "action": {
+        "type": "page",
+        "value": RouteName.constructionLicenseOverView
+      },
       "ar": {
         "title": "inquiry_construction_license",
         "description": null,
@@ -140,8 +141,6 @@ Map<String, dynamic> servicesConfig = {
         "tag": null
       }
     },
-
-
     {
       "id": 11428,
       "icon": "license_query",
@@ -150,19 +149,17 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "requireLogin": false,
       "isImportant": false,
-      "action": {"type": "page", "value": RouteName.surveyReportInqueryOverView},
+      "action": {
+        "type": "page",
+        "value": RouteName.surveyReportInqueryOverView
+      },
       "ar": {
         "title": "survey_report_inquery",
         "description": null,
         "tag": null
       },
-      "en": {
-        "title": "survey_report_inquery",
-        "description": null,
-        "tag": null
-      }
+      "en": {"title": "survey_report_inquery", "description": null, "tag": null}
     },
-
     {
       "id": 11134,
       "icon": "license_query",
@@ -735,7 +732,7 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "supporter", "description": null, "tag": null},
       "en": {"title": "supporter", "description": null, "tag": null}
     },
-     {
+    {
       "id": 407,
       "icon": "chat_bot",
       "3d_icon": null,

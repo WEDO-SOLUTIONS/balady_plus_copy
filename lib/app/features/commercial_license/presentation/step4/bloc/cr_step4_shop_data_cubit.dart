@@ -410,21 +410,6 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
       emit(state.copyWith(status: BlocStatus.success));
     });
-
-    /* final response = await _saveActivityDetails(SubmitActivityDetailRequest(
-        requestId: requestId,
-        workerTypeId: state.workerType!.index,
-        area: state.totalArea ?? 0,
-        detailedActivityId: state.selectedSubActivity!.id!));
-
-    response.fold(
-        (failure) => emit(state.copyWith(
-              status: BlocStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            )), (success) {
-      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
-      emit(state.copyWith(status: BlocStatus.success));
-    });*/
   }
 
   void salamaReportFawery() async {
@@ -689,8 +674,6 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
     bool draftLoaded = state.draftLoaded ?? false;
 
-    print(isDraft);
-    print(draftLoaded);
     if (draftLoaded == false && isDraft) {
       // if (true) {
       CommercialRequestDetailsResponse? requestData =
@@ -751,7 +734,6 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       QrLookUpItem? selectedMall = state.selectedMall;
 
       try {
-        print("EXXXXXX {$requestData?.shopInfo?.mallDto}");
         if (requestData?.shopInfo?.mallDto != null &&
             requestData?.shopInfo?.mallDto["id"] != null &&
             requestData?.shopInfo?.mallDto["name"] != null) {

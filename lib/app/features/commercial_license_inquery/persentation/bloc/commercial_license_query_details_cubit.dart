@@ -9,29 +9,29 @@ import '../../domain/use_cases/get_commercial_license_query_data.dart';
 
 part 'commercial_license_query_details_state.dart';
 
-class CommercialLicenseQueryDetailsCubit extends Cubit<CommercialLicenseQueryDetailsState> {
+class CommercialLicenseQueryDetailsCubit
+    extends Cubit<CommercialLicenseQueryDetailsState> {
   final GetCommercialLicenseQueryData getCommercialLicenseQueryData;
   final int commercialLicenseNumber;
   final int unifiedFacilityNumber;
   //CommercialLicenseDataModel? objcommercialLicenceDetails,
 
-  CommercialLicenseQueryDetailsCubit(
-      this.getCommercialLicenseQueryData,
-      this.commercialLicenseNumber,
-      this.unifiedFacilityNumber
-      ) : super(const CommercialLicenseQueryDetailsState()){
+  CommercialLicenseQueryDetailsCubit(this.getCommercialLicenseQueryData,
+      this.commercialLicenseNumber, this.unifiedFacilityNumber)
+      : super(const CommercialLicenseQueryDetailsState()) {
     getCommercialLicenseQueryDetails(
-      commercialLicenseNumber,unifiedFacilityNumber
-    );
+        commercialLicenseNumber, unifiedFacilityNumber);
   }
 
-  Future<void> getCommercialLicenseQueryDetails(int commercialLicenseNumber,int unifiedFacilityNumber ) async {
+  Future<void> getCommercialLicenseQueryDetails(
+      int commercialLicenseNumber, int unifiedFacilityNumber) async {
     emit(
       state.copyWith(status: BlocRequestStatus.submissionGetLoading),
     );
-    final failureOrSuccess = await getCommercialLicenseQueryData((commercialLicenseNumber,unifiedFacilityNumber));
+    final failureOrSuccess = await getCommercialLicenseQueryData(
+        (commercialLicenseNumber, unifiedFacilityNumber));
     failureOrSuccess.fold(
-          (failure) {
+      (failure) {
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetFailure,
@@ -39,21 +39,15 @@ class CommercialLicenseQueryDetailsCubit extends Cubit<CommercialLicenseQueryDet
           ),
         );
       },
-          (commercialLicenceDetails) {
+      (commercialLicenceDetails) {
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetSuccess,
-            commercialLicenceDetails: (commercialLicenceDetails.data!.result) as CommercialLicenseDataModel ,
+            commercialLicenceDetails: (commercialLicenceDetails.data!.result)
+                as CommercialLicenseDataModel,
           ),
         );
       },
     );
   }
-
-
-
-
-
-
-
 }

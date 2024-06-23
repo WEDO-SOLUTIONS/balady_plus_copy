@@ -3,7 +3,6 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart';
 
-
 class AddIsicActivities extends UseCase<bool, AddIsicActivitiesParams> {
   final CrRepository repository;
 

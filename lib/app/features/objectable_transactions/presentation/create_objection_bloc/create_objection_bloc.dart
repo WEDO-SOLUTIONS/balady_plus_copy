@@ -22,7 +22,7 @@ import '../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../_shared_feature_/data/entities/validators/incident_desc_validation.dart';
 import '../../../objectable_transactions/domain/entities/reason_model.dart';
 import '../../../objectable_transactions/domain/entities/transaction_details.dart';
-import '../../../objectable_transactions/domain/use_cases/upload_file.dart';
+import '../../../objectable_transactions/domain/use_cases/upload_file_v2.dart';
 import '../../../objectable_transactions/objections_exports.dart';
 import '../pages/create_objection_details_page.dart';
 import '../pages/create_objection_request_info_page.dart';
@@ -36,7 +36,7 @@ part 'create_objection_state.dart';
 class CreateObjectionBloc
     extends Bloc<CreateObjectionEvent, CreateObjectionState> {
   final CreateObjection _createObjection;
-  final UploadFile _uploadFile;
+  final UploadFileV2 _uploadFile;
   final TransactionDetails? details;
   final ObjectableTransactionsEntity? item;
   PageController controller = PageController();
@@ -50,7 +50,7 @@ class CreateObjectionBloc
 
   CreateObjectionBloc({this.item, this.details})
       : _createObjection = CreateObjection(repository: sl()),
-        _uploadFile = UploadFile(repository: sl()),
+        _uploadFile = UploadFileV2(repository: sl()),
         super(CreateObjectionState(
           reasons: [ReasonModel()],
           details: details,
@@ -73,7 +73,7 @@ class CreateObjectionBloc
         emit(state.copyWith(status: BlocStatus.loading));
 
         List<ReasonModel> reasons = state.reasons ?? [];
-        reasons.add(ReasonModel());
+        reasons.add(ReasonModel(guid: CommonFunctions.generateGUID()));
         emit(state.copyWith(status: BlocStatus.success, reasons: reasons));
       },
     );
@@ -189,6 +189,8 @@ class CreateObjectionBloc
           objectionTypeId: item?.objectionTypeId,
           objectedTransactionId: item?.transactionId,
           serviceTypeId: item?.serviceTypeId,
+          licenseNumber: item?.licenseNumber,
+          licenseTypeID: item?.licenseTypeID,
           objectedTransactionDisplayNumber: item?.transactionNumber, //
           submitterRole: CommonProperties.selectedDelegator != null
               ? CommonProperties.selectedDelegator?.roleId

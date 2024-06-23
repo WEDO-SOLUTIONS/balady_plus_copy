@@ -112,7 +112,8 @@ class CommercialLicenseCancelBloc
       emitter(
         SubmitCancelRequestSucceededState(
           submitResponse: submitResponse!,
-          totalCost: saveCancellationReasonResponse!.calculatorResponse.totalCost,
+          totalCost:
+              saveCancellationReasonResponse!.calculatorResponse.totalCost,
         ),
       );
 

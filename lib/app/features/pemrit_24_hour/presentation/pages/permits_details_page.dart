@@ -22,7 +22,7 @@ class _Permits24DetailsPageState extends State<Permits24DetailsPage> {
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.Permit_24_Open_Create_Details_Event);
-         CommonFunctions.sendUXCamEvent(
+    CommonFunctions.sendUXCamEvent(
         UXCamEvents.Permit_24_Open_Review_Step_Event);
   }
 

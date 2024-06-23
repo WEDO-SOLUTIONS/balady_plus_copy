@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show  AppColorsTheme;
+import '../../../../../core/utils/utils_exports.dart' show AppColorsTheme;
 
 class CustomBoxWidget extends StatelessWidget {
   final double width;

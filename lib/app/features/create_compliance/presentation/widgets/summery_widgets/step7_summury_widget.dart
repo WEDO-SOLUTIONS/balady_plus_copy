@@ -19,7 +19,8 @@ class Step7SummeryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
-        return state.requestDetails?.requestNote != null
+        return state.requestDetails?.requestNote != null &&
+                state.requestDetails?.statusId == 12
             ? CustomExpansionPanelWidget(
                 title: ("notes").tr(),
                 leading: SvgPicture.asset(IconPath.vdSummuryPhoto),

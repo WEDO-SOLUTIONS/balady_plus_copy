@@ -48,8 +48,7 @@ enum BlocRequestStatus {
   submissionDeleteCanceled,
   submissionDeleteFailure,
   submissionDeleteSuccess,
-  failure
-  ;
+  failure;
 
   bool get isSubmissionInitial => this == BlocRequestStatus.initial;
   bool get isRequestChanged => this == BlocRequestStatus.requestChanged;

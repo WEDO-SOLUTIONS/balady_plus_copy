@@ -179,4 +179,16 @@ class RequestsRepositoryImplementation implements RequestsRepository {
       return Left(ServerFailure(error.errorMessage));
     }
   }
+  
+  @override
+  Future<Either<Failure, UploadFileResponse>> uploadFileV2({required UploadFileParams params})  async {
+    try {
+      final data = await remoteDataSource.uploadFileV2(params: params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 }

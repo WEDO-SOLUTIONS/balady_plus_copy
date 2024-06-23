@@ -35,8 +35,6 @@ class ObjectionsDetailsBloc
         cancelObjection = CancelObjection(repository: sl()),
         getObjectablePermit = GetObjectablePermit(repository: sl()),
         super(ObjectionDetailsState()) {
-
-
     on<ObjectionDetailsEvent>((event, emit) {});
 
     on<GetObjectionDetailsEvent>(_getObjectionDetailsHandler);
@@ -51,40 +49,75 @@ class ObjectionsDetailsBloc
     String? hash = state.details?.requestSubmitterData?.objectedTransactionUrl
         ?.split("/")
         .lastOrNull;
+    print(
+        "SERViceType ${state.details?.requestSubmitterData?.objectedTransactionUrl}");
 
-    if (serviceTypeId == "3" || serviceTypeId == "4" || serviceTypeId == null) {
+    if (serviceTypeId == "3" || serviceTypeId == "4") {
       add(GetTransactionDetailsEvent(
           params: TransactionDetailsParams(
         applicationId: state.details?.serviceGroupId ?? "13",
         id: state.details?.requestSubmitterData?.objectedTransactionId ?? "",
       )));
-    } else if (serviceTypeId == "1") {
-      emitter(state.copyWith(status: BlocStatus.loading));
+    } else if (state.details?.serviceGroupId == "1003") {
+      print("YYY $serviceTypeId");
+      if (serviceTypeId == "1") {
+        print("III");
+        emitter(state.copyWith(status: BlocStatus.loading));
 
-      var failureOrSuccess = await getObjectablePermit(hash ?? "");
+        var failureOrSuccess = await getObjectablePermit(hash ?? "");
 
-      await failureOrSuccess.fold((failure) {
-        emitter(state.copyWith(
-          status: BlocStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
-      }, (success) async {
-        if (success.isNotEmpty) {
-          CommonFunctions.openBaladyWebView(success, isObjections: true);
-        } else {
-          CommonFunctions.openBaladyWebView(
-              "${RemoteConfig.baladyBaseUrl}/dashboardclient/requests/details/${hash}",
-              isObjections: true);
-        }
-        emitter(state.copyWith(
-          status: BlocStatus.success,
-          errorMessage: "",
-        ));
-      });
-    } else if (serviceTypeId == "2") {
-      CommonFunctions.openBaladyWebView(
-          "${RemoteConfig.baladyBaseUrl}/dashboardclient/licenses/details/${hash}",
-          isObjections: true);
+        await failureOrSuccess.fold((failure) {
+          print(failure);
+
+          emitter(state.copyWith(
+            status: BlocStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        }, (success) async {
+          print(success);
+          if (success.isNotEmpty) {
+            CommonFunctions.openBaladyWebView(success, isObjections: true);
+          } else {
+            CommonFunctions.openBaladyWebView(
+                "${RemoteConfig.baladyBaseUrl}/dashboardclient/requests/details/${hash}",
+                isObjections: true);
+          }
+          emitter(state.copyWith(
+            status: BlocStatus.success,
+            errorMessage: "",
+          ));
+        });
+      } else if (serviceTypeId == "2") {
+        CommonFunctions.openBaladyWebView(
+            "${RemoteConfig.baladyBaseUrl}/dashboardclient/licenses/details/${hash}",
+            isObjections: true);
+      }
+    } else if (state.details?.serviceGroupId == "1200") {
+      var splitted = state.details?.requestSubmitterData?.objectedTransactionUrl
+          ?.split("/requestType/");
+
+      hash = splitted?[0].split("/").lastOrNull;
+      var typeName = serviceTypeId == "1" ? 'requests' : "licenses";
+      CommonFunctions.openBaladyWebView(RemoteConfig.baladyBaseUrl +
+          "/dashboardclient/" +
+          typeName +
+          '/construction-details/' +
+          (hash ?? "") +
+          '/requestType/' +
+          "1200");
+    } else if (state.details?.serviceGroupId == "1100") {
+      var splitted = state.details?.requestSubmitterData?.objectedTransactionUrl
+          ?.split("/requestType/");
+
+      hash = splitted?[0].split("/").lastOrNull;
+      var typeName = serviceTypeId == "1" ? 'requests' : "licenses";
+      CommonFunctions.openBaladyWebView(RemoteConfig.baladyBaseUrl +
+          "/dashboardclient/" +
+          typeName +
+          '/construction-details/' +
+          (hash ?? "") +
+          '/requestType/' +
+          "1100");
     }
   }
 
@@ -107,7 +140,8 @@ class ObjectionsDetailsBloc
       ));
 
       CommonFunctions.showSuccess("objctions_cancelled");
-      add(GetObjectionDetailsEvent(params: state.details?.objectionRequestNumber ?? ""));
+      add(GetObjectionDetailsEvent(
+          params: state.details?.objectionRequestNumber ?? ""));
     });
   }
 
@@ -157,6 +191,4 @@ class ObjectionsDetailsBloc
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
   }
-
-
 }

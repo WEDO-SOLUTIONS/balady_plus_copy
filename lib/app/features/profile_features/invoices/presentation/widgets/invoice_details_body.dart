@@ -409,8 +409,10 @@ class InvoiceObjectionsList extends StatelessWidget {
                               Navigator.of(context).pushNamed(
                                 RouteName.objectionsDetailsPage,
                                 arguments: {
-                                  "objectionRequestNumber": state.invoice?.objections?[index]
-                                      .requestNumberAsText ??
+                                  "objectionRequestNumber": state
+                                          .invoice
+                                          ?.objections?[index]
+                                          .requestNumberAsText ??
                                       "",
                                 },
                               );

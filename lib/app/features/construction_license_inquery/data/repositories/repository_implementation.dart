@@ -6,18 +6,19 @@ import '../../domain/entity/construction_license_inquery_data_entity.dart';
 import '../../domain/repository/repository.dart';
 import '../data_source/remote_data_source.dart';
 
-
-class ConstructionLicenseInqueryRepositoryImplementation implements ConstructionLicenseInqueryRepository {
+class ConstructionLicenseInqueryRepositoryImplementation
+    implements ConstructionLicenseInqueryRepository {
   final ConstructionLicenseInqueryRemoteDataSource remoteDataSource;
 
   ConstructionLicenseInqueryRepositoryImplementation({
     required this.remoteDataSource,
   });
-  
+
   @override
-  Future<Either<Failure, ResponseBodyModel<ConstructionLicenseData>>> getLicenseData( int licenseNumber,String date) async {
+  Future<Either<Failure, ResponseBodyModel<ConstructionLicenseData>>>
+      getLicenseData(int licenseNumber, String date) async {
     try {
-      final data = await remoteDataSource.getLicenseData(  licenseNumber,date);
+      final data = await remoteDataSource.getLicenseData(licenseNumber, date);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -25,7 +26,4 @@ class ConstructionLicenseInqueryRepositoryImplementation implements Construction
       return Left(ServerFailure(error.errorMessage));
     }
   }
-
-
-
 }

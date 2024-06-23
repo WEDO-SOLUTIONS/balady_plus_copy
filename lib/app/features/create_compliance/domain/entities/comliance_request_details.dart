@@ -1,7 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../vd/domain/entities/gis/gis_params.dart';
 import 'dart:convert' as c;
+
+import '../../data/models/comliance_request_details_model.dart';
 
 class ComplianceRequestDetails extends Equatable {
   final int? requestId;
@@ -49,7 +53,11 @@ class ComplianceRequestDetails extends Equatable {
   final List<dynamic>? requestOwnersDto;
   final dynamic etmamOrderResponseDto;
   final bool? usageDisable;
+  final bool? isRequestReturnedFromMunicipality;
   final List<MainEmtithalItemsDto>? mainEmtithalItemsDto;
+  final List<ApplicantNote>? applicantNotes;
+   bool? isReadOnly;
+   bool? showMomtathelVisitSection;
 
   ComplianceRequestDetails(
       {this.requestId,
@@ -97,11 +105,31 @@ class ComplianceRequestDetails extends Equatable {
       this.requestOwnersDto,
       this.etmamOrderResponseDto,
       this.usageDisable,
-      this.mainEmtithalItemsDto});
+      this.mainEmtithalItemsDto,
+      this.isRequestReturnedFromMunicipality,
+      this.applicantNotes,
+      this.isReadOnly,
+      this.showMomtathelVisitSection});
 
   @override
   // TODO: implement props
   List<Object?> get props => [];
+}
+
+class ApplicantNote {
+  final String? note;
+  final String? date;
+  final String? statusName;
+  final String? author;
+  final AttachmentDto? noteAttachment;
+
+  ApplicantNote({
+    this.note,
+    this.date,
+    this.statusName,
+    this.author,
+    this.noteAttachment,
+  });
 }
 
 class Attachment {
@@ -138,16 +166,90 @@ class EmtithalItem {
   final String? itemId;
   final String? momItemId;
   final String? itemDesc;
-  bool? submitterAnswer;
-  final dynamic empAnswer;
+  int? submitterAnswer;
+  final int? empAnswer;
+  String? notes;
 
-  EmtithalItem({
-    this.itemId,
-    this.momItemId,
-    this.itemDesc,
-    this.submitterAnswer,
-    this.empAnswer,
-  });
+  final List<ItemData>? itemData;
+  final bool? showNotApplicable;
+  final bool? mandToAttach;
+  final AttachmentDto? attachmentDto;
+  FileDataItem? file;
+  bool? edit;
+
+  EmtithalItem(
+      {this.itemId,
+      this.momItemId,
+      this.itemDesc,
+      this.submitterAnswer,
+      this.empAnswer,
+      this.itemData,
+      this.showNotApplicable,
+      this.mandToAttach,
+      this.attachmentDto,
+      this.file,
+      this.notes,
+      this.edit});
+
+  String? getCurrentAnswer() {
+    int? ans;
+    if (submitterAnswer == null && empAnswer != null) {
+      ans = empAnswer;
+    } else {
+      ans = submitterAnswer;
+    }
+
+    switch (ans) {
+      case 0:
+        return "nonـcompliance".tr();
+      case 1:
+        return "compliance".tr();
+      case 2:
+        return "Not_Applicable".tr();
+    }
+  }
+
+  bool isAttachmentRequired(bool isReturned) {
+    if (isReturned) {
+      if (submitterAnswer == 1) {
+        return true;
+      } else if (submitterAnswer == 2) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    return false;
+  }
+
+  bool isNoteRequired(bool isReturned) {
+    if (isReturned) {
+      if (submitterAnswer == 1 || submitterAnswer == 2) {
+        return true;
+      }
+    } else {
+      if (submitterAnswer == 2) return true;
+    }
+    return false;
+  }
+
+  bool showNoteAndAttachments(bool isReturned) {
+    if (isReturned) {
+      if ((submitterAnswer == 1 && (empAnswer != null && empAnswer != 1)) ||
+          submitterAnswer == 2 ||
+          (empAnswer == 1 && submitterAnswer == 1)) {
+        return true;
+      }
+    } else {
+      if (submitterAnswer == 2) return true;
+    }
+    return false;
+  }
+
+  bool showEdit(bool isReturned) {
+    if (isReturned && empAnswer == 1) return true;
+    return false;
+  }
 }
 
 class LocationResponseInfoDto {
@@ -172,6 +274,7 @@ class LocationResponseInfoDto {
   final dynamic isLocationCorrect;
   final dynamic guid;
   final LandsInfo? landsInfo;
+  final bool? emtithalMand;
 
   LocationResponseInfoDto(
       {this.municipalityId,
@@ -194,7 +297,8 @@ class LocationResponseInfoDto {
       //  this.landArea,
       this.isLocationCorrect,
       this.guid,
-      this.landsInfo});
+      this.landsInfo,
+      this.emtithalMand});
 
   String getFullAddress({
     bool includeStreetName = true,
@@ -420,57 +524,95 @@ class MainEmtithalItemsDto {
     this.mainItemDesc,
     this.subEmtithalItems,
   });
-
-  factory MainEmtithalItemsDto.fromJson(Map<String, dynamic> json) =>
-      MainEmtithalItemsDto(
-        mainItemId: json["mainItemId"],
-        mainItemDesc: json["mainItemDesc"],
-        subEmtithalItems: json["subEmtithalItems"] == null
-            ? []
-            : List<SubEmtithalItem>.from(json["subEmtithalItems"]!
-                .map((x) => SubEmtithalItem.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "mainItemId": mainItemId,
-        "mainItemDesc": mainItemDesc,
-        "subEmtithalItems": subEmtithalItems == null
-            ? []
-            : List<dynamic>.from(subEmtithalItems!.map((x) => x.toJson())),
-      };
 }
 
 class SubEmtithalItem {
   final String? itemId;
   final String? momItemId;
   final String? itemDesc;
-  final bool? submitterAnswer;
-  final bool? empAnswer;
+  final int? submitterAnswer;
+  final int? empAnswer;
+  final List<ItemData>? itemData;
+  final bool? showNotApplicable;
+  final bool? mandToAttach;
+  final AttachmentDto? attachmentDto;
 
-  SubEmtithalItem({
-    this.itemId,
-    this.momItemId,
-    this.itemDesc,
-    this.submitterAnswer,
-    this.empAnswer,
+  SubEmtithalItem(
+      {this.itemId,
+      this.momItemId,
+      this.itemDesc,
+      this.submitterAnswer,
+      this.empAnswer,
+      this.itemData,
+      this.showNotApplicable,
+      this.mandToAttach,
+      this.attachmentDto});
+}
+
+class AttachmentDto {
+  final dynamic id;
+  final dynamic name;
+  final String? allowedFilesExtension;
+  final bool? isMandatory;
+  final bool? attached;
+  final bool? approved;
+  final dynamic attachUrl;
+  final dynamic notes;
+  final bool? updatable;
+  final int? maxSize;
+  final dynamic attachDescription;
+  final dynamic fileName;
+  final String? fileKey;
+  final String? downloadPath;
+
+  AttachmentDto(
+      {this.id,
+      this.name,
+      this.allowedFilesExtension,
+      this.isMandatory,
+      this.attached,
+      this.approved,
+      this.attachUrl,
+      this.notes,
+      this.updatable,
+      this.maxSize,
+      this.attachDescription,
+      this.fileName,
+      this.fileKey,
+      this.downloadPath});
+}
+
+class ItemData {
+  final String? note;
+  final bool? isLastNote;
+  final int? answer;
+  final int? statusId;
+  final String? statusName;
+  final bool? isBaladiaSource;
+  final String? date;
+  final ItemDataAttachment? attachment;
+
+  ItemData({
+    this.note,
+    this.isLastNote,
+    this.answer,
+    this.statusId,
+    this.statusName,
+    this.isBaladiaSource,
+    this.date,
+    this.attachment,
   });
 
-  factory SubEmtithalItem.fromJson(Map<String, dynamic> json) =>
-      SubEmtithalItem(
-        itemId: json["itemId"],
-        momItemId: json["momItemId"],
-        itemDesc: json["itemDesc"],
-        submitterAnswer: json["submitterAnswer"],
-        empAnswer: json["empAnswer"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "itemId": itemId,
-        "momItemId": momItemId,
-        "itemDesc": itemDesc,
-        "submitterAnswer": submitterAnswer,
-        "empAnswer": empAnswer,
-      };
+  String? getCurrentAnswer() {
+    switch (answer) {
+      case 0:
+        return "nonـcompliance".tr();
+      case 1:
+        return "compliance".tr();
+      case 2:
+        return "Not_Applicable".tr();
+    }
+  }
 }
 
 class LandsInfo {

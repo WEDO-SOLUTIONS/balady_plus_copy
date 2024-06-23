@@ -14,11 +14,15 @@ class CommercialLicenseAttachmentsViewModel extends BaseViewModel {
 
   List<AttachmentModel> attachments = [];
   final int licenseId;
+  final int? accessedRequestId;
 
   bool fileDone = true;
 
-  CommercialLicenseAttachmentsViewModel(
-      {required this.webService, required this.licenseId}) {
+  CommercialLicenseAttachmentsViewModel({
+    required this.webService,
+    required this.licenseId,
+    this.accessedRequestId,
+  }) {
     getCommercialLicenseCancelAttachments(licenseId);
   }
 
@@ -29,6 +33,9 @@ class CommercialLicenseAttachmentsViewModel extends BaseViewModel {
       notifyListeners();
       response = await webService.dio.get(
         ApiUrl.getLicenseAttachments(licenseId),
+        queryParameters: accessedRequestId != null
+            ? {"accessedRequestId": accessedRequestId}
+            : null,
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;

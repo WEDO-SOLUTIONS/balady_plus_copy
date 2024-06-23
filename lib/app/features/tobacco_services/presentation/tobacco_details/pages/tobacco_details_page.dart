@@ -20,7 +20,6 @@ class TobaccoDetailsPage extends StatefulWidget {
 }
 
 class _TobaccoDetailsPageState extends State<TobaccoDetailsPage> {
-
   @override
   void initState() {
     // TODO: implement initState

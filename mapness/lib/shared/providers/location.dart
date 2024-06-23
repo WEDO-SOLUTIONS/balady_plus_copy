@@ -58,6 +58,7 @@ class _Location extends _$Location {
           return false;
         }
         CommonFunctions.locationDialogShowed = true;
+
         unawaited(
           router
             .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
@@ -78,6 +79,7 @@ class _Location extends _$Location {
         return false;
       }
       CommonFunctions.locationDialogShowed = true;
+
       unawaited(
         router
           .push(LocationErrorSheet(routeOnClose: routeOnClose).location)

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart' show  AppColorsTheme;
+import '../../../../core/utils/utils_exports.dart' show AppColorsTheme;
 import '../../splash_exports.dart'
     show
         BottomLeftLogoWidget,

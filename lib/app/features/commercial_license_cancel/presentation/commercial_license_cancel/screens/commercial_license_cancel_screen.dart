@@ -87,20 +87,21 @@ class _CommercialLicenseCancelScreenState
             // ),
             BlocProvider(
               create: (context) => CommercialLicenseCancelBloc(
-                    webService: sl(),
-                    from: "request",
-                    crNumber: CommonProperties.selectedDelegator!.crNumber!,
-                    crType: CommonProperties.selectedDelegator!.crType,
-                    reasonCancel: data['reasonCancel'],
-                    requestId: data['requestId'],
-                    availableCloseDate: data['availableCloseDate']
-                  ),
+                webService: sl(),
+                from: data['from'],
+                crNumber: data['crNumber'],
+                crType: data['crType'],
+                reasonCancel: data['reasonCancel'],
+                requestId: data['requestId'],
+                availableCloseDate: data['availableCloseDate'],
+              ),
             ),
           ],
           child: Column(
             children: [
               Expanded(
-                child: BlocListener<CommercialLicenseCancelBloc, CommercialLicenseCancelState>(
+                child: BlocListener<CommercialLicenseCancelBloc,
+                    CommercialLicenseCancelState>(
                   listener: (BuildContext context, state) {
                     if (state is CommercialLicenseCancelSucceededState) {
                       setState(() {

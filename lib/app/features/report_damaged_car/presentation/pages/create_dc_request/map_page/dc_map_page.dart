@@ -26,7 +26,6 @@ class DCMapScreen extends StatefulWidget {
 }
 
 class _DCMapScreen extends State<DCMapScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -35,7 +34,8 @@ class _DCMapScreen extends State<DCMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-  MapScreenParams?  params = ModalRoute.of(context)!.settings.arguments as MapScreenParams;
+    MapScreenParams? params =
+        ModalRoute.of(context)!.settings.arguments as MapScreenParams;
 
     return Scaffold(
         backgroundColor: AppColor.white4,

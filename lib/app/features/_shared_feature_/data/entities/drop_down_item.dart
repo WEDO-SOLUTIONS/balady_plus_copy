@@ -5,6 +5,8 @@ class DropDownItem extends Equatable {
 
   /// Value which returned or posted to server
   final String? value;
+  final String? externalSystemUrl;
+  final bool? externalSystem;
   final String? code;
   final int order;
   final dynamic id;
@@ -13,6 +15,8 @@ class DropDownItem extends Equatable {
   const DropDownItem({
     required this.name,
     this.value,
+    this.externalSystemUrl,
+    this.externalSystem,
     this.code,
     this.order = 0,
     this.calculatorValue,

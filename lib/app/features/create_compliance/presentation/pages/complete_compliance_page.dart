@@ -31,9 +31,8 @@ class _CompleteCompliancePageState extends State<CompleteCompliancePage> {
     widget.bloc
       ..add(const GetMainUsagesEvent())
       ..add(const GetOwnerShipTypesEvent())
-      ..add(const GetReciptTypesEvent())
-      // ..add(const GetEngOfficesListEvent())
-      ..add(GetLicensesEvent());
+      ..add(const GetReciptTypesEvent());
+    // ..add(const GetEngOfficesListEvent())
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       widget.bloc.pageController.jumpToPage(3);
@@ -41,7 +40,7 @@ class _CompleteCompliancePageState extends State<CompleteCompliancePage> {
   }
 
   double currentStep = 1;
-
+ 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -49,15 +48,16 @@ class _CompleteCompliancePageState extends State<CompleteCompliancePage> {
       child: BlocListener<ComplianceBloc, ComplianceState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure ||
-              state.detailsStatus == BlocRequestStatus.failure)
+              state.detailsStatus == BlocRequestStatus.failure || state.appointmentsStatus == BlocStatus.failure)
             CommonFunctions.showError(state.errorMessage ?? "");
         },
         child: BlocBuilder<ComplianceBloc, ComplianceState>(
           builder: (context, state) {
+            int no = state.showNewAppointments ? 5 : 4; 
             return Scaffold(
                 backgroundColor: AppColor.scaffoldBackground,
                 appBar: ViolationAppBar(
-                  stepCounter: 4,
+                  stepCounter: no,
                   currentStep: (state.currentStep - 4) + 1,
                   backOnPress: () => context
                       .read<ComplianceBloc>()
@@ -85,7 +85,7 @@ class _CompleteCompliancePageState extends State<CompleteCompliancePage> {
                             }),
                         if (state.status == BlocStatus.loading ||
                             state.detailsStatus ==
-                                BlocRequestStatus.submissionGetLoading)
+                                BlocRequestStatus.submissionGetLoading || state.appointmentsStatus == BlocStatus.loading)
                           const CustomCircularLoadingWidget(),
                       ],
                     )));

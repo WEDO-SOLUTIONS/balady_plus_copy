@@ -41,7 +41,7 @@ class _SplashPageState extends State<SplashPage>
     );
 
     _controller = AnimationController(
-      duration: const Duration(seconds: 3),
+      duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
     _controller.forward();

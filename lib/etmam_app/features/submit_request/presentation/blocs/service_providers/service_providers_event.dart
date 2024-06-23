@@ -20,7 +20,7 @@ class LoadMoreServices extends ServiceProvidersEvent {
   LoadMoreServices();
 }
 
-class GetServicesReleationsEvent extends ServiceProvidersEvent { 
-String? name; 
+class GetServicesReleationsEvent extends ServiceProvidersEvent {
+  String? name;
   GetServicesReleationsEvent({this.name});
 }

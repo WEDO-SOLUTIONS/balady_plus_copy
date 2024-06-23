@@ -38,7 +38,7 @@ class DisclosedListWidget extends StatelessWidget {
                                   child: Row(
                                     children: [
                                       Flexible(
-                                        fit: FlexFit.tight ,
+                                        fit: FlexFit.tight,
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
@@ -61,12 +61,10 @@ class DisclosedListWidget extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-
-
                                       Text(
                                         '${'sar'.tr()} ${e.totalAmount}',
-                                        style: AppStyle
-                                            .requestNumberTextStle.copyWith(
+                                        style: AppStyle.requestNumberTextStle
+                                            .copyWith(
                                           color: AppColor.primary800Light,
                                         ),
                                       )

@@ -13,7 +13,7 @@ import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dar
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/enhanced_widgets/pickers/hijri_picker/hijri_picker.dart'
-as hijri_picker;
+    as hijri_picker;
 
 import '../../data/data_source/remote_data_source.dart';
 import '../../data/repositories/repository_implementation.dart';
@@ -24,13 +24,14 @@ class SurveyReportInqueryScreen extends StatefulWidget {
   const SurveyReportInqueryScreen({Key? key}) : super(key: key);
 
   @override
-  State<SurveyReportInqueryScreen> createState() => _SurveyReportInqueryScreenState();
+  State<SurveyReportInqueryScreen> createState() =>
+      _SurveyReportInqueryScreenState();
 }
 
 class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
-
-  final TextEditingController _licenseNumberController = TextEditingController();
- // final TextEditingController _licenseTypeController = TextEditingController();
+  final TextEditingController _licenseNumberController =
+      TextEditingController();
+  // final TextEditingController _licenseTypeController = TextEditingController();
   final TextEditingController _licenseDateController = TextEditingController();
   final FocusNode _licenseNumberDescFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
@@ -49,14 +50,10 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
       appBar: DefaultAppBarWidget(
         title: "back".tr(),
         showBack: true,
-
       ),
       body: getBody(),
-
-
     );
   }
-
 
   Widget getBody() {
     return Column(
@@ -64,7 +61,6 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
         Expanded(
           child: SingleChildScrollView(
             child: Column(
-
               children: [
                 Container(
                   padding: const EdgeInsets.only(
@@ -74,14 +70,11 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
-
-
                       children: [
                         CustomTextWidget(
                           "commercial_licenseـquery_title".tr(),
                           textStyle: AppStyle.complianceTitleStyle,
                           maxLines: 4,
-
                         ),
                         const SizedBox(
                           height: 10,
@@ -99,32 +92,27 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
                           ],
                           fillColor: Colors.transparent,
                           onValidate: (text) {
-                            if (text
-                                .toString()
-                                .isEmpty) {
+                            if (text.toString().isEmpty) {
                               return ("survey_number_error").tr();
                             }
                             return null;
                           },
-
                           textInputAction: TextInputAction.done,
                           spacerSize: 10,
                         ),
-
-
                         CustomTextFieldWidget(
-                            label:"${"issue_data".tr()} *",
+                            label: "${"issue_data".tr()} *",
                             controller: _licenseDateController,
                             fillColor: Colors.transparent,
                             onTap: () {
                               hijri_picker.Picker(
                                 isAr: CommonFunctions.isAppAR,
                                 confirmTextStyle:
-                                AppStyle.textButtonStyle.copyWith(
+                                    AppStyle.textButtonStyle.copyWith(
                                   color: AppColor.primary900Light,
                                 ),
                                 cancelTextStyle:
-                                AppStyle.textButtonStyle.copyWith(
+                                    AppStyle.textButtonStyle.copyWith(
                                   color: AppColor.primary900Light,
                                 ),
                                 headercolor: AppColor.paleGrey,
@@ -132,32 +120,29 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
                                 confirmText: 'choose'.tr(),
                                 title: CustomTextWidget(
                                   'issue_data'.tr(),
-                                  textStyle:
-                                  AppStyle.dropDownTitleTextStyle,
+                                  textStyle: AppStyle.dropDownTitleTextStyle,
                                 ),
                                 hideHeader: false,
-                                adapter: hijri_picker
-                                    .DateTimePickerAdapter(
+                                adapter: hijri_picker.DateTimePickerAdapter(
                                   // minValue: HijriCalendar.fromDate(DateTime.now()),
-                                  maxValue: HijriCalendar.fromDate(
-                                      DateTime.now()),
-                                  customColumnType:
-                                  CommonFunctions.isAppAR
+                                  maxValue:
+                                      HijriCalendar.fromDate(DateTime.now()),
+                                  customColumnType: CommonFunctions.isAppAR
                                       ? [2, 1, 0]
                                       : [0, 1, 2],
-                                  value: HijriCalendar.fromDate(
-                                      DateTime.now()),
+                                  value: HijriCalendar.fromDate(DateTime.now()),
                                 ),
                                 selectedTextStyle: const TextStyle(
                                     color: AppColor.primary900Light),
                                 onConfirm: (picker, value) {
-                                  final date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
+                                  final date = (picker.adapter
+                                          as hijri_picker.DateTimePickerAdapter)
+                                      .value;
                                   if (date != null) {
-
-
                                     setState(() {
-
-                                      _licenseDateController.text = "${date.hYear}/${date.hMonth.toString().padLeft(2,'0')}/${date.hDay.toString().padLeft(2,'0')}";;
+                                      _licenseDateController.text =
+                                          "${date.hYear}/${date.hMonth.toString().padLeft(2, '0')}/${date.hDay.toString().padLeft(2, '0')}";
+                                      ;
                                     });
 
                                     // bloc.add(
@@ -183,18 +168,13 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
                             //controller: bloc.controller,
                             readOnly: true,
                             disabledColor: Colors.transparent,
-
-                            onValidate: (date) =>
-                            date?.isNotEmpty ?? false
+                            onValidate: (date) => date?.isNotEmpty ?? false
                                 ? null
-                                : "issue_date_error".tr()
-                        ),
-
+                                : "issue_date_error".tr()),
                       ],
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -206,8 +186,7 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
                 topRight: Radius.circular(36),
               ),
               color: Colors.white),
-          padding: const EdgeInsets.symmetric(
-              horizontal: 18, vertical: 26),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
           child: CustomElevatedButtonWidget(
             btnColor: AppColor.primary800Light,
             textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -219,27 +198,23 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
             text: "query".tr(),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-
                 NavigatorState navigator = Navigator.of(context);
 
-
-                String date =  _licenseDateController.text.toString().replaceAll("/", "");
+                String date =
+                    _licenseDateController.text.toString().replaceAll("/", "");
                 navigator.pushNamed(
                   RouteName.surveyReportInqueryDetails,
                   arguments: SurveyReportInqueryDetailsCubit(
                       GetSurveyInqueryData(
                         repository: SurveyInqueryRepositoryImplementation(
                             remoteDataSource:
-                            SurveyInqueryRemoteDataSourceImplementation(
-                                webService: sl())),
+                                SurveyInqueryRemoteDataSourceImplementation(
+                                    webService: sl())),
                       ),
-                      int.parse(_licenseNumberController.text.toString().trim()),
-                      date
-
-                  ),
+                      int.parse(
+                          _licenseNumberController.text.toString().trim()),
+                      date),
                 );
-
-
               }
             },
           ),

@@ -1,0 +1,84 @@
+{
+  "project_info": {
+    "project_number": "376161649334",
+    "firebase_url": "https://balady-ece90.firebaseio.com",
+    "project_id": "balady-ece90",
+    "storage_bucket": "balady-ece90.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376161649334:android:a76597f93bd3533c901c17",
+        "android_client_info": {
+          "package_name": "com.balady.balady_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376161649334-old7kujfmtbbkm0rbfjdn6i6u25gqrg5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK8vV41in8m2RUUHKfQlYf23O2vjzqHEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376161649334-old7kujfmtbbkm0rbfjdn6i6u25gqrg5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "376161649334-f3uljm506fv1s1fl3pb9r0rbdpi5lvso.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "momra.balady.ios"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376161649334:android:13c841be8965117e901c17",
+        "android_client_info": {
+          "package_name": "momra.balady.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376161649334-old7kujfmtbbkm0rbfjdn6i6u25gqrg5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK8vV41in8m2RUUHKfQlYf23O2vjzqHEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376161649334-old7kujfmtbbkm0rbfjdn6i6u25gqrg5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "376161649334-f3uljm506fv1s1fl3pb9r0rbdpi5lvso.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "momra.balady.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+
+  ],
+  "configuration_version": "1"
+}

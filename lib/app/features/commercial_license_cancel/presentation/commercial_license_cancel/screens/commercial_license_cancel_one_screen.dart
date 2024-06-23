@@ -138,7 +138,7 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                                           onConfirm: (picker, value) {
                                             final date = (picker.adapter
                                                     as hijri_picker
-                                                        .DateTimePickerAdapter)
+                                                    .DateTimePickerAdapter)
                                                 .value;
                                             if (date != null) {
                                               bloc.add(

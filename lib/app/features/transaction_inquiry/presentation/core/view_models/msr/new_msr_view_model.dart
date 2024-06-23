@@ -15,6 +15,7 @@ import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../../vd/presentation/dialogs/duplicate_request_dialog.dart';
 import '../../../../data/general_inquiry_data.dart';
+import '../../../dialogs/municipal_cert_message_riyadh_dialog.dart';
 import '../../../dialogs/municipality_dialog_msr.dart';
 import '../../models/attachment_model.dart';
 import '../../models/classification.dart';
@@ -409,17 +410,34 @@ class NewMSRViewModel extends BaseViewModel {
       showError(("outside_saudiArabia").tr());
       return false;
     }
-    if (gisResult?.adminMunicipalityId != null) {
-      isAllowed = RemoteConfig.MSRAllowedMuncipalites.contains(
-          gisResult!.adminMunicipalityId!);
-    }
 
-    if (!isAllowed) {
-      showCustomDialog(MunicipalityMSRDialog());
+    bool isInRiyadh = gisResult?.adminMunicipalityId == "004";
+
+    if (isInRiyadh) {
+      showDialog(
+          context: NavigationService.navigatorKey.currentState!.context,
+          barrierDismissible: true,
+          builder: (ctx) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0)),
+              child: MunicipalMessageRiyadhDialog())).then((value) {
+        if (value == true) {
+          navigation.currentState?.pop();
+          navigation.currentState?.pop();
+        }
+      });
     } else {
-      isExcepted = Helpers.checkForExpectedVD(gisResult);
-    }
+      if (gisResult?.adminMunicipalityId != null) {
+        isAllowed = RemoteConfig.MSRAllowedMuncipalites.contains(
+            gisResult!.adminMunicipalityId!);
+      }
 
+      if (!isAllowed) {
+        showCustomDialog(MunicipalityMSRDialog());
+      } else {
+        isExcepted = Helpers.checkForExpectedVD(gisResult);
+      }
+    }
     return isAllowed && !isExcepted;
   }
 

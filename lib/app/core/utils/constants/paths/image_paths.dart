@@ -76,27 +76,6 @@ class ImagePath {
 
   static const boardingloader4 = '${_imagePath}loader4$_png';
 
-  // building requirements
-  static const buildingReq1 = '${_imagePath}building/1$_png';
-  static const buildingReq2 = '${_imagePath}building/2$_png';
-  static const buildingReq3 = '${_imagePath}building/3$_png';
-  static const buildingReq4 = '${_imagePath}building/4$_png';
-  static const buildingReq5 = '${_imagePath}building/5$_png';
-  static const buildingReq6 = '${_imagePath}building/6$_png';
-  static const buildingReq7 = '${_imagePath}building/7$_png';
-  static const buildingReq8 = '${_imagePath}building/8$_png';
-  static const buildingReq9 = '${_imagePath}building/9$_png';
-  static const buildingReq10 = '${_imagePath}building/10$_png';
-  static const buildingReq11 = '${_imagePath}building/11$_png';
-  static const buildingReq12 = '${_imagePath}building/12$_png';
-  static const buildingReq13 = '${_imagePath}building/13$_png';
-  static const buildingReq14 = '${_imagePath}building/14$_png';
-  static const buildingReq15 = '${_imagePath}building/15$_png';
-  static const buildingReq16 = '${_imagePath}building/16$_png';
-  static const buildingReq17 = '${_imagePath}building/17$_png';
-  static const buildingReq18 = '${_imagePath}building/18$_png';
-  static const buildingReq19 = '${_imagePath}building/19$_png';
-
   // Visual Distoration  static const buildingReq17 = '${_imagePath}building_req17$_png';
   static const distortedWritings = '${_imagePath}distortedWritings$_png';
   static const umbrellas = '${_imagePath}umbrellas$_png';
@@ -135,5 +114,4 @@ class ImagePath {
 
   static const backgroundServiceCard =
       '${_imagePath}background_service_card$_png';
-
 }

@@ -20,7 +20,6 @@ class PersonalInformationPage extends StatefulWidget {
 }
 
 class _PersonalInformationPageState extends State<PersonalInformationPage> {
-
   @override
   void initState() {
     super.initState();
@@ -29,7 +28,8 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
 
   @override
   Widget build(BuildContext context) {
-   SsoUserInfo userInfo = ModalRoute.of(context)!.settings.arguments as SsoUserInfo;
+    SsoUserInfo userInfo =
+        ModalRoute.of(context)!.settings.arguments as SsoUserInfo;
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: 'personal_information'.tr(),

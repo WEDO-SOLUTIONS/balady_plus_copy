@@ -54,7 +54,7 @@ class ProfileSections {
             route: RouteName.objections,
           ),
           ProfileItem(
-            title: "wallet".tr(),
+            title: "bottomNavigationBarDigitalWalletWord".tr(),
             icon: IconPath.wallet,
             route: RouteName.walletPage,
           ),

@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/base/base_view.dart';
@@ -22,10 +23,13 @@ import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.
 
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
+import '../../blocs/new_health_certificate_bloc/new_health_certificate_bloc.dart';
 import '../../core/models/license_for_health_information_response.dart';
 import '../../core/models/licesnse_type.dart';
 import '../../core/models/list_response.dart';
 import '../../core/services/view_models/new_details_health_license_view_model.dart';
+import '../../core/services/view_models/new_health_license_view_model.dart';
+import '../../core/services/view_models/new_terms_health_license_view_model.dart';
 import '../../widgets/new_health_certificate_widgets/previous_next_buttons.dart';
 
 ScrollController scrollController = ScrollController();
@@ -53,42 +57,64 @@ class _CertificateInfoStepScreenState extends State<CertificateInfoStepScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<NewDetailsHealthLicenseViewModel>(
-        onModelReady: (model) {},
-        builder: (context, model, child) {
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: Container(
-                    padding: const EdgeInsets.only(bottom: 85),
-                    margin: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          //personal info Section
-                          PersonalInfoSection(),
-                          //location section
-                          JobLocationSection(),
-                        ]),
-                  ),
-                ),
-              ),
-              //MM
+    return BlocBuilder<NewHealthCertificateBloc, NewHealthCertificateState>(
+      builder: (context, state) {
+        bool isLastPage = context.read<NewHealthCertificateBloc>().isLastPage();
 
-              PreviousNextButtons(
-                isFormValid: model.isFormValid,
-                onConfirm: () {
-                  model.hideKeyboard();
-                  // NavigationService.navigatorKey.currentState!
-                  //     .pushNamed(RoutesNames.pledgesStepRoute);
-                },
-              )
-            ],
-          );
-        });
+        return BaseView<NewTermsHealthLicenseViewModel>(
+            onModelReady: (model) {},
+            builder: (context, pledgeModel, child) {
+              return BaseView<NewDetailsHealthLicenseViewModel>(
+                  onModelReady: (model) {},
+                  builder: (context, model, child) {
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            controller: scrollController,
+                            child: Container(
+                              padding: const EdgeInsets.only(bottom: 85),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 24),
+                              child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: const [
+                                    //personal info Section
+                                    PersonalInfoSection(),
+                                    //location section
+                                    JobLocationSection(),
+                                  ]),
+                            ),
+                          ),
+                        ),
+                        //MM
+
+                        PreviousNextButtons(
+                          isFormValid: model.isFormValid,
+                          onConfirm: () async {
+                            final model = locator<HealthLicenseViewModel>();
+
+                            List<String>? terms = await model.getTerms();
+                            print("terms $terms");
+                            if (terms == null) return;
+                            model.hideKeyboard();
+                            if (!isLastPage && terms.isNotEmpty) {
+                              context
+                                  .read<NewHealthCertificateBloc>()
+                                  .add(GoToNextPageEvent());
+                            } else {
+                              model.hideKeyboard();
+                              pledgeModel.submit().then((value) {});
+                            }
+                          },
+                        )
+                      ],
+                    );
+                  });
+            });
+      },
+    );
   }
 }
 

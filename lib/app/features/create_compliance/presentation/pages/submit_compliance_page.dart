@@ -51,12 +51,12 @@ class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
         ..add(const GetMainUsagesEvent())
         ..add(const GetOwnerShipTypesEvent())
         ..add(const GetReciptTypesEvent())
-        //  ..add(const GetEngOfficesListEvent())
-        ..add(GetLicensesEvent()),
+      //  ..add(const GetEngOfficesListEvent())
+      ,
       child: BlocListener<ComplianceBloc, ComplianceState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure ||
-              state.detailsStatus == BlocRequestStatus.failure)
+              state.detailsStatus == BlocRequestStatus.failure || state.appointmentsStatus == BlocStatus.failure)
             CommonFunctions.showError(state.errorMessage ?? "");
         },
         child: BlocBuilder<ComplianceBloc, ComplianceState>(
@@ -92,7 +92,7 @@ class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
                             }),
                         if (state.status == BlocStatus.loading ||
                             state.detailsStatus ==
-                                BlocRequestStatus.submissionGetLoading)
+                                BlocRequestStatus.submissionGetLoading || state.appointmentsStatus == BlocStatus.loading)
                           const CustomCircularLoadingWidget(),
                       ],
                     )));

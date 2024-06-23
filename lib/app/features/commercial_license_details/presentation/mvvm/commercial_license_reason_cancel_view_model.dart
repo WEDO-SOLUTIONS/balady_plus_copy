@@ -18,10 +18,13 @@ class CommercialLicenseReasonCancelViewModel extends BaseViewModel {
   List<ReasonCancel> reasonCancelList = [];
   ReasonCancel? reasonCancel;
 
-  CommercialLicenseReasonCancelViewModel({required this.submitterInfo, required this.webService,required this.licenseId,}) {
+  CommercialLicenseReasonCancelViewModel({
+    required this.submitterInfo,
+    required this.webService,
+    required this.licenseId,
+  }) {
     getCommercialLicenseCancellationReasons();
   }
-
 
   Future<void> getCommercialLicenseCancellationReasons() async {
     Response? response;
@@ -52,7 +55,6 @@ class CommercialLicenseReasonCancelViewModel extends BaseViewModel {
     isLoading = false;
     notifyListeners();
   }
-
 
   void selectReasonCancel(ReasonCancel? selectReasonCancel) {
     reasonCancel = selectReasonCancel;

@@ -22,4 +22,7 @@ class GeneralKey {
 
   static const String Numbersfield = 'Numbersfield';
   static const String MultiSelectDropdown = 'MultiSelect Dropdown';
+
+  static const String appId = 'BaladySuperApp';
+  static const String typeId = 'Mobile';
 }
