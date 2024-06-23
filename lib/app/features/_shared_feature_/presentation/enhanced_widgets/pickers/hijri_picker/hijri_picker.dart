@@ -366,7 +366,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                   top: BorderSide(color: theme!.dividerColor, width: 0.5),
                   bottom: BorderSide(color: theme!.dividerColor, width: 0.5),
                 ),
-                color: picker!.headercolor ?? theme!.bottomAppBarColor,
+                color: picker!.headercolor ?? theme!.bottomAppBarTheme.color,
               ),
         ));
       }
@@ -442,7 +442,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
           : DefaultTextStyle(
               style: TextStyle(
                   fontSize: Picker.defaultTextSize,
-                  color: theme!.textTheme.headline1!.color),
+                  color: theme!.textTheme.displayLarge!.color),
               child: picker!.title!),
     )));
 

@@ -95,7 +95,9 @@ class ProfileImage extends _$ProfileImage {
       final response = await dio.post(
         '/profile/photo',
         data: compressedBytes,
-        options: Options(sendTimeout: const Duration(seconds: 35), receiveTimeout: const Duration(seconds: 35)),
+        options: Options(
+            sendTimeout: const Duration(seconds: 35),
+            receiveTimeout: const Duration(seconds: 35)),
       );
 
       final result = proto.Profile_Photo.fromBuffer(response.data as List<int>);
@@ -114,7 +116,8 @@ class ProfileImage extends _$ProfileImage {
     try {
       if (imgUrl.isEmpty) {
         final profileResponse = await dio.get('/profile');
-        final profileData = proto.ProfileResponse.fromBuffer(profileResponse.data as List<int>);
+        final profileData =
+            proto.ProfileResponse.fromBuffer(profileResponse.data as List<int>);
         imgUrl = profileData.profile.photo.image.url;
       }
 

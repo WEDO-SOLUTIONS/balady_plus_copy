@@ -1,27 +1,27 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class UserStatePicker extends StatelessWidget {
   const UserStatePicker({super.key});
 
   @override
   Widget build(BuildContext context) => const Column(
-      children: [
-        UserStateRow(userState: UserState.guest),
-        UserStateRow(userState: UserState.personal),
-        UserStateRow(userState: UserState.business),
-      ],
-    );
+        children: [
+          UserStateRow(userState: UserState.guest),
+          UserStateRow(userState: UserState.personal),
+          UserStateRow(userState: UserState.business),
+        ],
+      );
 }
 
 class UserStateRow extends ConsumerWidget {
   const UserStateRow({
-    required this.userState, super.key,
+    required this.userState,
+    super.key,
   });
 
   final UserState userState;
@@ -46,9 +46,7 @@ class UserStateRow extends ConsumerWidget {
           child: Row(
             children: [
               SvgPicture.asset(
-                currentLanguage == userState
-                    ? 'assets/icons/svg/ic_radio_on.svg'
-                    : 'assets/icons/svg/ic_radio_off.svg',
+                currentLanguage == userState ? 'assets/icons/svg/ic_radio_on.svg' : 'assets/icons/svg/ic_radio_off.svg',
                 height: 24,
                 width: 24,
                 package: PackageConfig.packageName,
@@ -56,11 +54,9 @@ class UserStateRow extends ConsumerWidget {
               const Spacer(),
               Text(
                 userState.name,
-                style: context.textStyle
-                    .text
-                    .copyWith(
-                      color: context.color.textAndIconsBasePrimary,
-                    ),
+                style: context.textStyle.text.copyWith(
+                  color: context.color.textAndIconsBasePrimary,
+                ),
               ),
             ],
           ),

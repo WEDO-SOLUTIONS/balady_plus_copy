@@ -14,8 +14,8 @@ import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/esri_layers.dart';
 import 'package:mapness/app/routes/events.dart';
+import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
@@ -45,6 +45,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   bool needToShow = true;
   final ValueNotifier<bool> _onScroll = ValueNotifier(false);
   late final DraggableScrollableController _draggableScrollableController;
+  final dashBoardMinimumSize = 0.13;
 
   @override
   void initState() {
@@ -100,6 +101,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   Future<void> setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
+
+    _calculatePadding();
   }
 
   void _calculatePadding() {
@@ -154,6 +157,15 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           type: MaterialType.transparency,
           child: Stack(
             children: [
+              ListenableBuilder(
+                listenable: _draggableScrollableController,
+                builder: (context, child) => (_draggableScrollableController.isAttached &&
+                        _draggableScrollableController.size > dashBoardMinimumSize)
+                    ? GestureDetector(
+                        onTap: () => _hideDashboard(),
+                      )
+                    : const SizedBox.shrink(),
+              ),
               ValueListenableBuilder(
                 valueListenable: _onScroll,
                 builder: (context, _, __) => controls.MapControls(
@@ -184,76 +196,66 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   void _objectTapListener(TapEvent event) {
     final currentRoute = ref.watch(currentRouteProvider);
 
-    const landingPagePath = '/landing';
-    const routingRoutePath = '/routingRoutes';
+    const routingRoutePath = RoutingRoutesRoute.path;
 
     ///TODO: need to refactor after Dashboard refactoring to designSystem
-    ///Ignore hide dashboard tap from other pages
-    if (_draggableScrollableController.size > 0.13 && currentRoute?.currentPath == landingPagePath) {
-      _hideDashboard(event);
-    } else {
-      final goRouter = ref.read(goRouterProvider);
-      if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
-        return;
-      } else if (goRouter.isCurrentRoute(EsriLayersRoute.path)) {
-        ///Close Esri Layers page
-        if (context.mounted) {
-          context.pop();
-          return;
-        }
-      }
-      if (event is ObjectTapEvent) {
-        Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
-            group: MetricsConstants.poiTag,
-            action: MetricAction.tap.toString(),
-            props: {
-              'objectId': event.dgisObjectId.objectId,
-            });
-
-        if (context.mounted) {
-          if (currentRoute?.currentPath == routingRoutePath) {
-            context.pop();
-          }
-          PoiMapRoute.open(
-            ref.read(goRouterProvider),
-            event.dgisObjectId.objectId,
-            latLng: event.latLng,
-          );
-        }
-      } else if (event is RoadEventTapEvent) {
-        Metrics.logEventAdvanced(
-          MetricsConstants.poiKeys.roadEvent,
+    final goRouter = ref.read(goRouterProvider);
+    if (goRouter.isCurrentRoute(RoutingRoute.path)) {
+      return;
+    } else if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
+      return;
+    }
+    if (event is ObjectTapEvent) {
+      Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
           group: MetricsConstants.poiTag,
           action: MetricAction.tap.toString(),
-          props: {'event': event.id.objectId, 'title': event.title},
+          props: {
+            'objectId': event.dgisObjectId.objectId,
+          });
+
+      if (context.mounted) {
+        if (currentRoute?.currentPath == routingRoutePath) {
+          context.pop();
+        }
+        PoiMapRoute.open(
+          ref.read(goRouterProvider),
+          event.dgisObjectId.objectId,
+          latLng: event.latLng,
+        );
+      }
+    } else if (event is RoadEventTapEvent) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.poiKeys.roadEvent,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {'event': event.id.objectId, 'title': event.title},
+      );
+
+      EventsRoute.open(context, event);
+    } else if (event is MyLocationTapEvent) {
+      if (context.mounted) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.poiKeys.myLocation,
+          group: MetricsConstants.poiTag,
+          action: MetricAction.tap.toString(),
         );
 
-        EventsRoute.open(context, event);
-      } else if (event is MyLocationTapEvent) {
-        if (context.mounted) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.poiKeys.myLocation,
-            group: MetricsConstants.poiTag,
-            action: MetricAction.tap.toString(),
-          );
-
-          final userLocation = ref.read(locationProvider);
-          PoiMapRoute.open(
-            ref.read(goRouterProvider),
-            -1,
-            latLng: userLocation != null
-                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                : event.latLng,
-            zoom: 17,
-            bearing: 0,
-            tilt: 0,
-          );
-        }
+        final userLocation = ref.read(locationProvider);
+        PoiMapRoute.open(
+          ref.read(goRouterProvider),
+          -1,
+          latLng: userLocation != null
+              ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+              : event.latLng,
+          zoom: 17,
+          bearing: 0,
+          tilt: 0,
+        );
       }
     }
   }
 
-  void _hideDashboard(TapEvent event) {
+  void _hideDashboard() {
     _draggableScrollableController.animateTo(
       0.09,
       duration: const Duration(milliseconds: 250),

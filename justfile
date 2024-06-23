@@ -16,7 +16,7 @@ import 'justscripts/release.just'
 import? 'justscripts/local.just'
 
 # prebuild: pubget locale_gen build_pigeon download-sdk codegen
-prebuild: pubget locale_gen build_pigeon codegen
+prebuild: locale_gen pubget build_pigeon codegen
 
 pubget:
     #!/bin/bash

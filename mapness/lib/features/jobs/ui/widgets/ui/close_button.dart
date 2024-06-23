@@ -1,6 +1,6 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class CloseButton extends StatelessWidget {
   const CloseButton({
@@ -20,7 +20,7 @@ class CloseButton extends StatelessWidget {
           child: Container(
             height: 40,
             width: 40,
-            decoration:  BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
                 Radius.circular(8),
               ),

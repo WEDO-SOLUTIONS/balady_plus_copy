@@ -54,6 +54,13 @@ class CameraPositionMessage {
   final double bearing;
 }
 
+class CameraPositionPointMessage {
+  CameraPositionPointMessage(this.x, this.y);
+
+  final double x;
+  final double y;
+}
+
 enum CameraAnimationTypeMessage { default_, linear, showBothPositions }
 
 class DgisObjectIdMessage {
@@ -374,7 +381,6 @@ class DirectoryObjectMessage {
     this.buildingInfo,
     this.entrances,
     this.tradeLicense,
-    this.externalIds,
   );
 
   final List<ObjectTypeItemMessage?> types;
@@ -400,7 +406,6 @@ class DirectoryObjectMessage {
   final BuildingInfoMessage buildingInfo;
   final List<EntranceInfoMessage?> entrances;
   final TradeLicenseMessage? tradeLicense;
-  final List<String?>? externalIds;
 }
 
 enum SortingTypeMessage { byRelevance, byDistance, byRating }
@@ -746,6 +751,7 @@ class SearchResultMessage {
     this.searchResultType,
     this.dynamicFilters,
     this.autoUseFirstResult,
+    this.markersWithLabel,
   );
 
   final PageMessage? firstPage;
@@ -755,6 +761,14 @@ class SearchResultMessage {
   final SearchResultTypeMessage searchResultType;
   final List<DynamicFilterMessage?> dynamicFilters;
   final bool autoUseFirstResult;
+  final List<UiMarkerInfoMessage?>? markersWithLabel;
+}
+
+class UiMarkerInfoMessage {
+  UiMarkerInfoMessage(this.objectId, this.label);
+
+  final DgisObjectIdMessage? objectId;
+  final String? label;
 }
 
 class SuggestObjectHandlerMessage {
@@ -1024,11 +1038,11 @@ enum FollowStateMessage {
 enum BetterRouteResponseMessage { accept, reject, timeout }
 
 /// Settings for better route searching
-/// [routeSearchDelay] - delay before searching for alternative routes when starting a trip on a route or after switching
+/// [routeSearchDelay] - delay (in seconds) before searching for alternative routes when starting a trip on a route or after switching
 /// to another route. Must be not less than 5 seconds
-/// [betterRouteTimeCostThreshold] - minimum travel time difference between the original route and the alternative route
+/// [betterRouteTimeCostThreshold] - minimum travel time (in seconds) difference between the original route and the alternative route
 /// for which the alternative route is considered a better route
-/// [betterRouteLengthThreshold] - minimum total length of route edges that differ between the original route
+/// [betterRouteLengthThreshold] - minimum total length (in millimeters) of route edges that differ between the original route
 /// and the alternative route at which the alternative route is considered a better route
 class BetterRouteSettingsMessage {
   final int betterRouteTimeCostThreshold;
@@ -1081,6 +1095,9 @@ abstract class MapApi {
 
   @async
   void setCameraPosition(CameraPositionMessage cameraPosition);
+
+  @async
+  void setCameraPositionPoint(CameraPositionPointMessage cameraPosition);
 
   @async
   void moveCamera(
@@ -1359,6 +1376,12 @@ abstract class MapApi {
 
   @async
   void setCameraPadding(CameraSetPaddingMessage cameraPadding);
+
+  @async
+  void setMapAttributeString(String name, String value);
+
+  @async
+  void setMapAttributeBool(String name, bool value);
 
   @async
   List<BriefRouteInfoMessage?> findBriefRouteInfos(

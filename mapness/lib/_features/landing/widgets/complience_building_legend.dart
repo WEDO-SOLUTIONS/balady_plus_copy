@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -8,7 +9,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 class ComplienceBuildingLegend extends ConsumerWidget {
-
   ComplienceBuildingLegend({super.key});
   final sizeGroupItems = AutoSizeGroup();
 
@@ -65,7 +65,6 @@ class ComplienceBuildingLegend extends ConsumerWidget {
 }
 
 class _LegendItem extends StatelessWidget {
-
   const _LegendItem({
     required this.color,
     required this.borderColor,

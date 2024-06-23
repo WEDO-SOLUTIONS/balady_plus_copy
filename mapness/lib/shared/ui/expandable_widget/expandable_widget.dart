@@ -1,15 +1,17 @@
 import 'dart:math';
 
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ExpandableWidget extends StatelessWidget {
   const ExpandableWidget({
-    required this.title, required this.icon, required this.content, super.key,
+    required this.title,
+    required this.icon,
+    required this.content,
+    super.key,
     this.subtitle,
   });
 
@@ -20,93 +22,89 @@ class ExpandableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-      padding: const EdgeInsets.all(8),
-      child: ExpansionWidget(
-        titleBuilder: (
-          animationValue,
-          easeInValue,
-          isExpanded,
-          toggleFunction,
-        ) {
-          final borderRadius = BorderRadius.only(
-            topLeft: const Radius.circular(8),
-            topRight: const Radius.circular(8),
-            bottomLeft: Radius.circular(isExpanded ? 0 : 8),
-            bottomRight: Radius.circular(isExpanded ? 0 : 8),
-          );
-          return Material(
-            color: Colors.white,
-            borderRadius: borderRadius,
-            child: InkWell(
-              onTap: () => toggleFunction(animated: true),
+        padding: const EdgeInsets.all(8),
+        child: ExpansionWidget(
+          titleBuilder: (
+            animationValue,
+            easeInValue,
+            isExpanded,
+            toggleFunction,
+          ) {
+            final borderRadius = BorderRadius.only(
+              topLeft: const Radius.circular(8),
+              topRight: const Radius.circular(8),
+              bottomLeft: Radius.circular(isExpanded ? 0 : 8),
+              bottomRight: Radius.circular(isExpanded ? 0 : 8),
+            );
+            return Material(
+              color: Colors.white,
               borderRadius: borderRadius,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                ),
-                child: Row(
-                  children: [
-                    icon,
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 2),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          title,
-                          if (subtitle != null) ...[
-                            const SizedBox(
-                              height: 2,
-                            ),
-                            Text(
-                              subtitle!,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .caption
-                                  .copyWith(
-                                    color: context
-                                        .color.textAndIconsBasePrimary,
-                                  ),
-                            ),
+              child: InkWell(
+                onTap: () => toggleFunction(animated: true),
+                borderRadius: borderRadius,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: borderRadius,
+                  ),
+                  child: Row(
+                    children: [
+                      icon,
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 2),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            title,
+                            if (subtitle != null) ...[
+                              const SizedBox(
+                                height: 2,
+                              ),
+                              Text(
+                                subtitle!,
+                                style: context.textStyle.caption.copyWith(
+                                  color: context.color.textAndIconsBasePrimary,
+                                ),
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    Transform.rotate(
-                      angle: pi * animationValue,
-                      child: SvgPicture.asset(
-                        'assets/icons/svg/ic_chevron_down.svg',
-                        height: 24,
-                        width: 24,
-                        package: PackageConfig.packageName,
+                      const Spacer(),
+                      Transform.rotate(
+                        angle: pi * animationValue,
+                        child: SvgPicture.asset(
+                          'assets/icons/svg/ic_chevron_down.svg',
+                          height: 24,
+                          width: 24,
+                          package: PackageConfig.packageName,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+            );
+          },
+          content: Container(
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              bottom: 16,
             ),
-          );
-        },
-        content: Container(
-          padding: const EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: 16,
-          ),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(8),
-              bottomRight: Radius.circular(8),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
             ),
+            child: content,
           ),
-          child: content,
         ),
-      ),
-    );
+      );
 }

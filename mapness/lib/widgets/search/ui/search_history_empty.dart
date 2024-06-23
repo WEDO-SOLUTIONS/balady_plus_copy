@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,8 +24,7 @@ class SearchHistoryEmpty extends ConsumerWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: context
-                      .l10n.lookForUsefulPlacesCafesMallsForExampleMallNearby,
+                  text: context.l10n.lookForUsefulPlacesCafesMallsForExampleMallNearby,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .heading2

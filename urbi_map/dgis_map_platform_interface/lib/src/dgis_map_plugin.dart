@@ -48,89 +48,62 @@ class DgisMapPlugin extends FlutterMapApi {
   late final _publicTransportEventHandler = PublicTransportEventHandler();
   late final _naviMessageEventHandler = MessageEventHandler();
   late final _naviManeuverEventHandler = ManeuverEventHandler();
-  late final _trafficAndParkingStateEventHandler =
-      TrafficAndParkingEventHandler();
+  late final _trafficAndParkingStateEventHandler = TrafficAndParkingEventHandler();
   late final _packagesHandler = PackageEventHandler();
 
-  Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents =>
-      _zoomEventHandler.zoomControlEnabledEvents;
+  Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents => _zoomEventHandler.zoomControlEnabledEvents;
 
-  Stream<LocationEnabledEvent> get locationEnabledEvents =>
-      _locationEventHandler.locationEnabledEvents;
+  Stream<LocationEnabledEvent> get locationEnabledEvents => _locationEventHandler.locationEnabledEvents;
 
-  Stream<LocationFollowEvent> get locationFollowEvents =>
-      _locationEventHandler.locationFollowEvents;
+  Stream<LocationFollowEvent> get locationFollowEvents => _locationEventHandler.locationFollowEvents;
 
-  Stream<IndoorLevelsEvent> get indoorLevelNames =>
-      _indoorEventHandler.indoorLevelNames;
+  Stream<IndoorLevelsEvent> get indoorLevelNames => _indoorEventHandler.indoorLevelNames;
 
-  Stream<IndoorActiveLevelEvent> get indoorActiveIndex =>
-      _indoorEventHandler.indoorActiveLevel;
+  Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _indoorEventHandler.indoorActiveLevel;
 
-  Stream<TapEvent> get objectTapEvents =>
-      _objectTapEventHandler.objectTapEvents;
+  Stream<TapEvent> get objectTapEvents => _objectTapEventHandler.objectTapEvents;
 
-  Stream<VisibleRectEvent> get visibleRectEvents =>
-      _visibleRectEventHandler.visibleRectEvents;
+  Stream<VisibleRectEvent> get visibleRectEvents => _visibleRectEventHandler.visibleRectEvents;
 
-  Stream<CameraPositionMessage> get cameraPositionEvents =>
-      _visibleRectEventHandler.cameraPositionEvents;
+  Stream<CameraPositionMessage> get cameraPositionEvents => _visibleRectEventHandler.cameraPositionEvents;
 
-  Stream<CameraStateEvent> get cameraStateEvents =>
-      _cameraStateEventHandler.cameraStateEvents;
+  Stream<CameraStateEvent> get cameraStateEvents => _cameraStateEventHandler.cameraStateEvents;
 
-  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
-      _markerTapEventHandler.markerWithPhotoTapEvents;
+  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents => _markerTapEventHandler.markerWithPhotoTapEvents;
 
-  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents =>
-      _routesEventHandler.activeRouteChangedEvents;
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents => _routesEventHandler.activeRouteChangedEvents;
 
-  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
-      _routesEventHandler.routesInfoChangedEvents;
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents => _routesEventHandler.routesInfoChangedEvents;
 
-  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents =>
-      _routesEventHandler.betterRouteInfoEvents;
+  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents => _routesEventHandler.betterRouteInfoEvents;
 
-  Stream<NavigationEvent> get navigationEvents =>
-      _navigationEventHandler.navigationEvents;
+  Stream<NavigationEvent> get navigationEvents => _navigationEventHandler.navigationEvents;
 
-  Stream<NaviDashboardEvent> get naviDashboardEvents =>
-      _naviDashboardEventHandler.dashboardEvents;
+  Stream<NaviDashboardEvent> get naviDashboardEvents => _naviDashboardEventHandler.dashboardEvents;
 
-  Stream<CompassBearingEvent> get compassBearingEvents =>
-      _compassEventHandler.compassBearingEvents;
+  Stream<CompassBearingEvent> get compassBearingEvents => _compassEventHandler.compassBearingEvents;
 
-  Stream<NaviSpeedEvent> get naviSpeedEvents =>
-      _naviSpeedEventHandler.speedEvents;
+  Stream<NaviSpeedEvent> get naviSpeedEvents => _naviSpeedEventHandler.speedEvents;
 
-  Stream<NaviMessageEvent> get naviMessageEvents =>
-      _naviMessageEventHandler.messageEvents;
+  Stream<NaviMessageEvent> get naviMessageEvents => _naviMessageEventHandler.messageEvents;
 
-  Stream<NaviManeuverEvent> get naviManeuverEvents =>
-      _naviManeuverEventHandler.maneuverEvents;
+  Stream<NaviManeuverEvent> get naviManeuverEvents => _naviManeuverEventHandler.maneuverEvents;
 
-  Stream<PublicTransportRoutesChangedEvent>
-      get publicTransportRoutesChangedEvents =>
-          _publicTransportEventHandler.routesChangedEvents;
+  Stream<PublicTransportRoutesChangedEvent> get publicTransportRoutesChangedEvents =>
+      _publicTransportEventHandler.routesChangedEvents;
 
-  Stream<ParkingStateEvent> get parkingStateEvents =>
-      _trafficAndParkingStateEventHandler.parkingStateEvents;
+  Stream<ParkingStateEvent> get parkingStateEvents => _trafficAndParkingStateEventHandler.parkingStateEvents;
 
-  Stream<TrafficStateEvent> get trafficStateEvents =>
-      _trafficAndParkingStateEventHandler.trafficStateEvents;
+  Stream<TrafficStateEvent> get trafficStateEvents => _trafficAndParkingStateEventHandler.trafficStateEvents;
 
-  Stream<PublicTransportActiveRouteChanged>
-      get publicTransportActiveRouteChangedEvents =>
-          _publicTransportEventHandler.activeRouteChangedEvents;
+  Stream<PublicTransportActiveRouteChanged> get publicTransportActiveRouteChangedEvents =>
+      _publicTransportEventHandler.activeRouteChangedEvents;
 
-  Stream<PackageProgressEvent> get packageProgressEvents =>
-      _packagesHandler.packageProgressEvents;
+  Stream<PackageProgressEvent> get packageProgressEvents => _packagesHandler.packageProgressEvents;
 
-  Stream<PackageInfoChangedEvent> get packageInfoChangedEvents =>
-      _packagesHandler.packagesInfoChangedEvents;
+  Stream<PackageInfoChangedEvent> get packageInfoChangedEvents => _packagesHandler.packagesInfoChangedEvents;
 
-  Stream<RouteOptionsEvent> get routeOptionsEvent =>
-      _navigationEventHandler.routeOptionEvents;
+  Stream<RouteOptionsEvent> get routeOptionsEvent => _navigationEventHandler.routeOptionEvents;
 
   bool get isInitialized => _isInitialized;
 
@@ -172,8 +145,7 @@ class DgisMapPlugin extends FlutterMapApi {
     await _publicTransportEventHandler.dispose();
   }
 
-  Future<void> onZoomAction(ZoomControlType btn,
-      {required bool isPressed}) async {
+  Future<void> onZoomAction(ZoomControlType btn, {required bool isPressed}) async {
     return _zoomEventHandler.onZoomAction(btn, isPressed: isPressed);
   }
 
@@ -186,9 +158,7 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   StreamSubscription _initEventChannel() {
-    return EventChannel('com.dgis.map_view_events_$_viewId')
-        .receiveBroadcastStream()
-        .listen(
+    return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen(
       (event) {
         final map = event as Map<dynamic, dynamic>;
         switch (map['event']) {
@@ -290,32 +260,40 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.setCameraPosition(cameraPosition);
   }
 
+  Future<void> setCameraPositionPoint(CameraPositionPointMessage cameraPosition) {
+    return _api.setCameraPositionPoint(cameraPosition);
+  }
+
   Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding) {
     return _api.setCameraPadding(cameraPadding);
   }
 
-  Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
-      CameraAnimationTypeMessage animationType) {
+  Future<void> moveCamera(
+      CameraPositionMessage cameraPosition, double duration, CameraAnimationTypeMessage animationType) {
     return _api.moveCamera(cameraPosition, duration, animationType);
   }
 
-  Future<CameraPositionMessage> calcPositionForRoute(
-      CalcPositionOptionsMessage options) {
+  Future<void> setMapAttributeString(String name, String value) {
+    return _api.setMapAttributeString(name, value);
+  }
+
+  Future<void> setMapAttributeBool(String name, bool value) {
+    return _api.setMapAttributeBool(name, value);
+  }
+
+  Future<CameraPositionMessage> calcPositionForRoute(CalcPositionOptionsMessage options) {
     return _api.calcPositionForRoute(options);
   }
 
-  Future<CameraPositionMessage> calcPositionForMarkers(
-      List<String> markers, CalcPositionOptionsMessage options) {
+  Future<CameraPositionMessage> calcPositionForMarkers(List<String> markers, CalcPositionOptionsMessage options) {
     return _api.calcPositionForMarkers(markers, options);
   }
 
-  Future<CameraPositionMessage> calcPositionForPolygons(
-      List<String> polygons, CalcPositionOptionsMessage options) {
+  Future<CameraPositionMessage> calcPositionForPolygons(List<String> polygons, CalcPositionOptionsMessage options) {
     return _api.calcPositionForPolygons(polygons, options);
   }
 
-  Future<CameraPositionMessage> calcPositionForPolylines(
-      List<String> polylines, CalcPositionOptionsMessage options) {
+  Future<CameraPositionMessage> calcPositionForPolylines(List<String> polylines, CalcPositionOptionsMessage options) {
     return _api.calcPositionForPolylines(polylines, options);
   }
 
@@ -324,13 +302,10 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   Future<List<RenderedObjectMessage>> getNearestObjects() async {
-    return (await _api.getNearestObjects())
-        .whereType<RenderedObjectMessage>()
-        .toList();
+    return (await _api.getNearestObjects()).whereType<RenderedObjectMessage>().toList();
   }
 
-  Future<DirectoryObjectMessage> searchByObjectId(
-      DgisObjectIdMessage objectId) {
+  Future<DirectoryObjectMessage> searchByObjectId(DgisObjectIdMessage objectId) {
     return _api.searchByObjectId(objectId);
   }
 
@@ -416,11 +391,9 @@ class DgisMapPlugin extends FlutterMapApi {
     );
   }
 
-  Future<PageMessage> fetchPrevPage(PageIdMessage pageId) =>
-      _api.fetchPrevPage(pageId);
+  Future<PageMessage> fetchPrevPage(PageIdMessage pageId) => _api.fetchPrevPage(pageId);
 
-  Future<PageMessage> fetchNextPage(PageIdMessage pageId) =>
-      _api.fetchNextPage(pageId);
+  Future<PageMessage> fetchNextPage(PageIdMessage pageId) => _api.fetchNextPage(pageId);
 
   Future<void> releasePage(PageIdMessage pageId) => _api.releasePage(pageId);
 
@@ -431,8 +404,7 @@ class DgisMapPlugin extends FlutterMapApi {
   }) =>
       _api.fetchSuggests(queryText, allowedResultTypes, searchRect);
 
-  Future<List<DistanceResponseMessage?>> getDistanceTo(
-      List<DistanceRequestMessage> points) {
+  Future<List<DistanceResponseMessage?>> getDistanceTo(List<DistanceRequestMessage> points) {
     return _api.getDistanceTo(points);
   }
 
@@ -497,8 +469,7 @@ class DgisMapPlugin extends FlutterMapApi {
     ClusteringMapObjectManager manager, {
     String? layerId,
   }) async {
-    final result = await _api.createMapObjectManagerWithClustering(
-        manager.options, layerId);
+    final result = await _api.createMapObjectManagerWithClustering(manager.options, layerId);
     _objectTapEventHandler.addClusterRenderer(result.id, manager.renderCluster);
     if (manager.onTap != null) {
       _objectTapEventHandler.addClusterHandler(result.id, manager.onTap!);
@@ -520,8 +491,7 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.removeMapObjectManager(manager);
   }
 
-  Future<void> setMapObjectManagerIsVisible(
-      bool isVisible, MapObjectManagerMessage? manager) {
+  Future<void> setMapObjectManagerIsVisible(bool isVisible, MapObjectManagerMessage? manager) {
     return _api.setMapObjectManagerIsVisible(isVisible, manager);
   }
 
@@ -567,8 +537,7 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.addPolygons(
       polygons
           .map(
-            (polygon) =>
-                PolygonMessage(id: polygon.id, options: polygon.options),
+            (polygon) => PolygonMessage(id: polygon.id, options: polygon.options),
           )
           .toList(),
       manager,
@@ -594,8 +563,7 @@ class DgisMapPlugin extends FlutterMapApi {
     MapObjectManagerMessage? manager,
   ) {
     if (polyline.onTap != null) {
-      _objectTapEventHandler.addPolylineHandler(
-          polyline.id, polyline.onTap!, manager?.id);
+      _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!, manager?.id);
     }
     return _api.addPolyline(
       PolylineMessage(id: polyline.id, options: polyline.options),
@@ -609,15 +577,13 @@ class DgisMapPlugin extends FlutterMapApi {
   ) {
     for (var polyline in polylines) {
       if (polyline.onTap != null) {
-        _objectTapEventHandler.addPolylineHandler(
-            polyline.id, polyline.onTap!, manager?.id);
+        _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!, manager?.id);
       }
     }
     return _api.addPolylines(
       polylines
           .map(
-            (polyline) =>
-                PolylineMessage(id: polyline.id, options: polyline.options),
+            (polyline) => PolylineMessage(id: polyline.id, options: polyline.options),
           )
           .toList(),
       manager,
@@ -649,8 +615,7 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.setHighlighted(objectIds);
   }
 
-  Future<void> onLocationPremissionGranted(
-      DesiredAccuracyMessage desiredAccuracy) {
+  Future<void> onLocationPremissionGranted(DesiredAccuracyMessage desiredAccuracy) {
     return _api.onLocationPremissionGranted(desiredAccuracy);
   }
 
@@ -805,15 +770,11 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.setNavigatorVoice(id);
   }
 
-  Future<bool> toggleHeatmap(WeatherMapMessage message) =>
-      _api.toggleHeatmap(message);
+  Future<bool> toggleHeatmap(WeatherMapMessage message) => _api.toggleHeatmap(message);
 
-  Future<void> betterRouteResponse(BetterRouteResponseMessage response) =>
-      _api.betterRouteResponse(response);
+  Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _api.betterRouteResponse(response);
 
-  Future<BetterRouteSettingsMessage> getBetterRouteSettings() =>
-      _api.getBetterRouteSettings();
+  Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _api.getBetterRouteSettings();
 
-  Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) =>
-      _api.setBetterRouteSettings(message);
+  Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _api.setBetterRouteSettings(message);
 }

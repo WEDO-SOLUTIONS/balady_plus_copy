@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_plus/app/features/_shared_features/notifications_count/widgets/notifications_count_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,8 +29,7 @@ class DashboardProfile extends ConsumerWidget {
       child: userData.maybeWhen(
         orElse: () => Text(
           _greeting(context),
-          style: context.textStyle.heading1
-              .copyWith(color: context.color.textAndIconsStatusAccent),
+          style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsStatusAccent),
           textAlign: TextAlign.end,
         ),
         data: (userInfo) {
@@ -45,18 +45,10 @@ class DashboardProfile extends ConsumerWidget {
               name = '${_greeting(context)}, $localizedName';
             }
           }
-          return Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                name ?? _greeting(context),
-                style: context.textStyle.heading1
-                    .copyWith(color: context.color.textAndIconsStatusAccent),
-                textAlign: TextAlign.end,
-              ),
-              const Spacer(),
-              const NotificationsCountIcon(),
-            ],
+          return Text(
+            name ?? _greeting(context),
+            style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsStatusAccent),
+            textAlign: TextAlign.end,
           );
         },
       ),

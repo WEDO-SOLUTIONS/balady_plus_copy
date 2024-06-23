@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -46,9 +47,7 @@ class UnautorizedProfile extends ConsumerWidget {
               child: Text(
                 context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
                 textAlign: TextAlign.center,
-                style: context.textStyle
-                    .text
-                    .copyWith(color: Colors.white),
+                style: context.textStyle.text.copyWith(color: Colors.white),
               ),
             ),
             const SizedBox(

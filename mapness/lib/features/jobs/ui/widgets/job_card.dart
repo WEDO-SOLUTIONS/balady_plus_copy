@@ -1,15 +1,13 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
 import 'package:mapness/features/jobs/data/models/job_model.dart';
 import 'package:mapness/features/jobs/ui/widgets/ui/time_distance_indicator.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 
 class JobCard extends ConsumerWidget {
-
   const JobCard({
     required this.jobModel,
     super.key,
@@ -52,33 +50,24 @@ class JobCard extends ConsumerWidget {
             children: [
               Text(
                 jobModel.name ?? '',
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .callout
-                    .copyWith(
-                      color: context.color.textAndIconsBasePrimary,
-                    ),
+                style: context.textStyle.callout.copyWith(
+                  color: context.color.textAndIconsBasePrimary,
+                ),
               ),
               Text(
                 jobModel.provider?.name ?? '',
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .footNote
-                    .copyWith(
-                      color: context.color.textAndIconsBasePrimary.withOpacity(.5),
-                    ),
+                style: context.textStyle.footNote.copyWith(
+                  color: context.color.textAndIconsBasePrimary.withOpacity(.5),
+                ),
               ),
               if (jobModel.description != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
                     jobModel.description ?? '',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .footNote
-                        .copyWith(
-                          color: context.color.textAndIconsBasePrimary,
-                        ),
+                    style: context.textStyle.footNote.copyWith(
+                      color: context.color.textAndIconsBasePrimary,
+                    ),
                   ),
                 ),
               if (longitude != null && latitude != null)

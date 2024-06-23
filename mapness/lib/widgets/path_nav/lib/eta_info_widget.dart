@@ -1,10 +1,8 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaInfoWidget extends StatelessWidget {
-
   const EtaInfoWidget({
     required this.title,
     required this.subtitle,
@@ -29,18 +27,12 @@ class EtaInfoWidget extends StatelessWidget {
                   // applyHeightToFirstAscent: false,
                   applyHeightToLastDescent: false,
                 ),
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .heading1
-                    .copyWith(color: context.color.textAndIconsBasePrimary),
+                style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsBasePrimary),
               ),
               Text(
                 subtitle ?? '-',
                 textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .caption
-                    .copyWith(color: NonThemeColor.color38),
+                style: context.textStyle.caption.copyWith(color: NonThemeColor.color38),
               ),
             ],
           ),

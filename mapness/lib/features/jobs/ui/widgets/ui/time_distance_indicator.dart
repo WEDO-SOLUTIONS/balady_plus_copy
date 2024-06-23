@@ -1,11 +1,10 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/features/jobs/providers/job_distance_provider.dart';
 import 'package:mapness/features/path_nav/lib/number_formatters.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TimeDistanceIndicator extends ConsumerWidget {
   const TimeDistanceIndicator({
@@ -22,9 +21,7 @@ class TimeDistanceIndicator extends ConsumerWidget {
 
     return jobDistance.maybeWhen(
       data: (data) {
-        if (data == null ||
-            data.briefMessages == null ||
-            data.briefMessages?.isEmpty == true) {
+        if (data == null || data.briefMessages == null || data.briefMessages?.isEmpty == true) {
           return const SizedBox.shrink();
         }
 
@@ -45,12 +42,9 @@ class TimeDistanceIndicator extends ConsumerWidget {
             const SizedBox(width: 8),
             Text(
               fmtDuration,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .footNote
-                  .copyWith(
-                    color: context.color.textAndIconsBasePrimary.withOpacity(.5),
-                  ),
+              style: context.textStyle.footNote.copyWith(
+                color: context.color.textAndIconsBasePrimary.withOpacity(.5),
+              ),
             ),
           ],
         );

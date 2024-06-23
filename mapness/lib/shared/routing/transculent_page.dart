@@ -129,7 +129,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
   }
 
   @override
-  Widget build(BuildContext context) => AnimatedBuilder(
+  Widget build(BuildContext context) =>  AnimatedBuilder(
       animation: widget.route.restorationScopeId,
       builder: (context, child) {
         assert(child != null);
@@ -406,6 +406,9 @@ class TRoute<T> extends ModalRoute<T> {
 
   @override
   Duration get transitionDuration => Duration.zero;
+  
+  @override
+  bool get popGestureEnabled => true;
 }
 
 class TransculentPage<T> extends Page<T> {

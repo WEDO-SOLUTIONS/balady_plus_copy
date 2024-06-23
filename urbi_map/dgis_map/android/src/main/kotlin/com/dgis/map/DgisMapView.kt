@@ -190,6 +190,19 @@ class DgisMapView(
         result.success(null)
     }
 
+    override fun setCameraPositionPoint(
+            cameraPosition: CameraPositionPointMessage,
+            result: Messages.Result<Void>
+    ) {
+        val map = map ?: kotlin.run {
+            result.error(IllegalArgumentException("Map has not been initialized"))
+            return
+        }
+
+        map.camera.positionPoint = CameraPositionPoint(x = cameraPosition.x.toFloat(), y = cameraPosition.y.toFloat())
+        result.success(null)
+    }
+
     override fun setCameraPadding(
             cameraPadding: CameraSetPaddingMessage,
             result: Messages.Result<Void>
@@ -206,6 +219,16 @@ class DgisMapView(
                 top = cameraPadding.topPadding.toInt(),
         )
         result.success(null)
+    }
+
+    override fun setMapAttributeBool(name: String, value: Boolean, result: Messages.Result<Void>?) {
+        map?.setAttribute(name, AttributeValue(value))
+        result?.success(null)
+    }
+
+    override fun setMapAttributeString(name: String, value: String, result: Messages.Result<Void>?) {
+        map?.setAttribute(name, AttributeValue(value))
+        result?.success(null)
     }
 
     override fun moveCamera(

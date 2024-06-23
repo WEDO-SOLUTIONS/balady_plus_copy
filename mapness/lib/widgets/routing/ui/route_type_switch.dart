@@ -1,14 +1,12 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RouteTypeSwitch extends ConsumerWidget {
-
   const RouteTypeSwitch({
     required this.onPressed,
     required this.title,
@@ -23,8 +21,7 @@ class RouteTypeSwitch extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final titleColor =
-        isChoosed ? context.color.textAndIconsBasePrimary : NonThemeColor.color16;
+    final titleColor = isChoosed ? context.color.textAndIconsBasePrimary : NonThemeColor.color16;
 
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
@@ -58,12 +55,9 @@ class RouteTypeSwitch extends ConsumerWidget {
                   ),
                   Text(
                     title!,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .footNoteBold
-                        .copyWith(
-                          color: titleColor,
-                        ),
+                    style: context.textStyle.footNoteBold.copyWith(
+                      color: titleColor,
+                    ),
                   ),
                 ],
               ],

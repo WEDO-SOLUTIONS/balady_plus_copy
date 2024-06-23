@@ -1,14 +1,20 @@
+import 'dart:async';
+
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/router_extension.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
@@ -49,14 +55,19 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     RoutePointMyLocation(),
     RoutePointDirectoryObject(null),
   ];
+  StreamSubscription<TapEvent>? _streamSubscription;
+  late final DgisBottomSheetController dgisBottomSheetController;
 
   @override
   void initState() {
+    dgisBottomSheetController = DgisBottomSheetController();
+    _setupTapListener();
     super.initState();
   }
 
   @override
   void deactivate() {
+    _streamSubscription?.cancel();
     super.deactivate();
   }
 
@@ -83,6 +94,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
             bottomExtent: 136,
           ),
           DgisBottomSheet(
+            controller: dgisBottomSheetController,
             showBarrier: false,
             availableExpansions: const {
               Expansion.collapsed,
@@ -187,4 +199,33 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       _updatePoints(points);
     }
   }
+
+  Future<void> _setupTapListener() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    _streamSubscription = dgisController.objectTapEvents.listen(
+      _tapListener,
+    );
+  }
+
+  void _tapListener(event) {
+    final goRouter = ref.read(goRouterProvider);
+
+    if (event is ObjectTapEvent) {
+      final expansion = dgisBottomSheetController.currentExpansion!;
+      switch (expansion) {
+        case Expansion.expanded:
+        case Expansion.middle:
+          dgisBottomSheetController.animateTo(Expansion.collapsed);
+          break;
+        case Expansion.hidden:
+        case Expansion.collapsed:
+        case Expansion.fullHidePhoto:
+          break;
+      }
+    if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
+      return;
+    }
+    }
+  }
+
 }

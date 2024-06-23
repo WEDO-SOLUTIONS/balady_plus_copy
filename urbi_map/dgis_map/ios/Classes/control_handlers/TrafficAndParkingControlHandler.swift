@@ -8,6 +8,7 @@ class TrafficAndParkingControlHandler {
     }
     
     private let parkingAttrName = "parkingOn"
+    private let parkingFilterAttrName = "parkingFilter"
     
     private let map: Map
     private let eventChannel: DgisStreamHandler
@@ -25,11 +26,18 @@ class TrafficAndParkingControlHandler {
     }
     
     func onAttachToMap() {
-        self.cancelable.append(self.map.attributes.changed.sink { bearing in
-            self.eventChannel.success([
-                "event": Events.parkingStateChanged,
-                "visible": self.isParkingOn(),
-            ])
+        self.cancelable.append(self.map.attributes.changed.sink { attributes in
+            if (attributes.contains(self.parkingAttrName) || attributes.contains(self.parkingFilterAttrName)) {
+                var filterAttribute: String?
+                if case let .string(value) = self.map.attributes.getAttributeValue(name: self.parkingFilterAttrName) {
+                    filterAttribute = value
+                }
+                self.eventChannel.success([
+                    "event": Events.parkingStateChanged,
+                    "visible": self.isParkingOn(),
+                    "filterAttribute": filterAttribute
+                ])
+            }
         })
         
         self.cancelable.append(self.trafficControlModel.stateChannel.sink { trafficState in

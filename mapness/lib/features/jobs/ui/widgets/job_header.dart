@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/jobs/providers/jobs_statistic_provider.dart';
@@ -17,7 +17,10 @@ class JobHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent,) =>
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) =>
       JobHeader(
         draggableScrollableController: draggableScrollableController,
       );
@@ -87,15 +90,11 @@ class JobHeader extends ConsumerWidget {
                 ),
                 Text(
                   context.l10n.jobs,
-                  style:
-                      Theme.of(context).extension<ThemeTextStyles>()!.heading2,
+                  style: context.textStyle.heading2,
                 ),
                 Text(
                   '${data?.jobsCount ?? 0} ${context.l10n.vacancies}',
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .footNote
-                      .apply(color: context.color.textAndIconsBasePrimary.withOpacity(.5)),
+                  style: context.textStyle.footNote.apply(color: context.color.textAndIconsBasePrimary.withOpacity(.5)),
                 ),
               ],
             ),

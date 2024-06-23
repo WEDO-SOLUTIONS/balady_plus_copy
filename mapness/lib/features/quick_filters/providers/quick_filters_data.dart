@@ -1,4 +1,5 @@
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 enum QuickFilterType {
   restaurants,
@@ -21,12 +22,18 @@ enum QuickFilterType {
 const quickFilters = [
   QuickFilter(
     type: QuickFilterType.restaurants,
+    query: {
+      Language.english: 'Restaurants',
+      Language.arabic: 'المطاعم'
+    },
     rubrics: [161, 165, 161, 9786, 162, 469, 58871],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_restaurants.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/restaurants_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.markets,
+    query: {
+      Language.english: 'Markets',
+      Language.arabic: 'الأسواق'
+    },
     rubrics: [
       112589,
       361,
@@ -51,29 +58,37 @@ const quickFilters = [
       544,
       398,
     ],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_markets.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/markets_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.hotels,
+    query: {
+      Language.english: 'Hotels',
+      Language.arabic: 'الفنادق'
+    },
     rubrics: [269],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_hotels.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/hotels_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.mosques,
+    query: {
+      Language.english: 'Mosques',
+      Language.arabic: 'المساجد'
+    },
     rubrics: [13374],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_mosques.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.gasStation,
+    query: {
+      Language.english: 'Gas stations',
+      Language.arabic: 'محطات الوقود'
+    },
     rubrics: [18547],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_gas_station.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/gas_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.carServices,
+    query: {
+      Language.english: 'Car services',
+      Language.arabic: 'خدمات السيارات'
+    },
     rubrics: [
       404,
       405,
@@ -114,29 +129,37 @@ const quickFilters = [
       429,
       1156,
     ],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_car_services.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/cars_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.hospitals,
+    query: {
+      Language.english: 'Hospitals',
+      Language.arabic: 'المستشفيات'
+    },
     rubrics: [201],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_hospital.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/hospitals_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.dentalCenters,
+    query: {
+      Language.english: 'Dental centers',
+      Language.arabic: 'مراكز طب الأسنان'
+    },
     rubrics: [222],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_dental.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/dental_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.pharmacies,
+    query: {
+      Language.english: 'Pharmacies',
+      Language.arabic: 'الصيدليات'
+    },
     rubrics: [207],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_medicine.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/pharmacies_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.sportClubs,
+    query: {
+      Language.english: 'Sport clubs',
+      Language.arabic: 'الأندية الرياضية'
+    },
     rubrics: [
       261,
       262,
@@ -153,18 +176,21 @@ const quickFilters = [
       51256,
       110498,
     ],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_sport_clubs.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/sport_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.parks,
+    query: {
+      Language.english: 'Parks',
+      Language.arabic: 'الحدائق'
+    },
     rubrics: [],
-    query: 'parks',
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_park.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/parks_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.recreationCenters,
+    query: {
+      Language.english: 'Recreation centers',
+      Language.arabic: 'مراكز الترفيه'
+    },
     rubrics: [
       537,
       169,
@@ -181,11 +207,13 @@ const quickFilters = [
       190,
       110358,
     ],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_recreation.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/recreation_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.beautyCenters,
+    query: {
+      Language.english: 'Beauty centers',
+      Language.arabic: 'مراكز التجميل'
+    },
     rubrics: [
       56759,
       110351,
@@ -204,26 +232,21 @@ const quickFilters = [
       695,
       51009,
     ],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_beauty.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/beauty_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.salons,
+    query: {
+      Language.english: 'Salons',
+      Language.arabic: 'الصالونات'
+    },
     rubrics: [110352],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_salons.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/salons_pin.svg',
   ),
   QuickFilter(
     type: QuickFilterType.schools,
+    query: {
+      Language.english: 'Schools',
+      Language.arabic: 'المدارس'
+    },
     rubrics: [245],
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_school.svg',
-    mapIcon: 'assets/icons/svg/quick_filters/schools_pin.svg',
   ),
-  // QuickFilter(
-  //   rubrics: [],
-  //   query: 'beaches',
-  //   title: 'Beaches',
-  //   uiIcon: 'assets/icons/svg/quick_filters/ic_quick_beaches.svg',
-  //   mapIcon: "assets/icons/svg/quick_filters/beaches_pin.svg",
-  // ),
 ];

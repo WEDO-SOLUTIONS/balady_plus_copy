@@ -371,7 +371,6 @@ class Routes {
             const AppointmentsListScreen(),
 
         RouteName.baladyCalendarPage: (context) => const BaladyCalendarPage(),
-        RouteName.splash: (context) => const SplashPage(),
         RouteName.etmamMainPage: (context) => const EtmamMainPage(),
         RouteName.etmamMainPageCitySelector: (context) =>
             const EtmamMainCityPage(),
@@ -797,9 +796,6 @@ class Routes {
             const ConstructionLicenseInqueryScreen(),
         RouteName.constructionLicenseInqueryDetails: (context) =>
             const ConstructionLicenseInqueryDetails(),
-
-        ///////////////////////////////////
-
 
         RouteName.approvalSequenceMainScreen: (context) =>
             const ApprovalSequenceMainScreen(),

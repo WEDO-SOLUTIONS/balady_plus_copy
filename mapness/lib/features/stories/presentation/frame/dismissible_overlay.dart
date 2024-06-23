@@ -1,5 +1,5 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DismissibleTransition extends StatefulWidget {
   const DismissibleTransition({
@@ -15,8 +15,7 @@ class DismissibleTransition extends StatefulWidget {
   State<DismissibleTransition> createState() => DismissibleTransitionState();
 }
 
-class DismissibleTransitionState extends State<DismissibleTransition>
-    with SingleTickerProviderStateMixin {
+class DismissibleTransitionState extends State<DismissibleTransition> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
 
@@ -51,14 +50,11 @@ class DismissibleTransitionState extends State<DismissibleTransition>
   @override
   Widget build(BuildContext context) => GestureDetector(
         onVerticalDragUpdate: (details) {
-          _controller.value -=
-              details.delta.dy / MediaQuery.of(context).size.height;
+          _controller.value -= details.delta.dy / MediaQuery.of(context).size.height;
         },
         onVerticalDragEnd: (details) {
-          final predictedValue = _controller.value -
-              details.velocity.pixelsPerSecond.dy *
-                  0.25 /
-                  MediaQuery.of(context).size.height;
+          final predictedValue =
+              _controller.value - details.velocity.pixelsPerSecond.dy * 0.25 / MediaQuery.of(context).size.height;
           if (predictedValue < 0.6) {
             _controller.reverse(from: _controller.value);
           } else {
@@ -78,8 +74,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
                 transform: Matrix4.identity()
                   ..translate(
                     0.0,
-                    MediaQuery.of(context).size.height *
-                        (1 - _opacityAnimation.value),
+                    MediaQuery.of(context).size.height * (1 - _opacityAnimation.value),
                   )
                   ..scale(
                     0.8 + 0.2 * _opacityAnimation.value,

@@ -102,6 +102,10 @@ class DgisMapController {
     onDetached: _instance.onTrafficAndParkingDetached,
     onTrafficClicked: _instance.onTrafficClicked,
     onParkingClicked: _instance.onParkingClicked,
+    setParkingFilter: (filter) => _instance.setMapAttributeString(
+      NaviTrafficParkingController.parkingFilterAttribute,
+      filter.attributeValue,
+    ),
   );
 
   late NaviFreeRoamController freeRoamController = NaviFreeRoamController(
@@ -139,6 +143,10 @@ class DgisMapController {
 
   /// Changes map camera position immediately without animation.
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) => _instance.setCameraPosition(cameraPosition);
+
+  /// Changes map camera position point
+  Future<void> setCameraPositionPoint(CameraPositionPointMessage cameraPosition) =>
+      _instance.setCameraPositionPoint(cameraPosition);
 
   /// Changes map camera padding immediately without animation.
   Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding) => _instance.setCameraPadding(cameraPadding);
@@ -214,6 +222,9 @@ class DgisMapController {
   }
 
   /// Runs directory search by [queryText] query.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
   Future<SearchResultMessage> search(
     String queryText, {
     List<SearchCategoryMessage>? categories,
@@ -235,6 +246,9 @@ class DgisMapController {
   }
 
   /// Runs directory search by [SearchQueryMessage] query.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
   Future<SearchResultMessage> searchByQuery(
     SearchQueryMessage query, {
     List<GeoPointMessage>? spatialRestriction,
@@ -254,6 +268,9 @@ class DgisMapController {
   }
 
   /// Runs directory search by [SearchCategoryMessage] category.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
   Future<SearchResultMessage> searchByCategory(
     SearchCategoryMessage category, {
     List<GeoPointMessage>? spatialRestriction,
@@ -273,6 +290,9 @@ class DgisMapController {
   }
 
   /// Runs directory search by rubrics.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
   Future<SearchResultMessage> searchByRubrics(
     List<int> rubrics, {
     List<GeoPointMessage>? spatialRestriction,

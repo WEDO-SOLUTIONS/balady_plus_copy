@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
@@ -6,7 +7,6 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class QrLicenseInfo extends StatelessWidget {
-
   const QrLicenseInfo(this.licenseInfo, {super.key});
   final QrLicenseMessage? licenseInfo;
 
@@ -41,8 +41,7 @@ class QrLicenseInfo extends StatelessWidget {
                   ),
                   Text(
                     context.l10n.deliveryAvailable,
-                    style:
-                        context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                    style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
                   ),
                 ],
               ),
@@ -78,9 +77,10 @@ class QrLicenseInfo extends StatelessWidget {
                       Text(
                         context.l10n.motorVisual,
                         style: context.textStyle.footNote.copyWith(
-                            color: context.color.textAndIconsBasePrimary.withOpacity(
-                          0.5,
-                        ),),
+                          color: context.color.textAndIconsBasePrimary.withOpacity(
+                            0.5,
+                          ),
+                        ),
                       ),
                     ],
                   ),
