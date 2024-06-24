@@ -28,7 +28,8 @@ class DashboardProfile extends ConsumerWidget {
       child: userData.maybeWhen(
         orElse: () => Text(
           _greeting(context),
-          style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsStatusAccent),
+          style: context.textStyle.heading1
+              .copyWith(color: context.color.textAndIconsStatusAccent),
           textAlign: TextAlign.end,
         ),
         data: (userInfo) {
@@ -46,7 +47,8 @@ class DashboardProfile extends ConsumerWidget {
           }
           return Text(
             name ?? _greeting(context),
-            style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsStatusAccent),
+            style: context.textStyle.heading1
+                .copyWith(color: context.color.textAndIconsStatusAccent),
             textAlign: TextAlign.end,
           );
         },

@@ -69,31 +69,29 @@ apk-release version: apply-patches prebuild (_apk-urbi_pre-prod version) (_apk-m
 _apk-urbi_pre-prod version:
     print_style '' 'yellow' 'build urbi pre'
     VENDOR_CONFIG="urbi-pre-prod"
-    fvm flutter build apk --target lib/main_urbi_pre.dart {{ dart_define }}
-    mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-{{ version }}.apk
+    fvm flutter build apk --flavor pre --target lib/main_urbi_pre.dart {{ dart_define }}
+    mv build/app/outputs/flutter-apk/app-pre-release.apk build/app/outputs/flutter-apk/urbi-pre-{{ version }}.apk
     print_style '' 'cyan' 'urbi pre ready!'
 
 _apk-momrah-prod version:
     print_style '' 'yellow' 'build momrah prod'
     VENDOR_CONFIG="momrah-prod"
-    fvm flutter build apk --target lib/main_prod.dart {{ dart_define }}
-    mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-{{ version }}.apk
+    fvm flutter build apk --flavor prod --target lib/main_prod.dart {{ dart_define }}
+    mv build/app/outputs/flutter-apk/app-prod-release.apk build/app/outputs/flutter-apk/momrah-prod-{{ version }}.apk
     print_style '' 'cyan' 'momrah prod ready!'
 
 _apk-momrah-pre version:
-    print_style '' 'yellow' 'build momrah prod'
+    print_style '' 'yellow' 'build momrah pre'
     VENDOR_CONFIG="momrah-prod"
-    fvm flutter build apk --target lib/main_pre.dart {{ dart_define }}
-    mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-{{ version }}.apk
-    print_style '' 'cyan' 'momrah prod ready!'
+    fvm flutter build apk --flavor pre --target lib/main_pre.dart {{ dart_define }}
+    mv build/app/outputs/flutter-apk/app-pre-release.apk build/app/outputs/flutter-apk/momrah-prod-{{ version }}.apk
+    print_style '' 'cyan' 'momrah pre ready!'
 
 _apk-momrah-stage version:
     print_style '' 'yellow' 'build momrah stage'
     VENDOR_CONFIG="momrah-stage"
-    # fvm flutter build apk --target lib/main_stg.dart --debug {{ dart_define }}
-    # mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{ version }}.apk
-    fvm flutter build apk --target lib/main_stg.dart {{ dart_define }}
-    mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-stage-{{ version }}.apk
+    fvm flutter build apk --flavor stg --target lib/main_stg.dart {{ dart_define }}
+    mv build/app/outputs/flutter-apk/app-stg-release.apk build/app/outputs/flutter-apk/momrah-stage-{{ version }}.apk
     print_style '' 'cyan' 'momrah stage ready!'
 
     print_style '' 'green' 'done, you may open build with:'
@@ -102,6 +100,6 @@ _apk-momrah-stage version:
 _apk-momrah-stage-debug version:
     print_style '' 'yellow' 'build momrah stage debug'
     VENDOR_CONFIG="momrah-stage"
-    fvm flutter build apk --target lib/main_stg.dart --debug {{ dart_define }}
-    mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{ version }}.apk
+    fvm flutter build apk --flavor stg --target lib/main_stg.dart --debug {{ dart_define }}
+    mv build/app/outputs/flutter-apk/app-stg-debug.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{ version }}.apk
     print_style '' 'cyan' 'momrah stage debug ready!'
