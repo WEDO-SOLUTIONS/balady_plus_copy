@@ -17,7 +17,7 @@ class JoyParksCard extends ConsumerWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: GestureDetector(
-            onTap: ref.read(layersControlsProvider.notifier).toggleJoyParks,
+            onTap: ref.read(layersControlsProvider.notifier).toggleIwish,
             child: SizedBox(
               height: 118,
               child: DecoratedBox(

@@ -34,43 +34,47 @@ class _SliderListViewState<T> extends State<SliderListView<T>> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            height: widget.contentHeight,
-            child: PageView.builder(
-              physics: const BouncingScrollPhysics(),
-              controller: controller,
-              itemCount: widget.items.length,
-              itemBuilder: (context, index) {
-                final item = widget.items[index];
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(RadiusBorder.xl),
+              child: SizedBox(
+                height: widget.contentHeight,
+                child: PageView.builder(
+                  padEnds: false,
+                  physics: const BouncingScrollPhysics(),
+                  controller: controller,
+                  itemCount: widget.items.length,
+                  itemBuilder: (context, index) {
+                    final item = widget.items[index];
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  child: GestureDetector(
-                    onTap: () => widget.onTap?.call(item),
-                    child: widget.itemBuilder(item),
-                  ),
-                );
+                    return GestureDetector(
+                      onTap: () => widget.onTap?.call(item),
+                      child: widget.itemBuilder(item),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: Spacing.$3x),
+            SmoothPageIndicator(
+              onDotClicked: (index) {
+                controller.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.decelerate);
               },
+              controller: controller,
+              count: widget.items.length,
+              effect: ScrollingDotsEffect(
+                radius: 100.0,
+                dotWidth: 6.0,
+                dotHeight: 6.0,
+                dotColor: context.colorsV2.foregroundDisabled,
+                activeDotColor: context.colorsV2.foregroundDefault,
+              ),
             ),
-          ),
-          const SizedBox(height: Spacing.$3x),
-          SmoothPageIndicator(
-            onDotClicked: (index) {
-              controller.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.decelerate);
-            },
-            controller: controller,
-            count: widget.items.length,
-            effect: ScrollingDotsEffect(
-              radius: 100.0,
-              dotWidth: 6.0,
-              dotHeight: 6.0,
-              dotColor: context.colorsV2.foregroundDisabled,
-              activeDotColor: context.colorsV2.foregroundDefault,
-            ),
-          ),
-        ],
+          ],
+        ),
       );
 }
