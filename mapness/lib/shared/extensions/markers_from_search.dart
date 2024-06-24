@@ -8,36 +8,34 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-FutureOr<Map<int, String>> generateTitleMap(List<UiMarkerInfoMessage?>? uiMarkers) {
+/// Return the Map between `objectId` and `label` for the object
+FutureOr<Map<int, String>> _generateTitleMap(List<UiMarkerInfoMessage?>? uiMarkers) {
   final titleMap = <int, String>{};
   for (final uiMarker in uiMarkers ?? List<UiMarkerInfoMessage?>.empty()) {
     if (uiMarker?.objectId == null || uiMarker?.label == null) {
       continue;
     }
-    titleMap[uiMarker!.objectId!.objectId] = breakLineInTwo(removeComma(uiMarker.label!));
+    titleMap[uiMarker!.objectId!.objectId] = _breakLineInTwo(_removeComma(uiMarker.label!));
   }
   return titleMap;
 }
 
-String removeComma(String title) {
+
+/// We use this method to throw away the part of the organization description that contains
+/// additional information that is not necessary on the map next to the marker
+/// 
+/// Example:
+/// input: "Al Ajazy, restaurant"
+/// output: "Al Ajazy"
+String _removeComma(String title) {
   final res = title.split(',');
   return res[0];
 }
 
-String truncateOneLine(String title) {
-  const min = 20;
-  const max = 27;
-  if (title.length <= max) {
-    return title;
-  }
-  if (title.substring(min, max).contains(' ')) {
-    final index = title.substring(min, max).indexOf(' ');
-    return title.substring(0, index + min);
-  }
-  return '${title.substring(0, max - 3)}...';
-}
-
-String breakLineInTwo(String inputString) {
+/// We use this method to break the long title of the organization
+/// The break character is '\n' symbol
+/// Max length in the line should be less or equal `maxLength` value
+String _breakLineInTwo(String inputString) {
   const int maxLength = 20;
 
   // If the string fits within the max length, return it as is
@@ -80,7 +78,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     bool isLTR = false,
   }) async {
     final uiObjectMaps = withLabel
-        ? await compute<List<UiMarkerInfoMessage?>?, Map<int, String>>(generateTitleMap, markersWithLabel)
+        ? await compute<List<UiMarkerInfoMessage?>?, Map<int, String>>(_generateTitleMap, markersWithLabel)
         : null;
 
     final hasLabels = uiObjectMaps != null && uiObjectMaps.isNotEmpty && withLabel;
@@ -107,7 +105,9 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 strokeColor: 0xD3FFFFFF,
                 strokeWidth: 2,
                 textPlacement: MarkerTextPlacementMessage(
-                  placement: isLTR ? TextPlacementMessage.rightCenter : TextPlacementMessage.leftCenter,
+                  // We use left aligned text because the most of our users is using the arabic language and
+                  // arabic text writes RTL
+                  placement: TextPlacementMessage.leftCenter,
                 ),
               ),
               position: markerInfo.geoPoint,

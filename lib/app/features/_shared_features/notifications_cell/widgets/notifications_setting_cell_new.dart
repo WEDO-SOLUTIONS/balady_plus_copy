@@ -67,9 +67,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           ContentRow(
                             options: ContentRowOptions(
                                 leadingIcon: SvgPicture.asset(
-                                  iconPath.IconPath.notificationIc2,
                                   icon_path.IconPath.notificationIc2,
-
                                   height: 24,
                                   width: 24,
                                   colorFilter: const ColorFilter.mode(
