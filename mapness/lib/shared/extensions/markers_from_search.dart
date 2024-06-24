@@ -14,9 +14,58 @@ FutureOr<Map<int, String>> generateTitleMap(List<UiMarkerInfoMessage?>? uiMarker
     if (uiMarker?.objectId == null || uiMarker?.label == null) {
       continue;
     }
-    titleMap[uiMarker!.objectId!.objectId] = uiMarker.label!;
+    titleMap[uiMarker!.objectId!.objectId] = breakLineInTwo(removeComma(uiMarker.label!));
   }
   return titleMap;
+}
+
+String removeComma(String title) {
+  final res = title.split(',');
+  return res[0];
+}
+
+String truncateOneLine(String title) {
+  const min = 20;
+  const max = 27;
+  if (title.length <= max) {
+    return title;
+  }
+  if (title.substring(min, max).contains(' ')) {
+    final index = title.substring(min, max).indexOf(' ');
+    return title.substring(0, index + min);
+  }
+  return '${title.substring(0, max - 3)}...';
+}
+
+String breakLineInTwo(String inputString) {
+  const int maxLength = 20;
+
+  // If the string fits within the max length, return it as is
+  if (inputString.length <= maxLength) {
+    return inputString;
+  }
+
+  // Find the nearest space before the 20th character
+  int breakIndex = maxLength;
+  while (breakIndex > 0 && inputString[breakIndex] != ' ') {
+    breakIndex--;
+  }
+
+  // If no space is found, use the maxLength as the break index
+  if (breakIndex == 0) {
+    breakIndex = maxLength;
+  }
+
+  // Split the string into two parts
+  final String firstLine = inputString.substring(0, breakIndex).trim();
+  String secondLine = inputString.substring(breakIndex).trim();
+
+  // If the second line exceeds maxLength, truncate it and add "..."
+  if (secondLine.length > maxLength) {
+    secondLine = '${secondLine.substring(0, maxLength - 3)}...';
+  }
+
+  return '$firstLine\n$secondLine';
 }
 
 extension MarkerFromSearchResultMessage on SearchResultMessage {
@@ -28,6 +77,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     required GoRouter router,
     MarkerIconMessage? icon,
     bool withLabel = true,
+    bool isLTR = false,
   }) async {
     final uiObjectMaps = withLabel
         ? await compute<List<UiMarkerInfoMessage?>?, Map<int, String>>(generateTitleMap, markersWithLabel)
@@ -57,7 +107,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 strokeColor: 0xD3FFFFFF,
                 strokeWidth: 2,
                 textPlacement: MarkerTextPlacementMessage(
-                  placement: TextPlacementMessage.rightCenter,
+                  placement: isLTR ? TextPlacementMessage.rightCenter : TextPlacementMessage.leftCenter,
                 ),
               ),
               position: markerInfo.geoPoint,
