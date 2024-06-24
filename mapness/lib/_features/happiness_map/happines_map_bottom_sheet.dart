@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
@@ -46,8 +46,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
   double childHeightExpanded = 100;
   double childPortion(double height) => min(height / widget.biggestHeight, 1);
 
-  void onSubmit() =>
-      ref.read(happinessManagerProvider.notifier).submitFeedback();
+  void onSubmit() => ref.read(happinessManagerProvider.notifier).submitFeedback();
 
   @override
   void initState() {
@@ -91,8 +90,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
       return Align(
         alignment: Alignment.bottomCenter,
         child: ErrorSheet(
-          onRetry: () =>
-              ref.read(happinessManagerProvider.notifier).submitFeedback(),
+          onRetry: () => ref.read(happinessManagerProvider.notifier).submitFeedback(),
           buttonLabel: context.l10n.reload,
           onClose: widget.onClose,
         ),
@@ -106,14 +104,13 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
       );
     }
 
-    if (requestState is AsyncLoading || requestState.requireValue) {
+    if (requestState is AsyncLoading || requestState.requireValue == true) {
       return Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
-          padding: const EdgeInsets.only(
-              top: 16.0, bottom: 24.0, left: 16.0, right: 16.0),
+          padding: const EdgeInsets.only(top: 16.0, bottom: 24.0, left: 16.0, right: 16.0),
           child: LoadingThanksSheet(
-            isLoading: requestState is AsyncLoading,
+            isLoading: requestState is AsyncLoading || requestState.requireValue == false,
             onComplete: widget.onFeedbackSent,
             onClose: widget.onClose,
             triggerOnComplete: state.feedback == HappinessFeedback.like,
@@ -126,9 +123,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
       controller: _draggableScrollableController,
       initialChildSize: childPortion(childHeightExpanded),
       minChildSize: childPortion(childHeightCollapsed),
-      maxChildSize: isCollapsed
-          ? childPortion(childHeightCollapsed)
-          : childPortion(childHeightExpanded),
+      maxChildSize: isCollapsed ? childPortion(childHeightCollapsed) : childPortion(childHeightExpanded),
       builder: (context, scrollController) => Container(
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -152,8 +147,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                 }
               }),
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Column(
                   children: [
                     Container(
@@ -161,8 +155,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                       width: 26,
                       decoration: BoxDecoration(
                         color: context.color.surfaceBasePrimary,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(24)),
+                        borderRadius: const BorderRadius.all(Radius.circular(24)),
                       ),
                     ),
                     const SizedBox(
@@ -181,13 +174,9 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                 Expanded(
                                   child: Text(
                                     context.l10n.shareYourFeelings,
-                                    style: Theme.of(context)
-                                        .extension<ThemeTextStyles>()!
-                                        .heading1
-                                        .copyWith(
-                                          color: context
-                                              .color.textAndIconsBasePrimary,
-                                        ),
+                                    style: context.textStyle.heading1.copyWith(
+                                      color: context.color.textAndIconsBasePrimary,
+                                    ),
                                   ),
                                 ),
                                 CloseHappinessButton(
@@ -224,24 +213,17 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                 color: context.color.surfaceBasePrimary,
                                 borderRadius: BorderRadius.circular(8),
                                 child: InkWell(
-                                  onTap: () => const HappinessMapCommentRoute()
-                                      .push(context),
+                                  onTap: () => const HappinessMapCommentRoute().push(context),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 10,
                                       horizontal: 16,
                                     ),
                                     child: Text(
-                                      state.comment.isEmpty
-                                          ? context.l10n.shareYourFeedback
-                                          : state.comment,
-                                      style: Theme.of(context)
-                                          .extension<ThemeTextStyles>()!
-                                          .text
-                                          .copyWith(
-                                            color: context
-                                                .color.textAndIconsBasePrimary,
-                                          ),
+                                      state.comment.isEmpty ? context.l10n.shareYourFeedback : state.comment,
+                                      style: context.textStyle.text.copyWith(
+                                        color: context.color.textAndIconsBasePrimary,
+                                      ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),

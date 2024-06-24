@@ -1,7 +1,7 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/routing/ui/routing_search_bar.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RoutingSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   RoutingSearchHeaderDelegate({
@@ -14,9 +14,9 @@ class RoutingSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
-      placeholder: placeholder,
-      draggableScrollableController: draggableScrollableController,
-    );
+        placeholder: placeholder,
+        draggableScrollableController: draggableScrollableController,
+      );
 
   @override
   double get maxExtent => 84;
@@ -30,7 +30,9 @@ class RoutingSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({
-    required this.placeholder, required this.draggableScrollableController, super.key,
+    required this.placeholder,
+    required this.draggableScrollableController,
+    super.key,
   });
 
   final String placeholder;
@@ -38,42 +40,42 @@ class DashboardHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16),
-          topLeft: Radius.circular(16),
-        ),
-      ),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 8,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(16),
+            topLeft: Radius.circular(16),
           ),
-          Center(
-            child: Container(
-              height: 4,
-              width: 26,
-              decoration:  BoxDecoration(
-                color: context.color.surfaceBasePrimary,
-                borderRadius: const BorderRadius.all(Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 8,
+            ),
+            Center(
+              child: Container(
+                height: 4,
+                width: 26,
+                decoration: BoxDecoration(
+                  color: context.color.surfaceBasePrimary,
+                  borderRadius: const BorderRadius.all(Radius.circular(24)),
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: RoutingSearchBar(
-              placeholder: placeholder,
-              draggableScrollableController: draggableScrollableController,
+            const SizedBox(
+              height: 8,
             ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-        ],
-      ),
-    );
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: RoutingSearchBar(
+                placeholder: placeholder,
+                draggableScrollableController: draggableScrollableController,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+          ],
+        ),
+      );
 }

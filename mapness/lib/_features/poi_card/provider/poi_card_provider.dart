@@ -1,18 +1,26 @@
+import 'dart:convert';
+
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/_features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/_features/poi_card/domain/model/organizations_response.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_padding_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/dgis_http_network.dart';
+import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/providers/padding_config.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../../shared/providers/dgis_http_network.dart';
 
 part 'poi_card_provider.g.dart';
 
@@ -32,6 +40,26 @@ class PoiCardState {
     this.qrTradeLicense,
     this.tradeLicense,
   });
+
+  Map<String, dynamic> toJson() => {
+        'gisObjectIdMessage': gisObjectIdMessage?.toJson(),
+        'organizations': organizations?.toJson(),
+        'tradeLicense': tradeLicense?.toJson(),
+        'qrTradeLicense': qrTradeLicense?.toJson(),
+        'showEntrances': showEntrances,
+        'isLoading': isLoading,
+      };
+
+  static PoiCardState fromJson(Map<String, dynamic> json) {
+    final organizatonsJson = json['organizations'];
+    final objectIdJson = json['gisObjectIdMessage'];
+    final entrancesJson = json['showEntrances'];
+    return PoiCardState(
+      showEntrances: entrancesJson,
+      isLoading: false,
+      gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
+      organizations: OrganizationsMessage.fromJson(organizatonsJson));
+  }
 
   PoiCardState copyWith({
     bool? showEntrances,
@@ -53,61 +81,106 @@ class PoiCardState {
 
 @riverpod
 class PoiCardProvider extends _$PoiCardProvider {
-  PoiCardState? poiCardState;
-
   @override
   Future<PoiCardState?> build(
-    DgisObjectIdMessage objectId, {
+    int objectId, {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
-    PoiPaddingConfig? paddingConfig,
-    bool? onRouting,
   }) async {
-    if (poiCardState != null && poiCardState?.gisObjectIdMessage?.id == objectId) {
+    if (closestPoint != null) {
+      final read = ref.read(selectedMarkerProvider.notifier);
+      await read.showMarker(
+        Markers.pinMarker(
+          GeoPointWithElevationMessage(
+            latitude: closestPoint.latitude,
+            longitude: closestPoint.longitude,
+            elevation: 1,
+          ),
+          id: poiPinId,
+        ),
+      );
+    }
+
+    final poiCardStateKey = objectId.toString();
+    final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
+    final cachedData = poiBox.get(poiCardStateKey, defaultValue: null);
+    if (cachedData != null) {
+      try {
+        final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
+        return stateFromJson;
+      }
+      // ignore: avoid_catches_without_on_clauses
+      catch (e, s) {
+        state = AsyncValue.error(e, s);
+      }
+    } else {
+
+      state = const AsyncValue.loading();
+
+      final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
+
+      final result = await ref
+          .watch(
+        pointOfInterestProvider(
+          DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+          closestPoint: closestPoint,
+        ).future,
+      )
+          .timeout(
+        const Duration(minutes: 1),
+        onTimeout: () {
+          ref.read(goRouterProvider).pop();
+          return null;
+        },
+      );
+
+      if(result!=null){
+        ref.read(paddingConfigProvider(
+          result,
+          closestPoint,
+          cameraConfig,
+        ));
+      }
+
+      final organizationsResponse = await fetchOrganizationsData(
+        objectId: result?.id?.objectId,
+      );
+
+      final tradeLicense = result?.tradeLicense;
+
+      QrLicenseMessage? qrLicense;
+      if (tradeLicense != null) {
+        final license = tradeLicense.license;
+        if (license.isNotEmpty) {
+          qrLicense = await qrLicenseRepository.getLicenseInfo(license);
+        }
+      }
+
+      final poiCardState = PoiCardState(
+        organizations: organizationsResponse,
+        isLoading: false,
+        showEntrances: false,
+        gisObjectIdMessage: result,
+        tradeLicense: tradeLicense,
+        qrTradeLicense: qrLicense,
+      );
+
+      try {
+        final json = jsonEncode(poiCardState.toJson());
+        await poiBox.put(poiCardStateKey, json);
+      }
+      // ignore: avoid_catches_without_on_clauses
+      catch (e, s) {
+        debugPrint('$e');
+        state = AsyncValue.error(e, s);
+      }
       return poiCardState;
     }
-
-    final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
-
-    final result = await ref
-        .watch(
-      pointOfInterestProvider(
-        objectId,
-        cameraConfig: cameraConfig,
-        closestPoint: closestPoint,
-        paddingConfig: paddingConfig,
-        onRouting: onRouting,
-      ).future,
-    )
-        .timeout(
-      const Duration(minutes: 1),
-      onTimeout: () {
-        ref.read(goRouterProvider).pop();
-        return null;
-      },
-    );
-
-    final organizationsResponse = await fetchOrganizationsData(
-      objectId: result?.id?.objectId,
-    );
-
-    final tradeLicense = result?.tradeLicense;
-
-    QrLicenseMessage? qrLicense;
-    if (tradeLicense != null) {
-      final license = tradeLicense.license;
-      if (license.isNotEmpty) {
-        qrLicense = await qrLicenseRepository.getLicenseInfo(license);
-      }
-    }
-
-    return poiCardState = PoiCardState(
-      organizations: organizationsResponse,
+    return const PoiCardState(
+      organizations: null,
       isLoading: true,
       showEntrances: false,
-      gisObjectIdMessage: result,
-      tradeLicense: tradeLicense,
-      qrTradeLicense: qrLicense,
+      gisObjectIdMessage: null,
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
@@ -26,19 +27,17 @@ class PersonalData extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ContentWrapper(
-              color: context.color.surfaceBaseSecondary,
-              children: [
+          ContentWrapper(color: context.color.surfaceBaseSecondary, children: [
             ContentRow(
               options: ContentRowOptions(
-      dividerEnabled: true,
+                dividerEnabled: true,
                 title: userInfo.getLocalizedFirstName(language),
                 subtitle: context.l10n.firstName,
               ),
             ),
             ContentRow(
               options: ContentRowOptions(
-            dividerEnabled: true,
+                dividerEnabled: true,
                 title: userInfo.getLocalizedLastName(language),
                 subtitle: context.l10n.profileSettingsLastName,
               ),
@@ -67,14 +66,14 @@ class PersonalData extends ConsumerWidget {
             ContentRow(
               options: ContentRowOptions(
                 dividerEnabled: true,
-              title: userInfo.enName ?? '',
-              subtitle: context.l10n.englishFullName,
+                title: userInfo.enName ?? '',
+                subtitle: context.l10n.englishFullName,
               ),
             ),
             ContentRow(
               options: ContentRowOptions(
-              title: userInfo.nationality ?? '',
-              subtitle: context.l10n.nationality,
+                title: userInfo.nationality ?? '',
+                subtitle: context.l10n.nationality,
               ),
             ),
           ]),

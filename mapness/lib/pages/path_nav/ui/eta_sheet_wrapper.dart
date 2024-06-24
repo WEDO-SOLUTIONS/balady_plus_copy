@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -53,7 +54,7 @@ class EtaSheetWrapper extends StatelessWidget {
                         bottom: Spacing.verticalPaddingInsideCell,
                       ),
                       child: _BetterRouteButton(
-                        title: context.l10n.betterRouteFound(max((duration / 60).floor(), 1)),
+                        title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
                         onTap: onBetterRouteAccept,
                         onCloseTap: onBetterRouteReject,
                       ),

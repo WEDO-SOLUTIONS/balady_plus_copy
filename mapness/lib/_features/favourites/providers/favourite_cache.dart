@@ -12,6 +12,7 @@ import 'package:mapness/_features/favourites/mappers/favorite_cache_item_mapper.
 import 'package:mapness/_features/favourites/mappers/favourites_response_mapper.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
@@ -76,8 +77,8 @@ class _FavouriteCache extends _$FavouriteCache {
 
     final newState = FavouritesState(
       items: items.where((e) => e.id != item.id).toList(),
-      work: item.id == work?.id ? null:work,
-      home: item.id == home?.id ? null:home,
+      work: item.id == work?.id ? null : work,
+      home: item.id == home?.id ? null : home,
     );
 
     await _updateState(newState);
@@ -111,9 +112,7 @@ class _FavouriteCache extends _$FavouriteCache {
       home: home,
     );
 
-
     await _updateState(newState);
-
 
     try {
       await _deleteRequest(
@@ -356,8 +355,14 @@ class _FavouriteCache extends _$FavouriteCache {
 
   @override
   Future<FavouritesState> build() async {
+    final authState = await ref.watch(authProvider.future);
+    if (authState == null) {
+      return const FavouritesState(items: []);
+    }
+
     final link = ref.keepAlive();
     final timer = Timer(_cacheFor, link.close);
+
     ref.onDispose(() => timer.cancel);
 
     // sync uncommitted changes

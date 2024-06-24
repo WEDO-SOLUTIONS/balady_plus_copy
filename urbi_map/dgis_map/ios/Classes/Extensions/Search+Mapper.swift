@@ -2,7 +2,7 @@ import Foundation
 import DGis
 
 extension SearchResult {
-    func toMessage(withId pageId: String, camera: Camera, items: [ItemMarkerInfo]?) -> SearchResultMessage {
+    func toMessage(withId pageId: String, camera: Camera, items: [ItemMarkerInfo]?, labels: [UIMarkerInfo]?) -> SearchResultMessage {
         SearchResultMessage.make(
             withFirstPage: self.firstPage?.toMessage(withId: pageId),
             representativeArea: self.representativeArea?.toMessage(),
@@ -16,12 +16,23 @@ extension SearchResult {
                     bearing: NSNumber(value: cameraPosition.bearing.value)
                 )
             },
+            
             itemMarkerInfos: items?.toMessage(),
             searchResultType: self.searchResultType.toMessage(),
             dynamicFilters: self.dynamicFilters.compactMap {
                 $0.toMessage()
             },
-            autoUseFirstResult: NSNumber(value: self.autoUseFirstResult)
+            autoUseFirstResult: NSNumber(value: self.autoUseFirstResult),
+            markersWithLabel: labels?.map { $0.toMessage() }
+        )
+    }
+}
+
+extension UIMarkerInfo {
+    func toMessage() -> UiMarkerInfoMessage {
+        UiMarkerInfoMessage.make(
+            withObjectId: self.objectId.toMessage(),
+            label: self.label
         )
     }
 }
@@ -31,7 +42,7 @@ extension Page {
         PageMessage.make(
             withId: PageIdMessage.make(withId: id),
             items: self.items.map {
-                $0.toMessage(externalIds: nil)
+                $0.toMessage()
             }
         )
     }

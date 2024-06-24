@@ -1,22 +1,19 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DeleteAllContent extends StatelessWidget {
-
   const DeleteAllContent({
-    required this.onConfirm, required this.onCancel, super.key,
+    required this.onConfirm,
+    required this.onCancel,
+    super.key,
   });
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context)
-        .extension<ThemeTextStyles>()!
-        .heading2
-        .copyWith(color: Colors.white);
+    final textStyle = context.textStyle.heading2.copyWith(color: Colors.white);
     final color = context.color.strokeAccent;
 
     return Material(
@@ -38,8 +35,7 @@ class DeleteAllContent extends StatelessWidget {
               onPressed: onConfirm,
               style: ElevatedButton.styleFrom(
                 backgroundColor: color,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
               ),
               child: Text(context.l10n.delete, style: textStyle),
             ),
@@ -47,8 +43,7 @@ class DeleteAllContent extends StatelessWidget {
               onPressed: onCancel,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
               ),
               child: Text(
                 context.l10n.cancel,

@@ -16,7 +16,6 @@ import '../../constants/constants.dart' as mapConstants;
 import 'package:provider/provider.dart';
 import '../../data/model/white_lands.dart';
 import '../widgets/SearchMapWidget.dart';
-import '../widgets/general_card_widget.dart';
 import '../widgets/indoor_control_widget.dart';
 import '../widgets/map_cards/compliance_legends_map_card.dart';
 import '../widgets/map_cards/lands_legends_map_card.dart';
@@ -297,43 +296,6 @@ class HomeMap extends StatelessWidget {
                   right: Constants.semiMediumPadding,
                   bottom: Constants.semiSmallPadding),
               child: MapLayerCard(),
-            ),
-          ),
-        if (!hideControls)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: Constants.semiMediumPadding,
-                  right: Constants.semiMediumPadding,
-                  bottom: Constants.semiSmallPadding),
-              child: ValueListenableBuilder<DgisObjectIdMessage?>(
-                valueListenable: mapViewModel.selectedPointId,
-                builder: (_, selectedPoint, __) {
-                  print(selectedPoint);
-                  print("heree");
-                  return selectedPoint == null
-                      ? const SizedBox()
-                      : GeneralMapCardWidget(
-                          color:
-                              mapViewModel.selectedPointCategory.value != null
-                                  ? mapViewModel.selectedPointCategory.value!
-                                      .cardIconColor()
-                                  : Color(0xFFC8A83A),
-                          icon: mapViewModel.selectedPointCategory.value != null
-                              ? mapViewModel.selectedPointCategory.value!
-                                  .cardIconName()
-                              : "assets/maps/icons/card_icon/general.png",
-                          onClose: () {
-                            mapViewModel.showDialog();
-                          },
-                          pointViewModel: PointViewModel(
-                              controller: mapViewModel.controller,
-                              point: selectedPoint,
-                              webService: sl()),
-                        );
-                },
-              ),
             ),
           ),
         if (!hideControls)

@@ -1,15 +1,13 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class ErrorSheet extends StatelessWidget {
-
   const ErrorSheet({
     required this.onRetry,
     super.key,
@@ -17,6 +15,7 @@ class ErrorSheet extends StatelessWidget {
     this.errorLabel,
     this.onClose,
   });
+
   /// action how to recover state
   final VoidCallback onRetry;
 
@@ -34,10 +33,7 @@ class ErrorSheet extends StatelessWidget {
     Text text(String text) => Text(
           text,
           textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .extension<ThemeTextStyles>()!
-              .heading2
-              .copyWith(color: context.color.textAndIconsBasePrimary),
+          style: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
         );
 
     return Material(

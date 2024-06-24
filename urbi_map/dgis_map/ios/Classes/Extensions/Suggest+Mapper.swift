@@ -19,7 +19,7 @@ extension SuggestHandler {
             return SuggestHandlerMessage.make(
                 withObjectHandler: objectHandler.map {
                     return SuggestObjectHandlerMessage.make(
-                        withItem: $0.item.toMessage(externalIds: nil)
+                        withItem: $0.item.toMessage()
                     )
                 },
                 performSearchHandler: nil,

@@ -2,7 +2,7 @@ import Foundation
 import DGis
 
 extension DirectoryObject {
-    func toMessage(externalIds: [String]?) -> DirectoryObjectMessage {
+    func toMessage() -> DirectoryObjectMessage {
         return DirectoryObjectMessage.make(
             withTypes: self.types.toMessage(),
             title: self.title,
@@ -34,8 +34,7 @@ extension DirectoryObject {
             entrances: self.entrances.map {
                 $0.toMessage()
             },
-            tradeLicense: self.tradeLicense?.toMessage(),
-            externalIds: externalIds
+            tradeLicense: self.tradeLicense?.toMessage()
         )
     }
 }

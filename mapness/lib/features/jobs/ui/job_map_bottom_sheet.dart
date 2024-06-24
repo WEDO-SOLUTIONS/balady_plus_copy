@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +8,6 @@ import 'package:mapness/features/jobs/data/models/job_model.dart';
 import 'package:mapness/features/jobs/providers/job_list_provider.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_card.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_header.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/scroll_controller_ext.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -100,14 +100,12 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
               orElse: () => const SizedBox.shrink(),
               data: (data) => CustomScrollView(
                 controller: scrollController,
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 physics: const ClampingScrollPhysics(),
                 slivers: [
                   SliverPersistentHeader(
                     delegate: JobHeaderDelegate(
-                      draggableScrollableController:
-                          _draggableScrollableController,
+                      draggableScrollableController: _draggableScrollableController,
                     ),
                   ),
                   SliverList.builder(
@@ -217,8 +215,7 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
     }
 
     final currentRoute = ref.read(currentRouteProvider);
-    if (currentRoute?.currentPath != null &&
-        RegExp('/job/.*/detail').hasMatch(currentRoute!.currentPath!)) {
+    if (currentRoute?.currentPath != null && RegExp('/job/.*/detail').hasMatch(currentRoute!.currentPath!)) {
       JobsMapDetail(jobId: jobId).pushReplacement(context);
       return;
     }

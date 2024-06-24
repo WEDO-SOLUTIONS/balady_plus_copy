@@ -110,6 +110,7 @@ class NavigationHandler(
         map.camera.setBehaviour(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
         )
+
         navigationManager.mapFollowController.setFollow(true)
     }
 

@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_screen_animator.dart';
 import 'package:flutter/material.dart';
@@ -52,9 +53,13 @@ class _SplashPageState extends State<SplashPage>
             return AcquireLocationPage();
           }));
         } else {*/
-        final params = sl<BridgeParams>().copyWith(isAuthenticated: true);
-        final entryPointBridge = sl<EntryPointBridge>();
-        entryPointBridge(params);
+        // final params = sl<BridgeParams>().copyWith(
+        //   isAuthenticated: true,
+        // );
+        // final entryPointBridge = sl<EntryPointBridge>();
+        // entryPointBridge(params);
+
+        sl<EntryPointCubit>().hideSplash();
 
         //   CommonFunctions.sendUrbiMapLogs();
         //  }

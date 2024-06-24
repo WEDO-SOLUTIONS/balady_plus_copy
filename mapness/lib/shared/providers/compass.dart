@@ -34,7 +34,11 @@ class Compass extends _$Compass {
   }
 
   void _updateState(CompassEvent event) {
-    var bearing = event.heading ?? 0;
+    double bearing = event.heading ?? 0;
+    // final accuracy = event.accuracy ?? -1;
+    // if (accuracy > 15 || (!Platform.isIOS && event.accuracy == -1)) {
+    //   state = null;
+    // }
     if (bearing < 0) {
       // fix wrong bearing
       bearing += 360;

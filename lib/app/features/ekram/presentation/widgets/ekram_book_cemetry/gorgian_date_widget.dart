@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_picker/picker.dart';
+import 'package:flutter_picker_plus/flutter_picker_plus.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/services/local/helpers.dart';
@@ -62,8 +62,9 @@ class GorgianCalendarDateWidget extends StatelessWidget {
         adapter: DateTimePickerAdapter(
             minValue: minValue,
             maxValue: maxValue,
-            months: DateTimePickerAdapter.MonthsList_EN_L.map(
-                (e) => Helpers.translatingWord(e)).toList(),
+            months: DateTimePickerAdapter.monthsListENL
+                .map((e) => Helpers.translatingWord(e))
+                .toList(),
             customColumnType: Helpers.getCurrentLanguageCode() == "ar"
                 ? [2, 1, 0]
                 : [0, 1, 2],

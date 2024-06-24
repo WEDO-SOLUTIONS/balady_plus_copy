@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,13 +49,10 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
     final showHome = fav.home == null;
     final showWork = fav.work == null;
     final isFavourite = fav.items.firstWhereOrNull(
-          (element) =>
-              element.entity?.id == widget.favItem.entity?.id &&
-              widget.favItem.entity?.id != null,
+          (element) => element.entity?.id == widget.favItem.entity?.id && widget.favItem.entity?.id != null,
         ) !=
         null;
 
-    ///
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -74,16 +72,14 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
                       iconAsset: 'assets/icons/svg/ic_work.svg',
                       title: context.l10n.work,
                       showBorder: true,
-                      onTap: () =>
-                          _withPop(favNotifier.setWork(widget.favItem)),
+                      onTap: () => _withPop(favNotifier.setWork(widget.favItem)),
                     ),
                   if (showHome)
                     PoiFavoriteDialogButton(
                       iconAsset: 'assets/icons/svg/ic_home.svg',
                       title: context.l10n.home,
                       showBorder: true,
-                      onTap: () =>
-                          _withPop(favNotifier.setHome(widget.favItem)),
+                      onTap: () => _withPop(favNotifier.setHome(widget.favItem)),
                     ),
                   PoiFavoriteDialogButton(
                     iconAsset: 'assets/icons/svg/ic_bookmark.svg',
@@ -113,9 +109,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
       callback: () {
         final favNotifier = ref.read(favouriteCacheProvider.notifier);
         _withPop(
-          isFavourite
-              ? favNotifier.deleteItem(widget.favItem)
-              : favNotifier.addItem(widget.favItem),
+          isFavourite ? favNotifier.deleteItem(widget.favItem) : favNotifier.addItem(widget.favItem),
         );
       },
     );

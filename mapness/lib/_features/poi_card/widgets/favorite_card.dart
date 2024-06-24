@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class FavoriteCard extends ConsumerWidget {
             action: MetricAction.tap.toString(),
           );
 
-          const FavouritesRoute().pushToRoot(context);
+          const FavouritesRoute().push(context);
         },
         child: Row(
           children: [

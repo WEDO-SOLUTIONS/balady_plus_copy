@@ -11,9 +11,10 @@ class NetworkStatus extends _$NetworkStatus {
         Connectivity().onConnectivityChanged.listen(_connectivityListener);
     ref.onDispose(connectivitySubscription.cancel);
 
-    return ConnectivityResult.none;
+    return ConnectivityResult.other;
   }
 
+  // ignore: use_setters_to_change_properties
   void _connectivityListener(ConnectivityResult event) {
     state = event;
   }

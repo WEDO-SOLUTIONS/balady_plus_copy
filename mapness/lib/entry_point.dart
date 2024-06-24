@@ -27,11 +27,14 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/deeplink_functionds.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/hive.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/widgets/map/map_page.dart';
@@ -109,6 +112,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Update MediaQueryInfoProvider with the initial MediaQuery
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
+      // Init camera position point
+      initCameraPositionPoint();
+      clearCache();
     });
   }
 
@@ -179,7 +185,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   useMaterial3: false,
                   extensions: <ThemeExtension<dynamic>>[
                     if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
+                    if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
                     AppColorsThemeExt.palette(colorScheme, isDark: false),
+                    AppColorsThemeV2.palette(isDark: false),
                     AppStaticColorsThemeExt.palette(colorScheme)
                   ],
                 ),
@@ -193,6 +201,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         ],
       ),
     );
+  }
+
+  Future<void> initCameraPositionPoint() async {
+    final controller = await ref.read(dgisControllerProvider.future);
+
+    try {
+      await controller.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
+
+      // ignore: avoid_catches_without_on_clauses, avoid_types_as_parameter_names, non_constant_identifier_names
+    } catch (ex) {
+      debugPrint('Error setting camera position point: $ex');
+    }
+  }
+
+  Future<void> clearCache() async {
+    final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
+    await poiBox.clear();
   }
 
   Future<void> initMixpanel() async {

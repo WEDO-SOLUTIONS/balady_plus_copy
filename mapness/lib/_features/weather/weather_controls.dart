@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
@@ -8,7 +8,6 @@ import 'package:mapness/_features/weather/domain/enum/weather_enum.dart';
 import 'package:mapness/_features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/_features/weather/provider/weather_map_controls.dart';
 import 'package:mapness/_features/weather/widgets/weather_state_icon.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class WeatherControls extends ConsumerWidget {
   const WeatherControls({
@@ -84,10 +83,7 @@ class Legend extends ConsumerWidget {
 
     final measures = weatherMapState.type.measures();
     final measureUnit = weatherMapState.type.measureUnit();
-    final style = Theme.of(context)
-        .extension<ThemeTextStyles>()!
-        .caption
-        .copyWith(color: context.color.textAndIconsBasePrimary);
+    final style = context.textStyle.caption.copyWith(color: context.color.textAndIconsBasePrimary);
     return Column(
       children: [
         Container(

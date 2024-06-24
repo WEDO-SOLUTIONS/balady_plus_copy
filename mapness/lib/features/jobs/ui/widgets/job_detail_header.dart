@@ -1,15 +1,13 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/jobs/providers/job_detail_provider.dart';
 import 'package:mapness/features/jobs/ui/widgets/ui/header_wrapper.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:shimmer/shimmer.dart';
 
 const double headerSize = 100;
 
 class JobDetailHeaderDelegate extends SliverPersistentHeaderDelegate {
-
   JobDetailHeaderDelegate({
     required this.jobId,
     required this.draggableScrollableController,
@@ -20,7 +18,10 @@ class JobDetailHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent,) =>
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) =>
       DashboardHeader(
         jobId: jobId,
         draggableScrollableController: draggableScrollableController,
@@ -37,7 +38,6 @@ class JobDetailHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class DashboardHeader extends ConsumerWidget {
-
   const DashboardHeader({
     required this.jobId,
     required this.draggableScrollableController,
@@ -97,19 +97,14 @@ class DashboardHeader extends ConsumerWidget {
                     children: [
                       Text(
                         data?.name ?? '',
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .heading2,
+                        style: context.textStyle.heading2,
                       ),
                       Text(
                         data?.provider?.name ?? '',
                         maxLines: 2,
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .footNote
-                            .apply(
-                              color: context.color.textAndIconsBasePrimary.withOpacity(.5),
-                            ),
+                        style: context.textStyle.footNote.apply(
+                          color: context.color.textAndIconsBasePrimary.withOpacity(.5),
+                        ),
                       ),
                     ],
                   ),

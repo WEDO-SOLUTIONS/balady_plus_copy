@@ -26,15 +26,15 @@ import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 /// Search sheet that is shown on the explore screen.
 class MapSearchSheet extends ConsumerStatefulWidget {
-  final String? initialQuery;
+  final bool requestFocus;
   final bool withClustering;
   final double biggestHeight;
 
   const MapSearchSheet({
     required this.withClustering,
     required this.biggestHeight,
+    required this.requestFocus,
     super.key,
-    this.initialQuery,
   });
 
   @override
@@ -46,7 +46,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
-  final settings = MapObjectManagerSettings.mappness();
+  final settings = MapObjectManagerSettings.search();
 
   ClusteringMapObjectManager? _clustering;
 
@@ -125,15 +125,16 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
           child: DgisBottomSheet(
             showBarrier: false,
             controller: _dgisSheetController,
-            initialExpansion: Expansion.expanded,
+            initialExpansion: Expansion.middle,
             availableExpansions: const {
               Expansion.hidden,
+              Expansion.middle,
               Expansion.expanded,
               Expansion.collapsed,
             },
             onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
-            middleHeight: widget.biggestHeight * 0.7,
-            collapsedHeight: widget.biggestHeight * 0.2,
+            middleHeight: widget.biggestHeight * 0.8,
+            collapsedHeight: widget.biggestHeight * 0.1,
             scrollableBody: (context, scrollController) {
               /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
               /// https://www.youtube.com/watch?v=L_WoOkDAqbM
@@ -151,7 +152,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
                       slivers: [
                         SliverPersistentHeader(
                           delegate: MapSearchHeaderDelegate(
-                            requestFocus: widget.initialQuery == null,
+                            requestFocus: widget.requestFocus,
                             onClose: onClose,
                           ),
                           pinned: true,
@@ -171,7 +172,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   Future<void> _drawSearchMarkers(SearchState searchState) async {
     if (searchState is SearchStateResults) {
-      final icon = LayersSvgPaths.basicMarker.markerIcon(size: 16);
+      final markerIconPath = searchState.markerType?.iconPath;
+      final icon = markerIconPath != null
+          ? markerIconPath.markerIcon(size: 32)
+          : LayersSvgPaths.basicMarker.markerIcon(size: 16);
       final markers = await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon);
 
       await searchObjectManager?.removeAllMarkers();
@@ -246,7 +250,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     searchObjectManager?.removeAllMarkers().then((value) {
       ref.read(searchInRectProvider.notifier).update();
       searchObjectManager = null;
-      context.pop();
     });
+    context.pop();
   }
 }

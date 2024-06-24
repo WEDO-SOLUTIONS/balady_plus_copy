@@ -48,6 +48,7 @@ class MapSearchResults extends ConsumerWidget {
               'object': item.id!.objectId,
             },
           );
+
           PoiMapRoute.open(
             ref.read(goRouterProvider),
             item.id!.objectId,

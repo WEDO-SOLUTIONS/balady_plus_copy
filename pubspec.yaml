@@ -20,7 +20,7 @@ version: 3.11.2+212
 #version: 3.30.2+393
 
 environment:
-  sdk: ">=3.0.1 <4.0.0"
+  sdk: ">=3.2.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -90,7 +90,7 @@ dependencies:
   # loading animation
   loading_animation_widget: ^1.2.0+3
   # Date and number formatting
-  intl: ^0.18.0
+  intl: ^0.19.0
   # A flutter package to select a country from a list of countries.
   country_picker: ^2.0.16
   camera:
@@ -111,7 +111,7 @@ dependencies:
   # parses Adobe After Effects animations
   lottie: ^2.2.0
   # Generate Unique ID
-  uuid: ^3.0.7
+  uuid: ^4.0.0
   hijri: ^3.0.0
   # swiper/carousel for flutter, with multiple layouts,
   flutter_card_swiper: ^6.0.0
@@ -133,7 +133,7 @@ dependencies:
   google_maps_flutter: ^2.5.3
   share_plus: ^4.5.3
   pinput: ^2.2.31
-  pin_code_fields: ^7.3.0
+  pin_code_fields: ^8.0.1
   cached_network_image: ^3.2.2
   mime: ^1.0.4
   jwt_decoder:
@@ -150,20 +150,25 @@ dependencies:
   flutter_google_places:
     git:
       url: https://github.com/MahmoudBaha/flutter_google_places
-  flutter_picker: ^2.1.0
+  flutter_picker_plus: ^1.1.3
   percent_indicator: ^4.2.3
   flutter_staggered_grid_view: ^0.7.0
   flutter_cached_pdfview: ^0.4.2
   network_info_plus: ^2.1.4+1
   dart_ipify: ^1.1.1
   timelines: ^0.1.0
-  pdfx:
+  pdfx: ^2.6.0
   archive: ^3.3.7
   bottom_picker: ^2.0.4
   page_view_dot_indicator: ^2.3.0
-  firebase_core: ^2.24.0
+  firebase_core: ^3.1.0
+  # eliminate this after lazy-ass author update the package
   firebase_messaging:
-  firebase_analytics:
+    git:
+      url: https://github.com/AlexStrNik/flutterfire.git
+      ref: master
+      path: packages/firebase_messaging/firebase_messaging
+  firebase_analytics: ^11.0.1
   flutter_uxcam: ^2.4.7
   card_swiper: ^3.0.1
   carousel_slider: ^4.2.1
@@ -172,7 +177,7 @@ dependencies:
 
   app_settings: ^5.0.0
   dotted_border: ^2.0.0+3
-  sentry_dio: ^7.9.0
+  sentry_dio: ^8.3.0
   linkable: ^3.0.0
 
   # Map urbi SDK
@@ -182,7 +187,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.2.4
+    version: ^1.3.5
 
   mapness:
     path: mapness
@@ -190,7 +195,7 @@ dependencies:
   wakelock_plus: ^1.1.3
   provider: ^6.0.5
   flutter_compass: ^0.8.0
-  sentry_flutter: ^7.13.2
+  sentry_flutter: ^8.3.0
 
   flutter_html:
   curl_logger_dio_interceptor: ^1.0.0
@@ -303,7 +308,7 @@ flutter:
     - family: sura_juza_names
       fonts:
         - asset: assets/fonts/sura_juza_names.ttf
-     
+
     - family: Frutiger
       fonts:
         - asset: fonts/FrutigerLTArabic45Light.ttf
@@ -313,7 +318,7 @@ flutter:
         - asset: fonts/FrutigerLTArabic65Bold.ttf
           weight: 700
         - asset: fonts/frutigerltarabic75black.ttf
-          weight: 900   
+          weight: 900
 
     - family: Inter
       fonts:

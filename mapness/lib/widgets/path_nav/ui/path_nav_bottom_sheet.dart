@@ -1,6 +1,6 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/pages/path_nav/lib/no_overscroll_behavior.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavBottomSheet extends StatefulWidget {
   const PathNavBottomSheet({
@@ -22,8 +22,7 @@ class PathNavBottomSheet extends StatefulWidget {
   State<PathNavBottomSheet> createState() => _PathNavBottomSheetState();
 }
 
-class _PathNavBottomSheetState extends State<PathNavBottomSheet>
-    with SingleTickerProviderStateMixin {
+class _PathNavBottomSheetState extends State<PathNavBottomSheet> with SingleTickerProviderStateMixin {
   DraggableScrollableController get _dragController => widget.controller;
 
   double get _minSize => widget.minSize;
@@ -83,96 +82,93 @@ class _PathNavBottomSheetState extends State<PathNavBottomSheet>
         builder: (context, state, child) {
           final showColor = state < 1;
           return Padding(
-          padding: EdgeInsets.only(
-            left: 12 * state,
-            right: 12 * state,
-          ),
-
-          /// bg
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: showColor ? Colors.white : Colors.transparent,
-              borderRadius: BorderRadius.vertical(
-                top: const Radius.circular(16),
-                bottom: Radius.circular(16 * state),
-              ),
+            padding: EdgeInsets.only(
+              left: 12 * state,
+              right: 12 * state,
             ),
-            child: AnimatedContainer(
-              duration: duration,
-              curve: curve,
+
+            /// bg
+            child: DecoratedBox(
               decoration: BoxDecoration(
-                color: showColor
-                    ? context.color.surfaceBasePrimary
-                    : Colors.transparent,
+                color: showColor ? Colors.white : Colors.transparent,
                 borderRadius: BorderRadius.vertical(
                   top: const Radius.circular(16),
                   bottom: Radius.circular(16 * state),
                 ),
               ),
-              child: ScrollConfiguration(
-                behavior: NoOverscrollBehavior(),
-                child: ListView(
-                  shrinkWrap: true,
-                  controller: scrollController,
-                  padding: EdgeInsets.zero,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    /// header
-                    AnimatedContainer(
-                      curve: curve,
-                      duration: duration,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
-                          top: const Radius.circular(16),
-                          bottom: Radius.circular(16 * state),
+              child: AnimatedContainer(
+                duration: duration,
+                curve: curve,
+                decoration: BoxDecoration(
+                  color: showColor ? context.color.surfaceBasePrimary : Colors.transparent,
+                  borderRadius: BorderRadius.vertical(
+                    top: const Radius.circular(16),
+                    bottom: Radius.circular(16 * state),
+                  ),
+                ),
+                child: ScrollConfiguration(
+                  behavior: NoOverscrollBehavior(),
+                  child: ListView(
+                    shrinkWrap: true,
+                    controller: scrollController,
+                    padding: EdgeInsets.zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      /// header
+                      AnimatedContainer(
+                        curve: curve,
+                        duration: duration,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.vertical(
+                            top: const Radius.circular(16),
+                            bottom: Radius.circular(16 * state),
+                          ),
+                        ),
+                        padding: const EdgeInsets.only(
+                          top: 4,
+                          left: 12,
+                          right: 12,
+                          bottom: 12,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            /// handle
+                            Container(
+                              color: context.color.surfaceBasePrimary,
+                              height: 4,
+                              width: 40,
+                            ),
+                            const SizedBox(height: 4),
+                            SafeArea(
+                              bottom: !_dragController.isAttached || _dragController.size <= 0.03,
+                              top: false,
+                              child: widget.header,
+                            ),
+                          ],
                         ),
                       ),
-                      padding: const EdgeInsets.only(
-                        top: 4,
-                        left: 12,
-                        right: 12,
-                        bottom: 12,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          /// handle
-                          Container(
-                            color: context.color.surfaceBasePrimary,
-                            height: 4,
-                            width: 40,
-                          ),
-                          const SizedBox(height: 4),
-                          SafeArea(
-                            bottom: !_dragController.isAttached ||
-                                _dragController.size <= 0.03,
-                            top: false,
-                            child: widget.header,
-                          ),
-                        ],
-                      ),
-                    ),
 
-                    /// body
-                    AnimatedOpacity(
-                      opacity: 1 - state,
-                      curve: curve,
-                      duration: duration,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: SafeArea(
-                          top: false,
-                          child: widget.body,
+                      /// body
+                      AnimatedOpacity(
+                        opacity: 1 - state,
+                        curve: curve,
+                        duration: duration,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: SafeArea(
+                            top: false,
+                            child: widget.body,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
+          );
         },
       ),
     );

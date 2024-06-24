@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:dgis_map_platform_interface/src/events/parking_state_event.dart';
-import 'package:dgis_map_platform_interface/src/events/traffic_state_event.dart';
+import 'package:dgis_map_platform_interface/library.dart';
 
 class TrafficAndParkingEventHandler {
   TrafficAndParkingEventHandler();
@@ -14,7 +13,8 @@ class TrafficAndParkingEventHandler {
 
   void parkingStateChanged(Map<dynamic, dynamic> map) {
     final visible = map["visible"];
-    final event = ParkingStateEvent(visible: visible);
+    final filter = ParkingFilter.fromAttribute(map["filterAttribute"]);
+    final event = ParkingStateEvent(visible: visible, filter: filter);
 
     _parkingStateController.sink.add(event);
   }

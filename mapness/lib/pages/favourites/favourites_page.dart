@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -153,7 +154,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                 child: CustomScrollView(
                   slivers: [
                     SliverToBoxAdapter(child: FavouritesToggle(isEditing: isEditing)),
-                    SliverToBoxAdapter(child: Spacing.verticalBaseToTopModal.heightBox),
+                    SliverToBoxAdapter(child: NumericBase.$4x.heightBox),
                     SliverToBoxAdapter(
                       child: Row(
                         children: [
@@ -204,7 +205,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               ),
                             );
                           }),
-                          Spacing.verticalBaseToTopModal.widthBox,
+                          NumericBase.$4x.widthBox,
                           Builder(
                             builder: (context) {
                               final work = state.work;
@@ -258,7 +259,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                       ),
                     ),
                     SliverToBoxAdapter(
-                      child: Spacing.verticalBaseToTopModal.heightBox,
+                      child: NumericBase.$4x.heightBox,
                     ),
                     if (state.items.isEmpty)
                       SliverToBoxAdapter(

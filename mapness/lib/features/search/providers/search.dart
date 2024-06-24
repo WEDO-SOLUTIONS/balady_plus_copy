@@ -1,25 +1,21 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search.g.dart';
 
-List<GeoPointMessage> saRestrictions = [
-  GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
-  GeoPointMessage(latitude: 32.568765, longitude: 32.61185),
-  GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
-  GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
-];
-
 enum SearchType {
   fetchSuggest,
   searchByText,
   searchByQuery,
+  quickSearch,
 }
 
 @riverpod
@@ -40,9 +36,20 @@ class SearchQuery extends _$SearchQuery {
 
 @riverpod
 class Search extends _$Search {
-  SearchType? previousType;
-  String? previousQuery;
-  SearchQueryMessage? prevSearchQueryMessage;
+  /// Search area limit
+  static final _saRestrictions = [
+    GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    GeoPointMessage(latitude: 32.568765, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
+  ];
+
+  SearchType? _previousType;
+  String? _previousQuery;
+  SearchQueryMessage? _previousSearchQueryMessage;
+  QuickFilter? _previousQuickSearch;
+  CancelableOperation? _searchOperation;
+
   @override
   SearchState build(String scope) {
     ref.listen(searchQueryProvider(scope), (_, next) {
@@ -52,18 +59,17 @@ class Search extends _$Search {
     return SearchStateHistory();
   }
 
-  CancelableOperation? _searchOperation;
-
   void clear() {
     state = SearchStateHistory();
-    previousType = null;
-    previousQuery = null;
-    prevSearchQueryMessage = null;
+    _previousType = null;
+    _previousQuery = null;
+    _previousSearchQueryMessage = null;
+    _previousQuickSearch = null;
   }
 
   Future<void> fetchSuggest(String query) async {
-    previousType = SearchType.fetchSuggest;
-    previousQuery = query;
+    _previousType = SearchType.fetchSuggest;
+    _previousQuery = query;
     Metrics.logEvent(
       'fetchSuggest',
       object: runtimeType,
@@ -88,9 +94,45 @@ class Search extends _$Search {
     mixpanel?.track('Search: fetchSuggest');
   }
 
+  Future<void> quickSearch(QuickFilter quickSearch) async {
+    final language = ref.read(appLanguageProvider);
+    _previousType = SearchType.quickSearch;
+    _previousQuickSearch = quickSearch;
+    final searchQuery = quickSearch.query[language] ?? '';
+    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+    Metrics.logEvent(
+      'quickSearch',
+      object: runtimeType,
+      extras: {'query': searchQuery},
+    );
+
+    mixpanel?.timeEvent('Search: quickSearch');
+    await _searchOperation?.cancel();
+    final dgisController = await ref.read(dgisControllerProvider.future);
+
+    final searchOperation = CancelableOperation.fromFuture(
+      dgisController.search(
+        searchQuery,
+        sortingType: SortingTypeMessage.byDistance,
+        spatialRestriction: _saRestrictions,
+        searchRect: searchRect,
+      ),
+    );
+    _searchOperation = searchOperation;
+    final results = await searchOperation.value;
+    state = (results.firstPage?.items.isEmpty ?? true)
+        ? SearchStateEmpty()
+        : SearchStateResults(
+            results,
+            searchQuery,
+            markerType: quickSearch.markerType,
+          );
+    mixpanel?.track('Search: quickSearch');
+  }
+
   Future<void> searchByText(String query) async {
-    previousType = SearchType.searchByText;
-    previousQuery = query;
+    _previousType = SearchType.searchByText;
+    _previousQuery = query;
     final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
     Metrics.logEvent(
       'searchByText',
@@ -106,20 +148,20 @@ class Search extends _$Search {
       dgisController.search(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: getListFromRect(searchRect),
+        spatialRestriction: _saRestrictions,
         searchRect: searchRect,
       ),
     );
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
     state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results, query);
-    mixpanel?.track('Search: fetchSuggest');
+    mixpanel?.track('Search: searchByText');
   }
 
   Future<void> searchByQuery(SearchQueryMessage query, String text) async {
-    previousType = SearchType.searchByQuery;
-    previousQuery = text;
-    prevSearchQueryMessage = query;
+    _previousType = SearchType.searchByQuery;
+    _previousQuery = text;
+    _previousSearchQueryMessage = query;
     final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
 
     Metrics.logEvent(
@@ -135,7 +177,7 @@ class Search extends _$Search {
       dgisController.searchByQuery(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: getListFromRect(searchRect),
+        spatialRestriction: _saRestrictions,
         searchRect: searchRect,
       ),
     );
@@ -146,30 +188,21 @@ class Search extends _$Search {
   }
 
   void searchInThisArea() {
-    switch (previousType) {
+    switch (_previousType) {
       case null:
         break;
       case SearchType.fetchSuggest:
-        fetchSuggest(previousQuery!);
+        fetchSuggest(_previousQuery!);
         break;
       case SearchType.searchByText:
-        searchByText(previousQuery!);
+        searchByText(_previousQuery!);
         break;
       case SearchType.searchByQuery:
-        searchByQuery(prevSearchQueryMessage!, previousQuery!);
+        searchByQuery(_previousSearchQueryMessage!, _previousQuery!);
+        break;
+      case SearchType.quickSearch:
+        quickSearch(_previousQuickSearch!);
         break;
     }
   }
-}
-
-List<GeoPointMessage>? getListFromRect(GeoRectMessage? rect) {
-  if (rect == null) {
-    return null;
-  }
-  return [
-    GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.northEast.longitude),
-    GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.southWest.longitude),
-    GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.southWest.longitude),
-    GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.northEast.longitude),
-  ];
 }
