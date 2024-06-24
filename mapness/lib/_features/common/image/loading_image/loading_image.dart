@@ -1,6 +1,5 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
@@ -51,7 +50,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
     ref.listen(
       networkStatusProvider,
       (previous, next) {
-        if (previous == ConnectivityResult.none && next != previous) {
+        if (previous == false && next != previous) {
           _reloadWidget(context);
         }
       },

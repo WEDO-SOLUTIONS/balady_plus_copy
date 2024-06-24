@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:balady_uikit/balady_uikit.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
@@ -29,12 +27,12 @@ class MapSearchContent extends ConsumerStatefulWidget {
 }
 
 class _MapSearchContentState extends ConsumerState<MapSearchContent> {
-  bool _isLostInternet = false;
+  bool _hasConnection = true;
   Timer? _debounceTimer;
 
   @override
   void initState() {
-    _isLostInternet = ref.read(networkStatusProvider) == ConnectivityResult.none;
+    _hasConnection = ref.read(networkStatusProvider);
     super.initState();
   }
 
@@ -44,23 +42,19 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
     super.dispose();
   }
 
-  void _updateInternetStatus(BuildContext context, bool haveInternet) {
+  void _updateInternetStatus(BuildContext context, bool hasConnection) {
     if (context.mounted) {
       setState(() {
-        _isLostInternet = haveInternet;
+        _hasConnection = hasConnection;
       });
     }
   }
 
-  void _debouncedUpdate(BuildContext context, ConnectivityResult next) {
+  void _debouncedUpdate(BuildContext context, bool hasConnection) {
     _debounceTimer?.cancel();
 
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
-      final bool noInternet = next == ConnectivityResult.none;
-
-      if (noInternet) {
-        _updateInternetStatus(context, noInternet);
-      }
+      _updateInternetStatus(context, hasConnection);
     });
   }
 
@@ -76,16 +70,14 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
       },
     );
 
-    if (_isLostInternet) {
+    if (!_hasConnection) {
       return SliverToBoxAdapter(
         child: SafeArea(
           top: false,
           child: MapLostInternet(
             onTap: () async {
-              _updateInternetStatus(
-                context,
-                ref.read(networkStatusProvider) == ConnectivityResult.none,
-              );
+              await ref.read(networkStatusProvider.notifier).update();
+              _updateInternetStatus(context, ref.read(networkStatusProvider));
             },
           ),
         ),

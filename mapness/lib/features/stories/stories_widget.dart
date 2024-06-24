@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
@@ -41,7 +40,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   @override
   Widget build(BuildContext context) {
     ref.listen(networkStatusProvider, (previous, next) {
-      if (previous == ConnectivityResult.none && next != previous) {
+      if (previous == false && next != previous) {
         ref.read(storyServiceProvider.notifier).refresh();
       }
     });
