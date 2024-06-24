@@ -7,11 +7,6 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 
-import '../../../../etmam_app/core/dependency_injection/injection_container.dart';
-import '../../../features/_shared_feature_/data/entities/device_details.dart';
-import '../../../features/_shared_feature_/data/entities/package_details.dart';
-import '../../../features/notifications/Data/model/notification_request.dart';
-import '../../../features/notifications/manager/notification_manager.dart';
 import 'navigation_services.dart';
 
 /// A notification action which triggers a App navigation event
@@ -121,12 +116,6 @@ class NotificationService {
       await Firebase.initializeApp();
     } catch (ex) {}
 
-    NotificationSettings settings =
-        await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
 
     // Set the background messaging handler early on, as a named top-level function
     // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
