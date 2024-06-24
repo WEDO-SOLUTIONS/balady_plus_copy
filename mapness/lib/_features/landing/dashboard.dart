@@ -162,6 +162,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
                                 child: Row(
+                                  textDirection: TextDirection.ltr,
                                   children: [
                                     Expanded(child: WeatherCard()),
                                     SizedBox(width: Spacing.$3x),
@@ -173,6 +174,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                 child: Row(
+                                  textDirection: TextDirection.ltr,
                                   children: [
                                     Expanded(
                                       child: PlacesForCart(

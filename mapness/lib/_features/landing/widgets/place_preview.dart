@@ -3,14 +3,12 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/landing/providers/interesting_places.dart';
 import 'package:mapness/_features/landing/widgets/slider_list_view.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -50,7 +48,7 @@ class PlacePreview extends ConsumerWidget {
 
               PoiMapRoute.open(ref.read(goRouterProvider), objectId, zoom: 17);
             },
-            itemBuilder: (item) => _PlaceCard(item),
+            itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item.id)),
           );
         },
         error: (error, trace) => ErrorSheet(
@@ -63,67 +61,75 @@ class PlacePreview extends ConsumerWidget {
 class _PlaceCard extends StatelessWidget {
   final proto.InterestingPlace item;
 
-  const _PlaceCard(this.item);
+  const _PlaceCard(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) => ClipRRect(
         borderRadius: BorderRadius.circular(RadiusBorder.xl),
         child: Stack(
           children: [
-            ShaderMask(
-              blendMode: BlendMode.srcATop,
-              shaderCallback: (bounds) => LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [const Color(0x00000000), Colors.black.withOpacity(0.6)],
-              ).createShader(bounds),
-              child: CachedNetworkImage(
-                height: 347,
-                imageUrl: item.preview.image.url,
-                fit: BoxFit.cover,
-                progressIndicatorBuilder: (context, url, progress) => ColoredBox(
-                  color: context.colorsV2.backgroundSurface1,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: progress.progress,
-                      color: context.color.strokePrimary,
+            CachedNetworkImage(
+              height: 347,
+              imageUrl: item.preview.image.url,
+              fit: BoxFit.cover,
+              imageBuilder: (context, imageProvider) => Stack(
+                children: [
+                  ShaderMask(
+                    blendMode: BlendMode.srcATop,
+                    shaderCallback: (bounds) => LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [const Color(0x00000000), Colors.black.withOpacity(0.6)],
+                    ).createShader(bounds),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints.expand(),
+                      child: Image(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                errorWidget: (context, error, _) => ColoredBox(
-                  color: context.colorsV2.backgroundSurface1,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images_svg/sad_face.svg',
-                          package: PackageConfig.packageName,
+                  Align(
+                    alignment: context.isLTR ? Alignment.bottomLeft : Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(Spacing.$6x),
+                      child: Text(
+                        item.titleOrFallback(locale: AppLocalizationsEn()),
+                        style: context.textStyleV3.h2SemiBold.copyWith(
+                          color: context.colorsV2.staticWhite,
                         ),
-                        const SizedBox(height: Spacing.$4x),
-                        Text(context.l10n.somethingWentWrong, style: context.textStyleV3.h2Medium),
-                        const SizedBox(height: Spacing.$1x),
-                        Text(context.l10n.pleaseTryAgainLater),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ),
-            Align(
-              alignment: context.isLTR ? Alignment.bottomLeft : Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.all(Spacing.$6x),
-                child: Text(
-                  item.titleOrFallback(locale: AppLocalizationsEn()),
-                  style: context.textStyleV3.h2SemiBold.copyWith(
-                    color: context.colorsV2.staticWhite,
-                  ),
-                ),
+              progressIndicatorBuilder: (context, url, progress) => _ImagePlaceholder(
+                progress: progress.progress,
               ),
+              errorWidget: (context, error, _) => const _ImagePlaceholder(),
             ),
           ],
+        ),
+      );
+}
+
+class _ImagePlaceholder extends StatelessWidget {
+  final double? progress;
+
+  const _ImagePlaceholder({this.progress});
+
+  @override
+  Widget build(BuildContext context) => ColoredBox(
+        color: context.colorsV2.backgroundSurface5,
+        child: Center(
+          child: SizedBox(
+            child: CircularProgressIndicator(
+              value: progress,
+              color: context.colorsV2.borderDefault,
+              backgroundColor: context.colorsV2.borderMuted,
+              strokeCap: StrokeCap.round,
+            ),
+          ),
         ),
       );
 }
