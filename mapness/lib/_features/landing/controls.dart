@@ -72,26 +72,70 @@ class MapControls extends ConsumerWidget {
                       right: 12,
                       bottom: bottomPadding,
                     ),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const LayersControl(),
-                          const SizedBox(height: 8),
-                          const TrafficControl(),
-                          const Spacer(),
-                          const ZoomControl(),
-                          const Spacer(),
-                          const CompassControl(),
-                          const SizedBox(height: 8),
-                          ComplienceBuildingLegend(),
-                          const SizedBox(height: 8),
-                          const FollowControl(
-                            onlyFollowDirection: false,
-                          ),
-                        ],
-                      ),
+                    child: Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            WeatherControl(
+                              onTap: () => const WeatherRoute().push(context),
+                            ),
+                            const SizedBox(height: 8),
+                            const HappinesControl(),
+                            const Spacer(),
+                            const IndoorControl(),
+                            const Spacer(),
+                            Consumer(
+                              builder: (context, ref, _) => Row(
+                                children: [
+                                  MapButton(
+                                    child: SvgPicture.asset(
+                                      'assets/icons/svg/ic_controls_qibla.svg',
+                                      semanticsLabel: 'MinApps Screen',
+                                      package: 'mapness',
+                                    ),
+                                    onTap: () async {
+                                      Metrics.logEventAdvanced(
+                                        MetricsConstants.exploreKeys.qibla,
+                                        action: MetricAction.tap.name,
+                                        group: MetricsConstants.exploreTag,
+                                      );
+                                      final location = ref.read(locationProvider.notifier);
+
+                                      await location.checkLocationPermission().then((allowed) {
+                                        if (allowed) {
+                                          const KiblahRoute().push(context);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const SearchInArea(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const LayersControl(),
+                            const SizedBox(height: 8),
+                            const TrafficControl(),
+                            const Spacer(),
+                            const ZoomControl(),
+                            const Spacer(),
+                            const CompassControl(),
+                            const SizedBox(height: 8),
+                            ComplianceBuildingLegend(),
+                            const SizedBox(height: 8),
+                            const FollowControl(
+                              onlyFollowDirection: false,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
