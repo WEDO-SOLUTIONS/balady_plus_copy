@@ -41,7 +41,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   late final _dgisSheetController = DgisBottomSheetController();
-
+  double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
   final settings = MapObjectManagerSettings.search();
@@ -105,17 +105,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       )
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
-    double ratioForScreen() => switch (_dgisSheetController.currentExpansion) {
-          Expansion.collapsed => 0.1,
-          Expansion.middle => 0.8,
-          Expansion.hidden => 0.0,
-          _ => 0.8,
-        };
-
     return Stack(
       alignment: Alignment.bottomLeft,
       children: [
-        const MapSearchSheetControls(currentSize: 0.1),
+        MapSearchSheetControls(currentSize: currentSize),
         NotificationListener<ScrollNotification>(
           onNotification: _onNotification,
           child: DgisBottomSheet(
@@ -212,6 +205,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       );
 
   void _onExpansionChanged(Expansion expansion) => switch (expansion) {
+        Expansion.middle => setState(() {
+            currentSize = 0.8;
+          }),
+        Expansion.collapsed => setState(() {
+            currentSize = 0.1;
+          }),
         Expansion.hidden => close(),
         _ => null,
       };
