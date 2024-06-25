@@ -14,14 +14,12 @@ import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../notifications/data/repositories/notification_repository_implementation.dart';
 import '../../../notifications/domain/entities/set_notifications_profile_params.dart';
 import '../bloc/notifications_setting_cubit.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class NotificationsSettingCell extends StatefulWidget {
   const NotificationsSettingCell({super.key});
 
   @override
-  State<NotificationsSettingCell> createState() =>
-      _NotificationsSettingCellState();
+  State<NotificationsSettingCell> createState() => _NotificationsSettingCellState();
 }
 
 class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
@@ -33,20 +31,14 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
         ? const SizedBox.shrink()
         : BlocProvider(
             create: (context) {
-              NotificationRepositoryImplementation
-                  notificationRepositoryImplementation = sl();
+              NotificationRepositoryImplementation notificationRepositoryImplementation = sl();
               return NotificationsSettingCubit(
-                  notificationsSettingsListRepository:
-                      notificationRepositoryImplementation,
-                  notificationId: 'mobile');
+                  notificationsSettingsListRepository: notificationRepositoryImplementation, notificationId: 'mobile');
             },
-            child: BlocBuilder<NotificationsSettingCubit,
-                NotificationsSettingState>(
+            child: BlocBuilder<NotificationsSettingCubit, NotificationsSettingState>(
               builder: (contextCubit, state) {
-                NotificationsSettingCubit cubit =
-                    contextCubit.watch<NotificationsSettingCubit>();
-                if (state is InitialNotificationsSettingsState ||
-                    state is LoadingEventsSettingsState) {
+                NotificationsSettingCubit cubit = contextCubit.watch<NotificationsSettingCubit>();
+                if (state is InitialNotificationsSettingsState || state is LoadingEventsSettingsState) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state is FailureNotificationsSettingsState) {
@@ -61,9 +53,8 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                     manageNotificationClicked = false;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NotificationsSettings(
-                              notificationsList: cubit
-                                  .notificationsSettingsList.categories!)));
+                          builder: (context) =>
+                              NotificationsSettings(notificationsList: cubit.notificationsSettingsList.categories!)));
                     });
                   }
 
@@ -80,17 +71,14 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                             onTap: () {
                               cubit.setNotificationsProfile(
                                   SetNotificationsProfileParams(
-                                      enabled: !state.isChecked,
-                                      channelId: 'mobile',
-                                      applicationId: 'super-app'),
+                                      enabled: !state.isChecked, channelId: 'mobile', applicationId: 'super-app'),
                                   !state.isChecked);
                             },
                             borderRadius: BorderRadius.circular(8),
                             child: SizedBox(
                               height: 48,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -106,15 +94,13 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                       width: 12,
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 2.0),
+                                      padding: const EdgeInsets.only(bottom: 2.0),
                                       child: Text(
                                         'notifications'.tr(),
                                         style: Theme.of(context)
                                             .extension<ThemeTextStyles>()!
                                             .text
-                                            .copyWith(
-                                                color: const Color(0xFF1E2A36)),
+                                            .copyWith(color: const Color(0xFF1E2A36)),
                                       ),
                                     ),
                                     const Spacer(),
@@ -140,12 +126,8 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           children: [
                             Text(
                               'enable_disable_notifications'.tr(),
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .caption
-                                  .copyWith(
-                                    color: context.color.textAndIconsBasePrimary
-                                        .withOpacity(0.36),
+                              style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(
+                                    color: context.color.textAndIconsBasePrimary.withOpacity(0.36),
                                   ),
                             ),
                           ],
@@ -158,8 +140,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           ? GestureDetector(
                               onTap: () {
                                 manageNotificationClicked = true;
-                                cubit.getNotificationSetting(
-                                    cubit.notificationId);
+                                cubit.getNotificationSetting(cubit.notificationId);
                                 /* Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => NotificationsSettings(
                                         notificationsList: cubit
@@ -167,8 +148,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                             .categories!)));*/
                               },
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
