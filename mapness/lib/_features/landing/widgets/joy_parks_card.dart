@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -17,7 +18,12 @@ class JoyParksCard extends ConsumerWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: GestureDetector(
-            onTap: ref.read(layersControlsProvider.notifier).toggleIwish,
+            onTap: () {
+              // TODO: fix this and close bottom sheet and display map
+              const LandingRoute().push(context);
+
+              ref.read(layersControlsProvider.notifier).toggleIwish();
+            },
             child: SizedBox(
               height: 118,
               child: DecoratedBox(
@@ -44,6 +50,7 @@ class JoyParksCard extends ConsumerWidget {
                               color: context.colorsV2.staticWhite,
                             ),
                           ),
+                          const SizedBox(height: 4),
                           Text(
                             context.l10n.exploreNature,
                             style: context.textStyleV3.captionLargeRegular.copyWith(

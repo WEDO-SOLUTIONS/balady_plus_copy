@@ -102,41 +102,10 @@ class PrayerCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 40,
                                 height: 40,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Metrics.logEventAdvanced(
-                                      MetricsConstants.exploreKeys.prayerTimesBannerBellIcon,
-                                      action: MetricAction.tap.name,
-                                      group: MetricsConstants.exploreTag,
-                                    );
-                                    Provider.of<PrayerTimesCubit>(context, listen: false).prayerSettingsOnOff();
-                                  },
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(RadiusBorder.m),
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                                      child: ColoredBox(
-                                        color: Colors.white.withOpacity(0.25),
-                                        child: Center(
-                                          child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
-                                            builder: (context, state) {
-                                              final isNotificationDisabled = state.isNotificationDisable;
-                                              return Icon(
-                                                SystemIcons.notification,
-                                                color: isNotificationDisabled
-                                                    ? context.colorsV2.foregroundMuted
-                                                    : Colors.white,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                child: _NotificationIconSwitch(),
                               )
                             ],
                           ),
@@ -144,6 +113,60 @@ class PrayerCard extends StatelessWidget {
                       ),
                     );
                   }),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+}
+
+class _NotificationIconSwitch extends StatefulWidget {
+  const _NotificationIconSwitch();
+
+  @override
+  State<_NotificationIconSwitch> createState() => _NotificationIconSwitchState();
+}
+
+class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
+  bool isPressed = false;
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.prayerTimesBannerBellIcon,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
+          Provider.of<PrayerTimesCubit>(context, listen: false).prayerSettingsOnOff();
+        },
+        onTapDown: (_) {
+          setState(() {
+            isPressed = true;
+          });
+        },
+        onTapUp: (_) {
+          setState(() {
+            isPressed = false;
+          });
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+            child: ColoredBox(
+              color: Colors.white.withOpacity(0.25),
+              child: Center(
+                child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+                  builder: (context, state) {
+                    final isNotificationDisabled = state.isNotificationDisable;
+                    return Icon(
+                      isNotificationDisabled ? SystemIcons.notification : SystemIcons.notificationFill,
+                      color: isPressed ? context.colorsV2.foregroundMuted : Colors.white,
+                    );
+                  },
                 ),
               ),
             ),

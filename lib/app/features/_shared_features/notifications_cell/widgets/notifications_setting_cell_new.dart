@@ -2,8 +2,6 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_settings/notifications_settings.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -67,9 +65,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           ContentRow(
                             options: ContentRowOptions(
                                 leadingIcon: SvgPicture.asset(
-                                  iconPath.IconPath.notificationIc2,
                                   icon_path.IconPath.notificationIc2,
-
                                   height: 24,
                                   width: 24,
                                   colorFilter: const ColorFilter.mode(
