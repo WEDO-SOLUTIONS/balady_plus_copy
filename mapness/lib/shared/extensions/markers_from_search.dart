@@ -75,7 +75,6 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     required GoRouter router,
     MarkerIconMessage? icon,
     bool withLabel = true,
-    bool isLTR = false,
   }) async {
     final uiObjectMaps = withLabel
         ? await compute<List<UiMarkerInfoMessage?>?, Map<int, String>>(_generateTitleMap, markersWithLabel)
