@@ -61,12 +61,12 @@ class PrayerCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'remain_to_azan'.tr().replaceAll('{}', state.nextPrayer!.prayer.label.tr()),
-                            style: context.textStyleV3.bodyLargeRegular.copyWith(
-                              color: context.color.textAndIconsBaseInversePrimary,
-                            ),
-                          ),
+                          // Text(
+                          //   'remain_to_azan'.tr().replaceAll('{}', state.nextPrayer!.prayer.label.tr()),
+                          //   style: context.textStyleV3.bodyLargeRegular.copyWith(
+                          //     color: context.color.textAndIconsBaseInversePrimary,
+                          //   ),
+                          // ),
                           _NextPrayerTimer(
                             prayer: nextPrayer.prayer,
                             time: nextPrayer.dateTime,
@@ -216,14 +216,8 @@ class _NextPrayerTimerState extends State<_NextPrayerTimer> {
         final minutes = (time.inMinutes % 60).toString().padLeft(2, '0');
         final seconds = (time.inSeconds % 60).toString().padLeft(2, '0');
 
-        return hours != '00'
-            ? Text(
+        return Text(
                 '$hours : $minutes : $seconds',
-                style: context.textStyleV3.h1Medium.copyWith(color: context.colorsV2.staticWhite),
-                textDirection: TextDirection.ltr,
-              )
-            : Text(
-                '$minutes : $seconds',
                 style: context.textStyleV3.h1Medium.copyWith(color: context.colorsV2.staticWhite),
                 textDirection: TextDirection.ltr,
               );
