@@ -163,8 +163,7 @@ class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
                   builder: (context, state) {
                     final isNotificationDisabled = state.isNotificationDisable;
                     return Icon(
-                      /// TODO: Change one of the icons with filled version
-                      isNotificationDisabled ? SystemIcons.notification : SystemIcons.notification,
+                      isNotificationDisabled ? SystemIcons.notification : SystemIcons.notificationFill,
                       color: isPressed ? context.colorsV2.foregroundMuted : Colors.white,
                     );
                   },
