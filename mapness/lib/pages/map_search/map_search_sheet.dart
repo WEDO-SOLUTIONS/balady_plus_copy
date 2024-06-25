@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -13,9 +11,9 @@ import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content.dart';
+import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -107,24 +105,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       )
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
+    double ratioForScreen() => switch (_dgisSheetController.currentExpansion) {
+          Expansion.collapsed => 0.1,
+          Expansion.middle => 0.8,
+          Expansion.hidden => 0.0,
+          _ => 0.8,
+        };
+
     return Stack(
       alignment: Alignment.bottomLeft,
       children: [
-        // TODO: We should add map controlls here
-        SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: widget.biggestHeight * 0.2 + 16, left: 12),
-            child: SearchInArea(
-              visible: false,
-              title: context.l10n.searchInThisArea,
-              onTap: () {
-                ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
-                ref.read(searchInRectProvider.notifier).update();
-              },
-            ),
-          ),
-        ),
+        const MapSearchSheetControls(currentSize: 0.1),
         NotificationListener<ScrollNotification>(
           onNotification: _onNotification,
           child: DgisBottomSheet(
