@@ -46,6 +46,13 @@ class MapSearchSheetControls extends ConsumerWidget {
       bottomPadding = 16;
     }
 
+    final visibleSearchArea = ref.watch(searchInRectProvider.select((value) => value.$2));
+
+    void _searchInArea() {
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
+      ref.read(searchInRectProvider.notifier).update();
+    }
+
     return IgnorePointer(
       ignoring: hideControls,
       child: SafeArea(
@@ -85,12 +92,9 @@ class MapSearchSheetControls extends ConsumerWidget {
                           Row(
                             children: [
                               uikit.SearchInArea(
-                                visible: false,
+                                visible: !visibleSearchArea,
                                 title: context.l10n.searchInThisArea,
-                                onTap: () {
-                                  ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
-                                  ref.read(searchInRectProvider.notifier).update();
-                                },
+                                onTap: _searchInArea,
                               ),
                               const Spacer(),
                               const FollowControl(

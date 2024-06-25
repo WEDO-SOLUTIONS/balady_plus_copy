@@ -34,6 +34,8 @@ class Search extends _$Search {
   QuickFilter? _previousQuickSearch;
   CancelableOperation? _searchOperation;
 
+  bool get isSearchRunning => _previousType != null;
+
   @override
   SearchState build(String scope) => const SearchStateHistory();
 
