@@ -49,8 +49,9 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
   Widget build(BuildContext context) {
     ref.listen(
       networkStatusProvider,
-      (previous, next) {
-        if (previous == false && next != previous) {
+      (wasAvailable, available) {
+        final becomeAvailable = wasAvailable == false && available != wasAvailable;
+        if (becomeAvailable) {
           _reloadWidget(context);
         }
       },

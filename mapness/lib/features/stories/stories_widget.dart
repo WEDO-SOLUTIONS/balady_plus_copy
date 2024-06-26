@@ -39,8 +39,9 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(networkStatusProvider, (previous, next) {
-      if (previous == false && next != previous) {
+    ref.listen(networkStatusProvider, (wasAvailable, available) {
+      final becomeAvailable = wasAvailable == false && available != wasAvailable;
+      if (becomeAvailable) {
         ref.read(storyServiceProvider.notifier).refresh();
       }
     });
