@@ -85,7 +85,7 @@ class MapControls extends ConsumerWidget {
                           const Spacer(),
                           const CompassControl(),
                           const SizedBox(height: 8),
-                          ComplienceBuildingLegend(),
+                          ComplianceBuildingLegend(),
                           const SizedBox(height: 8),
                           const FollowControl(
                             onlyFollowDirection: false,
