@@ -18,7 +18,7 @@ import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
-import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -90,7 +90,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         }();
       case LangingFocusMaker.mosques:
         Future.delayed(Duration.zero, () {
-          ref.read(searchByRubricsQueryProvider.notifier).selectFilter(QuickFilterType.mosques);
+          ref.read(searchByRubricsQueryProvider.notifier).selectFilter(QuickFilter.mosques);
         });
       // ignore: no_default_cases
       default:

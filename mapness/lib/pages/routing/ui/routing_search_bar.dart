@@ -52,12 +52,11 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
   @override
   Widget build(BuildContext context) {
     final scope = context.watch<SearchScope>();
-    ref.listen(searchQueryProvider(scope.value), (previous, next) {
-      if (next != _controller.text) {
+    ref.listen(searchProvider(scope.value), (previous, next) {
+      if (next.searchText != _controller.text) {
         _controller
-          ..text = next
-          ..selection =
-              TextSelection.collapsed(offset: _controller.text.length);
+          ..text = next.searchText
+          ..selection = TextSelection.collapsed(offset: _controller.text.length);
       }
     });
     return BaladySearchWithBackButton(
@@ -71,7 +70,7 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             props: {'query': query},
           );
 
-          ref.read(searchQueryProvider(scope.value).notifier).update(query);
+          ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
         },
         onSubmitted: (query) {
           Metrics.logEventAdvanced(
