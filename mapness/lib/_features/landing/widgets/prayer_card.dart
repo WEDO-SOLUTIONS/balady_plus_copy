@@ -239,14 +239,8 @@ class _NextPrayerTimerState extends State<_NextPrayerTimer> {
         final minutes = (time.inMinutes % 60).toString().padLeft(2, '0');
         final seconds = (time.inSeconds % 60).toString().padLeft(2, '0');
 
-        return hours != '00'
-            ? Text(
+        return Text(
                 '$hours : $minutes : $seconds',
-                style: context.textStyleV3.h1Medium.copyWith(color: context.colorsV2.staticWhite),
-                textDirection: TextDirection.ltr,
-              )
-            : Text(
-                '$minutes : $seconds',
                 style: context.textStyleV3.h1Medium.copyWith(color: context.colorsV2.staticWhite),
                 textDirection: TextDirection.ltr,
               );
