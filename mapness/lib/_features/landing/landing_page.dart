@@ -204,6 +204,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       return;
     } else if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
       return;
+    } else if (goRouter.isCurrentRoute(RoutingRoutesRoute.path)) {
+      return;
     }
     if (event is ObjectTapEvent) {
       Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
