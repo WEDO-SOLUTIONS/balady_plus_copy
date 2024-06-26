@@ -133,6 +133,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
         const landingPage = '/landing';
+        const kiblahPage = '/kiblah';
+
         Future.delayed(const Duration(milliseconds: 250), () {
           _calculatePadding();
         });
@@ -141,6 +143,12 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           _onScroll
             ..value = true
             ..value = false;
+        } else if (next?.currentPath == kiblahPage) {
+          _draggableScrollableController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.linear,
+          );
         }
       })
 
