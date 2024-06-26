@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,7 @@ import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
@@ -102,6 +104,20 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         child: SafeArea(
           top: false,
           child: MapSearchHistory(),
+        ),
+      ),
+      loading: () => SliverFillRemaining(
+        hasScrollBody: false,
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 196),
+            child: Loading(
+              orientation: Axis.vertical,
+              size: LoaderSize.large,
+              title: context.l10n.loading,
+            ),
+          ),
         ),
       ),
       suggest: (suggest) => SliverToBoxAdapter(

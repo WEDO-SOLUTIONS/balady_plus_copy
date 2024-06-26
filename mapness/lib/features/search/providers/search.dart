@@ -19,22 +19,6 @@ enum SearchType {
 }
 
 @riverpod
-class SearchQuery extends _$SearchQuery {
-  @override
-  String build(String scope) => '';
-
-  void update(String value) {
-    Metrics.logEvent(
-      'SearchQuery',
-      object: runtimeType,
-      extras: {'value': value},
-    );
-    mixpanel?.track('SearchQuery', properties: {'value': value});
-    state = value;
-  }
-}
-
-@riverpod
 class Search extends _$Search {
   /// Search area limit
   static final _saRestrictions = [
@@ -51,23 +35,40 @@ class Search extends _$Search {
   CancelableOperation? _searchOperation;
 
   @override
-  SearchState build(String scope) {
-    ref.listen(searchQueryProvider(scope), (_, next) {
-      fetchSuggest(next);
-    });
-
-    return SearchStateHistory();
-  }
+  SearchState build(String scope) => const SearchStateHistory();
 
   void clear() {
-    state = SearchStateHistory();
+    _searchOperation?.cancel();
+    state = const SearchStateHistory();
     _previousType = null;
     _previousQuery = null;
     _previousSearchQueryMessage = null;
     _previousQuickSearch = null;
   }
 
+  Future<void> searchQueryChanged(String query) async {
+    Metrics.logEvent(
+      'SearchQuery',
+      object: runtimeType,
+      extras: {'value': query},
+    );
+    mixpanel?.track('SearchQuery', properties: {'value': query});
+
+    if (query.isEmpty) {
+      clear();
+    }
+
+    await fetchSuggest(query);
+  }
+
   Future<void> fetchSuggest(String query) async {
+    await _searchOperation?.cancel();
+    if (query.isEmpty) {
+      state = const SearchStateHistory();
+      return;
+    }
+
+    _updateSearchText(query);
     _previousType = SearchType.fetchSuggest;
     _previousQuery = query;
     Metrics.logEvent(
@@ -76,29 +77,37 @@ class Search extends _$Search {
     );
 
     mixpanel?.timeEvent('Search: fetchSuggest');
-    await _searchOperation?.cancel();
-    if (query.isEmpty) {
-      state = SearchStateHistory();
-      return;
-    }
     final dgisController = await ref.read(dgisControllerProvider.future);
     final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
 
-    final searchOperation = CancelableOperation.fromFuture(dgisController.fetchSuggest(
-      query,
-      searchRect: searchRect,
-    ));
+    final searchOperation = CancelableOperation.fromFuture(
+      dgisController.fetchSuggest(
+        query,
+        searchRect: searchRect,
+      ),
+    );
     _searchOperation = searchOperation;
     final result = await searchOperation.value;
-    state = result.suggests.isEmpty ? SearchStateEmpty() : SearchStateSuggest(result);
+    state = result.suggests.isEmpty
+        ? SearchStateEmpty(searchText: query)
+        : SearchStateSuggest(
+            suggest: result,
+            searchText: query,
+          );
     mixpanel?.track('Search: fetchSuggest');
   }
 
   Future<void> quickSearch(QuickFilter quickSearch) async {
+    await _searchOperation?.cancel();
     final language = ref.read(appLanguageProvider);
+    final searchQuery = quickSearch.query[language] ?? '';
+    if (searchQuery.isEmpty) {
+      state = const SearchStateHistory();
+      return;
+    }
+    state = SearchStateLoading(searchText: searchQuery);
     _previousType = SearchType.quickSearch;
     _previousQuickSearch = quickSearch;
-    final searchQuery = quickSearch.query[language] ?? '';
     final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
     Metrics.logEvent(
       'quickSearch',
@@ -107,7 +116,6 @@ class Search extends _$Search {
     );
 
     mixpanel?.timeEvent('Search: quickSearch');
-    await _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     final searchOperation = CancelableOperation.fromFuture(
@@ -121,16 +129,18 @@ class Search extends _$Search {
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
     state = (results.firstPage?.items.isEmpty ?? true)
-        ? SearchStateEmpty()
+        ? SearchStateEmpty(searchText: searchQuery)
         : SearchStateResults(
-            results,
-            searchQuery,
+            results: results,
+            searchText: searchQuery,
             markerType: quickSearch.markerType,
           );
     mixpanel?.track('Search: quickSearch');
   }
 
   Future<void> searchByText(String query) async {
+    await _searchOperation?.cancel();
+    state = SearchStateLoading(searchText: query);
     _previousType = SearchType.searchByText;
     _previousQuery = query;
     final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
@@ -141,7 +151,6 @@ class Search extends _$Search {
     );
 
     mixpanel?.timeEvent('Search: searchByText');
-    await _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     final searchOperation = CancelableOperation.fromFuture(
@@ -154,11 +163,18 @@ class Search extends _$Search {
     );
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
-    state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results, query);
+    state = (results.firstPage?.items.isEmpty ?? true)
+        ? SearchStateEmpty(searchText: query)
+        : SearchStateResults(
+            results: results,
+            searchText: query,
+          );
     mixpanel?.track('Search: searchByText');
   }
 
   Future<void> searchByQuery(SearchQueryMessage query, String text) async {
+    await _searchOperation?.cancel();
+    state = SearchStateLoading(searchText: text);
     _previousType = SearchType.searchByQuery;
     _previousQuery = text;
     _previousSearchQueryMessage = query;
@@ -170,7 +186,6 @@ class Search extends _$Search {
       extras: {'query_id': query.id},
     );
     mixpanel?.timeEvent('Search: searchByQuery');
-    await _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     final searchOperation = CancelableOperation.fromFuture(
@@ -183,7 +198,12 @@ class Search extends _$Search {
     );
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
-    state = (results.firstPage?.items.isEmpty ?? true) ? SearchStateEmpty() : SearchStateResults(results, text);
+    state = (results.firstPage?.items.isEmpty ?? true)
+        ? SearchStateEmpty(searchText: text)
+        : SearchStateResults(
+            results: results,
+            searchText: text,
+          );
     mixpanel?.track('Search: searchByQuery');
   }
 
@@ -204,5 +224,16 @@ class Search extends _$Search {
         quickSearch(_previousQuickSearch!);
         break;
     }
+  }
+
+  void _updateSearchText(String searchText) {
+    final oldState = state;
+    state = switch (oldState) {
+      SearchStateHistory() => oldState.copyWith(searchText: searchText),
+      SearchStateEmpty() => oldState.copyWith(searchText: searchText),
+      SearchStateSuggest() => oldState.copyWith(searchText: searchText),
+      SearchStateResults() => oldState.copyWith(searchText: searchText),
+      SearchStateLoading() => oldState.copyWith(searchText: searchText),
+    };
   }
 }

@@ -101,7 +101,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       ..watch(searchInRectProvider.notifier)
       ..listen(
         searchProvider(SearchScopeEnum.map.value),
-        (previous, next) => _drawSearchMarkers(next),
+        (previous, next) {
+          _drawSearchMarkers(next, previous);
+        },
       )
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
@@ -178,8 +180,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     );
   }
 
-  Future<void> _drawSearchMarkers(SearchState searchState) async {
-    if (searchState is SearchStateResults) {
+  Future<void> _drawSearchMarkers(SearchState searchState, SearchState? prevState) async {
+    if (searchState is SearchStateResults &&
+        (prevState is! SearchStateResults || prevState.results != searchState.results)) {
       final markerIconPath = searchState.markerType?.iconPath;
       final icon = markerIconPath != null
           ? markerIconPath.markerIcon(size: 32)
