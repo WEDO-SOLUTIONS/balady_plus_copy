@@ -4,7 +4,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 
 // TODO(Sergei): remove rubrics and rename to QuickSearch when quick search feature is approved
 enum QuickFilter {
-  restaurants,
+  eatOut,
   markets,
   hotels,
   mosques,
@@ -19,6 +19,7 @@ enum QuickFilter {
   beautyCenters,
   salons,
   schools,
+  shopping,
 }
 
 extension QuickFilterExtension on QuickFilter {
@@ -36,8 +37,9 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.sportClubs => locale.sportClubs,
         QuickFilter.carServices => locale.carServices,
         QuickFilter.markets => locale.markets,
-        QuickFilter.restaurants => locale.restaurants,
+        QuickFilter.eatOut => locale.restaurants,
         QuickFilter.salons => locale.salons,
+        QuickFilter.shopping => locale.placesToShop,
       };
 
   MapMarkersType? get markerType => switch (this) {
@@ -52,82 +54,87 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.sportClubs => MapMarkersType.gym,
         QuickFilter.carServices => MapMarkersType.carServices,
         QuickFilter.markets => MapMarkersType.markets,
-        QuickFilter.restaurants => MapMarkersType.restaurants,
+        QuickFilter.eatOut => MapMarkersType.restaurants,
         _ => null,
       };
 
   Map<Language, String> get query => switch (this) {
-    QuickFilter.mosques => {
-      Language.english: 'Mosques',
-      Language.arabic: 'المساجد',
-    },
-    QuickFilter.gasStation => {
-      Language.english: 'Gas stations',
-      Language.arabic: 'محطات الوقود',
-    },
-    QuickFilter.parks => {
-      Language.english: 'Parks',
-      Language.arabic: 'الحدائق',
-    },
-    QuickFilter.hospitals => {
-      Language.english: 'Hospitals',
-      Language.arabic: 'المستشفيات',
-    },
-    QuickFilter.schools => {
-      Language.english: 'Schools',
-      Language.arabic: 'المدارس',
-    },
-    QuickFilter.pharmacies => {
-      Language.english: 'Pharmacies',
-      Language.arabic: 'الصيدليات',
-    },
-    QuickFilter.dentalCenters => {
-      Language.english: 'Dental centers',
-      Language.arabic: 'مراكز طب الأسنان',
-    },
-    QuickFilter.hotels => {
-      Language.english: 'Hotels',
-      Language.arabic: 'الفنادق',
-    },
-    QuickFilter.sportClubs => {
-      Language.english: 'Sport clubs',
-      Language.arabic: 'الأندية الرياضية',
-    },
-    QuickFilter.carServices => {
-      Language.english: 'Car services',
-      Language.arabic: 'خدمات السيارات',
-    },
-    QuickFilter.markets => {
-      Language.english: 'Markets',
-      Language.arabic: 'الأسواق',
-    },
-    QuickFilter.restaurants => {
-      Language.english: 'Restaurants',
-      Language.arabic: 'المطاعم',
-    },
-    QuickFilter.recreationCenters => {
-      Language.english: 'Recreation centers',
-      Language.arabic: 'مراكز الترفيه',
-    },
-    QuickFilter.beautyCenters => {
-      Language.english: 'Beauty centers',
-      Language.arabic: 'مراكز التجميل',
-    },
-    QuickFilter.salons => {
-      Language.english: 'Salons',
-      Language.arabic: 'الصالونات',
-    },
-  };
+        QuickFilter.mosques => {
+            Language.english: 'Mosques',
+            Language.arabic: 'مساجد',
+          },
+        QuickFilter.gasStation => {
+            Language.english: 'Gas stations',
+            Language.arabic: 'محطات وقود',
+          },
+        QuickFilter.parks => {
+            Language.english: 'Parks',
+            Language.arabic: 'حدائق',
+          },
+        QuickFilter.hospitals => {
+            Language.english: 'Hospitals',
+            Language.arabic: 'مستشفيات',
+          },
+        QuickFilter.schools => {
+            Language.english: 'Schools',
+            Language.arabic: 'لمدارس',
+          },
+        QuickFilter.pharmacies => {
+            Language.english: 'Pharmacies',
+            Language.arabic: 'صيدليات',
+          },
+        QuickFilter.dentalCenters => {
+            Language.english: 'Dental centers',
+            Language.arabic: 'مراكز طب الأسنان',
+          },
+        QuickFilter.hotels => {
+            Language.english: 'Hotels',
+            Language.arabic: 'فندق',
+          },
+        QuickFilter.sportClubs => {
+            Language.english: 'Sport clubs',
+            Language.arabic: 'أندية لياقة بدنية',
+          },
+        QuickFilter.carServices => {
+            Language.english: 'Car services',
+            Language.arabic: 'تصليح وصيانة مركبات',
+          },
+        QuickFilter.markets => {
+            Language.english: 'Markets',
+            Language.arabic: 'مواد غذائية',
+          },
+        QuickFilter.eatOut => {
+            Language.english: 'Eat out',
+            Language.arabic: 'مطاعم',
+          },
+        QuickFilter.recreationCenters => {
+            Language.english: 'Recreation centers',
+            Language.arabic: 'ترفيه',
+          },
+        QuickFilter.beautyCenters => {
+            Language.english: 'Beauty centers',
+            Language.arabic: 'جمال',
+          },
+        QuickFilter.salons => {
+            Language.english: 'Salons',
+            Language.arabic: 'صالونات',
+          },
+        QuickFilter.shopping => {
+            Language.english: 'Shopping centers',
+            Language.arabic: 'مول',
+          },
+      };
 
   List<int> get rubrics => switch (this) {
         QuickFilter.mosques => const [13374],
         QuickFilter.gasStation => const [18547],
-        QuickFilter.parks => const [],
         QuickFilter.hospitals => const [201],
         QuickFilter.schools => const [245],
         QuickFilter.pharmacies => const [207],
         QuickFilter.dentalCenters => const [222],
         QuickFilter.hotels => const [269],
+        QuickFilter.eatOut => const [161, 165, 161, 9786, 162, 469, 58871],
+        QuickFilter.salons => const [110352],
         QuickFilter.beautyCenters => const [
             56759,
             110351,
@@ -242,7 +249,7 @@ extension QuickFilterExtension on QuickFilter {
             544,
             398,
           ],
-        QuickFilter.restaurants => const [161, 165, 161, 9786, 162, 469, 58871],
-        QuickFilter.salons => const [110352],
+        QuickFilter.parks => const [],
+        QuickFilter.shopping => const [],
       };
 }
