@@ -37,7 +37,7 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.sportClubs => locale.sportClubs,
         QuickFilter.carServices => locale.carServices,
         QuickFilter.markets => locale.markets,
-        QuickFilter.eatOut => locale.restaurants,
+        QuickFilter.eatOut => locale.eatOut,
         QuickFilter.salons => locale.salons,
         QuickFilter.shopping => locale.placesToShop,
       };
