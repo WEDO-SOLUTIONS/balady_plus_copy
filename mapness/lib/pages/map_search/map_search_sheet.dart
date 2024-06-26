@@ -80,6 +80,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomSafeArea = MediaQuery.of(context).padding.bottom;
+    final height = 88 + bottomSafeArea;
+
     searchObjectManager ??= ref.watch(
       mapObjectManagerProvider(
         named: settings.name,
@@ -134,7 +137,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
             },
             onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
             middleHeight: widget.biggestHeight * 0.8,
-            collapsedHeight: widget.biggestHeight * 0.1,
+            collapsedHeight: height,
             scrollableBody: (context, scrollController) {
               /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
               /// https://www.youtube.com/watch?v=L_WoOkDAqbM
@@ -166,6 +169,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
             },
           ),
         ),
+        Container(
+          height: bottomSafeArea + 10,
+          width: double.maxFinite,
+          color: Colors.white,
+        )
       ],
     );
   }

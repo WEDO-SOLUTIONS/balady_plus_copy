@@ -1,7 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
@@ -54,16 +54,7 @@ class DashboardHeader extends ConsumerWidget {
         child: Column(
           children: [
             const SizedBox(height: 8),
-            Center(
-              child: Container(
-                height: 4,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: context.color.surfaceContrastMid.withOpacity(0.24),
-                  borderRadius: const BorderRadius.all(Radius.circular(99)),
-                ),
-              ),
-            ),
+            Center(child: SheetDragger()),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
