@@ -1,13 +1,12 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/favourites/widgets/empty_result_widget.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
@@ -73,15 +72,9 @@ class FavouritesPicker extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: SvgPicture.asset(
-                            'assets/icons/svg/ic_chevron_right.svg',
-                            height: 24,
-                            width: 24,
-                            package: PackageConfig.packageName,
-                            colorFilter: ColorFilter.mode(
-                              context.color.textAndIconsBasePrimary,
-                              BlendMode.srcIn,
-                            ),
+                          child: Icon(
+                            context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                            color: context.color.textAndIconsBasePrimary,
                           ),
                         ),
                       ),
