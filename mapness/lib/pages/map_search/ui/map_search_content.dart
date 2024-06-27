@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
@@ -44,9 +45,13 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
 
   void _updateInternetStatus(BuildContext context, bool hasConnection) {
     if (context.mounted) {
-      setState(() {
-        _hasConnection = hasConnection;
-      });
+      // If the [hasConnection] value has changed we rebuild widget with `setState`
+      // Otherwise we do nothing
+      if (hasConnection != _hasConnection) {
+        setState(() {
+          _hasConnection = hasConnection;
+        });
+      }
     }
   }
 
@@ -65,8 +70,8 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
 
     ref.listen(
       networkStatusProvider,
-      (previous, next) {
-        _debouncedUpdate(context, next);
+      (_, hasConnection) {
+        _debouncedUpdate(context, hasConnection);
       },
     );
 

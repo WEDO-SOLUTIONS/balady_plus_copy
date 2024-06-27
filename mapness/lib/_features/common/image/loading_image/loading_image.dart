@@ -50,7 +50,13 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
     ref.listen(
       networkStatusProvider,
       (wasAvailable, available) {
-        final becomeAvailable = wasAvailable == false && available != wasAvailable;
+        // [wasAvailable] is nullable value. So we have to handle this value
+        // If the network was available we use this value. Else we set default value `true`
+        // By default we think that the user has network connection
+        final _wasAvailable = wasAvailable ?? true;
+
+        // If the network was not available bit now it is available => [becomeAvailable] = true
+        final becomeAvailable = !_wasAvailable && available;
         if (becomeAvailable) {
           _reloadWidget(context);
         }
