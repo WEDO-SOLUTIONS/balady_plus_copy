@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/icons/general_32_icons.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
@@ -19,6 +20,11 @@ import 'package:mapness/_features/landing/widgets/qibla_card.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/landing/widgets/weather_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/stories/data/story_service.dart';
 import 'package:mapness/features/stories/stories.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -39,6 +45,7 @@ class Dashboard extends ConsumerStatefulWidget {
   final double biggestHeight;
   final double biggestWidth;
   final bool initWithMinSize;
+
   // ignore: avoid_positional_boolean_parameters
   final Function(bool) onScroll;
 
@@ -146,6 +153,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                         draggableScrollableController: widget.scrollableController,
                       ),
                       pinned: true,
+                      floating: true,
                     ),
                     SliverList.list(
                       children: [
@@ -157,7 +165,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const JoyParksCard(),
+                              JoyParksCard(widget.scrollableController),
                               const SizedBox(height: Spacing.$3x),
                               const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
@@ -179,14 +187,16 @@ class _DashboardState extends ConsumerState<Dashboard> {
                                     Expanded(
                                       child: PlacesForCart(
                                         title: context.l10n.placesForShopping,
-                                        svgAsset: 'assets/images_svg/shopping.svg',
+                                        icon: General32Icons.shoppingLRTL,
+                                        onTap: () => _openSearch(QuickFilter.shopping),
                                       ),
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: PlacesForCart(
                                         title: context.l10n.placesForEatingOut,
-                                        svgAsset: 'assets/images_svg/restourant.svg',
+                                        icon: General32Icons.restourantLRTL,
+                                        onTap: () => _openSearch(QuickFilter.eatOut),
                                       ),
                                     ),
                                   ],
@@ -225,6 +235,13 @@ class _DashboardState extends ConsumerState<Dashboard> {
         ),
       ),
     );
+  }
+
+  void _openSearch(QuickFilter quickFilter) {
+    ref.read(goRouterProvider).push(const SearchRoute(requestFocus: false).location);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
+    });
   }
 
   void _scrollListenHandler() {

@@ -120,7 +120,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                                   // so we will do it here only for this edge case
                                   await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
                                   if (context.mounted) {
-                                    const KiblahRoute().pushReplacement(context);
+                                    await const KiblahRoute().push(context);
                                   }
                                 },
                               ),

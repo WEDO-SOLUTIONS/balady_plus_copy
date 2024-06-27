@@ -1,7 +1,9 @@
+import 'dart:math';
+
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
@@ -11,36 +13,42 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
 class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final DraggableScrollableController draggableScrollableController;
+
+  static const headerHeight = 140.0;
+
   DashboardHeaderDelegate({
     required this.draggableScrollableController,
   });
 
-  final DraggableScrollableController draggableScrollableController;
-
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
         draggableScrollableController: draggableScrollableController,
+        shrinkOffset: shrinkOffset,
       );
 
   @override
-  double get maxExtent => 140;
+  double get maxExtent => headerHeight;
 
   @override
-  double get minExtent => 140;
+  double get minExtent => headerHeight - Spacing.$4x - QuickFilters.height;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
 }
 
 class DashboardHeader extends ConsumerWidget {
+  final double shrinkOffset;
+  final DraggableScrollableController draggableScrollableController;
+
   const DashboardHeader({
     required this.draggableScrollableController,
+    required this.shrinkOffset,
     super.key,
   });
-
-  final DraggableScrollableController draggableScrollableController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
@@ -53,20 +61,11 @@ class DashboardHeader extends ConsumerWidget {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 8),
-            Center(
-              child: Container(
-                height: 4,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: context.color.surfaceContrastMid.withOpacity(0.24),
-                  borderRadius: const BorderRadius.all(Radius.circular(99)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
+            const SizedBox(height: Spacing.$2x),
+            const Center(child: SheetDragger()),
+            const SizedBox(height: Spacing.$2x),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               child: GestureDetector(
                 onTap: () {
                   Metrics.logEventAdvanced(
@@ -87,15 +86,26 @@ class DashboardHeader extends ConsumerWidget {
                 },
                 child: AbsorbPointer(
                   child: BaladyInput.search(
-                    hintText: context.l10n.search,
+                    hintText: context.l10n.searchPlaceOrAddress,
                     readOnly: true,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            const MapQuickFilters(id: QuickFilterScreen.dashboard, isDashboard: true),
-            const SizedBox(height: 16),
+            ClipRect(
+              clipBehavior: Clip.antiAlias,
+              child: SizedOverflowBox(
+                size: Size(
+                  double.infinity,
+                  max(0, QuickFilters.height + Spacing.$4x * 2 - shrinkOffset),
+                ),
+                child: const Column(mainAxisSize: MainAxisSize.min, children: [
+                  SizedBox(height: Spacing.$4x),
+                  MapQuickFilters(id: QuickFilterScreen.dashboard, isDashboard: true),
+                  SizedBox(height: Spacing.$4x),
+                ]),
+              ),
+            ),
           ],
         ),
       );

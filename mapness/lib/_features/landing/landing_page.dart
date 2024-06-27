@@ -16,9 +16,10 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
-import 'package:mapness/features/quick_filters/providers/quick_filters_data.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -90,7 +91,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         }();
       case LangingFocusMaker.mosques:
         Future.delayed(Duration.zero, () {
-          ref.read(searchByRubricsQueryProvider.notifier).selectFilter(QuickFilterType.mosques);
+          ref.read(searchByRubricsQueryProvider.notifier).selectFilter(QuickFilter.mosques);
         });
       // ignore: no_default_cases
       default:
@@ -133,6 +134,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
         const landingPage = '/landing';
+
         Future.delayed(const Duration(milliseconds: 250), () {
           _calculatePadding();
         });
@@ -141,6 +143,12 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           _onScroll
             ..value = true
             ..value = false;
+        } else if (next?.currentPath == KiblahRoute.path) {
+          _draggableScrollableController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.linear,
+          );
         }
       })
 
@@ -203,6 +211,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     if (goRouter.isCurrentRoute(RoutingRoute.path)) {
       return;
     } else if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
+      return;
+    } else if (goRouter.isCurrentRoute(RoutingRoutesRoute.path)) {
       return;
     }
     if (event is ObjectTapEvent) {

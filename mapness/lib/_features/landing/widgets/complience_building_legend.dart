@@ -8,8 +8,8 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
-class ComplienceBuildingLegend extends ConsumerWidget {
-  ComplienceBuildingLegend({super.key});
+class ComplianceBuildingLegend extends ConsumerWidget {
+  ComplianceBuildingLegend({super.key});
   final sizeGroupItems = AutoSizeGroup();
 
   @override

@@ -20,7 +20,7 @@ class BriefRouteButton extends ConsumerWidget {
     this.foreground,
     this.background,
     super.key,
-    this.type,
+    this.type = BriefRouteInfoType.duration,
   });
 
   final VoidCallback onTap;
@@ -30,7 +30,7 @@ class BriefRouteButton extends ConsumerWidget {
   final EdgeInsetsGeometry? padding;
   final Color? foreground;
   final Color? background;
-  final BriefRouteInfoType? type;
+  final BriefRouteInfoType type;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

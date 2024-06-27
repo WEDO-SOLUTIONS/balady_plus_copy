@@ -6,9 +6,11 @@ import 'package:mapness/pages/kiblah/kiblah_page.dart';
 part 'kiblah.g.dart';
 
 @TypedGoRoute<KiblahRoute>(
-  path: '/kiblah',
+  path: KiblahRoute.path,
 )
 class KiblahRoute extends GoRouteData {
+  static const path = '/kiblah';
+
   const KiblahRoute();
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;

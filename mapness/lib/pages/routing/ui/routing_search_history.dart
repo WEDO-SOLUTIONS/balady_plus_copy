@@ -109,7 +109,7 @@ class RoutingSearchHistory extends ConsumerWidget {
               context.pop(point);
             },
             searchByQuery: (query) {
-              ref.read(searchQueryProvider(SearchScopeEnum.routes.value).notifier).update(query);
+              ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).fetchSuggest(query);
             },
           ),
         ],
