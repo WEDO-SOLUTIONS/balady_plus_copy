@@ -98,6 +98,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
             ),
             separatorBuilder: (context, index) => Spacing.verticalPaddingInsideWrapper.heightBox,
           ),
+          SliverToBoxAdapter(child: 56.0.heightBox),
         ],
       );
 
