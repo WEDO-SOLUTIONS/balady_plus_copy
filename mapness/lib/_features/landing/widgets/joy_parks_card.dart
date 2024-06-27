@@ -5,12 +5,13 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class JoyParksCard extends ConsumerWidget {
-  const JoyParksCard({super.key});
+  final DraggableScrollableController controller;
+
+  const JoyParksCard(this.controller, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
@@ -19,8 +20,7 @@ class JoyParksCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: GestureDetector(
             onTap: () {
-              // TODO: fix this and close bottom sheet and display map
-              const LandingRoute().push(context);
+              controller.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
 
               ref.read(layersControlsProvider.notifier).toggleIwish();
             },

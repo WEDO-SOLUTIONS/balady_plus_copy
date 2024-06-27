@@ -153,6 +153,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                         draggableScrollableController: widget.scrollableController,
                       ),
                       pinned: true,
+                      floating: true,
                     ),
                     SliverList.list(
                       children: [
@@ -164,7 +165,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const JoyParksCard(),
+                              JoyParksCard(widget.scrollableController),
                               const SizedBox(height: Spacing.$3x),
                               const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
