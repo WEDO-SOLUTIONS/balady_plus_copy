@@ -64,31 +64,31 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                       ContentWrapper(
                         color: context.color.surfaceBaseSecondary,
                         children: [
-                          ContentRow(
-                            options: ContentRowOptions(
-                                leadingIcon: SvgPicture.asset(
-                                  iconPath.IconPath.notificationIc2,
-                                  icon_path.IconPath.notificationIc2,
-
-                                  height: 24,
-                                  width: 24,
-                                  colorFilter: const ColorFilter.mode(
-                                    AppColor.primary900Light,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                title: 'notifications'.tr(),
-                                actionWidget: ContentRowActionOptions(
-                                  enabledToggle: true,
-                                  toggleInitialValue: state.isChecked,
-                                )),
-                            onToggle: (_) {
-                              cubit.setNotificationsProfile(
-                                  SetNotificationsProfileParams(
-                                      enabled: !state.isChecked, channelId: 'mobile', applicationId: 'super-app'),
-                                  !state.isChecked);
-                            },
-                          )
+                          // ContentRow(
+                          //   options: ContentRowOptions(
+                          //       leadingIcon: SvgPicture.asset(
+                          //         iconPath.IconPath.notificationIc2,
+                          //         icon_path.IconPath.notificationIc2,
+                          //
+                          //         height: 24,
+                          //         width: 24,
+                          //         colorFilter: const ColorFilter.mode(
+                          //           AppColor.primary900Light,
+                          //           BlendMode.srcIn,
+                          //         ),
+                          //       ),
+                          //       title: 'notifications'.tr(),
+                          //       actionWidget: ContentRowActionOptions(
+                          //         enabledToggle: true,
+                          //         toggleInitialValue: state.isChecked,
+                          //       )),
+                          //   onToggle: (_) {
+                          //     cubit.setNotificationsProfile(
+                          //         SetNotificationsProfileParams(
+                          //             enabled: !state.isChecked, channelId: 'mobile', applicationId: 'super-app'),
+                          //         !state.isChecked);
+                          //   },
+                          // )
                         ],
                       ),
                       const SizedBox(
