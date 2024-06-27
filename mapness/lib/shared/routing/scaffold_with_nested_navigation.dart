@@ -170,7 +170,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                         icon: _BottomNavigationBarItem(
                           selected: currentIndex == 2,
                           iconBuilder: (ctx, isSelected) => _DefaultIcon(
-                            icon: GeneralIcons.routeStroke,
+                            icon: GeneralIcons.route,
                             selected: isSelected,
                           ),
                           label: context.l10n.nav_route,
@@ -181,7 +181,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                       icon: _BottomNavigationBarItem(
                         selected: currentIndex == landingIndex,
                         iconBuilder: (ctx, isSelected) => _DefaultIcon(
-                          icon: GeneralIcons.pin_1,
+                          icon: GeneralIcons.pin,
                           selected: isSelected,
                         ),
                         label: context.l10n.nav_general,

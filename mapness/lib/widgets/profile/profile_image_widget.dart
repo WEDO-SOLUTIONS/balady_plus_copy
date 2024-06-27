@@ -23,7 +23,7 @@ class ProfileImageWidget extends ConsumerWidget {
 
     final Widget defaultImage = Icon(
       // GeneralIcons.user,
-      GeneralIcons.userCirlce,
+      GeneralIcons.userCircle,
       size: dimension,
       color: color ?? NonThemeColor.color40,
     );
