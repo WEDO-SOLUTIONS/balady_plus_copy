@@ -70,8 +70,8 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                         children: [
                           Text(
                             'development-menu',
-                            style: Theme.of(context)
-                                .extension<ThemeTextStyles>()?.heading1.copyWith(color: Colors.black),
+                            style:
+                                Theme.of(context).extension<ThemeTextStyles>()?.heading1.copyWith(color: Colors.black),
                           ),
                           RichText(
                             text: TextSpan(
@@ -84,12 +84,31 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                                       .copyWith(color: Colors.black54),
                                 ),
                                 TextSpan(
-                                  text:
-                                      '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
+                                  text: '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()
                                       ?.footNoteBold
                                       .copyWith(color: Colors.black87),
+                                ),
+                              ],
+                            ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'CI build version: \n',
+                                  style: Theme.of(context)
+                                      .extension<ThemeTextStyles>()
+                                      ?.footNote
+                                      .copyWith(color: Colors.black54),
+                                ),
+                                TextSpan(
+                                  text: PackageConfig.buildName,
+                                  style: Theme.of(context).extension<ThemeTextStyles>()?.footNoteBold.copyWith(
+                                        color: Colors.black87,
+                                        fontSize: 12,
+                                      ),
                                 ),
                               ],
                             ),
@@ -116,57 +135,48 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   ),
                   Text(
                     'Git branch:',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
+                    style: Theme.of(context).extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitBranch,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
+                    style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     'Git commit:',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
+                    style: Theme.of(context).extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitCommit,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
+                    style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     'Vendor:',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
+                    style: Theme.of(context).extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.vendorConfig,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
+                    style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     'Uuid:',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
+                    style: Theme.of(context).extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     ref.watch(uuidProviderProvider),
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNoteBold.copyWith(color: Colors.black),
+                    style: Theme.of(context).extension<ThemeTextStyles>()?.footNoteBold.copyWith(color: Colors.black),
                   ),
                   const SizedBox(height: 8),
                   LabeledElevatedButton(
-                    onPressed: () =>
-                        ref.read(uuidProviderProvider.notifier).randomize(),
+                    onPressed: () => ref.read(uuidProviderProvider.notifier).randomize(),
                     label: 'randomize uuid',
                   ),
                   const DebugServerUrl(),
