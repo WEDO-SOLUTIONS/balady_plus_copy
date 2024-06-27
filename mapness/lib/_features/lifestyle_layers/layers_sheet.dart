@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -99,14 +100,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                           child: Column(
                             children: [
                               const SizedBox(height: 6),
-                              Container(
-                                height: 4,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color: context.color.surfaceContrastMid,
-                                  borderRadius: const BorderRadius.all(Radius.circular(99)),
-                                ),
-                              ),
+                              const SheetDragger(),
                               const SizedBox(height: 6),
                               Row(
                                 children: [

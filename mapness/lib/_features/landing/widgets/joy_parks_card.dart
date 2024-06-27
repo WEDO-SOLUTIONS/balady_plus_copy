@@ -9,7 +9,9 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class JoyParksCard extends ConsumerWidget {
-  const JoyParksCard({super.key});
+  final DraggableScrollableController controller;
+
+  const JoyParksCard(this.controller, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
@@ -17,7 +19,11 @@ class JoyParksCard extends ConsumerWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: GestureDetector(
-            onTap: ref.read(layersControlsProvider.notifier).toggleIwish,
+            onTap: () {
+              controller.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+
+              ref.read(layersControlsProvider.notifier).toggleIwish();
+            },
             child: SizedBox(
               height: 118,
               child: DecoratedBox(
@@ -44,6 +50,7 @@ class JoyParksCard extends ConsumerWidget {
                               color: context.colorsV2.staticWhite,
                             ),
                           ),
+                          const SizedBox(height: 4),
                           Text(
                             context.l10n.exploreNature,
                             style: context.textStyleV3.captionLargeRegular.copyWith(

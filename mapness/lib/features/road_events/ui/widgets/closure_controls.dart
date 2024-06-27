@@ -59,9 +59,7 @@ class ClosureControls extends ConsumerWidget {
                         );
                         final location = ref.read(locationProvider.notifier);
 
-                        await location
-                            .checkLocationPermission()
-                            .then((allowed) {
+                        await location.checkLocationPermission().then((allowed) {
                           if (allowed) {
                             const KiblahRoute().pushReplacement(context);
                           }
@@ -82,7 +80,7 @@ class ClosureControls extends ConsumerWidget {
                     const Spacer(),
                     const CompassControl(),
                     const SizedBox(height: 8),
-                    ComplienceBuildingLegend(),
+                    ComplianceBuildingLegend(),
                     const SizedBox(height: 8),
                     const FollowControl(
                       onlyFollowDirection: false,

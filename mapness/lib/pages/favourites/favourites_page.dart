@@ -12,6 +12,7 @@ import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
 import 'package:mapness/widgets/favourites/favourites_toggle.dart';
@@ -291,7 +292,9 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.asset(
                                       fit: BoxFit.fitWidth,
-                                      'assets/images/favorites_example.png',
+                                      ref.read(appLanguageProvider) == Language.arabic
+                                          ? 'assets/images/favorites_example_arabic.png'
+                                          : 'assets/images/favorites_example_english.png',
                                       package: PackageConfig.packageName,
                                     ),
                                   ),

@@ -8,15 +8,62 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-FutureOr<Map<int, String>> generateTitleMap(List<UiMarkerInfoMessage?>? uiMarkers) {
+/// Return the Map between `objectId` and `label` for the object
+FutureOr<Map<int, String>> _generateTitleMap(List<UiMarkerInfoMessage?>? uiMarkers) {
   final titleMap = <int, String>{};
   for (final uiMarker in uiMarkers ?? List<UiMarkerInfoMessage?>.empty()) {
     if (uiMarker?.objectId == null || uiMarker?.label == null) {
       continue;
     }
-    titleMap[uiMarker!.objectId!.objectId] = uiMarker.label!;
+    titleMap[uiMarker!.objectId!.objectId] = _breakLineInTwo(_removeComma(uiMarker.label!));
   }
   return titleMap;
+}
+
+
+/// We use this method to throw away the part of the organization description that contains
+/// additional information that is not necessary on the map next to the marker
+/// 
+/// Example:
+/// input: "Al Ajazy, restaurant"
+/// output: "Al Ajazy"
+String _removeComma(String title) {
+  final res = title.split(',');
+  return res[0];
+}
+
+/// We use this method to break the long title of the organization
+/// The break character is '\n' symbol
+/// Max length in the line should be less or equal `maxLength` value
+String _breakLineInTwo(String inputString) {
+  const int maxLength = 20;
+
+  // If the string fits within the max length, return it as is
+  if (inputString.length <= maxLength) {
+    return inputString;
+  }
+
+  // Find the nearest space before the 20th character
+  int breakIndex = maxLength;
+  while (breakIndex > 0 && inputString[breakIndex] != ' ') {
+    breakIndex--;
+  }
+
+  // If no space is found, use the maxLength as the break index
+  if (breakIndex == 0) {
+    breakIndex = maxLength;
+  }
+
+  // Split the string into two parts
+  final String firstLine = inputString.substring(0, breakIndex).trim();
+  String secondLine = inputString.substring(breakIndex).trim();
+
+  // If the second line exceeds maxLength, truncate it and add "..."
+  if (secondLine.length > maxLength) {
+    secondLine = '${secondLine.substring(0, maxLength - 3)}...';
+  }
+
+  return '$firstLine\n$secondLine';
 }
 
 extension MarkerFromSearchResultMessage on SearchResultMessage {
@@ -30,7 +77,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     bool withLabel = true,
   }) async {
     final uiObjectMaps = withLabel
-        ? await compute<List<UiMarkerInfoMessage?>?, Map<int, String>>(generateTitleMap, markersWithLabel)
+        ? await compute<List<UiMarkerInfoMessage?>?, Map<int, String>>(_generateTitleMap, markersWithLabel)
         : null;
 
     final hasLabels = uiObjectMaps != null && uiObjectMaps.isNotEmpty && withLabel;
@@ -57,7 +104,9 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 strokeColor: 0xD3FFFFFF,
                 strokeWidth: 2,
                 textPlacement: MarkerTextPlacementMessage(
-                  placement: TextPlacementMessage.rightCenter,
+                  // We use left aligned text because the most of our users is using the arabic language and
+                  // arabic text writes RTL
+                  placement: TextPlacementMessage.leftCenter,
                 ),
               ),
               position: markerInfo.geoPoint,

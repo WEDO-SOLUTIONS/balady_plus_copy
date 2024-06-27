@@ -12,6 +12,8 @@ class QuickFilters extends ConsumerStatefulWidget {
   final QuickFilterScreen id;
   final bool isDashboard;
 
+  static const height = 40.0;
+
   const QuickFilters({
     required this.filters,
     required this.id,
@@ -59,7 +61,7 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
     final reverse = originalDirectionality == TextDirection.rtl;
 
     return SizedBox(
-      height: 40,
+      height: QuickFilters.height,
       child: Directionality(
         textDirection: positionedListDirectionality,
         child: ScrollablePositionedList.separated(
