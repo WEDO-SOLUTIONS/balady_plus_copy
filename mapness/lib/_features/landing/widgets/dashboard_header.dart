@@ -13,13 +13,16 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
 class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final DraggableScrollableController draggableScrollableController;
+
+  static const headerHeight = 140.0;
+
   DashboardHeaderDelegate({
     required this.draggableScrollableController,
   });
-
-  final DraggableScrollableController draggableScrollableController;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
@@ -28,10 +31,10 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
       );
 
   @override
-  double get maxExtent => 140;
+  double get maxExtent => headerHeight;
 
   @override
-  double get minExtent => 140 - 16 - 40;
+  double get minExtent => headerHeight - Spacing.$4x - QuickFilters.height;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
@@ -58,11 +61,11 @@ class DashboardHeader extends ConsumerWidget {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: Spacing.$2x),
             const Center(child: SheetDragger()),
-            const SizedBox(height: 8),
+            const SizedBox(height: Spacing.$2x),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               child: GestureDetector(
                 onTap: () {
                   Metrics.logEventAdvanced(
@@ -94,12 +97,12 @@ class DashboardHeader extends ConsumerWidget {
               child: SizedOverflowBox(
                 size: Size(
                   double.infinity,
-                  max(0, 40 + 16 + 16 - shrinkOffset),
+                  max(0, QuickFilters.height + Spacing.$4x * 2 - shrinkOffset),
                 ),
                 child: const Column(mainAxisSize: MainAxisSize.min, children: [
-                  SizedBox(height: 16),
+                  SizedBox(height: Spacing.$4x),
                   MapQuickFilters(id: QuickFilterScreen.dashboard, isDashboard: true),
-                  SizedBox(height: 16),
+                  SizedBox(height: Spacing.$4x),
                 ]),
               ),
             ),
