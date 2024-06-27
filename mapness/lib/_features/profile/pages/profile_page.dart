@@ -236,7 +236,7 @@ class ProfilePage extends ConsumerWidget {
             return;
           }
           await ref.read(authProvider.notifier).logOut();
-          context.pop();
+          Navigator.of(ctx).pop();
         },
         title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
         logOutText: context.l10n.logOut,
