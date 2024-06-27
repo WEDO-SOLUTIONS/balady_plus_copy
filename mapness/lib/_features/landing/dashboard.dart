@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/icons/general_32_icons.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
@@ -185,7 +186,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                                     Expanded(
                                       child: PlacesForCart(
                                         title: context.l10n.placesForShopping,
-                                        svgAsset: 'assets/images_svg/shopping.svg',
+                                        icon: General32Icons.shoppingLRTL,
                                         onTap: () => _openSearch(QuickFilter.shopping),
                                       ),
                                     ),
@@ -193,7 +194,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                                     Expanded(
                                       child: PlacesForCart(
                                         title: context.l10n.placesForEatingOut,
-                                        svgAsset: 'assets/images_svg/restourant.svg',
+                                        icon: General32Icons.restourantLRTL,
                                         onTap: () => _openSearch(QuickFilter.eatOut),
                                       ),
                                     ),
