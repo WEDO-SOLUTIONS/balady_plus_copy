@@ -133,7 +133,7 @@ jobs:
           security unlock-keychain -p $KC_PASS $KC
           security find-identity -p codesigning
 
-          fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_prod.dart --flavor prod
+          fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_prod.dart --flavor prod  --dart-define=CI_BUILD_NAME="${CI_ARTIFACT_SUFFIX}"
           BUILD_URL=$(curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/momrah-${CI_ARTIFACT_SUFFIX}  | jq -r '.install_link')
           echo "BUILD_URL=${BUILD_URL}" >> ${GITHUB_ENV}
 
