@@ -19,6 +19,7 @@ class MapLostInternet extends StatelessWidget {
           Text(
             '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}',
             style: context.textStyle.text,
+            textAlign: TextAlign.center,
           ),
           SizedBox(
             width: double.infinity,

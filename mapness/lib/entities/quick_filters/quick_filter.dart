@@ -85,35 +85,35 @@ extension QuickFilterExtension on QuickFilter {
           },
         QuickFilter.dentalCenters => {
             Language.english: 'Dental centers',
-            Language.arabic: 'مراكز طب الأسنان',
+            Language.arabic: 'عيادات طب الأسنان',
           },
         QuickFilter.hotels => {
             Language.english: 'Hotels',
-            Language.arabic: 'فندق',
+            Language.arabic: 'فنادق',
           },
         QuickFilter.sportClubs => {
-            Language.english: 'Sport clubs',
-            Language.arabic: 'أندية لياقة بدنية',
+            Language.english: 'Fitness clubs',
+            Language.arabic: 'اللياقة البدنية',
           },
         QuickFilter.carServices => {
-            Language.english: 'Car services',
-            Language.arabic: 'تصليح وصيانة مركبات',
+            Language.english: 'Car service',
+            Language.arabic: 'مراكز خدمات السيارات',
           },
         QuickFilter.markets => {
             Language.english: 'Markets',
-            Language.arabic: 'مواد غذائية',
+            Language.arabic: 'أسواق',
           },
         QuickFilter.eatOut => {
             Language.english: 'Eat out',
             Language.arabic: 'مطاعم',
           },
         QuickFilter.recreationCenters => {
-            Language.english: 'Recreation centers',
-            Language.arabic: 'ترفيه',
+            Language.english: 'Entertainments',
+            Language.arabic: 'مراكز ترفيهية',
           },
         QuickFilter.beautyCenters => {
-            Language.english: 'Beauty centers',
-            Language.arabic: 'جمال',
+            Language.english: 'Beauty',
+            Language.arabic: 'تجميل',
           },
         QuickFilter.salons => {
             Language.english: 'Salons',
@@ -121,7 +121,7 @@ extension QuickFilterExtension on QuickFilter {
           },
         QuickFilter.shopping => {
             Language.english: 'Shopping centers',
-            Language.arabic: 'مول',
+            Language.arabic: 'مراكز تسوق',
           },
       };
 

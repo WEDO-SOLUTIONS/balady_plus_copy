@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -79,7 +80,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   @override
   Widget build(BuildContext context) {
     final bottomSafeArea = MediaQuery.of(context).padding.bottom;
-    final height = 88 + bottomSafeArea;
+    final collapsedHeight = 88 + bottomSafeArea;
 
     searchObjectManager ??= ref.watch(
       mapObjectManagerProvider(
@@ -108,7 +109,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     return Stack(
       alignment: Alignment.bottomLeft,
       children: [
-        MapSearchSheetControls(currentSize: currentSize),
+        MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
         NotificationListener<ScrollNotification>(
           onNotification: _onNotification,
           child: DgisBottomSheet(
@@ -123,7 +124,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
             },
             onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
             middleHeight: widget.biggestHeight * 0.8,
-            collapsedHeight: height,
+            collapsedHeight: collapsedHeight,
             scrollableBody: (context, scrollController) {
               /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
               /// https://www.youtube.com/watch?v=L_WoOkDAqbM
