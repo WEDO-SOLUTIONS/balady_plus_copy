@@ -208,9 +208,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
     ///TODO: need to refactor after Dashboard refactoring to designSystem
     final goRouter = ref.read(goRouterProvider);
-    if (goRouter.isCurrentRoute(RoutingRoute.path)) {
-      return;
-    } else if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
+
+    if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
       return;
     } else if (goRouter.isCurrentRoute(RoutingRoutesRoute.path)) {
       return;
