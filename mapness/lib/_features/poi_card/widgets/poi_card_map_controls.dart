@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart' as uiKit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/happines_control.dart';
@@ -9,14 +8,7 @@ import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
-import 'package:mapness/_features/weather/widgets/weather_control.dart';
-import 'package:mapness/app/routes/kiblah.dart';
-import 'package:mapness/app/routes/weather.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
-import 'package:mapness/shared/providers/map/selected_marker.dart';
-import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class PoiCardMapControls extends ConsumerStatefulWidget {
@@ -99,31 +91,11 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              WeatherControl(
-                                onTap: () => const WeatherRoute().push(context),
-                              ),
-                              const SizedBox(height: 8),
                               const HappinesControl(),
                               const Spacer(),
                               const IndoorControl(),
                               const Spacer(),
-                              MapButton(
-                                child: SvgPicture.asset(
-                                  'assets/icons/svg/ic_controls_qibla.svg',
-                                  semanticsLabel: 'MinApps Screen',
-                                  package: 'mapness',
-                                ),
-                                onTap: () async {
-                                  Metrics.logEventAdvanced(MetricsConstants.exploreKeys.qibla,
-                                      action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
-                                  // hotfix: We should move it to dispose of POI card but logic is too complex
-                                  // so we will do it here only for this edge case
-                                  await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-                                  if (context.mounted) {
-                                    await const KiblahRoute().push(context);
-                                  }
-                                },
-                              ),
+
                             ],
                           ),
                           const Spacer(),
