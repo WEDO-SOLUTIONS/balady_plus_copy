@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
@@ -55,18 +56,7 @@ class PoiHeader extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 6),
-          Center(
-            child: Builder(
-              builder: (context) => Container(
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                  color: context.color.textAndIconsBasePrimary.withOpacity(0.1),
-                ),
-                height: 4,
-                width: 40,
-              ),
-            ),
-          ),
+          const Center(child: SheetDragger()),
           const SizedBox(height: 6),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,

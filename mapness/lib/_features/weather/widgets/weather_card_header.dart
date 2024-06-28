@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/weather/data/models/weather_model.dart';
 import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
@@ -134,7 +135,7 @@ class Data extends ConsumerWidget {
             const SizedBox(
               height: 8,
             ),
-            _scrollHandle(),
+            const Center(child: SheetDragger()),
             const SizedBox(
               height: 6,
             ),
@@ -329,19 +330,6 @@ class Data extends ConsumerWidget {
                 ),
               ),
             ),
-          ),
-        ),
-      );
-
-  Widget _scrollHandle() => Builder(
-        builder: (context) => Center(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: borderRadius,
-              color: context.color.textAndIconsBasePrimary.withOpacity(0.1),
-            ),
-            height: 4,
-            width: 40,
           ),
         ),
       );
