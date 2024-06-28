@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -9,7 +10,7 @@ class SheetDragger extends StatelessWidget {
         height: 4,
         width: 40,
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: context.color.surfaceContrastMid,
           borderRadius: const BorderRadius.all(Radius.circular(99)),
         ),
       );

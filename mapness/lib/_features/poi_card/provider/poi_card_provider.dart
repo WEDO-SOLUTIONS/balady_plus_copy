@@ -87,7 +87,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
-    // TODO Refactoring all of this logic with new poi is required
+    // TODO(Ayat) Refactoring all of this logic with new poi is required
     if (closestPoint != null) {
       final read = ref.read(selectedMarkerProvider.notifier);
       await read.showMarker(
