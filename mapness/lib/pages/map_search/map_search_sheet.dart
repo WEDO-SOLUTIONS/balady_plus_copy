@@ -233,10 +233,15 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     if (!kbState) {
       return;
     }
-    return switch (_dgisSheetController.currentExpansion) {
-      Expansion.middle || Expansion.expanded => null,
-      _ => _dgisSheetController.animateTo(Expansion.expanded),
-    };
+    if (![Expansion.expanded, Expansion.middle].contains(_dgisSheetController.currentExpansion)) {
+      // We need to wait because of the rebuild the sheet state
+      // At the build method we recalculate [collapsedHeight] and we secretly call the [didUpdateWidget] method
+      // of [_dgisSheetController]. And if we call the [animateTo] method before the [didUpdateWidget] method
+      // we will get set wrong [Expansion] value
+      Future.delayed(Durations.short1).then((_) {
+        _dgisSheetController.animateTo(Expansion.expanded);
+      });
+    }
   }
 
   void onClose() {
