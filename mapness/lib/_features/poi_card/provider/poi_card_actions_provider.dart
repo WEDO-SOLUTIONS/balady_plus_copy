@@ -107,7 +107,7 @@ class PoiCardActions extends _$PoiCardActions {
   Future<void> launch(String value) async {
     final url = Uri.parse(value);
     if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.inAppWebView);
+      await launchUrl(url);
     }
   }
 
