@@ -55,10 +55,10 @@ class PoiCardState {
     final objectIdJson = json['gisObjectIdMessage'];
     final entrancesJson = json['showEntrances'];
     return PoiCardState(
-      showEntrances: entrancesJson,
-      isLoading: false,
-      gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
-      organizations: OrganizationsMessage.fromJson(organizatonsJson));
+        showEntrances: entrancesJson,
+        isLoading: false,
+        gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
+        organizations: OrganizationsMessage.fromJson(organizatonsJson));
   }
 
   PoiCardState copyWith({
@@ -126,8 +126,10 @@ class PoiCardProvider extends _$PoiCardProvider {
         cameraConfig,
       ));
     }
-
-    final poiCardStateKey = objectId.toString();
+    // We need to use [appLang] to cache different data for different locales
+    // We don't want to show arabic text to english users and vise versa
+    final appLang = ref.read(appLanguageProvider);
+    final poiCardStateKey = '${objectId.toString()} $appLang';
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
     final cachedData = poiBox.get(poiCardStateKey, defaultValue: null);
 
