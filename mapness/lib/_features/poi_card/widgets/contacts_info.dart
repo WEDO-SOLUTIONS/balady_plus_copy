@@ -55,6 +55,7 @@ class ContactsInfo extends ConsumerWidget {
                       leadingIcon: phone.type.getIconResource(isLtr).icon(
                             color: context.color.textAndIconsStatusAccent,
                           ),
+                      supportTitleRLT: false,
                       title: phone.type == ContactsInfoType.phone ? phone.displayText : null,
                     ),
                   ),
