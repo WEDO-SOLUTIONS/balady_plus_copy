@@ -18,8 +18,6 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
 
-  static const _minMaxLines = 11;
-
   @override
   void initState() {
     super.initState();
@@ -39,8 +37,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
     return Expanded(
       child: TextField(
         autofocus: true,
-        minLines: _minMaxLines,
-        maxLines: _minMaxLines,
+        maxLines: 999,
         focusNode: _focusNode,
         controller: _controller,
         onChanged: widget.onChanged,
