@@ -98,7 +98,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               'query': query,
             },
           );
-          if (query.isNotEmpty) {
+          if (query.trim().isNotEmpty) {
             await searcher.searchByText(query);
             await ref.read(searchHistoryProvider(scope.value).notifier).put(
                   SearchHistoryItem(
