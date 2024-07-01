@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mapness/_features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/_features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
@@ -44,7 +45,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
       firstPageKey: (widget.state?.organizations?.page ?? 1) + 1,
     );
     pagingController
-      ..itemList = widget.state?.organizations?.items
+      ..itemList = widget.state?.organizations?.itemsFiltered
       ..addPageRequestListener(_fetchPage);
 
     init = false;
