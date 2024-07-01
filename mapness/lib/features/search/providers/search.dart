@@ -124,7 +124,8 @@ class Search extends _$Search {
       dgisController.search(
         searchQuery,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: _saRestrictions,
+        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+        spatialRestriction: _getRestrictionFromRect(searchRect),
         searchRect: searchRect,
       ),
     );
@@ -159,7 +160,8 @@ class Search extends _$Search {
       dgisController.search(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: _saRestrictions,
+        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+        spatialRestriction: _getRestrictionFromRect(searchRect),
         searchRect: searchRect,
       ),
     );
@@ -194,7 +196,8 @@ class Search extends _$Search {
       dgisController.searchByQuery(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: _saRestrictions,
+        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+        spatialRestriction: _getRestrictionFromRect(searchRect),
         searchRect: searchRect,
       ),
     );
@@ -237,5 +240,17 @@ class Search extends _$Search {
       SearchStateResults() => oldState.copyWith(searchText: searchText),
       SearchStateLoading() => oldState.copyWith(searchText: searchText),
     };
+  }
+
+  List<GeoPointMessage>? _getRestrictionFromRect(GeoRectMessage? rect) {
+    if (rect == null) {
+      return null;
+    }
+    return [
+      GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.northEast.longitude),
+      GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.southWest.longitude),
+      GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.southWest.longitude),
+      GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.northEast.longitude),
+    ];
   }
 }
