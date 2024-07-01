@@ -127,19 +127,19 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Spacing.verticalPaddingInsideWrapper.heightBox,
+                  Spacing.$4x.heightBox,
                   RoutesCarousel(
                     points: widget.points,
                     startNavigation: () => _startNavigation(navigatingType),
                     navType: navigatingType,
                   ),
-                  Spacing.verticalPaddingInsideWrapper.heightBox,
+                  Spacing.$4x.heightBox,
                   RouteTabBar(
                     active: navigatingType,
                     onChanged: _onChanged,
                     points: widget.points,
                   ),
-                  Spacing.verticalPaddingInsideWrapper.heightBox,
+                  Spacing.$4x.heightBox,
                 ],
               ),
             ),
@@ -148,22 +148,19 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   void _startNavigation(RouteSearchOptionsMessage navigatingType) {
     final mapSetting = MapObjectManagerSettings.search();
-    ref.read(
-      mapObjectManagerProvider(
-        named: mapSetting.name,
-        layerId: mapSetting.layerId,
-      ).notifier,
-    ).removeAllMarkers();
+    ref
+        .read(
+          mapObjectManagerProvider(
+            named: mapSetting.name,
+            layerId: mapSetting.layerId,
+          ).notifier,
+        )
+        .removeAllMarkers();
 
     Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.routeSelectionChangeNavType,
+      MetricsConstants.routesKeys.routeSelectionGoButton,
       group: MetricsConstants.routesTag,
       action: MetricAction.tap.toString(),
-      props: {
-        'navType': navigatingType.name,
-        'points':
-            '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
-      },
     );
 
     PathNavRoute.open(
@@ -179,6 +176,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       action: MetricAction.tap.toString(),
       props: {
         'navType': routeSearch.name,
+        'points':
+            '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
       },
     );
 
