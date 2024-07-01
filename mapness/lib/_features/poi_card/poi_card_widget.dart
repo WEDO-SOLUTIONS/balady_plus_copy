@@ -309,6 +309,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                   PoiTabsType.inBuilding => InBuildingWidget(
                       state: poiCardState,
                       objectId: widget.objectId,
+                      bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
                     ),
                 },
               ),
