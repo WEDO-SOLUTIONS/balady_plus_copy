@@ -92,7 +92,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
                     },
                     options: ContentRowOptions(
                       title: item.nameEx?.primary,
-                      subtitle: item.nameEx?.extensionValue ?? item.poiCategory,
+                      subtitle: item.rubricsNames,
                       subtitleExtra: item.addressComment,
                     ),
                   )

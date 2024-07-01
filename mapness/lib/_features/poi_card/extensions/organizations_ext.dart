@@ -13,3 +13,7 @@ extension RealCountOfOrganizations on OrganizationsMessage {
   /// the logic.
   bool _filter(OrganizationItem item) => item.nameEx?.primary != null;
 }
+
+extension RubricsOfOrganization on OrganizationItem {
+  String? get rubricsNames => rubrics?.nonNulls.map((e) => e.name).join(', ');
+}
