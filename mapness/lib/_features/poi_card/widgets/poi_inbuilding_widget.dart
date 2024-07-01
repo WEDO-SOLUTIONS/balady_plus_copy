@@ -17,6 +17,7 @@ class InBuildingWidget extends ConsumerStatefulWidget {
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
   final LatLng? closestPoint;
+  final double? bottomTabsHeight;
 
   const InBuildingWidget({
     required this.state,
@@ -24,6 +25,7 @@ class InBuildingWidget extends ConsumerStatefulWidget {
     super.key,
     this.cameraConfig,
     this.closestPoint,
+    this.bottomTabsHeight,
   });
 
   @override
@@ -88,9 +90,9 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
                       );
                     },
                     options: ContentRowOptions(
-                      subtitleExtra: item.addressComment ?? '',
-                      title: item.nameEx?.primary ?? '',
-                      subtitle: item.nameEx?.extension ?? item.poiCategory ?? '',
+                      title: item.nameEx?.primary,
+                      subtitle: item.nameEx?.extensionValue ?? item.poiCategory,
+                      subtitleExtra: item.addressComment,
                     ),
                   )
                 ],
@@ -98,7 +100,8 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
             ),
             separatorBuilder: (context, index) => Spacing.verticalPaddingInsideWrapper.heightBox,
           ),
-          SliverToBoxAdapter(child: 56.0.heightBox),
+          SliverToBoxAdapter(
+              child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox),
         ],
       );
 
