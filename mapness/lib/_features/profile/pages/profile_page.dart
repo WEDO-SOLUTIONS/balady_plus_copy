@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_features/notifications_count/widgets/notifications_count_icon.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_list_screen.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -125,8 +126,16 @@ class ProfilePage extends ConsumerWidget {
                                     ? const SizedBox.shrink()
                                     : ContentRow(
                                         options: ContentRowOptions(
-                                          actionWidget: ContentRowActionOptions(
-                                            actionIcon: actionIcon,
+                                          customActionWidget: Row(
+                                            children: [
+                                              NotificationsCountIcon(),
+                                              ContentRowAction(
+                                                actionOptions: ContentRowActionOptions(
+                                                  actionIcon: actionIcon,
+                                                ),
+                                                onToggle: null,
+                                              ),
+                                            ],
                                           ),
                                           leadingIcon: Icon(
                                             SystemIcons.notification,
