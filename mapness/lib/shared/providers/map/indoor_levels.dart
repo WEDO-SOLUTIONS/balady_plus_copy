@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -21,41 +23,52 @@ class LevelsState {
 
 @riverpod
 class IndoorLevels extends _$IndoorLevels {
+  StreamSubscription? _levelsSubscription;
+  StreamSubscription? _indexSubscription;
+
   @override
   LevelsState? build() {
-    final dgisController = ref.watch(dgisControllerProvider);
-    final levelsSubscription =
-        dgisController.value?.indoorLevelNames.listen(_levelsListener);
-    final indexSubscription =
-        dgisController.value?.indoorActiveIndex.listen(_indexListener);
+    _subscribeToStreams();
 
-    ref.onDispose(
-      () {
-        levelsSubscription?.cancel();
-        indexSubscription?.cancel();
-      },
-    );
+    ref.onDispose(() {
+      _cancelSubscriptions();
+    });
 
     return null;
   }
 
   Future<void> selectLevel(IndoorLevel level) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-
     await dgisController.selectIndoorLevel(level);
   }
 
   void _indexListener(IndoorActiveLevelEvent event) {
-    state =
-        state?.copyWith(active: event.index) ?? LevelsState([], event.index);
+    state = state?.copyWith(active: event.index) ?? LevelsState([], event.index);
   }
 
   void _levelsListener(IndoorLevelsEvent event) {
+    print('event.levelNames.isEmpty ${event.levelNames.isEmpty}');
     if (event.levelNames.isEmpty) {
       state = null;
     } else {
       state = state?.copyWith(levels: event.levelNames) ??
           LevelsState(event.levelNames, 0);
     }
+  }
+
+  void _subscribeToStreams() {
+    final dgisController = ref.watch(dgisControllerProvider);
+    _levelsSubscription = dgisController.value?.indoorLevelNames.listen(_levelsListener);
+    _indexSubscription = dgisController.value?.indoorActiveIndex.listen(_indexListener);
+  }
+
+  void _cancelSubscriptions() {
+    _levelsSubscription?.cancel();
+    _indexSubscription?.cancel();
+  }
+
+  void refreshStreams() {
+    _cancelSubscriptions();
+    _subscribeToStreams();
   }
 }
