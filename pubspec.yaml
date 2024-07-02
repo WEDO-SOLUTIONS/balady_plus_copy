@@ -215,6 +215,7 @@ dependencies:
 
   jiffy:
   gif: ^2.3.0
+  bloc: ^8.1.4
 
 
 dependency_overrides:
