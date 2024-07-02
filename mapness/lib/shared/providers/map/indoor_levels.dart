@@ -47,7 +47,6 @@ class IndoorLevels extends _$IndoorLevels {
   }
 
   void _levelsListener(IndoorLevelsEvent event) {
-    print('event.levelNames.isEmpty ${event.levelNames.isEmpty}');
     if (event.levelNames.isEmpty) {
       state = null;
     } else {
