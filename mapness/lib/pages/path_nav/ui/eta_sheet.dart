@@ -52,7 +52,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     String distance = eta.distanceEta;
     if (distance.length > 5) {
       // For different locales we can see that delimiter is comma or period
-      String delimiter = '';
+      String delimiter = '.';
       if (distance.contains(',')) {
         delimiter = ',';
       }
