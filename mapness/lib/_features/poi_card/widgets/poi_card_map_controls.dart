@@ -88,14 +88,13 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                       ),
                       child: Row(
                         children: [
-                          Column(
+                          const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const HappinesControl(),
-                              const Spacer(),
-                              const IndoorControl(),
-                              const Spacer(),
-
+                              HappinesControl(),
+                              Spacer(),
+                              IndoorControl(),
+                              Spacer(),
                             ],
                           ),
                           const Spacer(),

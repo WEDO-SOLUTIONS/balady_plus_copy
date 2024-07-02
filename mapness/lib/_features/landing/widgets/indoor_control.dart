@@ -7,31 +7,44 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/map/indoor_levels.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
-class IndoorControl extends ConsumerWidget {
+class IndoorControl extends ConsumerStatefulWidget {
   const IndoorControl({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<IndoorControl> createState() => _IndoorControlState();
+}
+
+class _IndoorControlState extends ConsumerState<IndoorControl> {
+
+  @override
+  void didUpdateWidget(covariant IndoorControl oldWidget) {
+    ref.read(indoorLevelsProvider.notifier).refreshStreams();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final indoorState = ref.watch(indoorLevelsProvider);
 
     return indoorState == null
         ? const SizedBox.shrink()
-        : _IndoorControl(
-            state: indoorState,
-            onSelect: (level) => ref.read(indoorLevelsProvider.notifier).selectLevel(level),
-          );
+        : _IndoorControlLevels(
+      state: indoorState,
+      onSelect: (level) => ref.read(indoorLevelsProvider.notifier).selectLevel(level),
+    );
   }
+
 }
 
-class _IndoorControl extends StatelessWidget {
-  const _IndoorControl({
+class _IndoorControlLevels extends StatelessWidget {
+  const _IndoorControlLevels({
     required this.state,
     required this.onSelect,
   });
 
   final LevelsState state;
   final void Function(IndoorLevel) onSelect;
-
+  
   @override
   Widget build(BuildContext context) => Column(
         children: state.levels.reversed
@@ -56,4 +69,5 @@ class _IndoorControl extends StatelessWidget {
             )
             .toList(),
       );
+
 }
