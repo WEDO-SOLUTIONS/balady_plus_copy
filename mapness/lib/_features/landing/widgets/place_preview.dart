@@ -48,7 +48,7 @@ class PlacePreview extends ConsumerWidget {
 
               PoiMapRoute.open(ref.read(goRouterProvider), objectId, zoom: 17);
             },
-            itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item.id)),
+            itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item?.id)),
           );
         },
         error: (error, trace) => ErrorSheet(
@@ -59,7 +59,7 @@ class PlacePreview extends ConsumerWidget {
 }
 
 class _PlaceCard extends StatelessWidget {
-  final proto.InterestingPlace item;
+  final proto.InterestingPlace? item;
 
   const _PlaceCard(this.item, {super.key});
 
@@ -70,7 +70,7 @@ class _PlaceCard extends StatelessWidget {
           children: [
             CachedNetworkImage(
               height: 347,
-              imageUrl: item.preview.image.url,
+              imageUrl: item?.preview.image.url ?? '',
               fit: BoxFit.cover,
               imageBuilder: (context, imageProvider) => Stack(
                 children: [
@@ -94,7 +94,7 @@ class _PlaceCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(Spacing.$6x),
                       child: Text(
-                        item.titleOrFallback(locale: AppLocalizationsEn()),
+                        item?.titleOrFallback(locale: AppLocalizationsEn()) ?? '',
                         style: context.textStyleV3.h2SemiBold.copyWith(
                           color: context.colorsV2.staticWhite,
                         ),

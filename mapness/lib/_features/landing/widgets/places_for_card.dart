@@ -23,32 +23,29 @@ class PlacesForCart extends ConsumerWidget {
         borderRadius: BorderRadius.circular(RadiusBorder.xl),
         child: GestureDetector(
           onTap: onTap,
-          child: SizedBox(
-            height: 118,
-            child: ColoredBox(
-              color: context.colorsV2.backgroundSurface1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(top: Spacing.$4x, start: Spacing.$4x),
-                    child: Transform(
-                      alignment: Alignment.center,
-                      transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
-                      child: Icon(
-                        icon,
-                        size: 32,
-                        color: context.colorsV2.accentDefault,
-                      ),
+          child: ColoredBox(
+            color: context.colorsV2.backgroundSurface1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(top: Spacing.$4x, start: Spacing.$4x),
+                  child: Transform(
+                    alignment: Alignment.center,
+                    transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                    child: Icon(
+                      icon,
+                      size: 32,
+                      color: context.colorsV2.accentDefault,
                     ),
                   ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
-                    child: Text(title, style: context.textStyleV3.bodyLargeMedium),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: Spacing.$4x),
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
+                  child: Text(title, style: context.textStyleV3.bodyLargeMedium),
+                ),
+              ],
             ),
           ),
         ),
