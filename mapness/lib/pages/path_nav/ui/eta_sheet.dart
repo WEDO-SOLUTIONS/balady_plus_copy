@@ -46,6 +46,13 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     if (eta == null) {
       return const SizedBox();
     }
+
+    /// Distance could be in format 1544.8 and 0.8 is details compare to 1544 km
+    /// So to show it right we have do throw away details
+    String distance = eta.distanceEta;
+    if (distance.length > 5) {
+      distance = distance.split('.').first;
+    }
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
       onSizeChanged: widget.onSizeChanged,
@@ -55,8 +62,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           enabledHeader: _isExpanded,
-          distanceChild:
-              NaviChildModel(description: eta.distanceEtaUnits.getDescription(context), title: eta.distanceEta),
+          distanceChild: NaviChildModel(description: eta.distanceEtaUnits.getDescription(context), title: distance),
           arrivalChild: NaviChildModel(description: context.l10n.arrival, title: eta.arrivalTime),
           drivingChild: NaviChildModel(description: eta.timeEtaUnits.getDescription(context), title: eta.timeEta),
           contentRows: [
