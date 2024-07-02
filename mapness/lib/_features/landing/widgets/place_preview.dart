@@ -22,11 +22,13 @@ class PlacePreview extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => ref.watch(interestingPlacesProvider).when(
         data: (items) {
           final places = items
-              .where((e) =>
-                  e.tags.contains(
-                    proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
-                  ) &&
-                  e.preview.image.url.isNotEmpty)
+              .where(
+                (e) =>
+                    e.tags.contains(
+                      proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
+                    ) &&
+                    e.preview.image.url.isNotEmpty,
+              )
               .toList();
 
           return SliderListView(
@@ -48,7 +50,10 @@ class PlacePreview extends ConsumerWidget {
 
               PoiMapRoute.open(ref.read(goRouterProvider), objectId, zoom: 17);
             },
-            itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item.id)),
+            itemBuilder: (item) => _PlaceCard(
+              item,
+              key: ValueKey(item.id),
+            ),
           );
         },
         error: (error, trace) => ErrorSheet(
@@ -94,7 +99,7 @@ class _PlaceCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(Spacing.$6x),
                       child: Text(
-                        item.titleOrFallback(locale: AppLocalizationsEn()),
+                        item.titleOrFallback(locale: context.l10n),
                         style: context.textStyleV3.h2SemiBold.copyWith(
                           color: context.colorsV2.staticWhite,
                         ),
