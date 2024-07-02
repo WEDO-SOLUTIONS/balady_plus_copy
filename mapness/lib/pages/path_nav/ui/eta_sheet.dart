@@ -51,7 +51,12 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     /// So to show it right we have do throw away details
     String distance = eta.distanceEta;
     if (distance.length > 5) {
-      distance = distance.split('.').first;
+      // For different locales we can see that delimiter is comma or period
+      String delimiter = '';
+      if (distance.contains(',')) {
+        delimiter = ',';
+      }
+      distance = distance.split(delimiter).first;
     }
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
