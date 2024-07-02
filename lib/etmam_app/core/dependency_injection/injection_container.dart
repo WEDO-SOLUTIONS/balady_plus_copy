@@ -1,26 +1,9 @@
-import 'package:balady_plus/etmam_app/core/services/remote/notification_service.dart';
-import 'package:balady_plus/etmam_app/core/utils/initializers.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart'
-    show FlutterSecureStorage;
 import 'package:get_it/get_it.dart' show GetIt;
-import 'package:internet_connection_checker/internet_connection_checker.dart'
-    show InternetConnectionChecker;
-import '../../features/_shared_feature_/shared/shared_feature_exports.dart'
-    show NavBarInfo;
-import '../dependency_injection/dependency_injection_exports.dart'
-    show
-        SearchInjection,
-        HomeInjection,
-        AuthInjection,
-        CityInjection,
-        MyOrdersInjection,
-        ServiceInjection,
-        ProvidersInjection,
-        OTPInjection,
-        SubmitRequestInjection;
-import '../services/services_exports.dart'
-    show NetworkConnection, NetworkConnectionImplementation, WebService;
-import 'features/dynamic_form_injection.dart';
+
+import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart';
+import 'package:balady_plus/etmam_app/core/dependency_injection/features/dynamic_form_injection.dart';
+import 'package:balady_plus/etmam_app/core/utils/initializers.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart' show NavBarInfo;
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
@@ -34,13 +17,13 @@ void initialize() {
   //? Entry Point
   AuthInjection.init();
 
-//? Search
+  //? Search
   SearchInjection.init();
 
-//? Home
+  //? Home
   HomeInjection.init();
 
-//? Services
+  //? Services
   ServiceInjection.init();
 
   //? Providers

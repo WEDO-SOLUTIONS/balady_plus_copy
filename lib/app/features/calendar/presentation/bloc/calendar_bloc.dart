@@ -1,18 +1,16 @@
+import 'package:bloc/bloc.dart';
+
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-
-import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../events/domain/entities/events_category/events_category_params.dart';
-import '../../domain/entities/search_calendar/search_calendar_item.dart';
-import '../../domain/entities/search_calendar/search_calendar_params.dart';
-import '../../domain/usecase/get_category_event.dart';
-import '../../domain/usecase/get_search_events.dart';
-import '../../domain/usecase/grt_calendar_details.dart';
-import 'calendar_event.dart';
-import 'calendar_state.dart';
+import 'package:balady_plus/app/features/calendar/domain/entities/search_calendar/search_calendar_item.dart';
+import 'package:balady_plus/app/features/calendar/domain/entities/search_calendar/search_calendar_params.dart';
+import 'package:balady_plus/app/features/calendar/domain/usecase/get_category_event.dart';
+import 'package:balady_plus/app/features/calendar/domain/usecase/get_search_events.dart';
+import 'package:balady_plus/app/features/calendar/domain/usecase/grt_calendar_details.dart';
+import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart';
+import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_state.dart';
+import 'package:balady_plus/app/features/events/domain/entities/events_category/events_category_params.dart';
 
 class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   final GetSearchEvents _getSearchEvents;
@@ -23,7 +21,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         _getCategory = GetCategory(repository: sl()),
         _getCalendarDetails = GetCalendarDetails(repository: sl()),
         super(CalendarState(
-          searchItems: [],
+          searchItems: const [],
           searchedParams: SearchCalendarParams(page: 1, size: 10),
           status: BlocStatus.initial,
         )) {
@@ -41,75 +39,62 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
     on<GetMoreSearchEvent>(_getMoreSearchEventsHandler);
   }
-  Future<void> _getSearchEventsHandler(
-      GetSearchEvent e, Emitter emitter) async {
+  Future<void> _getSearchEventsHandler(GetSearchEvent e, Emitter emitter) async {
     emitter(state.copyWith(
         status: BlocStatus.loading,
         searchedParams: e.update
-            ? (e.params != null
-                ? e.params!.copyWith(page: 1, size: 10)
-                : SearchCalendarParams(page: 1, size: 10))
+            ? (e.params != null ? e.params!.copyWith(page: 1, size: 10) : SearchCalendarParams(page: 1, size: 10))
             : null));
-    final failureOrSuccess = await _getSearchEvents(
-        e.params != null ? e.params! : SearchCalendarParams(page: 1, size: 10));
+    final failureOrSuccess =
+        await _getSearchEvents(e.params != null ? e.params! : SearchCalendarParams(page: 1, size: 10));
 
     failureOrSuccess.fold((l) {
-      if (l == NoDataFoundFailure())
+      if (l == NoDataFoundFailure()) {
         emitter(state.copyWith(status: BlocStatus.success, searchItems: []));
-      else {
+      } else {
         emitter(
-          state.copyWith(
-              status: BlocStatus.retry,
-              errorMessage: (l as ServerFailure).errorMessage),
+          state.copyWith(status: BlocStatus.retry, errorMessage: (l as ServerFailure).errorMessage),
         );
       }
     }, (r) {
       emitter(state.copyWith(
         status: BlocStatus.success,
         searchItems: r.items,
-        searchedParams: e.update
-            ? state.searchedParams
-                .copyWith(page: (state.searchedParams.page ?? 1) + 1)
-            : null,
-        errorMessage: "",
+        searchedParams: e.update ? state.searchedParams.copyWith(page: (state.searchedParams.page ?? 1) + 1) : null,
+        errorMessage: '',
       ));
     });
   }
 
-  Future<void> _getMoreSearchEventsHandler(
-      GetMoreSearchEvent e, Emitter emitter) async {
+  Future<void> _getMoreSearchEventsHandler(GetMoreSearchEvent e, Emitter emitter) async {
     emitter(state.copyWith(
       status: BlocStatus.loadMore,
     ));
     final failureOrSuccess = await _getSearchEvents(state.searchedParams);
 
     failureOrSuccess.fold((l) {
-      if (l == NoDataFoundFailure())
+      if (l == NoDataFoundFailure()) {
         emitter(
-          state.copyWith(status: BlocStatus.failure, errorMessage: ""),
+          state.copyWith(status: BlocStatus.failure, errorMessage: ''),
         );
-      else {
+      } else {
         emitter(
-          state.copyWith(
-              status: BlocStatus.failure,
-              errorMessage: (l as ServerFailure).errorMessage),
+          state.copyWith(status: BlocStatus.failure, errorMessage: (l as ServerFailure).errorMessage),
         );
       }
     }, (r) {
-      List<SearchCalendarItem>? items = state.searchItems ?? [];
+      List<SearchCalendarItem>? items = state.searchItems;
       items.addAll(r.items ?? []);
       emitter(state.copyWith(
         status: BlocStatus.success,
         searchItems: items,
-        searchedParams: state.searchedParams
-            .copyWith(page: (state.searchedParams.page ?? 1) + 1),
-        errorMessage: "",
+        searchedParams: state.searchedParams.copyWith(page: (state.searchedParams.page ?? 1) + 1),
+        errorMessage: '',
       ));
     });
   }
 
-  Future<void> _getSesonsEventsHandler(
-      GetSeasonsEvent e, Emitter emitter) async {
+  Future<void> _getSesonsEventsHandler(GetSeasonsEvent e, Emitter emitter) async {
     if (state.seasonList?.isNotEmpty ?? false) return;
 
     emitter(state.copyWith(
@@ -119,7 +104,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          seasonStatus: (l as ServerFailure).errorCode == "2"
+          seasonStatus: (l as ServerFailure).errorCode == '2'
               ? BlocRequestStatus.submissionGetSuccess
               : BlocRequestStatus.submissionGetFailure,
           seasonList: [],
@@ -129,13 +114,12 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       emitter(state.copyWith(
         seasonStatus: BlocRequestStatus.submissionGetSuccess,
         seasonList: r.items,
-        errorMessage: "",
+        errorMessage: '',
       ));
     });
   }
 
-  Future<void> _updateSearchParamsHandler(
-      UpdateSearchParamsEvent e, Emitter emitter) async {
+  Future<void> _updateSearchParamsHandler(UpdateSearchParamsEvent e, Emitter emitter) async {
     emitter(state.copyWith(
       fromDate: e.fromDate,
       toDate: e.toDate,
@@ -144,8 +128,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     ));
   }
 
-  Future<void> _getCalendarDetailsHandler(
-      GetCalendarDetailsEvent e, Emitter emitter) async {
+  Future<void> _getCalendarDetailsHandler(GetCalendarDetailsEvent e, Emitter emitter) async {
     emitter(state.copyWith(
       status: BlocStatus.loading,
     ));
@@ -160,7 +143,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         details: r,
-        errorMessage: "",
+        errorMessage: '',
       ));
     });
   }
