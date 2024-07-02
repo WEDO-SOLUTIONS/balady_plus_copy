@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_list_screen.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -124,6 +125,35 @@ class ProfilePage extends ConsumerWidget {
                                   title: context.l10n.settings,
                                 ),
                                 onTap: () => const SettingsRoute().push(context),
+                              ),
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  final userData = ref.watch(authProvider);
+
+                                  return userData.maybeWhen(
+                                    orElse: () => const SizedBox.shrink(),
+                                    data: (data) => data == null
+                                        ? const SizedBox.shrink()
+                                        : ContentRow(
+                                            options: ContentRowOptions(
+                                              actionWidget: ContentRowActionOptions(
+                                                actionIcon: actionIcon,
+                                              ),
+                                              leadingIcon: Icon(
+                                                SystemIcons.notification,
+                                                color: context.color.textAndIconsStatusAccent,
+                                              ),
+                                              title: context.l10n.personalData,
+                                            ),
+                                            onTap: () {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) => const NotificationsListScreen(),
+                                                ),
+                                              );
+                                            }),
+                                  );
+                                },
                               ),
                             ],
                           ),
