@@ -18,6 +18,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
@@ -172,7 +173,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       final icon = markerIconPath != null
           ? markerIconPath.markerIcon(size: 32)
           : LayersSvgPaths.basicMarker.markerIcon(size: 16);
-      final markers = await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon);
+
+      final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+      final markers =
+          await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon, isRtl: isRtl);
 
       await searchObjectManager?.removeAllMarkers();
       await searchObjectManager?.addMarkers(markers);
