@@ -16,8 +16,8 @@ enum QuickFilter {
   sportClubs,
   parks,
   recreationCenters,
-  beautyCenters,
-  salons,
+  beauty,
+  barbershops,
   schools,
   shopping,
 }
@@ -32,13 +32,13 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.pharmacies => locale.pharmacies,
         QuickFilter.dentalCenters => locale.dentalCenters,
         QuickFilter.hotels => locale.hotels,
-        QuickFilter.beautyCenters => locale.beautyCenters,
+        QuickFilter.beauty => locale.beauty,
         QuickFilter.recreationCenters => locale.recreationalCenters,
         QuickFilter.sportClubs => locale.sportClubs,
         QuickFilter.carServices => locale.carServices,
         QuickFilter.markets => locale.markets,
         QuickFilter.eatOut => locale.eatOut,
-        QuickFilter.salons => locale.salons,
+        QuickFilter.barbershops => locale.barbershops,
         QuickFilter.shopping => locale.placesToShop,
       };
 
@@ -77,7 +77,7 @@ extension QuickFilterExtension on QuickFilter {
           },
         QuickFilter.schools => {
             Language.english: 'Schools',
-            Language.arabic: 'لمدارس',
+            Language.arabic: 'مدارس',
           },
         QuickFilter.pharmacies => {
             Language.english: 'Pharmacies',
@@ -92,11 +92,11 @@ extension QuickFilterExtension on QuickFilter {
             Language.arabic: 'فنادق',
           },
         QuickFilter.sportClubs => {
-            Language.english: 'Fitness clubs',
+            Language.english: 'Fitness',
             Language.arabic: 'اللياقة البدنية',
           },
         QuickFilter.carServices => {
-            Language.english: 'Car service',
+            Language.english: 'Car service centers',
             Language.arabic: 'مراكز خدمات السيارات',
           },
         QuickFilter.markets => {
@@ -111,13 +111,13 @@ extension QuickFilterExtension on QuickFilter {
             Language.english: 'Entertainments',
             Language.arabic: 'مراكز ترفيهية',
           },
-        QuickFilter.beautyCenters => {
+        QuickFilter.beauty => {
             Language.english: 'Beauty',
-            Language.arabic: 'تجميل',
+            Language.arabic: 'صالونات التجميل',
           },
-        QuickFilter.salons => {
-            Language.english: 'Salons',
-            Language.arabic: 'صالونات',
+        QuickFilter.barbershops => {
+            Language.english: 'Barbershops',
+            Language.arabic: 'صالونات حلاقة رجالية',
           },
         QuickFilter.shopping => {
             Language.english: 'Shopping centers',
@@ -134,8 +134,8 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.dentalCenters => const [222],
         QuickFilter.hotels => const [269],
         QuickFilter.eatOut => const [161, 165, 161, 9786, 162, 469, 58871],
-        QuickFilter.salons => const [110352],
-        QuickFilter.beautyCenters => const [
+        QuickFilter.barbershops => const [110352],
+        QuickFilter.beauty => const [
             56759,
             110351,
             382,
