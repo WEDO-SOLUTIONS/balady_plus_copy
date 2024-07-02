@@ -99,8 +99,8 @@ class SearchByRubrics extends _$SearchByRubrics {
       ).notifier,
     );
 
-    final selectedFilter = ref.watch(searchByRubricsQueryProvider);
-    final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
+    final selectedFilter = ref.read(searchByRubricsQueryProvider);
+    final isRtl = ref.read(appLanguageProvider) == Language.arabic;
     final markerIconPath = selectedFilter?.markerType?.iconPath;
     final icon =
         markerIconPath != null ? markerIconPath.markerIcon(size: 32) : LayersSvgPaths.basicMarker.markerIcon(size: 16);
