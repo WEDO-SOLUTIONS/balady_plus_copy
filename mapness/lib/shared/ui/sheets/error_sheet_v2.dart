@@ -55,8 +55,8 @@ class ErrorSheetV2 extends StatelessWidget {
             const SizedBox(height: 8),
             Align(
               alignment: isLtr ? Alignment.centerRight : Alignment.centerLeft,
-              child: AppCloseButton(
-                onPressed: onClose ?? () => context.pop(),
+              child: CustomCloseButton(
+                onClose: onClose ?? () => context.pop(),
               ),
             ),
             FractionallySizedBox(
