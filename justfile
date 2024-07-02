@@ -162,3 +162,13 @@ codegen_cached:
     cd mapness
     fvm dart run cached_build_runner build || true
     print_style '' 'yellow' '< code generated'
+
+build_release:
+major:
+    ./build_release.sh major
+minor:
+    ./build_release.sh minor
+patch:
+    ./build_release.sh patch
+candidate:
+    ./build_release.sh candidate
