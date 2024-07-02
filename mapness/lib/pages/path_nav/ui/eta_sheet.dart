@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_sound_provider.dart';
+import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -47,17 +48,6 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       return const SizedBox();
     }
 
-    /// Distance could be in format 1544.8 and 0.8 is details compare to 1544 km
-    /// So to show it right we have do throw away details
-    String distance = eta.distanceEta;
-    if (distance.length > 5) {
-      // For different locales we can see that delimiter is comma or period
-      String delimiter = '.';
-      if (distance.contains(',')) {
-        delimiter = ',';
-      }
-      distance = distance.split(delimiter).first;
-    }
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
       onSizeChanged: widget.onSizeChanged,
@@ -67,7 +57,8 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           enabledHeader: _isExpanded,
-          distanceChild: NaviChildModel(description: eta.distanceEtaUnits.getDescription(context), title: distance),
+          distanceChild: NaviChildModel(
+              description: eta.distanceEtaUnits.getDescription(context), title: formatDistance(eta.distanceEta)),
           arrivalChild: NaviChildModel(description: context.l10n.arrival, title: eta.arrivalTime),
           drivingChild: NaviChildModel(description: eta.timeEtaUnits.getDescription(context), title: eta.timeEta),
           contentRows: [
