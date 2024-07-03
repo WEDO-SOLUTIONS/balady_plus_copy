@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/_features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/_features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/_features/poi_card/domain/model/organizations_response.dart';
@@ -31,6 +32,7 @@ class PoiCardState {
   final TradeLicenseMessage? tradeLicense;
   final QrLicenseMessage? qrTradeLicense;
   final OrganizationsMessage? organizations;
+  final int? timestamp;
 
   const PoiCardState({
     required this.showEntrances,
@@ -39,6 +41,7 @@ class PoiCardState {
     required this.organizations,
     this.qrTradeLicense,
     this.tradeLicense,
+    this.timestamp,
   });
 
   Map<String, dynamic> toJson() => {
@@ -48,15 +51,19 @@ class PoiCardState {
         'qrTradeLicense': qrTradeLicense?.toJson(),
         'showEntrances': showEntrances,
         'isLoading': isLoading,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
       };
 
-  static Future<PoiCardState> fromJson(Map<String, dynamic> json) async {
+  factory PoiCardState.fromJson(Map<String, dynamic> json) {
     final organizatonsJson = json['organizations'];
     final objectIdJson = json['gisObjectIdMessage'];
     final entrancesJson = json['showEntrances'];
+    final timestampJson = json.containsKey('timestamp') ? json['timestamp'] as int? : null;
+
     return PoiCardState(
         showEntrances: entrancesJson,
         isLoading: false,
+        timestamp: timestampJson,
         gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
         organizations: OrganizationsMessage.fromJson(organizatonsJson));
   }
@@ -81,6 +88,9 @@ class PoiCardState {
 
 @riverpod
 class PoiCardProvider extends _$PoiCardProvider {
+  // POI Cache timeout in minutes
+  static const poiCacheTimeoutMinutes = 60;
+
   @override
   Future<PoiCardState?> build(
     int objectId, {
@@ -130,16 +140,12 @@ class PoiCardProvider extends _$PoiCardProvider {
     // We don't want to show arabic text to english users and vise versa
     final appLang = ref.read(appLanguageProvider);
     final poiCardStateKey = '${objectId.toString()} $appLang';
+
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
-    final cachedData = poiBox.get(poiCardStateKey, defaultValue: null);
+    final cachedData = await loadCacheData(poiBox, poiCardStateKey);
 
     if (cachedData != null) {
-      try {
-        final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
-        return stateFromJson;
-      } catch (e, s) {
-        state = AsyncValue.error(e, s);
-      }
+      return cachedData;
     } else {
       final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
       final organizationsResponse = await fetchOrganizationsData(objectId: result?.id?.objectId);
@@ -174,13 +180,6 @@ class PoiCardProvider extends _$PoiCardProvider {
       }
       return poiCardState;
     }
-
-    return const PoiCardState(
-      organizations: null,
-      isLoading: true,
-      showEntrances: false,
-      gisObjectIdMessage: null,
-    );
   }
 
   Future<OrganizationsMessage?> fetchOrganizationsData({int? objectId, int page = 1, int pageSize = 30}) async {
@@ -208,5 +207,26 @@ class PoiCardProvider extends _$PoiCardProvider {
     } catch (_) {
       return null;
     }
+  }
+
+  Future<PoiCardState?> loadCacheData(Box<dynamic> box, String key) async {
+    final cachedData = box.get(key, defaultValue: null);
+
+    if (cachedData != null) {
+      try {
+        final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
+        // Check if the cache is expired
+        if (stateFromJson.timestamp == null) {
+          return null;
+        } else if (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!)).inMinutes >
+            poiCacheTimeoutMinutes) {
+          return null;
+        }
+        return stateFromJson;
+      } catch (e, _) {
+        debugPrint('$e');
+      }
+    }
+    return null;
   }
 }
