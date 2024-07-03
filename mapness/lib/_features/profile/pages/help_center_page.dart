@@ -31,6 +31,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
               padding: const EdgeInsets.only(top: NumericBase.$4x),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
+                  systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                   title: context.l10n.helpCenter,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(

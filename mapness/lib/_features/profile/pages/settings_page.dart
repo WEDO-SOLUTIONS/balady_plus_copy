@@ -38,6 +38,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               padding: const EdgeInsets.only(top: NumericBase.$4x),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
+                  systemUiOverlayStyle: SystemUiOverlayStyle.dark ,
                   title: context.l10n.settings,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
