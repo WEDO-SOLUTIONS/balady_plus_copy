@@ -91,7 +91,7 @@ class _CalendarCard extends StatelessWidget {
           child: Stack(
             children: [
               Align(
-                alignment: Alignment.centerRight,
+                alignment: context.isLTR ? Alignment.centerRight : Alignment.centerLeft,
                 child: Transform(
                   alignment: Alignment.center,
                   transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),

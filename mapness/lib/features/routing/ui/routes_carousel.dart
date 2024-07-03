@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
@@ -54,7 +51,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   late PageController _pageController;
   bool _animating = false;
 
-  static const _bottomSheetHeight = 220;
+  static const _bottomSheetHeight = 320;
 
   @override
   void initState() {
@@ -62,6 +59,14 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     _pageController = PageController(
       viewportFraction: PathCardSize.fixedCardWidthWithPadding / widget.biggestWidth,
     );
+    ref.read(cameraPaddingProvider.notifier).setPadding(
+          CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: (MediaQuery.of(context).padding.top * MediaQuery.of(context).devicePixelRatio).toInt(),
+            rightPadding: 0,
+            bottomPadding: (_bottomSheetHeight * MediaQuery.of(context).devicePixelRatio).toInt(),
+          ),
+        );
   }
 
   @override
@@ -73,9 +78,6 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
         navType: widget.navType,
       ),
     );
-
-    final cameraProvider = ref.read(cameraPositionProvider.notifier);
-    final cameraPadding = ref.read(cameraPaddingProvider.notifier);
 
     ref.listen(
       activeRouteProvider,
@@ -96,36 +98,6 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
         );
       },
     );
-
-    if (routes.hasValue) {
-      ///TODO(ayat): Now we can animate to route only on Android, ios crashes with this method
-      /// Guess, we can animate only to the active routes on ios
-      /// Pls, double check this
-      if (Platform.isAndroid) {
-        cameraProvider.animateToRoute(
-            options: CalcPositionOptionsMessage(
-          screenArea: CameraSetPaddingMessage(
-            leftPadding: 50,
-            topPadding: 50,
-            rightPadding: 50,
-            bottomPadding: 440,
-          ),
-          size: ScreenSizeMessage(
-            width: MediaQuery.of(context).size.width.toInt(),
-            height: MediaQuery.of(context).size.height.toInt(),
-          ),
-        ));
-      }
-      cameraPadding.setPadding(
-        CameraSetPaddingMessage(
-          leftPadding: 0,
-          topPadding: 0,
-          rightPadding: 0,
-          bottomPadding:
-              Platform.isAndroid ? (_bottomSheetHeight * MediaQuery.of(context).devicePixelRatio).toInt() : 0,
-        ),
-      );
-    }
 
     return widgets.RoutesCarousel(
       navType: widget.navType,

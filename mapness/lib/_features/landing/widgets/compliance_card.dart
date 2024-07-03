@@ -3,8 +3,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -56,19 +54,19 @@ class ComplianceCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: Spacing.$5x + Spacing.$0_5x),
                     _RowButton(
-                      svgImageName: 'sertificate',
+                      icon: GeneralIcons.sertificate,
                       onTap: createCompliance,
                       label: context.l10n.createCompliance,
                     ),
                     const Divider(height: Spacing.px, indent: 63),
                     _RowButton(
-                      svgImageName: 'question',
+                      icon: context.isLTR ? GeneralIcons.questionSupportLTR : GeneralIcons.questionSupportRTL,
                       onTap: CommonFunctions.openComplianceFaq,
                       label: context.l10n.complianceFAQ,
                     ),
                     const Divider(height: Spacing.px, indent: 63),
                     _RowButton(
-                      svgImageName: 'document',
+                      icon: context.isLTR ? GeneralIcons.documentDefenceRTL : GeneralIcons.documentDefenceLTR,
                       onTap: CommonFunctions.openComplianceTerms,
                       label: context.l10n.complianceRequirements,
                     ),
@@ -83,12 +81,12 @@ class ComplianceCard extends ConsumerWidget {
 
 class _RowButton extends StatelessWidget {
   final String label;
-  final String svgImageName;
+  final IconData icon;
   final VoidCallback onTap;
 
   const _RowButton({
     required this.label,
-    required this.svgImageName,
+    required this.icon,
     required this.onTap,
   });
 
@@ -108,11 +106,10 @@ class _RowButton extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SvgPicture.asset(
-                        'assets/images_svg/$svgImageName.svg',
-                        package: PackageConfig.packageName,
-                        height: Spacing.$6x,
-                        width: Spacing.$6x,
+                      Icon(
+                        icon,
+                        size: Spacing.$6x,
+                        color: context.colorsV2.accentDefault,
                       ),
                       const SizedBox(width: Spacing.$4x),
                       Text(label, style: context.textStyleV3.bodySmallRegular),

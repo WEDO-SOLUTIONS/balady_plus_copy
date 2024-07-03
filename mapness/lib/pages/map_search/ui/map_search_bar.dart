@@ -68,22 +68,18 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
-    ref
-      ..listen(searchProvider(scope.value), (previous, next) {
-        if (next is SearchStateResults) {
-          _updateText(next.searchText);
-          _focusNode.unfocus();
-        }
-      })
-      ..listen(searchQueryProvider(scope.value), (previous, next) {
-        _updateText(next);
-      });
+    ref.listen(searchProvider(scope.value), (previous, next) {
+      _updateText(next.searchText);
+      if (next is SearchStateLoading) {
+        _focusNode.unfocus();
+      }
+    });
 
     return BaladySearchWithBackButton(
       searchInput: BaladyInput.search(
         focusNode: _focusNode,
         onChanged: (query) {
-          ref.read(searchQueryProvider(scope.value).notifier).update(query);
+          ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
           Metrics.logEventAdvanced(
             MetricsConstants.searchKeys.searchField,
             group: MetricsConstants.searchTag,

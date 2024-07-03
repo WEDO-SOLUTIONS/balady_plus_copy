@@ -58,52 +58,54 @@ class ContactsInfo extends ConsumerWidget {
                       title: phone.type == ContactsInfoType.phone ? phone.displayText : null,
                     ),
                   ),
-                Spacing.verticalGapBetweenStories.heightBox,
-                Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: Spacing.verticalPaddingInsideCell,
-                    left: Spacing.horizontalPaddingInsideWrapper,
-                    right: Spacing.horizontalPaddingInsideWrapper,
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      ...socials
-                          .map((e) => Material(
-                                color: context.color.surfaceBaseSecondary,
-                                borderRadius: BorderRadius.circular(CornerRadius.toastBorderRadius),
-                                child: InkWell(
-                                  highlightColor: context.color.surfaceOverlayPressed,
-                                  splashColor: context.color.surfaceOverlayPressed,
-                                  onTap: () {
-                                    final value = e.value;
-                                    if (value == null) {
-                                      return;
-                                    }
-                                    if (e.type == ContactsInfoType.email) {
-                                      ref.read(poiCardActionsProvider.notifier).sendEmail(value);
-                                    } else {
-                                      ref.read(poiCardActionsProvider.notifier).launch(value);
-                                    }
-                                  },
+                if (socials.isNotEmpty) ...[
+                  Spacing.verticalGapBetweenStories.heightBox,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: Spacing.verticalPaddingInsideCell,
+                      left: Spacing.horizontalPaddingInsideWrapper,
+                      right: Spacing.horizontalPaddingInsideWrapper,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        ...socials
+                            .map((e) => Material(
+                                  color: context.color.surfaceBaseSecondary,
                                   borderRadius: BorderRadius.circular(CornerRadius.toastBorderRadius),
-                                  child: SizedBox(
-                                      height: 36,
-                                      width: 36,
-                                      child: Icon(
-                                        e.type.getIconResource(isLtr),
-                                        size: 24,
-                                        color: context.color.textAndIconsStatusAccent,
-                                      )),
-                                ),
-                              ))
+                                  child: InkWell(
+                                    highlightColor: context.color.surfaceOverlayPressed,
+                                    splashColor: context.color.surfaceOverlayPressed,
+                                    onTap: () {
+                                      final value = e.value;
+                                      if (value == null) {
+                                        return;
+                                      }
+                                      if (e.type == ContactsInfoType.email) {
+                                        ref.read(poiCardActionsProvider.notifier).sendEmail(value);
+                                      } else {
+                                        ref.read(poiCardActionsProvider.notifier).launch(value);
+                                      }
+                                    },
+                                    borderRadius: BorderRadius.circular(CornerRadius.toastBorderRadius),
+                                    child: SizedBox(
+                                        height: 36,
+                                        width: 36,
+                                        child: Icon(
+                                          e.type.getIconResource(isLtr),
+                                          size: 24,
+                                          color: context.color.textAndIconsStatusAccent,
+                                        )),
+                                  ),
+                                ))
+                            .toList(),
+                      ]
+                          .insertBetween(
+                            Spacing.verticalGapBetweenChips.widthBox,
+                          )
                           .toList(),
-                    ]
-                        .insertBetween(
-                          Spacing.verticalGapBetweenChips.widthBox,
-                        )
-                        .toList(),
+                    ),
                   ),
-                )
+                ]
               ]));
     }
   }

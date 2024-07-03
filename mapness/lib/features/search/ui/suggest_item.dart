@@ -55,7 +55,7 @@ class SuggestItem extends ConsumerWidget {
 
     void _onSuggestTap() {
       if (incompleteText != null) {
-        ref.read(searchQueryProvider(scope.value).notifier).update(incompleteText.queryText);
+        ref.read(searchProvider(scope.value).notifier).fetchSuggest(incompleteText.queryText);
       } else if (performSearch != null) {
         ref.read(searchProvider(scope.value).notifier).searchByQuery(performSearch.searchQuery, suggest.title.text);
         final historyObject = SearchHistoryItem.fromQuery(query: suggest.title.text);
