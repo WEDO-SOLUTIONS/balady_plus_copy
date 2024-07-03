@@ -7,31 +7,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/map/indoor_levels.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
-class IndoorControl extends ConsumerStatefulWidget {
+class IndoorControl extends ConsumerWidget {
   const IndoorControl({super.key});
 
   @override
-  ConsumerState<IndoorControl> createState() => _IndoorControlState();
-}
-
-class _IndoorControlState extends ConsumerState<IndoorControl> {
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final indoorState = ref.watch(indoorLevelsProvider);
 
     return indoorState == null
         ? const SizedBox.shrink()
-        : _IndoorControlLevels(
-      state: indoorState,
+        : _IndoorControl(
+            state: indoorState,
       onSelect: (level) => ref.read(indoorLevelsProvider.notifier).selectLevel(level),
     );
   }
-
 }
 
-class _IndoorControlLevels extends StatelessWidget {
-  const _IndoorControlLevels({
+class _IndoorControl extends StatelessWidget {
+  const _IndoorControl({
     required this.state,
     required this.onSelect,
   });
@@ -53,15 +46,14 @@ class _IndoorControlLevels extends StatelessWidget {
                 ),
                 child: Text(
                   e.name,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.callout.copyWith(
-                        color: e.levelIndex == state.active
-                            ? context.color.strokeAccent
-                            : context.color.textAndIconsBasePrimary,
-                      ),
+                  style: context.textStyle.callout.copyWith(
+                    color: e.levelIndex == state.active
+                        ? context.color.strokeAccent
+                        : context.color.textAndIconsBasePrimary,
+                  ),
                 ),
               ),
             )
             .toList(),
       );
-
 }

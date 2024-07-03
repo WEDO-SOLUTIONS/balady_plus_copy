@@ -34,7 +34,6 @@ class IndoorLevels extends _$IndoorLevels {
 
     ref.onDispose(() {
       _cancelSubscriptions();
-      dgisController.value?.disposeIndoorEventHandler;
     });
 
     return null;
