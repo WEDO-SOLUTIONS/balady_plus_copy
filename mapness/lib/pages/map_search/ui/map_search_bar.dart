@@ -51,7 +51,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
   @override
   void dispose() {
-    _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
