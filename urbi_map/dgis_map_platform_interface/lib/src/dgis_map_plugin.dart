@@ -59,8 +59,6 @@ class DgisMapPlugin extends FlutterMapApi {
 
   Stream<IndoorLevelsEvent> get indoorLevelNames => _indoorEventHandler.indoorLevelNames;
 
-  Future<void> get disposeIndoorEventHandler => _indoorEventHandler.dispose();
-
   Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _indoorEventHandler.indoorActiveLevel;
 
   Stream<TapEvent> get objectTapEvents => _objectTapEventHandler.objectTapEvents;
