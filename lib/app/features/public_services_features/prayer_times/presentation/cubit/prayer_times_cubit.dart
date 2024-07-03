@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
@@ -10,8 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
-import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, CommonFunctions, Prayers;
+import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus, CommonFunctions, Prayers;
 import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../prayer_times_exports.dart'
     show
@@ -27,7 +25,6 @@ part 'prayer_times_state.dart';
 
 class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   final GetPrayerTimes _getPrayerTimes;
-  final GetGISData _getGISData;
   final GetPrayerTimesRange _getPrayerTimesRange;
 
   PrayerTimesCubit({
@@ -35,7 +32,6 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     required GetGISData getGISData,
     required GetPrayerTimesRange getPrayerTimesRange,
   })  : _getPrayerTimes = getPrayerTimes,
-        _getGISData = getGISData,
         _getPrayerTimesRange = getPrayerTimesRange,
         super(const PrayerTimesState()) {
     getPrayerTime();
@@ -50,44 +46,32 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     for (var prayer in state.prayersRange) {
       state.prayerTimeSettings[0] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.fajrId,
-              title: "fajrAzan".tr(),
-              scheduledDate: prayer.fajrDateTime)
+              id: prayer.fajrId, title: "fajrAzan".tr(), scheduledDate: prayer.fajrDateTime)
           : NotificationService.cancel(prayer.fajrId);
       state.prayerTimeSettings[1] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.zuhrId,
-              title: "zuhrAzan".tr(),
-              scheduledDate: prayer.zuhrDateTime)
+              id: prayer.zuhrId, title: "zuhrAzan".tr(), scheduledDate: prayer.zuhrDateTime)
           : NotificationService.cancel(prayer.zuhrId);
       state.prayerTimeSettings[2] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.asrId,
-              title: "asrAzan".tr(),
-              scheduledDate: prayer.asrDateTime)
+              id: prayer.asrId, title: "asrAzan".tr(), scheduledDate: prayer.asrDateTime)
           : NotificationService.cancel(prayer.asrId);
       state.prayerTimeSettings[3] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.magribId,
-              title: "magribAzan".tr(),
-              scheduledDate: prayer.magribDateTime)
+              id: prayer.magribId, title: "magribAzan".tr(), scheduledDate: prayer.magribDateTime)
           : NotificationService.cancel(prayer.magribId);
       state.prayerTimeSettings[4] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.ishaId,
-              title: "ishaAzan".tr(),
-              scheduledDate: prayer.ishaDateTime)
+              id: prayer.ishaId, title: "ishaAzan".tr(), scheduledDate: prayer.ishaDateTime)
           : NotificationService.cancel(prayer.ishaId);
     }
   }
 
-  void getPrayerSettings() =>
-      emit(state.copyWith(prayerTimeSettings: sharedPrefs.getPrayerSettings()));
+  void getPrayerSettings() => emit(state.copyWith(prayerTimeSettings: sharedPrefs.getPrayerSettings()));
 
   void onChangePrayerSettings(int index) {
     final newPrayerSettings = List.of(state.prayerTimeSettings);
-    newPrayerSettings.replaceRange(
-        index, index + 1, [newPrayerSettings[index] == "0" ? "1" : "0"]);
+    newPrayerSettings.replaceRange(index, index + 1, [newPrayerSettings[index] == "0" ? "1" : "0"]);
 
     emit(state.copyWith(prayerTimeSettings: newPrayerSettings));
     sharedPrefs.setPrayerSettings(newPrayerSettings);
@@ -95,9 +79,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void prayerSettingsOnOff() {
-    final newPrayerSettings = List.of(state.prayerTimeSettings)
-        .map((e) => state.isNotificationDisable ? "1" : "0")
-        .toList();
+    final newPrayerSettings =
+        List.of(state.prayerTimeSettings).map((e) => state.isNotificationDisable ? "1" : "0").toList();
 
     emit(state.copyWith(prayerTimeSettings: newPrayerSettings));
     sharedPrefs.setPrayerSettings(newPrayerSettings);
@@ -108,16 +91,11 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     if (CommonProperties.userLocation == null) return;
     final params = PrayerTimeRangeParams(
       startDate: DateFormat("dd/MM/yyyy").format(DateTime.now()),
-      endDate: DateFormat("dd/MM/yyyy")
-          .format(DateTime.now().copyWith(day: DateTime.now().day + 5)),
+      endDate: DateFormat("dd/MM/yyyy").format(DateTime.now().copyWith(day: DateTime.now().day + 5)),
       dateType: 'GRG',
       isFormat24Hours: "true",
-      lat: CommonProperties.userLocation != null
-          ? CommonProperties.userLocation!.y.toString()
-          : "21.424236910931974",
-      lng: CommonProperties.userLocation != null
-          ? CommonProperties.userLocation!.x.toString()
-          : "39.82589070176908",
+      lat: CommonProperties.userLocation != null ? CommonProperties.userLocation!.y.toString() : "21.424236910931974",
+      lng: CommonProperties.userLocation != null ? CommonProperties.userLocation!.x.toString() : "39.82589070176908",
     );
 
     final failureOrSuccess = await _getPrayerTimesRange(params);
@@ -133,17 +111,13 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void getPrayerTime() async {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    DateTime? aDate;
     DateTime? dateToCheck = state.lastUpdatedDate;
 
-    if (dateToCheck != null)
-      aDate = DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
-    //  if (aDate != today || aDate == null || state.prayerTimesResponse == null) {
+    if (dateToCheck != null) {
+      //  if (aDate != today || aDate == null || state.prayerTimesResponse == null) {
 
-    CommonFunctions.checkLocationSettings(
-        NavigationService.navigatorKey!.currentContext!);
+      CommonFunctions.checkLocationSettings(NavigationService.navigatorKey.currentContext!);
+    }
     emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
 
     GISParams? userLocation = CommonProperties.userLocation;
@@ -153,12 +127,10 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
         accuracy: LocationAccuracy.low,
       );
 
-      userLocation = GISParams(
-          x: locaton?.longitude ?? 39.82589070176908,
-          y: locaton?.latitude ?? 21.424236910931974);
-      if (locaton == null)
+      userLocation = GISParams(x: locaton?.longitude ?? 39.82589070176908, y: locaton?.latitude ?? 21.424236910931974);
+      if (locaton == null) {
         emit(state.copyWith(userLocationUnkown: true));
-      else {
+      } else {
         emit(state.copyWith(userLocationUnkown: false));
       }
     } else {
@@ -172,7 +144,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     );
     final failureOrSuccess = await _getPrayerTimes(params);
 
-    await failureOrSuccess.fold(
+    failureOrSuccess.fold(
       (failure) {
         emit(state.copyWith(
           status: BlocRequestStatus.submissionGetFailure,
@@ -181,9 +153,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       },
       (response) {
         emit(state.copyWith(
-            status: BlocRequestStatus.submissionGetSuccess,
-            prayerTimes: response,
-            lastUpdatedDate: DateTime.now()));
+            status: BlocRequestStatus.submissionGetSuccess, prayerTimes: response, lastUpdatedDate: DateTime.now()));
       },
     );
     /*return;
@@ -267,6 +237,6 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     } else {
       emit(state.copyWith(nextPrayer: state.prayerTimesResponse!.fajr));
     }
-    final nextPrayerTimeDiff = state.nextPrayer!.dateTime.difference(now);
+    // final nextPrayerTimeDiff = state.nextPrayer!.dateTime.difference(now);
   }
 }

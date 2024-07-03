@@ -99,7 +99,7 @@ class Search extends _$Search {
     mixpanel?.track('Search: fetchSuggest');
   }
 
-  Future<void> quickSearch(QuickFilter quickSearch) async {
+  Future<void> quickSearch(QuickFilter quickSearch, {List<GeoPointMessage>? spatialRestriction}) async {
     await _searchOperation?.cancel();
     final language = ref.read(appLanguageProvider);
     final searchQuery = quickSearch.query[language] ?? '';
@@ -125,7 +125,7 @@ class Search extends _$Search {
         searchQuery,
         sortingType: SortingTypeMessage.byDistance,
         // TODO(Sergei): revert value to _saRestrictions when search performance is improved
-        spatialRestriction: _getRestrictionFromRect(searchRect),
+        spatialRestriction: spatialRestriction ?? _saRestrictions,
         searchRect: searchRect,
       ),
     );
@@ -226,7 +226,9 @@ class Search extends _$Search {
         searchByQuery(_previousSearchQueryMessage!, _previousQuery!);
         break;
       case SearchType.quickSearch:
-        quickSearch(_previousQuickSearch!);
+        // TODO(Sergei): workaround for fast search from searchInThisArea, remove spatialRestriction param when search performance is improved
+        final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+        quickSearch(_previousQuickSearch!, spatialRestriction: _getRestrictionFromRect(searchRect));
         break;
     }
   }

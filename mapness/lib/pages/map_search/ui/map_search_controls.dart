@@ -52,8 +52,8 @@ class MapSearchSheetControls extends ConsumerWidget {
     final visibleSearchArea = ref.watch(searchInRectProvider.select((value) => value.$2));
 
     void _searchInArea() {
-      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
       ref.read(searchInRectProvider.notifier).update();
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
     }
 
     return IgnorePointer(
