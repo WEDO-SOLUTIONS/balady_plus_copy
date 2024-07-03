@@ -26,9 +26,9 @@ class IndoorEventHandler {
     final event = IndoorLevelsEvent(
       levelNames
           .mapIndexed((index, level) => IndoorLevel(
-        level,
-        index,
-      ))
+                level,
+                index,
+              ))
           .toList(),
     );
     _lastIndoorLevelNames = event;
