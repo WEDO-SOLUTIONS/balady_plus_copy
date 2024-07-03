@@ -1,5 +1,4 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +17,8 @@ class IndoorControl extends ConsumerWidget {
         ? const SizedBox.shrink()
         : _IndoorControl(
             state: indoorState,
-      onSelect: (level) => ref.read(indoorLevelsProvider.notifier).selectLevel(level),
-    );
+            onSelect: (level) => ref.read(indoorLevelsProvider.notifier).selectLevel(level),
+          );
   }
 }
 
