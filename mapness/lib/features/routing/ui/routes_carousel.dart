@@ -59,14 +59,14 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     _pageController = PageController(
       viewportFraction: PathCardSize.fixedCardWidthWithPadding / widget.biggestWidth,
     );
-    ref.read(cameraPaddingProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: (MediaQuery.of(context).padding.top * MediaQuery.of(context).devicePixelRatio).toInt(),
-            rightPadding: 0,
-            bottomPadding: (_bottomSheetHeight * MediaQuery.of(context).devicePixelRatio).toInt(),
-          ),
-        );
+    // ref.read(cameraPaddingProvider.notifier).setPadding(
+    //       CameraSetPaddingMessage(
+    //         leftPadding: 0,
+    //         topPadding: (MediaQuery.of(context).padding.top * MediaQuery.of(context).devicePixelRatio).toInt(),
+    //         rightPadding: 0,
+    //         bottomPadding: (_bottomSheetHeight * MediaQuery.of(context).devicePixelRatio).toInt(),
+    //       ),
+    //     );
   }
 
   @override

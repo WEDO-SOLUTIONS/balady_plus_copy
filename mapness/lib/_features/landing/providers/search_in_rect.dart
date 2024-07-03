@@ -33,10 +33,7 @@ class SearchInRect extends _$SearchInRect {
       subscription?.cancel();
     });
 
-    return (
-      ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect.geoRectMessage(),
-      false,
-    );
+    return (null, false);
   }
 
   void _setDefaultValue(VisibleRectEvent event) {

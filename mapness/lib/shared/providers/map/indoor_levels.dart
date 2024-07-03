@@ -16,9 +16,9 @@ class LevelsState {
     List<IndoorLevel>? levels,
     int? active,
   }) => LevelsState(
-      levels ?? this.levels,
-      active ?? this.active,
-    );
+        levels ?? this.levels,
+        active ?? this.active,
+      );
 }
 
 @riverpod
@@ -28,10 +28,13 @@ class IndoorLevels extends _$IndoorLevels {
 
   @override
   LevelsState? build() {
-    _subscribeToStreams();
+    final dgisController = ref.watch(dgisControllerProvider);
+
+    _subscribeToStreams(dgisController);
 
     ref.onDispose(() {
       _cancelSubscriptions();
+      dgisController.value?.disposeIndoorEventHandler;
     });
 
     return null;
@@ -55,8 +58,7 @@ class IndoorLevels extends _$IndoorLevels {
     }
   }
 
-  void _subscribeToStreams() {
-    final dgisController = ref.watch(dgisControllerProvider);
+  Future<void> _subscribeToStreams(AsyncValue<DgisMapController> dgisController) async {
     _levelsSubscription = dgisController.value?.indoorLevelNames.listen(_levelsListener);
     _indexSubscription = dgisController.value?.indoorActiveIndex.listen(_indexListener);
   }
@@ -64,10 +66,5 @@ class IndoorLevels extends _$IndoorLevels {
   void _cancelSubscriptions() {
     _levelsSubscription?.cancel();
     _indexSubscription?.cancel();
-  }
-
-  void refreshStreams() {
-    _cancelSubscriptions();
-    _subscribeToStreams();
   }
 }
