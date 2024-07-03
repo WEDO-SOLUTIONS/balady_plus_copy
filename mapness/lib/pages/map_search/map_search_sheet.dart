@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -17,6 +18,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
@@ -79,7 +81,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   @override
   Widget build(BuildContext context) {
     final bottomSafeArea = MediaQuery.of(context).padding.bottom;
-    final height = 88 + bottomSafeArea;
+    final collapsedHeight = 88 + bottomSafeArea;
 
     searchObjectManager ??= ref.watch(
       mapObjectManagerProvider(
@@ -108,7 +110,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     return Stack(
       alignment: Alignment.bottomLeft,
       children: [
-        MapSearchSheetControls(currentSize: currentSize),
+        MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
         NotificationListener<ScrollNotification>(
           onNotification: _onNotification,
           child: DgisBottomSheet(
@@ -123,7 +125,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
             },
             onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
             middleHeight: widget.biggestHeight * 0.8,
-            collapsedHeight: height,
+            collapsedHeight: collapsedHeight,
             scrollableBody: (context, scrollController) {
               /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
               /// https://www.youtube.com/watch?v=L_WoOkDAqbM
@@ -171,7 +173,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       final icon = markerIconPath != null
           ? markerIconPath.markerIcon(size: 32)
           : LayersSvgPaths.basicMarker.markerIcon(size: 16);
-      final markers = await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon);
+
+      final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+      final markers =
+          await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon, isRtl: isRtl);
 
       await searchObjectManager?.removeAllMarkers();
       await searchObjectManager?.addMarkers(markers);
@@ -232,10 +237,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     if (!kbState) {
       return;
     }
-    return switch (_dgisSheetController.currentExpansion) {
-      Expansion.middle || Expansion.expanded => null,
-      _ => _dgisSheetController.animateTo(Expansion.expanded),
-    };
+    final currentExp = _dgisSheetController.currentExpansion;
+    if (currentExp == Expansion.expanded || currentExp == Expansion.middle) {
+      return;
+    }
+    // We need to wait because of the rebuild the sheet state
+    // At the build method we recalculate [collapsedHeight] and we secretly call the [didUpdateWidget] method
+    // of [_dgisSheetController]. And if we call the [animateTo] method before the [didUpdateWidget] method
+    // we will get set wrong [Expansion] value
+    Future.delayed(Durations.short1).then((_) {
+      _dgisSheetController.animateTo(Expansion.expanded);
+    });
   }
 
   void onClose() {

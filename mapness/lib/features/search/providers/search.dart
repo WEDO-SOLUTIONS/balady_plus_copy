@@ -99,7 +99,7 @@ class Search extends _$Search {
     mixpanel?.track('Search: fetchSuggest');
   }
 
-  Future<void> quickSearch(QuickFilter quickSearch) async {
+  Future<void> quickSearch(QuickFilter quickSearch, {List<GeoPointMessage>? spatialRestriction}) async {
     await _searchOperation?.cancel();
     final language = ref.read(appLanguageProvider);
     final searchQuery = quickSearch.query[language] ?? '';
@@ -124,7 +124,8 @@ class Search extends _$Search {
       dgisController.search(
         searchQuery,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: _saRestrictions,
+        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+        spatialRestriction: spatialRestriction ?? _saRestrictions,
         searchRect: searchRect,
       ),
     );
@@ -159,7 +160,8 @@ class Search extends _$Search {
       dgisController.search(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: _saRestrictions,
+        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+        spatialRestriction: _getRestrictionFromRect(searchRect),
         searchRect: searchRect,
       ),
     );
@@ -194,7 +196,8 @@ class Search extends _$Search {
       dgisController.searchByQuery(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: _saRestrictions,
+        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+        spatialRestriction: _getRestrictionFromRect(searchRect),
         searchRect: searchRect,
       ),
     );
@@ -223,7 +226,9 @@ class Search extends _$Search {
         searchByQuery(_previousSearchQueryMessage!, _previousQuery!);
         break;
       case SearchType.quickSearch:
-        quickSearch(_previousQuickSearch!);
+        // TODO(Sergei): workaround for fast search from searchInThisArea, remove spatialRestriction param when search performance is improved
+        final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+        quickSearch(_previousQuickSearch!, spatialRestriction: _getRestrictionFromRect(searchRect));
         break;
     }
   }
@@ -237,5 +242,17 @@ class Search extends _$Search {
       SearchStateResults() => oldState.copyWith(searchText: searchText),
       SearchStateLoading() => oldState.copyWith(searchText: searchText),
     };
+  }
+
+  List<GeoPointMessage>? _getRestrictionFromRect(GeoRectMessage? rect) {
+    if (rect == null) {
+      return null;
+    }
+    return [
+      GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.northEast.longitude),
+      GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.southWest.longitude),
+      GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.southWest.longitude),
+      GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.northEast.longitude),
+    ];
   }
 }

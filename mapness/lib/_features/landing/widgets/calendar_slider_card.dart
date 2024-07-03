@@ -14,12 +14,14 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/landing/widgets/slider_list_view.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class CalendarSliderCard extends StatelessWidget {
+class CalendarSliderCard extends ConsumerWidget {
   final VoidCallback? onShowAll;
   final AppColorScheme colorScheme;
 
@@ -30,51 +32,72 @@ class CalendarSliderCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => BlocProvider.value(
-        value: sl<CalendarBloc>(),
-        child: BlocBuilder<CalendarBloc, CalendarState>(
-          builder: (context, state) {
-            if (state.status == BlocStatus.loading) {
-              return const CustomShimmerWidget(
-                childHeight: 132,
-                padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
-              );
-            }
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(networkStatusProvider, (prev, next) {
+      final wasNotConnected = !(prev ?? false);
+      final nowIsConnected = next;
 
-            if (state.status == BlocStatus.failure) {
-              return RetryWidget(
-                onRetry: () {
-                  context.read<CalendarBloc>().add(const GetSearchEvent());
-                },
-              );
-            }
+      if (wasNotConnected && nowIsConnected) {
+        sl<CalendarBloc>().add(const GetSearchEvent());
+      }
+    });
 
-            if (state.searchItems.firstOrNull == null) {
-              return const SizedBox.shrink();
-            }
-
-            return SliderListView(
-              items: state.searchItems,
-              contentHeight: 132,
-              itemBuilder: (item) => _CalendarCard(item),
+    return BlocProvider.value(
+      value: sl<CalendarBloc>(),
+      child: BlocBuilder<CalendarBloc, CalendarState>(
+        builder: (context, state) {
+          if (state.status == BlocStatus.loading) {
+            return const CustomShimmerWidget(
+              childHeight: 132,
+              padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
             );
-          },
-        ),
-      );
+          }
+
+          if (state.status == BlocStatus.failure) {
+            return RetryWidget(
+              onRetry: () {
+                context.read<CalendarBloc>().add(const GetSearchEvent());
+              },
+            );
+          }
+
+          if (state.searchItems.firstOrNull == null) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              child: CustomShimmerWidget(
+                childHeight: 132,
+                childWidth: double.infinity,
+              ),
+            );
+          }
+
+          return SliderListView(
+            items: state.searchItems,
+            contentHeight: 132,
+            itemBuilder: (item) => _CalendarCard(item),
+          );
+        },
+      ),
+    );
+  }
 }
 
 class _CalendarCard extends StatelessWidget {
-  final SearchCalendarItem item;
+  final SearchCalendarItem? item;
 
   const _CalendarCard(this.item);
 
   void addToCalendar() {
-    CommonFunctions.sendUXCamEvent(UXCamEvents.KingdomCalendar_List_AddToCalender_Event);
-    Add2Calendar.addEvent2Cal(Event(
-      title: item.name ?? '',
-      startDate: item.startDate!,
-      endDate: item.endDate!,
-    ));
+    final _item = item;
+
+    if (_item != null) {
+      CommonFunctions.sendUXCamEvent(UXCamEvents.KingdomCalendar_List_AddToCalender_Event);
+      Add2Calendar.addEvent2Cal(Event(
+        title: _item.name ?? '',
+        startDate: _item.startDate!,
+        endDate: _item.endDate!,
+      ));
+    }
   }
 
   @override
@@ -108,7 +131,7 @@ class _CalendarCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      item.name ?? '',
+                      item?.name ?? '',
                       maxLines: 2,
                       style: context.textStyleV3.h3SemiBold.copyWith(
                         color: context.colorsV2.staticWhite,
@@ -116,7 +139,7 @@ class _CalendarCard extends StatelessWidget {
                     ),
                     const SizedBox(height: Spacing.$1x + Spacing.$0_5x),
                     Text(
-                      item.startDate?.toWrittenDate() ?? '',
+                      item?.startDate?.toWrittenDate() ?? '',
                       maxLines: 2,
                       style: context.textStyleV3.bodySmallRegular.copyWith(
                         color: context.colorsV2.staticWhite,
@@ -134,7 +157,7 @@ class _CalendarCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        item.type ?? '',
+                        item?.type ?? '',
                         maxLines: 2,
                         style: context.textStyleV3.bodySmallRegular.copyWith(
                           color: context.colorsV2.staticWhite,

@@ -15,10 +15,13 @@ import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 class MapSearchSheetControls extends ConsumerWidget {
   // In percent of the screen
   final double? currentSize;
+  final double collapsedSize;
+
   // Calculate the topbar and bottom padding
   static const screenPadding = 80 + 70;
 
   const MapSearchSheetControls({
+    required this.collapsedSize,
     this.currentSize,
     super.key,
   });
@@ -49,8 +52,8 @@ class MapSearchSheetControls extends ConsumerWidget {
     final visibleSearchArea = ref.watch(searchInRectProvider.select((value) => value.$2));
 
     void _searchInArea() {
-      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
       ref.read(searchInRectProvider.notifier).update();
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
     }
 
     return IgnorePointer(
@@ -108,7 +111,7 @@ class MapSearchSheetControls extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 74),
+              SizedBox(height: collapsedSize),
             ],
           ),
         ),

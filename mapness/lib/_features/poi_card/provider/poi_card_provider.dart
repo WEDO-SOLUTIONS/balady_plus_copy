@@ -50,15 +50,15 @@ class PoiCardState {
         'isLoading': isLoading,
       };
 
-  static PoiCardState fromJson(Map<String, dynamic> json) {
+  static Future<PoiCardState> fromJson(Map<String, dynamic> json) async {
     final organizatonsJson = json['organizations'];
     final objectIdJson = json['gisObjectIdMessage'];
     final entrancesJson = json['showEntrances'];
     return PoiCardState(
-      showEntrances: entrancesJson,
-      isLoading: false,
-      gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
-      organizations: OrganizationsMessage.fromJson(organizatonsJson));
+        showEntrances: entrancesJson,
+        isLoading: false,
+        gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
+        organizations: OrganizationsMessage.fromJson(organizatonsJson));
   }
 
   PoiCardState copyWith({
@@ -87,6 +87,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
+    // TODO(Ayat) Refactoring all of this logic with new poi is required
     if (closestPoint != null) {
       final read = ref.read(selectedMarkerProvider.notifier);
       await read.showMarker(
@@ -101,50 +102,47 @@ class PoiCardProvider extends _$PoiCardProvider {
       );
     }
 
-    final poiCardStateKey = objectId.toString();
+    state = const AsyncValue.loading();
+
+    final result = await ref
+        .watch(
+      pointOfInterestProvider(
+        DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+        closestPoint: closestPoint,
+      ).future,
+    )
+        .timeout(
+      const Duration(minutes: 1),
+      onTimeout: () {
+        ref.read(goRouterProvider).pop();
+        return null;
+      },
+    );
+
+    if (result != null) {
+      ref.read(paddingConfigProvider(
+        result,
+        closestPoint,
+        cameraConfig,
+      ));
+    }
+    // We need to use [appLang] to cache different data for different locales
+    // We don't want to show arabic text to english users and vise versa
+    final appLang = ref.read(appLanguageProvider);
+    final poiCardStateKey = '${objectId.toString()} $appLang';
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
     final cachedData = poiBox.get(poiCardStateKey, defaultValue: null);
+
     if (cachedData != null) {
       try {
         final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
         return stateFromJson;
-      }
-      // ignore: avoid_catches_without_on_clauses
-      catch (e, s) {
+      } catch (e, s) {
         state = AsyncValue.error(e, s);
       }
     } else {
-
-      state = const AsyncValue.loading();
-
       final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
-
-      final result = await ref
-          .watch(
-        pointOfInterestProvider(
-          DgisObjectIdMessage(objectId: objectId, entranceId: 0),
-          closestPoint: closestPoint,
-        ).future,
-      )
-          .timeout(
-        const Duration(minutes: 1),
-        onTimeout: () {
-          ref.read(goRouterProvider).pop();
-          return null;
-        },
-      );
-
-      if(result!=null){
-        ref.read(paddingConfigProvider(
-          result,
-          closestPoint,
-          cameraConfig,
-        ));
-      }
-
-      final organizationsResponse = await fetchOrganizationsData(
-        objectId: result?.id?.objectId,
-      );
+      final organizationsResponse = await fetchOrganizationsData(objectId: result?.id?.objectId);
 
       final tradeLicense = result?.tradeLicense;
 
@@ -176,6 +174,7 @@ class PoiCardProvider extends _$PoiCardProvider {
       }
       return poiCardState;
     }
+
     return const PoiCardState(
       organizations: null,
       isLoading: true,
