@@ -92,12 +92,12 @@ extension QuickFilterExtension on QuickFilter {
             Language.arabic: 'فنادق',
           },
         QuickFilter.sportClubs => {
-            Language.english: 'Fitness',
+            Language.english: 'Sport clubs',
             Language.arabic: 'اللياقة البدنية',
           },
         QuickFilter.carServices => {
             Language.english: 'Car service centers',
-            Language.arabic: 'مراكز خدمات السيارات',
+            Language.arabic: 'تصليح وصيانة مركبات',
           },
         QuickFilter.markets => {
             Language.english: 'Markets',
@@ -108,7 +108,7 @@ extension QuickFilterExtension on QuickFilter {
             Language.arabic: 'مطاعم',
           },
         QuickFilter.recreationCenters => {
-            Language.english: 'Entertainments',
+            Language.english: 'Recreation centers',
             Language.arabic: 'مراكز ترفيهية',
           },
         QuickFilter.beauty => {

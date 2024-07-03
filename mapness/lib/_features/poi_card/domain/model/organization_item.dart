@@ -106,6 +106,7 @@ class OrganizationItem {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['timezone_offset'] = timezoneOffset;
+    data['id'] = id;
     if (flags != null) {
       data['flags'] = flags!.toJson();
     }
