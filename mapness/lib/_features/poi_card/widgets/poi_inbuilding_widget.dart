@@ -69,6 +69,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
         shrinkWrap: true,
         slivers: [
           PagedSliverList<int, OrganizationItem>.separated(
+            shrinkWrapFirstPageIndicators: true,
             pagingController: pagingController,
             builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
               itemBuilder: (context, item, index) => ContentWrapper(
