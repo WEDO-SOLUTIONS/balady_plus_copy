@@ -32,9 +32,6 @@ class DgisMapController {
   /// Names of indoor levels if any. Empty if there are no available levels.
   Stream<IndoorLevelsEvent> get indoorLevelNames => _instance.indoorLevelNames;
 
-  /// Close Stream on Event Handler
-  Future<void> get disposeIndoorEventHandler => _instance.disposeIndoorEventHandler;
-
   /// Selected indoor level index in [IndoorLevelsEvent::levelNames] list
   Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _instance.indoorActiveIndex;
 
