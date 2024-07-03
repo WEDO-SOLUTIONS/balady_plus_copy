@@ -212,25 +212,28 @@ class PoiCardProvider extends _$PoiCardProvider {
   Future<PoiCardState?> loadCacheData(Box<dynamic> box, String key) async {
     final cachedData = box.get(key, defaultValue: null);
 
-    if (cachedData != null) {
-      try {
-        final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
-
-        final dateNow = DateTime.now();
-        final timeDifferentInMinutes =
-            dateNow.difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!)).inMinutes;
-
-        // Check if the cache is expired
-        if (stateFromJson.timestamp == null) {
-          return null;
-        } else if (timeDifferentInMinutes > poiCacheTimeoutMinutes) {
-          return null;
-        }
-        return stateFromJson;
-      } catch (e, _) {
-        debugPrint('$e');
-      }
+    if (cachedData == null) {
+      return null;
     }
-    return null;
+
+    try {
+      final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
+      if (stateFromJson.timestamp == null) {
+        return null;
+      }
+
+      final dateNow = DateTime.now();
+      final timeDifferentInMinutes =
+          dateNow.difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!)).inMinutes;
+
+      // Check if the cache is expired
+      if (timeDifferentInMinutes > poiCacheTimeoutMinutes) {
+        return null;
+      }
+      return stateFromJson;
+    } catch (e, _) {
+      debugPrint('$e');
+      return null;
+    }
   }
 }
