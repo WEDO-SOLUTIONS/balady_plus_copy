@@ -76,6 +76,22 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
+                                  text: 'Urbi Release Version: ',
+                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
+                                ),
+                                TextSpan(
+                                  text: PackageConfig.releaseVersion,
+                                  style: context.textStyle.footNoteBold.copyWith(
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
                                   text: 'App version: ',
                                   style: context.textStyle.footNote.copyWith(color: Colors.black54),
                                 ),

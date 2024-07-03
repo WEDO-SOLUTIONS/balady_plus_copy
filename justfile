@@ -163,12 +163,12 @@ codegen_cached:
     fvm dart run cached_build_runner build || true
     print_style '' 'yellow' '< code generated'
 
-build_release:
+bump_version:
 major:
-    ./build_release.sh major
+    ./bump_version.sh major
 minor:
-    ./build_release.sh minor
+    ./bump_version.sh minor
 patch:
-    ./build_release.sh patch
+    ./bump_version.sh patch
 candidate:
-    ./build_release.sh candidate
+    ./bump_version.sh candidate
