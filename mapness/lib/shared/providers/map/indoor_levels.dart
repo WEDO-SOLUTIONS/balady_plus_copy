@@ -7,7 +7,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'indoor_levels.g.dart';
 
 class LevelsState {
-
   LevelsState(this.levels, this.active);
   final List<IndoorLevel> levels;
   final int active;
@@ -15,7 +14,8 @@ class LevelsState {
   LevelsState copyWith({
     List<IndoorLevel>? levels,
     int? active,
-  }) => LevelsState(
+  }) =>
+      LevelsState(
         levels ?? this.levels,
         active ?? this.active,
       );
@@ -63,8 +63,7 @@ class IndoorLevels extends _$IndoorLevels {
     if (event.levelNames.isEmpty) {
       state = null;
     } else {
-      state = state?.copyWith(levels: event.levelNames) ??
-          LevelsState(event.levelNames, 0);
+      state = state?.copyWith(levels: event.levelNames) ?? LevelsState(event.levelNames, 0);
     }
   }
 
@@ -79,5 +78,4 @@ class IndoorLevels extends _$IndoorLevels {
     _indexSubscription?.cancel();
     _indexSubscription = null;
   }
-
 }
