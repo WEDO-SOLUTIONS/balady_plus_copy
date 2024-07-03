@@ -215,11 +215,15 @@ class PoiCardProvider extends _$PoiCardProvider {
     if (cachedData != null) {
       try {
         final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
+
+        final dateNow = DateTime.now();
+        final timeDifferentInMinutes =
+            dateNow.difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!)).inMinutes;
+
         // Check if the cache is expired
         if (stateFromJson.timestamp == null) {
           return null;
-        } else if (DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!)).inMinutes >
-            poiCacheTimeoutMinutes) {
+        } else if (timeDifferentInMinutes > poiCacheTimeoutMinutes) {
           return null;
         }
         return stateFromJson;
