@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/_features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/_features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/_features/poi_card/domain/model/organizations_response.dart';
@@ -31,6 +32,7 @@ class PoiCardState {
   final TradeLicenseMessage? tradeLicense;
   final QrLicenseMessage? qrTradeLicense;
   final OrganizationsMessage? organizations;
+  final int? timestamp;
 
   const PoiCardState({
     required this.showEntrances,
@@ -39,6 +41,7 @@ class PoiCardState {
     required this.organizations,
     this.qrTradeLicense,
     this.tradeLicense,
+    this.timestamp,
   });
 
   Map<String, dynamic> toJson() => {
@@ -48,17 +51,21 @@ class PoiCardState {
         'qrTradeLicense': qrTradeLicense?.toJson(),
         'showEntrances': showEntrances,
         'isLoading': isLoading,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
       };
 
-  static PoiCardState fromJson(Map<String, dynamic> json) {
+  factory PoiCardState.fromJson(Map<String, dynamic> json) {
     final organizatonsJson = json['organizations'];
     final objectIdJson = json['gisObjectIdMessage'];
     final entrancesJson = json['showEntrances'];
+    final timestampJson = json.containsKey('timestamp') ? json['timestamp'] as int? : null;
+
     return PoiCardState(
-      showEntrances: entrancesJson,
-      isLoading: false,
-      gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
-      organizations: OrganizationsMessage.fromJson(organizatonsJson));
+        showEntrances: entrancesJson,
+        isLoading: false,
+        timestamp: timestampJson,
+        gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
+        organizations: OrganizationsMessage.fromJson(organizatonsJson));
   }
 
   PoiCardState copyWith({
@@ -81,12 +88,16 @@ class PoiCardState {
 
 @riverpod
 class PoiCardProvider extends _$PoiCardProvider {
+  // POI Cache timeout in minutes
+  static const poiCacheTimeoutMinutes = 60;
+
   @override
   Future<PoiCardState?> build(
     int objectId, {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
+    // TODO(Ayat) Refactoring all of this logic with new poi is required
     if (closestPoint != null) {
       final read = ref.read(selectedMarkerProvider.notifier);
       await read.showMarker(
@@ -101,50 +112,43 @@ class PoiCardProvider extends _$PoiCardProvider {
       );
     }
 
-    final poiCardStateKey = objectId.toString();
+    state = const AsyncValue.loading();
+
+    final result = await ref
+        .watch(
+      pointOfInterestProvider(
+        DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+        closestPoint: closestPoint,
+      ).future,
+    )
+        .timeout(
+      const Duration(minutes: 1),
+      onTimeout: () {
+        ref.read(goRouterProvider).pop();
+        return null;
+      },
+    );
+
+    if (result != null) {
+      ref.read(paddingConfigProvider(
+        result,
+        closestPoint,
+        cameraConfig,
+      ));
+    }
+    // We need to use [appLang] to cache different data for different locales
+    // We don't want to show arabic text to english users and vise versa
+    final appLang = ref.read(appLanguageProvider);
+    final poiCardStateKey = '${objectId.toString()} $appLang';
+
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
-    final cachedData = poiBox.get(poiCardStateKey, defaultValue: null);
+    final cachedData = await loadCacheData(poiBox, poiCardStateKey);
+
     if (cachedData != null) {
-      try {
-        final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
-        return stateFromJson;
-      }
-      // ignore: avoid_catches_without_on_clauses
-      catch (e, s) {
-        state = AsyncValue.error(e, s);
-      }
+      return cachedData;
     } else {
-
-      state = const AsyncValue.loading();
-
       final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
-
-      final result = await ref
-          .watch(
-        pointOfInterestProvider(
-          DgisObjectIdMessage(objectId: objectId, entranceId: 0),
-          closestPoint: closestPoint,
-        ).future,
-      )
-          .timeout(
-        const Duration(minutes: 1),
-        onTimeout: () {
-          ref.read(goRouterProvider).pop();
-          return null;
-        },
-      );
-
-      if(result!=null){
-        ref.read(paddingConfigProvider(
-          result,
-          closestPoint,
-          cameraConfig,
-        ));
-      }
-
-      final organizationsResponse = await fetchOrganizationsData(
-        objectId: result?.id?.objectId,
-      );
+      final organizationsResponse = await fetchOrganizationsData(objectId: result?.id?.objectId);
 
       final tradeLicense = result?.tradeLicense;
 
@@ -176,12 +180,6 @@ class PoiCardProvider extends _$PoiCardProvider {
       }
       return poiCardState;
     }
-    return const PoiCardState(
-      organizations: null,
-      isLoading: true,
-      showEntrances: false,
-      gisObjectIdMessage: null,
-    );
   }
 
   Future<OrganizationsMessage?> fetchOrganizationsData({int? objectId, int page = 1, int pageSize = 30}) async {
@@ -207,6 +205,34 @@ class PoiCardProvider extends _$PoiCardProvider {
       return response;
       // ignore: avoid_catches_without_on_clauses
     } catch (_) {
+      return null;
+    }
+  }
+
+  Future<PoiCardState?> loadCacheData(Box<dynamic> box, String key) async {
+    final cachedData = box.get(key, defaultValue: null);
+
+    if (cachedData == null) {
+      return null;
+    }
+
+    try {
+      final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
+      if (stateFromJson.timestamp == null) {
+        return null;
+      }
+
+      final dateNow = DateTime.now();
+      final timeDifferentInMinutes =
+          dateNow.difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!)).inMinutes;
+
+      // Check if the cache is expired
+      if (timeDifferentInMinutes > poiCacheTimeoutMinutes) {
+        return null;
+      }
+      return stateFromJson;
+    } catch (e, _) {
+      debugPrint('$e');
       return null;
     }
   }

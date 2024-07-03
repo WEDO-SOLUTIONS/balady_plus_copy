@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -7,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -15,9 +17,12 @@ import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -45,6 +50,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
   final settings = MapObjectManagerSettings.search();
+  StreamSubscription<TapEvent>? _streamSubscription;
 
   ClusteringMapObjectManager? _clustering;
 
@@ -54,6 +60,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   void initState() {
     super.initState();
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
+    _setupTapListener();
   }
 
   @override
@@ -72,6 +79,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   void dispose() {
     _keyboardVisible.cancel();
     _dgisSheetController.dispose();
+    _streamSubscription?.cancel();
 
     super.dispose();
   }
@@ -79,7 +87,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   @override
   Widget build(BuildContext context) {
     final bottomSafeArea = MediaQuery.of(context).padding.bottom;
-    final height = 88 + bottomSafeArea;
+    final collapsedHeight = 88 + bottomSafeArea;
 
     searchObjectManager ??= ref.watch(
       mapObjectManagerProvider(
@@ -108,7 +116,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     return Stack(
       alignment: Alignment.bottomLeft,
       children: [
-        MapSearchSheetControls(currentSize: currentSize),
+        MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
         NotificationListener<ScrollNotification>(
           onNotification: _onNotification,
           child: DgisBottomSheet(
@@ -123,7 +131,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
             },
             onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
             middleHeight: widget.biggestHeight * 0.8,
-            collapsedHeight: height,
+            collapsedHeight: collapsedHeight,
             scrollableBody: (context, scrollController) {
               /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
               /// https://www.youtube.com/watch?v=L_WoOkDAqbM
@@ -171,7 +179,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       final icon = markerIconPath != null
           ? markerIconPath.markerIcon(size: 32)
           : LayersSvgPaths.basicMarker.markerIcon(size: 16);
-      final markers = await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon);
+
+      final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+      final markers =
+          await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon, isRtl: isRtl);
 
       await searchObjectManager?.removeAllMarkers();
       await searchObjectManager?.addMarkers(markers);
@@ -211,7 +222,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         Expansion.collapsed => setState(() {
             currentSize = 0.1;
           }),
-        Expansion.hidden => close(),
+        Expansion.hidden => _removeAllMarkersAndPop(),
         _ => null,
       };
 
@@ -232,10 +243,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     if (!kbState) {
       return;
     }
-    return switch (_dgisSheetController.currentExpansion) {
-      Expansion.middle || Expansion.expanded => null,
-      _ => _dgisSheetController.animateTo(Expansion.expanded),
-    };
+    final currentExp = _dgisSheetController.currentExpansion;
+    if (currentExp == Expansion.expanded || currentExp == Expansion.middle) {
+      return;
+    }
+    // We need to wait because of the rebuild the sheet state
+    // At the build method we recalculate [collapsedHeight] and we secretly call the [didUpdateWidget] method
+    // of [_dgisSheetController]. And if we call the [animateTo] method before the [didUpdateWidget] method
+    // we will get set wrong [Expansion] value
+    Future.delayed(Durations.short1).then((_) {
+      _dgisSheetController.animateTo(Expansion.expanded);
+    });
   }
 
   void onClose() {
@@ -244,14 +262,25 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       group: MetricsConstants.searchTag,
       action: MetricAction.tap.toString(),
     );
-    close();
+    _removeAllMarkersAndPop();
   }
 
-  void close() {
+  void _removeAllMarkersAndPop() {
     searchObjectManager?.removeAllMarkers().then((value) {
       ref.read(searchInRectProvider.notifier).update();
       searchObjectManager = null;
     });
     context.pop();
+  }
+
+  Future<void> _setupTapListener() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    _streamSubscription = dgisController.objectTapEvents.listen((_) {
+      final goRouter = ref.read(goRouterProvider);
+
+      if (goRouter.isCurrentRoute(SearchRoute.path)) {
+        _removeAllMarkersAndPop();
+      }
+    });
   }
 }

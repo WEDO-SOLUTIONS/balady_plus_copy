@@ -15,15 +15,14 @@ class VendorConfig extends _$VendorConfig {
 
     final vendorName = switch (envType) {
       'dev' => 'urbi-pre-prod-vendor-config.jsonx',
-      'stg' => 'momrah-prod-vendor-config.jsonx',
+      'stg' => 'momrah-staging-vendor-config.jsonx',
       'pre' => 'momrah-prod-vendor-config.jsonx',
       'prod' => 'momrah-prod-vendor-config.jsonx',
       'urbiPre' => 'urbi-pre-prod-vendor-config.jsonx',
       _ => 'urbi-pre-prod-vendor-config.jsonx',
     };
 
-    final contents =
-        await rootBundle.loadString('assets/maps/configs/$vendorName');
+    final contents = await rootBundle.loadString('assets/maps/configs/$vendorName');
     final vendorData = json.decode(contents);
     final vendorOverrides = vendorData[0]['overrides'] as Map<String, dynamic>;
 

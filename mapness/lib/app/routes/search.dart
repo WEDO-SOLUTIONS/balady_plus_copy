@@ -7,9 +7,10 @@ import 'package:mapness/shared/routing/transculent_page.dart';
 part 'search.g.dart';
 
 @TypedGoRoute<SearchRoute>(
-  path: '/search',
+  path: SearchRoute.path,
 )
 class SearchRoute extends GoRouteData {
+  static const path = '/search';
   const SearchRoute({
     this.requestFocus = true,
     this.withClustering = false,

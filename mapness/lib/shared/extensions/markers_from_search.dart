@@ -20,10 +20,9 @@ FutureOr<Map<int, String>> _generateTitleMap(List<UiMarkerInfoMessage?>? uiMarke
   return titleMap;
 }
 
-
 /// We use this method to throw away the part of the organization description that contains
 /// additional information that is not necessary on the map next to the marker
-/// 
+///
 /// Example:
 /// input: "Al Ajazy, restaurant"
 /// output: "Al Ajazy"
@@ -75,6 +74,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     required GoRouter router,
     MarkerIconMessage? icon,
     bool withLabel = true,
+    bool isRtl = true,
   }) async {
     final uiObjectMaps = withLabel
         ? await compute<List<UiMarkerInfoMessage?>?, Map<int, String>>(_generateTitleMap, markersWithLabel)
@@ -104,9 +104,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 strokeColor: 0xD3FFFFFF,
                 strokeWidth: 2,
                 textPlacement: MarkerTextPlacementMessage(
-                  // We use left aligned text because the most of our users is using the arabic language and
-                  // arabic text writes RTL
-                  placement: TextPlacementMessage.leftCenter,
+                  placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
                 ),
               ),
               position: markerInfo.geoPoint,

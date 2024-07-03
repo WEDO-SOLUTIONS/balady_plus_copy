@@ -51,7 +51,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
   @override
   void dispose() {
-    _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -98,8 +97,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               'query': query,
             },
           );
-          await searcher.searchByText(query);
-          if (query.isNotEmpty) {
+          if (query.trim().isNotEmpty) {
+            await searcher.searchByText(query);
             await ref.read(searchHistoryProvider(scope.value).notifier).put(
                   SearchHistoryItem(
                     title: query,

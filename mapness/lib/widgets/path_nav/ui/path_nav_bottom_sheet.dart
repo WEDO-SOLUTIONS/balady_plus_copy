@@ -1,5 +1,6 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/pages/path_nav/lib/no_overscroll_behavior.dart';
 
 class PathNavBottomSheet extends StatefulWidget {
@@ -135,11 +136,7 @@ class _PathNavBottomSheetState extends State<PathNavBottomSheet> with SingleTick
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             /// handle
-                            Container(
-                              color: context.color.surfaceBasePrimary,
-                              height: 4,
-                              width: 40,
-                            ),
+                            const SheetDragger(),
                             const SizedBox(height: 4),
                             SafeArea(
                               bottom: !_dragController.isAttached || _dragController.size <= 0.03,

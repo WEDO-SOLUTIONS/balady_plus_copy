@@ -32,6 +32,8 @@ class InfoWidget extends ConsumerWidget {
 
     final subTitle = data?.makeAddress() ?? '';
 
+    final calculateEntrances = data?.entrances.fold(0, (prev, e) => prev + (e?.geometry?.entrancePoints.length ?? 0));
+
     final about = data?.about;
     return Padding(
       padding: EdgeInsets.zero,
@@ -44,7 +46,7 @@ class InfoWidget extends ConsumerWidget {
               data: data,
               title: data.address?.buildingName ?? data.title,
               subtitle: subTitle,
-              exits: data.entrances.length,
+              exits: calculateEntrances,
               onEntranceTap: callback,
             ),
           if (about != null && about.isNotEmpty == true)

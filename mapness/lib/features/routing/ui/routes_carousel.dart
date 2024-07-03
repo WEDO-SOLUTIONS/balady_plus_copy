@@ -5,6 +5,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
 
@@ -15,6 +16,7 @@ class RoutesCarousel extends StatelessWidget {
     required this.navType,
     super.key,
   });
+
   final RouteSearchOptionsMessage navType;
 
   final List<RouteParamsPoint?> points;
@@ -38,6 +40,7 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
     required this.startNavigation,
     required this.biggestWidth,
   });
+
   final RouteSearchOptionsMessage navType;
   final double biggestWidth;
   final Function() startNavigation;
@@ -48,10 +51,9 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
 }
 
 class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
+  static const _bottomSheetHeight = 320.0;
   late PageController _pageController;
   bool _animating = false;
-
-  static const _bottomSheetHeight = 320;
 
   @override
   void initState() {
@@ -59,14 +61,14 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     _pageController = PageController(
       viewportFraction: PathCardSize.fixedCardWidthWithPadding / widget.biggestWidth,
     );
-    ref.read(cameraPaddingProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: (MediaQuery.of(context).padding.top * MediaQuery.of(context).devicePixelRatio).toInt(),
-            rightPadding: 0,
-            bottomPadding: (_bottomSheetHeight * MediaQuery.of(context).devicePixelRatio).toInt(),
-          ),
-        );
+    final mediaQuery = ref.read(mediaQueryInfoProvider);
+    final devicePixelRatio = mediaQuery?.devicePixelRatio ?? 0.0;
+    ref.read(cameraPaddingProvider.notifier).setPadding(CameraSetPaddingMessage(
+          leftPadding: 0,
+          topPadding: (mediaQuery?.padding.top ?? .0 * devicePixelRatio).toInt(),
+          rightPadding: 0,
+          bottomPadding: (_bottomSheetHeight * devicePixelRatio).toInt(),
+        ));
   }
 
   @override
