@@ -11,9 +11,10 @@ extension RealCountOfOrganizations on OrganizationsMessage {
   ///
   /// Also if @backend will change the logic and will return items without building itself, this filter will not break
   /// the logic.
-  bool _filter(OrganizationItem item) => item.nameEx?.primary != null;
+  bool _filter(OrganizationItem item) => item.nameEx?.primary != null || (item.name?.isNotEmpty ?? false);
 }
 
 extension RubricsOfOrganization on OrganizationItem {
+  String? get title => nameEx?.primary ?? name;
   String? get rubricsNames => rubrics?.nonNulls.map((e) => e.name).join(', ');
 }

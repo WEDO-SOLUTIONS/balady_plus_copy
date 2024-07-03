@@ -161,7 +161,7 @@ class Search extends _$Search {
         query,
         sortingType: SortingTypeMessage.byDistance,
         // TODO(Sergei): revert value to _saRestrictions when search performance is improved
-        spatialRestriction: _getRestrictionFromRect(searchRect),
+        spatialRestriction: _getRestrictionFromRect(),
         searchRect: searchRect,
       ),
     );
@@ -176,7 +176,7 @@ class Search extends _$Search {
     mixpanel?.track('Search: searchByText');
   }
 
-  Future<void> searchByQuery(SearchQueryMessage query, String text) async {
+  Future<void> searchByQuery(SearchQueryMessage query, String text, {List<GeoPointMessage>? spatialRestriction}) async {
     await _searchOperation?.cancel();
     state = SearchStateLoading(searchText: text);
     _previousType = SearchType.searchByQuery;
@@ -197,7 +197,7 @@ class Search extends _$Search {
         query,
         sortingType: SortingTypeMessage.byDistance,
         // TODO(Sergei): revert value to _saRestrictions when search performance is improved
-        spatialRestriction: _getRestrictionFromRect(searchRect),
+        spatialRestriction: spatialRestriction ?? _saRestrictions,
         searchRect: searchRect,
       ),
     );
@@ -223,12 +223,12 @@ class Search extends _$Search {
         searchByText(_previousQuery!);
         break;
       case SearchType.searchByQuery:
-        searchByQuery(_previousSearchQueryMessage!, _previousQuery!);
+        // TODO(Sergei): workaround for fast search from searchInThisArea, remove spatialRestriction param when search performance is improved
+        searchByQuery(_previousSearchQueryMessage!, _previousQuery!, spatialRestriction: _getRestrictionFromRect());
         break;
       case SearchType.quickSearch:
         // TODO(Sergei): workaround for fast search from searchInThisArea, remove spatialRestriction param when search performance is improved
-        final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
-        quickSearch(_previousQuickSearch!, spatialRestriction: _getRestrictionFromRect(searchRect));
+        quickSearch(_previousQuickSearch!, spatialRestriction: _getRestrictionFromRect());
         break;
     }
   }
@@ -244,7 +244,8 @@ class Search extends _$Search {
     };
   }
 
-  List<GeoPointMessage>? _getRestrictionFromRect(GeoRectMessage? rect) {
+  List<GeoPointMessage>? _getRestrictionFromRect() {
+    final rect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect.geoRectMessage();
     if (rect == null) {
       return null;
     }

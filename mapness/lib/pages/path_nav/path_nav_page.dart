@@ -59,9 +59,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   @override
   void initState() {
     super.initState();
-
     _initNavigation();
-
     WakelockPlus.enable();
   }
 

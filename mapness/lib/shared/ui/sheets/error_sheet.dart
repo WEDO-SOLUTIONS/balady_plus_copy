@@ -47,9 +47,9 @@ class ErrorSheet extends StatelessWidget {
           children: [
             const SizedBox(height: 8),
             Align(
-              alignment: Alignment.centerLeft,
-              child: AppCloseButton(
-                onPressed: onClose ?? () => context.pop(),
+              alignment: AlignmentDirectional.centerEnd,
+              child: CustomCloseButton(
+                onClose: onClose ?? () => context.pop(),
               ),
             ),
             SvgPicture.asset(

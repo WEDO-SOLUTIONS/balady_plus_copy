@@ -18,6 +18,7 @@ import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
@@ -211,6 +212,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
       return;
     } else if (goRouter.isCurrentRoute(RoutingRoutesRoute.path)) {
+      return;
+    } else if (goRouter.isCurrentRoute(SearchRoute.path)) {
       return;
     }
     if (event is ObjectTapEvent) {

@@ -8,10 +8,10 @@ import 'package:mapness/shared/routing/transculent_page.dart';
 part 'path_nav.g.dart';
 
 @TypedGoRoute<PathNavRoute>(
-  path: '/pathNav',
-  // routes: <TypedGoRoute<GoRouteData>>[],
+  path: PathNavRoute.path,
 )
 class PathNavRoute extends GoRouteData {
+  static const path = '/pathNav';
   const PathNavRoute();
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
