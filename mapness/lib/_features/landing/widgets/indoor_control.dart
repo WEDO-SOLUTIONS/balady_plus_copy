@@ -17,12 +17,6 @@ class IndoorControl extends ConsumerStatefulWidget {
 class _IndoorControlState extends ConsumerState<IndoorControl> {
 
   @override
-  void didUpdateWidget(covariant IndoorControl oldWidget) {
-    ref.read(indoorLevelsProvider.notifier).refreshStreams();
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final indoorState = ref.watch(indoorLevelsProvider);
 
@@ -44,7 +38,7 @@ class _IndoorControlLevels extends StatelessWidget {
 
   final LevelsState state;
   final void Function(IndoorLevel) onSelect;
-  
+
   @override
   Widget build(BuildContext context) => Column(
         children: state.levels.reversed
