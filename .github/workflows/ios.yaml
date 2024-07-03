@@ -135,7 +135,11 @@ jobs:
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_prod.dart --flavor prod
           BUILD_URL=$(curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/momrah-${CI_ARTIFACT_SUFFIX}  | jq -r '.install_link')
-          echo "BUILD_URL=${BUILD_URL}" >> ${GITHUB_ENV}
+          echo "BUILD_URL_PROD=${BUILD_URL}" >> ${GITHUB_ENV}
+
+          fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_stg.dart --flavor stg
+          BUILD_URL=$(curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/momrah-stg-${CI_ARTIFACT_SUFFIX}  | jq -r '.install_link')
+          echo "BUILD_URL_STAGE=${BUILD_URL}" >> ${GITHUB_ENV}
 
       - name: Send notification to mattermost channel
         env: # Set the secret as an environment variable
@@ -153,7 +157,8 @@ jobs:
           ${is_pr}\
           **Branch**: [${CI_GIT_BRANCH}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${CI_GIT_BRANCH})\n\
           **Author**: ${GITHUB_ACTOR}\n\
-          **iOS**: [Build](${BUILD_URL})\" \
+          **iOS prod**: [Build](${BUILD_URL_PROD})\n\
+          **iOS stage**: [Build](${BUILD_URL_STAGE})\" \
           }"
 
       - name: Cleanup keychain
