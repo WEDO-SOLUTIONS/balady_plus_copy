@@ -45,7 +45,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
       firstPageKey: (widget.state?.organizations?.page ?? 1) + 1,
     );
     pagingController
-      ..itemList = widget.state?.organizations?.items
+      ..itemList = widget.state?.organizations?.itemsFiltered
       ..addPageRequestListener(_fetchPage);
 
     init = false;
