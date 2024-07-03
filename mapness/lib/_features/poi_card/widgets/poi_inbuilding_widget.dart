@@ -69,6 +69,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
         shrinkWrap: true,
         slivers: [
           PagedSliverList<int, OrganizationItem>.separated(
+            shrinkWrapFirstPageIndicators: true,
             pagingController: pagingController,
             builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
               itemBuilder: (context, item, index) => ContentWrapper(
@@ -91,7 +92,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
                       );
                     },
                     options: ContentRowOptions(
-                      title: item.nameEx?.primary,
+                      title: item.title,
                       subtitle: item.rubricsNames,
                       subtitleExtra: item.addressComment,
                     ),
@@ -120,11 +121,11 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
           );
 
       final length = pagingController.itemList?.length ?? 0;
-      final total = newItems?.total ?? 0;
+      final total = newItems?.count ?? 0;
       if (length >= total) {
-        pagingController.appendLastPage(newItems?.items ?? []);
+        pagingController.appendLastPage(newItems?.itemsFiltered ?? []);
       } else {
-        pagingController.appendPage(newItems?.items ?? [], pageKey + 1);
+        pagingController.appendPage(newItems?.itemsFiltered ?? [], pageKey + 1);
       }
     } catch (error) {
       pagingController.error = error;
