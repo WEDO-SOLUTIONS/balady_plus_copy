@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_features/notifications_count/cubit_notification_count/notifications_item_cubit.dart';
@@ -19,48 +20,53 @@ class NotificationsSettingsRow extends StatelessWidget {
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
-    return BlocBuilder<NotificationsCountCubit, SucceedCountState>(
-      builder: (context, state) {
-        final cubit = context.watch<NotificationsCountCubit>();
-
-        return ContentRow(
-          options: ContentRowOptions(
-            customActionWidget: Row(
-              children: [
-                if (state.count != null && state.count! > 0)
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(
-                      end: 6,
-                    ),
-                    child: Counter(
-                      count: state.count,
-                    ),
-                  ),
-                ContentRowAction(
-                  actionOptions: ContentRowActionOptions(
-                    actionIcon: actionIcon,
-                  ),
-                ),
-              ],
-            ),
-            leadingIcon: Icon(
-              SystemIcons.notification,
-              color: context.color.textAndIconsStatusAccent,
-            ),
-            title: context.l10n.municipalNotifications,
-          ),
-          onTap: () {
-            NavigationService.navigatorKey.currentState!
-                .pushNamed(
-              RouteName.notificationsListScreen,
-            )
-                .then((value) {
-              cubit.getUnreadMessages();
-              Jiffy.setLocale("en");
-            });
-          },
-        );
+    return BlocProvider(
+      create: (context) {
+        return NotificationsCountCubit(webService: sl());
       },
+      child: BlocBuilder<NotificationsCountCubit, SucceedCountState>(
+        builder: (blocContext, state) {
+          final cubit = blocContext.watch<NotificationsCountCubit>();
+
+          return ContentRow(
+            options: ContentRowOptions(
+              customActionWidget: Row(
+                children: [
+                  if (state.count != null && state.count! > 0)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                        end: 6,
+                      ),
+                      child: Counter(
+                        count: state.count,
+                      ),
+                    ),
+                  ContentRowAction(
+                    actionOptions: ContentRowActionOptions(
+                      actionIcon: actionIcon,
+                    ),
+                  ),
+                ],
+              ),
+              leadingIcon: Icon(
+                SystemIcons.notification,
+                color: context.color.textAndIconsStatusAccent,
+              ),
+              title: context.l10n.municipalNotifications,
+            ),
+            onTap: () {
+              NavigationService.navigatorKey.currentState!
+                  .pushNamed(
+                RouteName.notificationsListScreen,
+              )
+                  .then((value) {
+                cubit.getUnreadMessages();
+                Jiffy.setLocale("en");
+              });
+            },
+          );
+        },
+      ),
     );
   }
 }
