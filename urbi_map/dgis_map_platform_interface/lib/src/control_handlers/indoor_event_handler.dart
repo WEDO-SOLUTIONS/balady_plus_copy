@@ -33,9 +33,7 @@ class IndoorEventHandler {
   }
 
   void activeLevelEvent(Map<dynamic, dynamic> map) {
-    _indoorActiveLevelSubject.add(
-      IndoorActiveLevelEvent(map['value']),
-    );
+    _indoorActiveLevelSubject.add(IndoorActiveLevelEvent(map['value']));
   }
 
   Future<void> selectIndoorLevel(int index) => _api.selectIndoorLevel(index);
