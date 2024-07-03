@@ -36,8 +36,6 @@ class ErrorSheet extends StatelessWidget {
           style: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
         );
 
-    final isLtr = Directionality.of(context) == TextDirection.ltr;
-
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
@@ -49,7 +47,7 @@ class ErrorSheet extends StatelessWidget {
           children: [
             const SizedBox(height: 8),
             Align(
-              alignment: isLtr ? Alignment.centerRight : Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerEnd,
               child: CustomCloseButton(
                 onClose: onClose ?? () => context.pop(),
               ),
