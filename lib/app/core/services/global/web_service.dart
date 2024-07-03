@@ -66,10 +66,11 @@ class WebService {
       ),
     );
 
+    dio.interceptors.add(AppInterceptors());
     dio.interceptors.add(
         AppCertificatePinningInterceptor(allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,callFollowingErrorInterceptor: true)
     );
-    dio.interceptors.add(AppInterceptors());
+
   }
 
   WebService.newDio({
@@ -104,35 +105,41 @@ class AppCertificatePinningInterceptor extends Interceptor {
         await secure;
       }
 
-      var baseUrl = options.baseUrl;
+      if(options.uri.toString().toLowerCase().contains('connect/endsession') == false) {
+        var baseUrl = options.baseUrl;
 
-      if (options.path.contains('http') || options.baseUrl.isEmpty) {
-        baseUrl = options.path;
-      }
+        if (options.path.contains('http') || options.baseUrl.isEmpty) {
+          baseUrl = options.path;
+        }
 
-      secure = HttpCertificatePinning.check(
-        serverURL: baseUrl,
-        headerHttp: {},
-        sha: SHA.SHA256,
-        allowedSHAFingerprints: _allowedSHAFingerprints,
-        timeout: _timeout,
-      );
-
-      secure?.whenComplete(() => secure = null);
-      final secureString = await secure ?? '';
-
-      if (secureString.contains('CONNECTION_SECURE')) {
-        return super.onRequest(options, handler);
-      } else {
-        handler.reject(
-          DioException(
-            requestOptions: options,
-            error: CertificateNotVerifiedException(),
-              type: DioExceptionType.badCertificate
-          ),
-          callFollowingErrorInterceptor,
+        secure = HttpCertificatePinning.check(
+          serverURL: baseUrl,
+          headerHttp: {},
+          sha: SHA.SHA256,
+          allowedSHAFingerprints: _allowedSHAFingerprints,
+          timeout: _timeout,
         );
+
+        secure?.whenComplete(() => secure = null);
+        final secureString = await secure ?? '';
+
+        if (secureString.contains('CONNECTION_SECURE')) {
+          return super.onRequest(options, handler);
+        } else {
+          handler.reject(
+            DioException(
+                requestOptions: options,
+                error: CertificateNotVerifiedException(),
+                type: DioExceptionType.badCertificate
+            ),
+            callFollowingErrorInterceptor,
+          );
+        }
       }
+      else
+        {
+          return super.onRequest(options, handler);
+        }
     } on Exception catch (e) {
       dynamic error;
 
