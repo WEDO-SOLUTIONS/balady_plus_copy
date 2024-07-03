@@ -32,6 +32,12 @@ class DgisMapController {
   /// Names of indoor levels if any. Empty if there are no available levels.
   Stream<IndoorLevelsEvent> get indoorLevelNames => _instance.indoorLevelNames;
 
+  /// Getting the IndoorLevelNames latest record values from a stream
+  IndoorLevelsEvent? get lastIndoorLevelNames => _instance.lastIndoorLevelNames;
+
+  /// Getting the IndoorActiveLevel latest record values from a stream
+  IndoorActiveLevelEvent? get lastIndoorActiveLevel => _instance.lastIndoorActiveLevel;
+
   /// Selected indoor level index in [IndoorLevelsEvent::levelNames] list
   Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _instance.indoorActiveIndex;
 

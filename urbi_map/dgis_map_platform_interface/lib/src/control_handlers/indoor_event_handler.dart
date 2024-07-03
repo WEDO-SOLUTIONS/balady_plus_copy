@@ -1,46 +1,51 @@
 import 'dart:async';
 
-import 'package:rxdart/rxdart.dart';
-
-import '../events/indoor_events.dart';
-import '../pigeons/messages.g.dart';
+import 'package:dgis_map_platform_interface/src/events/indoor_events.dart';
+import 'package:dgis_map_platform_interface/src/pigeons/messages.g.dart';
 
 class IndoorEventHandler {
   IndoorEventHandler(this._api);
 
-  ValueStream<IndoorLevelsEvent> get indoorLevelNames => _indoorLevelNamesSubject.stream;
+  Stream<IndoorLevelsEvent> get indoorLevelNames => _indoorLevelNamesController.stream;
+  Stream<IndoorActiveLevelEvent> get indoorActiveLevel => _indoorActiveLevelController.stream;
 
-  ValueStream<IndoorActiveLevelEvent> get indoorActiveLevel => _indoorActiveLevelSubject.stream;
-
-  final _indoorLevelNamesSubject = BehaviorSubject<IndoorLevelsEvent>();
-  final _indoorActiveLevelSubject = BehaviorSubject<IndoorActiveLevelEvent>();
+  final _indoorLevelNamesController = StreamController<IndoorLevelsEvent>.broadcast();
+  final _indoorActiveLevelController = StreamController<IndoorActiveLevelEvent>.broadcast();
 
   final MapApi _api;
+
+  IndoorLevelsEvent? get lastIndoorLevelNames => _lastIndoorLevelNames;
+  IndoorActiveLevelEvent? get lastIndoorActiveLevel => _lastIndoorActiveLevel;
+
+  IndoorLevelsEvent? _lastIndoorLevelNames;
+  IndoorActiveLevelEvent? _lastIndoorActiveLevel;
 
   void levelNamesEvent(Map<dynamic, dynamic> map) {
     final result = map['value'] as List<Object?>;
     final levelNames = result.whereType<String>();
-    _indoorLevelNamesSubject.add(
-      IndoorLevelsEvent(
-        levelNames
-            .mapIndexed((index, level) => IndoorLevel(
-                  level,
-                  index,
-                ))
-            .toList(),
-      ),
+    final event = IndoorLevelsEvent(
+      levelNames
+          .mapIndexed((index, level) => IndoorLevel(
+        level,
+        index,
+      ))
+          .toList(),
     );
+    _lastIndoorLevelNames = event;
+    _indoorLevelNamesController.add(event);
   }
 
   void activeLevelEvent(Map<dynamic, dynamic> map) {
-    _indoorActiveLevelSubject.add(IndoorActiveLevelEvent(map['value']));
+    final event = IndoorActiveLevelEvent(map['value']);
+    _lastIndoorActiveLevel = event;
+    _indoorActiveLevelController.add(event);
   }
 
   Future<void> selectIndoorLevel(int index) => _api.selectIndoorLevel(index);
 
   Future<void> dispose() async {
-    await _indoorLevelNamesSubject.close();
-    await _indoorActiveLevelSubject.close();
+    await _indoorLevelNamesController.close();
+    await _indoorActiveLevelController.close();
   }
 }
 

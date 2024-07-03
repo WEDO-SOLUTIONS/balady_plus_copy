@@ -32,11 +32,21 @@ class IndoorLevels extends _$IndoorLevels {
 
     _subscribeToStreams(dgisController);
 
+    final lastIndoorLevelNames = dgisController.value?.lastIndoorLevelNames;
+    final lastIndoorActiveLevel = dgisController.value?.lastIndoorActiveLevel;
+
+    state = lastIndoorLevelNames != null && lastIndoorActiveLevel != null
+        ? LevelsState(
+            lastIndoorLevelNames.levelNames,
+            lastIndoorActiveLevel.index,
+          )
+        : null;
+
     ref.onDispose(() {
       _cancelSubscriptions();
     });
 
-    return null;
+    return state;
   }
 
   Future<void> selectLevel(IndoorLevel level) async {
