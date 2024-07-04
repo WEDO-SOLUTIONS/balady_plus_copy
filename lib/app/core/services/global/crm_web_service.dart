@@ -57,9 +57,9 @@ class CRMWebService {
     if (!kReleaseMode) {
       dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
     }
-   dio.interceptors.add(
-       AppCertificatePinningInterceptor(allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,callFollowingErrorInterceptor: true)
-    );
+   // dio.interceptors.add(
+   //     AppCertificatePinningInterceptor(allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,callFollowingErrorInterceptor: true)
+   //  );
     dio.interceptors.add(PrettyDioLogger(
       requestHeader: false,
       requestBody: false,

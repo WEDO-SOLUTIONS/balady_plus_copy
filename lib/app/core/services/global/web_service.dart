@@ -105,7 +105,7 @@ class AppCertificatePinningInterceptor extends Interceptor {
         await secure;
       }
 
-      if(options.uri.toString().toLowerCase().contains('connect/endsession') == false) {
+      if(options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) == true) {
         var baseUrl = options.baseUrl;
 
         if (options.path.contains('http') || options.baseUrl.isEmpty) {
