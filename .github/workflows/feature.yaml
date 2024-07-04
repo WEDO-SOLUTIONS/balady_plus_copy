@@ -56,9 +56,54 @@ jobs:
           flutter-version: "3.22.2"
           channel: "stable"
           cache: true
+      - name: Download Localazy
+        uses: localazy/download@v1
+        with:
+          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
+          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
+
+      - name: Generate locale
+        run: |
+          cd mapness
+          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
+          sudo chown github:github -R lib/l10n
+          mkdir -p lib/l10n/generated
+          flutter gen-l10n
+
+      - name: Setup dgis_map_platform_interface
+        run: |
+          cd urbi_map/dgis_map_platform_interface
+          mkdir lib/src/pigeons/
+          mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
+          flutter pub get
+          flutter pub run pigeon --input pigeons/messages.dart
+
+      - name: Setup dgis_map
+        env: # Set the secret as an environment variable
+          BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
+        run: |
+          cd urbi_map/dgis_map
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Download dependenices
+        env:
+          GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
+        run: |
+          eval $(ssh-agent -s)
+          ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
+
+          cd mapness
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+          ssh-agent -k
+          cd ../
+          flutter pub get
+
       - name: Analyze Flutter
         uses: ValentinVignal/action-dart-analyze@v0.17
         with:
           fail-on: "warning"
+
       - name: Commitsar Action
         uses: aevea/commitsar@v0.20.2
