@@ -37,7 +37,7 @@ on:
 jobs:
   auto-request-review:
     name: Auto Request Review CODEOWNERS
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Request review based on files changes and/or groups the author belongs to. CODEOWNERS
         uses: necojackarc/auto-request-review@v0.13.0
@@ -45,7 +45,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           config: .github/reviewers.yml # Config file location override
   linter:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     name: Lint flutter code
     steps:
       - name: Checkout code
