@@ -25,7 +25,6 @@ import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.Tilt
 import ru.dgis.sdk.map.calcPosition
-import ru.dgis.sdk.map.styleZToProjectionZ
 import ru.dgis.sdk.navigation.*
 import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.RouteSearchOptions
@@ -101,17 +100,20 @@ class NavigationHandler(
         }
         map.addSource(locationSource)
 
-        val position = map.camera.position.copy(
-            zoom = styleZToProjectionZ(styleZ = StyleZoom(17.5f), latitude = map.camera.position.point.latitude)
-        )
-        map.camera.position = position
-
         prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
         )
 
         navigationManager.mapFollowController.setFollow(true)
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = listOf(
+            SpeedRangeToStyleZoom(
+                range = SpeedRange(minSpeed = 0.0, maxSpeed = 5.0),
+                minDistanceToManeuver = RouteDistance(millimeters = 0),
+                maxDistanceToManeuver = RouteDistance(millimeters = 0),
+                styleZoom = StyleZoom(value = 16.5f)
+            )
+        )
     }
 
     fun followNavigation() {
