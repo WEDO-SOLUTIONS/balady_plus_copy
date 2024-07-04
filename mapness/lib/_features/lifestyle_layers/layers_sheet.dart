@@ -61,10 +61,13 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        GestureDetector(
-          onTap: () {
-            context.pop();
-          },
+        ColoredBox(
+          color: context.staticColor.surfaceOverlayModal,
+          child: GestureDetector(
+            onTap: () {
+              context.pop();
+            },
+          ),
         ),
         const MapControls(),
         DraggableScrollableSheet(

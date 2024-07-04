@@ -6,7 +6,6 @@ import 'package:mapness/_features/landing/providers/quick_filter_request_source_
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
-import 'package:mapness/_features/landing/widgets/happines_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
@@ -39,15 +38,7 @@ class MapControls extends ConsumerWidget {
                 ),
                 child: Row(
                   children: [
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        HappinesControl(),
-                        Spacer(),
-                        IndoorControl(),
-                        Spacer(),
-                      ],
-                    ),
+                    const Center(child: IndoorControl()),
                     const Spacer(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
