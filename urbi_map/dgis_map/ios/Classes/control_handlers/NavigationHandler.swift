@@ -189,10 +189,6 @@ class NavigationHandler {
             self.map.removeSource(source: prevLocationSource)
         }
         self.map.addSource(source: self.locationSource)
-                
-        var position = self.map.camera.position
-        position.zoom = styleZToProjectionZ(styleZ: 17.5, latitude: position.point.latitude)
-        try? self.map.camera.setPosition(position: position)
         
         self.prevCameraBehaviour = self.map.camera.behaviour.newBehaviour
         self.map.camera.setBehaviour(
@@ -200,6 +196,14 @@ class NavigationHandler {
         )
         
         self.navigationManager.mapFollowController.setFollow(follow: true)
+        self.navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = [
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: 0, maxSpeed: 5),
+                minDistanceToManeuver: RouteDistance(millimeters: 0),
+                maxDistanceToManeuver: RouteDistance(millimeters: 0),
+                styleZoom: StyleZoom(value: 16.5)
+            ),
+        ]
     }
     
     func followNavigation() {
