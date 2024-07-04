@@ -1,5 +1,4 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -46,11 +45,11 @@ class _IndoorControl extends StatelessWidget {
                 ),
                 child: Text(
                   e.name,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.callout.copyWith(
-                        color: e.levelIndex == state.active
-                            ? context.color.strokeAccent
-                            : context.color.textAndIconsBasePrimary,
-                      ),
+                  style: context.textStyle.callout.copyWith(
+                    color: e.levelIndex == state.active
+                        ? context.color.strokeAccent
+                        : context.color.textAndIconsBasePrimary,
+                  ),
                 ),
               ),
             )
