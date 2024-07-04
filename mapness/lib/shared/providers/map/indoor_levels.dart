@@ -30,6 +30,7 @@ class IndoorLevels extends _$IndoorLevels {
   LevelsState? build() {
     final dgisController = ref.watch(dgisControllerProvider);
 
+    _cancelSubscriptions();
     _subscribeToStreams(dgisController);
 
     final lastIndoorLevelNames = dgisController.value?.lastIndoorLevelNames;
@@ -74,6 +75,9 @@ class IndoorLevels extends _$IndoorLevels {
 
   void _cancelSubscriptions() {
     _levelsSubscription?.cancel();
+    _levelsSubscription = null;
     _indexSubscription?.cancel();
+    _indexSubscription = null;
   }
+
 }
