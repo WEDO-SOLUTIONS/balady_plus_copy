@@ -36,7 +36,6 @@ class SearchInRect extends _$SearchInRect {
     final visibleRectSubject = ref.read(dgisControllerProvider.notifier).visibleRectSubject;
     final geoRectMessage = visibleRectSubject.hasValue ? visibleRectSubject.value?.visibleRect.geoRectMessage() : null;
 
-    print('geoRectMessage $geoRectMessage');
     return (
     geoRectMessage,
     false,
