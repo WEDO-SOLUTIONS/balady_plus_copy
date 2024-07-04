@@ -59,6 +59,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
             padding: const EdgeInsets.only(top: NumericBase.$4x),
             child: Scaffold(
               appBar: BaladyTopBar.iconAndText(
+                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: context.l10n.aboutApp,
                 colorEnabled: context.color.textAndIconsStatusAccent,
                 leading: ActionModel(
