@@ -38,7 +38,13 @@ class MapControls extends ConsumerWidget {
                 ),
                 child: Row(
                   children: [
-                    const Center(child: IndoorControl()),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IndoorControl(),
+                      ],
+                    ),
                     const Spacer(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
