@@ -70,6 +70,13 @@ jobs:
           mkdir -p lib/l10n/generated
           flutter gen-l10n
 
+      - name: Setup requirements
+        env: # Set the secret as an environment variable
+          BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
+        run: |
+          echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
+          chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
+
       - name: Setup dgis_map_platform_interface
         run: |
           cd urbi_map/dgis_map_platform_interface
