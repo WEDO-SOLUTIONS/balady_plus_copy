@@ -44,7 +44,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           config: .github/reviewers.yml # Config file location override
-          use_local: true
   linter:
     runs-on: ubuntu-latest
     name: Lint flutter code
