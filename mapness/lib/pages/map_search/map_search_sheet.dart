@@ -104,7 +104,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       ).notifier,
     );
     ref
-      ..watch(searchInRectProvider.notifier)
       ..listen(
         searchProvider(SearchScopeEnum.map.value),
         (previous, next) {
