@@ -47,7 +47,7 @@ class ComplianceCard extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
                       child: Text(
-                        context.l10n.complianceCardDescription.multilines(),
+                        context.l10n.complianceCardDescription.multilines,
                         style: context.textStyleV3.captionLargeRegular.copyWith(
                           color: context.colorsV2.foregroundSoft,
                         ),
