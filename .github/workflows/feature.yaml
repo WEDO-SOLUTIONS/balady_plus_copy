@@ -14,6 +14,8 @@ on:
       - "bugfix/*"
       - "feat/*"
       - "feature/*"
+      - "urbi"
+      - "urbi-release-*"
   pull_request:
     types:
       - opened
@@ -24,6 +26,8 @@ on:
       - "bugfix/*"
       - "feat/*"
       - "feature/*"
+      - "urbi"
+      - "urbi-release-*"
     paths-ignore:
       - "**.md"
       - "doc/**"
@@ -33,56 +37,38 @@ on:
 jobs:
   auto-request-review:
     name: Auto Request Review CODEOWNERS
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Request review based on files changes and/or groups the author belongs to. CODEOWNERS
-        uses: necojackarc/auto-request-review@v0.13.0
+        uses: urbi-ae/auto-request-review@v0.17.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           config: .github/reviewers.yml # Config file location override
-          use_local: true
   linter:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     name: Lint flutter code
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
-      - run: flutter pub get
-      - name: Analyze Flutter
-        uses: ValentinVignal/action-dart-analyze@v0.17
         with:
-          fail-on: "warning"
-      - name: Commitsar Action
-        uses: aevea/commitsar@v0.20.2
+          flutter-version: "3.22.2"
+          channel: "stable"
+          cache: true
+      - name: Download Localazy
+        uses: localazy/download@v1
+        with:
+          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
+          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
 
-  build:
-    name: Build Android
-    if: github.event.pull_request.draft == false
-    # runs-on: ubuntu-latest
-    runs-on: [self-hosted, Linux]
-    timeout-minutes: 60
-    steps:
-      - name: ⬇️ Checkout repository
-        uses: actions/checkout@v4
-
-      # GITHUB_REF_SLUG
-      - name: Inject git variables
-        # uses: rlespinasse/github-slug-action@v4
+      - name: Generate locale
         run: |
-          echo "CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')" >> ${GITHUB_ENV}
-          export CI_DATE=$(date '+%Y-%m-%d-%H-%M-%S')
-          export CI_GIT_BRANCH=${GITHUB_REF_NAME}
-          export CI_IS_PR=""
-          if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]; then
-            export CI_GIT_BRANCH=${GITHUB_HEAD_REF}
-            export CI_IS_PR="pr-"
-          fi
-          echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
-          CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr --complement --squeeze-repeats '[:alnum:]' '-')
-          echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
-          echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
+          cd mapness
+          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
+          sudo chown github:github -R lib/l10n
+          mkdir -p lib/l10n/generated
+          flutter gen-l10n
 
       - name: Setup requirements
         env: # Set the secret as an environment variable
@@ -91,52 +77,15 @@ jobs:
           echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
           chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
 
-      - name: ⚙️ Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.22.2"
-          channel: "stable"
-          cache: true
-
-      - name: ⚙️ Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: "zulu"
-          java-version: "17.x"
-          cache: "gradle"
-        id: java
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Add Android ABI filter
+      - name: Setup dgis_map_platform_interface
         run: |
-          git apply .github/workflows/abi_filter.patch
-          git apply mapness/scripts/disable-force-update.patch
+          cd urbi_map/dgis_map_platform_interface
+          mkdir lib/src/pigeons/
+          mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
+          flutter pub get
+          flutter pub run pigeon --input pigeons/messages.dart
 
-      - name: 🤖🔨 Download strings from Localazy
-        uses: localazy/download@v1
-        with:
-          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
-          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
-
-      - name: 🤖🔨 Generate dart locale bindings
-        run: |
-          cd mapness
-          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
-          sudo chown github:github -R lib/l10n
-          mkdir -p lib/l10n/generated
-          flutter gen-l10n
-
-          - name: 🤖🔨 Development setup dgis_map_platform_interface
-          run: |
-            cd urbi_map/dgis_map_platform_interface
-            mkdir lib/src/pigeons/
-            mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
-            flutter pub get
-            flutter pub run pigeon --input pigeons/messages.dart
-
-      - name: 🤖🔨 Development setup dgis_map
+      - name: Setup dgis_map
         env: # Set the secret as an environment variable
           BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
         run: |
@@ -144,7 +93,7 @@ jobs:
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
 
-      - name: 🤖🔨 Development setup mapness
+      - name: Download dependenices
         env:
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
         run: |
@@ -155,52 +104,13 @@ jobs:
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
           ssh-agent -k
+          cd ../
+          flutter pub get
 
-      - name: 🤖🔨 Build Android app
-        run: |
-          flutter build apk --flavor pre --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
-          mv build/app/outputs/flutter-apk/app-pre-release.apk build/app/outputs/flutter-apk/urbi-pre-${CI_ARTIFACT_SUFFIX}.apk
-          flutter build apk --flavor prod --target lib/main_prod.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
-          mv build/app/outputs/flutter-apk/app-prod-release.apk build/app/outputs/flutter-apk/momrah-prod-${CI_ARTIFACT_SUFFIX}.apk
-          flutter build apk --flavor stg --target lib/main_stg.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-stage
-          mv build/app/outputs/flutter-apk/app-stg-release.apk build/app/outputs/flutter-apk/momrah-stage-${CI_ARTIFACT_SUFFIX}.apk
-
-      - name: 🤖🔨 Upload Urbi Pre Prod apk
-        uses: actions/upload-artifact@v4
+      - name: Analyze Flutter
+        uses: ValentinVignal/action-dart-analyze@v0.17
         with:
-          name: urbi-pre-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-          compression-level: 0
-          path: build/app/outputs/flutter-apk/urbi-pre-${{ env.CI_ARTIFACT_SUFFIX }}.apk
+          fail-on: "warning"
 
-      - name: 🤖🔨 Upload Momrah Prod apk
-        uses: actions/upload-artifact@v4
-        with:
-          name: momrah-prod-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-          compression-level: 0
-          path: build/app/outputs/flutter-apk/momrah-prod-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-
-      - name: 🤖🔨 Upload Momrah Stage apk
-        uses: actions/upload-artifact@v4
-        with:
-          name: momrah-stage-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-          compression-level: 0
-          path: build/app/outputs/flutter-apk/momrah-stage-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-
-      - name: Send notification to mattermost channel
-        env: # Set the secret as an environment variable
-          MM_CHANNEL_ID: ${{ secrets.MM_CHANNEL_ID }}
-          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
-          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
-        run: |
-          is_pr=""
-          if [ -n "${CI_IS_PR}" ]; then
-            is_pr="**Pull Request**: [${{ github.event.pull_request.title }}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${{ github.event.pull_request.number }})\n"
-          fi
-          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
-            \"channel_id\": \"${MM_CHANNEL_ID}\", \
-            \"message\": \"\
-          ${is_pr}\
-          Branch: [${CI_GIT_BRANCH}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${CI_GIT_BRANCH})\n\
-          Author: ${GITHUB_ACTOR}\n\
-          Android: [Build](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})\" \
-          }"
+      - name: Commitsar Action
+        uses: aevea/commitsar@v0.20.2
