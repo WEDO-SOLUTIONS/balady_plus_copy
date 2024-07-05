@@ -44,7 +44,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                   widget.onDelete(widget.history[index]);
                 },
                 background: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(Spacing.$4x),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: NonThemeColor.color50,
