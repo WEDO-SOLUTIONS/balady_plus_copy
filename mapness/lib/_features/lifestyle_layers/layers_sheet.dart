@@ -73,8 +73,8 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
         DraggableScrollableSheet(
           controller: _draggableScrollableController,
           minChildSize: 0,
-          maxChildSize: .5,
-          snapSizes: const [.0, .3, .5],
+          maxChildSize: .8,
+          snapSizes: const [.0, .3, .5, .8],
           snap: true,
           builder: (context, scrollController) => Directionality(
             textDirection: switch (lang) {
