@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class ComplianceCard extends ConsumerWidget {
@@ -46,7 +47,7 @@ class ComplianceCard extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
                       child: Text(
-                        context.l10n.complianceCardDescription,
+                        context.l10n.complianceCardDescription.multilines,
                         style: context.textStyleV3.captionLargeRegular.copyWith(
                           color: context.colorsV2.foregroundSoft,
                         ),
