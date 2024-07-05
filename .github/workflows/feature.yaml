@@ -40,7 +40,7 @@ jobs:
     runs-on: [self-hosted, Linux]
     steps:
       - name: Request review based on files changes and/or groups the author belongs to. CODEOWNERS
-        uses: urbi-ae/auto-request-review@v0.16.0
+        uses: urbi-ae/auto-request-review@v0.17.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           config: .github/reviewers.yml # Config file location override
