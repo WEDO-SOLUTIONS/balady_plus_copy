@@ -79,11 +79,14 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
       return SliverToBoxAdapter(
         child: SafeArea(
           top: false,
-          child: MapLostInternet(
-            onTap: () async {
-              await ref.read(networkStatusProvider.notifier).update();
-              _updateInternetStatus(context, ref.read(networkStatusProvider));
-            },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: MapLostInternet(
+              onTap: () async {
+                await ref.read(networkStatusProvider.notifier).update();
+                _updateInternetStatus(context, ref.read(networkStatusProvider));
+              },
+            ),
           ),
         ),
       );

@@ -61,8 +61,8 @@ class _Location extends _$Location {
 
         unawaited(
           router
-            .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
-            .then((value) => CommonFunctions.locationDialogShowed = false),
+              .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
+              .then((value) => CommonFunctions.locationDialogShowed = false),
         );
         return false;
       } else if (status != perm.PermissionStatus.granted) {
@@ -82,8 +82,8 @@ class _Location extends _$Location {
 
       unawaited(
         router
-          .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
-          .then((value) => CommonFunctions.locationDialogShowed = false),
+            .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
+            .then((value) => CommonFunctions.locationDialogShowed = false),
       );
     }
 
