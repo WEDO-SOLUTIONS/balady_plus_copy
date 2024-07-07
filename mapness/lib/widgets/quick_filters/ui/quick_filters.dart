@@ -1,7 +1,7 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -11,6 +11,8 @@ class QuickFilters extends ConsumerStatefulWidget {
   final List<FilterItem> filters;
   final QuickFilterScreen id;
   final bool isDashboard;
+
+  static const height = 40.0;
 
   const QuickFilters({
     required this.filters,
@@ -59,7 +61,7 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
     final reverse = originalDirectionality == TextDirection.rtl;
 
     return SizedBox(
-      height: 40,
+      height: QuickFilters.height,
       child: Directionality(
         textDirection: positionedListDirectionality,
         child: ScrollablePositionedList.separated(

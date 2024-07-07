@@ -105,7 +105,7 @@ jobs:
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.10.3"
+          flutter-version: "3.22.2"
           channel: "stable"
           cache: true
 
@@ -124,6 +124,20 @@ jobs:
         run: |
           git apply .github/workflows/abi_filter.patch
           git apply mapness/scripts/disable-force-update.patch
+
+      - name: 🤖🔨 Download strings from Localazy
+        uses: localazy/download@v1
+        with:
+          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
+          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
+
+      - name: 🤖🔨 Generate dart locale bindings
+        run: |
+          cd mapness
+          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
+          sudo chown github:github -R lib/l10n
+          mkdir -p lib/l10n/generated
+          flutter gen-l10n
 
       - name: 🤖🔨 Development setup dgis_map_platform_interface
         run: |
@@ -153,28 +167,14 @@ jobs:
           flutter pub run build_runner build --delete-conflicting-outputs
           ssh-agent -k
 
-      - name: 🤖🔨 Download strings from Localazy
-        uses: localazy/download@v1
-        with:
-          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
-          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
-
-      - name: 🤖🔨 Generate dart locale bindings
-        run: |
-          cd mapness
-          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
-          sudo chown github:github -R lib/l10n
-          mkdir -p lib/l10n/generated
-          flutter gen-l10n
-
       - name: 🤖🔨 Build Android app
         run: |
-          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-${CI_ARTIFACT_SUFFIX}.apk
-          flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-${CI_ARTIFACT_SUFFIX}.apk
-          flutter build apk --target lib/main_stg.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-stage
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-stage-${CI_ARTIFACT_SUFFIX}.apk
+          flutter build apk --flavor pre --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
+          mv build/app/outputs/flutter-apk/app-pre-release.apk build/app/outputs/flutter-apk/urbi-pre-${CI_ARTIFACT_SUFFIX}.apk
+          flutter build apk --flavor prod --target lib/main_prod.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
+          mv build/app/outputs/flutter-apk/app-prod-release.apk build/app/outputs/flutter-apk/momrah-prod-${CI_ARTIFACT_SUFFIX}.apk
+          flutter build apk --flavor stg --target lib/main_stg.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-stage
+          mv build/app/outputs/flutter-apk/app-stg-release.apk build/app/outputs/flutter-apk/momrah-stage-${CI_ARTIFACT_SUFFIX}.apk
 
       - name: 🤖🔨 Upload Urbi Pre Prod apk
         uses: actions/upload-artifact@v4

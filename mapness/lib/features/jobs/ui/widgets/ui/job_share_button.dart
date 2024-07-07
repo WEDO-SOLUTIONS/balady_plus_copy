@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/jobs/providers/job_distance_provider.dart';
@@ -20,19 +21,20 @@ class JobShareButton extends ConsumerWidget {
       return const SizedBox.shrink();
     }
     return jobDistance.maybeWhen(
-        data: (data) => JobButton(
-              label: context.l10n.share,
-              asset: 'assets/icons/svg/ic_share.svg',
-              backgroundColor: context.color.textAndIconsBasePrimary.withOpacity(0.05),
-              textColor: context.color.textAndIconsBasePrimary.withOpacity(.5),
-              onPressed: () {
-                final object = data?.id?.objectId;
-                if (object == null) {
-                  return;
-                }
-                Share.share('balady://poi-map?dgis-object-id=$object');
-              },
-            ),
-        orElse: () => const SizedBox.shrink(),);
+      data: (data) => JobButton(
+        label: context.l10n.share,
+        asset: 'assets/icons/svg/ic_share.svg',
+        backgroundColor: context.color.textAndIconsBasePrimary.withOpacity(0.05),
+        textColor: context.color.textAndIconsBasePrimary.withOpacity(.5),
+        onPressed: () {
+          final object = data?.id?.objectId;
+          if (object == null) {
+            return;
+          }
+          Share.share('balady://poi-map?dgis-object-id=$object');
+        },
+      ),
+      orElse: () => const SizedBox.shrink(),
+    );
   }
 }

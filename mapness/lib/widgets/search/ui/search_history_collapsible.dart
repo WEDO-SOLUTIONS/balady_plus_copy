@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
@@ -75,7 +76,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                     child: ContentRow(
                       options: ContentRowOptions(
                         leadingIcon: AppIcons(
-                          iconData: GeneralIcons.time,
+                          iconData: GeneralIcons.timeQuarter,
                           color: context.color.textAndIconsBaseSecondary,
                           size: 24,
                         ),

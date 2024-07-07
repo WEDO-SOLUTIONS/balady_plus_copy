@@ -2,11 +2,13 @@ import 'dart:typed_data';
 
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/profile.dart';
@@ -112,7 +114,7 @@ class AuthorizedWidget extends ConsumerWidget {
         builder: (context) => Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const _Dragger(),
+                const SheetDragger(),
                 ContentRow(
                   options: ContentRowOptions(
                     title: context.l10n.profilePhoto,
@@ -149,20 +151,4 @@ class AuthorizedWidget extends ConsumerWidget {
               ],
             ));
   }
-}
-
-//TODO: Romove this Widget and use ui-kit bottom sheet implementation
-class _Dragger extends StatelessWidget {
-  const _Dragger({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.only(top: 8),
-        width: 40,
-        height: 4,
-        decoration: BoxDecoration(
-          color: const Color(0x14141417),
-          borderRadius: BorderRadius.circular(2),
-        ),
-      );
 }

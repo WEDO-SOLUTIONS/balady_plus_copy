@@ -1,3 +1,4 @@
+import 'package:balady_uikit/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
@@ -7,6 +8,7 @@ import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/routing/ui/routing_search_history.dart';
 import 'package:mapness/pages/routing/ui/routing_search_results.dart';
 import 'package:mapness/pages/routing/ui/routing_suggest_list.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart';
 
 class RoutingSearchContent extends ConsumerWidget {
@@ -39,6 +41,19 @@ class RoutingSearchContent extends ConsumerWidget {
           top: false,
           child: RoutingSearchHistory(
             showMyLocation: showMyLocation,
+          ),
+        ),
+      ),
+      loading: () => SliverFillRemaining(
+        hasScrollBody: false,
+        child: SafeArea(
+          top: false,
+          child: Center(
+            child: Loading(
+              orientation: Axis.vertical,
+              size: LoaderSize.large,
+              title: context.l10n.loading,
+            ),
           ),
         ),
       ),

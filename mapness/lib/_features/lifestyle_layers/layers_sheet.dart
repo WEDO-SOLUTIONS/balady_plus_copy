@@ -1,8 +1,10 @@
 import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -30,7 +32,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     super.initState();
     _draggableScrollableController = DraggableScrollableController();
     _draggableScrollableController.addListener(() {
-      if (_draggableScrollableController.size < .2) {
+      if (_draggableScrollableController.isAttached && _draggableScrollableController.size < 0.12) {
         ref.read(goRouterProvider).pop();
       }
     });
@@ -54,12 +56,16 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     final state = ref.watch(layersControlsProvider);
     final lang = ref.watch(appLanguageProvider);
 
-    final headerStyle =
-        Theme.of(context).extension<ui_kit.ThemeTextStyles>()!.heading2;
+    final headerStyle = Theme.of(context).extension<ui_kit.ThemeTextStyles>()!.heading2;
 
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
+        GestureDetector(
+          onTap: () {
+            context.pop();
+          },
+        ),
         const MapControls(),
         DraggableScrollableSheet(
           controller: _draggableScrollableController,
@@ -94,20 +100,11 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                           child: Column(
                             children: [
                               const SizedBox(height: 6),
-                              Container(
-                                height: 4,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color: context.color.surfaceContrastMid,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(99)),
-                                ),
-                              ),
+                              const SheetDragger(),
                               const SizedBox(height: 6),
                               Row(
                                 children: [
-                                  Text(context.l10n.layersOnTheMap,
-                                      style: headerStyle),
+                                  Text(context.l10n.layersOnTheMap, style: headerStyle),
                                   const Spacer(),
                                   ui_kit.AppButton.close(
                                     onTap: () {
@@ -140,9 +137,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
 
                           return ui_kit.ContentRow(
                             onTap: () async {
-                              ref
-                                  .read(searchByRubricsQueryProvider.notifier)
-                                  .update(null);
+                              ref.read(searchByRubricsQueryProvider.notifier).update(null);
 
                               if (value == LayerType.favourites) {
                                 await CommonFunctions.authOrOpen(
@@ -158,14 +153,11 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                             options: ui_kit.ContentRowOptions(
                               wrapperEnabled: true,
                               wrapperColor: isSelected
-                                  ? context.color.surfaceStatusContrastAccent
-                                      .withOpacity(0.12)
+                                  ? context.color.surfaceStatusContrastAccent.withOpacity(0.12)
                                   : Colors.transparent,
-                              leadingIcon:
-                                  value.iconData().icon(color: textColor),
+                              leadingIcon: value.iconData().icon(color: textColor),
                               title: value.titleLocale(context.l10n),
-                              titleStyle: context.textStyle.text
-                                  .copyWith(color: textColor),
+                              titleStyle: context.textStyle.text.copyWith(color: textColor),
                             ),
                           );
                         },

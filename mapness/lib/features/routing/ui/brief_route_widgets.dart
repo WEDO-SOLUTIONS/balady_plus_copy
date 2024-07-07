@@ -1,11 +1,11 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
@@ -20,6 +20,7 @@ class BriefRouteButton extends ConsumerWidget {
     this.foreground,
     this.background,
     super.key,
+    this.type = BriefRouteInfoType.duration,
   });
 
   final VoidCallback onTap;
@@ -29,15 +30,18 @@ class BriefRouteButton extends ConsumerWidget {
   final EdgeInsetsGeometry? padding;
   final Color? foreground;
   final Color? background;
+  final BriefRouteInfoType type;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appFeatures = ref.watch(appFeaturesProvider);
-    final briefInfo = ref.watch(briefRouteInfoProvider(
-      startPoint: startPoint,
-      finishPoint: finishPoint,
-      navType: routeType,
-    ),);
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(
+        startPoint: startPoint,
+        finishPoint: finishPoint,
+        navType: routeType,
+      ),
+    );
 
     return appFeatures.naviEnabled
         ? Padding(
@@ -54,6 +58,7 @@ class BriefRouteButton extends ConsumerWidget {
                     horizontal: 9,
                   ),
                   child: _BriefRouteInfo(
+                    type: type,
                     iconSize: 24,
                     iconColor: foreground ?? Colors.white,
                     textColor: foreground ?? Colors.white,
@@ -67,14 +72,21 @@ class BriefRouteButton extends ConsumerWidget {
   }
 }
 
+enum BriefRouteInfoType {
+  duration,
+  distance,
+}
+
 class BriefRouteInfo extends ConsumerWidget {
   const BriefRouteInfo({
     required this.routeType,
+    this.type = BriefRouteInfoType.duration,
     super.key,
     this.startPoint,
     this.finishPoint,
   });
 
+  final BriefRouteInfoType? type;
   final RouteSearchOptionsMessage routeType;
   final RouteSearchPoint? startPoint;
   final RouteSearchPoint? finishPoint;
@@ -82,14 +94,17 @@ class BriefRouteInfo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appFeatures = ref.watch(appFeaturesProvider);
-    final briefInfo = ref.watch(briefRouteInfoProvider(
-      startPoint: startPoint,
-      finishPoint: finishPoint,
-      navType: routeType,
-    ),);
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(
+        startPoint: startPoint,
+        finishPoint: finishPoint,
+        navType: routeType,
+      ),
+    );
 
     return (briefInfo != null && appFeatures.naviEnabled)
         ? _BriefRouteInfo(
+            type: type,
             iconSize: 16,
             iconColor: context.color.textAndIconsBaseTertiary,
             textColor: context.color.textAndIconsBasePrimary,
@@ -105,13 +120,21 @@ class _BriefRouteInfo extends StatelessWidget {
     required this.iconSize,
     required this.textColor,
     required this.briefInfo,
+    required this.type,
   });
 
   final List<BriefRouteInfoMessage>? briefInfo;
 
+  final BriefRouteInfoType? type;
   final Color iconColor;
   final Color textColor;
   final double iconSize;
+
+  String obtainText(BuildContext context) => switch (type) {
+        BriefRouteInfoType.duration => briefInfo?.first.getBriefRouteDescription(context.l10n) ?? '',
+        BriefRouteInfoType.distance => briefInfo?.first.getBriefRouteDistanceDescription(context.l10n) ?? '',
+        _ => '',
+      };
 
   @override
   Widget build(BuildContext context) => Row(
@@ -133,13 +156,10 @@ class _BriefRouteInfo extends StatelessWidget {
               width: 4,
             ),
             Text(
-              getBriefRouteDescription(briefInfo!, context.l10n),
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .footNoteBold
-                  .copyWith(
-                    color: textColor,
-                  ),
+              obtainText(context),
+              style: context.textStyle.footNoteBold.copyWith(
+                color: textColor,
+              ),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               textAlign: TextAlign.right,
@@ -147,17 +167,4 @@ class _BriefRouteInfo extends StatelessWidget {
           ],
         ],
       );
-
-  String getBriefRouteDescription(
-      List<BriefRouteInfoMessage> briefInfo, AppLocalizations l10n,) {
-    final int = briefInfo.first.duration.toInt();
-    final duration = Duration(seconds: int);
-    final inMinutes = duration.inMinutes;
-    if (inMinutes < 60) {
-      return '$inMinutes ${l10n.min}';
-    } else {
-      final inHours = duration.inHours;
-      return '$inHours ${l10n.hrs}';
-    }
-  }
 }

@@ -73,16 +73,18 @@ class _NextPrayerState extends State<NextPrayerHome> {
 
         return hours != "00"
             ? CustomTextWidget(
-                "$seconds : $minutes : $hours",
+                "$hours : $minutes : $seconds",
                 fontColor: AppColor.white,
                 fontWeight: AppFontWeight.semiBold,
                 fontSize: 26,
+                textDirection: TextDirection.ltr,
               )
             : CustomTextWidget(
-                "$seconds : $minutes",
+                "$minutes : $seconds",
                 fontColor: AppColor.white,
                 fontWeight: AppFontWeight.semiBold,
                 fontSize: 26,
+                textDirection: TextDirection.ltr,
               );
       },
     );

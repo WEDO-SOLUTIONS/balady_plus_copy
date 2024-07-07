@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,7 +40,7 @@ class PoiPhotosHeader extends ConsumerWidget {
                     Expansion.collapsed || Expansion.middle => 100,
                   },
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 4.0),
+              padding: const EdgeInsets.only(bottom: Spacing.verticalPaddingInsideCell),
               child: PoiPhotosRow(
                 objectId: objectId,
               ),

@@ -67,10 +67,8 @@ class MapSearchHistory extends ConsumerWidget {
                               ErrorSheet(
                                 buttonLabel: context.l10n.tryAgain,
                                 errorLabel: context.l10n.placeWasNotFound,
-                                onClose: () =>
-                                    Navigator.of(contextDialog).pop(false),
-                                onRetry: () =>
-                                    Navigator.of(contextDialog).pop(true),
+                                onClose: () => Navigator.of(contextDialog).pop(false),
+                                onRetry: () => Navigator.of(contextDialog).pop(true),
                               ),
                             ],
                           ),
@@ -81,23 +79,14 @@ class MapSearchHistory extends ConsumerWidget {
                 ),
               ),
             );
-            await ref
-                .read(searchHistoryProvider(scope.value).notifier)
-                .delete(item);
+            await ref.read(searchHistoryProvider(scope.value).notifier).delete(item);
 
             if (result as bool) {
-              ref
-                  .read(searchQueryProvider(scope.value).notifier)
-                  .update(item.title);
+              await ref.read(searchProvider(scope.value).notifier).fetchSuggest(item.title);
             }
           }
         } else {
-          ref
-              .read(searchQueryProvider(scope.value).notifier)
-              .update(item.title);
-          await ref
-              .read(searchProvider(scope.value).notifier)
-              .searchByText(item.title);
+          await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
         }
       },
     );

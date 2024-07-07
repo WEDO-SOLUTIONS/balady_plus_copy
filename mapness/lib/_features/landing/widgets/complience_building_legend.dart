@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -7,9 +8,8 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
-class ComplienceBuildingLegend extends ConsumerWidget {
-
-  ComplienceBuildingLegend({super.key});
+class ComplianceBuildingLegend extends ConsumerWidget {
+  ComplianceBuildingLegend({super.key});
   final sizeGroupItems = AutoSizeGroup();
 
   @override
@@ -28,36 +28,41 @@ class ComplienceBuildingLegend extends ConsumerWidget {
         Language.arabic => TextDirection.rtl,
         _ => TextDirection.ltr,
       },
-      child: Container(
-        width: 180,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            AutoSizeText(
-              locale.legendComplienceBuildingTitle,
-              maxLines: 1,
-              style: textStyles.footNoteBold,
+      child: Material(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        child: SizedBox(
+          width: 180,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 16,
             ),
-            const SizedBox(height: 8),
-            _LegendItem(
-              color: NonThemeColor.color41,
-              borderColor: NonThemeColor.color42,
-              text: locale.legendComplienceBuildingGreen,
-              group: sizeGroupItems,
+            child: Column(
+              children: [
+                AutoSizeText(
+                  locale.legendComplienceBuildingTitle,
+                  maxLines: 1,
+                  style: textStyles.footNoteBold,
+                ),
+                const SizedBox(height: 8),
+                _LegendItem(
+                  color: NonThemeColor.color41,
+                  borderColor: NonThemeColor.color42,
+                  text: locale.legendComplienceBuildingGreen,
+                  group: sizeGroupItems,
+                ),
+                const SizedBox(height: 8),
+                _LegendItem(
+                  color: context.color.surfaceBasePrimary,
+                  borderColor: NonThemeColor.color43,
+                  text: locale.legendComplienceBuildingGrey,
+                  group: sizeGroupItems,
+                ),
+                const SizedBox(height: 4),
+              ],
             ),
-            const SizedBox(height: 8),
-            _LegendItem(
-              color: context.color.surfaceBasePrimary,
-              borderColor: NonThemeColor.color43,
-              text: locale.legendComplienceBuildingGrey,
-              group: sizeGroupItems,
-            ),
-            const SizedBox(height: 8),
-          ],
+          ),
         ),
       ),
     );
@@ -65,7 +70,6 @@ class ComplienceBuildingLegend extends ConsumerWidget {
 }
 
 class _LegendItem extends StatelessWidget {
-
   const _LegendItem({
     required this.color,
     required this.borderColor,

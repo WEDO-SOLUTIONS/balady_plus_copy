@@ -10,11 +10,11 @@ class _Wrapper extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         width: double.infinity,
         color: Colors.white,
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(PoiCardFooter.padding),
         child: SafeArea(
           top: false,
           child: SizedBox(
-            height: 40,
+            height: PoiCardFooter.height,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: children,

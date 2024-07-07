@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,12 +30,13 @@ class WeatherDayCard extends ConsumerWidget {
     final locale = ref.watch(appLanguageProvider).locale;
     final style = context.textStyle;
     final nowTime = DateTime.now();
-    final isToday =
-        WeatherDateFormatter.isToday(forecastDay?.date ?? '2022-01-01', locale);
+    final isToday = WeatherDateFormatter.isToday(forecastDay?.date ?? '2022-01-01', locale);
     final dayText = isToday
         ? context.l10n.today
         : WeatherDateFormatter.getDay(
-            forecastDay?.date ?? '2022-01-01', locale,);
+            forecastDay?.date ?? '2022-01-01',
+            locale,
+          );
     final conditionIconPath = forecastDay?.day?.condition?.iconPath ?? '';
     final conditionText = forecastDay?.day?.condition?.text ?? '';
 
@@ -46,13 +48,15 @@ class WeatherDayCard extends ConsumerWidget {
       collapsedBackgroundColor: context.color.surfaceBaseSecondary,
       backgroundColor: NonThemeColor.color9,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-        12,
-      ),),
+        borderRadius: BorderRadius.circular(
+          12,
+        ),
+      ),
       collapsedShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-        12,
-      ),),
+        borderRadius: BorderRadius.circular(
+          12,
+        ),
+      ),
       key: UniqueKey(),
       hasIcon: false,
       onExpansionChanged: onExpansionChanged,
@@ -123,79 +127,79 @@ class WeatherDayCard extends ConsumerWidget {
       ),
       children: [
         SizedBox(
-            height: 100,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                children: [
-                  ...?forecastDay?.hour?.where((hour) {
-                    if (isToday == false) {
-                      return true;
-                    }
-                    return DateTime.parse(hour.time ?? '').hour >= nowTime.hour;
-                  }).map<Widget>((hour) {
-                    final dateTime = DateTime.parse(hour.time ?? '');
-                    final time = DateFormat('hh:mm').format(dateTime);
+          height: 100,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              children: [
+                ...?forecastDay?.hour?.where((hour) {
+                  if (isToday == false) {
+                    return true;
+                  }
+                  return DateTime.parse(hour.time ?? '').hour >= nowTime.hour;
+                }).map<Widget>((hour) {
+                  final dateTime = DateTime.parse(hour.time ?? '');
+                  final time = DateFormat('hh:mm').format(dateTime);
 
-                    final formatter = NumberFormat()
-                      ..minimumFractionDigits = 0
-                      ..maximumFractionDigits = 1;
-                    final temperature = '${formatter.format(hour.tempC)}º';
+                  final formatter = NumberFormat()
+                    ..minimumFractionDigits = 0
+                    ..maximumFractionDigits = 1;
+                  final temperature = '${formatter.format(hour.tempC)}º';
 
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 12),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.white,
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: SvgPicture.asset(
-                                hour.condition?.iconPath ?? '',
-                                height: 24,
-                                width: 24,
-                                colorFilter: ColorFilter.mode(
-                                  context.color.strokeAccent,
-                                  BlendMode.srcIn,
-                                ),
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white,
+                          ),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: SvgPicture.asset(
+                              hour.condition?.iconPath ?? '',
+                              height: 24,
+                              width: 24,
+                              colorFilter: ColorFilter.mode(
+                                context.color.strokeAccent,
+                                BlendMode.srcIn,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Center(
-                            child: Text(
-                              time,
-                              style: style.caption.copyWith(
-                                color: NonThemeColor.color10,
-                              ),
+                        ),
+                        const SizedBox(height: 4),
+                        Center(
+                          child: Text(
+                            time,
+                            style: style.caption.copyWith(
+                              color: NonThemeColor.color10,
                             ),
                           ),
-                          Center(
-                            child: Text(
-                              temperature,
-                              style: style.footNoteBold.copyWith(
-                                color:
-                                    context.color.textAndIconsBasePrimary,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              textDirection: TextDirection.ltr,
+                        ),
+                        Center(
+                          child: Text(
+                            temperature,
+                            style: style.footNoteBold.copyWith(
+                              color: context.color.textAndIconsBasePrimary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
                             ),
+                            textDirection: TextDirection.ltr,
                           ),
-                        ],
-                      ),
-                    );
-                  }),
-                ],
-              ),
-            ),),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

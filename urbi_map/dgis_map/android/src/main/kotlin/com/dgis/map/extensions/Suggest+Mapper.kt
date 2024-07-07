@@ -18,7 +18,7 @@ fun SuggestHandler.toMessage(searchQueryId: String?): SuggestHandlerMessage {
         .setObjectHandler(
             this.asObjectHandler?.let {
                 SuggestObjectHandlerMessage.Builder()
-                    .setItem(it.item.toMessage(null))
+                    .setItem(it.item.toMessage())
                     .build()
             }
         )

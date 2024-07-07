@@ -51,7 +51,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
   @override
   void dispose() {
-    _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -68,25 +67,18 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
-    ref
-      ..listen(searchProvider(scope.value), (previous, next) {
-        if (next is SearchStateResults) {
-          _updateText(next.searchText);
-          _focusNode.unfocus();
-        }
-      })
-      ..listen(searchQueryProvider(scope.value), (previous, next) {
-        _updateText(next);
-      });
+    ref.listen(searchProvider(scope.value), (previous, next) {
+      _updateText(next.searchText);
+      if (next is SearchStateLoading) {
+        _focusNode.unfocus();
+      }
+    });
 
     return BaladySearchWithBackButton(
       searchInput: BaladyInput.search(
         focusNode: _focusNode,
-        onTap: () {
-          searcher.clear();
-        },
         onChanged: (query) {
-          ref.read(searchQueryProvider(scope.value).notifier).update(query);
+          ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
           Metrics.logEventAdvanced(
             MetricsConstants.searchKeys.searchField,
             group: MetricsConstants.searchTag,
@@ -105,8 +97,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               'query': query,
             },
           );
-          await searcher.searchByText(query);
-          if (query.isNotEmpty) {
+          if (query.trim().isNotEmpty) {
+            await searcher.searchByText(query);
             await ref.read(searchHistoryProvider(scope.value).notifier).put(
                   SearchHistoryItem(
                     title: query,
@@ -121,7 +113,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         controller: _controller,
         hintText: context.l10n.search,
       ),
-      onBackButtonPressed: widget.onClose,
+      onBackButtonPressed: () {
+        searcher.clear();
+        widget.onClose();
+      },
     );
   }
 }

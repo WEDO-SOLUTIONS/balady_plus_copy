@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class MapSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   MapSearchHeaderDelegate({
@@ -14,9 +14,9 @@ class MapSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
-      requestFocus: requestFocus,
-      onClose: onClose,
-    );
+        requestFocus: requestFocus,
+        onClose: onClose,
+      );
 
   @override
   double get maxExtent => 84;
@@ -30,7 +30,9 @@ class MapSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({
-    required this.requestFocus, required this.onClose, super.key,
+    required this.requestFocus,
+    required this.onClose,
+    super.key,
   });
 
   final bool requestFocus;
@@ -38,42 +40,27 @@ class DashboardHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16),
-          topLeft: Radius.circular(16),
-        ),
-      ),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 8,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(16),
+            topLeft: Radius.circular(16),
           ),
-          Center(
-            child: Container(
-              height: 4,
-              width: 26,
-              decoration: BoxDecoration(
-                color: context.color.surfaceBasePrimary,
-                borderRadius: const BorderRadius.all(Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            const Center(child: SheetDragger()),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: MapSearchBar(
+                requestFocus: requestFocus,
+                onClose: onClose,
               ),
             ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: MapSearchBar(
-              requestFocus: requestFocus,
-              onClose: onClose,
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-        ],
-      ),
-    );
+            const SizedBox(height: 16),
+          ],
+        ),
+      );
 }

@@ -245,6 +245,16 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
+    func setMapAttributeStringName(_ name: String, value: String, completion: @escaping (FlutterError?) -> Void) {
+        map?.attributes.setAttributeValue(name: name, value: .string(value))
+        completion(nil)
+    }
+
+    func setMapAttributeBoolName(_ name: String, value: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        map?.attributes.setAttributeValue(name: name, value: .boolean(value.boolValue))
+        completion(nil)
+    }
+
     func setCameraPositionCameraPosition(
         _ cameraPosition: CameraPositionMessage,
         completion: @escaping (FlutterError?) -> Void
@@ -273,6 +283,33 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
         completion(nil)   
+    }
+
+    func setCameraPositionPointCameraPosition(
+        _ cameraPosition: CameraPositionPointMessage,
+        completion: @escaping (FlutterError?) -> Void
+    ) {
+        guard let map = self.map else {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        
+        do {
+            try map.camera.setPositionPoint(positionPoint: CameraPositionPoint(x: cameraPosition.x.floatValue, y: cameraPosition.y.floatValue))
+        } catch {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        completion(nil)
+    
     }
     
     func moveCameraCameraPosition(_ cameraPosition: CameraPositionMessage, duration: NSNumber, animationType: CameraAnimationTypeMessage, completion: @escaping (FlutterError?) -> Void) {

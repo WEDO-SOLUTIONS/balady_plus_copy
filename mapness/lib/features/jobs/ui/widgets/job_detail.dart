@@ -1,4 +1,5 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -35,96 +36,93 @@ class _JobDetailState extends ConsumerState<JobDetail> {
 
     return Material(
       child: job.maybeWhen(
-          orElse: () => const SizedBox.shrink(),
-          data: (data) {
-            if (data == null) {
-              return const SizedBox.shrink();
-            }
+        orElse: () => const SizedBox.shrink(),
+        data: (data) {
+          if (data == null) {
+            return const SizedBox.shrink();
+          }
 
-            final latitude = double.tryParse(data.location?.latitude ?? '');
-            final longitude = double.tryParse(data.location?.longitude ?? '');
+          final latitude = double.tryParse(data.location?.latitude ?? '');
+          final longitude = double.tryParse(data.location?.longitude ?? '');
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16)
-                      .copyWith(top: 16),
-                  child: Column(
-                    children: [
-                      ExpandableContainer(
-                        title: context.l10n.jobDescription,
-                        data: data.description ?? '',
-                      ),
-                      ExpandableContainer(
-                        title: context.l10n.skills,
-                        data: data.skills ?? '',
-                      ),
-                      _JobDetailCard(model: data),
-                      const SizedBox(height: 16),
-                      _JobContactsWidget(model: data),
-                      const SizedBox(height: 16),
-                      _JobInfoWidget(
-                          title: context.l10n.published,
-                          data: _publishDate(data.publishDate ?? ''),),
-                      const SizedBox(height: 16),
-                      _JobInfoWidget(
-                        title: context.l10n.coordinates,
-                        data:
-                            '${data.location?.latitude ?? ''}, ${data.location?.longitude ?? ''}',
-                      ),
-                      const SizedBox(height: 16),
-                      _JobLicenseWidget(job: data),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 16),
+                child: Column(
+                  children: [
+                    ExpandableContainer(
+                      title: context.l10n.jobDescription,
+                      data: data.description ?? '',
+                    ),
+                    ExpandableContainer(
+                      title: context.l10n.skills,
+                      data: data.skills ?? '',
+                    ),
+                    _JobDetailCard(model: data),
+                    const SizedBox(height: 16),
+                    _JobContactsWidget(model: data),
+                    const SizedBox(height: 16),
+                    _JobInfoWidget(
+                      title: context.l10n.published,
+                      data: _publishDate(data.publishDate ?? ''),
+                    ),
+                    const SizedBox(height: 16),
+                    _JobInfoWidget(
+                      title: context.l10n.coordinates,
+                      data: '${data.location?.latitude ?? ''}, ${data.location?.longitude ?? ''}',
+                    ),
+                    const SizedBox(height: 16),
+                    _JobLicenseWidget(job: data),
+                    const SizedBox(height: 16),
+                  ],
                 ),
-                Container(
-                  padding: const EdgeInsetsDirectional.only(
-                      top: 8, bottom: 16, start: 16, end: 16,),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    children: [
-                      JobButton(
-                        label: context.l10n.call,
-                        asset: 'assets/icons/svg/ic_phone.svg',
-                        backgroundColor: context.color.strokeAccent,
-                        textColor: Colors.white,
-                        onPressed: () =>
-                            CommonFunctions.call(data.mobile ?? ''),
-                      ),
-                      if (ref.read(appFeaturesProvider).naviEnabled &&
-                          latitude != null &&
-                          longitude != null)
-                        Padding(
-                          padding:
-                              const EdgeInsetsDirectional.only(start: 16),
-                          child: JobShareButton(
-                            lat: latitude,
-                            lon: longitude,
-                          ),
-                        ),
-                      if (ref.read(appFeaturesProvider).naviEnabled &&
-                          latitude != null &&
-                          longitude != null)
-                        Padding(
-                          padding:
-                              const EdgeInsetsDirectional.only(start: 16),
-                          child: RouteButton(
-                            latitude: latitude,
-                            longitude: longitude,
-                            label: data.name ?? '',
-                          ),
-                        ),
-                    ],
-                  ),
+              ),
+              Container(
+                padding: const EdgeInsetsDirectional.only(
+                  top: 8,
+                  bottom: 16,
+                  start: 16,
+                  end: 16,
                 ),
-                const SizedBox(height: 16),
-              ],
-            );
-          },),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Row(
+                  children: [
+                    JobButton(
+                      label: context.l10n.call,
+                      asset: 'assets/icons/svg/ic_phone.svg',
+                      backgroundColor: context.color.strokeAccent,
+                      textColor: Colors.white,
+                      onPressed: () => CommonFunctions.call(data.mobile ?? ''),
+                    ),
+                    if (ref.read(appFeaturesProvider).naviEnabled && latitude != null && longitude != null)
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 16),
+                        child: JobShareButton(
+                          lat: latitude,
+                          lon: longitude,
+                        ),
+                      ),
+                    if (ref.read(appFeaturesProvider).naviEnabled && latitude != null && longitude != null)
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 16),
+                        child: RouteButton(
+                          latitude: latitude,
+                          longitude: longitude,
+                          label: data.name ?? '',
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -149,7 +147,6 @@ class _JobDetailState extends ConsumerState<JobDetail> {
 }
 
 class _JobDetailCard extends StatelessWidget {
-
   const _JobDetailCard({required this.model});
   final JobModel model;
 
@@ -166,10 +163,7 @@ class _JobDetailCard extends StatelessWidget {
           children: [
             Text(
               context.l10n.jobDetails,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .heading2
-                  .apply(color: context.color.textAndIconsBasePrimary),
+              style: context.textStyle.heading2.apply(color: context.color.textAndIconsBasePrimary),
             ),
             const SizedBox(height: 12),
             Row(
@@ -178,20 +172,15 @@ class _JobDetailCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     context.l10n.workHours,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .text
-                        .apply(color: context.color.textAndIconsBasePrimary),
+                    style: context.textStyle.text.apply(color: context.color.textAndIconsBasePrimary),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     model.workHours?.toStringAsFixed(0) ?? '',
                     textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .footNote
-                        .apply(color: context.color.textAndIconsBasePrimary.withOpacity(0.5)),
+                    style:
+                        context.textStyle.footNote.apply(color: context.color.textAndIconsBasePrimary.withOpacity(0.5)),
                   ),
                 ),
               ],
@@ -203,20 +192,15 @@ class _JobDetailCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     context.l10n.employmentType,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .text
-                        .apply(color: context.color.textAndIconsBasePrimary),
+                    style: context.textStyle.text.apply(color: context.color.textAndIconsBasePrimary),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     model.contractType?.name ?? '',
                     textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .footNote
-                        .apply(color: context.color.textAndIconsBasePrimary.withOpacity(0.5)),
+                    style:
+                        context.textStyle.footNote.apply(color: context.color.textAndIconsBasePrimary.withOpacity(0.5)),
                   ),
                 ),
               ],
@@ -228,20 +212,15 @@ class _JobDetailCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     context.l10n.nationality,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .text
-                        .apply(color: context.color.textAndIconsBasePrimary),
+                    style: context.textStyle.text.apply(color: context.color.textAndIconsBasePrimary),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     model.saudi == true ? 'Saudi' : 'Non-Saudi',
                     textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .footNote
-                        .apply(color: context.color.textAndIconsBasePrimary.withOpacity(0.5)),
+                    style:
+                        context.textStyle.footNote.apply(color: context.color.textAndIconsBasePrimary.withOpacity(0.5)),
                   ),
                 ),
               ],
@@ -252,7 +231,6 @@ class _JobDetailCard extends StatelessWidget {
 }
 
 class _JobContactsWidget extends StatelessWidget {
-
   const _JobContactsWidget({required this.model});
   final JobModel model;
 
@@ -275,8 +253,10 @@ class _JobContactsWidget extends StatelessWidget {
                   width: 18,
                   height: 18,
                   package: 'mapness',
-                  colorFilter:  ColorFilter.mode(
-                      context.color.strokeAccent, BlendMode.srcIn,),
+                  colorFilter: ColorFilter.mode(
+                    context.color.strokeAccent,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(
                   width: 12,
@@ -287,12 +267,9 @@ class _JobContactsWidget extends StatelessWidget {
                     child: Text(
                       model.mobile ?? '',
                       textAlign: TextAlign.start,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .text
-                          .apply(
-                            color: context.color.textAndIconsBasePrimary,
-                          ),
+                      style: context.textStyle.text.apply(
+                        color: context.color.textAndIconsBasePrimary,
+                      ),
                     ),
                   ),
                 ),
@@ -312,8 +289,10 @@ class _JobContactsWidget extends StatelessWidget {
                   width: 24,
                   height: 24,
                   package: 'mapness',
-                  colorFilter:  ColorFilter.mode(
-                      context.color.strokeAccent, BlendMode.srcIn,),
+                  colorFilter: ColorFilter.mode(
+                    context.color.strokeAccent,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(
                   width: 12,
@@ -324,12 +303,9 @@ class _JobContactsWidget extends StatelessWidget {
                     child: Text(
                       model.email ?? '',
                       textAlign: TextAlign.start,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .text
-                          .apply(
-                            color: context.color.textAndIconsBasePrimary,
-                          ),
+                      style: context.textStyle.text.apply(
+                        color: context.color.textAndIconsBasePrimary,
+                      ),
                     ),
                   ),
                 ),
@@ -341,7 +317,6 @@ class _JobContactsWidget extends StatelessWidget {
 }
 
 class _JobInfoWidget extends StatelessWidget {
-
   const _JobInfoWidget({
     required this.title,
     required this.data,
@@ -362,18 +337,16 @@ class _JobInfoWidget extends StatelessWidget {
           children: [
             Text(
               title,
-              style:
-                  Theme.of(context).extension<ThemeTextStyles>()!.text.apply(
-                        color: context.color.textAndIconsBasePrimary,
-                      ),
+              style: context.textStyle.text.apply(
+                color: context.color.textAndIconsBasePrimary,
+              ),
             ),
             const SizedBox(height: 12),
             Text(
               data,
-              style:
-                  Theme.of(context).extension<ThemeTextStyles>()!.footNote.apply(
-                        color: context.color.textAndIconsBasePrimary.withOpacity(.5),
-                      ),
+              style: context.textStyle.footNote.apply(
+                color: context.color.textAndIconsBasePrimary.withOpacity(.5),
+              ),
             ),
           ],
         ),
@@ -381,7 +354,6 @@ class _JobInfoWidget extends StatelessWidget {
 }
 
 class _JobLicenseWidget extends StatelessWidget {
-
   const _JobLicenseWidget({required this.job});
   final JobModel job;
 
@@ -412,18 +384,13 @@ class _JobLicenseWidget extends StatelessWidget {
                   children: [
                     Text(
                       job.commercialLicenseNumber?.toString() ?? '',
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .text
-                          .apply(color: context.color.textAndIconsBasePrimary),
+                      style: context.textStyle.text.apply(color: context.color.textAndIconsBasePrimary),
                     ),
                     Text(
                       context.l10n.commercialLicenseNumber,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .footNote
-                          .apply(
-                              color: context.color.textAndIconsBasePrimary.withOpacity(.5),),
+                      style: context.textStyle.footNote.apply(
+                        color: context.color.textAndIconsBasePrimary.withOpacity(.5),
+                      ),
                     ),
                   ],
                 ),

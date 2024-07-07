@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,16 +8,17 @@ import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mapness/_features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/_features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class InBuildingWidget extends ConsumerStatefulWidget {
   final PoiCardState? state;
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
   final LatLng? closestPoint;
+  final double? bottomTabsHeight;
 
   const InBuildingWidget({
     required this.state,
@@ -24,6 +26,7 @@ class InBuildingWidget extends ConsumerStatefulWidget {
     super.key,
     this.cameraConfig,
     this.closestPoint,
+    this.bottomTabsHeight,
   });
 
   @override
@@ -42,7 +45,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
       firstPageKey: (widget.state?.organizations?.page ?? 1) + 1,
     );
     pagingController
-      ..itemList = widget.state?.organizations?.items
+      ..itemList = widget.state?.organizations?.itemsFiltered
       ..addPageRequestListener(_fetchPage);
 
     init = false;
@@ -66,6 +69,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
         shrinkWrap: true,
         slivers: [
           PagedSliverList<int, OrganizationItem>.separated(
+            shrinkWrapFirstPageIndicators: true,
             pagingController: pagingController,
             builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
               itemBuilder: (context, item, index) => ContentWrapper(
@@ -88,9 +92,9 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
                       );
                     },
                     options: ContentRowOptions(
-                      subtitleExtra: item.addressComment ?? '',
-                      title: item.nameEx?.primary ?? '',
-                      subtitle: item.nameEx?.extension ?? item.poiCategory ?? '',
+                      title: item.title,
+                      subtitle: item.rubricsNames,
+                      subtitleExtra: item.addressComment,
                     ),
                   )
                 ],
@@ -98,12 +102,14 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
             ),
             separatorBuilder: (context, index) => Spacing.verticalPaddingInsideWrapper.heightBox,
           ),
+          SliverToBoxAdapter(
+              child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox),
         ],
       );
 
   Future<void> _fetchPage(int pageKey) async {
     final viewModelProvider = poiCardProviderProvider(
-      widget.objectId,
+      widget.objectId.objectId,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
     );
@@ -115,11 +121,11 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
           );
 
       final length = pagingController.itemList?.length ?? 0;
-      final total = newItems?.total ?? 0;
+      final total = newItems?.count ?? 0;
       if (length >= total) {
-        pagingController.appendLastPage(newItems?.items ?? []);
+        pagingController.appendLastPage(newItems?.itemsFiltered ?? []);
       } else {
-        pagingController.appendPage(newItems?.items ?? [], pageKey + 1);
+        pagingController.appendPage(newItems?.itemsFiltered ?? [], pageKey + 1);
       }
     } catch (error) {
       pagingController.error = error;

@@ -1,9 +1,7 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ExpandableContainer extends StatefulWidget {
-
   const ExpandableContainer({
     required this.title,
     required this.data,
@@ -24,33 +22,28 @@ class ExpandableContainerState extends State<ExpandableContainer> {
     if (widget.data.isEmpty) {
       return const SizedBox.shrink();
     }
-    final dataSplits =
-        widget.data.split('\n').where((e) => e.isNotEmpty).map((e) => Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '•',
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .text
-                      .apply(
-                        color: context.color.textAndIconsBasePrimary,
-                      ),
+    final dataSplits = widget.data.split('\n').where((e) => e.isNotEmpty).map(
+          (e) => Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '•',
+                style: context.textStyle.text.apply(
+                  color: context.color.textAndIconsBasePrimary,
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    e,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .text
-                        .apply(
-                          color: context.color.textAndIconsBasePrimary,
-                        ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  e,
+                  style: context.textStyle.text.apply(
+                    color: context.color.textAndIconsBasePrimary,
                   ),
                 ),
-              ],
-            ),);
+              ),
+            ],
+          ),
+        );
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       width: double.infinity,
@@ -71,10 +64,7 @@ class ExpandableContainerState extends State<ExpandableContainer> {
               children: [
                 Text(
                   widget.title,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .heading2
-                      .apply(color: context.color.textAndIconsBasePrimary),
+                  style: context.textStyle.heading2.apply(color: context.color.textAndIconsBasePrimary),
                 ),
                 if (widget.data.split('\n').length > 5)
                   Icon(
@@ -91,12 +81,9 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                 }),
                 child: Text(
                   '...',
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .text
-                      .apply(
-                        color: context.color.textAndIconsBasePrimary,
-                      ),
+                  style: context.textStyle.text.apply(
+                    color: context.color.textAndIconsBasePrimary,
+                  ),
                 ),
               ),
           ],

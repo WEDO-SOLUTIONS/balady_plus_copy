@@ -17,6 +17,7 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
@@ -146,6 +147,14 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       );
 
   void _startNavigation(RouteSearchOptionsMessage navigatingType) {
+    final mapSetting = MapObjectManagerSettings.search();
+    ref.read(
+      mapObjectManagerProvider(
+        named: mapSetting.name,
+        layerId: mapSetting.layerId,
+      ).notifier,
+    ).removeAllMarkers();
+
     Metrics.logEventAdvanced(
       MetricsConstants.routesKeys.routeSelectionChangeNavType,
       group: MetricsConstants.routesTag,

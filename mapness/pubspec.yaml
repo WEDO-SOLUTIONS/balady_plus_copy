@@ -41,16 +41,21 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.3.1
+    version: ^1.4.0
 
   urbi_utils:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: ^0.1.0
 
+  localize_and_translate:
+    git:
+      url: https://github.com/Demezy/localize_and_translate
+      ref: 4.1.2-dev-fixes
+
   collection: ^1.17.1
   flutter_localizations:
     sdk: flutter
-  intl: ^0.18.0
+  intl: ^0.19.0
   wakelock_plus: ^1.1.3
   provider: ^6.0.5 # todo: refactor
   url_launcher: ^6.1.14
@@ -62,11 +67,11 @@ dependencies:
   permission_handler: ^11.0.1
   package_info_plus: ^4.2.0
   hive_generator: ^2.0.1
-  connectivity_plus: ^5.0.1
+  internet_connection_checker: ^1.0.0+1
   hive: ^2.2.3
   path_provider: ^2.1.1
   expansion_widget: ^0.0.3
-  uuid: ^3.0.7
+  uuid: ^4.0.0
   carousel_slider: ^4.2.1
   rxdart: ^0.27.7
   geolocator: ^10.1.0
@@ -99,6 +104,9 @@ dependencies:
   cached_network_image: ^3.2.2
   # Scrollable list
   scrollable_positioned_list: ^0.3.8
+  smooth_page_indicator: ^1.1.0
+  add_2_calendar: ^2.2.5
+  flutter_bloc: ^8.1.6
 
 dependency_overrides:
   geolocator_android: ^4.2.2
@@ -135,6 +143,7 @@ flutter:
     - assets/icons/svg/weather/night/
     - assets/icons/svg/weather/day/
     - assets/icons/svg/layers/
+    - assets/icons/svg/places/
     - assets/icons/svg/poi_card/
     - assets/images/
     - assets/images_svg/

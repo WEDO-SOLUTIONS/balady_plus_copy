@@ -1,8 +1,7 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class LoadingCircular extends StatelessWidget {
-
   const LoadingCircular({super.key, this.size});
   final double? size;
 
@@ -11,8 +10,7 @@ class LoadingCircular extends StatelessWidget {
         height: size ?? 64,
         width: size ?? 64,
         child: CircularProgressIndicator(
-          valueColor:
-              AlwaysStoppedAnimation<Color>(context.color.strokeAccent),
+          valueColor: AlwaysStoppedAnimation<Color>(context.color.strokeAccent),
           backgroundColor: context.color.strokePrimary,
         ),
       );

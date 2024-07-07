@@ -7,15 +7,16 @@ import 'package:mapness/shared/routing/transculent_page.dart';
 part 'search.g.dart';
 
 @TypedGoRoute<SearchRoute>(
-  path: '/search',
+  path: SearchRoute.path,
 )
 class SearchRoute extends GoRouteData {
+  static const path = '/search';
   const SearchRoute({
-    this.initialQuery,
+    this.requestFocus = true,
     this.withClustering = false,
   });
 
-  final String? initialQuery;
+  final bool requestFocus;
   final bool withClustering;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
@@ -24,7 +25,7 @@ class SearchRoute extends GoRouteData {
   Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: LayoutBuilder(
           builder: (context, constraints) => MapSearchSheet(
-            initialQuery: initialQuery,
+            requestFocus: requestFocus,
             withClustering: withClustering,
             biggestHeight: constraints.biggest.height,
           ),

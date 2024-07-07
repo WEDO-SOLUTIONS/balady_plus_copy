@@ -4,7 +4,7 @@ import com.dgis.map.map_api.Messages.*
 import ru.dgis.sdk.*
 import ru.dgis.sdk.directory.*
 
-fun DirectoryObject.toMessage(externalIds: List<String>?): DirectoryObjectMessage {
+fun DirectoryObject.toMessage(): DirectoryObjectMessage {
     return DirectoryObjectMessage.Builder()
         .setTypes(this.types.map {
             ObjectTypeItemMessage.Builder()
@@ -41,7 +41,6 @@ fun DirectoryObject.toMessage(externalIds: List<String>?): DirectoryObjectMessag
             it.toMessage()
         })
         .setTradeLicense(this.tradeLicense?.toMessage())
-        .setExternalIds(externalIds)
         .build()
 }
 

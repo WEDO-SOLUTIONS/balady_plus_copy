@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
@@ -28,9 +28,7 @@ class JobsAroundCard extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(context.l10n.jobsAraundYou,
-                  style:
-                      Theme.of(context).extension<ThemeTextStyles>()!.heading2,),
+              Text(context.l10n.jobsAraundYou, style: context.textStyle.heading2),
               const SizedBox(height: 12),
               Stack(
                 children: [
@@ -68,21 +66,11 @@ class JobsAroundCard extends ConsumerWidget {
                             children: [
                               Text(
                                 jobs?.jobsCount?.toString() ?? '',
-                                style: Theme.of(context)
-                                    .extension<ThemeTextStyles>()!
-                                    .heading2
-                                    .apply(
-                                      color: Colors.white,
-                                    ),
+                                style: context.textStyle.heading2.apply(color: Colors.white),
                               ),
                               Text(
                                 context.l10n.jobVacancy,
-                                style: Theme.of(context)
-                                    .extension<ThemeTextStyles>()!
-                                    .footNote
-                                    .apply(
-                                      color: Colors.white,
-                                    ),
+                                style: context.textStyle.footNote.apply(color: Colors.white),
                               ),
                             ],
                           ),

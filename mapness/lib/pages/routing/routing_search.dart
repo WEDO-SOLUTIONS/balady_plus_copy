@@ -52,7 +52,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
     if (widget.initialQuery != null) {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) {
-          ref.read(searchQueryProvider(SearchScopeEnum.routes.value).notifier).update(
+          ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).fetchSuggest(
                 widget.initialQuery!,
               );
         },

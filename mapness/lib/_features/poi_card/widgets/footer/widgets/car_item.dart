@@ -13,10 +13,10 @@ class _CarItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final objectMessage_ = objectMessage;
-    if (objectMessage_ == null) {
+    if (objectMessage == null) {
       return const SizedBox.shrink();
     }
+
     return Flexible(
       flex: flex,
       child: Padding(
@@ -24,18 +24,17 @@ class _CarItem extends ConsumerWidget {
         child: BriefRouteButton(
           routeType: RouteSearchOptionsMessage.car,
           onTap: () {
-            Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {
-                  'object_id': objectMessage?.id?.objectId,
-                  'finish_point': '${finishPoint?.coordinates.latitude},${finishPoint?.coordinates.longitude}'
-                });
+            final mapSetting = MapObjectManagerSettings.search();
+            ref
+                .read(
+                  mapObjectManagerProvider(
+                    named: mapSetting.name,
+                    layerId: mapSetting.layerId,
+                  ).notifier,
+                )
+                .setMapObjectManagerIsVisible(isVisible: false);
 
-            getRoute(
-              objectMessage_,
-              context.l10n.myLocation,
-            ).push(context);
+            _openRoutingRoutes(context, ref);
           },
           finishPoint: finishPoint,
         ),
@@ -43,7 +42,33 @@ class _CarItem extends ConsumerWidget {
     );
   }
 
-  RoutingRoutesRoute getRoute(
+  void _openRoutingRoutes(BuildContext context, WidgetRef ref) {
+    final objectMessage = this.objectMessage;
+    if (objectMessage == null) {
+      return;
+    }
+    Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'object_id': objectMessage.id?.objectId,
+          'finish_point': '${finishPoint?.coordinates.latitude},${finishPoint?.coordinates.longitude}'
+        });
+    final goRouter = ref.read(goRouterProvider);
+    final matches = goRouter.routerDelegate.currentConfiguration.matches;
+    final hasRoutingRoutes = matches.any((element) => element.matchedLocation == RoutingRoutesRoute.path);
+    if (hasRoutingRoutes) {
+      context.popRouteUntilFirst();
+      final dgisObjectId = objectMessage.id?.objectId;
+      if (dgisObjectId != null) {
+        PoiMapRoute.open(goRouter, dgisObjectId);
+      }
+    }
+    final route = _getRoutingRoutesRoute(objectMessage, context.l10n.myLocation);
+    unawaited(route.push(context));
+  }
+
+  RoutingRoutesRoute _getRoutingRoutesRoute(
     DirectoryObjectMessage objectMessage,
     String startLabel,
   ) =>

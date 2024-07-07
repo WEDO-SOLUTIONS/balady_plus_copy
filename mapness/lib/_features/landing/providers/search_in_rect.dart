@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,21 +11,23 @@ part 'search_in_rect.g.dart';
 class SearchInRect extends _$SearchInRect {
   @override
   (GeoRectMessage?, bool) build() {
-    final filter = ref.watch(searchByRubricsQueryProvider);
-    if (filter == null) {
-      return (null, false);
-    }
-
     final dgisController = ref.watch(dgisControllerProvider).value;
 
     final subscription = dgisController?.visibleRectEvents.listen((event) async {
-      state = (
-        state.$1,
-        _buttonVisible(
+      _setDefaultValue(event);
+
+      final isSearchRunning = ref.watch(searchProvider(SearchScopeEnum.map.value).notifier).isSearchRunning;
+      if (!isSearchRunning) {
+        state = (event.visibleRect.geoRectMessage(), false);
+      } else {
+        state = (
           state.$1,
-          event.visibleRect.geoRectMessage(),
-        )
-      );
+          _buttonVisible(
+            state.$1,
+            event.visibleRect.geoRectMessage(),
+          )
+        );
+      }
     });
     ref.onDispose(() {
       subscription?.cancel();
@@ -34,6 +37,15 @@ class SearchInRect extends _$SearchInRect {
       ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect.geoRectMessage(),
       false,
     );
+  }
+
+  void _setDefaultValue(VisibleRectEvent event) {
+    if (state.$1 == null) {
+      state = (
+        event.visibleRect.geoRectMessage(),
+        state.$2,
+      );
+    }
   }
 
   void update() {

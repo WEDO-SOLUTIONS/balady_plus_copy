@@ -1,15 +1,21 @@
+import 'dart:async';
+
+import 'package:balady_uikit/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/pages/map_search/ui/map_lost_internet.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart';
 
-class MapSearchContent extends ConsumerWidget {
+class MapSearchContent extends ConsumerStatefulWidget {
   const MapSearchContent({
     required this.scrollController,
     super.key,
@@ -18,12 +24,70 @@ class MapSearchContent extends ConsumerWidget {
   final ScrollController scrollController;
 
   @override
-  Widget build(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+  ConsumerState<MapSearchContent> createState() => _MapSearchContentState();
+}
+
+class _MapSearchContentState extends ConsumerState<MapSearchContent> {
+  bool _hasConnection = true;
+  Timer? _debounceTimer;
+
+  @override
+  void initState() {
+    _hasConnection = ref.read(networkStatusProvider);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  void _updateInternetStatus(BuildContext context, bool hasConnection) {
+    if (context.mounted) {
+      // If the [hasConnection] value has changed we rebuild widget with `setState`
+      // Otherwise we do nothing
+      if (hasConnection != _hasConnection) {
+        setState(() {
+          _hasConnection = hasConnection;
+        });
+      }
+    }
+  }
+
+  void _debouncedUpdate(BuildContext context, bool hasConnection) {
+    _debounceTimer?.cancel();
+
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      _updateInternetStatus(context, hasConnection);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
+
+    ref.listen(
+      networkStatusProvider,
+      (_, hasConnection) {
+        _debouncedUpdate(context, hasConnection);
+      },
+    );
+
+    if (!_hasConnection) {
+      return SliverToBoxAdapter(
+        child: SafeArea(
+          top: false,
+          child: MapLostInternet(
+            onTap: () async {
+              await ref.read(networkStatusProvider.notifier).update();
+              _updateInternetStatus(context, ref.read(networkStatusProvider));
+            },
+          ),
+        ),
+      );
+    }
 
     return searchState.map(
       empty: () => const SliverFillRemaining(
@@ -37,6 +101,20 @@ class MapSearchContent extends ConsumerWidget {
         child: SafeArea(
           top: false,
           child: MapSearchHistory(),
+        ),
+      ),
+      loading: () => SliverFillRemaining(
+        hasScrollBody: false,
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 196),
+            child: Loading(
+              orientation: Axis.vertical,
+              size: LoaderSize.large,
+              title: context.l10n.loading,
+            ),
+          ),
         ),
       ),
       suggest: (suggest) => SliverToBoxAdapter(
@@ -55,7 +133,7 @@ class MapSearchContent extends ConsumerWidget {
           top: false,
           child: MapSearchResults(
             results: results,
-            scrollController: scrollController,
+            scrollController: widget.scrollController,
           ),
         ),
       ),
