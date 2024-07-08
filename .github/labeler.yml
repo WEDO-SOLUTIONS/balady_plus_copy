@@ -11,3 +11,6 @@ support-team:
 feature-team:
   - changed-files:
       - any-glob-to-any-file: "mapness/features/**"
+
+priority:
+  - head-branch: ["^urbi-release-"]
