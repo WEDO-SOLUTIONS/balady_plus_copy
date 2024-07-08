@@ -12,7 +12,7 @@ class MapLostInternet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BaseErrorWidget(
-        errorLabel: 'You don\'t seem to have internet connection. Please check the connection',
+        errorLabel: '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}',
         buttonLabel: context.l10n.tryAgain,
         onRetry: onTap,
       );
