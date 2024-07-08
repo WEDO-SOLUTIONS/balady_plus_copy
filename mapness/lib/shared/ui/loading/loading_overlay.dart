@@ -1,16 +1,11 @@
 import 'dart:async';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/ui/loading/loading_circular.dart';
 
 /// Size of the loading container
 const _loaderSize = 56.0;
-
-/// Size of the loading indicator
-const _indicatorSize = 24.0;
-
-const _indicatorStrokeWidth = 2.5;
 
 /// Loading overlay that shows a loading indicator on top of the child widget.
 ///
@@ -102,9 +97,9 @@ class LoadingOverlayState extends State<LoadingOverlay> {
                   shape: BoxShape.circle,
                   color: Colors.white,
                 ),
-                child: const LoadingCircular(
-                  size: _indicatorSize,
-                  strokeWidth: _indicatorStrokeWidth,
+                child: Loading.small(
+                  color: context.color.strokeAccent,
+                  isDisplayTitle: false,
                 ),
               ),
             ),
