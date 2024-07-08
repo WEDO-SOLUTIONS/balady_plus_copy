@@ -41,7 +41,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.4.0
+    version: ^1.4.4
 
   urbi_utils:
     hosted: https://baladyapp-unpub.urbi.ae/
