@@ -90,7 +90,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     ),
                   if (!isEditing)
                     Icon(
-                      ctx.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                      ctx.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                       color: ctx.color.textAndIconsStatusAccent,
                     ),
                   if (!isEditing)
@@ -112,9 +112,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     onTap: selectedItems.isEmpty
                         ? null
                         : () async {
-                            await ref
-                                .read(favouriteCacheProvider.notifier)
-                                .deleteItems(selectedItems.values.toList());
+                            await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
                             setState(() {
                               selectedItems.clear();
                             });
