@@ -9,13 +9,6 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - "bugfix/*"
-      - "feat/*"
-      - "feature/*"
-      - "urbi"
-      - "urbi-release-*"
   pull_request:
     types:
       - opened
