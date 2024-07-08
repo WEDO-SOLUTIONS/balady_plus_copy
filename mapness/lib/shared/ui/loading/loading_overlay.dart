@@ -14,7 +14,10 @@ const _indicatorStrokeWidth = 2.5;
 
 /// Loading overlay that shows a loading indicator on top of the child widget.
 ///
-/// Provide a child widget and call [makeCall] to make an asynchronous call that will show the loading indicator.
+/// Provide a methods:
+/// - [startLoading] to show loader on top of the child widget
+/// - [endLoading] to hide loader
+/// - [makeCall] to make an asynchronous call with loading indicator
 ///
 /// Example usage:
 /// ```dart
@@ -44,6 +47,9 @@ class LoadingOverlayState extends State<LoadingOverlay> {
 
   /// Starts the loading state.
   void startLoading() {
+    if (_isLoading) {
+      return;
+    }
     setState(() {
       _isLoading = true;
     });
@@ -51,6 +57,9 @@ class LoadingOverlayState extends State<LoadingOverlay> {
 
   /// Ends the loading state.
   void endLoading() {
+    if (!_isLoading) {
+      return;
+    }
     setState(() {
       _isLoading = false;
     });
