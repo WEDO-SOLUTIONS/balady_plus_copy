@@ -17,6 +17,7 @@ class BaseErrorWidget extends StatelessWidget {
     super.key,
   });
 
+  /// A factory constructor for creating a [BaseErrorWidget] without a retry button.
   factory BaseErrorWidget.noRetry({
     required String errorLabel,
     Key? key,
