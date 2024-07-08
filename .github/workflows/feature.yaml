@@ -33,6 +33,14 @@ jobs:
     steps:
       - name: typos-action
         uses: crate-ci/typos@v1.23.1
+        with:
+          files: "mapness/**"
+          write_changes: true
+
+      - uses: getsentry/action-git-diff-suggestions@main
+        with:
+          message: "typos made the following change"
+
   auto-request-review:
     name: Auto Request Review CODEOWNERS
     runs-on: [self-hosted, Linux]
@@ -42,6 +50,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           config: .github/reviewers.yml # Config file location override
+
   linter:
     runs-on: [self-hosted, Linux]
     name: Lint flutter code
