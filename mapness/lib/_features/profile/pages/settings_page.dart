@@ -57,27 +57,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     children: [
                       ContentWrapper(
                         color: context.color.surfaceBaseSecondary,
-                        children: const [
-                          // ContentRow(
-                          //   options: ContentRowOptions(
-                          //       leadingIcon: AppIcons(
-                          //         iconData: SystemIcons.notification,
-                          //         color: context.color.textAndIconsStatusAccent,
-                          //         size: 24,
-                          //       ),
-                          //       title: context.l10n.notifications,
-                          //       actionWidget: const ContentRowActionOptions(
-                          //         enabledToggle: true,
-                          //         // Initial toggle value
-                          //         toggleInitialValue: true,
-                          //       )),
-                          //   onToggle: (_) {
-                          //     // Do something when the toggle is changed
-                          //   },
-                          // )
-
-                          NotificationsSettingCell(),
-                        ],
+                        children: const [NotificationsSettingCell()],
                       ),
                       const SizedBox(
                         height: Spacing.verticalPaddingInsideWrapper,

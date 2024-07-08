@@ -104,7 +104,9 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
               ),
               Material(
                 color: context.color.surfaceBaseSecondary,
-                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(RadiusBorder.xl)),
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(RadiusBorder.xl),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: ContentRow(
