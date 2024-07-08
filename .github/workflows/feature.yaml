@@ -37,11 +37,6 @@ jobs:
           files: "mapness/**/*.dart"
           write_changes: true
 
-      - uses: getsentry/action-git-diff-suggestions@main
-        if: success() || failure()
-        with:
-          message: "typos made the following change"
-
   auto-request-review:
     name: Auto Request Review CODEOWNERS
     runs-on: [self-hosted, Linux]
