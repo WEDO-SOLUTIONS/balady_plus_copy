@@ -35,6 +35,11 @@ on:
       - ".vscode/"
 
 jobs:
+  check-typos:
+    runs-on: [self-hosted, Linux]
+    steps:
+      - name: typos-action
+        uses: crate-ci/typos@v1.23.1
   auto-request-review:
     name: Auto Request Review CODEOWNERS
     runs-on: [self-hosted, Linux]
