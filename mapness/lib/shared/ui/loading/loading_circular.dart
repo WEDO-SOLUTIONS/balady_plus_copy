@@ -1,6 +1,7 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 
+@Deprecated('Use Loading with factories from ui-kit instead')
 class LoadingCircular extends StatelessWidget {
   const LoadingCircular({
     this.size,
