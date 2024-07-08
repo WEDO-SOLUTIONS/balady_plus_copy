@@ -192,14 +192,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                     AppStaticColorsThemeExt.palette(colorScheme)
                   ],
                 ),
-                builder: (context, child) {
-                  if (child == null) {
-                    return const SizedBox.shrink();
-                  }
-                  return LoadingOverlay(
-                    child: child,
-                  );
-                },
+                builder: (context, child) => child != null
+                    ? LoadingOverlay(
+                        child: child,
+                      )
+                    : const SizedBox.shrink(),
                 locale: language.locale,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
