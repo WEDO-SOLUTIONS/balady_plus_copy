@@ -120,6 +120,16 @@ jobs:
       - name: Commitsar Action
         uses: aevea/commitsar@v0.20.2
 
+      - name: Generate Coverage
+        id: coverage-report
+        uses: whynotmake-it/dart-coverage-assistant@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          testing_command: flutter test --coverage
+          lower_threshold: 0
+          upper_threshold: 90
+          generate_badges: none
+
       - name: Run tests
         run: |
           flutter test
