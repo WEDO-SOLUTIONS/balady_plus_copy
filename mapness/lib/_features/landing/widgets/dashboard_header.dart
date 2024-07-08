@@ -77,12 +77,12 @@ class DashboardHeader extends ConsumerWidget {
 
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16),
-          topLeft: Radius.circular(16),
-        ),
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(16),
+            topLeft: Radius.circular(16),
+          ),
+          boxShadow: [Elevation.s]),
       child: Column(
         children: [
           const SizedBox(height: Spacing.$2x),
