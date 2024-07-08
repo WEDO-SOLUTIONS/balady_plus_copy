@@ -31,16 +31,16 @@ class KiblahPage extends ConsumerWidget {
         },
         leading: Padding(
           padding: const EdgeInsets.only(
-            left: NumericBase.$4x,
-            right: NumericBase.$4x,
+            left: Spacing.$4x,
+            right: Spacing.$4x,
           ),
           child: Row(
             children: [
               Icon(
-                isArabic ? SystemIcons.arrowCornerRightSmall : SystemIcons.arrowCornerLeftSmall,
+                isArabic ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge,
                 color: context.color.textAndIconsBaseInversePrimary,
               ),
-              const SizedBox(width: NumericBase.$0_5x),
+              const SizedBox(width: Spacing.$0_5x),
               Text(
                 context.l10n.back,
                 style: context.textStyle.footNote.copyWith(color: context.staticColor.textAndIconsBaseInversePrimary),

@@ -35,15 +35,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.only(top: NumericBase.$4x),
+              padding: const EdgeInsets.only(top: Spacing.$4x),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
-                  systemUiOverlayStyle: SystemUiOverlayStyle.dark ,
+                  systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                   title: context.l10n.settings,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     onPressed: () => context.pop(),
-                    icon: context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                    icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                   ),
                 ),
                 body: Padding(
@@ -57,7 +57,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     children: [
                       ContentWrapper(
                         color: context.color.surfaceBaseSecondary,
-                        children: [
+                        children: const [
                           // ContentRow(
                           //   options: ContentRowOptions(
                           //       leadingIcon: AppIcons(

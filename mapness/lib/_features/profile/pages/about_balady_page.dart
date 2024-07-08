@@ -56,7 +56,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
         child: Material(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.only(top: NumericBase.$4x),
+            padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
               appBar: BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
@@ -64,15 +64,15 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                 colorEnabled: context.color.textAndIconsStatusAccent,
                 leading: ActionModel(
                   onPressed: () => context.pop(),
-                  icon: context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                  icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                 ),
               ),
               body: ListView(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(Spacing.horizontalPaddingInsideWrapper),
+                    padding: const EdgeInsets.all(Spacing.$4x),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(CornerRadius.smallContainer),
+                      borderRadius: BorderRadius.circular(RadiusBorder.l),
                       // ignore: prefer_const_constructors
                       child: YoutubePlayer(
                         controller: _controller,

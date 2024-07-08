@@ -66,9 +66,9 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                 child: Material(
                   color: context.color.surfaceBaseSecondary,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(index == 0 ? CornerRadius.baseContainer : 0),
+                    top: Radius.circular(index == 0 ? RadiusBorder.xl : 0),
                     bottom: index == widget.history.length - 1 && widget.history.length <= 10
-                        ? const Radius.circular(CornerRadius.baseContainer)
+                        ? const Radius.circular(RadiusBorder.xl)
                         : const Radius.circular(0),
                   ),
                   child: SearchTapHandler(
@@ -104,14 +104,14 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
               ),
               Material(
                 color: context.color.surfaceBaseSecondary,
-                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(CornerRadius.baseContainer)),
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(RadiusBorder.xl)),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: ContentRow(
                     onTap: () => setState(() => _collapsed = !_collapsed),
                     options: ContentRowOptions(
                       leadingIcon: AppIcons(
-                        iconData: _collapsed ? SystemIcons.arrowCornerDownSmall : SystemIcons.arrowCornerUpSmall,
+                        iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
                         color: context.color.textAndIconsBaseSecondary,
                         size: 24,
                       ),

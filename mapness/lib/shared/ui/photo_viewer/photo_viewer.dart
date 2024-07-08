@@ -65,10 +65,10 @@ class _PhotoViewerState extends State<PhotoViewer> {
 
                       /// TODO(ui_kit): Fix leading in UIKIT
                       leading: Container(
-                        padding: const EdgeInsetsDirectional.only(start: NumericBase.$4x),
+                        padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
                         alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
                         child: Icon(
-                          context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                          context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                           color: Colors.white,
                         ),
                       ),
