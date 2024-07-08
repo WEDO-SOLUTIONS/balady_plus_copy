@@ -41,7 +41,6 @@ class IwishPlaceCard extends ConsumerWidget {
           error: (_, __) => ErrorSheet(
             onRetry: entityNotifier.refresh,
             buttonLabel: context.l10n.reload,
-            onClose: () => context.pop(),
           ),
           loading: () => LoadingSheet(
             text: context.l10n.loading,
@@ -99,11 +98,11 @@ class IwishPlaceCard extends ConsumerWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Align(
+                                    const Align(
                                       alignment: Alignment.topCenter,
                                       child: Padding(
-                                        padding: const EdgeInsets.only(top: 8),
-                                        child: const SheetDragger(),
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: SheetDragger(),
                                       ),
                                     ),
                                     const SizedBox(height: 4),

@@ -28,7 +28,6 @@ class IwishCarousel extends ConsumerWidget {
       error: (error, stackTrace) => ErrorSheet(
         onRetry: () => ref.read(iwishMarkersProvider.notifier).refresh(),
         buttonLabel: context.l10n.refresh,
-        onClose: () => context.pop(),
       ),
       loading: () => LoadingSheet(text: context.l10n.loading),
       data: (data) => CarouselSlider.builder(
