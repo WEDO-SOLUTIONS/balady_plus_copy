@@ -34,10 +34,11 @@ jobs:
       - name: typos-action
         uses: crate-ci/typos@v1.23.1
         with:
-          files: "mapness/**"
+          files: "mapness/**/*.dart"
           write_changes: true
 
       - uses: getsentry/action-git-diff-suggestions@main
+        if: success() || failure()
         with:
           message: "typos made the following change"
 
