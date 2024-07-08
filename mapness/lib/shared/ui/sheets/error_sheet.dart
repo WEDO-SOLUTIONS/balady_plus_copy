@@ -5,17 +5,13 @@ import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 class ErrorSheet extends StatelessWidget {
   const ErrorSheet({
     required this.onRetry,
-    super.key,
     this.buttonLabel,
     this.errorLabel,
-    this.onClose,
+    super.key,
   });
 
   /// action how to recover state
   final VoidCallback onRetry;
-
-  /// action when leave the sheet (default: pop)
-  final VoidCallback? onClose;
 
   /// button label (localized default: reload)
   final String? buttonLabel;

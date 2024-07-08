@@ -52,7 +52,6 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     return asyncState.map(
       error: (error) => ErrorSheet(
         buttonLabel: context.l10n.reload,
-        onClose: () => ctx.pop(),
         onRetry: () {
           ref.invalidate(favouriteCacheProvider);
         },
@@ -103,7 +102,6 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                 ],
               ),
             ),
-            // leadingWidth: _defaultActionWidth,
 
             trailing: Row(
               children: [

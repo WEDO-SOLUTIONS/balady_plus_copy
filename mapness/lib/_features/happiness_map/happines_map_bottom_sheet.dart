@@ -92,7 +92,6 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
         child: ErrorSheet(
           onRetry: () => ref.read(happinessManagerProvider.notifier).submitFeedback(),
           buttonLabel: context.l10n.reload,
-          onClose: widget.onClose,
         ),
       );
     }
