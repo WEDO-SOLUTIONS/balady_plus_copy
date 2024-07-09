@@ -29,7 +29,7 @@ class IwishCarousel extends ConsumerWidget {
         onRetry: () => ref.read(iwishMarkersProvider.notifier).refresh(),
         buttonLabel: context.l10n.refresh,
       ),
-      loading: () => LoadingSheet(text: context.l10n.loading),
+      loading: () => const LoadingSheet(),
       data: (data) => CarouselSlider.builder(
         itemCount: data.length,
         itemBuilder: (context, index, realIndex) => Consumer(

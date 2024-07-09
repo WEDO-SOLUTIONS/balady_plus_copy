@@ -131,7 +131,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-
     final sizeOfScreen = MediaQuery.of(context).size;
     final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
 
@@ -154,9 +153,9 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     /// loading progress indicator
     if (state.isLoading) {
-      return Align(
+      return const Align(
         alignment: Alignment.bottomCenter,
-        child: LoadingSheet(text: context.l10n.sending),
+        child: LoadingSheet(),
       );
     }
 
