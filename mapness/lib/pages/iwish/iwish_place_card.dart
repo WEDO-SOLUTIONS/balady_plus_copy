@@ -42,9 +42,7 @@ class IwishPlaceCard extends ConsumerWidget {
             onRetry: entityNotifier.refresh,
             buttonLabel: context.l10n.reload,
           ),
-          loading: () => LoadingSheet(
-            text: context.l10n.loading,
-          ),
+          loading: () => const LoadingSheet(),
           data: (entity) {
             final distance = ref.read(iwishDistanceProvider(entity));
 
