@@ -57,11 +57,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     children: [
                       ContentWrapper(
                         color: context.color.surfaceBaseSecondary,
-                        children: const [NotificationsSettingCell()],
+                        children: const [
+                          NotificationsSettingCell(),
+                        ],
                       ),
-                      const SizedBox(
-                        height: Spacing.verticalPaddingInsideWrapper,
-                      ),
+                      const SizedBox(height: Spacing.verticalPaddingInsideWrapper),
                       Consumer(
                         builder: (context, ref, child) {
                           final language = ref.watch(appLanguageProvider);

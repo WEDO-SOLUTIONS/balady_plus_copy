@@ -30,15 +30,21 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
   bool _collapsed = true;
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) => Dismissible(
+  Widget build(BuildContext context) {
+    final hasManyResults = widget.history.length > 10;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              final isLastItem = index == widget.history.length - 1;
+
+              return Dismissible(
                 key: ValueKey(widget.history[index].hashKey),
                 onDismissed: (direction) {
                   widget.onDelete(widget.history[index]);
@@ -67,9 +73,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                   color: context.color.surfaceBaseSecondary,
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(index == 0 ? RadiusBorder.xl : 0),
-                    bottom: index == widget.history.length - 1 && widget.history.length <= 10
-                        ? const Radius.circular(RadiusBorder.xl)
-                        : const Radius.circular(0),
+                    bottom: Radius.circular(isLastItem && !hasManyResults ? RadiusBorder.xl : 0),
                   ),
                   child: SearchTapHandler(
                     onTap: () => widget.onTap(widget.history[index]),
@@ -82,63 +86,65 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                         ),
                         title: widget.history[index].title,
                         subtitle: widget.history[index].address,
-                        dividerEnabled: index != widget.history.length - 1 || widget.history.length > 10,
+                        dividerEnabled: !isLastItem || hasManyResults,
                       ),
                     ),
                   ),
                 ),
+              );
+            },
+            itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
+          ),
+          if (hasManyResults) ...[
+            Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(start: 56),
+                child: Divider(
+                  thickness: 1,
+                  height: 2,
+                  color: context.color.surfaceBasePrimary,
+                ),
               ),
-              itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
             ),
-            if (widget.history.length > 10) ...[
-              Container(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 56),
-                  child: Divider(
-                    thickness: 1,
-                    height: 2,
-                    color: context.color.surfaceBasePrimary,
+            Material(
+              color: context.color.surfaceBaseSecondary,
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(RadiusBorder.xl),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: ContentRow(
+                  onTap: () => setState(() => _collapsed = !_collapsed),
+                  options: ContentRowOptions(
+                    leadingIcon: AppIcons(
+                      iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
+                      color: context.color.textAndIconsBaseSecondary,
+                      size: 24,
+                    ),
+                    title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
                   ),
                 ),
               ),
-              Material(
-                color: context.color.surfaceBaseSecondary,
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(RadiusBorder.xl),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
-                  child: ContentRow(
-                    onTap: () => setState(() => _collapsed = !_collapsed),
-                    options: ContentRowOptions(
-                      leadingIcon: AppIcons(
-                        iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
-                        color: context.color.textAndIconsBaseSecondary,
-                        size: 24,
-                      ),
-                      title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-            if (!_collapsed)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: Spacing.verticalPaddingInsideCell),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: AppButton(
-                        buttonColorScheme: ButtonColorScheme.tertiary,
-                        onTap: widget.onClear,
-                        primaryLabel: context.l10n.deleteHistory,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            ),
           ],
-        ),
-      );
+          if (!_collapsed)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.verticalPaddingInsideCell),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      buttonColorScheme: ButtonColorScheme.tertiary,
+                      onTap: widget.onClear,
+                      primaryLabel: context.l10n.deleteHistory,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }

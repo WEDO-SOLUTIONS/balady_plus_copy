@@ -23,14 +23,7 @@ class IndoorEventHandler {
   void levelNamesEvent(Map<dynamic, dynamic> map) {
     final result = map['value'] as List<Object?>;
     final levelNames = result.whereType<String>();
-    final event = IndoorLevelsEvent(
-      levelNames
-          .mapIndexed((index, level) => IndoorLevel(
-                level,
-                index,
-              ))
-          .toList(),
-    );
+    final event = IndoorLevelsEvent(levelNames.mapIndexed((index, level) => IndoorLevel(level, index)).toList());
     _lastIndoorLevelNames = event;
     _indoorLevelNamesController.add(event);
   }
