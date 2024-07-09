@@ -112,9 +112,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     onTap: selectedItems.isEmpty
                         ? null
                         : () async {
-                            await ref
-                                .read(favouriteCacheProvider.notifier)
-                                .deleteItems(selectedItems.values.toList());
+                            await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
                             setState(() {
                               selectedItems.clear();
                             });
@@ -178,7 +176,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 finishLabel: homeTitle,
                                 finishLatitude: coordinates?.latitude,
                                 finishLongitude: coordinates?.longitude,
-                                finishObjectId: int.parse(id),
+                                finishObjectId: int.tryParse(id),
                                 finishEntranceId: null,
                                 startLabel: context.l10n.myLocation,
                                 startLatitude: null,
