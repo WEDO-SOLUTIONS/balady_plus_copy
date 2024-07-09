@@ -59,23 +59,23 @@ class BaseErrorWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.only(
-          left: 16,
-          right: 16,
-          bottom: 16,
+          left: Spacing.$4x,
+          right: Spacing.$4x,
+          bottom: Spacing.$4x,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 16),
+            const SizedBox(height: Spacing.$4x),
             SvgPicture.asset(
               'assets/images_svg/illustration_error.svg',
               package: PackageConfig.packageName,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: Spacing.$4x),
             text(errorText),
             if (withRetryButton) ...[
-              const SizedBox(height: 20),
+              const SizedBox(height: Spacing.$5x),
               AppButton(
                 onTap: onRetry,
                 buttonColorScheme: buttonColorScheme,
