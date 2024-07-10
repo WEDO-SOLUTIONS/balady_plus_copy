@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -86,62 +87,65 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Stack(
-        children: [
-          const RoutingMapControls(
-            bottomExtent: 136,
-          ),
-          DgisBottomSheet(
-            controller: dgisBottomSheetController,
-            showBarrier: false,
-            availableExpansions: const {
-              Expansion.collapsed,
-              Expansion.expanded,
-              Expansion.middle,
-            },
-            initialExpansion: widget.collapseInitially ? Expansion.collapsed : Expansion.middle,
-            middleHeight: 0.7 * widget.biggestHeight,
-            collapsedHeight: 136,
-            scrollableBody: (context, scrollController) => Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(16),
-                  topLeft: Radius.circular(16),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Stack(
+          children: [
+            const RoutingMapControls(
+              bottomExtent: 136,
+            ),
+            DgisBottomSheet(
+              controller: dgisBottomSheetController,
+              showBarrier: false,
+              availableExpansions: const {
+                Expansion.collapsed,
+                Expansion.expanded,
+                Expansion.middle,
+              },
+              initialExpansion: widget.collapseInitially ? Expansion.collapsed : Expansion.middle,
+              middleHeight: 0.7 * widget.biggestHeight,
+              collapsedHeight: 136,
+              scrollableBody: (context, scrollController) => Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16),
+                  ),
                 ),
-              ),
-              child: Material(
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(16),
-                  topLeft: Radius.circular(16),
-                ),
-                color: NonThemeColor.color11,
-                child: CustomScrollView(
-                  controller: scrollController,
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: RoutingHeaderDelegate(
-                        points: points,
-                        updatePoints: _updatePoints,
+                child: Material(
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16),
+                  ),
+                  color: NonThemeColor.color11,
+                  child: CustomScrollView(
+                    controller: scrollController,
+                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    physics: const ClampingScrollPhysics(),
+                    slivers: [
+                      SliverPersistentHeader(
+                        delegate: RoutingHeaderDelegate(
+                          points: points,
+                          updatePoints: _updatePoints,
+                        ),
+                        pinned: true,
                       ),
-                      pinned: true,
-                    ),
-                    SliverToBoxAdapter(
-                      child: RoutingHistory(
-                        updatePoint: _updatePoint,
-                        searchByQuery: _searchQuery,
+                      SliverToBoxAdapter(
+                        child: RoutingHistory(
+                          updatePoint: _updatePoint,
+                          searchByQuery: _searchQuery,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
