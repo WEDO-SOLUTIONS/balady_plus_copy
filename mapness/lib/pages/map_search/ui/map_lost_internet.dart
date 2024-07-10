@@ -12,7 +12,7 @@ class MapLostInternet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BaseErrorWidget(
-        errorLabel: '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}',
+        errorLabel: context.l10n.youDontSeemToHaveInternetDescription,
         buttonLabel: context.l10n.tryAgain,
         onRetry: onTap,
       );

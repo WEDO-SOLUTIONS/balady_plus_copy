@@ -39,7 +39,7 @@ class IwishCarousel extends ConsumerWidget {
               error: (_, __) => Center(
                 child: TextButton(
                   onPressed: () => ref.read(iwishEntityProvider(data[index].id).notifier).refresh(),
-                  child: Text(context.l10n.reload),
+                  child: Text(context.l10n.tryAgain),
                 ),
               ),
               loading: () => const ShimmerEffectWidget(),

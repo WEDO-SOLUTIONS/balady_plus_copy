@@ -51,7 +51,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     final asyncState = ref.watch(favouriteCacheProvider);
     return asyncState.map(
       error: (error) => ErrorSheet(
-        buttonLabel: context.l10n.reload,
+        buttonLabel: context.l10n.tryAgain,
         onRetry: () {
           ref.invalidate(favouriteCacheProvider);
         },

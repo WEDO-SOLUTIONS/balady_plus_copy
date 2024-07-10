@@ -91,7 +91,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
         alignment: Alignment.bottomCenter,
         child: ErrorSheet(
           onRetry: () => ref.read(happinessManagerProvider.notifier).submitFeedback(),
-          buttonLabel: context.l10n.reload,
+          buttonLabel: context.l10n.tryAgain,
         ),
       );
     }

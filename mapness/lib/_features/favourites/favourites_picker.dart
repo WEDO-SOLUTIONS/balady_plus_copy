@@ -29,7 +29,7 @@ class FavouritesPicker extends ConsumerWidget {
     }
     if (asyncState.hasError) {
       return ErrorSheet(
-        buttonLabel: context.l10n.reload,
+        buttonLabel: context.l10n.tryAgain,
         onRetry: () => ref.invalidate(favouriteCacheProvider),
       );
     }
