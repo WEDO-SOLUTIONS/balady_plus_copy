@@ -113,7 +113,9 @@ jobs:
       - name: Analyze Flutter
         uses: ValentinVignal/action-dart-analyze@v0.17
         with:
-          fail-on: "warning"
+          fail-on: "format"
+          line-length: 120
+          check-renamed-files: true
 
       - name: Commitsar Action
         uses: aevea/commitsar@v0.20.2
