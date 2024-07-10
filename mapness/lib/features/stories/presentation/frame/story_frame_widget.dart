@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
+import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
 import 'package:mapness/features/stories/helper/locale_helper.dart';
 import 'package:mapness/features/stories/presentation/frame/frame_progress_indicator.dart';
 import 'package:mapness/features/stories/presentation/frame/story_frame_content.dart';
@@ -14,6 +15,7 @@ class StoryFrameWidget extends StatefulWidget {
   final int frameIndex;
   final int frameLength;
   final int duration;
+  final StoryThumbnailData thumbnailData;
 
   final StoryFrameController? controller;
 
@@ -30,6 +32,7 @@ class StoryFrameWidget extends StatefulWidget {
     required this.onClose,
     required this.onNext,
     required this.onPrevious,
+    required this.thumbnailData,
     super.key,
     this.onActionPressed,
     this.controller,
@@ -51,6 +54,8 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
   String _keyToLocale(String key) => switch (key) {
         'next' => StoryLocalization.of(context)?.l10n.next ?? '',
         'try_now' => StoryLocalization.of(context)?.l10n.tryNow ?? '',
+        'build_route' => StoryLocalization.of(context)?.l10n.buildRoute ?? '',
+        'open_services' => StoryLocalization.of(context)?.l10n.openServices ?? '',
         _ => ''
       };
 
@@ -59,6 +64,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
     return switch (action) {
       VerbatimStoryFrameAction() => action.title,
       LocaleKeyFrameAction() => _keyToLocale(action.titleLocaleKey),
+      DeeplinkStoryFrameAction() => '',
       null => '',
     };
   }
@@ -209,32 +215,21 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                       height: MediaQuery.of(context).size.height / 2,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          stops: const [0, 0.8, 1],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            const Color(0xff000000).withOpacity(0.4),
-                            const Color(0xff000000).withOpacity(0.06),
-                            const Color(0xff000000).withOpacity(0)
-                          ],
-                        ),
+                        gradient: widget.frame.hasGradient
+                            ? LinearGradient(
+                                stops: const [0, 0.8, 1],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  const Color(0xff000000).withOpacity(0.4),
+                                  const Color(0xff000000).withOpacity(0.06),
+                                  const Color(0xff000000).withOpacity(0)
+                                ],
+                              )
+                            : null,
                       ),
                     ),
                   ),
-
-                  /// story content
-                  if (!_isLoading)
-                    Positioned(
-                      left: 16,
-                      right: 16,
-                      top: 100,
-                      bottom: 64,
-                      child: Align(
-                        alignment: AlignmentDirectional.topStart,
-                        child: StoryFrameContent(frame: widget.frame),
-                      ),
-                    ),
 
                   /// left right click handlers
                   if (!_isLoading)
@@ -257,12 +252,29 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                       ],
                     ),
 
+                  /// story content
+                  if (!_isLoading)
+                    Positioned(
+                      left: 16,
+                      right: 16,
+                      top: 100,
+                      bottom: 64,
+                      child: Align(
+                        alignment: AlignmentDirectional.topStart,
+                        child: StoryFrameContent(
+                          frame: widget.frame,
+                          onActionPressed: (action) => widget.onActionPressed?.call(action),
+                        ),
+                      ),
+                    ),
+
                   /// progress indicator and exit button
                   FrameProgressIndicator(
                     onClose: widget.onClose,
                     frameIndex: widget.frameIndex,
                     framesLength: widget.frameLength,
                     animation: _progress,
+                    thumbnailData: widget.thumbnailData,
                   ),
 
                   // action button
@@ -271,8 +283,8 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                       widget.frame.action!.deeplinkUrl.isNotEmpty)
                     Positioned(
                       bottom: 12,
-                      left: 16,
-                      right: 16,
+                      left: widget.frame.action?.horizontalPadding ?? 16.0,
+                      right: widget.frame.action?.horizontalPadding ?? 16.0,
                       child: AppButton(
                         color: widget.frame.action?.backgroundColor,
                         textColor: widget.frame.action?.textStyle?.color,
