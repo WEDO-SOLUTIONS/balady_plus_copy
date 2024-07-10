@@ -16,11 +16,11 @@ class AppBarChatBot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChatBotProvider provider = context.watch<ChatBotProvider>();
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (bool didPop) async {
         closeScreen(context, provider);
-        return false;
       },
+      // canPop: false,
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -63,7 +63,7 @@ class AppBarChatBot extends StatelessWidget {
                       ),
                       const SizedBox(width: 12, height: 8),
                       Text(
-                        'municipal_advisor'.tr(),
+                        'chat_bot'.tr(),
                         style: AppStyle.countTextAthkarStyle.copyWith(),
                       ),
                       listMessages.isEmpty
@@ -128,7 +128,8 @@ class AppBarChatBot extends StatelessWidget {
       builder: (_) => const CloseChatBotPopup(),
     ).then((value) {
       if (value == true) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        // Navigator.of(context).popUntil((route) => route.isFirst);
+        Navigator.of(context).pop();
         if (provider.chatBotMessage.value.isNotEmpty) {
           BottomSheetDialog.showSheet(
             context,
@@ -142,7 +143,7 @@ class AppBarChatBot extends StatelessWidget {
             isFullHeight: false,
             isScrollControlled: true,
             backgroundColor: Colors.white,
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.65,
           );
         }
       }
