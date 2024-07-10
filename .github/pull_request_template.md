@@ -33,6 +33,15 @@ What types of changes does your code introduce?
 - [ ] Localazy keys were synchronised
 - [ ] Notion CODEOWNERS docs were updated.
 
+## [If applicable] Feature Owners CheckList
+
+[ ] Documentation: Technical
+[ ] Documentation: Change Log
+[ ] Testing: Unit tests
+[ ] Testing: UI tests
+[ ] Testing: Perf tests
+[ ] Testing: Integration tests
+
 ## Further comments
 
 <!--- If this is a relatively large or complex change, kick off the discussion by explaining why you chose the solution you did and what alternatives you considered, etc... -->
