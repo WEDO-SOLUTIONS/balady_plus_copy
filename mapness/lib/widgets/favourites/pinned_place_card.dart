@@ -98,13 +98,12 @@ class PinnedPlaceCard extends StatelessWidget {
                 left: context.isLTR ? null : 0,
                 child: PopupCard(
                   items: [
-                    // TODO(Sergei): check need for this item after July 2024 and remove it (and onTapRoute) completely if it's not needed
-                    // PopupModel(
-                    //   title: context.l10n.route,
-                    //   icon: GeneralIcons.route,
-                    //   onTap: onTapRoute,
-                    //   color: context.color.textAndIconsBasePrimary,
-                    // ),
+                    PopupModel(
+                      title: context.l10n.route,
+                      icon: GeneralIcons.route,
+                      onTap: onTapRoute,
+                      color: context.color.textAndIconsBasePrimary,
+                    ),
                     PopupModel(
                       title: context.l10n.share,
                       icon: SystemIcons.share,
