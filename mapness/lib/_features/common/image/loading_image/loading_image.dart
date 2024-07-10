@@ -6,6 +6,13 @@ import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/features/stories/presentation/story_refresh_button.dart';
 
 class LoadingImage extends ConsumerStatefulWidget {
+  final String imageUrl;
+  final Widget loadingWidget;
+  final BoxFit? fit;
+  final VoidCallback? onImageReady;
+  final bool? isAssetImg;
+  final Function(String name, {bool? isAsset})? onImageTap;
+
   const LoadingImage({
     required this.imageUrl,
     required this.loadingWidget,
@@ -15,12 +22,6 @@ class LoadingImage extends ConsumerStatefulWidget {
     this.onImageTap,
     this.isAssetImg = false,
   });
-  final String imageUrl;
-  final Widget loadingWidget;
-  final BoxFit? fit;
-  final VoidCallback? onImageReady;
-  final bool? isAssetImg;
-  final Function(String name, {bool? isAsset})? onImageTap;
 
   @override
   ConsumerState<LoadingImage> createState() => _LoadingImageState();
@@ -67,6 +68,10 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
         ? Image.asset(
             imageUrl,
             fit: widget.fit,
+            errorBuilder: (context, __, ___) => ColoredBox(
+              color: context.color.surfaceBasePrimary,
+              child: const SizedBox.shrink(),
+            ),
           )
         : CachedNetworkImage(
             imageUrl: imageUrl,

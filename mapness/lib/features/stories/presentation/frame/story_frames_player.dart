@@ -46,17 +46,13 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       0,
       widget.story.frames.indexWhere((element) => !element.isWatched),
     );
-    ref
-        .read(storyServiceProvider.notifier)
-        .markStoryAsRead(widget.story.storyId, currentIndex);
+    ref.read(storyServiceProvider.notifier).markStoryAsRead(widget.story.storyId, currentIndex);
   }
 
   void _nextPage(String storyId, int pageIndex, int maxIndex) {
     if (pageIndex == maxIndex - 1) {
       widget.onNextStory();
-      ref
-          .read(storyServiceProvider.notifier)
-          .markStoryAsRead(widget.story.storyId, currentIndex);
+      ref.read(storyServiceProvider.notifier).markStoryAsRead(widget.story.storyId, currentIndex);
       return;
     }
 
@@ -84,8 +80,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
         continue;
       }
       // Preload images for better performance
-      CachedNetworkImageProvider(frames[i].imageUrl)
-          .resolve(ImageConfiguration.empty);
+      CachedNetworkImageProvider(frames[i].imageUrl).resolve(ImageConfiguration.empty);
     }
   }
 
@@ -106,6 +101,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       duration: currentFrame.duration,
       frameIndex: currentIndex,
       frameLength: frames.length,
+      thumbnailData: story.thumbnail,
     );
   }
 }

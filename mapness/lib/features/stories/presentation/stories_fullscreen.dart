@@ -42,13 +42,14 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
     required VoidCallback onClose,
     void Function(String)? handleDeeplink,
     StoryTypes? localStoryType,
+    bool? onActionShowNextHistory,
   }) =>
       StoriesFullscreen._(
         initialStoryId: initialStoryId,
         onClose: onClose,
         handleDeeplink: handleDeeplink,
         localStoryType: localStoryType,
-        onActionShowNextStory: true,
+        onActionShowNextStory: onActionShowNextHistory ?? true,
       );
 
   @override

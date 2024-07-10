@@ -12,16 +12,18 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_features.dart';
+import 'package:mapness/shared/providers/onboarding.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 // Stateful navigation based on:
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
 class ScaffoldWithNestedNavigation extends ConsumerStatefulWidget {
+  final StatefulNavigationShell navigationShell;
+
   const ScaffoldWithNestedNavigation({
     required this.navigationShell,
     Key? key,
   }) : super(key: key ?? const ValueKey('ScaffoldWithNestedNavigation'));
-  final StatefulNavigationShell navigationShell;
 
   @override
   ConsumerState<ScaffoldWithNestedNavigation> createState() => _ScaffoldWithNestedNavigationState();
@@ -35,7 +37,19 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
   @override
   void initState() {
     currentTab = widget.navigationShell.currentIndex;
+
+    _showOnboarding();
+
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(ScaffoldWithNestedNavigation oldWidget) {
+    if (oldWidget.navigationShell.currentIndex != widget.navigationShell.currentIndex) {
+      currentTab = widget.navigationShell.currentIndex;
+    }
+
+    super.didUpdateWidget(oldWidget);
   }
 
   void _goToPage(int page) {
@@ -44,6 +58,23 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
       page,
       initialLocation: page == widget.navigationShell.currentIndex,
     );
+  }
+
+  void _showOnboarding() {
+    final isOnboardingShown = ref.read(onboardingProvider);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!isOnboardingShown) {
+        Stories.showOnboarding(
+          context,
+          StoryTypes.onboarding,
+          'onboarding',
+          onActionShowNextHistory: false,
+          navigationShell: widget.navigationShell,
+        );
+        ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
+      }
+    });
   }
 
   @override
@@ -89,16 +120,16 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
 }
 
 class ScaffoldWithNavigationBar extends ConsumerWidget {
+  final Widget body;
+  final int currentIndex;
+  final ValueChanged<int> onDestinationSelected;
+
   const ScaffoldWithNavigationBar({
     required this.body,
     required this.currentIndex,
     required this.onDestinationSelected,
     super.key,
   });
-
-  final Widget body;
-  final int currentIndex;
-  final ValueChanged<int> onDestinationSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

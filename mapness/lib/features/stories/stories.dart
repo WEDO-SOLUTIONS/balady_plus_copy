@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +41,6 @@ class Stories {
         child: Directionality(
           textDirection: Directionality.of(context),
           child: ProviderScope(
-            parent: ProviderScope.containerOf(context),
             child: Theme(
               data: Theme.of(context),
               child: Consumer(
@@ -93,7 +93,34 @@ class Stories {
     StoryTypes type,
     String id, {
     VoidCallback? onClose,
+    bool? onActionShowNextHistory,
+    StatefulNavigationShell? navigationShell,
   }) {
+    void handleDeeplink(String url) {
+      const pageTitle = {
+        0: 'profile',
+        1: 'services',
+        2: 'route',
+        3: 'explore',
+      };
+
+      final router = GoRouter.of(rootNavigatorKey.currentContext!);
+
+      if (url.startsWith('/bottomNavBar')) {
+        pageTitle.map((key, value) {
+          if (url.contains(value)) {
+            navigationShell?.goBranch(key);
+            if (url.contains('/snap_and_send')) {
+              CommonFunctions.openSnapAndSend();
+            }
+          }
+          return MapEntry(key, value);
+        });
+      } else {
+        router.push(url);
+      }
+    }
+
     final storyWidget = StoryLocalization(
       l10n: context.l10n,
       child: StoriesFullscreen.onboadring(
@@ -103,6 +130,8 @@ class Stories {
           _transitionState.currentState?.dismiss();
           onClose?.call();
         },
+        onActionShowNextHistory: onActionShowNextHistory,
+        handleDeeplink: handleDeeplink,
       ),
     );
 

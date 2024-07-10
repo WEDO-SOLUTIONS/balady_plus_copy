@@ -1,5 +1,6 @@
 enum StoryTypes {
   route,
+  onboarding,
 }
 
 extension StoryTypesExtension on StoryTypes {
@@ -7,6 +8,8 @@ extension StoryTypesExtension on StoryTypes {
     switch (this) {
       case StoryTypes.route:
         return 'route';
+      case StoryTypes.onboarding:
+        return 'onboarding';
     }
   }
 }
