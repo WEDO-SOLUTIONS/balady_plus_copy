@@ -1,14 +1,13 @@
 import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -26,6 +25,7 @@ class LayersSheet extends ConsumerStatefulWidget {
 
 class LayersSheetState extends ConsumerState<LayersSheet> {
   late final DraggableScrollableController _draggableScrollableController;
+  int _indexLayersTab = 0;
 
   @override
   void initState() {
@@ -36,78 +36,66 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
         ref.read(goRouterProvider).pop();
       }
     });
-
-    SchedulerBinding.instance.addPostFrameCallback(
-      (_) {
-        if (_draggableScrollableController.isAttached) {
-          _draggableScrollableController.animateTo(
-            .6,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.linear,
-          );
-        }
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final watch = ref.watch(layersControlsProvider.notifier);
-    final state = ref.watch(layersControlsProvider);
     final lang = ref.watch(appLanguageProvider);
+    final state = ref.watch(layersControlsProvider);
 
-    final headerStyle = Theme.of(context).extension<ui_kit.ThemeTextStyles>()!.heading2;
-
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        ColoredBox(
-          color: context.staticColor.surfaceOverlayModal,
-          child: GestureDetector(
-            onTap: () {
-              context.pop();
-            },
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          ColoredBox(
+            color: context.staticColor.surfaceOverlayModal,
+            child: GestureDetector(
+              onTap: () {
+                context.pop();
+              },
+            ),
           ),
-        ),
-        const MapControls(),
-        DraggableScrollableSheet(
-          controller: _draggableScrollableController,
-          minChildSize: 0,
-          maxChildSize: .8,
-          snapSizes: const [.0, .3, .5, .8],
-          snap: true,
-          builder: (context, scrollController) => Directionality(
-            textDirection: switch (lang) {
-              Language.english => TextDirection.ltr,
-              Language.arabic => TextDirection.rtl,
-            },
-            child: Container(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(16),
+          const MapControls(),
+          DraggableScrollableSheet(
+            controller: _draggableScrollableController,
+            minChildSize: 0,
+            maxChildSize: .5,
+            snapSizes: const [.0, .5],
+            snap: true,
+            builder: (context, scrollController) => Directionality(
+              textDirection: switch (lang) {
+                Language.english => TextDirection.ltr,
+                Language.arabic => TextDirection.rtl,
+              },
+              child: Container(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
                 ),
-              ),
-              child: Stack(
-                children: [
-                  CustomScrollView(
-                    controller: scrollController,
-                    primary: false,
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: Material(
-                          color: Colors.transparent,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    CustomScrollView(
+                      controller: scrollController,
+                      primary: false,
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      slivers: [
+                        SliverToBoxAdapter(
                           child: Column(
                             children: [
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 8),
                               const SheetDragger(),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 12),
                               Row(
                                 children: [
-                                  Text(context.l10n.layersOnTheMap, style: headerStyle),
+                                  Text(context.l10n.layersOnTheMap, style: context.textStyle.heading2),
                                   const Spacer(),
                                   ui_kit.AppButton.close(
                                     onTap: () {
@@ -120,65 +108,109 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                                       context.pop();
                                     },
                                     padding: EdgeInsets.zero,
+                                    innerPadding: const EdgeInsets.all(8),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 20),
                             ],
                           ),
                         ),
-                      ),
-                      SliverList.separated(
-                        separatorBuilder: (_, __) => const SizedBox(height: 4),
-                        itemCount: LayerType.withoutParking.length,
-                        itemBuilder: (_, index) {
-                          final value = LayerType.withoutParking[index];
-                          final isSelected = state.selectedType == value;
-                          final textColor = isSelected
-                              ? context.color.textAndIconsStatusAccent
-                              : context.color.textAndIconsBasePrimary;
-
-                          return ui_kit.ContentRow(
-                            onTap: () async {
-                              ref.read(searchByRubricsQueryProvider.notifier).update(null);
-
-                              if (value == LayerType.favourites) {
-                                await CommonFunctions.authOrOpen(
-                                  context,
-                                  callback: () async {
-                                    watch.handleTap(value);
-                                  },
-                                );
-                              } else {
-                                watch.handleTap(value);
-                              }
-                            },
-                            options: ui_kit.ContentRowOptions(
-                              wrapperEnabled: true,
-                              wrapperColor: isSelected
-                                  ? context.color.surfaceStatusContrastAccent.withOpacity(0.12)
-                                  : Colors.transparent,
-                              leadingIcon: value.iconData().icon(color: textColor),
-                              title: value.titleLocale(context.l10n),
-                              titleStyle: context.textStyle.text.copyWith(color: textColor),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  if (state.isLoading)
-                    Center(
-                      child: CircularProgressIndicator(
-                        color: context.color.textAndIconsStatusAccent,
-                      ),
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: [
+                              ui_kit.TabsRow.v2(
+                                initialIndex: _indexLayersTab,
+                                tabsContent: [
+                                  ui_kit.TabsRowV2Content(title: context.l10n.lifestyle),
+                                  ui_kit.TabsRowV2Content(title: context.l10n.business),
+                                ],
+                                onIndexChanged: (index) {
+                                  setState(() {
+                                    _indexLayersTab = index ?? 0;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 12),
+                            ],
+                          ),
+                        ),
+                        _LayerSliverList(
+                          layerType: _indexLayersTab == 0
+                              ? layers_state.LayerType.withoutLifestyle
+                              : layers_state.LayerType.withoutBusiness,
+                          layersState: state,
+                        ),
+                      ],
                     ),
-                ],
+                    if (state.isLoading)
+                      Center(
+                        child: CircularProgressIndicator(
+                          color: context.color.textAndIconsStatusAccent,
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
+    );
+  }
+}
+
+class _LayerSliverList extends ConsumerWidget {
+  final List<layers_state.LayerType> layerType;
+  final LayersState layersState;
+
+  const _LayerSliverList({
+    required this.layerType,
+    required this.layersState,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final watch = ref.watch(layersControlsProvider.notifier);
+
+    return SliverList.separated(
+      separatorBuilder: (_, __) => const SizedBox(height: 4),
+      itemCount: layerType.length,
+      itemBuilder: (_, index) {
+        final value = layerType[index];
+        final isSelected = layersState.selectedType == value;
+        final textColor = isSelected ? context.color.textAndIconsStatusAccent : context.color.textAndIconsBasePrimary;
+
+        return ui_kit.ContentRow(
+          onTap: () async {
+            ref.read(searchByRubricsQueryProvider.notifier).update(null);
+
+            if (value == layers_state.LayerType.favourites) {
+              await CommonFunctions.authOrOpen(
+                context,
+                callback: () async {
+                  watch.handleTap(value);
+                },
+              );
+            } else {
+              watch.handleTap(value);
+            }
+          },
+          options: ui_kit.ContentRowOptions(
+            wrapperEnabled: true,
+            wrapperColor: isSelected ? context.color.surfaceStatusContrastAccent.withOpacity(0.12) : Colors.transparent,
+            leadingIcon: value.iconData().icon(color: textColor),
+            title: value.titleLocale(context.l10n),
+            actionWidget: value == layers_state.LayerType.parkingLots
+                ? ui_kit.ContentRowActionOptions(
+                    actionPressed: () {},
+                    actionIcon: const ui_kit.AppIcons(iconData: ui_kit.SystemIcons.ellipsis),
+                  )
+                : null,
+            titleStyle: context.textStyle.text.copyWith(color: textColor),
+          ),
+        );
+      },
     );
   }
 }
