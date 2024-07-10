@@ -52,7 +52,7 @@ class BaseErrorWidget extends StatelessWidget {
           style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
         );
 
-    final errorText = errorLabel ?? '${context.l10n.somethingWentWrong}\n${context.l10n.tryAgainLater}';
+    final errorText = errorLabel ?? '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}';
 
     return Material(
       color: Colors.white,
@@ -72,10 +72,10 @@ class BaseErrorWidget extends StatelessWidget {
               'assets/images_svg/illustration_error.svg',
               package: PackageConfig.packageName,
             ),
-            const SizedBox(height: Spacing.$4x),
+            const SizedBox(height: Spacing.$2x),
             text(errorText),
             if (withRetryButton) ...[
-              const SizedBox(height: Spacing.$5x),
+              const SizedBox(height: Spacing.$6x),
               AppButton(
                 onTap: onRetry,
                 buttonColorScheme: buttonColorScheme,
