@@ -82,6 +82,7 @@ class DashboardHeader extends ConsumerWidget {
           topRight: Radius.circular(16),
           topLeft: Radius.circular(16),
         ),
+        boxShadow: [Elevation.s],
       ),
       child: Column(
         children: [

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
@@ -24,7 +25,7 @@ class ProfileImageWidget extends ConsumerWidget {
     final Widget defaultImage = Icon(
       GeneralIcons.userCircle,
       size: dimension,
-      color: color ?? NonThemeColor.color40,
+      color: color ?? context.colorsV2.foregroundSoft,
     );
 
     return profileImage.maybeWhen(

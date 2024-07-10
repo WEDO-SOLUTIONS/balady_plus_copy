@@ -28,7 +28,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.only(top: NumericBase.$4x),
+              padding: const EdgeInsets.only(top: Spacing.$4x),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
                   systemUiOverlayStyle: SystemUiOverlayStyle.dark,
@@ -36,7 +36,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     onPressed: () => context.pop(),
-                    icon: context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                    icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                   ),
                 ),
                 body: Padding(
@@ -60,10 +60,10 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                               ),
                               actionWidget: ContentRowActionOptions(
                                 actionIcon: context.isLTR
-                                    ? SystemIcons.arrowCornerRightSmall.icon(
+                                    ? SystemIcons.arrowCornerRightLarge.icon(
                                         color: context.color.textAndIconsBaseSecondary,
                                       )
-                                    : SystemIcons.arrowCornerLeftSmall.icon(
+                                    : SystemIcons.arrowCornerLeftLarge.icon(
                                         color: context.color.textAndIconsBaseSecondary,
                                       ),
                               ),

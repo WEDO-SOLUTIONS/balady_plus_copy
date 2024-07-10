@@ -250,7 +250,7 @@ class _NextPrayerTimerState extends State<_NextPrayerTimer> {
         final seconds = (time.inSeconds % 60).toString().padLeft(2, '0');
 
         return Text(
-          '$hours : $minutes : $seconds',
+          '$hours:$minutes:$seconds',
           style: context.textStyleV3.h1Medium.copyWith(color: context.colorsV2.staticWhite),
           textDirection: TextDirection.ltr,
         );
