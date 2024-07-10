@@ -40,7 +40,7 @@ class IwishPlaceCard extends ConsumerWidget {
         entity.when(
           error: (_, __) => ErrorSheet(
             onRetry: entityNotifier.refresh,
-            buttonLabel: context.l10n.reload,
+            buttonLabel: context.l10n.tryAgain,
           ),
           loading: () => const LoadingSheet(),
           data: (entity) {

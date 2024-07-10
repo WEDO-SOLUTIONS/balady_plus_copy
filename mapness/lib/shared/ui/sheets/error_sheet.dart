@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/ui/error_widget/error_widget.dart';
@@ -25,30 +26,23 @@ class ErrorSheet extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(16),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: 16,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 6),
-                  child: SheetDragger(),
-                ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 6),
+                child: SheetDragger(),
               ),
-              const SizedBox(height: 16),
-              BaseErrorWidget(
-                onRetry: onRetry,
-                buttonLabel: buttonLabel,
-                errorLabel: errorLabel,
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: Spacing.$1x),
+            BaseErrorWidget(
+              onRetry: onRetry,
+              buttonLabel: buttonLabel,
+              errorLabel: errorLabel,
+            ),
+          ],
         ),
       );
 }

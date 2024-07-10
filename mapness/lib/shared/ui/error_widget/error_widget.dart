@@ -52,13 +52,14 @@ class BaseErrorWidget extends StatelessWidget {
           style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
         );
 
-    final errorText = errorLabel ?? '${context.l10n.somethingWentWrong}\n${context.l10n.pleaseTryAgainLater}';
+    final errorText = errorLabel ?? '${context.l10n.somethingWentWrong}\n${context.l10n.tryAgainLater}';
 
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.only(
+          top: Spacing.$2x,
           left: Spacing.$4x,
           right: Spacing.$4x,
           bottom: Spacing.$4x,
@@ -67,7 +68,6 @@ class BaseErrorWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: Spacing.$4x),
             SvgPicture.asset(
               'assets/images_svg/illustration_error.svg',
               package: PackageConfig.packageName,
@@ -79,7 +79,7 @@ class BaseErrorWidget extends StatelessWidget {
               AppButton(
                 onTap: onRetry,
                 buttonColorScheme: buttonColorScheme,
-                primaryLabel: buttonLabel ?? context.l10n.reload,
+                primaryLabel: buttonLabel ?? context.l10n.tryAgain,
               ),
             ],
           ],

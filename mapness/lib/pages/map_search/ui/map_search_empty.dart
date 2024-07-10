@@ -7,6 +7,6 @@ class MapSearchEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BaseErrorWidget.noRetry(
-        errorLabel: context.l10n.weCouldntFindAnythingTryToSearchForDifferentLocation,
+        errorLabel: context.l10n.searchNothingFound,
       );
 }
