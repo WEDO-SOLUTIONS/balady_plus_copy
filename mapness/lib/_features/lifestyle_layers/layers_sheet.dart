@@ -4,17 +4,15 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart' as layers_state;
-import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -135,7 +133,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                             ],
                           ),
                         ),
-                        _LayerSliverList(
+                        LayerSliverList(
                           layerType: _indexLayersTab == 0
                               ? layers_state.LayerType.withoutLifestyle
                               : layers_state.LayerType.withoutBusiness,
@@ -156,61 +154,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _LayerSliverList extends ConsumerWidget {
-  final List<layers_state.LayerType> layerType;
-  final LayersState layersState;
-
-  const _LayerSliverList({
-    required this.layerType,
-    required this.layersState,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final watch = ref.watch(layersControlsProvider.notifier);
-
-    return SliverList.separated(
-      separatorBuilder: (_, __) => const SizedBox(height: 4),
-      itemCount: layerType.length,
-      itemBuilder: (_, index) {
-        final value = layerType[index];
-        final isSelected = layersState.selectedType == value;
-        final textColor = isSelected ? context.color.textAndIconsStatusAccent : context.color.textAndIconsBasePrimary;
-
-        return ui_kit.ContentRow(
-          onTap: () async {
-            ref.read(searchByRubricsQueryProvider.notifier).update(null);
-
-            if (value == layers_state.LayerType.favourites) {
-              await CommonFunctions.authOrOpen(
-                context,
-                callback: () async {
-                  watch.handleTap(value);
-                },
-              );
-            } else {
-              watch.handleTap(value);
-            }
-          },
-          options: ui_kit.ContentRowOptions(
-            wrapperEnabled: true,
-            wrapperColor: isSelected ? context.color.surfaceStatusContrastAccent.withOpacity(0.12) : Colors.transparent,
-            leadingIcon: value.iconData().icon(color: textColor),
-            title: value.titleLocale(context.l10n),
-            actionWidget: value == layers_state.LayerType.parkingLots
-                ? ui_kit.ContentRowActionOptions(
-                    actionPressed: () {},
-                    actionIcon: const ui_kit.AppIcons(iconData: ui_kit.SystemIcons.ellipsis),
-                  )
-                : null,
-            titleStyle: context.textStyle.text.copyWith(color: textColor),
-          ),
-        );
-      },
     );
   }
 }
