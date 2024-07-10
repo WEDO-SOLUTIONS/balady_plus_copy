@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -11,7 +12,6 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
@@ -23,7 +23,7 @@ class LayersSheet extends ConsumerStatefulWidget {
 
 class LayersSheetState extends ConsumerState<LayersSheet> {
   late final DraggableScrollableController _draggableScrollableController;
-  int _indexLayersTab = 0;
+  late final ValueNotifier<int> _notifierIndexLayersTab = ValueNotifier(0);
 
   @override
   void initState() {
@@ -38,8 +38,8 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final lang = ref.watch(appLanguageProvider);
     final state = ref.watch(layersControlsProvider);
+    final direction = ref.watch(uiDirectionProvider);
 
     return Scaffold(
       body: Stack(
@@ -47,11 +47,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
         children: [
           ColoredBox(
             color: context.staticColor.surfaceOverlayModal,
-            child: GestureDetector(
-              onTap: () {
-                context.pop();
-              },
-            ),
+            child: GestureDetector(onTap: () => context.pop()),
           ),
           const MapControls(),
           DraggableScrollableSheet(
@@ -61,10 +57,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
             snapSizes: const [.0, .5],
             snap: true,
             builder: (context, scrollController) => Directionality(
-              textDirection: switch (lang) {
-                Language.english => TextDirection.ltr,
-                Language.arabic => TextDirection.rtl,
-              },
+              textDirection: direction,
               child: Container(
                 padding: const EdgeInsets.only(
                   left: 16,
@@ -118,26 +111,26 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                           child: Column(
                             children: [
                               ui_kit.TabsRow.v2(
-                                initialIndex: _indexLayersTab,
                                 tabsContent: [
                                   ui_kit.TabsRowV2Content(title: context.l10n.lifestyle),
                                   ui_kit.TabsRowV2Content(title: context.l10n.business),
                                 ],
                                 onIndexChanged: (index) {
-                                  setState(() {
-                                    _indexLayersTab = index ?? 0;
-                                  });
+                                  _notifierIndexLayersTab.value = index ?? 0;
                                 },
                               ),
                               const SizedBox(height: 12),
                             ],
                           ),
                         ),
-                        LayerSliverList(
-                          layerType: _indexLayersTab == 0
-                              ? layers_state.LayerType.withoutLifestyle
-                              : layers_state.LayerType.withoutBusiness,
-                          layersState: state,
+                        ValueListenableBuilder(
+                          valueListenable: _notifierIndexLayersTab,
+                          builder: (context, value, _) => LayerSliverList(
+                            layerType: value == 0
+                                ? layers_state.LayerType.withoutLifestyle
+                                : layers_state.LayerType.withoutBusiness,
+                            layersState: state,
+                          ),
                         ),
                       ],
                     ),
