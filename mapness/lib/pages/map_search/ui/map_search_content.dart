@@ -13,6 +13,7 @@ import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
@@ -70,6 +71,16 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
+    ref.listen(searchProvider(scope.value), (_oldState, newState) {
+      if (newState is SearchStateEmpty) {
+        ref.read(urbiAnalyticsProvider).track(
+          'searchFailed',
+          properties: {
+            'text': newState.searchText,
+          },
+        );
+      }
+    });
 
     ref.listen(
       networkStatusProvider,

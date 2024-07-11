@@ -20,7 +20,7 @@ class RoutesCarousel extends StatelessWidget {
   final RouteSearchOptionsMessage navType;
 
   final List<RouteParamsPoint?> points;
-  final Function() startNavigation;
+  final Function(RouteInfo) startNavigation;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -43,7 +43,7 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
 
   final RouteSearchOptionsMessage navType;
   final double biggestWidth;
-  final Function() startNavigation;
+  final Function(RouteInfo) startNavigation;
   final List<RouteParamsPoint?> points;
 
   @override
