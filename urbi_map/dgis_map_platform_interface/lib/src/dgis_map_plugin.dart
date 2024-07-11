@@ -666,12 +666,12 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.showRoutes();
   }
 
-  Future<void> startNavigation() {
-    return _api.startNavigation();
+  Future<void> startNavigation(SpeedRangeZoom speedRangeZoon) {
+    return _api.startNavigation(speedRangeZoon);
   }
 
-  Future<void> startNavigationSimulation() {
-    return _api.startNavigationSimulation();
+  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoon) {
+    return _api.startNavigationSimulation(speedRangeZoon);
   }
 
   Future<void> stopNavigation() {

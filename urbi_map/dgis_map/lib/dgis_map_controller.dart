@@ -479,10 +479,12 @@ class DgisMapController {
     return _instance.showRoutes();
   }
 
-  Future<void> startNavigation() => _instance.startNavigation();
+  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) =>
+      _instance.startNavigation(speedRangeZoom);
 
   /// Starts navigation sinulation.
-  Future<void> startNavigationSimulation() => _instance.startNavigationSimulation();
+  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
+      _instance.startNavigationSimulation(speedRangeZoom);
 
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
   Future<void> stopNavigation() => _instance.stopNavigation();
