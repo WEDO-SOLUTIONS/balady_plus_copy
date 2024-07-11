@@ -30,6 +30,7 @@ import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -47,6 +48,8 @@ class SelectedLayer extends _$SelectedLayer {
   LayerType? build(LayerType? layerType) => null;
 }
 
+enum LayersWidgetType { layers, parking }
+
 class LayersState {
   LayersState({
     required this.isLoading,
@@ -55,7 +58,9 @@ class LayersState {
     required this.investmentsMarkers,
     required this.polylines,
     required this.polygons,
+    this.layersWidgetType = LayersWidgetType.layers,
   });
+
   final bool layersVisible;
   final LayerType? selectedType;
   final bool isLoading;
@@ -63,6 +68,27 @@ class LayersState {
   Map<String, Marker> investmentsMarkers = {};
   Map<String, Polyline> polylines = {};
   Map<String, Polygon> polygons = {};
+
+  final LayersWidgetType layersWidgetType;
+
+  LayersState copyWith({
+    bool? layersVisible,
+    LayerType? selectedType,
+    bool? isLoading,
+    Map<String, Marker>? investmentsMarkers,
+    Map<String, Polyline>? polylines,
+    Map<String, Polygon>? polygons,
+    LayersWidgetType? layersWidgetType,
+  }) =>
+      LayersState(
+        isLoading: isLoading ?? this.isLoading,
+        layersVisible: layersVisible ?? this.layersVisible,
+        selectedType: selectedType ?? this.selectedType,
+        investmentsMarkers: investmentsMarkers ?? this.investmentsMarkers,
+        polylines: polylines ?? this.polylines,
+        polygons: polygons ?? this.polygons,
+        layersWidgetType: layersWidgetType ?? this.layersWidgetType,
+      );
 }
 
 const duration = Duration(milliseconds: 700);
@@ -202,14 +228,16 @@ class LayersControls extends _$LayersControls {
     Map<String, Marker>? investmentsMarkers,
     Map<String, Polyline>? polylines,
     Map<String, Polygon>? polygons,
+    LayersWidgetType? layersWidgetType,
   }) {
-    state = LayersState(
+    state = state.copyWith(
       investmentsMarkers: investmentsMarkers ?? state.investmentsMarkers,
       layersVisible: visible ?? state.layersVisible,
       selectedType: state.selectedType,
       isLoading: isLoading ?? state.isLoading,
       polygons: polygons ?? state.polygons,
       polylines: polylines ?? state.polylines,
+      layersWidgetType: layersWidgetType ?? state.layersWidgetType,
     );
   }
 
@@ -322,18 +350,20 @@ class LayersControls extends _$LayersControls {
     await viewPortSubscription?.cancel();
 
     if (currentState == LayerType.parkingLots) {
-      await ref
-          .read(mapObjectManagerProvider(
-            named: esriMapObjectSettings.name,
-            layerId: esriMapObjectSettings.layerId,
-          ).notifier)
-          .removeAllMarkers();
+      final manager = ref.read(mapObjectManagerProvider(
+        named: esriMapObjectSettings.name,
+        layerId: esriMapObjectSettings.layerId,
+      ).notifier);
+      await manager.removeAllMarkers();
+
       layers
         ..setSelection()
         ..update(isLoading: false);
+
+      await _toggleParking();
     } else {
       setSelection(selectedType: LayerType.parkingLots);
-      await _showParking();
+      await _toggleParking();
     }
   }
 
@@ -611,8 +641,8 @@ class LayersControls extends _$LayersControls {
     );
   }
 
-  Future<void> _showParking() async {
-    // TODO: Implement parking in future tasks
+  Future<void> _toggleParking() async {
+    await ref.read(parkingStateProvider.notifier).onParkingTap();
   }
 
   void onError() {
@@ -634,5 +664,9 @@ class LayersControls extends _$LayersControls {
     await map.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
+  }
+
+  void showParking() {
+    update(layersWidgetType: LayersWidgetType.parking);
   }
 }

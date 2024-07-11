@@ -11,6 +11,7 @@ import 'package:shimmer/shimmer.dart';
 
 class LayersDetailsWidget extends ConsumerStatefulWidget {
   const LayersDetailsWidget({super.key, this.data});
+
   final PointLayersData? data;
 
   @override
@@ -52,8 +53,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                               dailyCost: '${selectedPoint?.dailyEaseCost}',
                               documentValue: '${selectedPoint?.documentValue}',
                               id: selectedPoint?.objectId,
-                              opportunityNumber:
-                                  selectedPoint?.opportunityNumber,
+                              opportunityNumber: selectedPoint?.opportunityNumber,
                               subMunicipality: selectedPoint?.subMunicipalityId,
                               mainActivity: selectedPoint?.mainActivityName,
                               onClose: () => context.pop(),
@@ -65,8 +65,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                             type: MaterialType.transparency,
                             child: ComplainceMapCard(
                               amana: selectedPoint?.amananme,
-                              targetBuildingType:
-                                  selectedPoint?.targetBuildingType,
+                              targetBuildingType: selectedPoint?.targetBuildingType,
                               streetName: selectedPoint?.streetName,
                               stageNo: selectedPoint?.stageno,
                               onClose: () => context.pop(),
