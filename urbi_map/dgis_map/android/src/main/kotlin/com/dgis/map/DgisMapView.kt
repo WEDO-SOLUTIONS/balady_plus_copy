@@ -621,7 +621,7 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun startNavigation(result: Messages.Result<Void>?) {
+    override fun startNavigation(speedRangeZoom: SpeedRangeZoom, result: Messages.Result<Void>?) {
         val routeHandler = routeHandler ?: kotlin.run {
             result?.error(Exception("RouteHandler not initialized"))
             return
@@ -631,11 +631,12 @@ class DgisMapView(
                 finishPoint = routeHandler.finishPoint,
                 options = routeHandler.options,
                 route = routeHandler.selectedRoute,
+                speedRangeZoom = speedRangeZoom,
                 result = result
         )
     }
 
-    override fun startNavigationSimulation(result: Messages.Result<Void>?) {
+    override fun startNavigationSimulation(speedRangeZoom: SpeedRangeZoom, result: Messages.Result<Void>?) {
         val routeHandler = routeHandler ?: kotlin.run {
             result?.error(Exception("RouteHandler not initialized"))
             return
@@ -645,6 +646,7 @@ class DgisMapView(
                 finishPoint = routeHandler.finishPoint,
                 options = routeHandler.options,
                 route = routeHandler.selectedRoute,
+                speedRangeZoom = speedRangeZoom,
                 result = result
         )
     }
