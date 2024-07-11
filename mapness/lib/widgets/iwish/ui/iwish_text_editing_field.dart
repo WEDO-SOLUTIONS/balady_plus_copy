@@ -1,14 +1,17 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishTextEditingField extends StatefulWidget {
   const IwishTextEditingField({
     required this.onChanged,
+    this.maxLength = 1000,
     super.key,
     this.initialValue,
   });
   final void Function(String) onChanged;
   final String? initialValue;
+  final int maxLength;
 
   @override
   State<IwishTextEditingField> createState() => _IwishTextEditingFieldState();
@@ -30,28 +33,60 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
     super.dispose();
   }
 
+  OutlineInputBorder _getBorder(Color color) => OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(
+          color: color,
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final style = context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary);
+    const errorColor = Color(0xFFE0373D);
+    final errorBorder = _getBorder(errorColor);
 
     return Expanded(
-      child: TextField(
-        autofocus: true,
-        maxLines: 999,
-        focusNode: _focusNode,
-        controller: _controller,
-        onChanged: widget.onChanged,
-        style: style,
-        cursorColor: context.color.strokeAccent,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: context.color.surfaceBasePrimary,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ValueListenableBuilder(
+            valueListenable: _controller,
+            builder: (_, value, __) => Text(
+              '${value.text.length}/${widget.maxLength}',
+              style: context.textStyle.caption.copyWith(
+                color: value.text.length > widget.maxLength ? errorColor : context.textStyle.caption.color,
+              ),
+            ),
           ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-        ),
+          const SizedBox(
+            height: 8,
+          ),
+          Expanded(
+            child: TextFormField(
+              focusNode: _focusNode,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              controller: _controller,
+              maxLines: 1000,
+              onChanged: widget.onChanged,
+              style: style,
+              cursorColor: context.color.strokeAccent,
+              validator: (value) => (value?.length ?? 0) > widget.maxLength ? '' : null,
+              decoration: InputDecoration(
+                counterText: '',
+                filled: true,
+                errorStyle: const TextStyle(height: 0),
+                hintText: context.l10n.shareYourFeedback,
+                fillColor: context.color.surfaceBaseSecondary,
+                enabledBorder: _getBorder(Colors.transparent),
+                focusedBorder: _getBorder(context.color.strokeAccent),
+                focusedErrorBorder: errorBorder,
+                errorBorder: errorBorder,
+                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
