@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PoiPhotosRow extends ConsumerWidget {
@@ -83,7 +83,7 @@ class PoiPhotosRow extends ConsumerWidget {
                                   'photo_url': photo,
                                 });
 
-                            PhotoViewer.open(context, index, photos);
+                            PhotoViewerRoute(currentPhotoIndex: index, photoPaths: photos).push(context);
                           },
                           imageUrl: photo,
                           fit: BoxFit.cover,
@@ -102,8 +102,9 @@ class PoiPhotosRow extends ConsumerWidget {
     return ListView.separated(
       itemBuilder: (context, index) {
         final loadingShimmerImage = LoadingShimmerImage(
-          onImageTap: (name, {isAsset}) =>
-              PhotoViewer.open(context, index, photos),
+          onImageTap: (name, {isAsset}) {
+            PhotoViewerRoute(currentPhotoIndex: index, photoPaths: photos).push(context);
+          },
           imageUrl: photos[index],
           fit: BoxFit.cover,
         );

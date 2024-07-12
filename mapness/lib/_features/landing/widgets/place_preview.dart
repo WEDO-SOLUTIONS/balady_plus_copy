@@ -27,7 +27,8 @@ class PlacePreview extends ConsumerWidget {
                     e.tags.contains(
                       proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
                     ) &&
-                    e.preview.image.url.isNotEmpty,
+                    e.preview.image.url.isNotEmpty &&
+                    e.preview.image.url != 'url',
               )
               .toList();
 
