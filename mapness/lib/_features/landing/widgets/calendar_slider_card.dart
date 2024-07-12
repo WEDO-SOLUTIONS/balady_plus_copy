@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/calendar/domain/entities/search_calendar/search_calendar_item.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart';
@@ -47,23 +46,28 @@ class CalendarSliderCard extends ConsumerWidget {
       child: BlocBuilder<CalendarBloc, CalendarState>(
         builder: (context, state) {
           if (state.status == BlocStatus.loading) {
-            return const CustomShimmerWidget(
-              childHeight: 132,
-              padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            return const Padding(
+              padding: EdgeInsets.only(
+                bottom: Spacing.$8x,
+              ),
+              child: CustomShimmerWidget(
+                childHeight: 132,
+                padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              ),
             );
           }
 
-          if (state.status == BlocStatus.failure) {
-            return RetryWidget(
-              onRetry: () {
-                context.read<CalendarBloc>().add(const GetSearchEvent());
-              },
-            );
+          if (state.status == BlocStatus.failure || state.status == BlocStatus.retry) {
+            return const SizedBox();
           }
 
           if (state.searchItems.firstOrNull == null) {
             return const Padding(
-              padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              padding: EdgeInsets.only(
+                left: Spacing.$4x,
+                right: Spacing.$4x,
+                bottom: Spacing.$8x,
+              ),
               child: CustomShimmerWidget(
                 childHeight: 132,
                 childWidth: double.infinity,
@@ -71,10 +75,15 @@ class CalendarSliderCard extends ConsumerWidget {
             );
           }
 
-          return SliderListView(
-            items: state.searchItems,
-            contentHeight: 132,
-            itemBuilder: (item) => _CalendarCard(item),
+          return Column(
+            children: [
+              SliderListView(
+                items: state.searchItems,
+                contentHeight: 132,
+                itemBuilder: (item) => _CalendarCard(item),
+              ),
+              const SizedBox(height: Spacing.$8x),
+            ],
           );
         },
       ),

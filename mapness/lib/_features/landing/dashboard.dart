@@ -211,7 +211,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                               const ComplianceCard(),
                               const SizedBox(height: Spacing.$8x),
                               const PrayerCard(),
-                              const SizedBox(height: Spacing.$8x),
                               CalendarSliderCard(
                                 colorScheme: ref.read(colorSchemeProvider),
                                 onShowAll: () => Metrics.logEventAdvanced(
@@ -219,9 +218,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                                   action: MetricAction.tap.name,
                                   group: MetricsConstants.exploreTag,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: Spacing.$8x,
                               ),
                             ],
                           ),
