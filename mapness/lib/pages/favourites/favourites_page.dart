@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,11 +40,60 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     });
   }
 
-  void _deleteItem(FavouriteItem? item) {
+  void _deleteItem(FavouriteItem? item, BuildContext context) {
     if (item == null) {
       return;
     }
-    ref.read(favouriteCacheProvider.notifier).deleteItem(item);
+    _onDeleteConfirmation(item, context);
+  }
+
+  // We have to pass [ctx] value because of text and colors settings, localization. The easiest way to do this
+  // Also here we have to set color for text styles because [CupertinoActionSheet] make it by default in
+  // Apple / iOS style
+  // We can't control [borderRadius] or [padding]s here. But this is the simple and robust solution
+  void _onDeleteConfirmation(FavouriteItem item, BuildContext ctx) {
+    showCupertinoModalPopup<void>(
+      context: ctx,
+      builder: (context) => CupertinoActionSheet(
+        message: Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 8),
+          child: Text(
+            ctx.l10n.deleteAlertFavourites,
+            style: ctx.textStyle.footNote.copyWith(
+              color: ctx.color.textAndIconsBaseSecondary,
+              letterSpacing: 0,
+            ),
+          ),
+        ),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            isDefaultAction: true,
+            isDestructiveAction: true,
+            onPressed: () {
+              ref.read(favouriteCacheProvider.notifier).deleteItem(item);
+              Navigator.pop(context);
+            },
+            child: Text(
+              ctx.l10n.delete,
+              style: ctx.textStyle.callout.copyWith(
+                color: ctx.color.textAndIconsStatusNegative,
+              ),
+            ),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(
+            ctx.l10n.cancel,
+            style: ctx.textStyle.callout.copyWith(
+              color: ctx.color.textAndIconsBasePrimary,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -80,7 +130,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
               },
               child: Row(
                 children: [
-                  Spacing.horizontalPaddingInsideWrapper.widthBox,
+                  Spacing.$4x.widthBox,
                   if (isEditing)
                     Text(
                       ctx.l10n.cancel,
@@ -134,7 +184,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                       ),
                     ),
                   ),
-                Spacing.horizontalPaddingInsideWrapper.widthBox,
+                Spacing.$4x.widthBox,
               ],
             ),
             textStyle: ctx.textStyle.footNoteBold.copyWith(
@@ -146,13 +196,13 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
           backgroundColor: Colors.white,
           body: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.horizontalPaddingInsideWrapper,
-              vertical: Spacing.verticalPaddingInsideWrapper,
+              horizontal: Spacing.$4x,
+              vertical: Spacing.$4x,
             ),
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(child: FavouritesToggle(isEditing: isEditing)),
-                SliverToBoxAdapter(child: NumericBase.$4x.heightBox),
+                SliverToBoxAdapter(child: Spacing.$4x.heightBox),
                 SliverToBoxAdapter(
                   child: Row(
                     children: [
@@ -170,7 +220,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             iconData: GeneralIcons.home,
                             isEditing: isEditing && home != null,
                             isAdded: home != null,
-                            onDelete: () => _deleteItem(home),
+                            onDelete: () => _deleteItem(home, ctx),
                             onTapRoute: () {
                               RoutingRoutesRoute(
                                 finishLabel: homeTitle,
@@ -219,7 +269,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               iconData: GeneralIcons.briefcase,
                               isEditing: isEditing && work != null,
                               isAdded: work != null,
-                              onDelete: () => _deleteItem(work),
+                              onDelete: () => _deleteItem(work, ctx),
                               onTapRoute: () {
                                 RoutingRoutesRoute(
                                   finishLabel: workTitle,
@@ -257,7 +307,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: NumericBase.$4x.heightBox,
+                  child: Spacing.$4x.heightBox,
                 ),
                 if (state.items.isEmpty)
                   SliverToBoxAdapter(
@@ -270,7 +320,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(Spacing.verticalPaddingInsideWrapper),
+                              padding: const EdgeInsets.all(Spacing.$4x),
                               child: Text(
                                 context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
                                 textAlign: TextAlign.center,
@@ -281,9 +331,9 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                left: Spacing.horizontalPaddingInsideWrapper,
-                                right: Spacing.horizontalPaddingInsideWrapper,
-                                bottom: Spacing.verticalPaddingInsideWrapper,
+                                left: Spacing.$4x,
+                                right: Spacing.$4x,
+                                bottom: Spacing.$4x,
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
@@ -329,7 +379,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           });
                         },
                         onShareTap: () => ShareUtil.share(item.entity?.id),
-                        onDelete: () => _deleteItem(item),
+                        onDelete: () => _deleteItem(item, ctx),
                         onRouteTap: () {
                           RoutingRoutesRoute(
                             finishLabel: item.title,
