@@ -24,7 +24,7 @@ class PoiPhotosHeader extends ConsumerWidget {
     return ValueListenableBuilder(
       valueListenable: expansion,
       builder: (context, expansion, child) => AnimatedCrossFade(
-          crossFadeState: bool || expansion == Expansion.hidden || expansion == Expansion.fullHidePhoto ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          crossFadeState: bool || expansion == Expansion.hidden|| expansion == Expansion.fullHidePhoto ? CrossFadeState.showFirst : CrossFadeState.showSecond,
           firstCurve: Curves.easeInOut,
           secondCurve: Curves.easeInOut,
           sizeCurve: Curves.easeInOut,
@@ -40,7 +40,7 @@ class PoiPhotosHeader extends ConsumerWidget {
                     Expansion.collapsed || Expansion.middle => 100,
                   },
             child: Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.$3x),
+              padding: const EdgeInsets.only(bottom: Spacing.verticalPaddingInsideCell),
               child: PoiPhotosRow(
                 objectId: objectId,
               ),

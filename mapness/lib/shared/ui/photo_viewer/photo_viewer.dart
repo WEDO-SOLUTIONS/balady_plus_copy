@@ -15,6 +15,23 @@ class PhotoViewer extends StatefulWidget {
   final List<String>? photoPaths;
   final int currentPhotoIndex;
 
+  ///Using Navigator instead of Gorouter for prevent rebuild underlying page
+  static Future<Object?> open(
+    BuildContext context,
+    int currentPhotoIndex,
+    List<String> photoPaths,
+  ) {
+    final navigatorState = Navigator.of(context);
+    return navigatorState.push(
+      MaterialPageRoute(
+        builder: (ctx) => PhotoViewer(
+          currentPhotoIndex: currentPhotoIndex,
+          photoPaths: photoPaths,
+        ),
+      ),
+    );
+  }
+
   @override
   State<PhotoViewer> createState() => _PhotoViewerState();
 }
@@ -22,19 +39,19 @@ class PhotoViewer extends StatefulWidget {
 class _PhotoViewerState extends State<PhotoViewer> {
   static const backgroundColor = Color(0xff0B1218);
 
-  late PageController _pageController;
-  late ValueNotifier<bool> _isAppBarVisible;
+  late PageController pageController;
+  late ValueNotifier<bool> isAppBarVisible;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: widget.currentPhotoIndex);
-    _isAppBarVisible = ValueNotifier(true);
+    pageController = PageController(initialPage: widget.currentPhotoIndex);
+    isAppBarVisible = ValueNotifier(true);
   }
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder(
-        valueListenable: _isAppBarVisible,
+        valueListenable: isAppBarVisible,
         builder: (context, isAppBarVisible, child) => Material(
           color: backgroundColor,
           child: Material(
@@ -63,9 +80,9 @@ class _PhotoViewerState extends State<PhotoViewer> {
           ),
         ),
         child: GestureDetector(
-          onTap: () => _isAppBarVisible.value = !_isAppBarVisible.value,
+          onTap: () => isAppBarVisible.value = !isAppBarVisible.value,
           child: Padding(
-            padding: const EdgeInsets.only(top: Spacing.$4x),
+            padding: const EdgeInsets.only(top: NumericBase.$4x),
             child: DecoratedBox(
               decoration: const BoxDecoration(color: backgroundColor),
               child: Stack(
@@ -84,7 +101,7 @@ class _PhotoViewerState extends State<PhotoViewer> {
                     },
                     itemCount: widget.photoPaths?.length ?? 0,
                     backgroundDecoration: const BoxDecoration(color: backgroundColor),
-                    pageController: _pageController,
+                    pageController: pageController,
                   ),
                 ],
               ),

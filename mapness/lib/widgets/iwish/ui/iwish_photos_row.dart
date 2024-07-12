@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
-import 'package:mapness/app/routes/photo_viewer.dart';
+import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 
 class IwishPhotosRow extends StatelessWidget {
   const IwishPhotosRow({required this.photos, super.key});
@@ -37,7 +37,8 @@ class IwishPhotosRow extends StatelessWidget {
                   key: ValueKey(photos[index]),
                   aspectRatio: 1,
                   child: LoadingShimmerImage(
-                    onImageTap: (name, {isAsset}) => PhotoViewerRoute(currentPhotoIndex: index, photoPaths: photos).push(context),
+                    onImageTap: (name, {isAsset}) =>
+                        PhotoViewer.open(context, index, photos),
                     imageUrl: photos[index],
                     fit: BoxFit.cover,
                   ),
