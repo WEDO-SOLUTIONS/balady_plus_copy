@@ -24,7 +24,7 @@ class GetCemetriesParams {
         "burialCityId": burialCityId,
         "burailTimeId": burailTimeId,
         "burialDate": burialDate,
-        "cemeteryTypeId": cemeteryTypeId,
+        if (cemeteryTypeId != 0) "cemeteryTypeId": cemeteryTypeId,
         "isFetus": isFetus,
         "isMuslim": isMuslim,
         "isPandemicDeath": isPandemicDeath,

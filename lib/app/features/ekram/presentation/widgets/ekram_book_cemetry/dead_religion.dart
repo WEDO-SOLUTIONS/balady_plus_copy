@@ -30,6 +30,7 @@ class DeadReligionWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: CustomRadioButtonEnd<bool>(
+                    isDisabled: state.isMuslimEnabled,
                     title: ("muslim").tr(),
                     value: true,
                     currentSelected: state.isMuslim == true,
@@ -43,9 +44,10 @@ class DeadReligionWidget extends StatelessWidget {
                     textSize: 16,
                   ),
                 ),
-                CustomVerticalSpace(height: 10),
+                const CustomVerticalSpace(height: 10),
                 Expanded(
                   child: CustomRadioButtonEnd<bool>(
+                    isDisabled: state.isMuslimEnabled,
                     title: ("non_muslim").tr(),
                     value: true,
                     currentSelected: state.isMuslim == false,

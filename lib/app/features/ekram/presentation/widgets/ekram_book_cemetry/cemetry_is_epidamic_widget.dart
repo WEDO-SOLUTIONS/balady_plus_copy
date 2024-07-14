@@ -26,8 +26,9 @@ class CemetryIsEpidamicWidget extends StatelessWidget {
               textAlign: TextAlign.start,
               fontWeight: AppFontWeight.bold,
             ),
-            CustomVerticalSpace(height: 10),
+            const CustomVerticalSpace(height: 10),
             CustomRadioButtonEnd<bool>(
+              isDisabled: state.isEpidamicEnabled,
               title: ("yes").tr(),
               value: true,
               currentSelected: state.isPandemicDeath == true,
@@ -40,8 +41,9 @@ class CemetryIsEpidamicWidget extends StatelessWidget {
               unSelectedBackgroundColor: Colors.transparent,
               textSize: 16,
             ),
-            CustomVerticalSpace(height: 10),
+            const CustomVerticalSpace(height: 10),
             CustomRadioButtonEnd<bool>(
+              isDisabled: state.isEpidamicEnabled,
               title: ("no").tr(),
               value: true,
               currentSelected: state.isPandemicDeath == false,

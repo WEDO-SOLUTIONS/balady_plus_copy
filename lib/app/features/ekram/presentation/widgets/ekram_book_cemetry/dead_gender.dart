@@ -29,11 +29,12 @@ class DeadGenderWidget extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: CustomRadioButtonEnd<int>(
+                  child: CustomRadioButtonEnd<String>(
+                    isDisabled: state.gender != null ? true : false,
                     title: ("male").tr(),
-                    value: 1,
+                    value: 'MALE',
                     currentSelected: state.gender,
-                    onChange: (int item) {
+                    onChange: (String item) {
                       context
                           .read<EkramBookCemetryBloc>()
                           .add(ChangeGenderEvent(value: item));
@@ -43,13 +44,14 @@ class DeadGenderWidget extends StatelessWidget {
                     textSize: 16,
                   ),
                 ),
-                CustomVerticalSpace(height: 10),
+                const CustomVerticalSpace(height: 10),
                 Expanded(
-                  child: CustomRadioButtonEnd<int>(
+                  child: CustomRadioButtonEnd<String>(
+                    isDisabled: state.gender != null ? true : false,
                     title: ("female").tr(),
-                    value: 2,
+                    value: 'FEMALE',
                     currentSelected: state.gender,
-                    onChange: (int item) {
+                    onChange: (String item) {
                       context
                           .read<EkramBookCemetryBloc>()
                           .add(ChangeGenderEvent(value: item));

@@ -24,6 +24,12 @@ class EkramBookCemetryState extends Equatable {
   final bool? isPandemicDeath;
   final bool? isFetus;
   final bool? isMuslim;
+  //depend on the object coming form the backend
+  final bool isMuslimEnabled;
+  //depend on the object coming form the backend
+  final bool isEpidamicEnabled;
+  //depend on the object coming form the backend
+  final bool isBirthDateEnabled;
 
   final bool? agreement;
   final String? fullName;
@@ -41,26 +47,30 @@ class EkramBookCemetryState extends Equatable {
   final String? otherTimeName;
 
   final String? deceassedId;
+  final int? identityType;
   final String? deceassedDOBGorgian;
   final String? deceassedDOBHijri;
   final UserInfoResponse? userInfoResponse;
-  final int? gender;
+  final String? gender;
   final String? firstName;
   final String? secondName;
   final String? thirdName;
   final String? fourthName;
+  final int? deathCountryId;
+  final int? deathCityId;
 
   //final LookUpItem? selectedHospital;
   // final String? otherHospitalName;
   //final LookUpItem? selectedNationality;
 
-  EkramBookCemetryState(
+  const EkramBookCemetryState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
       this.currentPageValue = 0,
       this.selectedNationalType,
       this.nationalTypes,
       this.deceassedId,
+      this.identityType,
       this.isFetus,
       this.deceassedDOBGorgian,
       this.deceassedDOBHijri,
@@ -85,11 +95,16 @@ class EkramBookCemetryState extends Equatable {
       this.selectedCemetryType,
       this.selectedTime,
       this.isMuslim,
+      this.isMuslimEnabled = false,
+      this.isEpidamicEnabled = false,
+      this.isBirthDateEnabled = false,
       this.gender,
       this.firstName,
       this.secondName,
       this.thirdName,
       this.fourthName,
+      this.deathCityId,
+      this.deathCountryId,
       this.nationalities,
       this.selectedNationality,
       this.countries,
@@ -126,15 +141,21 @@ class EkramBookCemetryState extends Equatable {
     final bool? clearUserInfo,
     final bool? clearOtherBurialTime,
     final Nullable<String?>? deceassedId,
+    final int? identityType,
     final Nullable<String?>? deceassedDOBGorgian,
     final Nullable<String?>? deceassedDOBHijri,
     final UserInfoResponse? userInfoResponse,
     final Nullable<bool?>? isMuslim,
-    final Nullable<int?>? gender,
+    final bool? isMuslimEnabled,
+    final bool? isEpidamicEnabled,
+    final bool? isBirthDateEnabled,
+    final Nullable<String?>? gender,
     final Nullable<String?>? firstName,
     final Nullable<String?>? secondName,
     final Nullable<String?>? thirdName,
     final Nullable<String?>? fourthName,
+    final int? deathCityId,
+    final int? deathCountryId,
     final List<LookUpItem>? nationalities,
     final Nullable<LookUpItem?>? selectedNationality,
     final List<LookUpItem>? countries,
@@ -154,6 +175,7 @@ class EkramBookCemetryState extends Equatable {
         mobileNumber: mobileNumber,
         requestType: requestType,
         deceassedId: deceassedId == null ? this.deceassedId : deceassedId.value,
+        identityType: identityType,
         deceassedDOBGorgian: deceassedDOBGorgian == null
             ? this.deceassedDOBGorgian
             : deceassedDOBGorgian.value,
@@ -184,11 +206,16 @@ class EkramBookCemetryState extends Equatable {
         burialDateGorgian: burialDateGorgian ?? this.burialDateGorgian,
         isPandemicDeath: isPandemicDeath ?? this.isPandemicDeath,
         isMuslim: isMuslim == null ? this.isMuslim : isMuslim.value,
+        isMuslimEnabled: isMuslimEnabled ?? this.isMuslimEnabled,
+        isEpidamicEnabled: isEpidamicEnabled ?? this.isEpidamicEnabled,
+        isBirthDateEnabled: isBirthDateEnabled ?? this.isBirthDateEnabled,
         gender: gender == null ? this.gender : gender.value,
         firstName: firstName == null ? this.firstName : firstName.value,
         secondName: secondName == null ? this.secondName : secondName.value,
         thirdName: thirdName == null ? this.thirdName : thirdName.value,
         fourthName: fourthName == null ? this.fourthName : fourthName.value,
+        deathCityId: deathCityId ?? this.deathCityId,
+        deathCountryId: deathCountryId ?? this.deathCountryId,
         nationalities: nationalities ?? this.nationalities,
         selectedNationality: selectedNationality == null
             ? this.selectedNationality
@@ -227,11 +254,14 @@ class EkramBookCemetryState extends Equatable {
         burialDateGorgian,
         isFetus,
         isMuslim,
+        isMuslimEnabled,
         gender,
         fourthName,
         thirdName,
         secondName,
         firstName,
+        deathCities,
+        countries,
         selectedNationality,
         selectedCountry,
         selectedDeathCity,

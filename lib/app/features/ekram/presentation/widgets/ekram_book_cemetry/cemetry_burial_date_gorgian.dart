@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/services/local/helpers.dart';
 import '../../blocs/ekram_book_cemetry/ekram_book_cemetry_bloc.dart';
@@ -13,7 +14,8 @@ class CemetryBurialDateGorgian extends StatelessWidget {
     return BlocBuilder<EkramBookCemetryBloc, EkramBookCemetryState>(
         builder: (context, state) {
       DateTime today = DateTime.now();
-      DateTime tomrrow = DateTime.now().add(Duration(days: 1));
+
+      DateTime tomrrow = DateTime.now().add(const Duration(days: 1));
 
       return GorgianCalendarDateWidget(
         minValue: today,
