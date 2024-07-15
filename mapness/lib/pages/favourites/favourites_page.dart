@@ -51,8 +51,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     final asyncState = ref.watch(favouriteCacheProvider);
     return asyncState.map(
       error: (error) => ErrorSheet(
-        buttonLabel: context.l10n.reload,
-        onClose: () => ctx.pop(),
+        buttonLabel: context.l10n.tryAgain,
         onRetry: () {
           ref.invalidate(favouriteCacheProvider);
         },
@@ -80,7 +79,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
               },
               child: Row(
                 children: [
-                  Spacing.horizontalPaddingInsideWrapper.widthBox,
+                  Spacing.$4x.widthBox,
                   if (isEditing)
                     Text(
                       ctx.l10n.cancel,
@@ -103,7 +102,6 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                 ],
               ),
             ),
-            // leadingWidth: _defaultActionWidth,
 
             trailing: Row(
               children: [
@@ -134,7 +132,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                       ),
                     ),
                   ),
-                Spacing.horizontalPaddingInsideWrapper.widthBox,
+                Spacing.$4x.widthBox,
               ],
             ),
             textStyle: ctx.textStyle.footNoteBold.copyWith(
@@ -146,13 +144,13 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
           backgroundColor: Colors.white,
           body: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.horizontalPaddingInsideWrapper,
-              vertical: Spacing.verticalPaddingInsideWrapper,
+              horizontal: Spacing.$4x,
+              vertical: Spacing.$4x,
             ),
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(child: FavouritesToggle(isEditing: isEditing)),
-                SliverToBoxAdapter(child: NumericBase.$4x.heightBox),
+                SliverToBoxAdapter(child: Spacing.$4x.heightBox),
                 SliverToBoxAdapter(
                   child: Row(
                     children: [
@@ -203,7 +201,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           ),
                         );
                       }),
-                      NumericBase.$4x.widthBox,
+                      Spacing.$4x.widthBox,
                       Builder(
                         builder: (context) {
                           final work = state.work;
@@ -257,7 +255,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: NumericBase.$4x.heightBox,
+                  child: Spacing.$4x.heightBox,
                 ),
                 if (state.items.isEmpty)
                   SliverToBoxAdapter(
@@ -270,7 +268,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(Spacing.verticalPaddingInsideWrapper),
+                              padding: const EdgeInsets.all(Spacing.$4x),
                               child: Text(
                                 context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
                                 textAlign: TextAlign.center,
@@ -281,9 +279,9 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                left: Spacing.horizontalPaddingInsideWrapper,
-                                right: Spacing.horizontalPaddingInsideWrapper,
-                                bottom: Spacing.verticalPaddingInsideWrapper,
+                                left: Spacing.$4x,
+                                right: Spacing.$4x,
+                                bottom: Spacing.$4x,
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),

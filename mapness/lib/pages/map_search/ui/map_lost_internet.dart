@@ -1,8 +1,6 @@
-import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 
 class MapLostInternet extends StatelessWidget {
   const MapLostInternet({
@@ -13,23 +11,9 @@ class MapLostInternet extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          NumericBase.$12x.heightBox,
-          Text(
-            '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}',
-            style: context.textStyle.text,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              padding: const EdgeInsets.all(NumericBase.$4x),
-              primaryLabel: context.l10n.tryAgain,
-              buttonColorScheme: ButtonColorScheme.primary,
-              onTap: onTap,
-            ),
-          ),
-        ],
+  Widget build(BuildContext context) => BaseErrorWidget(
+        errorLabel: context.l10n.youDontSeemToHaveInternetDescription,
+        buttonLabel: context.l10n.tryAgain,
+        onRetry: onTap,
       );
 }

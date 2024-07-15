@@ -13,7 +13,6 @@ part 'location_required_sheet.g.dart';
   path: '/request_location',
 )
 class LocationErrorSheet extends GoRouteData {
-
   const LocationErrorSheet({this.routeOnClose});
   final String? routeOnClose;
 
@@ -34,13 +33,11 @@ class LocationErrorSheet extends GoRouteData {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: ErrorSheetV2(
-                onClose: () => routeOnClose != null
-                    ? context.go(routeOnClose!)
-                    : context.pop(),
+                onClose: () => routeOnClose != null ? context.go(routeOnClose!) : context.pop(),
                 errorTitle: context.l10n.locationDialogErrorTitle,
                 errorContent: context.l10n.locationDialogErrorContent,
                 buttonLabel: context.l10n.locationDialogButtonLabel,
-                assetImage: 'assets/images/location_required.png',
+                assetImage: 'assets/images_svg/lost_location.svg',
                 package: PackageConfig.packageName,
                 onRetry: () async {
                   if (context.mounted) {
