@@ -72,45 +72,45 @@ class _ChatListState extends State<ChatList> {
             ),
 
             //////////////////////////////////
-            Align(
-            alignment: AlignmentDirectional.topStart,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(RouteName.chatbot);
-                  },
-                  radius: 40,
-                  child: SizedBox(
-                    height: 57,
-                    width: 57,
-                    child: CircleAvatar(
-                      backgroundColor: const Color(0xff1E697F),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            IconPath.chat_bot_icon,
-                            width: 20,
-                            height: 20,
-                          ),
-                          Text(
-                            'chat_bot'.tr(),
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // Align(
+            // alignment: AlignmentDirectional.topStart,
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(16),
+            //     child: InkWell(
+            //       onTap: () {
+            //         Navigator.of(context).pushNamed(RouteName.chatbot);
+            //       },
+            //       radius: 40,
+            //       child: SizedBox(
+            //         height: 57,
+            //         width: 57,
+            //         child: CircleAvatar(
+            //           backgroundColor: const Color(0xff1E697F),
+            //           child: Column(
+            //             mainAxisSize: MainAxisSize.max,
+            //             crossAxisAlignment: CrossAxisAlignment.center,
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: [
+            //               SvgPicture.asset(
+            //                 IconPath.chat_bot_icon,
+            //                 width: 20,
+            //                 height: 20,
+            //               ),
+            //               Text(
+            //                 'chat_bot'.tr(),
+            //                 style: const TextStyle(
+            //                   fontSize: 11,
+            //                   color: Colors.white,
+            //                   fontWeight: FontWeight.w900,
+            //                 ),
+            //               ),
+            //             ],
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
 
           ],
         );

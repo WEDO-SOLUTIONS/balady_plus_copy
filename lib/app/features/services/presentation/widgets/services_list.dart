@@ -67,17 +67,7 @@ class ServicesList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: services
                   .map(
-                    (e) => e.iconName == "chat_bot"
-                        ? Selector<ChatBotProvider, bool>(
-                            selector: (_, provider) =>
-                                provider.isEnabled,
-                            builder: (_, isLoading, __) {
-                              return isLoading
-                                  ? ServiceIcon(service: e)
-                                  : const SizedBox();
-                            },
-                          )
-                        : ServiceIcon(service: e),
+                    (e) => ServiceIcon(service: e),
                   )
                   .toList(),
             ),
