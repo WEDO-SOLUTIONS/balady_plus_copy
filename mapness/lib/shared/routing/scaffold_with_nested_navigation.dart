@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/route_onboarding.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/features/stories/domain/story_types.dart';
-import 'package:mapness/features/stories/stories.dart';
+import 'package:mapness/features/stories_v2/lib/stories.dart';
+import 'package:mapness/features/stories_v2/models/story_types.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -94,24 +94,25 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
             group: _tag,
             action: MetricAction.tap.name,
           );
-          if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
+          final naviEnabled = ref.read(appFeaturesProvider).naviEnabled;
+          if (selected == 2 && naviEnabled) {
             final isShowRoute = await ref.read(routeOnboardingProvider.future);
             if (isShowRoute) {
               _goToPage(selected);
-            } else {
-              if (!mounted) {
-                return;
-              }
-              Stories.showOnboarding(
-                context,
-                StoryTypes.route,
-                'route',
-                onClose: () async {
-                  await ref.read(routeOnboardingProvider.notifier).setShown(true);
-                  _goToPage(selected);
-                },
-              );
+              return;
             }
+            if (!mounted) {
+              return;
+            }
+            Stories.showOnboarding(
+              context,
+              StoryTypes.route,
+              'route',
+              onClose: () async {
+                await ref.read(routeOnboardingProvider.notifier).setShown(true);
+                _goToPage(selected);
+              },
+            );
             return;
           }
           _goToPage(selected);

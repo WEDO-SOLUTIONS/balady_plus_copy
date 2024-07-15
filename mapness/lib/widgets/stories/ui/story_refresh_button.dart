@@ -12,7 +12,7 @@ class StoryRefreshButton extends StatelessWidget {
           buttonColorScheme: ButtonColorScheme.tertiary,
           size: ButtonSize.small,
           primaryIcon: Icons.refresh,
-          innerPadding: const EdgeInsets.all(Spacing.verticalGapBetweenStories),
+          innerPadding: const EdgeInsets.all(Spacing.$2x),
         ),
       );
 }

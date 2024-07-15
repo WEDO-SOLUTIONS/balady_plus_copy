@@ -2,20 +2,19 @@ import 'package:another_transformer_page_view/another_transformer_page_view.dart
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/stories/data/local_stories_service.dart';
-import 'package:mapness/features/stories/data/story_service.dart';
-import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/features/stories/domain/story_data.dart';
-import 'package:mapness/features/stories/domain/story_types.dart';
-import 'package:mapness/features/stories/presentation/frame/story_frames_player.dart';
-
-import 'frame/story_frame_controller.dart';
+import 'package:mapness/features/stories_v2/models/story_data.dart';
+import 'package:mapness/features/stories_v2/models/story_types.dart';
+import 'package:mapness/features/stories_v2/providers/local_stories_service.dart';
+import 'package:mapness/features/stories_v2/providers/story_service.dart';
+import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
+import 'package:mapness/widgets/stories/lib/models/story_frame_controller.dart';
+import 'package:mapness/widgets/stories/ui/story_frames_player.dart';
 
 class StoriesFullscreen extends ConsumerStatefulWidget {
   final VoidCallback onClose;
   final String initialStoryId;
   final StoryTypes? localStoryType;
-  final void Function(String)? handleDeeplink;
+  final ValueChanged<String>? handleDeeplink;
   final bool onActionShowNextStory;
 
   const StoriesFullscreen._({
@@ -29,7 +28,7 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
   factory StoriesFullscreen.story({
     required String initialStoryId,
     required VoidCallback onClose,
-    void Function(String)? handleDeeplink,
+    ValueChanged<String>? handleDeeplink,
   }) =>
       StoriesFullscreen._(
         initialStoryId: initialStoryId,
@@ -40,7 +39,7 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
   factory StoriesFullscreen.onboadring({
     required String initialStoryId,
     required VoidCallback onClose,
-    void Function(String)? handleDeeplink,
+    ValueChanged<String>? handleDeeplink,
     StoryTypes? localStoryType,
     bool? onActionShowNextHistory,
   }) =>
@@ -88,7 +87,9 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
       }
       if (_indexController.event == IndexController.nextEvent) {
         _setCurrentPage(_currentPage + 1);
-      } else if (_indexController.event == IndexController.previousEvent) {
+        return;
+      }
+      if (_indexController.event == IndexController.previousEvent) {
         _setCurrentPage(_currentPage - 1);
       }
     });
@@ -106,7 +107,6 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     ref.read(storyServiceProvider.notifier).pauseUpdate();
   }
 
@@ -122,10 +122,16 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
     _currentPageNotifier.value = _currentPage;
   }
 
+  Future<List<StoryData>> _loadStories() {
+    if (widget.localStoryType?.file != null) {
+      return ref.read(localStoriesServiceProvider(widget.localStoryType!.file).future);
+    }
+    return ref.read(storyServiceProvider.future);
+  }
+
   Future<List<StoryData>> _initStories() async {
-    final stories = (widget.localStoryType?.file != null
-        ? await ref.read(localStoriesServiceProvider(widget.localStoryType!.file).future)
-        : await ref.read(storyServiceProvider.future));
+    final List<StoryData> stories = await _loadStories();
+
     final index = stories.indexWhere(
       (element) => element.storyId == widget.initialStoryId,
     );
@@ -155,7 +161,9 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
   void _onActionPressed(StoryFrameAction action, BuildContext context) {
     if (widget.onActionShowNextStory) {
       _storyFrameController.nextPage?.call();
-    } else if (widget.handleDeeplink != null) {
+      return;
+    }
+    if (widget.handleDeeplink != null) {
       widget.handleDeeplink?.call(action.deeplinkUrl);
       _onClose();
     }
@@ -167,48 +175,46 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
   }
 
   @override
-  Widget build(BuildContext context) {
-    const blank = SizedBox.shrink();
-
-    return FutureBuilder<List<StoryData>>(
-      future: _initStories(),
-      builder: (context, snapshot) {
-        final stories = snapshot.data ?? const [];
-        return !snapshot.hasData
-            ? blank
-            : Material(
-                color: context.color.surfaceBaseInversePrimary,
-                child: Directionality(
-                  textDirection: Directionality.of(context),
-                  child: ValueListenableBuilder(
-                    valueListenable: _currentPageNotifier,
-                    builder: (context, page, _) => TransformerPageView(
-                      onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
-                      index: page,
-                      controller: _indexController,
-                      transformer: DepthPageTransformer(isRtl: Directionality.of(context) == TextDirection.rtl),
-                      itemCount: stories.length,
-                      itemBuilder: (context, index) => StoryFramesPlayer(
-                        controller: _storyFrameController,
-                        onActionPressed: (action) => _onActionPressed(action, context),
-                        story: stories[index],
-                        onNextStory: _nextStory,
-                        onPreviousStory: _previousStory,
-                        onClose: _onClose,
-                      ),
-                    ),
+  Widget build(BuildContext context) => FutureBuilder<List<StoryData>>(
+        future: _initStories(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const SizedBox.shrink();
+          }
+          final stories = snapshot.data ?? const [];
+          final textDirection = Directionality.of(context);
+          return Material(
+            color: context.color.surfaceBaseInversePrimary,
+            child: Directionality(
+              textDirection: textDirection,
+              child: ValueListenableBuilder(
+                valueListenable: _currentPageNotifier,
+                builder: (context, page, _) => TransformerPageView(
+                  onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
+                  index: page,
+                  controller: _indexController,
+                  transformer: _DepthPageTransformer(isRtl: textDirection == TextDirection.rtl),
+                  itemCount: stories.length,
+                  itemBuilder: (context, index) => StoryFramesPlayer(
+                    controller: _storyFrameController,
+                    onActionPressed: (action) => _onActionPressed(action, context),
+                    story: stories[index],
+                    onNextStory: _nextStory,
+                    onPreviousStory: _previousStory,
+                    onClose: _onClose,
                   ),
                 ),
-              );
-      },
-    );
-  }
+              ),
+            ),
+          );
+        },
+      );
 }
 
-class DepthPageTransformer extends PageTransformer {
+class _DepthPageTransformer extends PageTransformer {
   final bool isRtl;
 
-  DepthPageTransformer({this.isRtl = false}) : super(reverse: false);
+  _DepthPageTransformer({this.isRtl = false}) : super(reverse: false);
 
   @override
   Widget transform(Widget child, TransformInfo info) {
@@ -225,7 +231,8 @@ class DepthPageTransformer extends PageTransformer {
           ),
         ),
       );
-    } else if (position >= -1) {
+    }
+    if (position >= -1) {
       const minScale = 0.75;
       // Scale the page down (between minScale and 1)
       final scaleFactor = minScale + (1 - minScale) * (1 + position);

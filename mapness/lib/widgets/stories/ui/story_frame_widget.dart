@@ -2,13 +2,13 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
-import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
-import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
-import 'package:mapness/features/stories/helper/locale_helper.dart';
-import 'package:mapness/features/stories/presentation/frame/frame_progress_indicator.dart';
-import 'package:mapness/features/stories/presentation/frame/story_frame_content.dart';
-import 'package:mapness/features/stories/presentation/frame/story_frame_controller.dart';
+import 'package:mapness/features/stories_v2/models/story_frame_data.dart';
+import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
+import 'package:mapness/widgets/stories/lib/models/story_frame_controller.dart';
+import 'package:mapness/widgets/stories/lib/models/story_thumbnail_data.dart';
+import 'package:mapness/widgets/stories/ui/frame_progress_indicator.dart';
+import 'package:mapness/widgets/stories/ui/story_frame_content.dart';
+import 'package:mapness/widgets/stories/ui/story_localization.dart';
 
 class StoryFrameWidget extends StatefulWidget {
   final StoryFrameData frame;
@@ -51,13 +51,16 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
 
   late bool _isLoading = _frame.isAssetImage == false;
 
-  String _keyToLocale(String key) => switch (key) {
-        'next' => StoryLocalization.of(context)?.l10n.next ?? '',
-        'try_now' => StoryLocalization.of(context)?.l10n.tryNow ?? '',
-        'build_route' => StoryLocalization.of(context)?.l10n.buildRoute ?? '',
-        'open_services' => StoryLocalization.of(context)?.l10n.openServices ?? '',
-        _ => ''
-      };
+  String _keyToLocale(String key) {
+    final locale = StoryLocalization.of(context).locale;
+    return switch (key) {
+      'next' => locale.next,
+      'try_now' => locale.tryNow,
+      'build_route' => locale.buildRoute,
+      'open_services' => locale.openServices,
+      _ => ''
+    };
+  }
 
   String get _actionTitleOrFailback {
     final action = widget.frame.action;
@@ -70,12 +73,8 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
   }
 
   void _onProgressListener() {
-    switch (_progress.status) {
-      case AnimationStatus.completed:
-        _onNext();
-      // ignore: no_default_cases
-      default:
-        break;
+    if (_progress.status == AnimationStatus.completed) {
+      _onNext();
     }
   }
 
@@ -162,10 +161,10 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
   void _onTapUp(VoidCallback action) {
     if (DateTime.now().difference(_lastTap) < const Duration(milliseconds: 150)) {
       action();
-    } else {
-      _resumeProgress();
-      _lastTap = DateTime.now();
+      return;
     }
+    _resumeProgress();
+    _lastTap = DateTime.now();
   }
 
   void _onActionPressed() {
@@ -204,7 +203,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                           child: Loading.large(
                             style: Brightness.light,
                             orientation: Axis.vertical,
-                            title: StoryLocalization.of(context)?.l10n.loading,
+                            title: StoryLocalization.of(context).locale.loading,
                           ),
                         ),
                       ),
@@ -212,7 +211,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                   ),
                   Positioned(
                     child: Container(
-                      height: MediaQuery.of(context).size.height / 2,
+                      height: MediaQuery.sizeOf(context).height / 2,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         gradient: widget.frame.hasGradient
@@ -236,14 +235,14 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                     Row(
                       children: [
                         Expanded(
-                          flex: 30,
+                          flex: 3,
                           child: GestureDetector(
                             onTapDown: _onTapDown,
                             onTapUp: (_) => _onTapUp(_onPrevious),
                           ),
                         ),
                         Expanded(
-                          flex: 70,
+                          flex: 7,
                           child: GestureDetector(
                             onTapDown: _onTapDown,
                             onTapUp: (_) => _onTapUp(_onNext),

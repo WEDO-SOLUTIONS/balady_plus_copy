@@ -5,7 +5,7 @@ class StoryTextStyle {
   final double? fontSize;
   final double? height;
 
-  StoryTextStyle({
+  const StoryTextStyle({
     this.fontSize,
     this.color,
     this.height,

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:mapness/features/stories/domain/stories_map.dart';
-import 'package:mapness/features/stories/domain/story_data.dart';
+import 'package:mapness/features/stories_v2/models/stories_map.dart';
+import 'package:mapness/features/stories_v2/models/story_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'local_stories_service.g.dart';

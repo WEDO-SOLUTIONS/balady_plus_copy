@@ -7,7 +7,7 @@ class StoryThumbnailData {
   final Color? animationColor;
   final Color? closeButtonColor;
 
-  StoryThumbnailData({
+  const StoryThumbnailData({
     required this.title,
     required this.imageUrl,
     this.backgroundColor,

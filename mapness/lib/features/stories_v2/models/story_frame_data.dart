@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
+import 'package:mapness/widgets/stories/lib/models/story_text_style.dart';
 
 extension StoryFrameDataX on StoryFrameData {
   String titleOrFailback(AppLocalizations locale) => switch (storyId) {
@@ -21,7 +21,7 @@ extension StoryFrameDataX on StoryFrameData {
         'onboarding1' => locale.onboardingBaladyAppDescription,
         'onboarding2' => locale.onboardingNavigationDescription,
         'onboarding3' => locale.onboardingGovServiceDescription,
-        _ => description,
+        _ => null,
       };
 }
 

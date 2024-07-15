@@ -25,8 +25,8 @@ import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/features/stories/data/story_service.dart';
-import 'package:mapness/features/stories/stories.dart';
+import 'package:mapness/features/stories_v2/lib/stories.dart';
+import 'package:mapness/features/stories_v2/providers/story_service.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -91,10 +91,22 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
       });
 
     final direction = ref.watch(uiDirectionProvider);
+    bool canPop() {
+      if (Stories.isShowing) {
+        return false;
+      }
+      return true;
+    }
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: canPop(),
+      onPopInvoked: (value) {
         if (Stories.isShowing) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.storiesClose,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
           Metrics.logEventAdvanced(
             MetricsConstants.exploreKeys.storiesClose,
             action: MetricAction.tap.name,
@@ -104,9 +116,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           //Resume the story update when viewport changed
           ref.read(storyServiceProvider.notifier).resumeUpdate();
           Stories.hide();
-          return false;
         }
-        return true;
       },
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {

@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/stories/data/story_service.dart';
-import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/features/stories/domain/story_data.dart';
-import 'package:mapness/features/stories/presentation/frame/story_frame_controller.dart';
-import 'package:mapness/features/stories/presentation/frame/story_frame_widget.dart';
+import 'package:mapness/features/stories_v2/models/story_data.dart';
+import 'package:mapness/features/stories_v2/providers/story_service.dart';
+import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
+import 'package:mapness/widgets/stories/lib/models/story_frame_controller.dart';
+import 'package:mapness/widgets/stories/ui/story_frame_widget.dart';
 
 class StoryFramesPlayer extends ConsumerStatefulWidget {
   final StoryFrameController? controller;
@@ -66,21 +66,23 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       widget.onPreviousStory();
       return;
     }
+    if (currentIndex - 1 < 0) {
+      return;
+    }
     setState(() {
-      currentIndex = max(currentIndex - 1, 0);
+      currentIndex = currentIndex - 1;
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final frames = widget.story.frames;
-    for (var i = currentIndex; i < frames.length; i++) {
-      if (frames[i].isAssetImage == true) {
+    for (final frame in widget.story.frames) {
+      if (frame.isAssetImage == true) {
         continue;
       }
       // Preload images for better performance
-      CachedNetworkImageProvider(frames[i].imageUrl).resolve(ImageConfiguration.empty);
+      CachedNetworkImageProvider(frame.imageUrl).resolve(ImageConfiguration.empty);
     }
   }
 

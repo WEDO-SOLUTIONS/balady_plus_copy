@@ -5,15 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
-import 'package:mapness/features/stories/data/story_service.dart';
-import 'package:mapness/features/stories/domain/story_types.dart';
-import 'package:mapness/features/stories/presentation/frame/dismissible_overlay.dart';
-import 'package:mapness/features/stories/presentation/stories_fullscreen.dart';
-import 'package:mapness/features/stories/presentation/story_localizations.dart';
+import 'package:mapness/features/stories_v2/models/story_types.dart';
+import 'package:mapness/features/stories_v2/providers/story_service.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/stories/ui/dismissible_overlay.dart';
+import 'package:mapness/widgets/stories/ui/stories_fullscreen.dart';
+import 'package:mapness/widgets/stories/ui/story_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'helper/locale_helper.dart';
 
 class Stories {
   static OverlayEntry? _overlayEntry;
@@ -36,7 +34,7 @@ class Stories {
 
   static void showStory(BuildContext context, Widget storyWidget) {
     _overlayEntry = OverlayEntry(
-      builder: (_) => StoryLocalizations(
+      builder: (_) => StoryLocalization(
         locale: context.l10n,
         child: Directionality(
           textDirection: Directionality.of(context),
@@ -67,17 +65,19 @@ class Stories {
     void handleDeeplink(String url) {
       if (url.startsWith('/')) {
         router.push(url);
-      } else if (url.startsWith('https://www.joodeskan.sa/')) {
+        return;
+      }
+      if (url.startsWith('https://www.joodeskan.sa/')) {
         NavigationService.navigatorKey.currentState?.pushNamed(
           RouteName.jodDonationPage,
         );
-      } else {
-        launchUrl(Uri.parse(url));
+        return;
       }
+      launchUrl(Uri.parse(url));
     }
 
     final storyWidget = StoryLocalization(
-      l10n: context.l10n,
+      locale: context.l10n,
       child: StoriesFullscreen.story(
         onClose: () => _transitionState.currentState?.dismiss(),
         initialStoryId: id,
@@ -122,7 +122,7 @@ class Stories {
     }
 
     final storyWidget = StoryLocalization(
-      l10n: context.l10n,
+      locale: context.l10n,
       child: StoriesFullscreen.onboadring(
         localStoryType: type,
         initialStoryId: id,

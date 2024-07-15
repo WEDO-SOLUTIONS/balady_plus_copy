@@ -1,9 +1,8 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
-import 'package:mapness/features/stories/presentation/story_localizations.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/features/stories_v2/models/story_frame_data.dart';
+import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
+import 'package:mapness/widgets/stories/ui/story_localization.dart';
 
 class StoryFrameContent extends StatelessWidget {
   final StoryFrameData frame;
@@ -17,7 +16,7 @@ class StoryFrameContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = StoryLocalizations.of(context)!.locale;
+    final l10n = StoryLocalization.of(context).locale;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: frame.horizontalPadding),
@@ -50,7 +49,11 @@ class StoryFrameContent extends StatelessWidget {
                 height: frame.descriptionStyle?.height,
               ),
             ),
-          if (frame.additionalContent != null) ...frame.additionalContent!(context, onActionPressed),
+          if (frame.additionalContent != null)
+            ...frame.additionalContent!(
+              context,
+              onActionPressed,
+            ),
         ],
       ),
     );

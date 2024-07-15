@@ -3,17 +3,17 @@ import 'package:balady_uikit/core/colors/colors_v2/colors_v2.dart';
 import 'package:balady_uikit/core/colors/colors_v2/core/base.dart';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
-import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
-import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
-import 'package:mapness/features/stories/domain/story_action.dart';
-import 'package:mapness/features/stories/domain/story_data.dart';
-import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
+import 'package:mapness/features/stories_v2/models/story_data.dart';
+import 'package:mapness/features/stories_v2/models/story_frame_data.dart';
+import 'package:mapness/widgets/stories/lib/models/story_action.dart';
+import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
+import 'package:mapness/widgets/stories/lib/models/story_text_style.dart';
+import 'package:mapness/widgets/stories/lib/models/story_thumbnail_data.dart';
 
 class StoriesMap {
   static final stories = {
     'route': [
-      StoryData(
+      const StoryData(
         storyId: 'route0',
         thumbnail: StoryThumbnailData(
           title: 'Route',
@@ -89,10 +89,10 @@ class StoriesMap {
           closeButtonColor: BaseColors.neutral.withOpacity(0.1),
         ),
         frames: [
-          StoryFrameData(
+          const StoryFrameData(
             storyId: 'onboarding1',
             title: 'Balady is a map centric app with business services',
-            description: 'Places, navigation, traffic situation and governmental services',
+            description: 'Places, navigation, traffic situationand governmental services',
             imageUrl: '',
             isWatched: false,
             isAssetImage: true,
@@ -109,7 +109,7 @@ class StoriesMap {
             ),
             horizontalPadding: 35,
           ),
-          StoryFrameData(
+          const StoryFrameData(
             storyId: 'onboarding2',
             title: 'Navigation for cars and pedestrians ',
             description: 'Find places, build a route, enable voice over instructions and see live traffic',
@@ -147,12 +147,12 @@ class StoriesMap {
             isWatched: false,
             isAssetImage: true,
             duration: 10,
-            titleStyle: StoryTextStyle(
+            titleStyle: const StoryTextStyle(
               color: AppColor.black,
               fontSize: 24,
               height: 30 / 24,
             ),
-            descriptionStyle: StoryTextStyle(
+            descriptionStyle: const StoryTextStyle(
               color: DefaultColors.neutral990,
               fontSize: 16,
               height: 20 / 16,
@@ -176,7 +176,7 @@ class StoriesMap {
               ),
               const SizedBox(height: 24),
             ],
-            action: LocaleKeyFrameAction(
+            action: const LocaleKeyFrameAction(
               deeplinkUrl: '/bottomNavBar/services',
               action: StoryAction.next,
               titleLocaleKey: 'open_services',
