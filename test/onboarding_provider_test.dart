@@ -2,23 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/shared/providers/onboarding.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:mapness/shared/test_utils/mock_shared_prefs.dart';
 
-class MockSharedPrefs extends Mock implements SharedPreferences {
-  bool? isOnboardingShown;
-
-  @override
-  Future<bool> setBool(String key, bool value) {
-    isOnboardingShown = value;
-    return Future<bool>.value(true);
-  }
-
-  @override
-  bool? getBool(String key){
-    return isOnboardingShown;
-  }
-}
 
 class Listener<T> extends Mock {
   void call(T? previous, T next);
@@ -51,12 +37,17 @@ void main() {
     verify(
           () => listener(null, false),
     );
+    final notifier =  container.read(onboardingProvider.notifier);
 
-    container.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
+    notifier.setIsOnboardingShown(isOnboardingShown: true);
 
     verify(
           () => listener(false, true),
     );
+    
+    expect(() => notifier.setIsOnboardingShown(isOnboardingShown: true), isA<void>());
+
+    verifyNoMoreInteractions(listener);
   });
 
 }
