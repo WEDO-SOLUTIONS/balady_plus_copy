@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,11 +53,18 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 }
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
+  static const controlsBottomExtent = 136.0;
+  static const middleHeightFraction = 0.7;
+
   List<RoutePoint> points = [
     RoutePointMyLocation(),
     RoutePointDirectoryObject(null),
   ];
-  StreamSubscription<TapEvent>? _streamSubscription;
+
+  /// Subscribes to object tap events on the map
+  StreamSubscription<TapEvent>? _objectTapStreamSubscription;
+
+  /// Bottom sheet controller
   late final DgisBottomSheetController dgisBottomSheetController;
 
   @override
@@ -68,7 +76,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   @override
   void deactivate() {
-    _streamSubscription?.cancel();
+    _objectTapStreamSubscription?.cancel();
     super.deactivate();
   }
 
@@ -87,6 +95,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
+    final initialExpansion = widget.collapseInitially ? Expansion.collapsed : Expansion.middle;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
@@ -94,7 +103,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
         child: Stack(
           children: [
             const RoutingMapControls(
-              bottomExtent: 136,
+              bottomExtent: controlsBottomExtent,
             ),
             DgisBottomSheet(
               controller: dgisBottomSheetController,
@@ -104,23 +113,23 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                 Expansion.expanded,
                 Expansion.middle,
               },
-              initialExpansion: widget.collapseInitially ? Expansion.collapsed : Expansion.middle,
-              middleHeight: 0.7 * widget.biggestHeight,
-              collapsedHeight: 136,
+              initialExpansion: initialExpansion,
+              middleHeight: middleHeightFraction * widget.biggestHeight,
+              collapsedHeight: controlsBottomExtent,
               scrollableBody: (context, scrollController) => Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(RadiusBorder.xl),
+                    topLeft: Radius.circular(RadiusBorder.xl),
                   ),
                 ),
                 child: Material(
                   borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(RadiusBorder.xl),
+                    topLeft: Radius.circular(RadiusBorder.xl),
                   ),
-                  color: NonThemeColor.color11,
+                  color: context.color.surfaceBaseSecondary,
                   child: CustomScrollView(
                     controller: scrollController,
                     keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -150,10 +159,8 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     );
   }
 
-  void _updatePoints(List<RoutePoint> newPoitns) {
-    setState(() {
-      points = newPoitns;
-    });
+  void _updatePoints(List<RoutePoint> newPoints) {
+    setState(() => points = newPoints);
     _showRoute();
   }
 
@@ -206,7 +213,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   Future<void> _setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    _streamSubscription = dgisController.objectTapEvents.listen(
+    _objectTapStreamSubscription = dgisController.objectTapEvents.listen(
       _tapListener,
     );
   }
@@ -226,10 +233,9 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
         case Expansion.fullHidePhoto:
           break;
       }
-    if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
-      return;
-    }
+      if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
+        return;
+      }
     }
   }
-
 }
