@@ -201,6 +201,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final language = ref.watch(appLanguageProvider);
     final photos = ref.watch(poiPhotoProvider(objectId));
     final poiActions = ref.read(poiCardActionsProvider.notifier);
+    final address = data.address;
 
     return BackdropFilter(
       filter: switch (_expansion.value) {
@@ -220,7 +221,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             Expansion.hidden,
           },
           initialExpansion: Expansion.collapsed,
-          collapsedHeight: sheetSizes.collapsedHeight + (photos.hasValue == true ? 100.0 : .0),
+          collapsedHeight:
+              sheetSizes.collapsedHeight + (address != null ? 20 : 0) + (photos.hasValue == true ? 100.0 : .0),
           hiddenHeight: sheetSizes.hiddenHeight,
           controller: _bottomSheetController,
           mapControlsBuilder: (context, bottomSheetSize, biggestHeight, smallestHeight) => PoiCardMapControls(
