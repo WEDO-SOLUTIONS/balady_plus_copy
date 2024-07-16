@@ -9,8 +9,22 @@ class _Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         width: double.infinity,
-        color: Colors.white,
-        padding: const EdgeInsets.all(PoiCardFooter.padding),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              offset: const Offset(0, -1),
+              blurRadius: 2,
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.only(
+          left: PoiCardFooter.padding,
+          right: PoiCardFooter.padding,
+          bottom: PoiCardFooter.padding,
+          top: 12,
+        ),
         child: SafeArea(
           top: false,
           child: SizedBox(
