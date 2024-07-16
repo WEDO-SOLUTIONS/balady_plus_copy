@@ -73,12 +73,10 @@ class PoiHeader extends ConsumerWidget {
                       maxLines: 2,
                       textAlign: TextAlign.start,
                     ),
-                    Text(
-                      subTitle,
-                      style: subTitleTextStyle,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      textAlign: TextAlign.start,
+                    _SubTitle(
+                      subTitle: subTitle,
+                      subTitleTextStyle: subTitleTextStyle,
+                      tabController: tabController,
                     ),
                   ],
                 ),
@@ -127,4 +125,49 @@ class PoiHeader extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _SubTitle extends StatefulWidget {
+  const _SubTitle({
+    required this.subTitle,
+    required this.subTitleTextStyle,
+    required this.tabController,
+    Key? key,
+  }) : super(key: key);
+
+  final String subTitle;
+  final TextStyle subTitleTextStyle;
+  final TabController tabController;
+
+  @override
+  State<_SubTitle> createState() => _SubTitleState();
+}
+
+class _SubTitleState extends State<_SubTitle> {
+  var _isShowSubTitle = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.tabController.addListener(() {
+      if (!widget.tabController.indexIsChanging) {
+        setState(() {
+          _isShowSubTitle = widget.tabController.index == 0;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedOpacity(
+        duration: const Duration(milliseconds: 250),
+        opacity: _isShowSubTitle ? 1 : 0,
+        child: Text(
+          widget.subTitle,
+          style: widget.subTitleTextStyle,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          textAlign: TextAlign.start,
+        ),
+      );
 }
