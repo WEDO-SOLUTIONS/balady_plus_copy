@@ -205,7 +205,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     return BackdropFilter(
       filter: switch (_expansion.value) {
-        Expansion.expanded => ColorFilter.mode(Colors.black.withAlpha(90), BlendMode.screen),
+        Expansion.expanded || Expansion.fullHidePhoto => ColorFilter.mode(Colors.black.withAlpha(90), BlendMode.screen),
         _ => const ColorFilter.mode(Colors.transparent, BlendMode.screen),
       },
       child: Directionality(
