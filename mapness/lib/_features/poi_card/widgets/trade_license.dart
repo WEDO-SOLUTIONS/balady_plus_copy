@@ -3,7 +3,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TradeLicense extends StatelessWidget {
@@ -12,36 +11,40 @@ class TradeLicense extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = tradeLicense?.license ?? '11234567898765432';
+    final title = tradeLicense?.license ?? '1123-456-7898-76';
     final subtitle = context.l10n.tinId;
+
     return CardContent(
       child: Column(
         children: [
           Row(
             children: [
               SvgPicture.asset(
-                'assets/icons/svg/ic_info_circle.svg',
-                package: PackageConfig.packageName,
+                'assets/icons/svg/ic_info_circle_2.svg',
                 height: 24,
                 width: 24,
               ),
               const SizedBox(
-                width: 8,
+                width: 14,
               ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
                     style: TextStyle(
-                      color: context.color.textAndIconsBasePrimary.withAlpha(125),
-                      fontSize: 14,
+                      color: context.color.textAndIconsBasePrimary,
+                      fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
+                  ),
+                  const SizedBox(
+                    height: 2,
                   ),
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: context.color.textAndIconsBasePrimary.withAlpha(125),
+                      color: context.color.textAndIconsBaseSecondary,
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),
