@@ -1,6 +1,6 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/features/stories_v2/models/story_frame_data.dart';
+import 'package:mapness/features/stories/models/story_frame_data.dart';
 import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
 import 'package:mapness/widgets/stories/ui/story_localization.dart';
 

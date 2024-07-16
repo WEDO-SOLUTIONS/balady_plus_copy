@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:balady_uikit/balady_uikit.dart' show Spacing, Stories;
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
-import 'package:mapness/features/stories_v2/models/story_data.dart';
+import 'package:mapness/features/stories/models/story_data.dart';
 
 /// A row of stories displayed in a horizontal scrollable list.
 class StoriesRow extends StatelessWidget {

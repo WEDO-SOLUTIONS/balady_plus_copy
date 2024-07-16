@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:hive/hive.dart';
-import 'package:mapness/features/stories_v2/models/story_data.dart';
-import 'package:mapness/features/stories_v2/providers/stories_repo.dart';
+import 'package:mapness/features/stories/models/story_data.dart';
+import 'package:mapness/features/stories/providers/stories_repo.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/widgets/stories/mappers/network_story_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

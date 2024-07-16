@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/features/stories/lib/stories.dart' as st;
+import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -34,12 +36,12 @@ class ProfilePage extends ConsumerWidget {
           );
     final userData = ref.watch(authProvider);
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) {
         StatefulNavigationShell.of(context).goBranch(
           ref.read(appFeaturesProvider).naviEnabled ? 3 : 2,
         );
-        return false;
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -58,7 +60,7 @@ class ProfilePage extends ConsumerWidget {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.horizontalPaddingInsideWrapper,
+                        horizontal: Spacing.$4x,
                       ),
                       child: userData.maybeWhen(
                         orElse: () => UnautorizedProfile(
@@ -77,13 +79,13 @@ class ProfilePage extends ConsumerWidget {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.horizontalPaddingInsideWrapper,
+                        horizontal: Spacing.$4x,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
+                            height: Spacing.$4x,
                           ),
                           ContentWrapper(
                             color: context.color.surfaceBaseSecondary,
@@ -128,7 +130,7 @@ class ProfilePage extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
+                            height: Spacing.$4x,
                           ),
                           ContentWrapper(
                             color: context.color.surfaceBaseSecondary,
@@ -181,7 +183,7 @@ class ProfilePage extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
+                            height: Spacing.$4x,
                           ),
                           userData.maybeWhen(
                             orElse: () => const SizedBox.shrink(),
@@ -212,6 +214,19 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  SliverToBoxAdapter(
+                      child: AppButton(
+                    primaryLabel: 'Test',
+                    onTap: () {
+                      st.Stories.showOnboarding(
+                        context,
+                        StoryTypes.onboarding,
+                        'onboarding',
+                        onActionShowNextHistory: false,
+                      );
+                    },
+                    buttonColorScheme: ButtonColorScheme.primary,
+                  )),
                 ],
               ),
             ),

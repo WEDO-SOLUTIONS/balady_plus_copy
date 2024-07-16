@@ -1,4 +1,4 @@
-import 'package:mapness/features/stories_v2/models/story_frame_data.dart';
+import 'package:mapness/features/stories/models/story_frame_data.dart';
 import 'package:mapness/widgets/stories/lib/models/story_thumbnail_data.dart';
 
 class StoryData {
