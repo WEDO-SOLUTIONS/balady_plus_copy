@@ -74,25 +74,27 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
         ),
         Tab(
           iconMargin: EdgeInsets.zero,
-          child: _PoiTabItem(
-            title: context.l10n.photos,
-            count: photoCount,
-            onTap: () {
-              if (photoCount == 0) {
-                widget.tabController.index = widget.tabController.previousIndex;
-                return;
-              }
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
-                  group: MetricsConstants.poiTag,
-                  action: MetricAction.tap.toString(),
-                  props: {
-                    'tab': context.l10n.photos,
-                  });
+          child: photoCount > 0
+              ? _PoiTabItem(
+                  title: context.l10n.photos,
+                  count: photoCount,
+                  onTap: () {
+                    if (photoCount == 0) {
+                      widget.tabController.index = widget.tabController.previousIndex;
+                      return;
+                    }
+                    Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
+                        group: MetricsConstants.poiTag,
+                        action: MetricAction.tap.toString(),
+                        props: {
+                          'tab': context.l10n.photos,
+                        });
 
-              widget.tabController.animateTo(1);
-            },
-            isActive: widget.tabController.index == 1,
-          ),
+                    widget.tabController.animateTo(1);
+                  },
+                  isActive: widget.tabController.index == 1,
+                )
+              : const SizedBox.shrink(),
         ),
         Tab(
           iconMargin: EdgeInsets.zero,
