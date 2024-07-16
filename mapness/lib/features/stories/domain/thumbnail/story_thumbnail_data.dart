@@ -3,14 +3,14 @@ import 'dart:ui';
 class StoryThumbnailData {
   final String title;
   final String imageUrl;
-  final Color? backgroundColor;
+  final Color? linearTrackColor;
   final Color? animationColor;
   final Color? closeButtonColor;
 
   StoryThumbnailData({
     required this.title,
     required this.imageUrl,
-    this.backgroundColor,
+    this.linearTrackColor,
     this.animationColor,
     this.closeButtonColor,
   });
@@ -18,14 +18,14 @@ class StoryThumbnailData {
   StoryThumbnailData copyWith({
     String? title,
     String? imageUrl,
-    Color? backgroundColor,
+    Color? linearTrackColor,
     Color? animationColor,
     Color? closeButtonColor,
   }) =>
       StoryThumbnailData(
         title: title ?? this.title,
         imageUrl: imageUrl ?? this.imageUrl,
-        backgroundColor: backgroundColor ?? this.backgroundColor,
+        linearTrackColor: linearTrackColor ?? this.linearTrackColor,
         animationColor: animationColor ?? this.animationColor,
         closeButtonColor: closeButtonColor ?? this.closeButtonColor,
       );

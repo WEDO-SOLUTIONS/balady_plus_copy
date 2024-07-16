@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
 import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
@@ -9,6 +8,7 @@ import 'package:mapness/features/stories/helper/locale_helper.dart';
 import 'package:mapness/features/stories/presentation/frame/frame_progress_indicator.dart';
 import 'package:mapness/features/stories/presentation/frame/story_frame_content.dart';
 import 'package:mapness/features/stories/presentation/frame/story_frame_controller.dart';
+import 'package:mapness/shared/ui/loading_image/loading_image.dart';
 
 class StoryFrameWidget extends StatefulWidget {
   final StoryFrameData frame;
@@ -59,7 +59,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
         _ => ''
       };
 
-  String get _actionTitleOrFailback {
+  String get _actionTitleOrFallback {
     final action = widget.frame.action;
     return switch (action) {
       VerbatimStoryFrameAction() => action.title,
@@ -240,6 +240,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                           child: GestureDetector(
                             onTapDown: _onTapDown,
                             onTapUp: (_) => _onTapUp(_onPrevious),
+                            onHorizontalDragStart: (_) => _onTapUp(_onPrevious),
                           ),
                         ),
                         Expanded(
@@ -247,6 +248,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                           child: GestureDetector(
                             onTapDown: _onTapDown,
                             onTapUp: (_) => _onTapUp(_onNext),
+                            onHorizontalDragStart: (_) => _onTapUp(_onNext),
                           ),
                         ),
                       ],
@@ -292,7 +294,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                                 widget.frame.action?.textStyle?.color == null
                             ? ButtonColorScheme.primary
                             : ButtonColorScheme.onColor,
-                        primaryLabel: _actionTitleOrFailback,
+                        primaryLabel: _actionTitleOrFallback,
                         onTap: _onActionPressed,
                       ),
                     ),

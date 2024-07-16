@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +10,7 @@ import 'package:mapness/features/stories/presentation/frame/dismissible_overlay.
 import 'package:mapness/features/stories/presentation/stories_fullscreen.dart';
 import 'package:mapness/features/stories/presentation/story_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/routing/bottom_nav_bar_mapper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'helper/locale_helper.dart';
@@ -97,25 +97,10 @@ class Stories {
     StatefulNavigationShell? navigationShell,
   }) {
     void handleDeeplink(String url) {
-      const pageTitle = {
-        0: 'profile',
-        1: 'services',
-        2: 'route',
-        3: 'explore',
-      };
-
       final router = GoRouter.of(rootNavigatorKey.currentContext!);
 
-      if (url.startsWith('/bottomNavBar')) {
-        pageTitle.map((key, value) {
-          if (url.contains(value)) {
-            navigationShell?.goBranch(key);
-            if (url.contains('/snap_and_send')) {
-              CommonFunctions.openSnapAndSend();
-            }
-          }
-          return MapEntry(key, value);
-        });
+      if (url.startsWith(RouteName.bottomNavigation)) {
+        navigationShell?.mapDeeplinkToBottomNavBar(url);
       } else {
         router.push(url);
       }

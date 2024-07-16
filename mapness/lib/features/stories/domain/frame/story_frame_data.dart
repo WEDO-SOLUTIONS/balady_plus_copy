@@ -4,7 +4,7 @@ import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension StoryFrameDataX on StoryFrameData {
-  String titleOrFailback(AppLocalizations locale) => switch (storyId) {
+  String titleOrFallback(AppLocalizations locale) => switch (storyId) {
         'route1' => locale.whatCanTheNavigatorDo,
         'route2' => locale.theShortestRoute,
         'route3' => locale.focusOnTheRoad,
@@ -14,7 +14,7 @@ extension StoryFrameDataX on StoryFrameData {
         _ => title,
       };
 
-  String? descriptionOrFailback(AppLocalizations locale) => switch (storyId) {
+  String? descriptionOrFallback(AppLocalizations locale) => switch (storyId) {
         'route1' => locale.route1description,
         'route2' => locale.route2description,
         'route3' => locale.route3description,

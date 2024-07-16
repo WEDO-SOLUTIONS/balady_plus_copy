@@ -36,19 +36,19 @@ class FrameProgressIndicator extends AnimatedWidget {
             return AnimatedBuilder(
               animation: _progress,
               builder: (_, __) => ClipRRect(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(RadiusBorder.xs),
                 child: LinearProgressIndicator(value: _progress.value),
               ),
             );
           }
           if (index < frameIndex) {
             return ClipRRect(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(RadiusBorder.xs),
               child: const LinearProgressIndicator(value: 1),
             );
           } else {
             return ClipRRect(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(RadiusBorder.xs),
               child: const LinearProgressIndicator(value: 0),
             );
           }
@@ -76,7 +76,7 @@ class FrameProgressIndicator extends AnimatedWidget {
                 Expanded(
                   child: ProgressIndicatorTheme(
                     data: ProgressIndicatorThemeData(
-                      linearTrackColor: thumbnailData.backgroundColor ?? _iconPrimaryOnColor.withOpacity(0.2),
+                      linearTrackColor: thumbnailData.linearTrackColor ?? _iconPrimaryOnColor.withOpacity(0.2),
                       linearMinHeight: 2,
                       color: thumbnailData.animationColor ?? _iconPrimaryOnColor,
                     ),

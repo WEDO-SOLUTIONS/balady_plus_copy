@@ -84,7 +84,7 @@ class StoriesMap {
         thumbnail: StoryThumbnailData(
           title: 'Onboarding',
           imageUrl: '',
-          backgroundColor: AppColor.black.withOpacity(0.1),
+          linearTrackColor: AppColor.black.withOpacity(0.1),
           animationColor: AppColor.black,
           closeButtonColor: BaseColors.neutral.withOpacity(0.1),
         ),
@@ -129,7 +129,7 @@ class StoriesMap {
             ),
             horizontalPadding: 35,
             action: LocaleKeyFrameAction(
-              deeplinkUrl: '/bottomNavBar/route',
+              deeplinkUrl: '/bottomNavigation/route',
               action: StoryAction.close,
               titleLocaleKey: 'build_route',
               backgroundColor: BaseColors.accent,
@@ -160,24 +160,17 @@ class StoriesMap {
             horizontalPadding: 35,
             additionalContent: (context, onActionPressed) => [
               const SizedBox(height: 24),
-              InkWell(
-                onTap: () {
-                  onActionPressed?.call(
-                    DeeplinkStoryFrameAction(deeplinkUrl: '/bottomNavBar/services/snap_and_send'),
-                  );
-                },
-                child: const ColoredBox(
-                  color: Colors.grey,
-                  child: SizedBox(
-                    height: 168,
-                    width: double.infinity,
-                  ),
+              const ColoredBox(
+                color: Colors.grey,
+                child: SizedBox(
+                  height: 168,
+                  width: double.infinity,
                 ),
               ),
               const SizedBox(height: 24),
             ],
             action: LocaleKeyFrameAction(
-              deeplinkUrl: '/bottomNavBar/services',
+              deeplinkUrl: '/bottomNavigation/services',
               action: StoryAction.next,
               titleLocaleKey: 'open_services',
               backgroundColor: BaseColors.extra01,

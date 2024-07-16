@@ -26,7 +26,7 @@ class StoryFrameContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            frame.titleOrFailback(l10n),
+            frame.titleOrFallback(l10n),
             style: context.textStyleV3.h1SemiBold.copyWith(
               color: frame.titleStyle?.color ?? context.color.textAndIconsBaseInversePrimary,
               fontSize: frame.titleStyle?.fontSize,
@@ -43,7 +43,7 @@ class StoryFrameContent extends StatelessWidget {
           const SizedBox(height: 12),
           if (frame.description != null)
             Text(
-              frame.descriptionOrFailback(l10n) ?? '',
+              frame.descriptionOrFallback(l10n) ?? '',
               style: context.textStyleV3.bodyLargeRegular.copyWith(
                 color: frame.descriptionStyle?.color ?? context.color.textAndIconsBaseInversePrimary,
                 fontSize: frame.descriptionStyle?.fontSize,

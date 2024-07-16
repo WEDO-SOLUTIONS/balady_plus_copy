@@ -64,14 +64,15 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
     final isOnboardingShown = ref.read(onboardingProvider);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      Stories.showOnboarding(
+        context,
+        StoryTypes.onboarding,
+        'onboarding',
+        onActionShowNextHistory: false,
+        navigationShell: widget.navigationShell,
+      );
+
       if (!isOnboardingShown) {
-        Stories.showOnboarding(
-          context,
-          StoryTypes.onboarding,
-          'onboarding',
-          onActionShowNextHistory: false,
-          navigationShell: widget.navigationShell,
-        );
         ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
       }
     });
