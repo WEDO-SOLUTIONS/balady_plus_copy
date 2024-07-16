@@ -19,9 +19,9 @@ abstract class _ElevatedIconButton extends StatelessWidget {
 
 class ElevatedIconButtonWidget extends _ElevatedIconButton {
   ///
-  ElevatedIconButtonWidget.upload({required VoidCallback onPressed})
+  ElevatedIconButtonWidget.upload({String? name,required VoidCallback onPressed})
       : super(CustomElevatedIconButtonWidget(
-          text: "compliance_image_upload".tr(),
+          text: name??"compliance_image_upload".tr(),
           btnColor: Colors.transparent,
           btnBorderColor: AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(

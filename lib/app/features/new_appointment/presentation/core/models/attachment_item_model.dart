@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 class AttachmentItemModel {
+  int? attachmentId;
   String? attachmentUuid;
   String? attachmentFileName;
   String? attachmentPath;
@@ -8,7 +9,10 @@ class AttachmentItemModel {
   bool? updatable;
 
   AttachmentItemModel(
-      {this.attachmentBase64,
+
+      {
+       this.attachmentId,
+        this.attachmentBase64,
       this.attachmentFileName,
       this.attachmentPath,
       this.attachmentUuid,

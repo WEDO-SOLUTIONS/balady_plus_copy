@@ -59,6 +59,8 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
 
   VisitType? get appointmentTypeItem => dataModel.appointmentTypeItem;
 
+  List<AttachmentsConfig>? get lstAttachmentConfig => dataModel.attachmentConfigList;
+
   LookUpItem? get specialConditionItem => dataModel.specialConditionItem;
 
   bool? get isSpecialConditionChecked => dataModel.isSpecialConditionChecked;
@@ -421,12 +423,15 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
     }
   }
 
-  void deleteAttachment(int index) {
+  void deleteAttachment(int index) async{
+
     dataModel.atttachmentItems.removeAt(index);
-    /*attachmentFileName = null;
-    attachmentPath = null;
-    attachmentBase64 = null;
-    attachmentUuid = null;*/
+   // bool isSuccess = await dataModel.deleteAttachment( dataModel.atttachmentItems[index].attachmentUuid!);
+   // if(isSuccess == true) {
+   //
+   //   notifyListeners();
+   // }
+
   }
 
   void checkRealStateRequest() async {
@@ -436,22 +441,12 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
   }
 
   void saveAttachment(
-      String filePath, String fileName, Uint8List base64) async {
-    /* attachmentFileName = null;
-    attachmentPath = null;
-    attachmentBase64 = null;
-    attachmentUuid = null;
-*/
+      String filePath, String fileName, Uint8List base64,int? attachmentId) async {
+
     bool isSuccess = false;
 
-    isSuccess = await dataModel.uploadFile(base64, fileName, filePath);
-
-    /* if (isSuccess) {
-      attachmentFileName = fileName;
-      attachmentPath = filePath;
-      attachmentBase64 = base64;
-    }*/
+    isSuccess = await dataModel.uploadFile(base64, fileName, filePath,attachmentId);
     notifyListeners();
-    // return isSuccess;
+
   }
 }

@@ -557,41 +557,16 @@ class AppointmentRepository {
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
           false, ex.toString(), null);
     }
-
-    final body = await webServices
-        .postApigeeRequest(ApiConstants.AppointmentSave, body: reqBody);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    SaveAppointmentResponse? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
-
-    try {
-      SaveAppointmentResponse response =
-          SaveAppointmentResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
-    } catch (ex) {
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentSave,
-            body: reqBody,
-            data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
-    }
-    return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-        state, error, result);
   }
 
   Future<Tuple3<bool?, String?, UploadFileResponse?>> uploadFile(
       Uint8List? base64,
       String? fileName,
       String? filePath,
-      String? mimeType) async {
+      String? mimeType,
+      int typeID) async {
     final body = await webServices.uploadApigeeFile(
-        ApiConstants.AppointmentUploadFile,
+        ApiConstants.AppointmentUploadFile(typeID),
         base64: base64,
         fileName: fileName,
         mimeType: mimeType);
@@ -610,7 +585,7 @@ class AppointmentRepository {
     } catch (ex) {
       try {
         Helpers.sendLog(
-            url: ApiConstants.AppointmentUploadFile,
+            url: ApiConstants.AppointmentUploadFile(typeID),
             qeuryParms: filePath,
             data: data,
             errorMsg: ex.toString());
@@ -619,34 +594,31 @@ class AppointmentRepository {
     return Tuple3<bool?, String?, UploadFileResponse?>(state, error, result);
   }
 
-  /*Future<Tuple3<bool?, String?, RatingInfoResponse?>> getRatingInfo(
-      String serviceId) async {
-    String query = "$serviceId";
 
-    final body = await webServices.getApigeeRequest(ApiConstants.RatingInfo,
-        relativePath: query, autoLogout: false);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    RatingInfoResponse? result;
-    String error =
-        body['error'] ?? ("errors_server_error_1").tr();
-
+  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> deleteAttachment(String udid,) async {
+    var res;
     try {
-      RatingInfoResponse response =
-          RatingInfoResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
+      res = await sl<web.WebService>()
+          .dio
+          .post(ApiUrl.deleteAppointment(udid));
+
+      SaveAppointmentResponse response =
+      SaveAppointmentResponse.fromJson(res.data);
+
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          true, "", response);
+    } on DioException catch (error) {
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, error.toString(), null);
     } catch (ex) {
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.RatingInfo,
-            qeuryParms: query,
-            data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, ex.toString(), null);
     }
-    return Tuple3<bool?, String?, RatingInfoResponse?>(state, error, result);
-  }*/
+  }
+
 }
