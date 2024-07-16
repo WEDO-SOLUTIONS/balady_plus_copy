@@ -184,8 +184,9 @@ class _PoiTabItem extends StatelessWidget {
                             // Fix shape for big numbers
                             borderRadius: count! < 100 ? null : BorderRadius.circular(50),
                             shape: count! < 100 ? BoxShape.circle : BoxShape.rectangle,
-                            color:
-                                isActive ?? false ? context.color.strokeAccent : NonThemeColor.color72.withOpacity(0.3),
+                            color: isActive ?? false
+                                ? context.colorsV2.neutralDefault
+                                : NonThemeColor.color72.withOpacity(0.3),
                           ),
                           child: Text(
                             '$count',
