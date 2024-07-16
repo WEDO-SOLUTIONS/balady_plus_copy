@@ -16,8 +16,11 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
+  final VoidCallback onResultItemTap;
+
   const MapSearchContent({
     required this.scrollController,
+    required this.onResultItemTap,
     super.key,
   });
 
@@ -135,6 +138,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         child: SafeArea(
           top: false,
           child: MapSearchResults(
+            onResultItemTap: widget.onResultItemTap,
             results: results,
             scrollController: widget.scrollController,
           ),

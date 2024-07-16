@@ -213,6 +213,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           Language.english => TextDirection.ltr,
         },
         child: DgisBottomSheet(
+          key: const Key('POI CARD SHEET KEY'),
           showBarrier: false,
           availableExpansions: const {
             Expansion.collapsed,
