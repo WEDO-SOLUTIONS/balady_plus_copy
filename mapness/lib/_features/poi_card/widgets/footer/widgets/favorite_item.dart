@@ -16,18 +16,14 @@ class _FavoriteItem extends ConsumerWidget {
     ref.watch(favouriteCacheProvider).valueOrNull;
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId!);
-    final favouriteItem =
-        objectId != null ? provider.getFavouriteOrNull(objectId!) : null;
-    final assetName = isFavourite
-        ? 'assets/icons/svg/ic_fav_solid.svg'
-        : 'assets/icons/svg/ic_fav_poi.svg';
+    final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId!) : null;
+    final assetName = isFavourite ? 'assets/icons/svg/ic_fav_solid.svg' : 'assets/icons/svg/ic_fav_poi.svg';
     return FooterIconButton(
       flex: flex,
       assetName: assetName,
       colorIcon: context.color.textAndIconsStatusAccent,
       colorButton: context.staticColor.surfaceStatusContrastAccent,
-      onTap: () =>
-          _onFavTap(context: context, favouriteItem: favouriteItem, ref: ref),
+      onTap: () => _onFavTap(context: context, favouriteItem: favouriteItem, ref: ref),
     );
   }
 
@@ -58,9 +54,7 @@ class _FavoriteItem extends ConsumerWidget {
         }
 
         FavouriteItem? favItem = favouriteItem;
-        if (favItem == null &&
-            objectMessage.markerPosition != null &&
-            objectMessage.id != null) {
+        if (favItem == null && objectMessage.markerPosition != null && objectMessage.id != null) {
           favItem = FavouriteItem(
             coordinates: Coordinates(
               latitude: objectMessage.markerPosition!.latitude,
@@ -96,7 +90,6 @@ class _FavoriteItem extends ConsumerWidget {
     FavouriteItem newFavourite,
   ) async {
     await showDialog(
-      useSafeArea: false,
       context: context,
       builder: (contextDialog) => ProviderScope(
         parent: ProviderScope.containerOf(context),
