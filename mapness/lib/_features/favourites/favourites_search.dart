@@ -22,19 +22,6 @@ class FavouritesSearch extends ConsumerStatefulWidget {
 }
 
 class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () {
-      ref.read(suggestQueryProvider.notifier).update('');
-    });
-  }
-
-  @override
-  void dispose() {
-    ref.read(suggestQueryProvider.notifier).update('');
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

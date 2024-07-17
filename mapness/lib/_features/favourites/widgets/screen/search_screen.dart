@@ -48,7 +48,6 @@ class SearchScreen extends ConsumerWidget {
             ),
             if (itemCount == 0)
               SearchHistory(
-                skipEmptyObjects: true,
                 onTap: (item) {
                   onHistoryItemTap?.call(item);
                 },
