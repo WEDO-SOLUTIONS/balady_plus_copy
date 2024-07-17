@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/_shared_feature_/data/models/response_b
 import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_model.dart';
 import 'package:dio/dio.dart' show Options, ResponseType, Response, DioError;
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 
 abstract class ChatBotDataSources {
   Future<Stream> sendQuestionMessageSSE({required String question});
@@ -122,7 +123,7 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         options: Options(
           headers: {
             "Accept": "*/*",
-            "sessionId": "001c44b8-2eee-415a-912d-601616e724be"
+            "sessionId":sharedPrefs.getChatbotSessionId(),//"001c44b8-2eee-415a-912d-601616e724be"
           },
           responseType: ResponseType.stream,
         ),
