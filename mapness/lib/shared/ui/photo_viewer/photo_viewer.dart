@@ -39,6 +39,8 @@ class PhotoViewer extends StatefulWidget {
 class _PhotoViewerState extends State<PhotoViewer> {
   static const backgroundColor = Color(0xff0B1218);
 
+  int _currentPage = 0;
+
   late PageController pageController;
   late ValueNotifier<bool> isAppBarVisible;
 
@@ -47,6 +49,15 @@ class _PhotoViewerState extends State<PhotoViewer> {
     super.initState();
     pageController = PageController(initialPage: widget.currentPhotoIndex);
     isAppBarVisible = ValueNotifier(true);
+
+    _currentPage = widget.currentPhotoIndex;
+    pageController.addListener(() {
+      final newPage = pageController.page?.round() ?? 0;
+
+      setState(() {
+        _currentPage = newPage;
+      });
+    });
   }
 
   @override
@@ -55,15 +66,18 @@ class _PhotoViewerState extends State<PhotoViewer> {
         builder: (context, isAppBarVisible, child) => Material(
           color: backgroundColor,
           child: Material(
-            color: isAppBarVisible ? context.color.surfaceContrastHigh : Colors.transparent,
-            child: Scaffold(
-              appBar: isAppBarVisible
-                  // TODO: Update when BaladyTopBar starts supporting background color
-                  ? BaladyTopBar(
+            color: Colors.transparent,
+            child: Stack(
+              children: [
+                child ?? const SizedBox(),
+                if (isAppBarVisible)
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    width: MediaQuery.of(context).size.width,
+                    child: BaladyTopBar(
                       textStyle: context.textStyle.callout.copyWith(color: Colors.white),
-                      title: context.l10n.photos,
-
-                      /// TODO(ui_kit): Fix leading in UIKIT
+                      title: '${_currentPage + 1} ${context.l10n.wordOf} ${widget.photoPaths?.length}',
                       leading: Container(
                         padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
                         alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
@@ -73,16 +87,16 @@ class _PhotoViewerState extends State<PhotoViewer> {
                         ),
                       ),
                       onLeadingPressed: () => context.pop(),
-                    )
-                  : null,
-              body: child,
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
         child: GestureDetector(
           onTap: () => isAppBarVisible.value = !isAppBarVisible.value,
           child: Padding(
-            padding: const EdgeInsets.only(top: NumericBase.$4x),
+            padding: const EdgeInsets.only(top: Spacing.$4x),
             child: DecoratedBox(
               decoration: const BoxDecoration(color: backgroundColor),
               child: Stack(
