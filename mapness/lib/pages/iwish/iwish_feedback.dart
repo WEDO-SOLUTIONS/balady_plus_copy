@@ -1,4 +1,4 @@
-import 'package:balady_uikit/components.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -66,7 +66,12 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
       return Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
-          padding: const EdgeInsets.only(top: 16.0, bottom: 24.0, left: 16.0, right: 16.0),
+          padding: const EdgeInsets.only(
+            top: Spacing.$4x,
+            bottom: Spacing.$6x,
+            left: Spacing.$4x,
+            right: Spacing.$4x,
+          ),
           child: LoadingThanksSheet(
             isLoading: entityState.isLoading || feedbackState.isLoading,
             onComplete: widget.onFeedbackSent,
@@ -118,7 +123,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
                   selectedTags: feedback.tags,
                   onTagToggled: _toggleTag,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: Spacing.$4x),
                 BaladyInput(
                   hintText: context.l10n.shareYourFeedback,
                   initialValue: feedbackState.value?.comment ?? feedback.comment,

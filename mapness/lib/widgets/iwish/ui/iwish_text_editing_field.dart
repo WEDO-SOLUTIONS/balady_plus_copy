@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -34,7 +35,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
   }
 
   OutlineInputBorder _getBorder(Color color) => OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(Spacing.$2x),
         borderSide: BorderSide(
           color: color,
         ),
@@ -43,7 +44,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
   @override
   Widget build(BuildContext context) {
     final style = context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary);
-    const errorColor = Color(0xFFE0373D);
+    final errorColor = context.colorsV2.errorOnContainer;
     final errorBorder = _getBorder(errorColor);
 
     return Expanded(
@@ -82,7 +83,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
                 focusedBorder: _getBorder(context.color.strokeAccent),
                 focusedErrorBorder: errorBorder,
                 errorBorder: errorBorder,
-                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                contentPadding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$2x),
               ),
             ),
           ),
