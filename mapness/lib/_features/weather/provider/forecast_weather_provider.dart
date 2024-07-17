@@ -32,6 +32,16 @@ class _ForecastWeather extends _$ForecastWeather {
     return null;
   }
 
+  Future<void> forceRefresh() async {
+    final cancelToken = CancelToken();
+    final controller = ref.watch(dgisControllerProvider).value;
+    final repository = ref.watch(weatherRepository.notifier);
+    final position = await controller?.getCameraPosition();
+    if (position != null) {
+      await _onEvent(position, repository, cancelToken);
+    }
+  }
+
   Future<void> _onEvent(
     CameraPositionMessage value,
     WeatherRepository repository,

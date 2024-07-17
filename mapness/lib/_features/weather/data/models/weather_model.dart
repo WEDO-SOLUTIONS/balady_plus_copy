@@ -166,7 +166,7 @@ class CurrentModel extends Current {
 }
 
 class ConditionsModel extends Condition {
-  ConditionsModel({
+  const ConditionsModel({
     super.code,
     super.icon,
     super.text,
@@ -194,9 +194,8 @@ class ForecastModel extends Forecast {
         final dayData = forecastDay['day'];
         final astroData = forecastDay['astro'];
 
-        var dayConditionData;
         ConditionsModel? decodedDayConditionResponse;
-        dayConditionData = dayData['condition'];
+        final dayConditionData = dayData['condition'] as Map<String, dynamic>?;
         if (dayConditionData != null) {
           decodedDayConditionResponse = ConditionsModel.fromMap(dayConditionData);
         }
