@@ -641,6 +641,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": true,
+      "beta": true,
       "action": {"type": "page", "value": RouteName.chatbot},
       "ar": {"title": "municipal_advisor", "description": null, "tag": null},
       "en": {"title": "municipal_advisor", "description": null, "tag": null}

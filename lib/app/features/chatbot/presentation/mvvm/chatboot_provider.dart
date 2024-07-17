@@ -49,14 +49,14 @@ class ChatBotProvider extends BaseViewModel {
           notifyListeners();
         }
 
-        if (scrollController.position.maxScrollExtent >
+        /* if (scrollController.position.maxScrollExtent >
             scrollController.offset) {
           scrollController.animateTo(
             scrollController.position.maxScrollExtent + 100,
             curve: Curves.linear,
             duration: const Duration(milliseconds: 600),
           );
-        }
+        }*/
       });
       return chatBotMessage;
     } catch (exception) {

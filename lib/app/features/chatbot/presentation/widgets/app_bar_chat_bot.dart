@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -62,9 +63,22 @@ class AppBarChatBot extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 12, height: 8),
-                      Text(
-                        'chat_bot'.tr(),
-                        style: AppStyle.countTextAthkarStyle.copyWith(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'chat_bot'.tr(),
+                            style: AppStyle.countTextAthkarStyle.copyWith(),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "(${"beta".tr()})",
+                            style: AppStyle.countTextAthkarStyle
+                                .copyWith(color: AppColor.redBrown),
+                          ),
+                        ],
                       ),
                       listMessages.isEmpty
                           ? Card(

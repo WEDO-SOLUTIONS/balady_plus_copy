@@ -11,12 +11,7 @@ import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show
-        CommonFunctions,
-        CommonProperties,
-        IconPath,
-        RouteName,
-        ServiceAction;
+    show CommonFunctions, CommonProperties, IconPath, RouteName, ServiceAction;
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
@@ -331,6 +326,15 @@ class ServiceIcon extends StatelessWidget {
                   fontWeight: AppFontWeight.bold,
                 ),
               ),
+              if (service.beta == true)
+                CustomTextWidget(
+                  "beta".tr(),
+                  fontSize: 8,
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  fontColor: AppColor.redBrown,
+                  fontWeight: AppFontWeight.bold,
+                )
             ],
           ),
         )

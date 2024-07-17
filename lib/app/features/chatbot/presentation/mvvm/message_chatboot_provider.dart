@@ -43,11 +43,14 @@ class MessageChatBotProvider extends BaseViewModel {
             timeStampReceived: DateTime.now(),
           );
           message.notifyListeners();
-          isLoading = false;
-          notifyListeners();
+          if (isLoading != false) {
+            isLoading = false;
+            notifyListeners();
+          }
           scrollControllerAction();
         },
         (stream) {
+          print("STAAAART STREAM 11");
           if (!isClose) {
             listen = stream.listen((messageType) {
               String editMessage = messageType.replaceAll("\\n", "\n");
@@ -55,6 +58,9 @@ class MessageChatBotProvider extends BaseViewModel {
                 answer: "${message.value.answer}$editMessage",
                 // answer: message.value.answer + [messageType]
               );
+              isLoading = false;
+              notifyListeners();
+
               message.notifyListeners();
               scrollControllerAction();
             });
@@ -117,11 +123,12 @@ class MessageChatBotProvider extends BaseViewModel {
   }
 
   void scrollControllerAction() {
-    if (scrollController.position.maxScrollExtent > scrollController.offset) {
+    if (scrollController.position.maxScrollExtent - 80 >
+        scrollController.offset) {
       scrollController.animateTo(
-        scrollController.position.maxScrollExtent + 100,
+        scrollController.position.maxScrollExtent + 20,
         curve: Curves.linear,
-        duration: const Duration(milliseconds: 550),
+        duration: const Duration(milliseconds: 450),
       );
     }
   }
