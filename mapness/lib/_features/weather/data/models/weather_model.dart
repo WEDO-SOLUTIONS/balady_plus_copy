@@ -13,8 +13,7 @@ class AllWeatherInfoModel extends AllWeatherInfoEntity {
   });
 
   // generate from json
-  factory AllWeatherInfoModel.fromMap(Map<String, dynamic> json) =>
-      AllWeatherInfoModel(
+  factory AllWeatherInfoModel.fromMap(Map<String, dynamic> json) => AllWeatherInfoModel(
         alerts: json['alerts'],
         current: json['current'],
         forecast: json['forecast'],
@@ -41,15 +40,12 @@ class AlertsModel extends Alerts {
     );
   }
 
-  factory AlertsModel.fromRawJson(String str) =>
-      AlertsModel.fromJson(json.decode(str));
+  factory AlertsModel.fromRawJson(String str) => AlertsModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   Map<String, dynamic> toJson() => {
-        'alert': alert == null
-            ? null
-            : List<dynamic>.from(alert!.map((x) => json.encode(x))),
+        'alert': alert == null ? null : List<dynamic>.from(alert!.map((x) => json.encode(x))),
       };
 }
 
@@ -80,17 +76,13 @@ class AlertModel extends Alert {
         certainty: json['certainty'],
         event: json['event'],
         note: json['note'],
-        effective: json['effective'] == null
-            ? null
-            : DateTime.parse(json['effective']),
-        expires:
-            json['expires'] == null ? null : DateTime.parse(json['expires']),
+        effective: json['effective'] == null ? null : DateTime.parse(json['effective']),
+        expires: json['expires'] == null ? null : DateTime.parse(json['expires']),
         desc: json['desc'],
         instruction: json['instruction'],
       );
 
-  factory AlertModel.fromRawJson(String str) =>
-      AlertModel.fromJson(json.decode(str));
+  factory AlertModel.fromRawJson(String str) => AlertModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
@@ -182,45 +174,46 @@ class ConditionsModel extends Condition {
 
   //generate from json
   static ConditionsModel fromMap(Map<String, dynamic> json) => ConditionsModel(
-      code: json['code'],
-      icon: json['icon'],
-      text: json['text'],
-    );
+        code: json['code'],
+        icon: json['icon'],
+        text: json['text'],
+      );
 }
 
 class ForecastModel extends Forecast {
   ForecastModel({super.forecastday});
 
   static ForecastModel fromJson(Map<String, dynamic> json) {
-    final forecastDayData = json['forecastday'];
-    var decodedForecastDayResponse = null;
+    final forecastDayData = json['forecastday'] as List<dynamic>?;
+    final List<ForecastDay> decodedForecastDayResponse = [];
     if (forecastDayData != null) {
-      decodedForecastDayResponse =
-          forecastDayData.map<ForecastDay>((forecastDay) {
+      // ignore: dead_code
+      for (var i = 0; i < forecastDayData.length; i++) {
+        final forecastDay = forecastDayData[i];
+
         final dayData = forecastDay['day'];
         final astroData = forecastDay['astro'];
 
         var dayConditionData;
-        ConditionsModel? decodedDayConditionResponse = null;
+        ConditionsModel? decodedDayConditionResponse;
         dayConditionData = dayData['condition'];
         if (dayConditionData != null) {
-          decodedDayConditionResponse =
-              ConditionsModel.fromMap(dayConditionData);
+          decodedDayConditionResponse = ConditionsModel.fromMap(dayConditionData);
         }
 
         if (decodedDayConditionResponse != null) {
           final astroModel = AstroModel.fromMap(astroData);
-          final dayModel =
-              DayModel.fromMap(dayData, decodedDayConditionResponse);
-          return ForecastDayModel.fromMap(
+          final dayModel = DayModel.fromMap(dayData, decodedDayConditionResponse);
+          final result = ForecastDayModel.fromMap(
             forecastDay,
             astroModel,
             dayModel,
           );
+          decodedForecastDayResponse.add(result);
         } else {
-          return ForecastDayModel();
+          decodedForecastDayResponse.add(ForecastDayModel());
         }
-      }).toList();
+      }
     }
     return ForecastModel(forecastday: decodedForecastDayResponse);
   }
@@ -268,15 +261,15 @@ class AstroModel extends Astro {
 
   //generate from json
   static AstroModel fromMap(Map<String, dynamic> json) => AstroModel(
-      isMoonUp: json['is_moon_up'],
-      isSunUp: json['is_sun_up'],
-      moonIllumination: json['moon_illumination'],
-      moonPhase: json['moon_phase'],
-      moonrise: json['moonrise'],
-      moonset: json['moonset'],
-      sunrise: json['sunrise'],
-      sunset: json['sunset'],
-    );
+        isMoonUp: json['is_moon_up'],
+        isSunUp: json['is_sun_up'],
+        moonIllumination: json['moon_illumination'],
+        moonPhase: json['moon_phase'],
+        moonrise: json['moonrise'],
+        moonset: json['moonset'],
+        sunrise: json['sunrise'],
+        sunset: json['sunset'],
+      );
 }
 
 class DayModel extends Day {
@@ -371,46 +364,47 @@ class HourModel extends Hour {
   });
 
   //generate from json
-  factory HourModel.fromMap(
-    Map<String, dynamic> json,
-  ) {
+  factory HourModel.fromMap(Map<String, dynamic> json) {
     final hourCondition = ConditionsModel.fromMap(json['condition']);
-
-    return HourModel(
-      timeEpoch: json['time_epoch'],
-      time: json['time'],
-      tempC: json['temp_c'],
-      tempF: json['temp_f'],
-      isDay: json['is_day'],
-      windMph: json['wind_mph'],
-      windKph: json['wind_kph'],
-      windDegree: json['wind_degree'],
-      windDir: json['wind_dir'],
-      pressureMb: json['pressure_mb'],
-      pressureIn: json['pressure_in'],
-      precipMm: json['precip_mm'],
-      precipIn: json['precip_in'],
-      humidity: json['humidity'],
-      cloud: json['cloud'],
-      feelslikeC: json['feelslike_c'],
-      feelslikeF: json['feelslike_f'],
-      windchillC: json['windchill_c'],
-      windchillF: json['windchill_f'],
-      heatindexC: json['heatindex_c'],
-      heatindexF: json['heatindex_f'],
-      dewpointC: json['dewpoint_c'],
-      dewpointF: json['dewpoint_f'],
-      willItRain: json['will_it_rain'],
-      chanceOfRain: json['chance_of_rain'],
-      willItSnow: json['will_it_snow'],
-      chanceOfSnow: json['chance_of_snow'],
-      visKm: json['vis_km'],
-      visMiles: json['vis_miles'],
-      gustMph: json['gust_mph'],
-      gustKph: json['gust_kph'],
-      uv: json['uv'],
-      condition: hourCondition,
-    );
+    try {
+      return HourModel(
+        timeEpoch: json['time_epoch'],
+        time: json['time'],
+        tempC: json['temp_c'],
+        tempF: json['temp_f'],
+        isDay: json['is_day'],
+        windMph: json['wind_mph'],
+        windKph: json['wind_kph'],
+        windDegree: json['wind_degree'],
+        windDir: json['wind_dir'],
+        pressureMb: json['pressure_mb'],
+        pressureIn: json['pressure_in'],
+        precipMm: json['precip_mm'],
+        precipIn: json['precip_in'],
+        humidity: json['humidity'],
+        cloud: json['cloud'],
+        feelslikeC: json['feelslike_c'],
+        feelslikeF: json['feelslike_f'],
+        windchillC: json['windchill_c'],
+        windchillF: json['windchill_f'],
+        heatindexC: json['heatindex_c'],
+        heatindexF: json['heatindex_f'],
+        dewpointC: json['dewpoint_c'],
+        dewpointF: json['dewpoint_f'],
+        willItRain: json['will_it_rain'],
+        chanceOfRain: json['chance_of_rain'],
+        willItSnow: json['will_it_snow'],
+        chanceOfSnow: json['chance_of_snow'],
+        visKm: json['vis_km'],
+        visMiles: json['vis_miles'],
+        gustMph: json['gust_mph'],
+        gustKph: json['gust_kph'],
+        uv: json['uv'],
+        condition: hourCondition,
+      );
+    } catch (e) {
+      return HourModel();
+    }
   }
 }
 
@@ -441,25 +435,31 @@ class LocationModel extends Location {
 AllWeatherInfoModel mapper(Map<String, dynamic>? json) {
   try {
     final data = json?['data']?['result'];
-    AlertsModel? alertModel = null;
+    if (data == null) {
+      return AllWeatherInfoModel();
+    }
+    AlertsModel? alertModel;
     final alertsData = data?['alerts'];
     if (alertsData != null) {
-      alertModel = AlertsModel.fromJson(alertsData);
+      final alertList = alertsData['alert'] as List<dynamic>;
+      if (alertList.isNotEmpty) {
+        alertModel = AlertsModel.fromJson(alertsData);
+      }
     }
 
-    LocationModel? locationModel = null;
+    LocationModel? locationModel;
     final locationData = data?['location'];
     if (locationData != null) {
       locationModel = LocationModel.fromJson(locationData);
     }
 
-    ForecastModel? forecastModel = null;
+    ForecastModel? forecastModel;
     final forecastData = data?['forecast'];
     if (forecastData != null) {
       forecastModel = ForecastModel.fromJson(forecastData);
     }
 
-    CurrentModel? conditionModel = null;
+    CurrentModel? conditionModel;
     final currentData = data?['current'];
     if (currentData != null) {
       final currentCondition = currentData['condition'];
