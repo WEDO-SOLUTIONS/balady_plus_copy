@@ -7,10 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
+import 'package:mapness/features/stories/ui/dismissible_overlay.dart';
+import 'package:mapness/features/stories/ui/stories_fullscreen.dart';
+import 'package:mapness/features/stories/ui/story_localization.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/stories/ui/dismissible_overlay.dart';
-import 'package:mapness/widgets/stories/ui/stories_fullscreen.dart';
-import 'package:mapness/widgets/stories/ui/story_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Stories {

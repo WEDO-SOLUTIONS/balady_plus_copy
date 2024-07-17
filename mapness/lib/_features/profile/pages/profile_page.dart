@@ -8,9 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/routes/profile.dart';
+import 'package:mapness/app/routes/stories.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
-import 'package:mapness/features/stories/lib/stories.dart' as st;
-import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -218,12 +217,13 @@ class ProfilePage extends ConsumerWidget {
                       child: AppButton(
                     primaryLabel: 'Test',
                     onTap: () {
-                      st.Stories.showOnboarding(
-                        context,
-                        StoryTypes.onboarding,
-                        'onboarding',
-                        onActionShowNextHistory: false,
-                      );
+                      // st.Stories.showOnboarding(
+                      //   context,
+                      //   StoryTypes.onboarding,
+                      //   'onboarding',
+                      //   onActionShowNextHistory: false,
+                      // );
+                      StoriesRoute.openOnboarding(context);
                     },
                     buttonColorScheme: ButtonColorScheme.primary,
                   )),

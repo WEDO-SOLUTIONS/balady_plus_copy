@@ -14,6 +14,7 @@ import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/app/routes/signin.dart';
+import 'package:mapness/app/routes/stories.dart';
 import 'package:mapness/app/routes/weather.dart';
 import 'package:mapness/shared/ui/sheets/location_required_sheet.dart';
 
@@ -37,4 +38,5 @@ final $appRoutes = [
   ...$layersRoutes,
   ...$eventRoutes,
   ...$miniAppsRoutes,
+  ...$storiesRoutes,
 ];

@@ -1,6 +1,12 @@
 enum StoryTypes {
   route,
-  onboarding,
+  onboarding;
+
+  static StoryTypes? fromFile(String file) => switch (file) {
+        'route' => StoryTypes.route,
+        'onboarding' => StoryTypes.onboarding,
+        _ => null,
+      };
 }
 
 extension StoryTypesExtension on StoryTypes {

@@ -107,12 +107,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
             action: MetricAction.tap.name,
             group: MetricsConstants.exploreTag,
           );
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.storiesClose,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-          );
-
           //Resume the story update when viewport changed
           ref.read(storyServiceProvider.notifier).resumeUpdate();
           Stories.hide();

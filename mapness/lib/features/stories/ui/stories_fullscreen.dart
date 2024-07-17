@@ -3,12 +3,12 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
+import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/local_stories_service.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
-import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
+import 'package:mapness/features/stories/ui/story_frames_player.dart';
 import 'package:mapness/widgets/stories/lib/models/story_frame_controller.dart';
-import 'package:mapness/widgets/stories/ui/story_frames_player.dart';
 
 class StoriesFullscreen extends ConsumerStatefulWidget {
   final VoidCallback onClose;

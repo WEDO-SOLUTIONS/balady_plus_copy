@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
+import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
+import 'package:mapness/features/stories/models/story_thumbnail_data.dart';
 import 'package:mapness/features/stories/models/story_typedefs.dart';
-import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
-import 'package:mapness/widgets/stories/lib/models/story_text_style.dart';
-import 'package:mapness/widgets/stories/lib/models/story_thumbnail_data.dart';
 
 extension NetworkStoryResponseMapper on NetworkStoriesResponse {
   List<StoryData> toDomain() => stories.map((e) => e.toDomain()).toList();
@@ -34,14 +33,6 @@ extension NetworkStoryFrameMapper on NetworkStoryFrame {
         description: description,
         action: actionButton.toDomain(),
         duration: duration,
-        descriptionStyle: style.description.toDomain(),
-        titleStyle: style.title.toDomain(),
-      );
-}
-
-extension NetworkStoryTextStyleMapper on NetworkStoryTextStyle {
-  StoryTextStyle toDomain() => StoryTextStyle(
-        color: color.toDomain(),
       );
 }
 
@@ -61,7 +52,5 @@ extension NetworkStoryPageActionMapper on NetworkStoryPageAction {
         title: title,
         // TODO(someone): support deeplinks in native platforms
         deeplinkUrl: link.url.replaceFirst('balady:/', ''),
-        textStyle: style.textStyle.toDomain(),
-        backgroundColor: style.backgroundColor.toDomain(),
       );
 }

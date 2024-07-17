@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
-import 'package:mapness/widgets/stories/lib/models/story_frame_action.dart';
-import 'package:mapness/widgets/stories/lib/models/story_text_style.dart';
 
 extension StoryFrameDataX on StoryFrameData {
   String titleOrFailback(AppLocalizations locale) => switch (storyId) {
@@ -31,13 +30,10 @@ class StoryFrameData {
   final String imageUrl;
   final String? subtitle;
   final String? description;
-  final StoryTextStyle? titleStyle;
-  final StoryTextStyle? descriptionStyle;
   final bool isWatched;
   final StoryFrameAction? action;
   final int duration;
   final bool? isAssetImage;
-  final double horizontalPadding;
   final List<Widget> Function(BuildContext context, void Function(StoryFrameAction action)? onActionPressed)?
       additionalContent;
   final bool hasGradient;
@@ -48,13 +44,10 @@ class StoryFrameData {
     required this.isWatched,
     required this.title,
     required this.imageUrl,
-    this.titleStyle,
-    this.descriptionStyle,
     this.subtitle,
     this.description,
     this.action,
     this.isAssetImage = false,
-    this.horizontalPadding = 0.0,
     this.additionalContent,
     this.hasGradient = false,
   });
@@ -65,13 +58,10 @@ class StoryFrameData {
     String? imageUrl,
     String? subtitle,
     String? description,
-    StoryTextStyle? titleStyle,
-    StoryTextStyle? descriptionStyle,
     bool? isWatched,
     StoryFrameAction? action,
     int? duration,
     bool? isAssetImage,
-    double? horizontalPadding,
     Color? closeButtonColor,
     bool? hasGradient,
   }) =>
@@ -82,12 +72,9 @@ class StoryFrameData {
         imageUrl: imageUrl ?? this.imageUrl,
         subtitle: subtitle ?? this.subtitle,
         description: description ?? this.description,
-        titleStyle: titleStyle ?? this.titleStyle,
-        descriptionStyle: descriptionStyle ?? this.descriptionStyle,
         isWatched: isWatched ?? this.isWatched,
         action: action ?? this.action,
         duration: duration ?? this.duration,
-        horizontalPadding: horizontalPadding ?? this.horizontalPadding,
         hasGradient: hasGradient ?? this.hasGradient,
       );
 }
