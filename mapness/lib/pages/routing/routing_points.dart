@@ -129,7 +129,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                     topRight: Radius.circular(RadiusBorder.xl),
                     topLeft: Radius.circular(RadiusBorder.xl),
                   ),
-                  color: context.color.surfaceBaseSecondary,
+                  color: context.color.surfaceBasePrimary,
                   child: CustomScrollView(
                     controller: scrollController,
                     keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
