@@ -1,9 +1,8 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -43,20 +42,15 @@ class RoutingFavouritesPage extends ConsumerWidget {
                           action: MetricAction.tap.toString(),
                         );
 
-                        context.pop(null);
+                        context.pop();
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Padding(
                         padding: const EdgeInsets.all(8),
-                        child: SvgPicture.asset(
-                          'assets/icons/svg/ic_chevron_right.svg',
-                          height: 24,
-                          width: 24,
-                          package: PackageConfig.packageName,
-                          colorFilter: ColorFilter.mode(
-                            context.color.textAndIconsBasePrimary,
-                            BlendMode.srcIn,
-                          ),
+                        child: Icon(
+                          context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                          size: 24,
+                          color: context.color.textAndIconsBasePrimary,
                         ),
                       ),
                     ),

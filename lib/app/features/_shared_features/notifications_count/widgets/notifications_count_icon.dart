@@ -22,8 +22,7 @@ class NotificationsCountIcon extends StatelessWidget {
                 },
                 child: BlocBuilder<NotificationsCountCubit, SucceedCountState>(
                   builder: (contextCubit, state) {
-                    NotificationsCountCubit cubit =
-                        contextCubit.watch<NotificationsCountCubit>();
+                    NotificationsCountCubit cubit = contextCubit.watch<NotificationsCountCubit>();
                     return InkWell(
                       onTap: () {
                         NavigationService.navigatorKey.currentState!
@@ -42,8 +41,7 @@ class NotificationsCountIcon extends StatelessWidget {
                             elevation: 2,
                             color: Colors.grey.shade200,
                             shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(6)),
+                              borderRadius: BorderRadius.all(Radius.circular(6)),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(

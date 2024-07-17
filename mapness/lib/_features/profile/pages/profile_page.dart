@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell_mapness.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -25,19 +26,19 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
     final actionIcon = context.isLTR
-        ? SystemIcons.arrowCornerRightSmall.icon(
+        ? SystemIcons.arrowCornerRightLarge.icon(
             color: context.color.textAndIconsBaseSecondary,
           )
-        : SystemIcons.arrowCornerLeftSmall.icon(
+        : SystemIcons.arrowCornerLeftLarge.icon(
             color: context.color.textAndIconsBaseSecondary,
           );
-
-    return WillPopScope(
-      onWillPop: () async {
+    final userData = ref.watch(authProvider);
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) {
         StatefulNavigationShell.of(context).goBranch(
           ref.read(appFeaturesProvider).naviEnabled ? 3 : 2,
         );
-        return false;
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -56,62 +57,54 @@ class ProfilePage extends ConsumerWidget {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.horizontalPaddingInsideWrapper,
+                        horizontal: Spacing.$4x,
                       ),
-                      child: Consumer(
-                        builder: (context, ref, child) {
-                          final userUnauthorized = UnautorizedProfile(
-                            onConnect: ref.read(authProvider.notifier).doAuth,
-                          );
-                          final userData = ref.watch(authProvider);
-                          return userData.maybeWhen(
-                            orElse: () => userUnauthorized,
-                            data: (userData) => userData == null
-                                ? userUnauthorized
-                                : AuthorizedWidget(
-                                    userData: userData,
-                                  ),
-                          );
-                        },
+                      child: userData.maybeWhen(
+                        orElse: () => UnautorizedProfile(
+                          onConnect: ref.read(authProvider.notifier).doAuth,
+                        ),
+                        data: (userData) => userData == null
+                            ? UnautorizedProfile(
+                                onConnect: ref.read(authProvider.notifier).doAuth,
+                              )
+                            : AuthorizedWidget(
+                                userData: userData,
+                              ),
                       ),
                     ),
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.horizontalPaddingInsideWrapper,
+                        horizontal: Spacing.$4x,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
+                            height: Spacing.$4x,
                           ),
                           ContentWrapper(
                             color: context.color.surfaceBaseSecondary,
                             children: [
-                              Consumer(builder: (context, ref, child) {
-                                final userData = ref.watch(authProvider);
-
-                                return userData.maybeWhen(
-                                  orElse: () => const SizedBox.shrink(),
-                                  data: (data) => data == null
-                                      ? const SizedBox.shrink()
-                                      : ContentRow(
-                                          options: ContentRowOptions(
-                                            actionWidget: ContentRowActionOptions(
-                                              actionIcon: actionIcon,
-                                            ),
-                                            leadingIcon: Icon(
-                                              GeneralIcons.user,
-                                              color: context.color.textAndIconsStatusAccent,
-                                            ),
-                                            title: context.l10n.personalData,
+                              userData.maybeWhen(
+                                orElse: () => const SizedBox.shrink(),
+                                data: (data) => data == null
+                                    ? const SizedBox.shrink()
+                                    : ContentRow(
+                                        options: ContentRowOptions(
+                                          actionWidget: ContentRowActionOptions(
+                                            actionIcon: actionIcon,
                                           ),
-                                          onTap: () => const ProfileInfoPageRoute().push(context),
+                                          leadingIcon: Icon(
+                                            GeneralIcons.user,
+                                            color: context.color.textAndIconsStatusAccent,
+                                          ),
+                                          title: context.l10n.personalData,
                                         ),
-                                );
-                              }),
+                                        onTap: () => const ProfileInfoPageRoute().push(context),
+                                      ),
+                              ),
                               ContentRow(
                                 options: ContentRowOptions(
                                   actionWidget: ContentRowActionOptions(
@@ -125,10 +118,16 @@ class ProfilePage extends ConsumerWidget {
                                 ),
                                 onTap: () => const SettingsRoute().push(context),
                               ),
+                              userData.maybeWhen(
+                                orElse: () => const SizedBox.shrink(),
+                                data: (data) => data == null
+                                    ? const SizedBox.shrink()
+                                    : NotificationsSettingsRow(actionIcon: actionIcon),
+                              ),
                             ],
                           ),
                           const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
+                            height: Spacing.$4x,
                           ),
                           ContentWrapper(
                             color: context.color.surfaceBaseSecondary,
@@ -181,38 +180,33 @@ class ProfilePage extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
+                            height: Spacing.$4x,
                           ),
-                          Consumer(builder: (context, ref, _) {
-                            final userData = ref.watch(authProvider);
-                            const emptyBox = SizedBox.shrink();
-
-                            return userData.maybeWhen(
-                              orElse: () => emptyBox,
-                              data: (data) => data == null
-                                  ? emptyBox
-                                  : ContentWrapper(
-                                      color: context.color.surfaceBaseSecondary,
-                                      children: [
-                                        ContentRow(
-                                          onTap: () => _logOut(context, ref),
-                                          options: ContentRowOptions(
-                                            titleStyle: context.textStyle.text
-                                                .copyWith(color: context.color.textAndIconsStatusNegative),
-                                            title: context.l10n.logOut,
-                                            leadingIcon: SvgPicture.asset(
-                                              'assets/icons/svg/ic_profile_logout.svg',
-                                              height: 24,
-                                              width: 24,
-                                              matchTextDirection: true,
-                                              package: PackageConfig.packageName,
-                                            ),
+                          userData.maybeWhen(
+                            orElse: () => const SizedBox.shrink(),
+                            data: (data) => data == null
+                                ? const SizedBox.shrink()
+                                : ContentWrapper(
+                                    color: context.color.surfaceBaseSecondary,
+                                    children: [
+                                      ContentRow(
+                                        onTap: () => _logOut(context, ref),
+                                        options: ContentRowOptions(
+                                          titleStyle: context.textStyle.text
+                                              .copyWith(color: context.color.textAndIconsStatusNegative),
+                                          title: context.l10n.logOut,
+                                          leadingIcon: SvgPicture.asset(
+                                            'assets/icons/svg/ic_profile_logout.svg',
+                                            height: 24,
+                                            width: 24,
+                                            matchTextDirection: true,
+                                            package: PackageConfig.packageName,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                            );
-                          })
+                                      ),
+                                    ],
+                                  ),
+                          ),
                         ],
                       ),
                     ),
@@ -236,7 +230,7 @@ class ProfilePage extends ConsumerWidget {
             return;
           }
           await ref.read(authProvider.notifier).logOut();
-          context.pop();
+          Navigator.of(ctx).pop();
         },
         title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
         logOutText: context.l10n.logOut,

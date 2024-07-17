@@ -30,11 +30,7 @@ class SearchScreen extends ConsumerWidget {
           children: [
             Container(
               color: context.color.surfaceBasePrimary,
-              padding: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: MediaQuery.of(context).padding.top + 8,
-              ),
+              padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: MediaQuery.of(context).padding.top + 12),
               child: BaladySearchWithBackButton(
                 onBackButtonPressed: onBackTap,
                 searchInput: BaladyInput(

@@ -59,9 +59,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   @override
   void initState() {
     super.initState();
-
     _initNavigation();
-
     WakelockPlus.enable();
   }
 
@@ -87,7 +85,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     );
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-    await dgisController.startNavigation();
+    await dgisController.startNavigation(
+      SpeedRangeZoom(
+        maxSpeedRange: 5,
+        minSpeedRange: 0,
+        routeDistanceMillimeters: 0,
+        styleZoomValue: 16.5,
+      ),
+    );
   }
 
   @override

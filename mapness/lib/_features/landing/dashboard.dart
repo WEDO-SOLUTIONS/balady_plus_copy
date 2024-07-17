@@ -53,7 +53,7 @@ class Dashboard extends ConsumerStatefulWidget {
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard> {
+class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin {
   double get _headerExtent => 75 / widget.biggestHeight;
 
   @override
@@ -150,6 +150,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                   slivers: [
                     SliverPersistentHeader(
                       delegate: DashboardHeaderDelegate(
+                        vsync: this,
                         draggableScrollableController: widget.scrollableController,
                       ),
                       pinned: true,

@@ -1,15 +1,23 @@
+import 'dart:async';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_sound_provider.dart';
+import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 
 import 'layout_size_wrapper.dart';
 
@@ -38,6 +46,21 @@ class EtaSheet extends ConsumerStatefulWidget {
 class _EtaSheetState extends ConsumerState<EtaSheet> {
   bool _isExpanded = false;
 
+  ///TODO: discuss to team and move to riverpod provider all the same cases
+  StreamSubscription<TapEvent>? _streamSubscription;
+
+  @override
+  void initState() {
+    _setupTapListener();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final eta = ref.watch(pathNavEtaProvider);
@@ -46,6 +69,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     if (eta == null) {
       return const SizedBox();
     }
+
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
       onSizeChanged: widget.onSizeChanged,
@@ -55,8 +79,8 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           enabledHeader: _isExpanded,
-          distanceChild:
-              NaviChildModel(description: eta.distanceEtaUnits.getDescription(context), title: eta.distanceEta),
+          distanceChild: NaviChildModel(
+              description: eta.distanceEtaUnits.getDescription(context), title: formatDistance(eta.distanceEta)),
           arrivalChild: NaviChildModel(description: context.l10n.arrival, title: eta.arrivalTime),
           drivingChild: NaviChildModel(description: eta.timeEtaUnits.getDescription(context), title: eta.timeEta),
           contentRows: [
@@ -137,5 +161,20 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
         props: {
           'isExpanded': _isExpanded,
         });
+  }
+
+  Future<void> _setupTapListener() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    _streamSubscription = dgisController.objectTapEvents.listen((_) {
+      final goRouter = ref.read(goRouterProvider);
+
+      if (goRouter.isCurrentRoute(PathNavRoute.path)) {
+        setState(() {
+          if (_isExpanded) {
+            _isExpanded = false;
+          }
+        });
+      }
+    });
   }
 }

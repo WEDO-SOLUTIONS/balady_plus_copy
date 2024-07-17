@@ -8,10 +8,10 @@ import 'package:mapness/shared/routing/transculent_page.dart';
 part 'path_nav.g.dart';
 
 @TypedGoRoute<PathNavRoute>(
-  path: '/pathNav',
-  // routes: <TypedGoRoute<GoRouteData>>[],
+  path: PathNavRoute.path,
 )
 class PathNavRoute extends GoRouteData {
+  static const path = '/pathNav';
   const PathNavRoute();
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
@@ -21,10 +21,11 @@ class PathNavRoute extends GoRouteData {
     final extra = state.extra as Map<String, dynamic>?;
     final navType = extra?['data'] as RouteSearchOptionsMessage;
     return _pathNavTransition(
-        context: context,
-        child: PathNavPage(
-          navType: navType,
-        ),);
+      context: context,
+      child: PathNavPage(
+        navType: navType,
+      ),
+    );
   }
 
   static void open(GoRouter router, RouteSearchOptionsMessage navType) {

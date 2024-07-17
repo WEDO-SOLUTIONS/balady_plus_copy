@@ -106,6 +106,7 @@ class OrganizationItem {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['timezone_offset'] = timezoneOffset;
+    data['id'] = id;
     if (flags != null) {
       data['flags'] = flags!.toJson();
     }
@@ -533,21 +534,21 @@ class Point {
 }
 
 class NameEx {
-  final String? extension;
+  final String? extensionValue;
   final String? primary;
   final String? shortName;
 
-  const NameEx({this.extension, this.primary, this.shortName});
+  const NameEx({this.extensionValue, this.primary, this.shortName});
 
   factory NameEx.fromJson(Map<String, dynamic> json) => NameEx(
-        extension: json['extension'],
+        extensionValue: json['extension'],
         primary: json['primary'],
         shortName: json['short_name'],
       );
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['extension'] = extension;
+    data['extension'] = extensionValue;
     data['primary'] = primary;
     data['short_name'] = shortName;
     return data;

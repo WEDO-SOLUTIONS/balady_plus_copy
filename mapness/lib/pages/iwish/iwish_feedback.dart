@@ -44,8 +44,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
     if (hasError) {
       return ErrorSheet(
         onRetry: feedbackNotifier.submitFeedback,
-        buttonLabel: context.l10n.reload,
-        onClose: () => context.pop(),
+        buttonLabel: context.l10n.tryAgain,
       );
     }
 

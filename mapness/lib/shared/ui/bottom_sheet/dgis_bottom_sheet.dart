@@ -4,10 +4,10 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_theme.dart';
 import 'package:mapness/shared/ui/bottom_sheet/lib/scroll_listeners.dart';
-import 'package:mapness/shared/ui/bottom_sheet/ui/dgis_handle.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/vertival_scroll_listener.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
@@ -512,7 +512,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                 padding: EdgeInsets.only(
                   bottom: 4,
                 ),
-                child: DgisHandle(),
+                child: SheetDragger(),
               ),
             ),
           Flexible(

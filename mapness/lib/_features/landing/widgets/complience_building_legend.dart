@@ -28,36 +28,41 @@ class ComplianceBuildingLegend extends ConsumerWidget {
         Language.arabic => TextDirection.rtl,
         _ => TextDirection.ltr,
       },
-      child: Container(
-        width: 180,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            AutoSizeText(
-              locale.legendComplienceBuildingTitle,
-              maxLines: 1,
-              style: textStyles.footNoteBold,
+      child: Material(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        child: SizedBox(
+          width: 180,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 16,
             ),
-            const SizedBox(height: 8),
-            _LegendItem(
-              color: NonThemeColor.color41,
-              borderColor: NonThemeColor.color42,
-              text: locale.legendComplienceBuildingGreen,
-              group: sizeGroupItems,
+            child: Column(
+              children: [
+                AutoSizeText(
+                  locale.legendComplienceBuildingTitle,
+                  maxLines: 1,
+                  style: textStyles.footNoteBold,
+                ),
+                const SizedBox(height: 8),
+                _LegendItem(
+                  color: NonThemeColor.color41,
+                  borderColor: NonThemeColor.color42,
+                  text: locale.legendComplienceBuildingGreen,
+                  group: sizeGroupItems,
+                ),
+                const SizedBox(height: 8),
+                _LegendItem(
+                  color: context.color.surfaceBasePrimary,
+                  borderColor: NonThemeColor.color43,
+                  text: locale.legendComplienceBuildingGrey,
+                  group: sizeGroupItems,
+                ),
+                const SizedBox(height: 4),
+              ],
             ),
-            const SizedBox(height: 8),
-            _LegendItem(
-              color: context.color.surfaceBasePrimary,
-              borderColor: NonThemeColor.color43,
-              text: locale.legendComplienceBuildingGrey,
-              group: sizeGroupItems,
-            ),
-            const SizedBox(height: 8),
-          ],
+          ),
         ),
       ),
     );

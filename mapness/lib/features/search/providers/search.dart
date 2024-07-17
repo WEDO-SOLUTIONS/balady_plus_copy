@@ -1,6 +1,5 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -80,7 +79,8 @@ class Search extends _$Search {
 
     mixpanel?.timeEvent('Search: fetchSuggest');
     final dgisController = await ref.read(dgisControllerProvider.future);
-    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+    final searchRect =
+        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
 
     final searchOperation = CancelableOperation.fromFuture(
       dgisController.fetchSuggest(
@@ -99,7 +99,7 @@ class Search extends _$Search {
     mixpanel?.track('Search: fetchSuggest');
   }
 
-  Future<void> quickSearch(QuickFilter quickSearch) async {
+  Future<void> quickSearch(QuickFilter quickSearch, {List<GeoPointMessage>? spatialRestriction}) async {
     await _searchOperation?.cancel();
     final language = ref.read(appLanguageProvider);
     final searchQuery = quickSearch.query[language] ?? '';
@@ -110,7 +110,8 @@ class Search extends _$Search {
     state = SearchStateLoading(searchText: searchQuery);
     _previousType = SearchType.quickSearch;
     _previousQuickSearch = quickSearch;
-    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+    final searchRect =
+        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
     Metrics.logEvent(
       'quickSearch',
       object: runtimeType,
@@ -124,7 +125,8 @@ class Search extends _$Search {
       dgisController.search(
         searchQuery,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: _saRestrictions,
+        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+        spatialRestriction: spatialRestriction ?? _saRestrictions,
         searchRect: searchRect,
       ),
     );
@@ -145,7 +147,8 @@ class Search extends _$Search {
     state = SearchStateLoading(searchText: query);
     _previousType = SearchType.searchByText;
     _previousQuery = query;
-    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+    final searchRect =
+        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
     Metrics.logEvent(
       'searchByText',
       object: runtimeType,
@@ -159,7 +162,8 @@ class Search extends _$Search {
       dgisController.search(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: _saRestrictions,
+        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+        spatialRestriction: _getRestrictionFromRect(),
         searchRect: searchRect,
       ),
     );
@@ -174,13 +178,14 @@ class Search extends _$Search {
     mixpanel?.track('Search: searchByText');
   }
 
-  Future<void> searchByQuery(SearchQueryMessage query, String text) async {
+  Future<void> searchByQuery(SearchQueryMessage query, String text, {List<GeoPointMessage>? spatialRestriction}) async {
     await _searchOperation?.cancel();
     state = SearchStateLoading(searchText: text);
     _previousType = SearchType.searchByQuery;
     _previousQuery = text;
     _previousSearchQueryMessage = query;
-    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+    final searchRect =
+        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
 
     Metrics.logEvent(
       'Search/searchByQuery',
@@ -194,7 +199,8 @@ class Search extends _$Search {
       dgisController.searchByQuery(
         query,
         sortingType: SortingTypeMessage.byDistance,
-        spatialRestriction: _saRestrictions,
+        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+        spatialRestriction: spatialRestriction ?? _saRestrictions,
         searchRect: searchRect,
       ),
     );
@@ -220,10 +226,12 @@ class Search extends _$Search {
         searchByText(_previousQuery!);
         break;
       case SearchType.searchByQuery:
-        searchByQuery(_previousSearchQueryMessage!, _previousQuery!);
+        // TODO(Sergei): workaround for fast search from searchInThisArea, remove spatialRestriction param when search performance is improved
+        searchByQuery(_previousSearchQueryMessage!, _previousQuery!, spatialRestriction: _getRestrictionFromRect());
         break;
       case SearchType.quickSearch:
-        quickSearch(_previousQuickSearch!);
+        // TODO(Sergei): workaround for fast search from searchInThisArea, remove spatialRestriction param when search performance is improved
+        quickSearch(_previousQuickSearch!, spatialRestriction: _getRestrictionFromRect());
         break;
     }
   }
@@ -237,5 +245,20 @@ class Search extends _$Search {
       SearchStateResults() => oldState.copyWith(searchText: searchText),
       SearchStateLoading() => oldState.copyWith(searchText: searchText),
     };
+  }
+
+  // TODO(Sergei): remove when search performance is improved (_saRestrictions will be used)
+  List<GeoPointMessage>? _getRestrictionFromRect() {
+    final rect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
+    if (rect == null) {
+      return null;
+    }
+    const areaExpansion = 0.06;
+    return [
+      GeoPointMessage(latitude: rect.northEastLat + areaExpansion, longitude: rect.northEastLon + areaExpansion),
+      GeoPointMessage(latitude: rect.northEastLat + areaExpansion, longitude: rect.southWestLon - areaExpansion),
+      GeoPointMessage(latitude: rect.southWestLat - areaExpansion, longitude: rect.southWestLon - areaExpansion),
+      GeoPointMessage(latitude: rect.southWestLat - areaExpansion, longitude: rect.northEastLon + areaExpansion),
+    ];
   }
 }

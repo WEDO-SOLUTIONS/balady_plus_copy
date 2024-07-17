@@ -1,7 +1,9 @@
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
@@ -37,11 +39,10 @@ class ErrorSheetV2 extends StatelessWidget {
     Text styledText(String text, {bool isTitle = false}) => Text(
           text,
           textAlign: TextAlign.center,
-          style: (isTitle ? context.textStyle.heading1 : context.textStyle.text)
-              .copyWith(color: context.color.textAndIconsBasePrimary),
+          style: (isTitle ? context.textStyleV3.h3SemiBold : context.textStyleV3.bodyLargeRegular).copyWith(
+            color: isTitle ? context.color.textAndIconsBasePrimary : NonThemeColor.color6,
+          ),
         );
-
-    final isLtr = Directionality.of(context) == TextDirection.ltr;
 
     return Material(
       color: Colors.white,
@@ -52,13 +53,19 @@ class ErrorSheetV2 extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 8),
-            Align(
-              alignment: isLtr ? Alignment.centerRight : Alignment.centerLeft,
-              child: AppCloseButton(
-                onPressed: onClose ?? () => context.pop(),
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 6),
+                child: SheetDragger(),
               ),
             ),
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: CustomCloseButton(
+                onClose: onClose ?? () => context.pop(),
+              ),
+            ),
+            const SizedBox(height: 16),
             FractionallySizedBox(
               widthFactor: .7,
               child: Builder(
@@ -75,7 +82,8 @@ class ErrorSheetV2 extends StatelessWidget {
                       assetImage!,
                       package: package,
                     );
-                  } else if (assetImage!.endsWith('.png')) {
+                  }
+                  if (assetImage!.endsWith('.png')) {
                     return Image.asset(
                       assetImage!,
                       package: package,
@@ -87,14 +95,14 @@ class ErrorSheetV2 extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             FractionallySizedBox(
-              widthFactor: .8,
+              widthFactor: .7,
               child: styledText(errorTitle ?? '', isTitle: true),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 12),
             FractionallySizedBox(
-              widthFactor: .8,
+              widthFactor: .7,
               child: styledText(errorContent ?? ''),
             ),
             const SizedBox(height: 24),

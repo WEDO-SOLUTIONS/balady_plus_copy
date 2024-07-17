@@ -1,11 +1,12 @@
+// ignore_for_file: prefer_expression_function_bodies
+
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class MiniAppHeader extends ConsumerWidget {
   const MiniAppHeader({
@@ -17,8 +18,6 @@ class MiniAppHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final direction = ref.watch(uiDirectionProvider);
-
     return ColoredBox(
       color: Colors.white,
       child: Padding(
@@ -41,17 +40,10 @@ class MiniAppHeader extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(8),
                   child: Padding(
                     padding: const EdgeInsets.all(8),
-                    child: SvgPicture.asset(
-                      direction == TextDirection.ltr
-                          ? 'assets/icons/svg/ic_chevron_left.svg'
-                          : 'assets/icons/svg/ic_chevron_right.svg',
-                      height: 24,
-                      width: 24,
-                      package: PackageConfig.packageName,
-                      colorFilter: ColorFilter.mode(
-                        context.color.textAndIconsBasePrimary,
-                        BlendMode.srcIn,
-                      ),
+                    child: Icon(
+                      context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                      size: 24,
+                      color: context.color.textAndIconsBasePrimary,
                     ),
                   ),
                 ),

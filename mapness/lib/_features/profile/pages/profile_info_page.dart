@@ -25,15 +25,16 @@ class ProfileInfoPage extends ConsumerWidget {
           child: Material(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.only(top: NumericBase.$4x),
+              padding: const EdgeInsets.only(top: Spacing.$4x),
               child: Scaffold(
                 appBar: BaladyTopBar.iconAndText(
+                  systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                   title: context.l10n.profileInfo,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     text: context.l10n.back,
                     onPressed: () => context.pop(),
-                    icon: context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                    icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                   ),
                 ),
                 body: ListView(

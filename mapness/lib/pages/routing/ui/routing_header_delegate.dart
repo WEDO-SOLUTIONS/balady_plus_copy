@@ -1,7 +1,7 @@
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -66,16 +66,7 @@ class RoutingHeader extends ConsumerWidget {
             const SizedBox(
               height: 6,
             ),
-            Center(
-              child: Container(
-                height: 4,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: context.color.surfaceBasePrimary,
-                  borderRadius: const BorderRadius.all(Radius.circular(24)),
-                ),
-              ),
-            ),
+            const Center(child: SheetDragger()),
             const SizedBox(
               height: 6,
             ),

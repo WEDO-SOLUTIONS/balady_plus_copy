@@ -131,7 +131,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-
     final sizeOfScreen = MediaQuery.of(context).size;
     final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
 
@@ -154,9 +153,9 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     /// loading progress indicator
     if (state.isLoading) {
-      return Align(
+      return const Align(
         alignment: Alignment.bottomCenter,
-        child: LoadingSheet(text: context.l10n.sending),
+        child: LoadingSheet(),
       );
     }
 
@@ -204,7 +203,10 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     return BackdropFilter(
-      filter: ColorFilter.mode(Colors.black.withAlpha(90),BlendMode.screen,),
+      filter: switch (_expansion.value) {
+        Expansion.expanded => ColorFilter.mode(Colors.black.withAlpha(90), BlendMode.screen),
+        _ => const ColorFilter.mode(Colors.transparent, BlendMode.screen),
+      },
       child: Directionality(
         textDirection: switch (language) {
           Language.arabic => TextDirection.rtl,
@@ -306,6 +308,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                   PoiTabsType.inBuilding => InBuildingWidget(
                       state: poiCardState,
                       objectId: widget.objectId,
+                      bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
                     ),
                 },
               ),

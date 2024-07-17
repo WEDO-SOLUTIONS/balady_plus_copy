@@ -31,6 +31,9 @@ part 'widgets/share_item.dart';
 part 'widgets/wrapper.dart';
 
 class PoiCardFooter extends ConsumerWidget {
+  static const double height = 40;
+  static const double padding = 8;
+
   final DirectoryObjectMessage data;
   final VoidCallback share;
   final VoidCallback callPhone;

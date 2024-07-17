@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
@@ -39,12 +40,9 @@ class IwishPlaceCard extends ConsumerWidget {
         entity.when(
           error: (_, __) => ErrorSheet(
             onRetry: entityNotifier.refresh,
-            buttonLabel: context.l10n.reload,
-            onClose: () => context.pop(),
+            buttonLabel: context.l10n.tryAgain,
           ),
-          loading: () => LoadingSheet(
-            text: context.l10n.loading,
-          ),
+          loading: () => const LoadingSheet(),
           data: (entity) {
             final distance = ref.read(iwishDistanceProvider(entity));
 
@@ -98,18 +96,11 @@ class IwishPlaceCard extends ConsumerWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Align(
+                                    const Align(
                                       alignment: Alignment.topCenter,
-                                      child: Container(
-                                        margin: const EdgeInsets.only(
-                                          top: 8,
-                                        ),
-                                        height: 4,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[300],
-                                          borderRadius: BorderRadius.circular(2),
-                                        ),
+                                      child: Padding(
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: SheetDragger(),
                                       ),
                                     ),
                                     const SizedBox(height: 4),

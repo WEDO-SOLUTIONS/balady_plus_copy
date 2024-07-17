@@ -1,6 +1,5 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
@@ -50,8 +49,15 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
   Widget build(BuildContext context) {
     ref.listen(
       networkStatusProvider,
-      (previous, next) {
-        if (previous == ConnectivityResult.none && next != previous) {
+      (wasAvailable, available) {
+        // [wasAvailable] is nullable value. So we have to handle this value
+        // If the network was available we use this value. Else we set default value `true`
+        // By default we think that the user has network connection
+        final _wasAvailable = wasAvailable ?? true;
+
+        // If the network was not available bit now it is available => [becomeAvailable] = true
+        final becomeAvailable = !_wasAvailable && available;
+        if (becomeAvailable) {
           _reloadWidget(context);
         }
       },
