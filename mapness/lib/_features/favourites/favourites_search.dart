@@ -12,19 +12,13 @@ import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
-class FavouritesSearch extends ConsumerStatefulWidget {
+class FavouritesSearch extends ConsumerWidget {
   const FavouritesSearch({required this.markerType, super.key});
 
   final FavouriteItemMarkerType markerType;
 
   @override
-  ConsumerState<FavouritesSearch> createState() => _FavouritesSearchState();
-}
-
-class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final searchResult = (ref.watch(suggestResultsProvider).value ?? [])
         .map((element) => element.handler.objectHandler)
         .whereType<SuggestObjectHandlerMessage>()
@@ -32,7 +26,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
         .toList();
 
     return SearchScreen(
-      hintText: widget.markerType.getHintText(context),
+      hintText: markerType.getHintText(context),
       onHistoryItemTap: (item) async {
         final dgisController = await ref.read(dgisControllerProvider.future);
 
@@ -42,7 +36,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
             entranceId: int.tryParse(item?.objectId ?? '') ?? 0,
           ),
         );
-        await onSearchTap(context, object);
+        await onSearchTap(ref, context, object);
       },
       onBackTap: () {
         context.pop();
@@ -52,7 +46,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
         final item = searchResult[index];
 
         return ContentRow(
-          onTap: () async => onSearchTap(context, item),
+          onTap: () async => onSearchTap(ref, context, item),
           options: ContentRowOptions(
             leadingIcon: General16Icons.pin.icon(
               color: context.color.textAndIconsStatusAccent,
@@ -66,13 +60,10 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
     );
   }
 
-  Future<void> onSearchTap(
-    BuildContext context,
-    DirectoryObjectMessage item,
-  ) async {
+  Future<void> onSearchTap(WidgetRef ref, BuildContext context, DirectoryObjectMessage item) async {
     final favItem = item.mapToFavourite();
     final repo = ref.read(favouriteCacheProvider.notifier);
-    await switch (widget.markerType) {
+    await switch (markerType) {
       FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => repo.addItem(favItem),
       FavouriteItemMarkerType.home => repo.setHome(favItem),
       FavouriteItemMarkerType.work => repo.setWork(favItem),
