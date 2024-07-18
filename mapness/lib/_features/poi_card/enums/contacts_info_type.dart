@@ -63,6 +63,8 @@ extension ContactsInfoTypeExt on ContactsInfoType {
   /// There are not present, for example, [ContactsInfoType.phone] because we want to show it in different place
   /// So if some of the types will not included in this list - return null
   PoiContentSocialMediaType? get socialMediaType => switch (this) {
+        ContactsInfoType.email => PoiContentSocialMediaType.email,
+        ContactsInfoType.website => PoiContentSocialMediaType.website,
         ContactsInfoType.instagram => PoiContentSocialMediaType.instagram,
         ContactsInfoType.facebook => PoiContentSocialMediaType.facebook,
         ContactsInfoType.youtube => PoiContentSocialMediaType.youtube,
