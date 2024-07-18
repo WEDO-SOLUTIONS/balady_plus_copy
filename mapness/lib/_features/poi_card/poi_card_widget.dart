@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -261,8 +262,9 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
                     (element) => element.type == ContactsInfoType.phone,
                   );
-
-              poiActions.callPhone(value: phoneNumber?.value);
+              if (phoneNumber?.value != null) {
+                poiActions.callPhone(phoneNumber!.value!);
+              }
             },
             onEntranceTap: () => poiActions.toggleEntrances(
               data,
@@ -288,24 +290,26 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                 context.pop();
               },
             ),
+            bodyPadding: const EdgeInsets.all(Spacing.$4x),
             body: [
               ValueListenableBuilder(
                 valueListenable: _tabType,
                 builder: (context, tabType, _) => switch (tabType) {
                   PoiTabsType.info => InfoWidget(
-                      callback: () => poiActions.toggleEntrances(
+                      objectInfo: poiCardState?.gisObjectIdMessage,
+                      qrTradeLicense: poiCardState?.qrTradeLicense,
+                      onEntrancesTap: () => poiActions.toggleEntrances(
                         data,
                         () => _bottomSheetController.animateTo(Expansion.collapsed),
                         widget.closestPoint,
                       ),
-                      poiCardState: poiCardState,
                     ),
                   PoiTabsType.photos => PoiPhotoCard(
                       model: PoiModel(
                         directoryObjectMessage: data,
                       ),
                     ),
-                  PoiTabsType.inBuilding => InBuildingWidget(
+                  PoiTabsType.inBuilding => PoiInBuildingWidget(
                       state: poiCardState,
                       objectId: widget.objectId,
                       bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
