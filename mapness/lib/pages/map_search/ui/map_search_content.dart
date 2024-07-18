@@ -71,23 +71,23 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
-    ref.listen(searchProvider(scope.value), (_oldState, newState) {
-      if (newState is SearchStateEmpty) {
-        ref.read(urbiAnalyticsProvider).track(
-          'searchFailed',
-          properties: {
-            'text': newState.searchText,
-          },
-        );
-      }
-    });
-
-    ref.listen(
-      networkStatusProvider,
-      (_, hasConnection) {
-        _debouncedUpdate(context, hasConnection);
-      },
-    );
+    ref
+      ..listen(searchProvider(scope.value), (_oldState, newState) {
+        if (newState is SearchStateEmpty) {
+          ref.read(urbiAnalyticsProvider).track(
+            'searchFailed',
+            properties: {
+              'text': newState.searchText,
+            },
+          );
+        }
+      })
+      ..listen(
+        networkStatusProvider,
+        (_, hasConnection) {
+          _debouncedUpdate(context, hasConnection);
+        },
+      );
 
     if (!_hasConnection) {
       return SliverToBoxAdapter(
