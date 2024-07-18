@@ -53,7 +53,6 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
         ) !=
         null;
 
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
