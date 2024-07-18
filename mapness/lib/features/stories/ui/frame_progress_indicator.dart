@@ -1,8 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/features/stories/models/story_fame_theme_data.dart';
 
-import 'package:mapness/features/stories/models/story_thumbnail_data.dart';
-import 'package:mapness/features/stories/ui/stories_screen.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 const _height = 72.0;
@@ -13,19 +12,18 @@ class FrameProgressIndicator extends AnimatedWidget {
   final VoidCallback? onClose;
   final int frameIndex;
   final int framesLength;
-  final StoryThumbnailData thumbnailData;
+  final StoryThumbnailThemeData thumbnailTheme;
 
   /// Creates a [FrameProgressIndicator].
   ///
   /// The [frameIndex] represents the current frame index.
   /// The [framesLength] represents the total number of frames.
-  /// The [thumbnailData] contains data for the story thumbnail.
   /// The [animation] is used to animate the progress indicator.
   /// The [onClose] callback is called when the close button is tapped.
   const FrameProgressIndicator({
     required this.frameIndex,
     required this.framesLength,
-    required this.thumbnailData,
+    required this.thumbnailTheme,
     required Animation<double> animation,
     super.key,
     this.onClose,
@@ -68,47 +66,39 @@ class FrameProgressIndicator extends AnimatedWidget {
           .toList();
 
   @override
-  Widget build(BuildContext context) {
-    final storyTheme = StoryTheme.of(context);
-    // TODO(ilysov): extract to theme
-    const iconPrimaryOnColor = Colors.white;
-    return SizedBox(
-      width: double.infinity,
-      height: _height,
-      child: Directionality(
-        textDirection: Directionality.of(context),
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: ProgressIndicatorTheme(
-                  data: ProgressIndicatorThemeData(
-                    linearTrackColor: storyTheme.thumbnailThemeData?.backgroundColor ??
-                        iconPrimaryOnColor.withOpacity(
-                          0.2,
-                        ),
-                    linearMinHeight: _indicatorHeight,
-                    color: storyTheme.thumbnailThemeData?.animationColor ?? iconPrimaryOnColor,
-                  ),
-                  child: Row(
-                    children: _framesIndicators,
+  Widget build(BuildContext context) => SizedBox(
+        width: double.infinity,
+        height: _height,
+        child: Directionality(
+          textDirection: Directionality.of(context),
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ProgressIndicatorTheme(
+                    data: ProgressIndicatorThemeData(
+                      linearTrackColor: thumbnailTheme.backgroundColor,
+                      linearMinHeight: _indicatorHeight,
+                      color: thumbnailTheme.animationColor,
+                    ),
+                    child: Row(
+                      children: _framesIndicators,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: Spacing.$4x),
-              AppButton.close(
-                onTap: onClose,
-                buttonColorScheme: ButtonColorScheme.onColor,
-                padding: EdgeInsets.zero,
-                color: storyTheme.thumbnailThemeData?.closeButtonColor ?? iconPrimaryOnColor.withOpacity(.08),
-                innerPadding: const EdgeInsets.all(Spacing.$2x),
-              ),
-            ],
+                const SizedBox(width: Spacing.$4x),
+                AppButton.close(
+                  onTap: onClose,
+                  buttonColorScheme: ButtonColorScheme.onColor,
+                  padding: EdgeInsets.zero,
+                  color: thumbnailTheme.closeButtonColor,
+                  innerPadding: const EdgeInsets.all(Spacing.$2x),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

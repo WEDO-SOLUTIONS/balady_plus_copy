@@ -25,8 +25,6 @@ import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/features/stories/lib/stories.dart';
-import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -91,149 +89,128 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
       });
 
     final direction = ref.watch(uiDirectionProvider);
-    bool canPop() {
-      if (Stories.isShowing) {
-        return false;
-      }
-      return true;
-    }
 
-    return PopScope(
-      canPop: canPop(),
-      onPopInvoked: (value) {
-        if (Stories.isShowing) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.storiesClose,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-          );
-          //Resume the story update when viewport changed
-          ref.read(storyServiceProvider.notifier).resumeUpdate();
-          Stories.hide();
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification is ScrollStartNotification) {
+          widget.onScroll.call(true);
+        } else if (notification is ScrollEndNotification) {
+          widget.onScroll.call(false);
         }
+        return true;
       },
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
-          if (notification is ScrollStartNotification) {
-            widget.onScroll.call(true);
-          } else if (notification is ScrollEndNotification) {
-            widget.onScroll.call(false);
-          }
-          return true;
-        },
-        child: DraggableScrollableSheet(
-          controller: widget.scrollableController,
-          initialChildSize: widget.initWithMinSize
-              ? _headerExtent
-              : Platform.isIOS
-                  ? .3
-                  : .38,
-          minChildSize: _headerExtent,
-          maxChildSize: .93,
-          snap: true,
-          snapSizes: [_headerExtent, if (Platform.isIOS) .3 else .38, .93],
-          builder: (context, scrollController) => Directionality(
-            textDirection: direction,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(RadiusBorder.xl),
-                topLeft: Radius.circular(RadiusBorder.xl),
+      child: DraggableScrollableSheet(
+        controller: widget.scrollableController,
+        initialChildSize: widget.initWithMinSize
+            ? _headerExtent
+            : Platform.isIOS
+                ? .3
+                : .38,
+        minChildSize: _headerExtent,
+        maxChildSize: .93,
+        snap: true,
+        snapSizes: [_headerExtent, if (Platform.isIOS) .3 else .38, .93],
+        builder: (context, scrollController) => Directionality(
+          textDirection: direction,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(RadiusBorder.xl),
+              topLeft: Radius.circular(RadiusBorder.xl),
+            ),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(RadiusBorder.xl),
+                  topLeft: Radius.circular(RadiusBorder.xl),
+                ),
               ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(RadiusBorder.xl),
-                    topLeft: Radius.circular(RadiusBorder.xl),
+              child: CustomScrollView(
+                controller: scrollController,
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverPersistentHeader(
+                    delegate: DashboardHeaderDelegate(
+                      vsync: this,
+                      draggableScrollableController: widget.scrollableController,
+                    ),
+                    pinned: true,
+                    floating: true,
                   ),
-                ),
-                child: CustomScrollView(
-                  controller: scrollController,
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: DashboardHeaderDelegate(
-                        vsync: this,
-                        draggableScrollableController: widget.scrollableController,
-                      ),
-                      pinned: true,
-                      floating: true,
-                    ),
-                    SliverList.list(
-                      children: [
-                        Container(
-                          color: context.colorsV2.backgroundSurface4,
-                          padding: const EdgeInsets.only(
-                            top: Spacing.$4x,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              JoyParksCard(widget.scrollableController),
-                              const SizedBox(height: Spacing.$3x),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                                child: Row(
-                                  textDirection: TextDirection.ltr,
-                                  children: [
-                                    Expanded(child: WeatherCard()),
-                                    SizedBox(width: Spacing.$3x),
-                                    Expanded(child: QiblaCard()),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: Spacing.$8x),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child: Row(
-                                  textDirection: TextDirection.ltr,
-                                  children: [
-                                    Expanded(
-                                      child: PlacesForCart(
-                                        title: context.l10n.placesForShopping,
-                                        icon: General32Icons.shoppingLRTL,
-                                        onTap: () => _openSearch(QuickFilter.shopping),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: PlacesForCart(
-                                        title: context.l10n.placesForEatingOut,
-                                        icon: General32Icons.restourantLRTL,
-                                        onTap: () => _openSearch(QuickFilter.eatOut),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: Spacing.$8x),
-                              const PlacePreview(),
-                              const SizedBox(height: Spacing.$8x),
-                              const SnapAndSendCard(),
-                              const SizedBox(height: Spacing.$8x),
-                              const ComplianceCard(),
-                              const SizedBox(height: Spacing.$8x),
-                              const PrayerCard(),
-                              const SizedBox(height: Spacing.$8x),
-                              CalendarSliderCard(
-                                colorScheme: ref.read(colorSchemeProvider),
-                                onShowAll: () => Metrics.logEventAdvanced(
-                                  MetricsConstants.exploreKeys.kingdomCalendarViewAll,
-                                  action: MetricAction.tap.name,
-                                  group: MetricsConstants.exploreTag,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: Spacing.$8x,
-                              ),
-                            ],
-                          ),
+                  SliverList.list(
+                    children: [
+                      Container(
+                        color: context.colorsV2.backgroundSurface4,
+                        padding: const EdgeInsets.only(
+                          top: Spacing.$4x,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            JoyParksCard(widget.scrollableController),
+                            const SizedBox(height: Spacing.$3x),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                              child: Row(
+                                textDirection: TextDirection.ltr,
+                                children: [
+                                  Expanded(child: WeatherCard()),
+                                  SizedBox(width: Spacing.$3x),
+                                  Expanded(child: QiblaCard()),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: Spacing.$8x),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                textDirection: TextDirection.ltr,
+                                children: [
+                                  Expanded(
+                                    child: PlacesForCart(
+                                      title: context.l10n.placesForShopping,
+                                      icon: General32Icons.shoppingLRTL,
+                                      onTap: () => _openSearch(QuickFilter.shopping),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: PlacesForCart(
+                                      title: context.l10n.placesForEatingOut,
+                                      icon: General32Icons.restourantLRTL,
+                                      onTap: () => _openSearch(QuickFilter.eatOut),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: Spacing.$8x),
+                            const PlacePreview(),
+                            const SizedBox(height: Spacing.$8x),
+                            const SnapAndSendCard(),
+                            const SizedBox(height: Spacing.$8x),
+                            const ComplianceCard(),
+                            const SizedBox(height: Spacing.$8x),
+                            const PrayerCard(),
+                            const SizedBox(height: Spacing.$8x),
+                            CalendarSliderCard(
+                              colorScheme: ref.read(colorSchemeProvider),
+                              onShowAll: () => Metrics.logEventAdvanced(
+                                MetricsConstants.exploreKeys.kingdomCalendarViewAll,
+                                action: MetricAction.tap.name,
+                                group: MetricsConstants.exploreTag,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: Spacing.$8x,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

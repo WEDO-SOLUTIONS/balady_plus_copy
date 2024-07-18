@@ -2,8 +2,9 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
-import 'package:mapness/features/stories/ui/stories_screen.dart';
-import 'package:mapness/features/stories/ui/story_localization.dart';
+import 'package:mapness/features/stories/models/story_localization.dart';
+
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class StoryFrameContent extends StatelessWidget {
   final StoryFrameData frame;
@@ -17,8 +18,13 @@ class StoryFrameContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = StoryLocalization.of(context).locale;
-    final storyTheme = StoryTheme.of(context);
+    final l10n = context.l10n;
+
+    final locales = StoryTexts.fromId(l10n, frame.storyId);
+    final storyTheme = frame.themeFromId(
+      colorTheme: context.colorsV2,
+      textTheme: context.textStyleV3,
+    );
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: storyTheme.horizontalPadding),
       child: Column(
@@ -26,28 +32,19 @@ class StoryFrameContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            frame.titleOrFailback(l10n),
-            style: storyTheme.titleStyle ??
-                context.textStyleV3.h1SemiBold.copyWith(
-                  color: context.color.textAndIconsBaseInversePrimary,
-                ),
+            locales.title,
+            style: storyTheme.titleStyle,
           ),
-          if (frame.subtitle != null)
+          if (locales.subTitle != null)
             Text(
-              frame.subtitle!,
-              style: storyTheme.titleStyle ??
-                  context.textStyle.heading2.copyWith(
-                    color: context.color.textAndIconsBaseInversePrimary,
-                  ),
+              locales.subTitle!,
+              style: storyTheme.titleStyle,
             ),
           const SizedBox(height: 12),
-          if (frame.description != null)
+          if (locales.description != null)
             Text(
-              frame.descriptionOrFailback(l10n) ?? '',
-              style: storyTheme.descriptionStyle ??
-                  context.textStyleV3.bodyLargeRegular.copyWith(
-                    color: context.color.textAndIconsBaseInversePrimary,
-                  ),
+              locales.description!,
+              style: storyTheme.descriptionStyle,
             ),
           if (frame.additionalContent != null)
             ...frame.additionalContent!(

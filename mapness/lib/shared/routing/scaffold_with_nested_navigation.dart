@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/route_onboarding.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/features/stories/lib/stories.dart';
-import 'package:mapness/features/stories/models/story_types.dart';
+import 'package:mapness/app/routes/stories.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -65,13 +64,14 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!isOnboardingShown) {
-        Stories.showOnboarding(
-          context,
-          StoryTypes.onboarding,
-          'onboarding',
-          onActionShowNextHistory: false,
-          navigationShell: widget.navigationShell,
-        );
+        StoriesRoute.openOnboarding(context);
+        //   Stories.showOnboarding(
+        //     context,
+        //     StoryTypes.onboarding,
+        //     'onboarding',
+        //     onActionShowNextHistory: false,
+        //     navigationShell: widget.navigationShell,
+        //   );
         ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
       }
     });
@@ -104,15 +104,20 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
             if (!mounted) {
               return;
             }
-            Stories.showOnboarding(
-              context,
-              StoryTypes.route,
-              'route',
-              onClose: () async {
-                await ref.read(routeOnboardingProvider.notifier).setShown(true);
-                _goToPage(selected);
-              },
-            );
+            StoriesRoute.openOnboarding(context, onClose: () {
+              ref.read(routeOnboardingProvider.notifier).setShown(true);
+              _goToPage(selected);
+            });
+
+            // Stories.showOnboarding(
+            //   context,
+            //   StoryTypes.route,
+            //   'route',
+            //   onClose: () async {
+            //     await ref.read(routeOnboardingProvider.notifier).setShown(true);
+            //     _goToPage(selected);
+            //   },
+            // );
             return;
           }
           _goToPage(selected);

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mapness/features/stories/models/stories_map.dart';
+import 'package:mapness/features/stories/models/stories_type_data.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

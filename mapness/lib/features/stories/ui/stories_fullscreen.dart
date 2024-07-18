@@ -1,14 +1,15 @@
 import 'package:another_transformer_page_view/another_transformer_page_view.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
+import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/local_stories_service.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/story_frames_player.dart';
-import 'package:mapness/widgets/stories/lib/models/story_frame_controller.dart';
 
 class StoriesFullscreen extends ConsumerStatefulWidget {
   final VoidCallback onClose;
@@ -68,9 +69,9 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _storyFrameController.play?.call();
-    } else {
-      _storyFrameController.pause?.call();
+      return;
     }
+    _storyFrameController.pause?.call();
   }
 
   @override
@@ -178,6 +179,14 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
   Widget build(BuildContext context) => FutureBuilder<List<StoryData>>(
         future: _initStories(),
         builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Material(
+              color: context.color.surfaceBaseInversePrimary,
+              child: Center(
+                child: Loading.medium(),
+              ),
+            );
+          }
           if (!snapshot.hasData) {
             return const SizedBox.shrink();
           }
@@ -193,7 +202,6 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
                   onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
                   index: page,
                   controller: _indexController,
-                  transformer: _DepthPageTransformer(isRtl: textDirection == TextDirection.rtl),
                   itemCount: stories.length,
                   itemBuilder: (context, index) => StoryFramesPlayer(
                     controller: _storyFrameController,
@@ -211,46 +219,46 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
       );
 }
 
-class _DepthPageTransformer extends PageTransformer {
-  final bool isRtl;
+// class _DepthPageTransformer extends PageTransformer {
+//   final bool isRtl;
 
-  _DepthPageTransformer({this.isRtl = false}) : super(reverse: false);
+//   _DepthPageTransformer({this.isRtl = false}) : super(reverse: false);
 
-  @override
-  Widget transform(Widget child, TransformInfo info) {
-    final position = info.position!;
+//   @override
+//   Widget transform(Widget child, TransformInfo info) {
+//     final position = info.position!;
 
-    if (position >= 0) {
-      return Opacity(
-        opacity: 1.0,
-        child: Transform.translate(
-          offset: Offset.zero,
-          child: Transform.scale(
-            scale: 1.0,
-            child: child,
-          ),
-        ),
-      );
-    }
-    if (position >= -1) {
-      const minScale = 0.75;
-      // Scale the page down (between minScale and 1)
-      final scaleFactor = minScale + (1 - minScale) * (1 + position);
+//     if (position >= 0) {
+//       return Opacity(
+//         opacity: 1.0,
+//         child: Transform.translate(
+//           offset: Offset.zero,
+//           child: Transform.scale(
+//             scale: 1.0,
+//             child: child,
+//           ),
+//         ),
+//       );
+//     }
+//     if (position >= -1) {
+//       const minScale = 0.75;
+//       // Scale the page down (between minScale and 1)
+//       final scaleFactor = minScale + (1 - minScale) * (1 + position);
 
-      final offsetX = isRtl ? info.width! * position : info.width! * -position;
+//       final offsetX = isRtl ? info.width! * position : info.width! * -position;
 
-      return Opacity(
-        opacity: 1.0 + position,
-        child: Transform.translate(
-          offset: Offset(offsetX, 0.0),
-          child: Transform.scale(
-            scale: scaleFactor,
-            child: child,
-          ),
-        ),
-      );
-    }
+//       return Opacity(
+//         opacity: 1.0 + position,
+//         child: Transform.translate(
+//           offset: Offset(offsetX, 0.0),
+//           child: Transform.scale(
+//             scale: scaleFactor,
+//             child: child,
+//           ),
+//         ),
+//       );
+//     }
 
-    return child;
-  }
-}
+//     return child;
+//   }
+// }

@@ -4,6 +4,9 @@ import 'package:balady_uikit/balady_uikit.dart' show Spacing, Stories;
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
+import 'package:mapness/features/stories/models/story_localization.dart';
+import 'package:mapness/features/stories/ui/story_type_provider.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// A row of stories displayed in a horizontal scrollable list.
 class StoriesRow extends StatelessWidget {
@@ -39,8 +42,11 @@ class StoriesRow extends StatelessWidget {
                     final story = stories[i];
                     return Stories(
                       key: ValueKey(story.storyId),
-                      title: story.thumbnail.title,
-                      networkImage: story.thumbnail.imageUrl,
+                      title: StoryTexts.thumbnailTextFromType(
+                        context.l10n,
+                        StoryTypeProvider.of(context),
+                      ),
+                      networkImage: story.thumbnail?.imageUrl,
                       onTap: () => onThumbnailPressed(story.storyId),
                       isWatched: story.isViewed,
                     );

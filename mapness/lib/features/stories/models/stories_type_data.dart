@@ -3,7 +3,7 @@ import 'package:mapness/features/stories/models/story_action.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
-import 'package:mapness/features/stories/models/story_thumbnail_data.dart';
+
 import 'package:mapness/features/stories/models/story_types.dart';
 
 sealed class StoryTypeData {
@@ -17,7 +17,7 @@ sealed class StoryTypeData {
 
   factory StoryTypeData.fromFile(String file) {
     final type = StoryTypes.fromFile(file);
-    assert(type == null, 'Invalid story type. Must be one of ${StoryTypes.values}');
+    assert(type != null, 'Invalid story type. Must be one of ${StoryTypes.values}');
     return StoryTypeData.fromType(type!);
   }
   factory StoryTypeData.fromType(StoryTypes type) => switch (type) {
@@ -33,15 +33,9 @@ class RouteStoryData extends StoryTypeData {
           stories: const [
             StoryData(
               storyId: 'route0',
-              thumbnail: StoryThumbnailData(
-                title: 'Route',
-                imageUrl: '',
-              ),
               frames: [
                 StoryFrameData(
                   storyId: 'route1',
-                  title: 'ماذا يمكن أن يفعل التنقل الذكي ؟',
-                  description: 'بعض المزايا والحيل لميزة التنقل الذكي...',
                   imageUrl: 'assets/images/route_story_1.png',
                   isWatched: false,
                   isAssetImage: true,
@@ -54,9 +48,6 @@ class RouteStoryData extends StoryTypeData {
                 ),
                 StoryFrameData(
                   storyId: 'route2',
-                  title: 'أقصر طريق',
-                  description:
-                      'يقترح التنقل الذكي ما يصل إلى ثلاث طرق بالنظر إلى الوضع الحالي لحركة المرور. سيقترح أيضًا بالطرق البديلة عند تقاطع الطرق ',
                   imageUrl: 'assets/images/route_story_2.png',
                   isAssetImage: true,
                   isWatched: false,
@@ -69,8 +60,6 @@ class RouteStoryData extends StoryTypeData {
                 ),
                 StoryFrameData(
                   storyId: 'route3',
-                  title: 'التركيز على طريقك',
-                  description: 'مساعدك الصوتي سيبقيك على اطلاع طوال رحلتك',
                   imageUrl: 'assets/images/route_story_3.png',
                   isWatched: false,
                   isAssetImage: true,
@@ -92,14 +81,9 @@ class OnboardingStoryData extends StoryTypeData {
       : super(type: StoryTypes.onboarding, stories: [
           StoryData(
             storyId: 'onboarding0',
-            thumbnail: const StoryThumbnailData(
-              title: 'Onboarding',
-            ),
             frames: [
               const StoryFrameData(
                 storyId: 'onboarding1',
-                title: 'Balady is a map centric app with business services',
-                description: 'Places, navigation, traffic situationand governmental services',
                 imageUrl: '',
                 isWatched: false,
                 isAssetImage: true,
@@ -107,8 +91,6 @@ class OnboardingStoryData extends StoryTypeData {
               ),
               const StoryFrameData(
                 storyId: 'onboarding2',
-                title: 'Navigation for cars and pedestrians ',
-                description: 'Find places, build a route, enable voice over instructions and see live traffic',
                 imageUrl: '',
                 isWatched: false,
                 isAssetImage: true,
@@ -121,8 +103,6 @@ class OnboardingStoryData extends StoryTypeData {
               ),
               StoryFrameData(
                 storyId: 'onboarding3',
-                title: 'You can access all governmental services',
-                description: 'Get business license, send a claim,  find investment opportunities ',
                 imageUrl: '',
                 isWatched: false,
                 isAssetImage: true,

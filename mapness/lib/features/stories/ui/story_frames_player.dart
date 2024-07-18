@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
+import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/story_frame_widget.dart';
-import 'package:mapness/widgets/stories/lib/models/story_frame_controller.dart';
 
 class StoryFramesPlayer extends ConsumerStatefulWidget {
   final StoryFrameController? controller;
@@ -103,7 +103,6 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       duration: currentFrame.duration,
       frameIndex: currentIndex,
       frameLength: frames.length,
-      thumbnailData: story.thumbnail,
     );
   }
 }

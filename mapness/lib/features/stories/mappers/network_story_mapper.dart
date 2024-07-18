@@ -20,17 +20,14 @@ extension NetworkStoryMapper on NetworkStory {
 extension NetworkStoryPreviewMapper on NetworkStoryPreview {
   StoryThumbnailData toDomain() => StoryThumbnailData(
         imageUrl: image.url,
-        title: title,
       );
 }
 
 extension NetworkStoryFrameMapper on NetworkStoryFrame {
   StoryFrameData toDomain(String storyId) => StoryFrameData(
         isWatched: false,
-        title: title,
         imageUrl: background.url,
         storyId: storyId,
-        description: description,
         action: actionButton.toDomain(),
         duration: duration,
       );

@@ -3,13 +3,13 @@ import 'package:mapness/features/stories/models/story_thumbnail_data.dart';
 
 class StoryData {
   const StoryData({
-    required this.thumbnail,
     required this.storyId,
     required this.frames,
+    this.thumbnail,
   });
   final List<StoryFrameData> frames;
   final String storyId;
-  final StoryThumbnailData thumbnail;
+  final StoryThumbnailData? thumbnail;
 
   bool get isViewed => frames.last.isWatched;
 

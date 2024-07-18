@@ -2,22 +2,19 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
+import 'package:mapness/features/stories/models/story_fame_theme_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
+import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
-import 'package:mapness/features/stories/models/story_thumbnail_data.dart';
 import 'package:mapness/features/stories/ui/frame_progress_indicator.dart';
-import 'package:mapness/features/stories/ui/stories_screen.dart';
 import 'package:mapness/features/stories/ui/story_frame_content.dart';
-import 'package:mapness/features/stories/ui/story_localization.dart';
-import 'package:mapness/widgets/stories/lib/models/story_frame_controller.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class StoryFrameWidget extends StatefulWidget {
   final StoryFrameData frame;
   final int frameIndex;
   final int frameLength;
   final int duration;
-  final StoryThumbnailData thumbnailData;
-
   final StoryFrameController? controller;
 
   final VoidCallback onNext;
@@ -33,7 +30,6 @@ class StoryFrameWidget extends StatefulWidget {
     required this.onClose,
     required this.onNext,
     required this.onPrevious,
-    required this.thumbnailData,
     super.key,
     this.onActionPressed,
     this.controller,
@@ -47,13 +43,17 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
   late final AnimationController _controller;
   late final Animation<double> _progress;
   late final StoryFrameData _frame;
+  late final StoryFrameThemeData storyTheme = _frame.themeFromId(
+    colorTheme: context.colorsV2,
+    textTheme: context.textStyleV3,
+  );
 
   late DateTime _lastTap = DateTime.now();
 
   late bool _isLoading = _frame.isAssetImage == false;
 
   String _keyToLocale(String key) {
-    final locale = StoryLocalization.of(context).locale;
+    final locale = context.l10n;
     return switch (key) {
       'next' => locale.next,
       'try_now' => locale.tryNow,
@@ -176,133 +176,127 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
   }
 
   @override
-  Widget build(BuildContext context) {
-    final storyTheme = StoryTheme.of(context);
-    return Material(
-      color: context.color.surfaceBaseInversePrimary,
-      child: SafeArea(
-        left: false,
-        right: false,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Directionality(
-            textDirection: Directionality.of(context),
-            child: Stack(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: context.color.surfaceBaseInversePrimary,
-                ),
-                Positioned.fill(
-                  child: LoadingImage(
-                    isAssetImg: widget.frame.isAssetImage,
-                    onImageReady: _imageLoaded,
-                    imageUrl: widget.frame.imageUrl,
-                    fit: BoxFit.cover,
-                    loadingWidget: Container(
-                      color: context.color.textAndIconsBaseInverseTertiary,
-                      child: Center(
-                        child: Loading.large(
-                          style: Brightness.light,
-                          orientation: Axis.vertical,
-                          title: StoryLocalization.of(context).locale.loading,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  child: Container(
-                    height: MediaQuery.sizeOf(context).height / 2,
+  Widget build(BuildContext context) => Material(
+        color: context.color.surfaceBaseInversePrimary,
+        child: SafeArea(
+          left: false,
+          right: false,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Directionality(
+              textDirection: Directionality.of(context),
+              child: Stack(
+                children: [
+                  Container(
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: widget.frame.hasGradient
-                          ? LinearGradient(
-                              stops: const [0, 0.8, 1],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                const Color(0xff000000).withOpacity(0.4),
-                                const Color(0xff000000).withOpacity(0.06),
-                                const Color(0xff000000).withOpacity(0)
-                              ],
-                            )
-                          : null,
-                    ),
+                    height: double.infinity,
+                    color: context.color.surfaceBaseInversePrimary,
                   ),
-                ),
-
-                /// left right click handlers
-                if (!_isLoading)
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: GestureDetector(
-                          onTapDown: _onTapDown,
-                          onTapUp: (_) => _onTapUp(_onPrevious),
+                  Positioned.fill(
+                    child: LoadingImage(
+                      isAssetImg: widget.frame.isAssetImage,
+                      onImageReady: _imageLoaded,
+                      imageUrl: widget.frame.imageUrl,
+                      fit: BoxFit.cover,
+                      loadingWidget: Container(
+                        color: context.color.textAndIconsBaseInverseTertiary,
+                        child: Center(
+                          child: Loading.large(
+                            style: Brightness.light,
+                            orientation: Axis.vertical,
+                            title: context.l10n.loading,
+                          ),
                         ),
                       ),
-                      Expanded(
-                        flex: 7,
-                        child: GestureDetector(
-                          onTapDown: _onTapDown,
-                          onTapUp: (_) => _onTapUp(_onNext),
+                    ),
+                  ),
+                  Positioned(
+                    child: Container(
+                      height: MediaQuery.sizeOf(context).height / 2,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: widget.frame.hasGradient
+                            ? LinearGradient(
+                                stops: const [0, 0.8, 1],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  const Color(0xff000000).withOpacity(0.4),
+                                  const Color(0xff000000).withOpacity(0.06),
+                                  const Color(0xff000000).withOpacity(0)
+                                ],
+                              )
+                            : null,
+                      ),
+                    ),
+                  ),
+
+                  /// left right click handlers
+                  if (!_isLoading)
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: GestureDetector(
+                            onTapDown: _onTapDown,
+                            onTapUp: (_) => _onTapUp(_onPrevious),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 7,
+                          child: GestureDetector(
+                            onTapDown: _onTapDown,
+                            onTapUp: (_) => _onTapUp(_onNext),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                  /// story content
+                  if (!_isLoading)
+                    Positioned(
+                      left: 16,
+                      right: 16,
+                      top: 100,
+                      bottom: 64,
+                      child: Align(
+                        alignment: AlignmentDirectional.topStart,
+                        child: StoryFrameContent(
+                          frame: widget.frame,
+                          onActionPressed: (action) => widget.onActionPressed?.call(action),
                         ),
                       ),
-                    ],
+                    ),
+
+                  /// progress indicator and exit button
+                  FrameProgressIndicator(
+                    onClose: widget.onClose,
+                    frameIndex: widget.frameIndex,
+                    framesLength: widget.frameLength,
+                    animation: _progress,
+                    thumbnailTheme: storyTheme.thumbnailTheme,
                   ),
 
-                /// story content
-                if (!_isLoading)
-                  Positioned(
-                    left: 16,
-                    right: 16,
-                    top: 100,
-                    bottom: 64,
-                    child: Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: StoryFrameContent(
-                        frame: widget.frame,
-                        onActionPressed: (action) => widget.onActionPressed?.call(action),
+                  // action button
+                  if (widget.frame.action != null &&
+                      widget.onActionPressed != null &&
+                      widget.frame.action!.deeplinkUrl.isNotEmpty)
+                    Positioned(
+                      bottom: 12,
+                      left: storyTheme.actionTheme.horizontalPadding,
+                      right: storyTheme.actionTheme.horizontalPadding,
+                      child: AppButton(
+                        color: storyTheme.thumbnailTheme.backgroundColor,
+                        textColor: storyTheme.actionTheme.textColor,
+                        buttonColorScheme: ButtonColorScheme.primary,
+                        primaryLabel: _actionTitleOrFailback,
+                        onTap: _onActionPressed,
                       ),
                     ),
-                  ),
-
-                /// progress indicator and exit button
-                FrameProgressIndicator(
-                  onClose: widget.onClose,
-                  frameIndex: widget.frameIndex,
-                  framesLength: widget.frameLength,
-                  animation: _progress,
-                  thumbnailData: widget.thumbnailData,
-                ),
-
-                // action button
-                if (widget.frame.action != null &&
-                    widget.onActionPressed != null &&
-                    widget.frame.action!.deeplinkUrl.isNotEmpty)
-                  Positioned(
-                    bottom: 12,
-                    left: storyTheme.storyActionThemeData?.horizontalPadding ?? 16.0,
-                    right: storyTheme.storyActionThemeData?.horizontalPadding ?? 16.0,
-                    child: AppButton(
-                      color: storyTheme.thumbnailThemeData?.backgroundColor,
-                      textColor: storyTheme.storyActionThemeData?.textColor,
-                      buttonColorScheme: storyTheme.storyActionThemeData?.backgroundColor == null ||
-                              storyTheme.storyActionThemeData?.textColor == null
-                          ? ButtonColorScheme.primary
-                          : ButtonColorScheme.onColor,
-                      primaryLabel: _actionTitleOrFailback,
-                      onTap: _onActionPressed,
-                    ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
