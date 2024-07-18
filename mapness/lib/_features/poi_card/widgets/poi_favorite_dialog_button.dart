@@ -10,6 +10,7 @@ class PoiFavoriteDialogButton extends StatelessWidget {
     required this.showBorder,
     super.key,
   });
+
   final VoidCallback onTap;
   final String title;
   final String iconAsset;
