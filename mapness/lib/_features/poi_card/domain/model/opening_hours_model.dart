@@ -13,7 +13,6 @@ class OpeningHoursModel {
     required this.openingHours,
   });
 
-
   OpenHours? getTodayOpeningInfo(AppLocalizations locale) {
     final todayName = DateTime.now().weekDayName(locale);
 
@@ -35,5 +34,4 @@ class OpenHours {
     this.openHour,
     this.closeHour,
   });
-
 }
