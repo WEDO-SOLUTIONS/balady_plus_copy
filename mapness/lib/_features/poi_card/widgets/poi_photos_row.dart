@@ -10,7 +10,6 @@ import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
-import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PoiPhotosRow extends ConsumerWidget {

@@ -8,9 +8,9 @@ extension StoryFrameDataX on StoryFrameData {
         'route1' => locale.whatCanTheNavigatorDo,
         'route2' => locale.theShortestRoute,
         'route3' => locale.focusOnTheRoad,
-        'onboarding1' => locale.onboardingBaladyAppTitle,
-        'onboarding2' => locale.onboardingNavigationTitle,
-        'onboarding3' => locale.onboardingGovServiceTitle,
+        // 'onboarding1' => locale.onboardingBaladyAppTitle,
+        // 'onboarding2' => locale.onboardingNavigationTitle,
+        // 'onboarding3' => locale.onboardingGovServiceTitle,
         _ => title,
       };
 
@@ -18,9 +18,9 @@ extension StoryFrameDataX on StoryFrameData {
         'route1' => locale.route1description,
         'route2' => locale.route2description,
         'route3' => locale.route3description,
-        'onboarding1' => locale.onboardingBaladyAppDescription,
-        'onboarding2' => locale.onboardingNavigationDescription,
-        'onboarding3' => locale.onboardingGovServiceDescription,
+        // 'onboarding1' => locale.onboardingBaladyAppDescription,
+        // 'onboarding2' => locale.onboardingNavigationDescription,
+        // 'onboarding3' => locale.onboardingGovServiceDescription,
         _ => description,
       };
 }

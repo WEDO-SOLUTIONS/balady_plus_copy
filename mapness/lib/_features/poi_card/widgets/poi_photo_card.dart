@@ -8,7 +8,6 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
-import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 import 'package:mapness/widgets/messages/errror_message.dart';
 import 'package:shimmer/shimmer.dart';
 

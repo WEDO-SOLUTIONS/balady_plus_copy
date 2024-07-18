@@ -68,7 +68,7 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
         context,
         StoryTypes.onboarding,
         'onboarding',
-        onActionShowNextHistory: false,
+        onActionShowNextHistory: true,
         navigationShell: widget.navigationShell,
       );
 

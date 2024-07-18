@@ -56,6 +56,9 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
         'try_now' => StoryLocalization.of(context)?.l10n.tryNow ?? '',
         'build_route' => StoryLocalization.of(context)?.l10n.buildRoute ?? '',
         'open_services' => StoryLocalization.of(context)?.l10n.openServices ?? '',
+        'about_routes' => 'Learn more about routes',
+        'balady_features' => 'More Balady features',
+        'get_started' => 'Get started',
         _ => ''
       };
 

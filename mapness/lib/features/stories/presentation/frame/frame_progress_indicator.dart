@@ -88,10 +88,10 @@ class FrameProgressIndicator extends AnimatedWidget {
                 const SizedBox(width: Spacing.$4x),
                 AppButton.close(
                   onTap: onClose,
-                  buttonColorScheme: ButtonColorScheme.onColor,
                   padding: EdgeInsets.zero,
                   color: thumbnailData.closeButtonColor ?? _iconPrimaryOnColor.withOpacity(.08),
                   innerPadding: const EdgeInsets.all(Spacing.$2x),
+                  iconColor: thumbnailData.iconColor,
                 ),
               ],
             ),

@@ -6,6 +6,7 @@ class StoryThumbnailData {
   final Color? linearTrackColor;
   final Color? animationColor;
   final Color? closeButtonColor;
+  final Color? iconColor;
 
   StoryThumbnailData({
     required this.title,
@@ -13,6 +14,7 @@ class StoryThumbnailData {
     this.linearTrackColor,
     this.animationColor,
     this.closeButtonColor,
+    this.iconColor,
   });
 
   StoryThumbnailData copyWith({
@@ -21,6 +23,7 @@ class StoryThumbnailData {
     Color? linearTrackColor,
     Color? animationColor,
     Color? closeButtonColor,
+    Color? iconColor,
   }) =>
       StoryThumbnailData(
         title: title ?? this.title,
@@ -28,5 +31,6 @@ class StoryThumbnailData {
         linearTrackColor: linearTrackColor ?? this.linearTrackColor,
         animationColor: animationColor ?? this.animationColor,
         closeButtonColor: closeButtonColor ?? this.closeButtonColor,
+        iconColor: iconColor ?? this.iconColor,
       );
 }
