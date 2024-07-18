@@ -1,4 +1,6 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,7 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
+import 'package:mapness/_features/poi_card/poi_header_subtitle.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
@@ -99,15 +102,13 @@ class PoiHeader extends ConsumerWidget {
                       maxLines: 2,
                       textAlign: TextAlign.start,
                     ),
-                    _SubTitle(
+                    PoiHeaderSubtitle(
                       subTitle: subTitle,
                       subTitleTextStyle: subTitleTextStyle,
                       tabController: tabController,
                     ),
                     if (address != null) ...[
-                      const SizedBox(
-                        height: 12,
-                      ),
+                      Spacing.$3x.heightBox,
                       Column(
                         children: [
                           Row(
@@ -192,49 +193,4 @@ class PoiHeader extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _SubTitle extends StatefulWidget {
-  const _SubTitle({
-    required this.subTitle,
-    required this.subTitleTextStyle,
-    required this.tabController,
-    Key? key,
-  }) : super(key: key);
-
-  final String subTitle;
-  final TextStyle subTitleTextStyle;
-  final TabController tabController;
-
-  @override
-  State<_SubTitle> createState() => _SubTitleState();
-}
-
-class _SubTitleState extends State<_SubTitle> {
-  var _isShowSubTitle = true;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.tabController.addListener(() {
-      if (!widget.tabController.indexIsChanging) {
-        setState(() {
-          _isShowSubTitle = widget.tabController.index == 0;
-        });
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => AnimatedOpacity(
-        duration: const Duration(milliseconds: 250),
-        opacity: _isShowSubTitle ? 1 : 0,
-        child: Text(
-          widget.subTitle,
-          style: widget.subTitleTextStyle,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          textAlign: TextAlign.start,
-        ),
-      );
 }

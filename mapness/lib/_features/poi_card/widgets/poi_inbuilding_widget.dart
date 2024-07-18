@@ -63,9 +63,7 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(
-          top: 8,
-        ),
+        padding: const EdgeInsets.only(top: Spacing.$2x),
         child: Expanded(
           child: CustomScrollView(
             controller: scrollController,

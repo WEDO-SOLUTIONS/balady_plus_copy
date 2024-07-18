@@ -1,4 +1,3 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -186,7 +185,7 @@ class _PoiTabItem extends StatelessWidget {
                             shape: count! < 100 ? BoxShape.circle : BoxShape.rectangle,
                             color: isActive ?? false
                                 ? context.colorsV2.neutralDefault
-                                : NonThemeColor.color72.withOpacity(0.3),
+                                : context.colorsV2.staticBlack.withOpacity(0.3),
                           ),
                           child: Text(
                             '$count',

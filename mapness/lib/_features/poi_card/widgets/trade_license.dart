@@ -11,7 +11,7 @@ class TradeLicense extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = tradeLicense?.license ?? '1123-456-7898-76';
+    final title = tradeLicense?.license ?? '';
     final subtitle = context.l10n.tinId;
 
     return CardContent(
