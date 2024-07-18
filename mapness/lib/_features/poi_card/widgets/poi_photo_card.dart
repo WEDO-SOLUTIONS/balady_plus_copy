@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 import 'package:mapness/widgets/messages/errror_message.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -72,11 +73,9 @@ class PoiPhotoCard extends ConsumerWidget {
       childrenDelegate: SliverChildBuilderDelegate(
         childCount: photoItems.length,
         (context, index) => LoadingShimmerImage(
-          imageUrl: photoItems[index].url,
-          fit: BoxFit.cover,
-          onImageTap: (name, {isAsset}) =>
-              PhotoViewer.open(context, index, photosUrls),
-        ),
+            imageUrl: photoItems[index].url,
+            fit: BoxFit.cover,
+            onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photosUrls)),
       ),
     );
   }

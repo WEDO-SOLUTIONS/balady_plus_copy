@@ -6,8 +6,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
-class PhotoViewer extends StatefulWidget {
-  const PhotoViewer({
+class PhotoViewerWidget extends StatefulWidget {
+  const PhotoViewerWidget({
     required this.photoPaths,
     required this.currentPhotoIndex,
     super.key,
@@ -15,28 +15,11 @@ class PhotoViewer extends StatefulWidget {
   final List<String>? photoPaths;
   final int currentPhotoIndex;
 
-  ///Using Navigator instead of Gorouter for prevent rebuild underlying page
-  static Future<Object?> open(
-    BuildContext context,
-    int currentPhotoIndex,
-    List<String> photoPaths,
-  ) {
-    final navigatorState = Navigator.of(context);
-    return navigatorState.push(
-      MaterialPageRoute(
-        builder: (ctx) => PhotoViewer(
-          currentPhotoIndex: currentPhotoIndex,
-          photoPaths: photoPaths,
-        ),
-      ),
-    );
-  }
-
   @override
-  State<PhotoViewer> createState() => _PhotoViewerState();
+  State<PhotoViewerWidget> createState() => _PhotoViewerWidgetState();
 }
 
-class _PhotoViewerState extends State<PhotoViewer> {
+class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
   static const backgroundColor = Color(0xff0B1218);
 
   int _currentPage = 0;
