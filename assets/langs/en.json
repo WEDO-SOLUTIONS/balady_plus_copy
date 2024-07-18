@@ -4300,5 +4300,6 @@
   "here": "link here",
   "done_download_open_moments": "Done download, will open in moments",
   "badCerifcation": "Unable to verify certificates",
-  "any_type": "any_type"
+  "any_type": "any_type",
+  "agreement_text_akram": "I {} acknowledge the validity of the registered data and bear all legal responsibility if proven otherwise"
 }
