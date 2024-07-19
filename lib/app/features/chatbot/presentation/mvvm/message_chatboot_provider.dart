@@ -50,14 +50,17 @@ class MessageChatBotProvider extends BaseViewModel {
           scrollControllerAction();
         },
         (stream) {
-          print("STAAAART STREAM 11");
+          String fullStream = "";
           if (!isClose) {
             listen = stream.listen((messageType) {
               String editMessage = messageType.replaceAll("\\n", "\n");
+              //  String editMessage = messageType;
               message.value = message.value.copyWith(
                 answer: "${message.value.answer}$editMessage",
                 // answer: message.value.answer + [messageType]
               );
+              fullStream = fullStream + messageType;
+
               isLoading = false;
               notifyListeners();
 
@@ -68,12 +71,16 @@ class MessageChatBotProvider extends BaseViewModel {
               message.value = message.value.copyWith(
                 haveError: false,
               );
+              message.value = message.value
+                  .copyWith(answer: fullStream.replaceAll("\\n", "\n"));
               isLoading = false;
               notifyListeners();
               listen!.cancel();
               scrollControllerAction();
             });
             listen!.onError((error) {
+              print("on Erorr ${error}");
+
               // message.value.answer.add(error.toString());
               message.value = message.value.copyWith(
                 answer: message.value.answer + error.toString(),
@@ -94,6 +101,7 @@ class MessageChatBotProvider extends BaseViewModel {
       );
       return message.value;
     } catch (exception) {
+      print(exception);
       CommonFunctions.sendEvent(
         dioError: null,
         response: null,
