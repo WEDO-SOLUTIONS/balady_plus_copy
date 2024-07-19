@@ -10,11 +10,9 @@ import 'package:provider/provider.dart';
 class SearchHistory extends ConsumerWidget {
   const SearchHistory({
     required this.onTap,
-    this.skipEmptyObjects,
     super.key,
   });
 
-  final bool? skipEmptyObjects;
   final Function(SearchHistoryItem item) onTap;
 
   @override
@@ -22,25 +20,8 @@ class SearchHistory extends ConsumerWidget {
     final scope = context.read<SearchScope>();
     final history = ref.watch(searchHistoryProvider(scope.value));
 
-    if (skipEmptyObjects ?? false) {
-      history.retainWhere((e) => e.objectId != null);
-    }
     final search = ref.watch(searchHistoryProvider(scope.value).notifier);
 
-    history.sort((a, b) {
-      final aCreated = a.createdAt;
-      final bCreated = b.createdAt;
-      if (aCreated != null && bCreated != null) {
-        return DateTime.parse(bCreated).compareTo(DateTime.parse(aCreated));
-      } else if (aCreated == null && bCreated == null) {
-        return 0;
-      } else if (aCreated != null && bCreated == null) {
-        return -1;
-      } else if (aCreated == null && bCreated != null) {
-        return 1;
-      }
-      return 0;
-    });
     return history.isEmpty
         ? const SearchHistoryEmpty()
         : SearchHistoryCollapsible(

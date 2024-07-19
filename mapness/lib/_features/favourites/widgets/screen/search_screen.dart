@@ -35,6 +35,7 @@ class SearchScreen extends ConsumerWidget {
                 onBackButtonPressed: onBackTap,
                 searchInput: BaladyInput(
                   higlighFocusedBorder: false,
+                  autofocus: true,
                   hintText: hintText ?? context.l10n.search,
                   onChanged: (value) {
                     if (value.isEmpty) {
@@ -48,7 +49,6 @@ class SearchScreen extends ConsumerWidget {
             ),
             if (itemCount == 0)
               SearchHistory(
-                skipEmptyObjects: true,
                 onTap: (item) {
                   onHistoryItemTap?.call(item);
                 },
