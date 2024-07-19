@@ -202,10 +202,11 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final language = ref.watch(appLanguageProvider);
     final photos = ref.watch(poiPhotoProvider(objectId));
     final poiActions = ref.read(poiCardActionsProvider.notifier);
+    final address = data.address;
 
     return BackdropFilter(
       filter: switch (_expansion.value) {
-        Expansion.expanded => ColorFilter.mode(Colors.black.withAlpha(90), BlendMode.screen),
+        Expansion.expanded || Expansion.fullHidePhoto => ColorFilter.mode(Colors.black.withAlpha(90), BlendMode.screen),
         _ => const ColorFilter.mode(Colors.transparent, BlendMode.screen),
       },
       child: Directionality(
@@ -214,6 +215,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           Language.english => TextDirection.ltr,
         },
         child: DgisBottomSheet(
+          key: const Key('POI CARD SHEET KEY'),
           showBarrier: false,
           availableExpansions: const {
             Expansion.collapsed,
@@ -221,7 +223,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             Expansion.hidden,
           },
           initialExpansion: Expansion.collapsed,
-          collapsedHeight: sheetSizes.collapsedHeight + (photos.hasValue == true ? 100.0 : .0),
+          collapsedHeight:
+              sheetSizes.collapsedHeight + (address != null ? 20 : 0) + (photos.hasValue == true ? 100.0 : .0),
           hiddenHeight: sheetSizes.hiddenHeight,
           controller: _bottomSheetController,
           mapControlsBuilder: (context, bottomSheetSize, biggestHeight, smallestHeight) => PoiCardMapControls(

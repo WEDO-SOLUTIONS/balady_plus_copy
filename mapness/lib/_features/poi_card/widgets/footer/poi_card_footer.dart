@@ -80,13 +80,12 @@ class PoiCardFooter extends ConsumerWidget {
       );
     }
 
-    final carIconFlex = (hasEntrances || hasContacts) ? 3 : 2;
     return _Wrapper(
       children: [
         _CarItem(
           finishPoint: finishPoint,
           objectMessage: data,
-          flex: carIconFlex,
+          flex: 2,
         ),
         if (hasContacts)
           _PhoneItem(

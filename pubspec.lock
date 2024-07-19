@@ -813,6 +813,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.5"
+  flutter_fgbg:
+    dependency: transitive
+    description:
+      name: flutter_fgbg
+      sha256: "08c4d2fd229e3df26083d5aecc3dea9ff4f2d188f8cd57aaf2b3f047bd08a047"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   flutter_gen:
     dependency: transitive
     description:
@@ -1663,6 +1671,14 @@ packages:
       url: "https://github.com/Demezy/localize_and_translate"
     source: git
     version: "4.1.2-dev"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: "7ad7215c15420a102ec687bb320a7312afd449bac63bfb1c60d9787c27b9767f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   logging:
     dependency: transitive
     description:
@@ -2471,10 +2487,10 @@ packages:
     dependency: transitive
     description:
       name: state_notifier
-      sha256: b8677376aa54f2d7c58280d5a007f9e8774f1968d1fb1c096adcb4792fba29bb
+      sha256: "8fe42610f179b843b12371e40db58c9444f8757f8b69d181c97e50787caed289"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "0.7.2+1"
   stream_channel:
     dependency: transitive
     description:
@@ -2595,6 +2611,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0+1"
+  urbi_analytics:
+    dependency: transitive
+    description:
+      name: urbi_analytics
+      sha256: "0e93ebf2bc6614a7dd2ff62a94c5575dfb11b2d3607241969b93435dc1697b05"
+      url: "https://baladyapp-unpub.urbi.ae"
+    source: hosted
+    version: "0.0.4"
   urbi_utils:
     dependency: transitive
     description:

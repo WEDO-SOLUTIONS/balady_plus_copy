@@ -67,7 +67,7 @@ class PoiPhotosRow extends ConsumerWidget {
               .mapIndexed(
                 (index, photo) => Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: AspectRatio(
@@ -75,8 +75,7 @@ class PoiPhotosRow extends ConsumerWidget {
                         key: ValueKey(photo),
                         child: LoadingShimmerImage(
                           onImageTap: (name, {isAsset}) {
-                            Metrics.logEventAdvanced(
-                                MetricsConstants.poiKeys.photo,
+                            Metrics.logEventAdvanced(MetricsConstants.poiKeys.photo,
                                 group: MetricsConstants.poiTag,
                                 action: MetricAction.tap.toString(),
                                 props: {
@@ -101,6 +100,7 @@ class PoiPhotosRow extends ConsumerWidget {
 
     /// scrollable list of photos
     return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       itemBuilder: (context, index) {
         final loadingShimmerImage = LoadingShimmerImage(
           onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photos),
@@ -108,10 +108,7 @@ class PoiPhotosRow extends ConsumerWidget {
           fit: BoxFit.cover,
         );
         return Padding(
-          padding: EdgeInsetsDirectional.only(
-            start: index == 0 ? 12 : 0,
-            end: index == photos.length ? 12 : 0,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: AspectRatio(

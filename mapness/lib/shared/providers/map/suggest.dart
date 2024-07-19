@@ -21,7 +21,7 @@ class SuggestResults extends _$SuggestResults {
     final query = ref.watch(suggestQueryProvider);
 
     if (query.isNotEmpty) {
-      return await _fetch(query);
+      return _fetch(query);
     }
 
     return [];
