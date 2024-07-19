@@ -56,7 +56,8 @@ class MessageChatBotProvider extends BaseViewModel {
               String editMessage = messageType.replaceAll("\\n", "\n");
               //  String editMessage = messageType;
               message.value = message.value.copyWith(
-                answer: "${message.value.answer}$editMessage",
+                answer: "${message.value.answer}$editMessage"
+                    .replaceAll("\\n", "\n"),
                 // answer: message.value.answer + [messageType]
               );
               fullStream = fullStream + messageType;
