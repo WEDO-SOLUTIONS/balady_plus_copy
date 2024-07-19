@@ -283,7 +283,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       final goRouter = ref.read(goRouterProvider);
 
       if (goRouter.isCurrentRoute(SearchRoute.path)) {
-        _removeAllMarkersAndPop();
+        _dgisSheetController.animateTo(Expansion.collapsed);
       }
     });
   }
