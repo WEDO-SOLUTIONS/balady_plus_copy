@@ -4,53 +4,22 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
-import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/local_stories_service.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
+import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/features/stories/ui/story_frames_player.dart';
 
 class StoriesFullscreen extends ConsumerStatefulWidget {
   final VoidCallback onClose;
   final String initialStoryId;
-  final StoryTypes? localStoryType;
-  final ValueChanged<String>? handleDeeplink;
-  final bool onActionShowNextStory;
 
-  const StoriesFullscreen._({
+  const StoriesFullscreen({
     required this.initialStoryId,
     required this.onClose,
-    this.handleDeeplink,
-    this.localStoryType,
-    this.onActionShowNextStory = false,
+    super.key,
   });
-
-  factory StoriesFullscreen.story({
-    required String initialStoryId,
-    required VoidCallback onClose,
-    ValueChanged<String>? handleDeeplink,
-  }) =>
-      StoriesFullscreen._(
-        initialStoryId: initialStoryId,
-        onClose: onClose,
-        handleDeeplink: handleDeeplink,
-      );
-
-  factory StoriesFullscreen.onboadring({
-    required String initialStoryId,
-    required VoidCallback onClose,
-    ValueChanged<String>? handleDeeplink,
-    StoryTypes? localStoryType,
-    bool? onActionShowNextHistory,
-  }) =>
-      StoriesFullscreen._(
-        initialStoryId: initialStoryId,
-        onClose: onClose,
-        handleDeeplink: handleDeeplink,
-        localStoryType: localStoryType,
-        onActionShowNextStory: onActionShowNextHistory ?? true,
-      );
 
   @override
   ConsumerState<StoriesFullscreen> createState() => _StoriesFullscreenState();
@@ -116,22 +85,16 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
       return;
     }
     if (page <= -1 || page >= _maxPages) {
-      _onClose();
+      widget.onClose();
     }
 
     _currentPage = page;
     _currentPageNotifier.value = _currentPage;
   }
 
-  Future<List<StoryData>> _loadStories() {
-    if (widget.localStoryType?.file != null) {
-      return ref.read(localStoriesServiceProvider(widget.localStoryType!.file).future);
-    }
-    return ref.read(storyServiceProvider.future);
-  }
-
-  Future<List<StoryData>> _initStories() async {
-    final List<StoryData> stories = await _loadStories();
+  Future<List<StoryData>> _initStories(BuildContext context) async {
+    final type = StoryArgsProvider.of(context).type;
+    final List<StoryData> stories = await ref.read(localStoriesServiceProvider(type.file).future);
 
     final index = stories.indexWhere(
       (element) => element.storyId == widget.initialStoryId,
@@ -145,7 +108,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
 
   void _nextStory() {
     if (_currentPage + 1 >= _maxPages) {
-      _onClose();
+      widget.onClose();
       return;
     }
     _indexController.next(animation: false);
@@ -153,31 +116,15 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
 
   void _previousStory() {
     if (_currentPage - 1 < 0) {
-      _onClose();
+      widget.onClose();
       return;
     }
     _indexController.previous(animation: false);
   }
 
-  void _onActionPressed(StoryFrameAction action, BuildContext context) {
-    if (widget.onActionShowNextStory) {
-      _storyFrameController.nextPage?.call();
-      return;
-    }
-    if (widget.handleDeeplink != null) {
-      widget.handleDeeplink?.call(action.deeplinkUrl);
-      _onClose();
-    }
-  }
-
-  Future<void> _onClose() async {
-    ref.read(storyServiceProvider.notifier).resumeUpdate();
-    widget.onClose();
-  }
-
   @override
   Widget build(BuildContext context) => FutureBuilder<List<StoryData>>(
-        future: _initStories(),
+        future: _initStories(context),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Material(
@@ -205,11 +152,9 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
                   itemCount: stories.length,
                   itemBuilder: (context, index) => StoryFramesPlayer(
                     controller: _storyFrameController,
-                    onActionPressed: (action) => _onActionPressed(action, context),
                     story: stories[index],
                     onNextStory: _nextStory,
                     onPreviousStory: _previousStory,
-                    onClose: _onClose,
                   ),
                 ),
               ),
@@ -218,47 +163,3 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
         },
       );
 }
-
-// class _DepthPageTransformer extends PageTransformer {
-//   final bool isRtl;
-
-//   _DepthPageTransformer({this.isRtl = false}) : super(reverse: false);
-
-//   @override
-//   Widget transform(Widget child, TransformInfo info) {
-//     final position = info.position!;
-
-//     if (position >= 0) {
-//       return Opacity(
-//         opacity: 1.0,
-//         child: Transform.translate(
-//           offset: Offset.zero,
-//           child: Transform.scale(
-//             scale: 1.0,
-//             child: child,
-//           ),
-//         ),
-//       );
-//     }
-//     if (position >= -1) {
-//       const minScale = 0.75;
-//       // Scale the page down (between minScale and 1)
-//       final scaleFactor = minScale + (1 - minScale) * (1 + position);
-
-//       final offsetX = isRtl ? info.width! * position : info.width! * -position;
-
-//       return Opacity(
-//         opacity: 1.0 + position,
-//         child: Transform.translate(
-//           offset: Offset(offsetX, 0.0),
-//           child: Transform.scale(
-//             scale: scaleFactor,
-//             child: child,
-//           ),
-//         ),
-//       );
-//     }
-
-//     return child;
-//   }
-// }

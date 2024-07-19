@@ -83,10 +83,10 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
         currentIndex: currentTab,
         onDestinationSelected: (selected) async {
           const pageTitle = {
-            0: 'profile',
-            1: 'services',
-            2: 'route',
-            3: 'explore',
+            0: 'explore',
+            1: 'routing',
+            2: 'services',
+            3: 'profile',
           };
 
           Metrics.logEventAdvanced(

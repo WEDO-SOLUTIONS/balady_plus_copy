@@ -1,18 +1,10 @@
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:flutter/material.dart';
-import 'package:mapness/features/stories/models/story_frame_action.dart';
-import 'package:mapness/features/stories/models/story_frame_data.dart';
-import 'package:mapness/features/stories/models/story_localization.dart';
-
-import 'package:mapness/shared/extensions/build_context_ext.dart';
+part of 'story_frame_widget.dart';
 
 class StoryFrameContent extends StatelessWidget {
   final StoryFrameData frame;
-  final void Function(StoryFrameAction action)? onActionPressed;
 
   const StoryFrameContent({
     required this.frame,
-    this.onActionPressed,
     super.key,
   });
 
@@ -46,11 +38,7 @@ class StoryFrameContent extends StatelessWidget {
               locales.description!,
               style: storyTheme.descriptionStyle,
             ),
-          if (frame.additionalContent != null)
-            ...frame.additionalContent!(
-              context,
-              onActionPressed,
-            ),
+          if (frame.additionalContent != null) ...frame.additionalContent!(context),
         ],
       ),
     );

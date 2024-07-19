@@ -25,7 +25,6 @@ extension NetworkStoryPreviewMapper on NetworkStoryPreview {
 
 extension NetworkStoryFrameMapper on NetworkStoryFrame {
   StoryFrameData toDomain(String storyId) => StoryFrameData(
-        isWatched: false,
         imageUrl: background.url,
         storyId: storyId,
         action: actionButton.toDomain(),
@@ -45,9 +44,9 @@ extension ColorMapper on NetowrkColor {
 }
 
 extension NetworkStoryPageActionMapper on NetworkStoryPageAction {
-  StoryFrameAction? toDomain() => VerbatimStoryFrameAction(
+  StoryFrameAction? toDomain() => NetworkLinkFrameAction(
         title: title,
         // TODO(someone): support deeplinks in native platforms
-        deeplinkUrl: link.url.replaceFirst('balady:/', ''),
+        url: link.url.replaceFirst('balady:/', ''),
       );
 }

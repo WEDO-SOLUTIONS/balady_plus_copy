@@ -55,10 +55,14 @@ class StoriesRoute extends GoRouteData {
     const storiesRoute = StoriesRoute();
     final router = GoRouter.of(context);
     if (router.isCurrentRoute(storiesRoute.location)) {
-      router.pushReplacement(storiesRoute.location, extra: args).whenComplete(() => onClose?.call());
+      router.pushReplacement(storiesRoute.location, extra: args);
       return;
     }
-    router.push(storiesRoute.location, extra: args).whenComplete(() => onClose?.call());
+    router.push<int?>(storiesRoute.location, extra: args).then((value) {
+      if (value != null) {
+        StatefulNavigationShell.maybeOf(context)?.goBranch(value);
+      }
+    });
   }
 
   @override

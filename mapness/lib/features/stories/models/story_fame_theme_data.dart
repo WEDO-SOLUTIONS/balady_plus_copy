@@ -10,6 +10,7 @@ class StoryFrameThemeData {
   final StoryActionThemeData actionTheme;
   final TextStyle titleStyle;
   final TextStyle descriptionStyle;
+  final Color backgroundColor;
   final Color? gradientColor;
 
   StoryFrameThemeData._({
@@ -17,6 +18,7 @@ class StoryFrameThemeData {
     required this.actionTheme,
     required this.titleStyle,
     required this.descriptionStyle,
+    required this.backgroundColor,
     this.horizontalPadding = 0,
     this.gradientColor,
   });
@@ -47,7 +49,9 @@ class StoryFrameThemeData {
       'route2' => baseTheme.copyWith(),
       'route3' => baseTheme.copyWith(),
       'onboarding1' => baseTheme.copyWith(),
-      'onboarding2' => baseTheme.copyWith(),
+      'onboarding2' => baseTheme.copyWith(
+          gradientColor: const Color(0xFFB7C1FB),
+        ),
       'onboarding3' => baseTheme.copyWith(),
       _ => baseTheme,
     };
@@ -60,6 +64,7 @@ class StoryFrameThemeData {
       StoryFrameThemeData._(
         titleStyle: textTheme.h1SemiBold,
         descriptionStyle: textTheme.bodyLargeRegular,
+        backgroundColor: colorTheme.backgroundSurface1,
         horizontalPadding: 16,
         thumbnailTheme: StoryThumbnailThemeData.baseTheme(colorTheme: colorTheme),
         actionTheme: StoryActionThemeData.baseTheme(textTheme: textTheme),
@@ -72,6 +77,7 @@ class StoryFrameThemeData {
     TextStyle? titleStyle,
     TextStyle? descriptionStyle,
     Color? gradientColor,
+    Color? backgroundColor,
   }) =>
       StoryFrameThemeData._(
         horizontalPadding: horizontalPadding ?? this.horizontalPadding,
@@ -79,6 +85,7 @@ class StoryFrameThemeData {
         actionTheme: actionTheme ?? this.actionTheme,
         titleStyle: titleStyle ?? this.titleStyle,
         descriptionStyle: descriptionStyle ?? this.descriptionStyle,
+        backgroundColor: backgroundColor ?? this.backgroundColor,
         gradientColor: gradientColor ?? this.gradientColor,
       );
 }

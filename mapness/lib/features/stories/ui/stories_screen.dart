@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/features/stories/models/stories_type_data.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
+import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/stories_fullscreen.dart';
-import 'package:mapness/features/stories/ui/story_type_provider.dart';
+import 'package:mapness/features/stories/ui/story_args_provider.dart';
 
 class StoriesScreen extends ConsumerWidget {
   const StoriesScreen({
@@ -21,30 +22,20 @@ class StoriesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final storyData = StoryTypeData.fromType(type);
-    return StoryTypeProvider(
+    void _onClose() {
+      onClose?.call();
+      ref.read(storyServiceProvider.notifier).resumeUpdate();
+      context.pop();
+    }
+
+    return StoryArgsProvider(
       type: type,
+      onClose: _onClose,
       child: Material(
-        color: Colors.white,
-        child: type == StoryTypes.onboarding
-            ? StoriesFullscreen.onboadring(
-                initialStoryId: initialStoryId ?? storyData.stories.first.storyId,
-                onClose: () {
-                  onClose?.call();
-                  context.pop();
-                },
-                // TODO: implement handleDeeplink
-                handleDeeplink: (storyId) {},
-                localStoryType: type,
-              )
-            : StoriesFullscreen.story(
-                initialStoryId: storyData.stories.first.storyId,
-                onClose: () {
-                  onClose?.call();
-                  context.pop();
-                },
-                // TODO: implement handleDeeplink
-                handleDeeplink: (storyId) {},
-              ),
+        child: StoriesFullscreen(
+          initialStoryId: initialStoryId ?? storyData.stories.first.storyId,
+          onClose: _onClose,
+        ),
       ),
     );
   }

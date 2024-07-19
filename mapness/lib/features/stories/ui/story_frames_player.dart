@@ -4,10 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
-import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
-import 'package:mapness/features/stories/ui/story_frame_widget.dart';
+import 'package:mapness/features/stories/ui/frame/story_frame_widget.dart';
 
 class StoryFramesPlayer extends ConsumerStatefulWidget {
   final StoryFrameController? controller;
@@ -16,19 +15,15 @@ class StoryFramesPlayer extends ConsumerStatefulWidget {
 
   final VoidCallback onNextStory;
   final VoidCallback onPreviousStory;
-  final VoidCallback onClose;
 
-  final void Function(StoryFrameAction action)? onActionPressed;
   final void Function(String id, int page)? onMarkReed;
 
   const StoryFramesPlayer({
-    required this.onClose,
     required this.onNextStory,
     required this.onPreviousStory,
     required this.story,
     super.key,
     this.controller,
-    this.onActionPressed,
     this.onMarkReed,
   });
 
@@ -81,8 +76,10 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       if (frame.isAssetImage == true) {
         continue;
       }
-      // Preload images for better performance
-      CachedNetworkImageProvider(frame.imageUrl).resolve(ImageConfiguration.empty);
+      if (frame.imageUrl != null) {
+        // Preload images for better performance
+        CachedNetworkImageProvider(frame.imageUrl!).resolve(ImageConfiguration.empty);
+      }
     }
   }
 
@@ -94,10 +91,8 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
 
     return StoryFrameWidget(
       controller: widget.controller,
-      onActionPressed: widget.onActionPressed,
       key: Key(story.storyId + currentIndex.toString()),
       frame: currentFrame,
-      onClose: widget.onClose,
       onNext: () => _nextPage(story.storyId, currentIndex, frames.length),
       onPrevious: () => _previousPage(story.storyId, currentIndex),
       duration: currentFrame.duration,

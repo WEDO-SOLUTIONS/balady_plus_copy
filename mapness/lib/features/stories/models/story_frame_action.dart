@@ -1,35 +1,36 @@
-import 'package:mapness/features/stories/models/story_action.dart';
-
+/// Represents a sealed class for different types of actions that can be performed on a story frame.
 sealed class StoryFrameAction {
-  final String deeplinkUrl;
-  final StoryAction? action;
-
-  const StoryFrameAction({
-    required this.deeplinkUrl,
-    this.action,
-  });
+  const StoryFrameAction();
 }
 
-class VerbatimStoryFrameAction extends StoryFrameAction {
+/// Network link frame action.
+///
+/// This action is used to open a network link.
+class NetworkLinkFrameAction extends StoryFrameAction {
   final String title;
+  final String url;
 
-  const VerbatimStoryFrameAction({
+  const NetworkLinkFrameAction({
     required this.title,
-    required super.deeplinkUrl,
-    super.action,
+    required this.url,
   });
 }
 
-class LocaleKeyFrameAction extends StoryFrameAction {
-  final String titleLocaleKey;
+/// Nvigation frame action.
+///
+/// Title is a locale key that should be used to get the title from the localization.
+/// This action is used to navigate to a specific location using [location].
+class NavigationFrameAction extends StoryFrameAction {
+  final String localeKey;
+  final String location;
 
-  const LocaleKeyFrameAction({
-    required this.titleLocaleKey,
-    required super.deeplinkUrl,
-    super.action,
+  const NavigationFrameAction({
+    required this.location,
+    required this.localeKey,
   });
 }
 
-class DeeplinkStoryFrameAction extends StoryFrameAction {
-  DeeplinkStoryFrameAction({required super.deeplinkUrl});
+/// This action is used to navigate to the next story.
+class NextStoryAction extends StoryFrameAction {
+  const NextStoryAction();
 }
