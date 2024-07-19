@@ -102,7 +102,10 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     VoidCallback onEntrancesTap,
   ) {
     // Brief distance from my location to the object
-    final briefDistance = briefInfo?.first.getBriefRouteDistanceDescription(l10n) ?? '';
+    String briefDistance = '';
+    if (briefInfo?.isNotEmpty ?? false) {
+      briefDistance = briefInfo!.first.getBriefRouteDistanceDescription(l10n);
+    }
 
     // Entrances
     final entrancesCount = entrances.fold(0, (prev, e) => prev + (e?.geometry?.entrancePoints.length ?? 0));
@@ -158,10 +161,14 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
       l10n,
     );
     if (is24x7 || isOpenSameTime) {
-      final openHours = model.openingHours?.first;
+      OpenHours? openHours;
+      if (model.openingHours != null && model.openingHours!.isNotEmpty) {
+        openHours = model.openingHours?.first;
+      }
       if (openHours == null) {
         return null;
       }
+
       final title = StringBuffer();
       if (isOpenSameTime) {
         title
