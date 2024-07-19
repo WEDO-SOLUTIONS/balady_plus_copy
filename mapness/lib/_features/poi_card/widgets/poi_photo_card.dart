@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -72,10 +73,12 @@ class PoiPhotoCard extends ConsumerWidget {
       ),
       childrenDelegate: SliverChildBuilderDelegate(
         childCount: photoItems.length,
-        (context, index) => LoadingShimmerImage(
-          imageUrl: photoItems[index].url,
-          fit: BoxFit.cover,
-          onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photosUrls)
+        (context, index) => ClipRRect(
+          borderRadius: BorderRadius.circular(RadiusBorder.xs),
+          child: LoadingShimmerImage(
+              imageUrl: photoItems[index].url,
+              fit: BoxFit.cover,
+              onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photosUrls)),
         ),
       ),
     );

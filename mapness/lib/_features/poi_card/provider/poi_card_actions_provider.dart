@@ -111,12 +111,8 @@ class PoiCardActions extends _$PoiCardActions {
     }
   }
 
-  Future<void> callPhone({
-    String? value,
-  }) async {
-    if (value != null) {
-      await launchUrl(Uri(scheme: 'tel', path: value));
-    }
+  Future<void> callPhone(String value) async {
+    await launchUrl(Uri(scheme: 'tel', path: value));
   }
 
   void resetMapControlsState() {
