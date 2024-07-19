@@ -1,23 +1,13 @@
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
-import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
-import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
-import 'package:mapness/_features/poi_card/poi_header_subtitle.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
-import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 class PoiHeader extends ConsumerWidget {
@@ -39,20 +29,6 @@ class PoiHeader extends ConsumerWidget {
     final model = PoiModel(
       directoryObjectMessage: data,
     );
-
-    final briefInfo = ref.watch(
-      briefRouteInfoProvider(
-        finishPoint: RouteSearchPoint(
-          coordinates: data.markerPosition?.toGeoPointMessage() ??
-              GeoPointMessage(
-                latitude: 0,
-                longitude: 0,
-              ),
-          dgisObjectId: data.id!,
-        ),
-        navType: RouteSearchOptionsMessage.car,
-      ),
-    );
     final address = model.directoryObjectMessage?.address;
     final subTitle = model.directoryObjectMessage?.subtitle ?? '';
     final title = address?.buildingName ?? model.directoryObjectMessage?.title ?? '';
@@ -63,11 +39,6 @@ class PoiHeader extends ConsumerWidget {
     final subTitleTextStyle = context.textStyle.footNote.copyWith(
       color: context.color.textAndIconsBaseSecondary,
     );
-    final addressTextStyle = context.textStyle.heading1.copyWith(
-      fontSize: 16,
-    );
-
-    final openHours = data.getOpeningHoursModel(context.l10n);
 
     return Container(
       width: double.infinity,
@@ -102,50 +73,13 @@ class PoiHeader extends ConsumerWidget {
                       maxLines: 2,
                       textAlign: TextAlign.start,
                     ),
-                    PoiHeaderSubtitle(
-                      subTitle: subTitle,
-                      subTitleTextStyle: subTitleTextStyle,
-                      tabController: tabController,
+                    Text(
+                      subTitle,
+                      style: subTitleTextStyle,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textAlign: TextAlign.start,
                     ),
-                    if (address != null) ...[
-                      Spacing.$3x.heightBox,
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  address.buildingName ?? data.makeAddress(),
-                                  style: addressTextStyle,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-                              Text(
-                                briefInfo?.first.getBriefRouteDistanceDescription(context.l10n) ?? '',
-                                style: context.textStyle.footNoteBold.copyWith(
-                                  color: context.color.textAndIconsBaseSecondary.withOpacity(.8),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              if (openHours.isOpen24x7 ?? false)
-                                Text(
-                                  context.l10n.twentyFourSeven,
-                                )
-                              else
-                                Text(
-                                  '${context.l10n.daily} ${openHours.openingHours?.first.openHour ?? ''} - ${openHours.openingHours?.first.closeHour ?? ''}',
-                                  style: subTitleTextStyle,
-                                ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
                   ],
                 ),
               ),
