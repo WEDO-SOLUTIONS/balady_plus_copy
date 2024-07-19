@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart' as layers_state;
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart'
+    as layers_state;
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -32,7 +33,9 @@ class LayerSliverList extends ConsumerWidget {
       itemBuilder: (_, index) {
         final value = layerType[index];
         final isSelected = layersState.selectedType == value;
-        final textColor = isSelected ? context.color.textAndIconsStatusAccent : context.color.textAndIconsBasePrimary;
+        final textColor = isSelected
+            ? context.color.textAndIconsStatusAccent
+            : context.color.textAndIconsBasePrimary;
 
         return ContentRow(
           onTap: () async {
@@ -51,14 +54,16 @@ class LayerSliverList extends ConsumerWidget {
           },
           options: ContentRowOptions(
             wrapperEnabled: true,
-            wrapperColor: isSelected ? context.color.surfaceStatusContrastAccent.withOpacity(0.12) : Colors.transparent,
+            wrapperColor: isSelected
+                ? context.color.surfaceStatusContrastAccent.withOpacity(0.12)
+                : Colors.transparent,
             leadingIcon: value.iconData().icon(color: textColor),
             title: value.titleLocale(context.l10n),
             actionWidget: value == layers_state.LayerType.parkingLots
                 ? ContentRowActionOptions(
-              actionPressed: () {},
-              actionIcon: const AppIcons(iconData: SystemIcons.ellipsis),
-            )
+                    actionPressed: () {},
+                    actionIcon: const AppIcons(iconData: SystemIcons.ellipsis),
+                  )
                 : null,
             titleStyle: context.textStyle.text.copyWith(color: textColor),
           ),
