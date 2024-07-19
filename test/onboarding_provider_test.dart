@@ -5,7 +5,6 @@ import 'package:mapness/shared/providers/onboarding.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mapness/shared/test_utils/mock_shared_prefs.dart';
 
-
 class Listener<T> extends Mock {
   void call(T? previous, T next);
 }
@@ -21,7 +20,7 @@ void main() {
     return container;
   }
 
-  test('onboarding provider test',() async{
+  test('onboarding provider test', () async {
     final prefs = MockSharedPrefs();
 
     final container = makeProviderContainer(prefs);
@@ -35,19 +34,18 @@ void main() {
     );
 
     verify(
-          () => listener(null, false),
+      () => listener(null, false),
     );
-    final notifier =  container.read(onboardingProvider.notifier);
+    final notifier = container.read(onboardingProvider.notifier);
 
     notifier.setIsOnboardingShown(isOnboardingShown: true);
 
     verify(
-          () => listener(false, true),
+      () => listener(false, true),
     );
-    
+
     expect(() => notifier.setIsOnboardingShown(isOnboardingShown: true), isA<void>());
 
     verifyNoMoreInteractions(listener);
   });
-
 }
