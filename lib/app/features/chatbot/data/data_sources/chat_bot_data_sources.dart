@@ -136,33 +136,35 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
       StreamTransformer<String, String> stringTransformer =
           StreamTransformer.fromHandlers(
         handleData: (data, sink) {
+          print("sink : $data");
           // String sOne = data.substring(7);
           // String sOne = data.replaceAll("u","");
-          String sOne = data.replaceAll("\"", "");
+          // String sOne = data.replaceAll("\"", "");
           // sOne = sOne.replaceAll("\\", "");
           // var s = utf8.encode(sOne);
           // var y = utf8.decode(sOne.codeUnits);
           // var t = utf8.decode(sOne.runes.toList());
           // String data = String.fromCharCodes(dataUint8List);
 
-          if (sOne != "\\" &&
-              sOne != "end" &&
-              sOne != "start" &&
-              sOne.isNotEmpty) {
-            // var re = RegExp(r'u(?<codePoint>[0-9A-Fa-f\u0621-\u064A]{4})');
-            // var matches = re.allMatches(sOne);
-            // var matches = sOne.split("u");
-            // var codePoints = [
-            //   for (var match in matches)
-            //     int.parse(match.namedGroup('codePoint')!, radix: 16),
-            // ];
-            // var codepoint = int.parse(sOne, radix: 16);
-            // String unicodeString = String.fromCharCode(codepoint);
-            // print(unicodeString);
-            // sink.add(String.fromCharCodes(codePoints));
-            sink.add(sOne);
-          }
-          sink.add("");
+          // if (sOne != "\\" &&
+          //     sOne != "end" &&
+          //     sOne != "start" &&
+          //     sOne.isNotEmpty) {
+          //   // var re = RegExp(r'u(?<codePoint>[0-9A-Fa-f\u0621-\u064A]{4})');
+          //   // var matches = re.allMatches(sOne);
+          //   // var matches = sOne.split("u");
+          //   // var codePoints = [
+          //   //   for (var match in matches)
+          //   //     int.parse(match.namedGroup('codePoint')!, radix: 16),
+          //   // ];
+          //   // var codepoint = int.parse(sOne, radix: 16);
+          //   // String unicodeString = String.fromCharCode(codepoint);
+          //   // print(unicodeString);
+          //   // sink.add(String.fromCharCodes(codePoints));
+          //   sink.add(sOne);//
+          // }
+
+          sink.add(data);
         },
       );
       Stream stream = response.data?.stream
