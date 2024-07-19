@@ -30,8 +30,7 @@ class SearchScreen extends ConsumerWidget {
           children: [
             Container(
               color: context.color.surfaceBasePrimary,
-              padding: const EdgeInsets.all(Spacing.$4x)
-                  .copyWith(top: MediaQuery.of(context).padding.top + 12),
+              padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: MediaQuery.of(context).padding.top + 12),
               child: BaladySearchWithBackButton(
                 onBackButtonPressed: onBackTap,
                 searchInput: BaladyInput(
@@ -56,8 +55,7 @@ class SearchScreen extends ConsumerWidget {
               ),
             Expanded(
               child: ListView.separated(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 itemCount: itemCount,
                 separatorBuilder: (_, __) => const Divider(),
                 itemBuilder: itemBuilder,
