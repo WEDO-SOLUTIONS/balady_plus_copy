@@ -40,7 +40,6 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
           ListView.builder(
             shrinkWrap: true,
             padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               final isLastItem = index == widget.history.length - 1;
 

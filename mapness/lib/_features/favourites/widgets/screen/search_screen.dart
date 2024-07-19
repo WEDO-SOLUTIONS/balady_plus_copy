@@ -25,6 +25,7 @@ class SearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: context.color.surfaceBasePrimary,
         body: Column(
           children: [
@@ -53,10 +54,11 @@ class SearchScreen extends ConsumerWidget {
                   onHistoryItemTap?.call(item);
                 },
               ),
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                itemCount: itemCount,
+            if (itemCount > 0)
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  itemCount: itemCount,
                 separatorBuilder: (_, __) => const Divider(),
                 itemBuilder: itemBuilder,
               ),
