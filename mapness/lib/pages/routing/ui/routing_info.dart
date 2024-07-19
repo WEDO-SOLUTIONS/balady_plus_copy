@@ -18,6 +18,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
@@ -130,7 +131,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                   Spacing.$4x.heightBox,
                   RoutesCarousel(
                     points: widget.points,
-                    startNavigation: () => _startNavigation(navigatingType),
+                    startNavigation: (route) => _startNavigation(route, navigatingType),
                     navType: navigatingType,
                   ),
                   Spacing.$4x.heightBox,
@@ -146,7 +147,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         },
       );
 
-  void _startNavigation(RouteSearchOptionsMessage navigatingType) {
+  void _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) {
     final mapSetting = MapObjectManagerSettings.search();
     ref
         .read(
@@ -161,6 +162,14 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       MetricsConstants.routesKeys.routeSelectionGoButton,
       group: MetricsConstants.routesTag,
       action: MetricAction.tap.toString(),
+    );
+
+    ref.read(urbiAnalyticsProvider).track(
+      'startNavigation',
+      properties: {
+        'duration': route.duration,
+        'distance': route.distance,
+      },
     );
 
     PathNavRoute.open(

@@ -27,7 +27,7 @@ class RoutesCarousel extends ConsumerWidget {
   final PageController pageController;
   final AsyncValue<List<RouteInfo>> routes;
   final ValueChanged<int> onActiveChanged;
-  final Function() startNavigation;
+  final Function(RouteInfo) startNavigation;
   final Function() refresh;
 
   @override
@@ -66,7 +66,7 @@ class RoutesCarousel extends ConsumerWidget {
                   duration: durationInSeconds.formatDuration(context.l10n),
                   steps: steps,
                   calories: calories,
-                  onStartTap: startNavigation,
+                  onStartTap: () => startNavigation(route),
                   additionalInfo: shortest != null && shortest == durationInSeconds
                       ? PathCardStatus.shortest(context.l10n.shortest)
                       : null,
