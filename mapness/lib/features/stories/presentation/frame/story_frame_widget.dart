@@ -218,18 +218,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                       height: MediaQuery.of(context).size.height / 2,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        gradient: widget.frame.hasGradient
-                            ? LinearGradient(
-                                stops: const [0, 0.8, 1],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  const Color(0xff000000).withOpacity(0.4),
-                                  const Color(0xff000000).withOpacity(0.06),
-                                  const Color(0xff000000).withOpacity(0)
-                                ],
-                              )
-                            : null,
+                        gradient: widget.frame.storyGradient,
                       ),
                     ),
                   ),

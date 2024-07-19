@@ -9,7 +9,7 @@ sealed class StoryFrameAction {
   final StoryAction? action;
   final double? horizontalPadding;
 
-  StoryFrameAction({
+  const StoryFrameAction({
     required this.deeplinkUrl,
     this.textStyle,
     this.backgroundColor,
@@ -21,7 +21,7 @@ sealed class StoryFrameAction {
 class VerbatimStoryFrameAction extends StoryFrameAction {
   final String title;
 
-  VerbatimStoryFrameAction({
+  const VerbatimStoryFrameAction({
     required this.title,
     required String deeplinkUrl,
     required StoryTextStyle textStyle,
@@ -38,7 +38,7 @@ class VerbatimStoryFrameAction extends StoryFrameAction {
 class LocaleKeyFrameAction extends StoryFrameAction {
   final String titleLocaleKey;
 
-  LocaleKeyFrameAction({
+  const LocaleKeyFrameAction({
     required this.titleLocaleKey,
     required String deeplinkUrl,
     required StoryTextStyle? textStyle,
@@ -55,5 +55,5 @@ class LocaleKeyFrameAction extends StoryFrameAction {
 }
 
 class DeeplinkStoryFrameAction extends StoryFrameAction {
-  DeeplinkStoryFrameAction({required super.deeplinkUrl});
+  const DeeplinkStoryFrameAction({required super.deeplinkUrl});
 }

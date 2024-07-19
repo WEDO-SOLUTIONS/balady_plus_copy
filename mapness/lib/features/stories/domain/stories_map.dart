@@ -19,7 +19,7 @@ class StoriesMap {
           imageUrl: '',
         ),
         frames: [
-          StoryFrameData(
+          const StoryFrameData(
             storyId: 'route1',
             title: 'ماذا يمكن أن يفعل التنقل الذكي ؟',
             description: 'بعض المزايا والحيل لميزة التنقل الذكي...',
@@ -36,8 +36,18 @@ class StoriesMap {
                 color: Colors.white,
               ),
             ),
+            storyGradient: LinearGradient(
+              stops: [0, 0.8, 1],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromRGBO(0, 0, 0, 0.4),
+                Color.fromRGBO(0, 0, 0, 0.06),
+                Color.fromRGBO(0, 0, 0, 0),
+              ],
+            ),
           ),
-          StoryFrameData(
+          const StoryFrameData(
             storyId: 'route2',
             title: 'أقصر طريق',
             description:
@@ -55,8 +65,18 @@ class StoriesMap {
                 color: Colors.white,
               ),
             ),
+            storyGradient: LinearGradient(
+              stops: [0, 0.8, 1],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromRGBO(0, 0, 0, 0.4),
+                Color.fromRGBO(0, 0, 0, 0.06),
+                Color.fromRGBO(0, 0, 0, 0),
+              ],
+            ),
           ),
-          StoryFrameData(
+          const StoryFrameData(
             storyId: 'route3',
             title: 'التركيز على طريقك',
             description: 'مساعدك الصوتي سيبقيك على اطلاع طوال رحلتك',
@@ -72,6 +92,16 @@ class StoriesMap {
               textStyle: StoryTextStyle(
                 color: Colors.white,
               ),
+            ),
+            storyGradient: LinearGradient(
+              stops: [0, 0.8, 1],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromRGBO(0, 0, 0, 0.4),
+                Color.fromRGBO(0, 0, 0, 0.06),
+                Color.fromRGBO(0, 0, 0, 0),
+              ],
             ),
           ),
         ],
@@ -89,7 +119,7 @@ class StoriesMap {
           iconColor: AppColor.white,
         ),
         frames: [
-          StoryFrameData(
+          const StoryFrameData(
             storyId: 'onboarding1',
             title: 'Balady is more than maps and services',
             description:
@@ -120,7 +150,7 @@ class StoriesMap {
               ),
             ),
           ),
-          StoryFrameData(
+          const StoryFrameData(
             storyId: 'onboarding2',
             title: 'Smart navigation for cars and pedestrians',
             description:
@@ -151,7 +181,7 @@ class StoriesMap {
               ),
             ),
           ),
-          StoryFrameData(
+          const StoryFrameData(
             storyId: 'onboarding3',
             title: 'Take full advantage\nof Balady\'s capabilities',
             description: 'Get business license, send a claim\nand find investment opportunities',
