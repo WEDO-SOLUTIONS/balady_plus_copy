@@ -3,12 +3,12 @@ import 'package:mapness/_features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 class OpeningHoursModel {
-  final bool? isOpen24x7;
+  final bool? isAlwaysOpen;
   final bool? isDailySameOpenHours;
   final List<OpenHours>? openingHours;
 
   const OpeningHoursModel({
-    required this.isOpen24x7,
+    required this.isAlwaysOpen,
     required this.isDailySameOpenHours,
     required this.openingHours,
   });

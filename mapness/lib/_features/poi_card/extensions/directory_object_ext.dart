@@ -151,7 +151,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     }
     final model = _getOpeningHoursModel(l10n);
 
-    final is24x7 = model.isOpen24x7 == true;
+    final is24x7 = model.isAlwaysOpen == true;
     final isOpenSameTime = model.isDailySameOpenHours == true;
     final days = _createWorkTimeDays(
       model.openingHours,
@@ -218,7 +218,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
   OpeningHoursModel _getOpeningHoursModel(AppLocalizations locale) {
     final displayOpenHours = openingHours?.getDisplayOpenHours(locale);
     return OpeningHoursModel(
-      isOpen24x7: openingHours?.isOpen24x7,
+      isAlwaysOpen: openingHours?.isOpen24x7,
       openingHours: displayOpenHours,
       isDailySameOpenHours: openingHours?.defineIsDailySameOpenHours(locale),
     );

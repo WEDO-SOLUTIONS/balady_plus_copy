@@ -10,16 +10,16 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
   OpeningHoursModel getOpeningHoursModel(AppLocalizations locale) {
     final displayOpenHours = openingHours?.getDisplayOpenHours(locale);
     return OpeningHoursModel(
-      isOpen24x7: openingHours?.isOpen24x7,
+      isAlwaysOpen: openingHours?.isOpen24x7,
       openingHours: displayOpenHours,
       isDailySameOpenHours: openingHours?.defineIsDailySameOpenHours(locale),
     );
   }
 
   List<ContactsInfoModel> getContactsInfoModels() => contactInfos
-        .whereNotNull()
-        .map(
-          (e) => e.contactsInfo(),
-        )
-        .toList();
+      .whereNotNull()
+      .map(
+        (e) => e.contactsInfo(),
+      )
+      .toList();
 }

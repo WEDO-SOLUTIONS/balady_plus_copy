@@ -22,7 +22,7 @@ class PhotoViewerWidget extends StatefulWidget {
 
 class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
   static const backgroundColor = Color(0xff0B1218);
-  String title = '';
+  String _title = '';
   late final PhotoViewController _scaleController;
   late PageController pageController;
   late ValueNotifier<bool> isAppBarVisible;
@@ -38,7 +38,7 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
     isAppBarVisible = ValueNotifier(true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        title = getTitle(widget.currentPhotoIndex);
+        _title = getTitle(widget.currentPhotoIndex);
       });
     });
   }
@@ -46,7 +46,7 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
   @override
   void didUpdateWidget(covariant PhotoViewerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    title = getTitle(widget.currentPhotoIndex);
+    _title = getTitle(widget.currentPhotoIndex);
   }
 
   void listener(PhotoViewControllerValue value) {
@@ -71,7 +71,7 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
               extendBodyBehindAppBar: true,
               appBar: isAppBarVisible
                   // TODO: Update when BaladyTopBar starts supporting background color
-                  ? _PhotoAppBar(title: title)
+                  ? _PhotoAppBar(title: _title)
                   : null,
               body: child,
             ),
@@ -101,7 +101,7 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
                     pageController: pageController,
                     onPageChanged: (i) {
                       setState(() {
-                        title = getTitle(i);
+                        _title = getTitle(i);
                       });
                     }),
               ],
