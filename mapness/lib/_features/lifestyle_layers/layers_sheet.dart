@@ -1,11 +1,11 @@
-import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/map_controls.dart' as controls;
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/app/router.dart';
@@ -47,9 +47,9 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
         children: [
           ColoredBox(
             color: context.staticColor.surfaceOverlayModal,
-            child: GestureDetector(onTap: () => context.pop()),
+            child: GestureDetector(onTap: context.pop),
           ),
-          const MapControls(),
+          const controls.MapControls(),
           DraggableScrollableSheet(
             controller: _draggableScrollableController,
             minChildSize: 0,
@@ -88,7 +88,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                                 children: [
                                   Text(context.l10n.layersOnTheMap, style: context.textStyle.heading2),
                                   const Spacer(),
-                                  ui_kit.AppButton.close(
+                                  AppButton.close(
                                     onTap: () {
                                       Metrics.logEventAdvanced(
                                         MetricsConstants.layersKeys.exitIcon,
@@ -110,10 +110,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                         SliverToBoxAdapter(
                           child: Column(
                             children: [
-                              ui_kit.TabsRow.v2(
+                              TabsRow.v2(
                                 tabsContent: [
-                                  ui_kit.TabsRowV2Content(title: context.l10n.lifestyle),
-                                  ui_kit.TabsRowV2Content(title: context.l10n.business),
+                                  TabsRowV2Content(title: context.l10n.lifestyle),
+                                  TabsRowV2Content(title: context.l10n.business),
                                 ],
                                 onIndexChanged: (index) {
                                   _notifierIndexLayersTab.value = index ?? 0;
