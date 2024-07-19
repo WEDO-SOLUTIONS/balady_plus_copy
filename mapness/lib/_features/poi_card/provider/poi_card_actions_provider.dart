@@ -186,7 +186,7 @@ class PoiCardActions extends _$PoiCardActions {
           latitude: minCoords.latitude,
           longitude: minCoords.longitude,
         ),
-        zoom: 18,
+        zoom: 17.3,
         tilt: cameraPosition?.tilt ?? 0,
         bearing: cameraPosition?.tilt ?? 0,
       ),

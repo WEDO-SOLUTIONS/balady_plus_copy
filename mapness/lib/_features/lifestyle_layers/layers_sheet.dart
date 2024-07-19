@@ -76,99 +76,102 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
               Language.english => TextDirection.ltr,
               Language.arabic => TextDirection.rtl,
             },
-            child: Container(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(16),
+            child: BackdropFilter(
+              filter: ColorFilter.mode(Colors.black.withAlpha(90), BlendMode.screen),
+              child: Container(
+                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
                 ),
-              ),
-              child: Stack(
-                children: [
-                  CustomScrollView(
-                    controller: scrollController,
-                    primary: false,
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 6),
-                              const SheetDragger(),
-                              const SizedBox(height: 6),
-                              Row(
-                                children: [
-                                  Text(context.l10n.layersOnTheMap, style: headerStyle),
-                                  const Spacer(),
-                                  ui_kit.AppButton.close(
-                                    onTap: () {
-                                      Metrics.logEventAdvanced(
-                                        MetricsConstants.layersKeys.exitIcon,
-                                        group: MetricsConstants.layersTag,
-                                        action: MetricAction.tap.toString(),
-                                      );
+                child: Stack(
+                  children: [
+                    CustomScrollView(
+                      controller: scrollController,
+                      primary: false,
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 6),
+                                const SheetDragger(),
+                                const SizedBox(height: 6),
+                                Row(
+                                  children: [
+                                    Text(context.l10n.layersOnTheMap, style: headerStyle),
+                                    const Spacer(),
+                                    ui_kit.AppButton.close(
+                                      onTap: () {
+                                        Metrics.logEventAdvanced(
+                                          MetricsConstants.layersKeys.exitIcon,
+                                          group: MetricsConstants.layersTag,
+                                          action: MetricAction.tap.toString(),
+                                        );
 
-                                      context.pop();
-                                    },
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                            ],
+                                        context.pop();
+                                      },
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      SliverList.separated(
-                        separatorBuilder: (_, __) => const SizedBox(height: 4),
-                        itemCount: LayerType.withoutParking.length,
-                        itemBuilder: (_, index) {
-                          final value = LayerType.withoutParking[index];
-                          final isSelected = state.selectedType == value;
-                          final textColor = isSelected
-                              ? context.color.textAndIconsStatusAccent
-                              : context.color.textAndIconsBasePrimary;
+                        SliverList.separated(
+                          separatorBuilder: (_, __) => const SizedBox(height: 4),
+                          itemCount: LayerType.withoutParking.length,
+                          itemBuilder: (_, index) {
+                            final value = LayerType.withoutParking[index];
+                            final isSelected = state.selectedType == value;
+                            final textColor = isSelected
+                                ? context.color.textAndIconsStatusAccent
+                                : context.color.textAndIconsBasePrimary;
 
-                          return ui_kit.ContentRow(
-                            onTap: () async {
-                              ref.read(searchByRubricsQueryProvider.notifier).update(null);
+                            return ui_kit.ContentRow(
+                              onTap: () async {
+                                ref.read(searchByRubricsQueryProvider.notifier).update(null);
 
-                              if (value == LayerType.favourites) {
-                                await CommonFunctions.authOrOpen(
-                                  context,
-                                  callback: () async {
-                                    watch.handleTap(value);
-                                  },
-                                );
-                              } else {
-                                watch.handleTap(value);
-                              }
-                            },
-                            options: ui_kit.ContentRowOptions(
-                              wrapperEnabled: true,
-                              wrapperColor: isSelected
-                                  ? context.color.surfaceStatusContrastAccent.withOpacity(0.12)
-                                  : Colors.transparent,
-                              leadingIcon: value.iconData().icon(color: textColor),
-                              title: value.titleLocale(context.l10n),
-                              titleStyle: context.textStyle.text.copyWith(color: textColor),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  if (state.isLoading)
-                    Center(
-                      child: CircularProgressIndicator(
-                        color: context.color.textAndIconsStatusAccent,
-                      ),
+                                if (value == LayerType.favourites) {
+                                  await CommonFunctions.authOrOpen(
+                                    context,
+                                    callback: () async {
+                                      watch.handleTap(value);
+                                    },
+                                  );
+                                } else {
+                                  watch.handleTap(value);
+                                }
+                              },
+                              options: ui_kit.ContentRowOptions(
+                                wrapperEnabled: true,
+                                wrapperColor: isSelected
+                                    ? context.color.surfaceStatusContrastAccent.withOpacity(0.12)
+                                    : Colors.transparent,
+                                leadingIcon: value.iconData().icon(color: textColor),
+                                title: value.titleLocale(context.l10n),
+                                titleStyle: context.textStyle.text.copyWith(color: textColor),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                ],
+                    if (state.isLoading)
+                      Center(
+                        child: CircularProgressIndicator(
+                          color: context.color.textAndIconsStatusAccent,
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
