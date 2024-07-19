@@ -13,14 +13,14 @@ import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 
-class InBuildingWidget extends ConsumerStatefulWidget {
+class PoiInBuildingWidget extends ConsumerStatefulWidget {
   final PoiCardState? state;
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
   final LatLng? closestPoint;
   final double? bottomTabsHeight;
 
-  const InBuildingWidget({
+  const PoiInBuildingWidget({
     required this.state,
     required this.objectId,
     super.key,
@@ -30,10 +30,10 @@ class InBuildingWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<InBuildingWidget> createState() => _InBuildingWidgetState();
+  ConsumerState<PoiInBuildingWidget> createState() => _PoiInBuildingWidgetState();
 }
 
-class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
+class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
   late final PagingController<int, OrganizationItem> pagingController;
   late final ScrollController scrollController;
   bool init = true;

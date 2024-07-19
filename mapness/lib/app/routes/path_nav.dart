@@ -21,10 +21,11 @@ class PathNavRoute extends GoRouteData {
     final extra = state.extra as Map<String, dynamic>?;
     final navType = extra?['data'] as RouteSearchOptionsMessage;
     return _pathNavTransition(
-        context: context,
-        child: PathNavPage(
-          navType: navType,
-        ),);
+      context: context,
+      child: PathNavPage(
+        navType: navType,
+      ),
+    );
   }
 
   static void open(GoRouter router, RouteSearchOptionsMessage navType) {
