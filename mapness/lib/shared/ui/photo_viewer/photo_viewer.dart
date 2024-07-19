@@ -119,8 +119,16 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
   }
 }
 
+const _appBarBackground = [
+  Color.fromRGBO(0, 0, 0, 0.6),
+  Color.fromRGBO(0, 0, 0, 0.45),
+  Color.fromRGBO(0, 0, 0, 0.24),
+  Color.fromRGBO(0, 0, 0, 0),
+];
+
 class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+
   const _PhotoAppBar({
     required this.title,
   });
@@ -136,12 +144,7 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromRGBO(0, 0, 0, 0.6),
-                  Color.fromRGBO(0, 0, 0, 0.45),
-                  Color.fromRGBO(0, 0, 0, 0.24),
-                  Color.fromRGBO(0, 0, 0, 0),
-                ],
+                colors: _appBarBackground,
               ),
             ),
           ),

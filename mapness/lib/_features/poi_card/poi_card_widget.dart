@@ -272,10 +272,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               widget.closestPoint,
             ),
           ),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(RadiusBorder.xl),
-            topRight: Radius.circular(RadiusBorder.xl),
-          ),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
           scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
             controller: controller,
             header: PoiHeader(

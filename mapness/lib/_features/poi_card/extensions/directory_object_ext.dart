@@ -298,10 +298,15 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
 
   /// Parking
   PoiContentParking? getParking(AppLocalizations l10n) {
-    if (parkingInfo == null) {
+    final parkingInfo_ = parkingInfo;
+    if (parkingInfo_ == null) {
       return null;
     }
-    final title = '${parkingInfo?.capacity?.total} ${l10n.parkingSpaces}';
+    final capacity = parkingInfo_.capacity?.total;
+    if (capacity == null) {
+      return null;
+    }
+    final title = '$capacity ${l10n.parkingSpaces}';
     return PoiContentParking(title: title);
   }
 }

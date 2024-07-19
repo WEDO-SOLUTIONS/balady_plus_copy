@@ -21,13 +21,23 @@ class InfoWidget extends ConsumerWidget {
   final DirectoryObjectMessage? objectInfo;
   final QrLicenseMessage? qrTradeLicense;
   final VoidCallback onEntrancesTap;
+  final RouteSearchPoint? finishPoint;
 
-  const InfoWidget({
+  InfoWidget({
     required this.objectInfo,
     required this.qrTradeLicense,
     required this.onEntrancesTap,
     super.key,
-  });
+  }) : finishPoint = objectInfo != null
+            ? RouteSearchPoint(
+                coordinates: objectInfo.markerPosition?.toGeoPointMessage() ??
+                    GeoPointMessage(
+                      latitude: 0,
+                      longitude: 0,
+                    ),
+                dgisObjectId: objectInfo.id!,
+              )
+            : null;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,14 +48,7 @@ class InfoWidget extends ConsumerWidget {
 
     final briefInfo = ref.watch(
       briefRouteInfoProvider(
-        finishPoint: RouteSearchPoint(
-          coordinates: data.markerPosition?.toGeoPointMessage() ??
-              GeoPointMessage(
-                latitude: 0,
-                longitude: 0,
-              ),
-          dgisObjectId: data.id!,
-        ),
+        finishPoint: finishPoint,
         navType: RouteSearchOptionsMessage.car,
       ),
     );
