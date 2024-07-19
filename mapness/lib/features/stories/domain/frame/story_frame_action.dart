@@ -3,20 +3,25 @@ import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
 import 'package:mapness/features/stories/domain/story_action.dart';
 
 sealed class StoryFrameAction {
-  StoryFrameAction({
-    required this.deeplinkUrl,
-    required this.textStyle,
-    required this.backgroundColor,
-    this.action,
-  });
   final String deeplinkUrl;
   final StoryTextStyle? textStyle;
   final Color? backgroundColor;
   final StoryAction? action;
+  final double? horizontalPadding;
+
+  const StoryFrameAction({
+    required this.deeplinkUrl,
+    this.textStyle,
+    this.backgroundColor,
+    this.action,
+    this.horizontalPadding,
+  });
 }
 
 class VerbatimStoryFrameAction extends StoryFrameAction {
-  VerbatimStoryFrameAction({
+  final String title;
+
+  const VerbatimStoryFrameAction({
     required this.title,
     required String deeplinkUrl,
     required StoryTextStyle textStyle,
@@ -28,21 +33,27 @@ class VerbatimStoryFrameAction extends StoryFrameAction {
           backgroundColor: backgroundColor,
           action: action,
         );
-  final String title;
 }
 
 class LocaleKeyFrameAction extends StoryFrameAction {
-  LocaleKeyFrameAction({
+  final String titleLocaleKey;
+
+  const LocaleKeyFrameAction({
     required this.titleLocaleKey,
     required String deeplinkUrl,
-    required StoryTextStyle textStyle,
+    required StoryTextStyle? textStyle,
     Color? backgroundColor,
     StoryAction? action,
+    double? horizontalPadding,
   }) : super(
           deeplinkUrl: deeplinkUrl,
           textStyle: textStyle,
           backgroundColor: backgroundColor,
           action: action,
+          horizontalPadding: horizontalPadding,
         );
-  final String titleLocaleKey;
+}
+
+class DeeplinkStoryFrameAction extends StoryFrameAction {
+  const DeeplinkStoryFrameAction({required super.deeplinkUrl});
 }

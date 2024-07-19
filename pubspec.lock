@@ -1028,7 +1028,7 @@ packages:
     source: hosted
     version: "4.0.1"
   flutter_riverpod:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_riverpod
       sha256: da9591d1f8d5881628ccd5c25c40e74fc3eef50ba45e40c3905a06e1712412d5
@@ -1766,6 +1766,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  mocktail:
+    dependency: "direct main"
+    description:
+      name: mocktail
+      sha256: "890df3f9688106f25755f26b1c60589a92b3ab91a22b8b224947ad041bf172d8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   nested:
     dependency: transitive
     description:

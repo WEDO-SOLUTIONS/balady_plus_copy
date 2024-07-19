@@ -111,6 +111,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   add_2_calendar: ^2.2.5
   flutter_bloc: ^8.1.6
+  mocktail: ^1.0.0
 
 dependency_overrides:
   geolocator_android: ^4.2.2
@@ -121,7 +122,6 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.0
   random_string: ^2.3.1
   flutter_lints: ^2.0.3
   # a tool for running code generators

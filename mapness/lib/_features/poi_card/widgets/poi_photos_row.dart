@@ -3,12 +3,13 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
+
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PoiPhotosRow extends ConsumerWidget {

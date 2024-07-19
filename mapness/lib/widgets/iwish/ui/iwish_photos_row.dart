@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
+import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 
 class IwishPhotosRow extends ConsumerWidget {
   const IwishPhotosRow({required this.photos, super.key});
