@@ -20,11 +20,11 @@ class PoiPhotosHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final photos = ref.watch(poiPhotoProvider(objectId));
 
-    final bool = !photos.hasValue || photos.requireValue.items.isEmpty;
+    final isPhotosNotEmpty = !photos.hasValue || photos.requireValue.items.isEmpty;
     return ValueListenableBuilder(
       valueListenable: expansion,
       builder: (context, expansion, child) => AnimatedCrossFade(
-        crossFadeState: bool || expansion == Expansion.hidden || expansion == Expansion.fullHidePhoto
+        crossFadeState: isPhotosNotEmpty || expansion == Expansion.hidden || expansion == Expansion.fullHidePhoto
             ? CrossFadeState.showFirst
             : CrossFadeState.showSecond,
         firstCurve: Curves.easeInOut,
@@ -33,7 +33,7 @@ class PoiPhotosHeader extends ConsumerWidget {
         firstChild: const SizedBox.shrink(),
         secondChild: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          height: bool
+          height: isPhotosNotEmpty
               ? 0
               : switch (expansion) {
                   Expansion.fullHidePhoto => 0,
