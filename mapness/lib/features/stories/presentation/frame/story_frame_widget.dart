@@ -162,7 +162,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
     _lastTap = DateTime.now();
   }
 
-  void _onTapUp(VoidCallback action) {
+  void _onPauseOrResume(VoidCallback action) {
     if (DateTime.now().difference(_lastTap) < const Duration(milliseconds: 150)) {
       action();
     } else {
@@ -231,16 +231,16 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                           flex: 30,
                           child: GestureDetector(
                             onTapDown: _onTapDown,
-                            onTapUp: (_) => _onTapUp(_onPrevious),
-                            onHorizontalDragStart: (_) => _onTapUp(_onPrevious),
+                            onTapUp: (_) => _onPauseOrResume(_onPrevious),
+                            onHorizontalDragStart: (_) => _onPauseOrResume(_onPrevious),
                           ),
                         ),
                         Expanded(
                           flex: 70,
                           child: GestureDetector(
                             onTapDown: _onTapDown,
-                            onTapUp: (_) => _onTapUp(_onNext),
-                            onHorizontalDragStart: (_) => _onTapUp(_onNext),
+                            onTapUp: (_) => _onPauseOrResume(_onNext),
+                            onHorizontalDragStart: (_) => _onPauseOrResume(_onNext),
                           ),
                         ),
                       ],
