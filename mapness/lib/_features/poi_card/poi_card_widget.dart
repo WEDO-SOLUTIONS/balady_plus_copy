@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +132,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-
     final sizeOfScreen = MediaQuery.of(context).size;
     final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
 
@@ -154,9 +154,9 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     /// loading progress indicator
     if (state.isLoading) {
-      return Align(
+      return const Align(
         alignment: Alignment.bottomCenter,
-        child: LoadingSheet(text: context.l10n.sending),
+        child: LoadingSheet(),
       );
     }
 
@@ -262,8 +262,9 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
                     (element) => element.type == ContactsInfoType.phone,
                   );
-
-              poiActions.callPhone(value: phoneNumber?.value);
+              if (phoneNumber?.value != null) {
+                poiActions.callPhone(phoneNumber!.value!);
+              }
             },
             onEntranceTap: () => poiActions.toggleEntrances(
               data,
@@ -271,6 +272,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               widget.closestPoint,
             ),
           ),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
           scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
             controller: controller,
             header: PoiHeader(
@@ -289,24 +291,26 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                 context.pop();
               },
             ),
+            bodyPadding: const EdgeInsets.all(Spacing.$4x),
             body: [
               ValueListenableBuilder(
                 valueListenable: _tabType,
                 builder: (context, tabType, _) => switch (tabType) {
                   PoiTabsType.info => InfoWidget(
-                      callback: () => poiActions.toggleEntrances(
+                      objectInfo: poiCardState?.gisObjectIdMessage,
+                      qrTradeLicense: poiCardState?.qrTradeLicense,
+                      onEntrancesTap: () => poiActions.toggleEntrances(
                         data,
                         () => _bottomSheetController.animateTo(Expansion.collapsed),
                         widget.closestPoint,
                       ),
-                      poiCardState: poiCardState,
                     ),
                   PoiTabsType.photos => PoiPhotoCard(
                       model: PoiModel(
                         directoryObjectMessage: data,
                       ),
                     ),
-                  PoiTabsType.inBuilding => InBuildingWidget(
+                  PoiTabsType.inBuilding => PoiInBuildingWidget(
                       state: poiCardState,
                       objectId: widget.objectId,
                       bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,

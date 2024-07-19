@@ -1,0 +1,16 @@
+platform-team:
+  - changed-files:
+      - any-glob-to-any-file: "urbi_map/**"
+
+support-team:
+  - changed-files:
+      - all-globs-to-any-file:
+          - "!urbi_map/**"
+          - "!mapness/features/**"
+
+feature-team:
+  - changed-files:
+      - any-glob-to-any-file: "mapness/features/**"
+
+priority:
+  - head-branch: ["^urbi-release-"]

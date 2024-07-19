@@ -24,8 +24,10 @@ import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -601,6 +603,12 @@ class LayersControls extends _$LayersControls {
         .onError((error, stackTrace) => onError())
         .timeout(duration, onTimeout: onError);
     update(isLoading: false);
+
+    await computeCameraPosition(
+      markers,
+      ref.read(cameraPositionProvider),
+      ref.read(cameraPositionProvider.notifier).animateTo,
+    );
   }
 
   Future<void> _showParking() async {

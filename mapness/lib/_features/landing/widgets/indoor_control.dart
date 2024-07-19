@@ -33,6 +33,7 @@ class _IndoorControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
         children: state.levels.reversed
             .mapIndexed(
               (index, e) => MapButton(

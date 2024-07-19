@@ -42,13 +42,13 @@ class RoutingFavouritesPage extends ConsumerWidget {
                           action: MetricAction.tap.toString(),
                         );
 
-                        context.pop(null);
+                        context.pop();
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Padding(
                         padding: const EdgeInsets.all(8),
                         child: Icon(
-                          context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                          context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                           size: 24,
                           color: context.color.textAndIconsBasePrimary,
                         ),

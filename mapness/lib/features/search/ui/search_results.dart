@@ -23,6 +23,7 @@ class SearchResults extends ConsumerStatefulWidget {
 
 class _SearchResultsState extends ConsumerState<SearchResults> {
   bool _hasNext = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -42,12 +43,12 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
 
     final delta = MediaQuery.of(context).size.height * 0.2;
 
-    if (max - current <= delta) {
+    if (!_isLoading && max - current <= delta) {
+      _isLoading = true;
       ref.read(searchPaginationProvider(widget.results).notifier).fetchNext().then(
         (hasNext) {
-          setState(() {
-            _hasNext = hasNext;
-          });
+          _isLoading = false;
+          setState(() => _hasNext = hasNext);
         },
       );
     }

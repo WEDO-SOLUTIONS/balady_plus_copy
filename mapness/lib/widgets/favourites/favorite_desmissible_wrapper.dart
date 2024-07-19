@@ -9,14 +9,14 @@ class FavoriteDismissibleWrapper extends StatelessWidget {
   final bool isFirst;
   final bool isLast;
   final Widget child;
-  final bool isDismissableEnabled;
+  final bool isDismissibleEnabled;
   final VoidCallback onDelete;
 
   const FavoriteDismissibleWrapper({
     required this.isFirst,
     required this.isLast,
     required this.child,
-    required this.isDismissableEnabled,
+    required this.isDismissibleEnabled,
     required this.id,
     required this.onDelete,
     super.key,
@@ -25,7 +25,7 @@ class FavoriteDismissibleWrapper extends StatelessWidget {
   static const radius = Radius.circular(12);
 
   @override
-  Widget build(BuildContext context) => isDismissableEnabled
+  Widget build(BuildContext context) => isDismissibleEnabled
       ? Dismissible(
           direction: DismissDirection.endToStart,
           movementDuration: const Duration(milliseconds: 300),

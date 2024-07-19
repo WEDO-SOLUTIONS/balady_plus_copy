@@ -9,13 +9,6 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - "bugfix/*"
-      - "feat/*"
-      - "feature/*"
-      - "urbi"
-      - "urbi-release-*"
   pull_request:
     types:
       - opened
@@ -35,6 +28,15 @@ on:
       - ".vscode/"
 
 jobs:
+  check-typos:
+    runs-on: [self-hosted, Linux]
+    steps:
+      - name: typos-action
+        uses: crate-ci/typos@v1.23.1
+        with:
+          files: "mapness/**/*.dart"
+          write_changes: true
+
   auto-request-review:
     name: Auto Request Review CODEOWNERS
     runs-on: [self-hosted, Linux]
@@ -44,6 +46,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           config: .github/reviewers.yml # Config file location override
+
   linter:
     runs-on: [self-hosted, Linux]
     name: Lint flutter code
@@ -110,7 +113,31 @@ jobs:
       - name: Analyze Flutter
         uses: ValentinVignal/action-dart-analyze@v0.17
         with:
-          fail-on: "warning"
+          fail-on: "format"
+          line-length: 120
+          check-renamed-files: true
 
       - name: Commitsar Action
         uses: aevea/commitsar@v0.20.2
+
+      - name: Generate Coverage
+        id: coverage-report
+        uses: whynotmake-it/dart-coverage-assistant@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          testing_command: flutter test --coverage
+          lower_threshold: 0
+          upper_threshold: 90
+          generate_badges: none
+
+      - name: Run tests
+        run: |
+          flutter test
+
+      - name: Report tests
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Flutter Tests
+          path: reports/test-*.json
+          reporter: flutter-json

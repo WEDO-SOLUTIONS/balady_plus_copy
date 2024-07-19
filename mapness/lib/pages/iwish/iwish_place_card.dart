@@ -40,12 +40,9 @@ class IwishPlaceCard extends ConsumerWidget {
         entity.when(
           error: (_, __) => ErrorSheet(
             onRetry: entityNotifier.refresh,
-            buttonLabel: context.l10n.reload,
-            onClose: () => context.pop(),
+            buttonLabel: context.l10n.tryAgain,
           ),
-          loading: () => LoadingSheet(
-            text: context.l10n.loading,
-          ),
+          loading: () => const LoadingSheet(),
           data: (entity) {
             final distance = ref.read(iwishDistanceProvider(entity));
 
@@ -99,11 +96,11 @@ class IwishPlaceCard extends ConsumerWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Align(
+                                    const Align(
                                       alignment: Alignment.topCenter,
                                       child: Padding(
-                                        padding: const EdgeInsets.only(top: 8),
-                                        child: const SheetDragger(),
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: SheetDragger(),
                                       ),
                                     ),
                                     const SizedBox(height: 4),

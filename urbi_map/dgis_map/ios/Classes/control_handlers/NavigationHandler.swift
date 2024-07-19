@@ -183,16 +183,14 @@ class NavigationHandler {
         self.maneuverControlModel.cancel()
     }
     
-    func setupCamera() {
+    func setupCamera(
+        speedRangeZoom: SpeedRangeZoom
+    ) {
         self.prevMyLocationMapObjectSource = self.map.sources.first { $0 is MyLocationMapObjectSource } as? MyLocationMapObjectSource
         if let prevLocationSource = self.prevMyLocationMapObjectSource {
             self.map.removeSource(source: prevLocationSource)
         }
         self.map.addSource(source: self.locationSource)
-                
-        var position = self.map.camera.position
-        position.zoom = styleZToProjectionZ(styleZ: 17.5, latitude: position.point.latitude)
-        try? self.map.camera.setPosition(position: position)
         
         self.prevCameraBehaviour = self.map.camera.behaviour.newBehaviour
         self.map.camera.setBehaviour(
@@ -200,6 +198,14 @@ class NavigationHandler {
         )
         
         self.navigationManager.mapFollowController.setFollow(follow: true)
+        self.navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = [
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: Double(truncating: speedRangeZoom.minSpeedRange), maxSpeed: Double(truncating: speedRangeZoom.maxSpeedRange)),
+                minDistanceToManeuver: RouteDistance(millimeters: Int64(truncating: speedRangeZoom.routeDistanceMillimeters)),
+                maxDistanceToManeuver: RouteDistance(millimeters: Int64(truncating: speedRangeZoom.routeDistanceMillimeters)),
+                styleZoom: StyleZoom(value: Float(truncating: speedRangeZoom.styleZoomValue))
+            ),
+        ]
     }
     
     func followNavigation() {
@@ -224,6 +230,7 @@ class NavigationHandler {
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
         route: TrafficRoute?,
+        speedRangeZoom: SpeedRangeZoom,
         completion: @escaping (FlutterError?) -> Void
     ) {
         guard let finishPoint = finishPoint, let options = options, let route = route else {
@@ -236,7 +243,7 @@ class NavigationHandler {
         }
         
         do {
-            setupCamera()
+            setupCamera(speedRangeZoom: speedRangeZoom)
             try self.navigationManager.start(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
@@ -265,6 +272,7 @@ class NavigationHandler {
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
         route: TrafficRoute?,
+        speedRangeZoom: SpeedRangeZoom,
         completion: @escaping (FlutterError?) -> Void
     ) {
         guard let finishPoint = finishPoint, let options = options, let route = route else {
@@ -277,7 +285,7 @@ class NavigationHandler {
         }
         
         do {
-            setupCamera()
+            setupCamera(speedRangeZoom: speedRangeZoom)
             try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,

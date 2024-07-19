@@ -45,119 +45,134 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
   late PointerDownEvent pointerDetails;
 
   @override
-  Widget build(BuildContext context) => FavoriteDismissibleWrapper(
-        id: widget.item.id,
-        isFirst: widget.isFirst,
-        isLast: widget.isLast,
-        isDismissableEnabled: widget.isDeletable && !isDismissed && !widget.isEditing,
-        onDelete: () => widget.onDelete?.call(),
-        child: Row(
-          key: Key(widget.item.id),
-          children: [
-            if (widget.isEditing) Spacing.horizontalPaddingInsideCell.widthBox,
-            if (widget.isEditing)
-              BaladyCheckBox(
-                key: UniqueKey(),
-                state: widget.isSelected == true ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked,
-                disable: false,
-                onChanged: (value) {
-                  switch (value) {
-                    case BaladyCheckBoxState.checked:
-                      widget.onSelect?.call(true);
-                      break;
-                    case BaladyCheckBoxState.unchecked:
-                      widget.onSelect?.call(false);
-                      break;
-                    case BaladyCheckBoxState.indeterminate:
-                      break;
-                  }
-                },
-              ),
-            Expanded(
-              child: Listener(
-                onPointerDown: (details) {
-                  setState(() {
-                    pointerDetails = details;
-                  });
-                },
-                child: InkWell(
-                  onTap: () {
-                    if (widget.isEditing) {
-                      setState(() => widget.onSelect?.call(widget.isSelected == true));
-                    } else {
-                      widget.onTap();
-                    }
-                  },
-                  onLongPress: () {
-                    if (!widget.isEditing) {
-                      final color = context.color;
-                      showMenu(
-                        constraints: const BoxConstraints(
-                          minWidth: 140,
-                          maxWidth: 140,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        context: context,
-                        items: <PopupMenuEntry<bool>>[
-                          PopupMenuItem<bool>(
-                            padding: EdgeInsets.zero,
-                            onTap: () => widget.onRouteTap?.call(),
-                            child: PopupMenuWidget(
-                              title: context.l10n.route,
-                              icon: GeneralIcons.route.icon(
-                                color: color.textAndIconsBasePrimary,
-                              ),
-                            ),
-                          ),
-                          PopupMenuItem<bool>(
-                            padding: EdgeInsets.zero,
-                            onTap: () => widget.onShareTap?.call(),
-                            child: PopupMenuWidget(
-                              title: context.l10n.share,
-                              icon: SystemIcons.share.icon(
-                                color: color.textAndIconsBasePrimary,
-                              ),
-                            ),
-                          ),
-                          PopupMenuItem<bool>(
-                            padding: EdgeInsets.zero,
-                            onTap: () => widget.onDelete?.call(),
-                            child: PopupMenuWidget(
-                              titleStyle: context.textStyle.text.copyWith(
-                                color: color.textAndIconsStatusNegative,
-                              ),
-                              title: context.l10n.delete,
-                              icon: GeneralIcons.trash.icon(
-                                color: color.textAndIconsStatusNegative,
-                              ),
-                              showDivider: false,
-                            ),
-                          ),
-                        ],
-                        position: RelativeRect.fromLTRB(
-                          pointerDetails.position.dx,
-                          pointerDetails.position.dy,
-                          pointerDetails.position.dx,
-                          pointerDetails.position.dy,
-                        ),
-                      );
-                    }
-                  },
-                  child: ContentRow(
-                    options: ContentRowOptions(
-                      leadingIcon: SystemIcons.bookmarkFill.icon(
-                        color: context.color.textAndIconsStatusAccent,
-                      ),
-                      title: widget.item.title,
-                      subtitle: widget.item.subtitle,
+  Widget build(BuildContext context) {
+    final stateOfCheckBox = widget.isSelected == true ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked;
+    final isDismissibleEnabled = widget.isDeletable && !isDismissed && !widget.isEditing;
+    return FavoriteDismissibleWrapper(
+      id: widget.item.id,
+      isFirst: widget.isFirst,
+      isLast: widget.isLast,
+      isDismissibleEnabled: isDismissibleEnabled,
+      onDelete: () => widget.onDelete?.call(),
+      child: Row(
+        key: Key(widget.item.id),
+        children: [
+          if (widget.isEditing) ...[
+            Spacing.$2x.widthBox,
+            BaladyCheckBox(
+              key: UniqueKey(),
+              state: stateOfCheckBox,
+              disable: false,
+              onChanged: _onChanged,
+            ),
+          ],
+          Expanded(
+            child: Listener(
+              onPointerDown: _onPointerDown,
+              child: InkWell(
+                onTap: _onTap,
+                onLongPress: _onLongPress,
+                child: ContentRow(
+                  options: ContentRowOptions(
+                    leadingIcon: SystemIcons.bookmarkFill.icon(
+                      color: context.color.textAndIconsStatusAccent,
                     ),
+                    title: widget.item.title,
+                    subtitle: widget.item.subtitle,
                   ),
                 ),
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onChanged(BaladyCheckBoxState value) {
+    switch (value) {
+      case BaladyCheckBoxState.checked:
+        widget.onSelect?.call(true);
+        break;
+      case BaladyCheckBoxState.unchecked:
+        widget.onSelect?.call(false);
+        break;
+      case BaladyCheckBoxState.indeterminate:
+        break;
+    }
+  }
+
+  void _onPointerDown(PointerDownEvent details) {
+    setState(() {
+      pointerDetails = details;
+    });
+  }
+
+  void _onTap() {
+    if (widget.isEditing) {
+      setState(() => widget.onSelect?.call(widget.isSelected == true));
+    } else {
+      widget.onTap();
+    }
+  }
+
+  void _onLongPress() {
+    if (!widget.isEditing) {
+      final color = context.color;
+      showMenu(
+        constraints: const BoxConstraints(
+          minWidth: 140,
+          maxWidth: 140,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(RadiusBorder.l),
+        ),
+        context: context,
+        items: <PopupMenuEntry<bool>>[
+          PopupMenuItem<bool>(
+            padding: EdgeInsets.zero,
+            onTap: () => widget.onRouteTap?.call(),
+            child: PopupMenuWidget(
+              title: context.l10n.route,
+              icon: GeneralIcons.route.icon(
+                color: color.textAndIconsBasePrimary,
+              ),
+              showDivider: false,
+            ),
+          ),
+          PopupMenuItem<bool>(
+            padding: EdgeInsets.zero,
+            onTap: () => widget.onShareTap?.call(),
+            child: PopupMenuWidget(
+              title: context.l10n.share,
+              icon: SystemIcons.share.icon(
+                color: color.textAndIconsBasePrimary,
+              ),
+              showDivider: false,
+            ),
+          ),
+          PopupMenuItem<bool>(
+            padding: EdgeInsets.zero,
+            onTap: () => widget.onDelete?.call(),
+            child: PopupMenuWidget(
+              titleStyle: context.textStyle.text.copyWith(
+                color: color.textAndIconsStatusNegative,
+              ),
+              title: context.l10n.delete,
+              icon: GeneralIcons.trash.icon(
+                color: color.textAndIconsStatusNegative,
+              ),
+              showDivider: false,
+            ),
+          ),
+        ],
+        position: RelativeRect.fromLTRB(
+          pointerDetails.position.dx,
+          pointerDetails.position.dy,
+          pointerDetails.position.dx,
+          pointerDetails.position.dy,
         ),
       );
+    }
+  }
 }

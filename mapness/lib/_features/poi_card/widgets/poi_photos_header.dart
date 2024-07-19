@@ -24,7 +24,7 @@ class PoiPhotosHeader extends ConsumerWidget {
     return ValueListenableBuilder(
       valueListenable: expansion,
       builder: (context, expansion, child) => AnimatedCrossFade(
-          crossFadeState: bool || expansion == Expansion.hidden|| expansion == Expansion.fullHidePhoto ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          crossFadeState: bool || expansion == Expansion.hidden || expansion == Expansion.fullHidePhoto ? CrossFadeState.showFirst : CrossFadeState.showSecond,
           firstCurve: Curves.easeInOut,
           secondCurve: Curves.easeInOut,
           sizeCurve: Curves.easeInOut,

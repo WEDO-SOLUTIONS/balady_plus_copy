@@ -25,7 +25,6 @@ import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.Tilt
 import ru.dgis.sdk.map.calcPosition
-import ru.dgis.sdk.map.styleZToProjectionZ
 import ru.dgis.sdk.navigation.*
 import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.RouteSearchOptions
@@ -94,17 +93,12 @@ class NavigationHandler(
         )
     }
 
-    fun setupCamera() {
+    fun setupCamera(speedRangeZoom: Messages.SpeedRangeZoom) {
         this.prevLocationSource = this.map.sources.first { it is MyLocationMapObjectSource } as? MyLocationMapObjectSource
         if (this.prevLocationSource != null) {
             map.removeSource(this.prevLocationSource!!)
         }
         map.addSource(locationSource)
-
-        val position = map.camera.position.copy(
-            zoom = styleZToProjectionZ(styleZ = StyleZoom(17.5f), latitude = map.camera.position.point.latitude)
-        )
-        map.camera.position = position
 
         prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
@@ -112,6 +106,14 @@ class NavigationHandler(
         )
 
         navigationManager.mapFollowController.setFollow(true)
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = listOf(
+            SpeedRangeToStyleZoom(
+                range = SpeedRange(minSpeed = speedRangeZoom.minSpeedRange, maxSpeed = speedRangeZoom.maxSpeedRange), 
+                minDistanceToManeuver = RouteDistance(millimeters = speedRangeZoom.routeDistanceMillimeters.toLong()),
+                maxDistanceToManeuver = RouteDistance(millimeters = speedRangeZoom.routeDistanceMillimeters.toLong()),
+                styleZoom = StyleZoom(value = speedRangeZoom.styleZoomValue.toFloat())
+            )
+        )
     }
 
     fun followNavigation() {
@@ -155,6 +157,7 @@ class NavigationHandler(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
         route: TrafficRoute?,
+        speedRangeZoom: Messages.SpeedRangeZoom,
         result: Result<Void>?,
     ) {
         if (finishPoint == null || options == null || route == null) {
@@ -162,7 +165,7 @@ class NavigationHandler(
             return
         }
 
-        setupCamera()
+        setupCamera(speedRangeZoom = speedRangeZoom)
         navigationManager.start(
             routeBuildOptions = RouteBuildOptions(
                 finishPoint = finishPoint,
@@ -179,6 +182,7 @@ class NavigationHandler(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
         route: TrafficRoute?,
+        speedRangeZoom: Messages.SpeedRangeZoom,
         result: Result<Void>?,
     ) {
         if (finishPoint == null || options == null || route == null) {
@@ -186,7 +190,7 @@ class NavigationHandler(
             return
         }
 
-        setupCamera()
+        setupCamera(speedRangeZoom = speedRangeZoom)
         navigationManager.startSimulation(
             routeBuildOptions = RouteBuildOptions(
                 finishPoint = finishPoint,
