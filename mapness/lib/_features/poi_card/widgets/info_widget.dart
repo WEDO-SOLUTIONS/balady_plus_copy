@@ -1,75 +1,100 @@
-import 'package:balady_plus/app/features/map_page/extensions/directory_object_ext.dart';
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
-import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
-import 'package:mapness/_features/poi_card/widgets/about.dart';
-import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
-import 'package:mapness/_features/poi_card/widgets/favourites.dart';
-import 'package:mapness/_features/poi_card/widgets/full_address.dart';
-import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
-import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
-import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
+import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
+import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
+import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
+import 'package:mapness/app/routes/favourites.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 
 import 'footer/footer_style.dart';
 
 class InfoWidget extends ConsumerWidget {
-  final PoiCardState? poiCardState;
-  final VoidCallback callback;
+  final DirectoryObjectMessage? objectInfo;
+  final QrLicenseMessage? qrTradeLicense;
+  final VoidCallback onEntrancesTap;
+  final RouteSearchPoint? finishPoint;
 
-  const InfoWidget({
-    required this.poiCardState,
-    required this.callback,
+  InfoWidget({
+    required this.objectInfo,
+    required this.qrTradeLicense,
+    required this.onEntrancesTap,
     super.key,
-  });
+  }) : finishPoint = objectInfo != null
+            ? RouteSearchPoint(
+                coordinates: objectInfo.markerPosition?.toGeoPointMessage() ??
+                    GeoPointMessage(
+                      latitude: 0,
+                      longitude: 0,
+                    ),
+                dgisObjectId: objectInfo.id!,
+              )
+            : null;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = poiCardState?.gisObjectIdMessage;
-    final qrTradeLicense = poiCardState?.qrTradeLicense;
-    final tradeLicense = data?.tradeLicense;
+    final data = objectInfo;
+    if (data == null) {
+      return const SizedBox();
+    }
 
-    final subTitle = data?.makeAddress() ?? '';
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(
+        finishPoint: finishPoint,
+        navType: RouteSearchOptionsMessage.car,
+      ),
+    );
 
-    final calculateEntrances = data?.entrances.fold(0, (prev, e) => prev + (e?.geometry?.entrancePoints.length ?? 0));
+    final favouritesState = ref.watch(favouriteCacheProvider);
 
-    final about = data?.about;
-    return Padding(
-      padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Favourites(data),
-          if (data != null)
-            FullAddress(
-              data: data,
-              title: data.address?.buildingName ?? data.title,
-              subtitle: subTitle,
-              exits: calculateEntrances,
-              onEntranceTap: callback,
-            ),
-          if (about != null && about.isNotEmpty == true)
-            About(
-              text: about,
-            ),
-          if (data?.openingHours != null)
-            OpeningHours(
-              data?.getOpeningHoursModel(
-                context.l10n,
-              ),
-            ),
-          if (data!.contactInfos.isNotEmpty)
-            ContactsInfo(
-              data: data.contactInfos,
-            ),
-          if (qrTradeLicense != null) QrLicenseInfo(qrTradeLicense),
-          if (tradeLicense != null) TradeLicense(tradeLicense),
-          const SafeArea(
-            top: false,
-            child: SizedBox(height: footerHeight),
-          ),
-        ],
+    // On press the favourites we open the favourites page
+    final void Function() onFavouritePressed = () {
+      Metrics.logEventAdvanced(
+        MetricsConstants.poiKeys.favorites,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+      );
+
+      const FavouritesRoute().push(context);
+    };
+
+    // On phone card tap handler
+    final void Function(String) onPhoneTap = (phone) {
+      ref.read(poiCardActionsProvider.notifier).callPhone(phone);
+    };
+
+    // On social media button tap handler
+    final void Function(PoiContentSocialMediaType, String) onSocialMediaTap = (type, link) {
+      if (type == PoiContentSocialMediaType.email) {
+        ref.read(poiCardActionsProvider.notifier).sendEmail(link);
+      } else {
+        ref.read(poiCardActionsProvider.notifier).launch(link);
+      }
+    };
+
+    final poiContentData = PoiContentData(
+      favourite: data.getFavourites(favouritesState, context.l10n, onFavouritePressed),
+      fullAddress: data.getFullAddress(briefInfo, context.l10n, onEntrancesTap),
+      about: data.getAbout(context.l10n),
+      workTime: data.getOpeningHours(context.l10n),
+      contacts: data.getContacts(onPhoneTap, onSocialMediaTap, context.l10n),
+      license: data.getLicense(context.l10n),
+      accessibilityInfo: data.getAccessibility(context.l10n, qrTradeLicense),
+      parking: data.getParking(context.l10n),
+    );
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: footerHeight),
+        child: PoiContent(data: poiContentData),
       ),
     );
   }
