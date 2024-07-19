@@ -1,21 +1,18 @@
-import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
-import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/map_controls.dart' as controls;
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -26,6 +23,7 @@ class LayersSheet extends ConsumerStatefulWidget {
 
 class LayersSheetState extends ConsumerState<LayersSheet> {
   late final DraggableScrollableController _draggableScrollableController;
+  late final ValueNotifier<int> _notifierIndexLayersTab = ValueNotifier(0);
 
   @override
   void initState() {
@@ -36,50 +34,36 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
         ref.read(goRouterProvider).pop();
       }
     });
-
-    SchedulerBinding.instance.addPostFrameCallback(
-      (_) {
-        if (_draggableScrollableController.isAttached) {
-          _draggableScrollableController.animateTo(
-            .6,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.linear,
-          );
-        }
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final watch = ref.watch(layersControlsProvider.notifier);
     final state = ref.watch(layersControlsProvider);
-    final lang = ref.watch(appLanguageProvider);
+    final direction = ref.watch(uiDirectionProvider);
 
-    final headerStyle = Theme.of(context).extension<ui_kit.ThemeTextStyles>()!.heading2;
-
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        GestureDetector(
-          onTap: () {
-            context.pop();
-          },
-        ),
-        const MapControls(),
-        DraggableScrollableSheet(
-          controller: _draggableScrollableController,
-          minChildSize: 0,
-          maxChildSize: .5,
-          builder: (context, scrollController) => Directionality(
-            textDirection: switch (lang) {
-              Language.english => TextDirection.ltr,
-              Language.arabic => TextDirection.rtl,
-            },
-            child: BackdropFilter(
-              filter: ColorFilter.mode(Colors.black.withAlpha(90), BlendMode.screen),
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          ColoredBox(
+            color: context.staticColor.surfaceOverlayModal,
+            child: GestureDetector(onTap: context.pop),
+          ),
+          const controls.MapControls(),
+          DraggableScrollableSheet(
+            controller: _draggableScrollableController,
+            minChildSize: 0,
+            maxChildSize: .5,
+            snapSizes: const [.0, .5],
+            snap: true,
+            builder: (context, scrollController) => Directionality(
+              textDirection: direction,
               child: Container(
-                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.vertical(
@@ -95,72 +79,58 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                       physics: const ClampingScrollPhysics(),
                       slivers: [
                         SliverToBoxAdapter(
-                          child: Material(
-                            color: Colors.transparent,
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 6),
-                                const SheetDragger(),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Text(context.l10n.layersOnTheMap, style: headerStyle),
-                                    const Spacer(),
-                                    ui_kit.AppButton.close(
-                                      onTap: () {
-                                        Metrics.logEventAdvanced(
-                                          MetricsConstants.layersKeys.exitIcon,
-                                          group: MetricsConstants.layersTag,
-                                          action: MetricAction.tap.toString(),
-                                        );
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 8),
+                              const SheetDragger(),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Text(context.l10n.layersOnTheMap, style: context.textStyle.heading2),
+                                  const Spacer(),
+                                  AppButton.close(
+                                    onTap: () {
+                                      Metrics.logEventAdvanced(
+                                        MetricsConstants.layersKeys.exitIcon,
+                                        group: MetricsConstants.layersTag,
+                                        action: MetricAction.tap.toString(),
+                                      );
 
-                                        context.pop();
-                                      },
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                              ],
-                            ),
+                                      context.pop();
+                                    },
+                                    padding: EdgeInsets.zero,
+                                    innerPadding: const EdgeInsets.all(8),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                            ],
                           ),
                         ),
-                        SliverList.separated(
-                          separatorBuilder: (_, __) => const SizedBox(height: 4),
-                          itemCount: LayerType.withoutParking.length,
-                          itemBuilder: (_, index) {
-                            final value = LayerType.withoutParking[index];
-                            final isSelected = state.selectedType == value;
-                            final textColor = isSelected
-                                ? context.color.textAndIconsStatusAccent
-                                : context.color.textAndIconsBasePrimary;
-
-                            return ui_kit.ContentRow(
-                              onTap: () async {
-                                ref.read(searchByRubricsQueryProvider.notifier).update(null);
-
-                                if (value == LayerType.favourites) {
-                                  await CommonFunctions.authOrOpen(
-                                    context,
-                                    callback: () async {
-                                      watch.handleTap(value);
-                                    },
-                                  );
-                                } else {
-                                  watch.handleTap(value);
-                                }
-                              },
-                              options: ui_kit.ContentRowOptions(
-                                wrapperEnabled: true,
-                                wrapperColor: isSelected
-                                    ? context.color.surfaceStatusContrastAccent.withOpacity(0.12)
-                                    : Colors.transparent,
-                                leadingIcon: value.iconData().icon(color: textColor),
-                                title: value.titleLocale(context.l10n),
-                                titleStyle: context.textStyle.text.copyWith(color: textColor),
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: [
+                              TabsRow.v2(
+                                tabsContent: [
+                                  TabsRowV2Content(title: context.l10n.lifestyle),
+                                  TabsRowV2Content(title: context.l10n.business),
+                                ],
+                                onIndexChanged: (index) {
+                                  _notifierIndexLayersTab.value = index ?? 0;
+                                },
                               ),
-                            );
-                          },
+                              const SizedBox(height: 12),
+                            ],
+                          ),
+                        ),
+                        ValueListenableBuilder(
+                          valueListenable: _notifierIndexLayersTab,
+                          builder: (context, value, _) => LayerSliverList(
+                            layerType: value == 0
+                                ? layers_state.LayerType.withoutLifestyle
+                                : layers_state.LayerType.withoutBusiness,
+                            layersState: state,
+                          ),
                         ),
                       ],
                     ),
@@ -175,8 +145,8 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

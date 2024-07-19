@@ -109,7 +109,7 @@ class LayersControls extends _$LayersControls {
           toggleInvestOpportunities();
         case LayerType.fencing:
           toggleWhiteLands();
-        case LayerType.parking:
+        case LayerType.parkingLots:
           toggleParking();
         case LayerType.joy:
           toggleIwish();
@@ -321,7 +321,7 @@ class LayersControls extends _$LayersControls {
     final currentState = state.selectedType;
     await viewPortSubscription?.cancel();
 
-    if (currentState == LayerType.parking) {
+    if (currentState == LayerType.parkingLots) {
       await ref
           .read(mapObjectManagerProvider(
             named: esriMapObjectSettings.name,
@@ -332,7 +332,7 @@ class LayersControls extends _$LayersControls {
         ..setSelection()
         ..update(isLoading: false);
     } else {
-      setSelection(selectedType: LayerType.parking);
+      setSelection(selectedType: LayerType.parkingLots);
       await _showParking();
     }
   }
