@@ -91,6 +91,13 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
   late final DgisBottomSheetController _bottomSheetController;
 
   @override
+  void didUpdateWidget(covariant _Content oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _tabController.animateTo(0);
+  }
+
+  @override
   void initState() {
     super.initState();
     _tabController = TabController(
