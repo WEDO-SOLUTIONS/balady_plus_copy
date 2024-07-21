@@ -60,6 +60,7 @@ import '../../features/profile_features/delegators/domain/entities/user_profile_
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
 import '../../features/vd/presentation/dialogs/vd_all_types_dialog.dart';
+import '../errors/exceptions.dart';
 import './utils_exports.dart'
     show
         AppColor,
@@ -1171,6 +1172,11 @@ class CommonFunctions {
         String message = (dioError?.response?.data.toString() ??
                 response?.data.toString()) ??
             (errorMessage ?? ex.toString());
+
+        if (dioError != null &&  dioError is NoDataFoundException)
+        {
+          message = "Data Not Found";
+        }
 
         message = message.isEmpty ? (errorMessage ?? ex.toString()) : message;
         print("MessageMessage ${message}");

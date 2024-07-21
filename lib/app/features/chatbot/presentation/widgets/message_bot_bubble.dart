@@ -12,6 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../municipal_services/municipal_advisor/presentation/widgets/loading_bubble.dart';
+import 'message_chat_text.dart';
+
 class MessageBotBubble extends StatelessWidget {
   final MessageChatBotProvider messageProvide;
 
@@ -21,103 +24,111 @@ class MessageBotBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: messageProvide,
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            ChatBotBubble(
-              body: CustomTextWidget(
-                messageProvide.message.value.question,
-                // "\u0631,\u0631, \u0631,\u0631,\u0631, \u0631",
-                textStyle: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: Colors.white,
-                ),
-                maxLines: 100,
-              ),
-              timeStamp: messageProvide.message.value.timeStampSend,
-              // messageProvide.message.value,
-            ),
-
-            ////////////////////////////////////////////////////////
-            Selector<MessageChatBotProvider, StreamSubscription?>(
-              selector: (_, provider) => provider.listen,
-              builder: (_, listen, __) {
-                // provider.isLoading = isLoading;
-                return ChatBotBubble(
-                  body: Wrap(
-                    alignment: WrapAlignment.end,
-                    children: [
-                      // ValueListenableBuilder<ChatBotMessageEntities>(
-                      //   valueListenable: messageProvide.message,
-                      //   builder: (_, listMessages, child) {
-                      //     return Wrap(
-                      //       children: messageProvide.message.value.answer
-                      //           .map((message) => AnimatedTextKit(
-                      //                 // key: Key(message),
-                      //                 animatedTexts: [
-                      //                   TypewriterAnimatedText(
-                      //                     message,
-                      //                     textStyle: AppStyle
-                      //                         .textFieldTitleTextStyle
-                      //                         .copyWith(
-                      //                       color: AppColor.blackModern700Light,
-                      //                       fontFamily: GeneralKey.appFontType,
-                      //                     ),
-                      //                     speed:
-                      //                         const Duration(milliseconds: 50),
-                      //                   ),
-                      //                 ],
-                      //                 pause: const Duration(milliseconds: 100),
-                      //                 repeatForever: false,
-                      //                 isRepeatingAnimation: false,
-                      //                 totalRepeatCount: 2,
-                      //               ))
-                      //           .toList(),
-                      //     );
-                      //   },
-                      // ),
-                      ValueListenableBuilder<ChatBotMessageEntities>(
-                        valueListenable: messageProvide.message,
-                        builder: (_, listMessages, child) {
-                          return SelectableText(
-                            messageProvide.message.value.answer,
-                            style: AppStyle.textFieldTitleTextStyle.copyWith(
-                              color: AppColor.blackModern700Light,
-                            ),
-                          );
-                        },
+      child: Selector<MessageChatBotProvider, bool>(
+          selector: (_, provider) => provider.isLoading,
+          builder: (_, isLoading, __) {
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  ChatBotBubble(
+                    body: CustomTextWidget(
+                      messageProvide.message.value.question,
+                      // "\u0631,\u0631, \u0631,\u0631,\u0631, \u0631",
+                      textStyle: AppStyle.textFieldTitleTextStyle.copyWith(
+                        color: Colors.white,
                       ),
-
-                      Selector<MessageChatBotProvider, bool>(
-                        selector: (_, provider) => provider.isLoading,
-                        builder: (_, isLoading, __) {
-                          // provider.isLoading = isLoading;
-                          return isLoading
-                              ? const CustomCircularLoadingWidget()
-                              : messageProvide.message.value.haveError
-                                  ? CustomPrimaryButton(
-                                      onPressed: () {
-                                        messageProvide.sendQuestion(
-                                          messageProvide.message.value.question,
-                                        );
-                                      },
-                                      btnText: 'retry'.tr(),
-                                    )
-                                  : const SizedBox();
-                        },
-                      ),
-                    ],
+                      maxLines: 100,
+                    ),
+                    timeStamp: messageProvide.message.value.timeStampSend,
+                    // messageProvide.message.value,
                   ),
-                  timeStamp: messageProvide.message.value.timeStampReceived,
-                  isResponse: true,
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+                  isLoading
+                      ? const LoadingBubble()
+                      :
+                      ////////////////////////////////////////////////////////
+                      Selector<MessageChatBotProvider, StreamSubscription?>(
+                          selector: (_, provider) => provider.listen,
+                          builder: (_, listen, __) {
+                            // provider.isLoading = isLoading;
+                            return ChatBotBubble(
+                              body: Wrap(
+                                alignment: WrapAlignment.end,
+                                children: [
+                                  // ValueListenableBuilder<ChatBotMessageEntities>(
+                                  //   valueListenable: messageProvide.message,
+                                  //   builder: (_, listMessages, child) {
+                                  //     return Wrap(
+                                  //       children: messageProvide.message.value.answer
+                                  //           .map((message) => AnimatedTextKit(
+                                  //                 // key: Key(message),
+                                  //                 animatedTexts: [
+                                  //                   TypewriterAnimatedText(
+                                  //                     message,
+                                  //                     textStyle: AppStyle
+                                  //                         .textFieldTitleTextStyle
+                                  //                         .copyWith(
+                                  //                       color: AppColor.blackModern700Light,
+                                  //                       fontFamily: GeneralKey.appFontType,
+                                  //                     ),
+                                  //                     speed:
+                                  //                         const Duration(milliseconds: 50),
+                                  //                   ),
+                                  //                 ],
+                                  //                 pause: const Duration(milliseconds: 100),
+                                  //                 repeatForever: false,
+                                  //                 isRepeatingAnimation: false,
+                                  //                 totalRepeatCount: 2,
+                                  //               ))
+                                  //           .toList(),
+                                  //     );
+                                  //   },
+                                  // ),
+                                  ValueListenableBuilder<
+                                      ChatBotMessageEntities>(
+                                    valueListenable: messageProvide.message,
+                                    builder: (_, listMessages, child) {
+                                      return MessageChatText(
+                                          text: messageProvide
+                                              .message.value.answer);
+                                    },
+                                  ),
+
+                                  Selector<MessageChatBotProvider, bool>(
+                                    selector: (_, provider) =>
+                                        provider.isLoading,
+                                    builder: (_, isLoading, __) {
+                                      // provider.isLoading = isLoading;
+                                      return isLoading
+                                          ? const CustomCircularLoadingWidget()
+                                          : messageProvide
+                                                  .message.value.haveError
+                                              ? CustomPrimaryButton(
+                                                  onPressed: () {
+                                                    messageProvide.sendQuestion(
+                                                      messageProvide.message
+                                                          .value.question,
+                                                    );
+                                                  },
+                                                  btnText: 'retry'.tr(),
+                                                )
+                                              : const SizedBox();
+                                    },
+                                  ),
+                                ],
+                              ),
+                              timeStamp: messageProvide
+                                  .message.value.timeStampReceived,
+                              isResponse: true,
+                            );
+                          },
+                        ),
+                ],
+              ),
+            );
+          }),
     );
   }
 }
