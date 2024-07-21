@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
-import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
@@ -22,11 +21,11 @@ class MapControls extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Directionality(
+            const Directionality(
               textDirection: TextDirection.ltr,
               child: Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(
+                  padding: EdgeInsets.only(
                     left: 12,
                     top: 12,
                     right: 12,
@@ -34,28 +33,26 @@ class MapControls extends ConsumerWidget {
                   ),
                   child: Row(
                     children: [
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IndoorControl(),
                         ],
                       ),
-                      const Spacer(),
+                      Spacer(),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const LayersControl(),
-                          const SizedBox(height: 8),
-                          const TrafficControl(),
-                          const Spacer(),
-                          const ZoomControl(),
-                          const Spacer(),
-                          const CompassControl(),
-                          const SizedBox(height: 8),
-                          ComplianceBuildingLegend(),
-                          const SizedBox(height: 8),
-                          const FollowControl(
+                          LayersControl(),
+                          SizedBox(height: 8),
+                          TrafficControl(),
+                          Spacer(),
+                          ZoomControl(),
+                          Spacer(),
+                          CompassControl(),
+                          SizedBox(height: 8),
+                          FollowControl(
                             onlyFollowDirection: false,
                           ),
                         ],
