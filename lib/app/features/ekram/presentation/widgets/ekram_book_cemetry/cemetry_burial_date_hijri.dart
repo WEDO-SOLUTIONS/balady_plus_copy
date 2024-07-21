@@ -19,10 +19,9 @@ class CemetryBurialDateHijri extends StatelessWidget {
       return HijriCalendarDateWidget(
         minValue: HijriCalendar.fromDate(today),
         maxValue: HijriCalendar.fromDate(tomrrow),
-        currentVlaue:
-            state.burialDateHijri,
+        currentVlaue: state.burialDateHijri,
         fieldName:
-            Helpers.translatingWord("cemetry_deceassed_burial_date_hijri"),
+            "${Helpers.translatingWord("cemetry_deceassed_burial_date_hijri")} *",
         isMandatory: true,
         onChanged: (String? date) {
           print(date);

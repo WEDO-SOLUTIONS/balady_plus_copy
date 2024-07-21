@@ -16,13 +16,14 @@ class CemetryNationalDobHijri extends StatelessWidget {
       return HijriCalendarDateWidget(
         isDisabled: state.isBirthDateEnabled,
         currentVlaue: state.deceassedDOBHijri,
-        fieldName: Helpers.translatingWord("cemetry_dob_hijri"),
+        fieldName: "${Helpers.translatingWord("cemetry_dob_hijri")} *",
         isMandatory: true,
         onChanged: (String? date) {
           context
               .read<EkramBookCemetryBloc>()
               .add(ChangeNationalIdDob(hijriDate: date));
         },
+        maxValue: HijriCalendar.fromDate(DateTime.now()),
       );
     });
   }

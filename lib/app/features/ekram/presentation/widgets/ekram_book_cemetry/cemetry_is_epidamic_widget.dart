@@ -20,7 +20,7 @@ class CemetryIsEpidamicWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextWidget(
-              ("cemetry_deceassed_epidamic").tr(),
+              "${("cemetry_deceassed_epidamic").tr()} *",
               fontColor: AppColor.primary900Light,
               fontSize: 13.0,
               textAlign: TextAlign.start,

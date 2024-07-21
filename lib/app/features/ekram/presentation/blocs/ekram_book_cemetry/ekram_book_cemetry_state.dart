@@ -148,7 +148,7 @@ class EkramBookCemetryState extends Equatable {
     final Nullable<bool?>? isMuslim,
     final bool? isMuslimEnabled,
     final bool? isEpidamicEnabled,
-    final bool? isBirthDateEnabled,
+    final bool? isBirthDateDisabled,
     final Nullable<String?>? gender,
     final Nullable<String?>? firstName,
     final Nullable<String?>? secondName,
@@ -208,7 +208,7 @@ class EkramBookCemetryState extends Equatable {
         isMuslim: isMuslim == null ? this.isMuslim : isMuslim.value,
         isMuslimEnabled: isMuslimEnabled ?? this.isMuslimEnabled,
         isEpidamicEnabled: isEpidamicEnabled ?? this.isEpidamicEnabled,
-        isBirthDateEnabled: isBirthDateEnabled ?? this.isBirthDateEnabled,
+        isBirthDateEnabled: isBirthDateDisabled ?? isBirthDateEnabled,
         gender: gender == null ? this.gender : gender.value,
         firstName: firstName == null ? this.firstName : firstName.value,
         secondName: secondName == null ? this.secondName : secondName.value,
@@ -288,7 +288,9 @@ class EkramBookCemetryState extends Equatable {
           selectedCemetry == null ||
           selectedCemetryType == null ||
           selectedCountry == null ||
-          selectedNationality == null) {
+          selectedNationality == null ||
+          firstName == null ||
+          fourthName == null) {
         return false;
       }
 

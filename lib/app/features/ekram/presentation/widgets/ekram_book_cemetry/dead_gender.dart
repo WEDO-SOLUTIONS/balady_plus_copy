@@ -20,7 +20,7 @@ class DeadGenderWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextWidget(
-              ("sex").tr(),
+              "${("sex").tr()} *",
               fontColor: AppColor.blackModern700Light,
               fontSize: 17.0,
               textAlign: TextAlign.start,

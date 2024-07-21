@@ -89,12 +89,14 @@ class EkramBookCemetryBloc
         _getCountreies = GetCountreies(repository: sl()),
         _getEkramCities = GetEkramCities(repository: sl()),
         super(EkramBookCemetryState(
-            isMuslim: true,
-            isFetus: false,
-            isPandemicDeath: false,
-            fullName: CommonProperties.userInfo?.arName ?? "",
-            mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
-            requestType: trans("ekram_request_type"))) {
+          isMuslim: true,
+          isFetus: false,
+          isPandemicDeath: false,
+          fullName: CommonProperties.userInfo?.arName ?? "",
+          mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
+          requestType: trans("ekram_request_type"),
+          selectedCemetryType: LookUpItem(name: 'any_type'.tr(), id: 0),
+        )) {
     on<EkramBookCemetryEvent>((event, emit) {});
     on<ChangeAgreementEvent>(_changeAgreementHandler);
 
@@ -150,6 +152,32 @@ class EkramBookCemetryBloc
         thirdName: e.thirdName != null ? Nullable(e.thirdName) : null,
         fourthName: e.fourthName != null ? Nullable(e.fourthName) : null,
         errorMessage: ""));
+  }
+
+  String? validateNationalId(String? input) {
+    if (state.selectedNationalType?.id == 1) {
+      if (!(input?.startsWith("1") ?? false) || (input?.length ?? 0) < 10) {
+        return "wrong_input_data".tr();
+      } else {
+        return null;
+      }
+    } else if (state.selectedNationalType?.id == 3) {
+      if (!(input?.startsWith("2") ?? false) || (input?.length ?? 0) < 10) {
+        return "wrong_input_data".tr();
+      } else {
+        return null;
+      }
+    } else if (state.selectedNationalType?.id == 9 ||
+        state.selectedNationalType?.id == 10) {
+      if ((input?.startsWith("2") ?? false) ||
+          (input?.startsWith("1") ?? false) ||
+          (input?.length ?? 0) < 10) {
+        return "wrong_input_data".tr();
+      } else {
+        return null;
+      }
+    }
+    return null;
   }
 
   Future<void> _changeNationalityHandler(
@@ -249,7 +277,7 @@ class EkramBookCemetryBloc
       fourthName: Nullable(null),
       deceassedDOBGorgian: Nullable(null),
       deceassedDOBHijri: Nullable(null),
-      isBirthDateEnabled: false,
+      isBirthDateDisabled: false,
       isMuslim: Nullable(true),
       gender: Nullable(null),
     ));
@@ -352,7 +380,7 @@ class EkramBookCemetryBloc
       currentTime: DateTime.now(),
     );
 
-    String formatted = DateFormat("hh:mm").format(time!).toString();
+    String formatted = DateFormat("HH:mm").format(time!).toString();
     emitter(state.copyWith(
       otherTimeName: formatted,
     ));
@@ -430,6 +458,8 @@ class EkramBookCemetryBloc
       int? deathCountryId = success.data?.result?.deathInfo?.countryId;
       int? deathCityId = success.data?.result?.deathInfo?.cityId;
       bool? isPandemicDeath = success.data?.result?.deathInfo?.caseContagious;
+      String? deceasedDataSource =
+          success.data?.result?.deceasedInfo?.deceasedDataSource;
 
       if (birthDate != null) {
         add(ChangeNationalIdDob(hijriDate: birthDate));
@@ -464,7 +494,11 @@ class EkramBookCemetryBloc
           isMuslim: Nullable(isMuslim),
           isMuslimEnabled: isMuslim == null ? false : true,
           isEpidamicEnabled: isPandemicDeath == null ? false : true,
-          isBirthDateEnabled: birthDate == null ? false : true,
+          isBirthDateDisabled: deceasedDataSource == 'MANUALLY'
+              ? false
+              : birthDate == null
+                  ? false
+                  : true,
           deathCountryId: deathCountryId,
           deathCityId: deathCityId));
 
@@ -527,10 +561,11 @@ class EkramBookCemetryBloc
       return null;
     }, (success) {
       emit(state.copyWith(
-        status: BlocStatus.success,
-        countries: success.data?.result,
-        errorMessage: "",
-      ));
+          status: BlocStatus.success,
+          countries: success.data?.result,
+          errorMessage: "",
+          selectedCountry: success.data?.result
+              ?.firstWhere((value) => value.localCountry == true)));
       return success.data?.result;
     });
   }
@@ -692,7 +727,7 @@ class EkramBookCemetryBloc
       isPandemicDeath: state.isPandemicDeath!,
       relationship: state.relation,
       fetus: state.isFetus!,
-      graveTypeId: state.selectedCemetryType!.id! == 0
+      graveTypeId: state.selectedCemetryType!.id == 0
           ? null
           : state.selectedCemetryType!.id!,
       deathCountryId: state.selectedCountry!.id,
