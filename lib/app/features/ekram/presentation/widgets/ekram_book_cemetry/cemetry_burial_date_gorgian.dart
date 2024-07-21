@@ -22,7 +22,7 @@ class CemetryBurialDateGorgian extends StatelessWidget {
         maxValue: tomrrow,
         currentVlaue: state.burialDateGorgian,
         fieldName:
-            Helpers.translatingWord("cemetry_deceassed_burial_date_gorgian"),
+            "${Helpers.translatingWord("cemetry_deceassed_burial_date_gorgian")} *",
         isMandatory: true,
         onChanged: (String? date) {
           context

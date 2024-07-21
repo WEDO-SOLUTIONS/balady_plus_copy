@@ -20,7 +20,7 @@ class DeadReligionWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextWidget(
-              ("ekramReligion").tr(),
+              "${("ekramReligion").tr()} *",
               fontColor: AppColor.blackModern700Light,
               fontSize: 17.0,
               textAlign: TextAlign.start,

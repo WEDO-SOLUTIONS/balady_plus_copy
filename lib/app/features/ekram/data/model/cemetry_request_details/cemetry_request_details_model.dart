@@ -32,6 +32,10 @@ class CemetryRequestDetailsModel extends CemetryRequestDetails {
       super.deathCityId,
       super.deathCountryName,
       super.deathCountryId,
+      super.graveTypeName,
+      super.graveSizeName,
+      super.pandemic,
+      super.deceasedIdentityTypeName,
       super.burialCityName});
 
   factory CemetryRequestDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -46,7 +50,7 @@ class CemetryRequestDetailsModel extends CemetryRequestDetails {
           burialDateHijri: json["burialDateHijri"],
           prayId: json["prayId"],
           prayName: json["prayName"],
-          prayOther: json["prayOther"],
+          prayOther: json["burialTimeOther"],
           deceasedBirthdate: json["deceasedBirthdate"],
           deceasedBirthdateHijri: json["deceasedBirthdateHijri"],
           deceasedName: json["deceasedName"],
@@ -66,6 +70,10 @@ class CemetryRequestDetailsModel extends CemetryRequestDetails {
           deathCountryName: json["deathCountryName"],
           deathCityId: json["deathCityId"],
           deathCityName: json["deathCityName"],
+          graveTypeName: json["graveTypeName"],
+          graveSizeName: json["graveSizeName"],
+          pandemic: json["pandemic"],
+          deceasedIdentityTypeName: json["deceasedIdentityTypeName"],
           burialCityName: json["burialCityName"]);
 
   @override
