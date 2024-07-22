@@ -42,15 +42,15 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
 
   /// Special method to delete the item from the cache for home and work cards.
   /// Combines the logic of the [_onDeleteConfirmation] and [_onDelete] methods.
-  void _deleteItem(FavouriteItem? item, BuildContext context) {
+  Future<void> _deleteItem(FavouriteItem? item, BuildContext context) async {
     if (item == null) {
       return;
     }
-    _onDeleteConfirmation(item, context).then((value) {
-      if (value == true) {
-        _onDelete(item);
-      }
-    });
+    final result = await _onDeleteConfirmation(item, context);
+
+    if (result == true) {
+      _onDelete(item);
+    }
   }
 
   /// Pure function to delete the item from the cache

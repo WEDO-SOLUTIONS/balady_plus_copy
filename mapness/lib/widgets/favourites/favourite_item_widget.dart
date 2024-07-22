@@ -158,13 +158,12 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
           ),
           PopupMenuItem<bool>(
             padding: EdgeInsets.zero,
-            onTap: () {
+            onTap: () async {
               if (widget.onDeleteConfirmation != null) {
-                widget.onDeleteConfirmation?.call().then((value) {
-                  if (value == true) {
-                    widget.onDelete?.call();
-                  }
-                });
+                final result = await widget.onDeleteConfirmation?.call();
+                if (result == true) {
+                  widget.onDelete?.call();
+                }
               } else {
                 widget.onDelete?.call();
               }
