@@ -58,7 +58,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
               ));
 
     if (isMarkerPositionIsNull) {
-      return null;
+      return;
     }
 
     final markerPoint = GeoPointMessage(
