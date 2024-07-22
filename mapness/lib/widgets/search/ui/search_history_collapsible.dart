@@ -29,7 +29,7 @@ class SearchHistoryCollapsible extends ConsumerStatefulWidget {
 
 class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryCollapsible> {
   bool _collapsed = true;
-  static const radius = Radius.circular(RadiusBorder.xl);
+
   @override
   Widget build(BuildContext context) {
     final hasManyResults = widget.history.length > 10;
@@ -47,7 +47,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
               return AppDismissible(
                 isFirst: isFirst,
                 isLast: isLastItem,
-                onDismiss: () =>  widget.onDelete(widget.history[index]),
+                onDismiss: () => widget.onDelete(widget.history[index]),
                 elementKey: ValueKey(widget.history[index].hashKey),
                 child: Material(
                   color: context.color.surfaceBaseSecondary,
@@ -110,7 +110,9 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
           ],
           if (!_collapsed)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.verticalPaddingInsideCell),
+              padding: const EdgeInsets.symmetric(
+                vertical: Spacing.$3x,
+              ),
               child: Row(
                 children: [
                   Expanded(
