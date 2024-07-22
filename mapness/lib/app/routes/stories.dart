@@ -10,11 +10,20 @@ part 'stories.g.dart';
 @TypedGoRoute<StoriesRoute>(
   path: '/stories',
 )
+
+/// Represents a route for displaying stories.
+///
+/// Example usage:
+/// ```dart
+///   StoriesRoute.openOnboarding(context);
+///   StoriesRoute.openById(context, storyId: 'storyId');
+/// ```
 class StoriesRoute extends GoRouteData {
   const StoriesRoute();
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
+  /// Opens a route story in the app.
   static void openRoute(
     BuildContext context, {
     VoidCallback? onClose,
@@ -28,6 +37,7 @@ class StoriesRoute extends GoRouteData {
     );
   }
 
+  /// Opens a story by ID in the app.
   static void openById(
     BuildContext context, {
     required String storyId,
@@ -41,6 +51,7 @@ class StoriesRoute extends GoRouteData {
     );
   }
 
+  /// Opens the onboarding story in the app.
   static void openOnboarding(
     BuildContext context, {
     VoidCallback? onClose,
@@ -54,6 +65,7 @@ class StoriesRoute extends GoRouteData {
     );
   }
 
+  /// Opens a story in the app.
   static void _open(
     BuildContext context,
     StoryTypes type, {

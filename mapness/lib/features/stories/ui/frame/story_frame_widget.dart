@@ -10,6 +10,7 @@ import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
 import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/ui/frame_progress_indicator.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -25,12 +26,13 @@ class StoryFrameWidget extends StatefulWidget {
   final int frameLength;
   final int duration;
   final StoryFrameController? controller;
-
+  final StoryTypes type;
   final VoidCallback onNext;
   final VoidCallback onPrevious;
 
   const StoryFrameWidget({
     required this.duration,
+    required this.type,
     required this.frame,
     required this.frameIndex,
     required this.frameLength,
@@ -52,6 +54,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
     colorTheme: context.colorsV2,
     textTheme: context.textStyleV3,
   );
+  late final StoryArgsProvider storyArgs = StoryArgsProvider.of(context);
 
   late DateTime _lastTap = DateTime.now();
 
@@ -79,8 +82,9 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
 
     _progress = Tween<double>(begin: 0, end: 1).animate(_controller);
     _frame = widget.frame;
-
-    _progress.addListener(_onProgressListener);
+    if (widget.type != StoryTypes.onboarding) {
+      _progress.addListener(_onProgressListener);
+    }
 
     if (_frame.isAssetImage == true) {
       _imageLoaded();
@@ -180,13 +184,18 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            FrameProgressIndicator(
-                              onClose: StoryArgsProvider.of(context).onClose,
-                              frameIndex: widget.frameIndex,
-                              framesLength: widget.frameLength,
-                              animation: _progress,
-                              thumbnailTheme: storyTheme.thumbnailTheme,
-                            ),
+                            if (storyArgs.type != StoryTypes.onboarding)
+                              FrameProgressIndicator(
+                                onClose: StoryArgsProvider.of(context).onClose,
+                                frameIndex: widget.frameIndex,
+                                framesLength: widget.frameLength,
+                                animation: _progress,
+                                thumbnailTheme: storyTheme.thumbnailTheme,
+                              )
+                            else
+                              const SizedBox(
+                                height: kToolbarHeight,
+                              ),
                             SizedBox(
                               width: contraints.maxWidth,
                               child: StoryFrameContent(

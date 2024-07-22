@@ -7,6 +7,7 @@ import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/frame/story_frame_widget.dart';
+import 'package:mapness/features/stories/ui/story_args_provider.dart';
 
 class StoryFramesPlayer extends ConsumerStatefulWidget {
   final StoryFrameController? controller;
@@ -93,6 +94,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       controller: widget.controller,
       key: Key(story.storyId + currentIndex.toString()),
       frame: currentFrame,
+      type: StoryArgsProvider.of(context).type,
       onNext: () => _nextPage(story.storyId, currentIndex, frames.length),
       onPrevious: () => _previousPage(story.storyId, currentIndex),
       duration: currentFrame.duration,

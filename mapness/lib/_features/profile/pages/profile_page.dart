@@ -217,12 +217,6 @@ class ProfilePage extends ConsumerWidget {
                       child: AppButton(
                     primaryLabel: 'Test',
                     onTap: () {
-                      // st.Stories.showOnboarding(
-                      //   context,
-                      //   StoryTypes.onboarding,
-                      //   'onboarding',
-                      //   onActionShowNextHistory: false,
-                      // );
                       StoriesRoute.openOnboarding(context);
                     },
                     buttonColorScheme: ButtonColorScheme.primary,
