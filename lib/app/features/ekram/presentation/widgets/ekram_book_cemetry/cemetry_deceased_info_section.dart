@@ -386,7 +386,7 @@ class _CemetryDeceasedInfoSectionState
                         label: "${("cemetry_type").tr()} *",
                         hint: ("cemetry_type").tr(),
                       ),
-                      NotesWidget(notes: ["ekram_org_note".tr()]),
+                      NotesWidget(notes: ["cemeteries_displayed".tr()]),
                       CustomLookUpLongDialog(
                         items: state.cemetries ?? [],
                         value: state.selectedCemetry,
