@@ -129,7 +129,7 @@ class NewAppointmentViewModel extends BaseViewModel {
   LookUpList? specialConditionTypeList;
   List<VisitType>? appointmentTypeList;
 
-  List<AttachmentsConfig>? attachmentConfigList;
+  List<AttachmentsConfig>? attachmentConfigList = [];
   String? realEstateSurveyId;
   String? realEstateId;
   String? realEstateRequestId;

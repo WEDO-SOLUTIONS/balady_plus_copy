@@ -51,7 +51,7 @@ class _AppointmentAttachmentSectionState
             physics: NeverScrollableScrollPhysics(),
             itemCount: model.lstAttachmentConfig!.length,
             itemBuilder: (ctx, index) {
-              return  BookAppointmentAttachmentsWidgetNew(attachmentName: model.lstAttachmentConfig?[index].name,
+              return  BookAppointmentAttachmentsWidgetNew(attachmentName: model.lstAttachmentConfig?[index].name,isMandatory:model.lstAttachmentConfig?[index].mandatory,
                 saveFile: (String filePath, String fileName, Uint8List base64) {
                   model.saveAttachment(filePath, fileName, base64,model.lstAttachmentConfig?[index].id);
                   // setState(() {});
@@ -78,6 +78,7 @@ class _AppointmentAttachmentSectionState
                 showDelete: model.attachmentsList[index].updatable == true,
                 onDelete: () {
                   model.deleteAttachment(index);
+                  model.validateForm();
                   setState(() {});
                 },
                 fileName: model.attachmentsList[index].attachmentFileName ?? "",
@@ -94,6 +95,7 @@ class _AppointmentAttachmentSectionState
 
 class BookAppointmentAttachmentsWidgetNew extends StatelessWidget {
   final String? attachmentName;
+  final bool? isMandatory;
   //final String? fileName;
   final Function(String filePath, String fileName, Uint8List stream) saveFile;
 
@@ -101,13 +103,14 @@ class BookAppointmentAttachmentsWidgetNew extends StatelessWidget {
 
   const BookAppointmentAttachmentsWidgetNew({
      this.attachmentName,
-    // this.fileName,
+    required this.isMandatory,
     required this.saveFile,
-    //  required this.deleteFile,
   });
 
   @override
   Widget build(BuildContext context) {
+    NewAppointmentFirstStepViewModel model =
+    Provider.of<NewAppointmentFirstStepViewModel>(context, listen: true);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -115,6 +118,8 @@ class BookAppointmentAttachmentsWidgetNew extends StatelessWidget {
 
         ElevatedIconButtonWidget.upload(
           name: attachmentName,
+          isMandatory:isMandatory,
+          model:model,
           onPressed: () async {
             FileDataItem? file = await CommonFunctions.pickFile(context);
             if (file != null) {

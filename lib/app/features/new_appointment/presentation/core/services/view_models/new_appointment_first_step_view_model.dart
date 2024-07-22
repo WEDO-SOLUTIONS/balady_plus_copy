@@ -25,6 +25,8 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
 
   NewAppointmentFirstStepViewModel(
       {required this.withPreviousTransaction, required this.isDraft}) {
+    dataModel.attachmentConfigList = [];
+
     locator<NewAppointmentViewModel>().withPreviousTransaction =
         withPreviousTransaction;
     if (isDraft == false) locator<NewAppointmentViewModel>().init();
@@ -345,12 +347,40 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         }*/
       }
 
+      var value =checkAttachmentValidation();
+      if(value != null && isValid==true) {
+        isValid = value;
+      }
+
+
       if (isFormValid != isValid) {
         isFormValid = isValid;
         notifyListeners();
       }
     } catch (ex) {}
     notifyListeners();
+  }
+
+
+  bool? checkAttachmentValidation(){
+    bool? isValide=true;
+    if(lstAttachmentConfig != null) {
+      for (var index = 0; index < lstAttachmentConfig!.length; index++) {
+        if (lstAttachmentConfig![index].mandatory == true) {
+          var lst = attachmentsList.where((attachment) =>
+          attachment.attachmentId == lstAttachmentConfig![index].id);
+          if (lst.isEmpty) {
+            isValide = false;
+          }
+        }
+      }
+    }
+    else
+      {
+        isValide=null;
+      }
+
+   return isValide;
   }
 
   void init() {
@@ -446,6 +476,7 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
     bool isSuccess = false;
 
     isSuccess = await dataModel.uploadFile(base64, fileName, filePath,attachmentId);
+    validateForm();
     notifyListeners();
 
   }
