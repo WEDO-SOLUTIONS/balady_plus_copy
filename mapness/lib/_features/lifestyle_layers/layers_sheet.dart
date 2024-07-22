@@ -111,6 +111,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                           child: Column(
                             children: [
                               TabsRow.v2(
+                                initialIndex: _notifierIndexLayersTab.value,
                                 tabsContent: [
                                   TabsRowV2Content(title: context.l10n.lifestyle),
                                   TabsRowV2Content(title: context.l10n.business),
