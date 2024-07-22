@@ -30,9 +30,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
 
     final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen!);
 
-    const horizontalPadding = PoiCardMapControls.horizontalPadding +
-        Markers.defaultWidth +
-        MapButton.defaultSize;
+    const horizontalPadding = PoiCardMapControls.horizontalPadding + Markers.defaultWidth + MapButton.defaultSize;
 
     final paddingConfig = PoiPaddingConfig(
       paddingOfCamera: EdgeInsets.only(
@@ -40,9 +38,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
         right: horizontalPadding,
         top: Markers.defaultHeight + (safeArea?.top ?? 0),
         // Calculate the bottom padding for the camera, use multiplier to calculate the padding
-        bottom: (PoiCardMapControls.bottomPadding +
-                sheetSizes.collapsedHeight * 1.5) +
-            10,
+        bottom: (PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5) + 10,
       ),
       sizeOfScreen: sizeOfScreen,
     );
@@ -67,25 +63,18 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     );
 
     // Get viewports: visible (whole screen) and tappable (area of the screen where marker will not overlap on other elements)
-    final visibleRect = ref
-        .read(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .value
-        ?.visibleRect;
+    final visibleRect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect;
     final tappableRect = _getRectWithPaddings(visibleRect, paddingConfig);
 
     // Check if point is in viewport
-    final isInViewZone =
-        await _isInViewZone(visibleRect, dgisController, markerPoint);
+    final isInViewZone = await _isInViewZone(visibleRect, dgisController, markerPoint);
 
     // Check if point is in tappable zone
-    final isInTappableZone =
-        await _isInViewZone(tappableRect, dgisController, markerPoint);
+    final isInTappableZone = await _isInViewZone(tappableRect, dgisController, markerPoint);
 
     final cameraHaveToBeMoved = isInViewZone && !isInTappableZone;
 
-    final cameraData = ref.read(cameraPositionProvider) ??
-        await dgisController.value?.getCameraPosition();
+    final cameraData = ref.read(cameraPositionProvider) ?? await dgisController.value?.getCameraPosition();
 
     final cameraZoom = cameraData?.zoom;
     final point = cameraData?.point;
@@ -94,26 +83,22 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
 
     if (cameraHaveToBeMoved && newPoint != null) {
       // If tapped point is to the left than min longitude => move right
-      final distFromMarkerToTapZoneLeft =
-          tappableRect!.southWestLon - markerPoint.longitude;
+      final distFromMarkerToTapZoneLeft = tappableRect!.southWestLon - markerPoint.longitude;
       if (distFromMarkerToTapZoneLeft > 0) {
         newPoint.longitude -= distFromMarkerToTapZoneLeft;
       }
       // If tapped point is higher then max latitude => move down
-      final distFromMarkerToTapZoneTop =
-          markerPoint.latitude - tappableRect.northEastLat;
+      final distFromMarkerToTapZoneTop = markerPoint.latitude - tappableRect.northEastLat;
       if (distFromMarkerToTapZoneTop > 0) {
         newPoint.latitude += distFromMarkerToTapZoneTop;
       }
       // If tapped point is to right then max longitude => move left
-      final distFromMarkerToTapZoneRight =
-          markerPoint.longitude - tappableRect.northEastLon;
+      final distFromMarkerToTapZoneRight = markerPoint.longitude - tappableRect.northEastLon;
       if (distFromMarkerToTapZoneRight > 0) {
         newPoint.longitude += distFromMarkerToTapZoneRight;
       }
       // If tapped point is lower then min latitude => move up
-      final distFromMarkerToTapZoneBottom =
-          tappableRect.southWestLat - markerPoint.latitude;
+      final distFromMarkerToTapZoneBottom = tappableRect.southWestLat - markerPoint.latitude;
       if (distFromMarkerToTapZoneBottom > 0) {
         newPoint.latitude -= distFromMarkerToTapZoneBottom;
       }
@@ -122,10 +107,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     // If point is in view zone, we do nothing or we slightly move to point of the camera if needed
     // Else we animate to marker point (we will see the marker on the screen and the camera will be centered on it)
     // If you want to center the map, you must pass the zoom value to PoiCameraConfig
-    final cameraPoint =
-        isInViewZone && newPoint != null && cameraConfig?.zoom == null
-            ? newPoint
-            : markerPoint;
+    final cameraPoint = isInViewZone && newPoint != null && cameraConfig?.zoom == null ? newPoint : markerPoint;
 
     // Act like 2GIS app: if point is in view zone, we do:
     // a) slightly animate to point if it's not in tappable zone but in view zone
@@ -145,14 +127,10 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
   }
 
   Future<bool> _isInViewZone(
-          VisibleRect? rect,
-          AsyncValue<DgisMapController> dgisController,
-          GeoPointMessage markerPoint) async =>
-      rect != null &&
-      await dgisController.value!.contains(rect.geoRectMessage(), markerPoint);
+          VisibleRect? rect, AsyncValue<DgisMapController> dgisController, GeoPointMessage markerPoint) async =>
+      rect != null && await dgisController.value!.contains(rect.geoRectMessage(), markerPoint);
 
-  VisibleRect? _getRectWithPaddings(
-      VisibleRect? rect, PoiPaddingConfig? paddingConfig) {
+  VisibleRect? _getRectWithPaddings(VisibleRect? rect, PoiPaddingConfig? paddingConfig) {
     if (rect == null) {
       return null;
     }
