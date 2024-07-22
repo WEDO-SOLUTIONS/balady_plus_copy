@@ -68,7 +68,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                 leading: ActionModel(
                   text: context.l10n.back,
                   onPressed: () => context.pop(),
-                  icon: context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge,
+                  icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                 ),
               ),
               body: _isLoading
