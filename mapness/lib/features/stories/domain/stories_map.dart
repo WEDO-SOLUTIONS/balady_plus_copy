@@ -145,6 +145,7 @@ class StoriesMap {
               titleLocaleKey: 'about_routes',
               backgroundColor: AppColor.white,
               horizontalPadding: 24,
+              verticalPadding: 24,
               textStyle: StoryTextStyle(
                 color: DefaultColors.neutral990,
               ),
@@ -176,6 +177,7 @@ class StoriesMap {
               titleLocaleKey: 'balady_features',
               backgroundColor: AppColor.white,
               horizontalPadding: 24,
+              verticalPadding: 24,
               textStyle: StoryTextStyle(
                 color: DefaultColors.neutral990,
               ),
@@ -206,6 +208,7 @@ class StoriesMap {
               titleLocaleKey: 'get_started',
               backgroundColor: AppColor.white,
               horizontalPadding: 24,
+              verticalPadding: 24,
               textStyle: StoryTextStyle(
                 color: DefaultColors.neutral990,
               ),

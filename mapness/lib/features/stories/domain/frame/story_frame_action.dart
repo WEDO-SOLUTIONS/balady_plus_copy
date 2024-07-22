@@ -8,6 +8,7 @@ sealed class StoryFrameAction {
   final Color? backgroundColor;
   final StoryAction? action;
   final double? horizontalPadding;
+  final double? verticalPadding;
 
   const StoryFrameAction({
     required this.deeplinkUrl,
@@ -15,6 +16,7 @@ sealed class StoryFrameAction {
     this.backgroundColor,
     this.action,
     this.horizontalPadding,
+    this.verticalPadding,
   });
 }
 
@@ -27,11 +29,13 @@ class VerbatimStoryFrameAction extends StoryFrameAction {
     required StoryTextStyle textStyle,
     Color? backgroundColor,
     StoryAction? action,
+    double? verticalPadding,
   }) : super(
           deeplinkUrl: deeplinkUrl,
           textStyle: textStyle,
           backgroundColor: backgroundColor,
           action: action,
+          verticalPadding: verticalPadding,
         );
 }
 
@@ -45,12 +49,14 @@ class LocaleKeyFrameAction extends StoryFrameAction {
     Color? backgroundColor,
     StoryAction? action,
     double? horizontalPadding,
+    double? verticalPadding,
   }) : super(
           deeplinkUrl: deeplinkUrl,
           textStyle: textStyle,
           backgroundColor: backgroundColor,
           action: action,
           horizontalPadding: horizontalPadding,
+          verticalPadding: verticalPadding,
         );
 }
 

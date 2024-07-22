@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
@@ -36,21 +37,24 @@ class Stories {
 
   static void showStory(BuildContext context, Widget storyWidget) {
     _overlayEntry = OverlayEntry(
-      builder: (_) => StoryLocalizations(
-        locale: context.l10n,
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: ProviderScope(
-            child: Theme(
-              data: Theme.of(context),
-              child: Consumer(
-                builder: (context, ref, child) => DismissibleTransition(
-                  key: _transitionState,
-                  onDismiss: () {
-                    ref.read(storyServiceProvider.notifier).resumeUpdate();
-                    _hide();
-                  },
-                  child: storyWidget,
+      builder: (_) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: StoryLocalizations(
+          locale: context.l10n,
+          child: Directionality(
+            textDirection: Directionality.of(context),
+            child: ProviderScope(
+              child: Theme(
+                data: Theme.of(context),
+                child: Consumer(
+                  builder: (context, ref, child) => DismissibleTransition(
+                    key: _transitionState,
+                    onDismiss: () {
+                      ref.read(storyServiceProvider.notifier).resumeUpdate();
+                      _hide();
+                    },
+                    child: storyWidget,
+                  ),
                 ),
               ),
             ),
