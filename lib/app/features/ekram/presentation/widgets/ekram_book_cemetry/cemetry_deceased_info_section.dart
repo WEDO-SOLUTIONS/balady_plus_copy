@@ -222,8 +222,7 @@ class _CemetryDeceasedInfoSectionState
                         ),*/
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
-                        isDisbaled:
-                            state.selectedNationality != null ? true : false,
+                        isDisbaled: !state.isNationalityEnables,
                         items: state.nationalities ?? [],
                         value: state.selectedNationality,
                         onEmptyList: () async {

@@ -30,6 +30,7 @@ class EkramBookCemetryState extends Equatable {
   final bool isEpidamicEnabled;
   //depend on the object coming form the backend
   final bool isBirthDateEnabled;
+  final bool isNationalityEnables;
 
   final bool? agreement;
   final String? fullName;
@@ -111,7 +112,8 @@ class EkramBookCemetryState extends Equatable {
       this.deathCities,
       this.selectedCountry,
       this.selectedDeathCity,
-      this.otherDeathCity});
+      this.otherDeathCity,
+      this.isNationalityEnables = true});
 
   EkramBookCemetryState copyWith({
     final BlocStatus? status,
@@ -149,6 +151,7 @@ class EkramBookCemetryState extends Equatable {
     final bool? isMuslimEnabled,
     final bool? isEpidamicEnabled,
     final bool? isBirthDateDisabled,
+    final bool? isNationalityEnables,
     final Nullable<String?>? gender,
     final Nullable<String?>? firstName,
     final Nullable<String?>? secondName,
@@ -224,7 +227,9 @@ class EkramBookCemetryState extends Equatable {
         deathCities: deathCities ?? this.deathCities,
         selectedCountry: selectedCountry ?? this.selectedCountry,
         selectedDeathCity: selectedDeathCity ?? this.selectedDeathCity,
-        otherDeathCity: otherDeathCity ?? this.otherDeathCity);
+        otherDeathCity: otherDeathCity ?? this.otherDeathCity,
+        isNationalityEnables: isNationalityEnables ?? this.isNationalityEnables
+        );
   }
 
   @override

@@ -506,6 +506,7 @@ class EkramBookCemetryBloc
               : birthDate == null
                   ? false
                   : true,
+          isNationalityEnables: nationality == null ? true : false,
           deathCountryId: deathCountryId,
           deathCityId: deathCityId));
 
