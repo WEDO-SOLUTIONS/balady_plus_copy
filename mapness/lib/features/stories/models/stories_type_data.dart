@@ -4,27 +4,27 @@ import 'package:mapness/features/stories/models/story_frame_data.dart';
 
 import 'package:mapness/features/stories/models/story_types.dart';
 
-sealed class StoryTypeData {
+sealed class StoryTypedData {
   final List<StoryData> stories;
   final StoryTypes type;
 
-  const StoryTypeData({
+  const StoryTypedData({
     required this.stories,
     required this.type,
   });
 
-  factory StoryTypeData.fromFile(String file) {
+  factory StoryTypedData.fromFile(String file) {
     final type = StoryTypes.fromFile(file);
     assert(type != null, 'Invalid story type. Must be one of ${StoryTypes.values}');
-    return StoryTypeData.fromType(type!);
+    return StoryTypedData.fromType(type!);
   }
-  factory StoryTypeData.fromType(StoryTypes type) => switch (type) {
+  factory StoryTypedData.fromType(StoryTypes type) => switch (type) {
         StoryTypes.onboarding => OnboardingStoryData(),
         StoryTypes.route => RouteStoryData(),
       };
 }
 
-class RouteStoryData extends StoryTypeData {
+class RouteStoryData extends StoryTypedData {
   RouteStoryData()
       : super(
           type: StoryTypes.route,
@@ -53,7 +53,7 @@ class RouteStoryData extends StoryTypeData {
         );
 }
 
-class OnboardingStoryData extends StoryTypeData {
+class OnboardingStoryData extends StoryTypedData {
   OnboardingStoryData()
       : super(type: StoryTypes.onboarding, stories: [
           const StoryData(

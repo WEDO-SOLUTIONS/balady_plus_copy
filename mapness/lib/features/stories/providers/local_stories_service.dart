@@ -10,7 +10,7 @@ part 'local_stories_service.g.dart';
 class LocalStoriesService extends _$LocalStoriesService {
   @override
   Future<List<StoryData>> build(String file) async {
-    final networkStories = StoryTypeData.fromFile(file).stories;
+    final networkStories = StoryTypedData.fromFile(file).stories;
 
     final stories = networkStories;
 

@@ -12,7 +12,7 @@ class StoryFrameContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final locales = StoryTexts.fromId(l10n, frame.storyId);
+    final locales = StoryFrameTexts.fromId(l10n, frame.storyId);
     final storyTheme = frame.themeFromId(
       colorTheme: context.colorsV2,
       textTheme: context.textStyleV3,

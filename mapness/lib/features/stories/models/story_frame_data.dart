@@ -49,8 +49,8 @@ class StoryFrameData {
   }) =>
       StoryFrameThemeData.fromId(storyId, colorTheme: colorTheme, textTheme: textTheme);
 
-  StoryTexts textFromId({
+  StoryFrameTexts textFromId({
     required AppLocalizations l10n,
   }) =>
-      StoryTexts.fromId(l10n, storyId);
+      StoryFrameTexts.fromId(l10n, storyId);
 }

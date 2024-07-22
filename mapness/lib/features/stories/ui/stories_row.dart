@@ -42,7 +42,7 @@ class StoriesRow extends StatelessWidget {
                     final story = stories[i];
                     return Stories(
                       key: ValueKey(story.storyId),
-                      title: StoryTexts.thumbnailTextFromType(
+                      title: StoryFrameTexts.thumbnailTextFromType(
                         context.l10n,
                         StoryArgsProvider.of(context).type,
                       ),

@@ -1,18 +1,18 @@
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
-class StoryTexts {
+class StoryFrameTexts {
   final String title;
   final String? subTitle;
   final String? description;
 
-  StoryTexts({
+  StoryFrameTexts({
     required this.title,
     this.description,
     this.subTitle,
   });
 
-  factory StoryTexts.fromId(AppLocalizations l10n, String id) => StoryTexts(
+  factory StoryFrameTexts.fromId(AppLocalizations l10n, String id) => StoryFrameTexts(
         title: _titleFromId(l10n, id),
         subTitle: l10n.theShortestRoute,
         description: _descriptionFromId(l10n, id),

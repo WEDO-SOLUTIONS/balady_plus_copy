@@ -21,7 +21,7 @@ class StoriesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final storyData = StoryTypeData.fromType(type);
+    final storyData = StoryTypedData.fromType(type);
     void _onClose() {
       onClose?.call();
       ref.read(storyServiceProvider.notifier).resumeUpdate();
