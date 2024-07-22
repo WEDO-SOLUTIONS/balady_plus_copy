@@ -181,7 +181,7 @@ class EkramBookCemetryBloc
       } else {
         return null;
       }
-    } else if ((input?.length ?? 0) < 10 || (input?.length ?? 0) > 10) {
+    } else if ((input?.length ?? 0) > 10) {
       return "wrong_input_data".tr();
     }
     return null;
