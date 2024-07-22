@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/dismissible/app_dismissible.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 
 class SearchHistoryCollapsible extends ConsumerStatefulWidget {
@@ -28,7 +29,7 @@ class SearchHistoryCollapsible extends ConsumerStatefulWidget {
 
 class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryCollapsible> {
   bool _collapsed = true;
-
+  static const radius = Radius.circular(RadiusBorder.xl);
   @override
   Widget build(BuildContext context) {
     final hasManyResults = widget.history.length > 10;
@@ -42,32 +43,12 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
             padding: EdgeInsets.zero,
             itemBuilder: (context, index) {
               final isLastItem = index == widget.history.length - 1;
-
-              return Dismissible(
-                key: ValueKey(widget.history[index].hashKey),
-                onDismissed: (direction) {
-                  widget.onDelete(widget.history[index]);
-                },
-                background: Container(
-                  padding: const EdgeInsets.all(Spacing.$4x),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: NonThemeColor.color50,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.filled(
-                      2,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Text(
-                          context.l10n.delete,
-                          style: context.textStyle.footNote.copyWith(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              final isFirst = index == 0;
+              return AppDismissible(
+                isFirst: isFirst,
+                isLast: isLastItem,
+                onDismiss: () =>  widget.onDelete(widget.history[index]),
+                elementKey: ValueKey(widget.history[index].hashKey),
                 child: Material(
                   color: context.color.surfaceBaseSecondary,
                   borderRadius: BorderRadius.vertical(

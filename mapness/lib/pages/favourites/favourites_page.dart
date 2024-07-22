@@ -352,18 +352,18 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                   separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (_, index) {
                     final item = state.items[index];
-                    const radius = Radius.circular(12);
+                    const radius = Radius.circular(RadiusBorder.l);
                     return Container(
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
-                          color: context.color.surfaceBaseSecondary,
-                          borderRadius: BorderRadius.only(
-                            topLeft: index == 0 ? radius : Radius.zero,
-                            topRight: index == 0 ? radius : Radius.zero,
-                            bottomLeft: index == state.items.length - 1 ? radius : Radius.zero,
-                            bottomRight: index == state.items.length - 1 ? radius : Radius.zero,
-                          )),
+                        color: context.color.surfaceBaseSecondary,
+                        borderRadius: BorderRadius.vertical(
+                          top: index == 0 ? radius : Radius.zero,
+                          bottom: index == state.items.length - 1 ? radius : Radius.zero,
+                        ),
+                      ),
                       child: FavouriteItemWidget(
+                        key: ValueKey(item.id),
                         isFirst: index == 0,
                         isLast: index == state.items.length - 1,
                         isSelected: selectedItems.containsKey(item.id),
