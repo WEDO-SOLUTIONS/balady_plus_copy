@@ -1,8 +1,8 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 
-class StoryRefreshButton extends StatelessWidget {
-  const StoryRefreshButton({required this.onPressed, super.key});
+class RefreshButton extends StatelessWidget {
+  const RefreshButton({required this.onPressed, super.key});
   final VoidCallback onPressed;
 
   @override
