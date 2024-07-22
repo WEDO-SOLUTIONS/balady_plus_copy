@@ -156,13 +156,17 @@ class EkramBookCemetryBloc
 
   String? validateNationalId(String? input) {
     if (state.selectedNationalType?.id == 1) {
-      if (!(input?.startsWith("1") ?? false) || (input?.length ?? 0) < 10) {
+      if (!(input?.startsWith("1") ?? false) ||
+          (input?.length ?? 0) < 10 ||
+          (input?.length ?? 0) > 10) {
         return "wrong_input_data".tr();
       } else {
         return null;
       }
     } else if (state.selectedNationalType?.id == 3) {
-      if (!(input?.startsWith("2") ?? false) || (input?.length ?? 0) < 10) {
+      if (!(input?.startsWith("2") ?? false) ||
+          (input?.length ?? 0) < 10 ||
+          (input?.length ?? 0) > 10) {
         return "wrong_input_data".tr();
       } else {
         return null;
@@ -171,11 +175,14 @@ class EkramBookCemetryBloc
         state.selectedNationalType?.id == 10) {
       if ((input?.startsWith("2") ?? false) ||
           (input?.startsWith("1") ?? false) ||
-          (input?.length ?? 0) < 10) {
+          (input?.length ?? 0) < 10 ||
+          (input?.length ?? 0) > 10) {
         return "wrong_input_data".tr();
       } else {
         return null;
       }
+    } else if ((input?.length ?? 0) < 10 || (input?.length ?? 0) > 10) {
+      return "wrong_input_data".tr();
     }
     return null;
   }
