@@ -16,6 +16,7 @@ class FavouriteItemWidget extends StatefulWidget {
   final bool? isSelected;
   final Function(bool value)? onSelect;
   final VoidCallback? onDelete;
+  final Future<bool?> Function()? onDeleteConfirmation;
   final VoidCallback? onRouteTap;
   final VoidCallback? onShareTap;
   final bool isFirst;
@@ -28,6 +29,7 @@ class FavouriteItemWidget extends StatefulWidget {
     required this.isFirst,
     required this.isLast,
     required super.key,
+    this.onDeleteConfirmation,
     this.isDeletable = true,
     this.onSelect,
     this.isSelected,
@@ -55,6 +57,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
       isLast: widget.isLast,
       isDismissibleEnabled: isDismissibleEnabled,
       onDismiss: () => widget.onDelete?.call(),
+      confirmDismiss: widget.onDeleteConfirmation != null ? (_) async => widget.onDeleteConfirmation?.call() : null,
       child: Row(
         key: Key(widget.item.id),
         children: [
@@ -71,6 +74,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
             child: Listener(
               onPointerDown: _onPointerDown,
               child: InkWell(
+                borderRadius: BorderRadius.circular(RadiusBorder.l),
                 onTap: _onTap,
                 onLongPress: _onLongPress,
                 child: ContentRow(
@@ -154,7 +158,17 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
           ),
           PopupMenuItem<bool>(
             padding: EdgeInsets.zero,
-            onTap: () => widget.onDelete?.call(),
+            onTap: () {
+              if (widget.onDeleteConfirmation != null) {
+                widget.onDeleteConfirmation?.call().then((value) {
+                  if (value == true) {
+                    widget.onDelete?.call();
+                  }
+                });
+              } else {
+                widget.onDelete?.call();
+              }
+            },
             child: PopupMenuWidget(
               titleStyle: context.textStyle.text.copyWith(
                 color: color.textAndIconsStatusNegative,

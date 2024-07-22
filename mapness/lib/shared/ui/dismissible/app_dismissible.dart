@@ -21,6 +21,9 @@ class AppDismissible extends StatelessWidget {
   /// Callback when the Dismissible is dismissed. Works only when [isDismissibleEnabled] is true
   final VoidCallback onDismiss;
 
+  /// Callback for confirming the dismiss action. Works only when [isDismissibleEnabled] is true
+  final Future<bool?> Function(DismissDirection)? confirmDismiss;
+
   const AppDismissible({
     required this.elementKey,
     required this.isFirst,
@@ -28,6 +31,7 @@ class AppDismissible extends StatelessWidget {
     required this.child,
     required this.onDismiss,
     this.isDismissibleEnabled = true,
+    this.confirmDismiss,
     super.key,
   });
 
@@ -35,6 +39,7 @@ class AppDismissible extends StatelessWidget {
   Widget build(BuildContext context) => isDismissibleEnabled
       ? Dismissible(
           direction: DismissDirection.endToStart,
+          confirmDismiss: confirmDismiss,
           movementDuration: const Duration(milliseconds: 300),
           key: elementKey,
           onDismissed: (_) => onDismiss(),
