@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
+import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
+import 'package:mapness/features/stories/models/story_localization.dart';
 import 'package:mapness/features/stories/models/story_thumbnail_data.dart';
 import 'package:mapness/features/stories/models/story_typedefs.dart';
 
@@ -20,6 +22,7 @@ extension NetworkStoryMapper on NetworkStory {
 extension NetworkStoryPreviewMapper on NetworkStoryPreview {
   StoryThumbnailData toDomain() => StoryThumbnailData(
         imageUrl: image.url,
+        title: title,
       );
 }
 
@@ -29,6 +32,16 @@ extension NetworkStoryFrameMapper on NetworkStoryFrame {
         storyId: storyId,
         action: actionButton.toDomain(),
         duration: duration,
+        networkTheme: NetworkStoryThemeData(
+          titleColor: style.title.color.toDomain(),
+          descriptionColor: style.description.color.toDomain(),
+          actionbackgroundColor: actionButton.style.backgroundColor.toDomain(),
+          actionTextColor: actionButton.style.textStyle.color.toDomain(),
+        ),
+        networkTexts: StoryFrameTexts(
+          title: title,
+          description: description,
+        ),
       );
 }
 

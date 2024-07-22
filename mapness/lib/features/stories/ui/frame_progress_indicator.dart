@@ -1,6 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/features/stories/models/story_fame_theme_data.dart';
+import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
 
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -40,21 +40,21 @@ class FrameProgressIndicator extends AnimatedWidget {
   List<Widget> get _framesIndicators => List<Widget>.generate(
         framesLength,
         (index) {
-          Widget clipRrect({required double progress}) => ClipRRect(
+          Widget clipRRect({required double progress}) => ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: LinearProgressIndicator(value: progress),
               );
 
-          Widget child = clipRrect(progress: 0);
+          Widget child = clipRRect(progress: 0);
 
           if (index == frameIndex) {
             child = AnimatedBuilder(
               animation: _progress,
-              builder: (_, __) => clipRrect(progress: _progress.value),
+              builder: (_, __) => clipRRect(progress: _progress.value),
             );
           }
           if (index < frameIndex) {
-            child = clipRrect(progress: 1);
+            child = clipRRect(progress: 1);
           }
 
           return Expanded(child: child);

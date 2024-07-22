@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
-import 'package:mapness/shared/ui/buttons/story_refresh_button.dart';
+import 'package:mapness/shared/ui/buttons/refresh_button.dart';
 
 class LoadingImage extends ConsumerStatefulWidget {
   final String imageUrl;

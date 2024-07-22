@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:hive/hive.dart';
-import 'package:mapness/features/stories/mappers/network_story_mapper.dart';
+import 'package:mapness/features/stories/data/mappers/network_story_mapper.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/providers/stories_repo.dart';
 import 'package:mapness/shared/providers/hive.dart';
@@ -29,8 +29,7 @@ class StoryService extends _$StoryService {
   }
 
   List<StoryData> syncronizeWatcheness(List<StoryData> stories) {
-    final map = _viewedStories.toMap();
-    final watchStored = map.map((key, value) => MapEntry(key as String, value as int));
+    final watchStored = Map<String, int>.of(_viewedStories.toMap() as Map<String, int>);
 
     final updatedStories = stories.map(
       (story) {
@@ -68,11 +67,11 @@ class StoryService extends _$StoryService {
 
     _viewedStories = await ref.watch(hiveProvider('storiesBox').future);
 
-    final stories = syncronizeWatcheness(networkStories);
+    // final stories = networkStories;
 
     return [
-      ...stories.where((element) => !element.isViewed),
-      ...stories.where((element) => element.isViewed),
+      ...networkStories.where((element) => !element.isViewed),
+      ...networkStories.where((element) => element.isViewed),
     ].toList();
   }
 }

@@ -28,6 +28,19 @@ class StoriesRoute extends GoRouteData {
     );
   }
 
+  static void openById(
+    BuildContext context, {
+    required String storyId,
+    VoidCallback? onClose,
+  }) {
+    _open(
+      context,
+      StoryTypes.network,
+      onClose: onClose,
+      initialStoryId: storyId,
+    );
+  }
+
   static void openOnboarding(
     BuildContext context, {
     VoidCallback? onClose,

@@ -12,12 +12,10 @@ import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/features/stories/ui/story_frames_player.dart';
 
 class StoriesFullscreen extends ConsumerStatefulWidget {
-  final VoidCallback onClose;
   final String initialStoryId;
 
   const StoriesFullscreen({
     required this.initialStoryId,
-    required this.onClose,
     super.key,
   });
 
@@ -85,16 +83,26 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
       return;
     }
     if (page <= -1 || page >= _maxPages) {
-      widget.onClose();
+      _onClose();
     }
 
     _currentPage = page;
     _currentPageNotifier.value = _currentPage;
   }
 
+  Future<List<StoryData>> _loadStories(StoryTypes type) async {
+    if (type == StoryTypes.network) {
+      return ref.read(storyServiceProvider.future);
+    }
+    if (type.file == null) {
+      return [];
+    }
+    return ref.read(localStoriesServiceProvider(type.file!).future);
+  }
+
   Future<List<StoryData>> _initStories(BuildContext context) async {
     final type = StoryArgsProvider.of(context).type;
-    final List<StoryData> stories = await ref.read(localStoriesServiceProvider(type.file).future);
+    final List<StoryData> stories = await _loadStories(type);
 
     final index = stories.indexWhere(
       (element) => element.storyId == widget.initialStoryId,
@@ -108,7 +116,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
 
   void _nextStory() {
     if (_currentPage + 1 >= _maxPages) {
-      widget.onClose();
+      _onClose();
       return;
     }
     _indexController.next(animation: false);
@@ -116,10 +124,14 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
 
   void _previousStory() {
     if (_currentPage - 1 < 0) {
-      widget.onClose();
+      _onClose();
       return;
     }
     _indexController.previous(animation: false);
+  }
+
+  void _onClose() {
+    StoryArgsProvider.of(context).onClose();
   }
 
   @override
@@ -138,25 +150,18 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
             return const SizedBox.shrink();
           }
           final stories = snapshot.data ?? const [];
-          final textDirection = Directionality.of(context);
-          return Material(
-            color: context.color.surfaceBaseInversePrimary,
-            child: Directionality(
-              textDirection: textDirection,
-              child: ValueListenableBuilder(
-                valueListenable: _currentPageNotifier,
-                builder: (context, page, _) => TransformerPageView(
-                  onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
-                  index: page,
-                  controller: _indexController,
-                  itemCount: stories.length,
-                  itemBuilder: (context, index) => StoryFramesPlayer(
-                    controller: _storyFrameController,
-                    story: stories[index],
-                    onNextStory: _nextStory,
-                    onPreviousStory: _previousStory,
-                  ),
-                ),
+          return ValueListenableBuilder(
+            valueListenable: _currentPageNotifier,
+            builder: (_, page, __) => TransformerPageView(
+              onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
+              index: page,
+              controller: _indexController,
+              itemCount: stories.length,
+              itemBuilder: (_, index) => StoryFramesPlayer(
+                controller: _storyFrameController,
+                story: stories[index],
+                onNextStory: _nextStory,
+                onPreviousStory: _previousStory,
               ),
             ),
           );

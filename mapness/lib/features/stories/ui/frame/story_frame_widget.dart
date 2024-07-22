@@ -6,11 +6,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
-import 'package:mapness/features/stories/models/story_fame_theme_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
-import 'package:mapness/features/stories/models/story_localization.dart';
+import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
 import 'package:mapness/features/stories/ui/frame_progress_indicator.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -144,128 +143,133 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
   }
 
   @override
-  Widget build(BuildContext context) => Material(
-        color: storyTheme.backgroundColor,
-        child: SafeArea(
-          child: Directionality(
-            textDirection: Directionality.of(context),
-            child: LayoutBuilder(
-                builder: (context, contraints) => SizedBox.fromSize(
-                      size: contraints.biggest,
-                      child: ColoredBox(
-                        color: storyTheme.backgroundColor,
-                        child: Stack(
-                          children: [
-                            if (storyTheme.gradientColor != null)
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: SizedBox(
-                                  height: MediaQuery.sizeOf(context).height / 2,
-                                  width: double.infinity,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      gradient: RadialGradient(
-                                        radius: 1,
-                                        center: Alignment.topLeft,
-                                        colors: [
-                                          storyTheme.gradientColor!,
-                                          storyTheme.backgroundColor,
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            Column(
-                              children: [
-                                FrameProgressIndicator(
-                                  onClose: StoryArgsProvider.of(context).onClose,
-                                  frameIndex: widget.frameIndex,
-                                  framesLength: widget.frameLength,
-                                  animation: _progress,
-                                  thumbnailTheme: storyTheme.thumbnailTheme,
-                                ),
-                                SizedBox(
-                                  width: contraints.maxWidth,
-                                  child: StoryFrameContent(
-                                    frame: widget.frame,
-                                  ),
-                                ),
-                                if (widget.frame.imageUrl != null)
-                                  Expanded(
-                                    child: LoadingImage(
-                                      isAssetImg: widget.frame.isAssetImage,
-                                      onImageReady: _imageLoaded,
-                                      imageUrl: widget.frame.imageUrl!,
-                                      fit: BoxFit.cover,
-                                      loadingWidget: Container(
-                                        color: storyTheme.backgroundColor,
-                                        child: Center(
-                                          child: Loading.large(
-                                            style: Brightness.light,
-                                            orientation: Axis.vertical,
-                                            title: context.l10n.loading,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
+  Widget build(BuildContext context) => SafeArea(
+        child: LayoutBuilder(
+            builder: (context, contraints) => SizedBox.fromSize(
+                  size: contraints.biggest,
+                  child: ColoredBox(
+                    color: storyTheme.backgroundColor,
+                    child: Stack(
+                      children: [
+                        if (widget.frame.imageUrl != null && widget.frame.fullscreenImage)
+                          Positioned.fill(
+                            child: _buildImage(
+                              title: context.l10n.loading,
                             ),
-
-                            /// left right click handlers
-                            if (!_isLoading)
-                              Padding(
-                                padding: const EdgeInsets.only(top: kToolbarHeight),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 3,
-                                      child: GestureDetector(
-                                        onTapDown: _onTapDown,
-                                        onTapUp: (_) => _onTapUp(_onPrevious),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 7,
-                                      child: GestureDetector(
-                                        onTapDown: _onTapDown,
-                                        onTapUp: (_) => _onTapUp(_onNext),
-                                      ),
-                                    ),
-                                  ],
+                          ),
+                        if (storyTheme.gradientColor != null)
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: SizedBox(
+                              height: contraints.maxHeight / 2,
+                              width: double.infinity,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: RadialGradient(
+                                    radius: 1,
+                                    center: Alignment.topLeft,
+                                    colors: [
+                                      storyTheme.gradientColor!,
+                                      const Color(0x00FFFFFF),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            if (widget.frame.action != null)
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Container(
-                                    width: contraints.maxWidth,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: storyTheme.actionTheme.horizontalPadding,
-                                      vertical: Spacing.$4x,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        stops: const [0, 0.5, 1],
-                                        colors: [
-                                          storyTheme.backgroundColor.withOpacity(0),
-                                          storyTheme.backgroundColor,
-                                          storyTheme.backgroundColor,
-                                        ],
-                                      ),
-                                    ),
-                                    child: StoryFrameActionButton(
-                                      actionTheme: storyTheme.actionTheme,
-                                      action: widget.frame.action!,
-                                    )),
+                            ),
+                          ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FrameProgressIndicator(
+                              onClose: StoryArgsProvider.of(context).onClose,
+                              frameIndex: widget.frameIndex,
+                              framesLength: widget.frameLength,
+                              animation: _progress,
+                              thumbnailTheme: storyTheme.thumbnailTheme,
+                            ),
+                            SizedBox(
+                              width: contraints.maxWidth,
+                              child: StoryFrameContent(
+                                frame: widget.frame,
+                              ),
+                            ),
+                            if (widget.frame.imageUrl != null && !widget.frame.fullscreenImage)
+                              Expanded(
+                                child: _buildImage(
+                                  title: context.l10n.loading,
+                                ),
                               ),
                           ],
                         ),
-                      ),
-                    )),
+                        if (!_isLoading)
+                          Padding(
+                            padding: const EdgeInsets.only(top: kToolbarHeight),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: GestureDetector(
+                                    onTapDown: _onTapDown,
+                                    onTapUp: (_) => _onTapUp(_onPrevious),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 7,
+                                  child: GestureDetector(
+                                    onTapDown: _onTapDown,
+                                    onTapUp: (_) => _onTapUp(_onNext),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (widget.frame.action != null)
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                                width: contraints.maxWidth,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: storyTheme.actionTheme.horizontalPadding,
+                                  vertical: Spacing.$4x,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: storyTheme.actionTheme.hasGradient
+                                      ? LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          stops: const [0, 0.5, 1],
+                                          colors: [
+                                            storyTheme.backgroundColor.withOpacity(0),
+                                            storyTheme.backgroundColor,
+                                            storyTheme.backgroundColor,
+                                          ],
+                                        )
+                                      : null,
+                                ),
+                                child: StoryFrameActionButton(
+                                  actionTheme: storyTheme.actionTheme,
+                                  action: widget.frame.action!,
+                                )),
+                          ),
+                      ],
+                    ),
+                  ),
+                )),
+      );
+
+  LoadingImage _buildImage({required String title}) => LoadingImage(
+        isAssetImg: widget.frame.isAssetImage,
+        onImageReady: _imageLoaded,
+        imageUrl: widget.frame.imageUrl!,
+        fit: BoxFit.cover,
+        loadingWidget: Container(
+          color: storyTheme.backgroundColor,
+          child: Center(
+            child: Loading.large(
+              style: Brightness.light,
+              orientation: Axis.vertical,
+              title: title,
+            ),
           ),
         ),
       );

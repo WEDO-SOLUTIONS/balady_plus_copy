@@ -4,6 +4,7 @@ import 'package:mapness/features/stories/models/story_frame_data.dart';
 
 import 'package:mapness/features/stories/models/story_types.dart';
 
+/// Represents the base class for different types of story data.
 sealed class StoryTypedData {
   final List<StoryData> stories;
   final StoryTypes type;
@@ -13,19 +14,25 @@ sealed class StoryTypedData {
     required this.type,
   });
 
+  /// Creates a [StoryTypedData] instance based on the given file.
+
   factory StoryTypedData.fromFile(String file) {
     final type = StoryTypes.fromFile(file);
     assert(type != null, 'Invalid story type. Must be one of ${StoryTypes.values}');
     return StoryTypedData.fromType(type!);
   }
+
+  /// Creates a [StoryTypedData] instance based on the given type.
   factory StoryTypedData.fromType(StoryTypes type) => switch (type) {
-        StoryTypes.onboarding => OnboardingStoryData(),
-        StoryTypes.route => RouteStoryData(),
+        StoryTypes.onboarding => const OnboardingStoryData(),
+        StoryTypes.route => const RouteStoryData(),
+        StoryTypes.network => const NetworkStoryData(),
       };
 }
 
+/// Represents the story data for the [StoryTypes.route] type.
 class RouteStoryData extends StoryTypedData {
-  RouteStoryData()
+  const RouteStoryData()
       : super(
           type: StoryTypes.route,
           stories: const [
@@ -53,15 +60,17 @@ class RouteStoryData extends StoryTypedData {
         );
 }
 
+/// Represents the story data for the [StoryTypes.onboarding] type.
 class OnboardingStoryData extends StoryTypedData {
-  OnboardingStoryData()
-      : super(type: StoryTypes.onboarding, stories: [
-          const StoryData(
+  const OnboardingStoryData()
+      : super(type: StoryTypes.onboarding, stories: const [
+          StoryData(
             storyId: 'onboarding0',
             frames: [
               StoryFrameData(
                 storyId: 'onboarding1',
                 imageUrl: 'assets/images/route_story_1.png',
+                isAssetImage: true,
                 action: NavigationFrameAction(
                   location: '/bottomNavBar/routing',
                   localeKey: 'build_route',
@@ -70,6 +79,8 @@ class OnboardingStoryData extends StoryTypedData {
               StoryFrameData(
                 storyId: 'onboarding2',
                 imageUrl: 'assets/images/test_oboarding.png',
+                fullscreenImage: false,
+                isAssetImage: true,
                 action: NavigationFrameAction(
                   location: '/bottomNavBar/routing',
                   localeKey: 'build_route',
@@ -78,6 +89,8 @@ class OnboardingStoryData extends StoryTypedData {
               StoryFrameData(
                 storyId: 'onboarding3',
                 imageUrl: 'assets/images/test_oboarding.png',
+                fullscreenImage: false,
+                isAssetImage: true,
                 action: NavigationFrameAction(
                   location: '/bottomNavBar/services',
                   localeKey: 'open_services',
@@ -86,4 +99,13 @@ class OnboardingStoryData extends StoryTypedData {
             ],
           ),
         ]);
+}
+
+/// Represents the story data for the [StoryTypes.network] type.
+class NetworkStoryData extends StoryTypedData {
+  const NetworkStoryData()
+      : super(
+          type: StoryTypes.network,
+          stories: const [],
+        );
 }

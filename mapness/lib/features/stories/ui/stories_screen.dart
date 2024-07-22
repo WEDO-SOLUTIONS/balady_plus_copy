@@ -32,9 +32,11 @@ class StoriesScreen extends ConsumerWidget {
       type: type,
       onClose: _onClose,
       child: Material(
-        child: StoriesFullscreen(
-          initialStoryId: initialStoryId ?? storyData.stories.first.storyId,
-          onClose: _onClose,
+        child: Directionality(
+          textDirection: Directionality.of(context),
+          child: StoriesFullscreen(
+            initialStoryId: initialStoryId ?? storyData.stories.first.storyId,
+          ),
         ),
       ),
     );

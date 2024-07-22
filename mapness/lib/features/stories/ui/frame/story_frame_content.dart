@@ -10,12 +10,12 @@ class StoryFrameContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
-    final locales = StoryFrameTexts.fromId(l10n, frame.storyId);
     final storyTheme = frame.themeFromId(
       colorTheme: context.colorsV2,
       textTheme: context.textStyleV3,
+    );
+    final texts = frame.textFromId(
+      l10n: context.l10n,
     );
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: storyTheme.horizontalPadding),
@@ -24,18 +24,18 @@ class StoryFrameContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            locales.title,
+            texts.title,
             style: storyTheme.titleStyle,
           ),
-          if (locales.subTitle != null)
+          if (texts.subTitle != null)
             Text(
-              locales.subTitle!,
+              texts.subTitle!,
               style: storyTheme.titleStyle,
             ),
           const SizedBox(height: 12),
-          if (locales.description != null)
+          if (texts.description != null)
             Text(
-              locales.description!,
+              texts.description!,
               style: storyTheme.descriptionStyle,
             ),
           if (frame.additionalContent != null) ...frame.additionalContent!(context),

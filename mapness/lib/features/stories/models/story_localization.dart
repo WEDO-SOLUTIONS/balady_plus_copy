@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -37,4 +38,15 @@ class StoryFrameTexts {
       };
   static String thumbnailTextFromType(AppLocalizations l10n, StoryTypes type) =>
       type == StoryTypes.route ? 'Route' : 'Onboarding';
+
+  StoryFrameTexts copyWith({
+    String? title,
+    String? subTitle,
+    String? description,
+  }) =>
+      StoryFrameTexts(
+        title: title ?? this.title,
+        subTitle: subTitle ?? this.subTitle,
+        description: description ?? this.description,
+      );
 }
