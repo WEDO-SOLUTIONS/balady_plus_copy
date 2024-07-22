@@ -41,6 +41,8 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     final state = ref.watch(layersControlsProvider);
     final direction = ref.watch(uiDirectionProvider);
 
+    final controlsBottomExtent = MediaQuery.of(context).size.height * .5;
+
     return Scaffold(
       body: Stack(
         alignment: Alignment.bottomCenter,
@@ -49,7 +51,9 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
             color: context.staticColor.surfaceOverlayModal,
             child: GestureDetector(onTap: context.pop),
           ),
-          const controls.MapControls(),
+          controls.MapControls(
+            bottomExtent: controlsBottomExtent,
+          ),
           DraggableScrollableSheet(
             controller: _draggableScrollableController,
             minChildSize: 0,
