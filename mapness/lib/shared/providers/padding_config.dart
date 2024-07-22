@@ -39,7 +39,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
         right: horizontalPadding,
         top: Markers.defaultHeight + (safeArea?.top ?? 0),
         // Calculate the bottom padding for the camera, use multiplier to calculate the padding
-        bottom: PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5,
+        bottom: (PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5) + 10,
       ),
       sizeOfScreen: sizeOfScreen,
     );
