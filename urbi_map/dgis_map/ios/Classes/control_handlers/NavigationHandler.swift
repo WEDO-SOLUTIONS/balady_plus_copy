@@ -309,6 +309,29 @@ class NavigationHandler {
         navigationManager.stop()
         resetCamera()
     }
+    
+    func saveNavigationState(completion: @escaping (FlutterStandardTypedData?, FlutterError?) -> Void) {
+        let state = PackedNavigationState.fromModel(model: self.navigationManager.uiModel)
+        completion(
+            .init(bytes: state.toBytes()),
+            nil
+        )
+    }
+    
+    func restoreNavigationState(state bytes: FlutterStandardTypedData, completion: @escaping (FlutterError?) -> Void) {
+        do {
+            let state = try PackedNavigationState.fromBytes(data: bytes.data)
+//            self.navigationManager.uiModel.
+            completion(nil)
+        } catch {
+            completion(FlutterError(
+                code: "NavigationError",
+                message: error.localizedDescription,
+                details: nil
+            ))
+            return
+        }
+    }
 
     func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
         do {
