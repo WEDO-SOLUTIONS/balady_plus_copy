@@ -8,10 +8,7 @@ import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_control
 import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
 import 'package:mapness/_features/debug_overlay/widgets/sso_credential_view.dart';
 import 'package:mapness/_features/debug_overlay/widgets/voice_picker.dart';
-import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/features/stories/domain/story_types.dart';
-import 'package:mapness/features/stories/stories.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
@@ -195,19 +192,6 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const BetterRouteSettingsWidget(),
                   const DebugNavigationControll(),
                   const ColorschemeToggler(),
-                  LabeledElevatedButton(
-                    onPressed: () {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        Stories.showOnboarding(
-                          rootNavigatorKey.currentContext!,
-                          StoryTypes.onboarding,
-                          'onboarding',
-                          onActionShowNextHistory: true,
-                        );
-                      });
-                    },
-                    label: 'Show onboarding',
-                  ),
                 ],
               ),
             ),
