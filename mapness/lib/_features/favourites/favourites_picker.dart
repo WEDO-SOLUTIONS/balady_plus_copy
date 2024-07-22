@@ -117,6 +117,7 @@ class FavouritesPicker extends ConsumerWidget {
                             padding:
                                 index == (state.items.length - 1) ? const EdgeInsets.only(bottom: 8) : EdgeInsets.zero,
                             child: FavouriteItemWidget(
+                              key: ValueKey(item.id),
                               onTap: () => context.pop(item),
                               isEditing: false,
                               isDeletable: false,
