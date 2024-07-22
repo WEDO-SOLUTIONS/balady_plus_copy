@@ -22,6 +22,16 @@ class SearchHistory extends ConsumerWidget {
 
     final search = ref.watch(searchHistoryProvider(scope.value).notifier);
 
+    // Sort the history by createdAt. If we delete this sorting, elements will be sorted by the order of
+    // insertion and in reverse order. For example, the last searched element will be the last element in the list.
+    // Also if the user has the previous version of the app, the history will be sorted by the order of insertion but
+    // the main priority of sorting is by [createdAt] for the new requests.
+    // Current version for this sort: 4.2.2
+    //
+    // If you want ot delete this method please:
+    // 1. Test the app with the previous and current version of the app
+    // 2. Search for some places and look how the history is sorted.
+    // Is it sorted by the order of insertion or by [createdAt]? Is it fit the product requirements?
     history.sort((a, b) {
       final aCreated = a.createdAt;
       final bCreated = b.createdAt;
