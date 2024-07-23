@@ -532,6 +532,562 @@ class DgisMapController {
   /// Does not apply filters immediately. Resets inner state.
   void resetCurrentEvergisFiltersState() => _evergisFilters.clear();
 
+  ///Set Public Transport Active Route
+  Future<void> setPublicTransportActiveRoute(int routeIndex) {
+    return _instance.setPublicTransportActiveRoute(routeIndex);
+  }
+
+  Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos({
+    required RouteSearchOptionsMessage options,
+    RouteSearchPointMessage? startPoint,
+    RouteSearchPointMessage? finishPoint,
+  }) {
+    return _instance.findBriefRouteInfos(
+      options,
+      startPoint,
+      finishPoint,
+    );
+  }
+
+  ///toggle heatmap
+  Future<bool> toggleHeatmap({required WeatherMapMessage message}) => _instance.toggleHeatmap(message);
+
+  ///list packages
+  Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
+
+  ///List voices
+  Future<List<PackageMessage?>> listVoices() => _instance.listVoices();
+
+  ///Install package
+  Future<void> installPackage(String id) => _instance.installPackage(id);
+
+  ///Install voice
+  Future<void> installVoice(String id) => _instance.installVoice(id);
+
+  ///Set navigator voice
+  Future<void> setNavigato  DgisMapController(this._viewId);
+
+  final int _viewId;
+
+  final _evergisFilters = <dynamic>[];
+  final _instance = DgisMapPlugin();
+
+  /// Zoom controls availability
+  Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents => _instance.zoomControlEnabledEvents;
+
+  /// Compass bearing
+  Stream<CompassBearingEvent> get compassBearingEvents => _instance.compassBearingEvents;
+
+  /// Location control availability
+  Stream<LocationEnabledEvent> get locationEnabledEvents => _instance.locationEnabledEvents;
+
+  /// Location follow state
+  Stream<LocationFollowType> get locationFollowEvents =>
+      _instance.locationFollowEvents.map((event) => event.followType);
+
+  /// Names of indoor levels if any. Empty if there are no available levels.
+  Stream<IndoorLevelsEvent> get indoorLevelNames => _instance.indoorLevelNames;
+
+  /// Getting the IndoorLevelNames latest record values from a stream
+  IndoorLevelsEvent? get lastIndoorLevelNames => _instance.lastIndoorLevelNames;
+
+  /// Getting the IndoorActiveLevel latest record values from a stream
+  IndoorActiveLevelEvent? get lastIndoorActiveLevel => _instance.lastIndoorActiveLevel;
+
+  /// Selected indoor level index in [IndoorLevelsEvent::levelNames] list
+  Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _instance.indoorActiveIndex;
+
+  /// Map tap events for all types of objects, that do not have specific stream
+  /// (e.g. [markerWithPhotoTapEvents])
+  Stream<TapEvent> get objectTapEvents => _instance.objectTapEvents;
+
+  /// User taps route when there are several of them available.
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents => _instance.activeRouteChangedEvents;
+
+  /// Available routes update.
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents => _instance.routesInfoChangedEvents;
+
+  // Better route availability update.
+  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents => _instance.betterRouteInfoEvents;
+
+  /// Events during navigation.
+  Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
+
+  /// Events of visible rect changes.
+  Stream<VisibleRectEvent> get visibleRectEvents => _instance.visibleRectEvents;
+
+  /// Events of camera position changes.
+  Stream<CameraPositionMessage> get cameraPositionEvents => _instance.cameraPositionEvents;
+
+  /// Events of camera state changes.
+  Stream<CameraStateEvent> get cameraStateEvents => _instance.cameraStateEvents;
+
+  /// Tap events for panorama markers.
+  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents => _instance.markerWithPhotoTapEvents;
+
+  Stream<PublicTransportRoutesChangedEvent> get publicTransportRoutesChangedEvents =>
+      _instance.publicTransportRoutesChangedEvents;
+
+  Stream<PublicTransportActiveRouteChanged> get publicTransportActiveRouteChangedEvents =>
+      _instance.publicTransportActiveRouteChangedEvents;
+
+  Stream<PackageProgressEvent> get packageProgressEvents => _instance.packageProgressEvents;
+
+  Stream<PackageInfoChangedEvent> get packagesInfoChangedEvents => _instance.packageInfoChangedEvents;
+
+  late NaviSpeedController naviSpeedController = NaviSpeedController(
+    _instance.naviSpeedEvents.asBroadcastStream(),
+  );
+
+  late NaviMessageController naviMessageController = NaviMessageController(
+    _instance.naviMessageEvents.asBroadcastStream(),
+  );
+
+  late NaviManeuverController naviManeuverController = NaviManeuverController(
+    _instance.naviManeuverEvents.asBroadcastStream(),
+  );
+
+  late NaviCompassController naviCompassController = NaviCompassController(
+    _instance.compassBearingEvents.asBroadcastStream(),
+    _instance.onCompassClicked,
+  );
+
+  late NaviZoomController naviZoomController = NaviZoomController(
+    _instance.zoomControlEnabledEvents.asBroadcastStream(),
+    _instance.onZoomAction,
+  )..init();
+
+  late NaviTrafficParkingController naviTrafficParkingController = NaviTrafficParkingController(
+    parkingStateEvents: _instance.parkingStateEvents.asBroadcastStream(),
+    trafficStateEvents: _instance.trafficStateEvents.asBroadcastStream(),
+    onAttached: _instance.onTrafficAndParkingAttached,
+    onDetached: _instance.onTrafficAndParkingDetached,
+    onTrafficClicked: _instance.onTrafficClicked,
+    onParkingClicked: _instance.onParkingClicked,
+    setParkingFilter: (filter) => _instance.setMapAttributeString(
+      NaviTrafficParkingController.parkingFilterAttribute,
+      filter.attributeValue,
+    ),
+  );
+
+  late NaviFreeRoamController freeRoamController = NaviFreeRoamController(
+    _instance.navigationEvents,
+    start: _instance.startFreeRoam,
+    stop: _instance.stopFreeRoam,
+  );
+
+  Stream<NaviDashboardEvent> get naviDashboardEvents => _instance.naviDashboardEvents;
+
+  Stream<RouteOptionsEvent> get routeOptionEvents => _instance.routeOptionsEvent;
+
+  /// Must be called **once** when controller becomes avalilable to initialize plugin.
+  Future<InitializeMessage> initialize() async => _instance.initialize(_viewId);
+
+  Future<void> dispose() async {
+    naviZoomController.dispose();
+    await _instance.dispose();
+  }
+
+  /// Load map styles from asset.
+  Future<void> loadStyles(String asset) async => _instance.loadStyles(asset);
+
+  /// Override locale for map. Uses string format "en-US", "ar-SA".
+  Future<void> overrideLocales(List<String> locales) => _instance.overrideLocales(locales);
+
+  /// Changes state of location follow. Observe state listening to [locationFollowEvents].
+  Future<void> toggleFollowState() => _instance.toggleFollowState();
+
+  /// Changes state of location follow in navigation mode.
+  Future<void> followNavigation() => _instance.followNavigation();
+
+  /// Changes selected indoor level. Observe state listening to [indoorActiveIndex].
+  Future<void> selectIndoorLevel(IndoorLevel level) => _instance.selectIndoorLevel(level.levelIndex);
+
+  /// Changes map camera position immediately without animation.
+  Future<void> setCameraPosition(CameraPositionMessage cameraPosition) => _instance.setCameraPosition(cameraPosition);
+
+  /// Changes map camera position point
+  Future<void> setCameraPositionPoint(CameraPositionPointMessage cameraPosition) =>
+      _instance.setCameraPositionPoint(cameraPosition);
+
+  /// Changes map camera padding immediately without animation.
+  Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding) => _instance.setCameraPadding(cameraPadding);
+
+  /// Smoothly changes camera positions
+  Future<void> moveCamera(
+      CameraPositionMessage cameraPosition, double duration, CameraAnimationTypeMessage animationType) =>
+      _instance.moveCamera(cameraPosition, duration, animationType);
+
+  /// Calcluates camera position for rpute in navigation mode
+  Future<CameraPositionMessage> calcPositionForRoute(CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForRoute(options);
+
+  /// Calcluates camera position for given list of markers to be visible
+  Future<CameraPositionMessage> calcPositionForMarkers(List<String> markers, CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForMarkers(markers, options);
+
+  /// Calcluates camera position for given list of polygons to be visible
+  Future<CameraPositionMessage> calcPositionForPolygons(List<String> polygons, CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForPolygons(polygons, options);
+
+  /// Calcluates camera position for given list of polylines to be visible
+  Future<CameraPositionMessage> calcPositionForPolylines(List<String> polylines, CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForPolylines(polylines, options);
+
+  /// Returns map camera position.
+  Future<CameraPositionMessage> getCameraPosition() => _instance.getCameraPosition();
+
+  /// Returns nearest objects to camera position.
+  Future<List<RenderedObjectMessage>> getNearestObjects() => _instance.getNearestObjects();
+
+  Future<void> setPanoramasPaddings({
+    int left = 0,
+    int top = 0,
+    int right = 0,
+    int bottom = 0,
+  }) =>
+      _instance.setPanoramasPaddings(
+        CameraSetPaddingMessage(
+          leftPadding: left,
+          topPadding: top,
+          rightPadding: right,
+          bottomPadding: bottom,
+        ),
+      );
+
+  /// Center camera on selected panorama marker.
+  Future<void> moveCameraToSelectedPanorama() => _instance.moveCameraToSelectedPanorama();
+
+  /// Resets selected panorama.
+  Future<void> unselectPanorama() => _instance.unselectPanorama();
+
+  /// Set panomara marker to follow user's sight on 360° panorama.
+  Future<void> setPanoramaMarkerAzimuth(double degree) =>
+      _instance.setPanoramaMarkerAzimuth(MarkerAzimuthMessage(degree: degree));
+
+  /// Returns directory object info by it's id.
+  Future<DirectoryObjectMessage> searchByObjectId(DgisObjectIdMessage objectId) => _instance.searchByObjectId(objectId);
+
+  /// Returns distance in meters from current location to every point in [points] list.
+  /// Works offline. Doesn't require network access.
+  ///
+  /// Returns null when last location is unavailable, e.g. location is disabled on device.
+  Future<List<DistanceResponseMessage>?> getDistanceTo(List<DistanceRequestMessage> points) async {
+    try {
+      final response = await _instance.getDistanceTo(points);
+
+      return response.whereType<DistanceResponseMessage>().toList();
+    } catch (_) {
+      // Last location is unavailable
+      return null;
+    }
+  }
+
+  /// Runs directory search by [queryText] query.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
+  Future<SearchResultMessage> search(
+      String queryText, {
+        List<SearchCategoryMessage>? categories,
+        List<GeoPointMessage>? spatialRestriction,
+        required SortingTypeMessage sortingType,
+        GeoRectMessage? searchRect,
+        bool isOpenNow = false,
+        int pageSize = 20,
+      }) {
+    return _instance.search(
+      queryText,
+      categories: categories,
+      spatialRestriction: spatialRestriction,
+      sortingType: sortingType,
+      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
+      pageSize: pageSize,
+      searchRect: searchRect,
+    );
+  }
+
+  /// Runs directory search by [SearchQueryMessage] query.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
+  Future<SearchResultMessage> searchByQuery(
+      SearchQueryMessage query, {
+        List<GeoPointMessage>? spatialRestriction,
+        required SortingTypeMessage sortingType,
+        GeoRectMessage? searchRect,
+        bool isOpenNow = false,
+        int pageSize = 20,
+      }) {
+    return _instance.searchByQuery(
+      query,
+      spatialRestriction: spatialRestriction,
+      sortingType: sortingType,
+      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
+      pageSize: pageSize,
+      searchRect: searchRect,
+    );
+  }
+
+  /// Runs directory search by [SearchCategoryMessage] category.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
+  Future<SearchResultMessage> searchByCategory(
+      SearchCategoryMessage category, {
+        List<GeoPointMessage>? spatialRestriction,
+        required SortingTypeMessage sortingType,
+        GeoRectMessage? searchRect,
+        bool isOpenNow = false,
+        int pageSize = 20,
+      }) {
+    return _instance.searchByCategory(
+      category,
+      spatialRestriction: spatialRestriction,
+      sortingType: sortingType,
+      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
+      pageSize: pageSize,
+      searchRect: searchRect,
+    );
+  }
+
+  /// Runs directory search by rubrics.
+  /// [spatialRestriction] is search area limit in the form of a polygon
+  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
+  /// is visible rect of the viewport
+  Future<SearchResultMessage> searchByRubrics(
+      List<int> rubrics, {
+        List<GeoPointMessage>? spatialRestriction,
+        required SortingTypeMessage sortingType,
+        GeoRectMessage? searchRect,
+        bool isOpenNow = false,
+        int pageSize = 20,
+      }) {
+    return _instance.searchByRubrics(
+      rubrics,
+      spatialRestriction: spatialRestriction,
+      sortingType: sortingType,
+      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
+      pageSize: pageSize,
+      searchRect: searchRect,
+    );
+  }
+
+  /// Fetches next page for given page
+  Future<PageMessage> fetchPrevPage(PageMessage page) => _instance.fetchPrevPage(page.id);
+
+  /// Fetches prev page for given page
+  Future<PageMessage> fetchNextPage(PageMessage page) => _instance.fetchNextPage(page.id);
+
+  /// Releases page from memory
+  Future<void> releasePage(PageMessage page) => _instance.releasePage(page.id);
+
+  /// Options for marker that appears on map on object tap. Used by [addMarker].
+  Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions) => _instance.setMarkerOptions(markerOptions);
+
+  /// Add marker to map.
+  Future<void> addMarker(Marker marker, {MapObjectManagerMessage? toManager}) => _instance.addMarker(marker, toManager);
+
+  /// Add several markers to map.
+  Future<void> addMarkers(List<Marker> markers, {MapObjectManagerMessage? toManager}) =>
+      _instance.addMarkers(markers, toManager);
+
+  /// Remove marker by id.
+  Future<void> removeMarker(String id, {MapObjectManagerMessage? fromManager}) =>
+      _instance.removeMarker(id, fromManager);
+
+  /// Creates [MapObjectManagerMessage] with clustering.
+  Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
+      ClusteringMapObjectManager manager, {
+        String? layerId,
+      }) =>
+      _instance.createMapObjectManagerWithClustering(manager, layerId: layerId);
+
+  /// Creates [MapObjectManagerMessage] without clustering.
+  Future<MapObjectManagerMessage> createMapObjectManager({String? layerId}) =>
+      _instance.createMapObjectManager(layerId: layerId);
+
+  /// Removes [MapObjectManagerMessage].
+  Future<void> removeMapObjectManager(MapObjectManagerMessage manager) => _instance.removeMapObjectManager(manager);
+
+  /// Changes [MapObjectManagerMessage] visibility
+  Future<void> setMapObjectManagerIsVisible(bool isVisible, MapObjectManagerMessage? manager) =>
+      _instance.setMapObjectManagerIsVisible(isVisible, manager);
+
+  /// Remove all markers added with [addMarker].
+  Future<void> removeAllMarkers({MapObjectManagerMessage? fromManager}) => _instance.removeAllMarkers(fromManager);
+
+  /// Remove all markers, polygons, polylines
+  /// that were added with [addMarker], [addPolygons], [addPolyline].
+  Future<void> removeAll({MapObjectManagerMessage? fromManager}) async {
+    await _instance.removeAllMarkers(fromManager);
+    await _instance.removeAllPolygons(fromManager);
+    await _instance.removeAllPolylines(fromManager);
+  }
+
+  /// Add polygon to map.
+  Future<void> addPolygon(Polygon polygon, {MapObjectManagerMessage? toManager}) =>
+      _instance.addPolygon(polygon, toManager);
+
+  /// Add several polygons to map.
+  Future<void> addPolygons(List<Polygon> polygons, {MapObjectManagerMessage? toManager}) =>
+      _instance.addPolygons(polygons, toManager);
+
+  /// Remove polygon by id.
+  Future<void> removePolygon(String id, {MapObjectManagerMessage? fromManager}) =>
+      _instance.removePolygon(id, fromManager);
+
+  /// Remove all polygons added with [addPolygon].
+  Future<void> removeAllPolygons({MapObjectManagerMessage? fromManager}) => _instance.removeAllPolygons(fromManager);
+
+  /// Add polyline to map.
+  Future<void> addPolyline(
+      Polyline polyline, {
+        MapObjectManagerMessage? toManager,
+      }) =>
+      _instance.addPolyline(polyline, toManager);
+
+  /// Add several polylines to map.
+  Future<void> addPolylines(
+      List<Polyline> polyline, {
+        MapObjectManagerMessage? toManager,
+      }) =>
+      _instance.addPolylines(polyline, toManager);
+
+  /// Remove polyline by id.
+  Future<void> removePolyline(
+      String id, {
+        MapObjectManagerMessage? fromManager,
+      }) =>
+      _instance.removePolyline(id, fromManager);
+
+  /// Remove all polyline added with [addPolyline].
+  Future<void> removeAllPolylines({MapObjectManagerMessage? fromManager}) => _instance.removeAllPolylines(fromManager);
+
+  /// Hightlighs objects by it's id.
+  Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds) => _instance.setHighlighted(objectIds);
+
+  /// Remove all objects highlighted with [setHighlighted].
+  Future<void> removeAllHighlights() => setHighlighted([]);
+
+  /// Returns suggest from directory. To run search excplicitly call [search].
+  Future<SuggestResultMessage> fetchSuggest(
+      String queryText, {
+        GeoRectMessage? searchRect,
+        List<SuggestedTypeMessage>? allowedResultTypes,
+      }) =>
+      _instance.fetchSuggests(
+        queryText,
+        searchRect: searchRect,
+        allowedResultTypes: allowedResultTypes?.map((e) => SuggestedTypeMessage_(type: e)).toList(),
+      );
+
+  /// Hide panorama markers. Used for optimization. In most cases should not be used directly.
+  Future<void> hidePanoramasMarkers() async {
+    await _instance.hidePanoramasMarkers();
+  }
+
+  /// Show available panorama markers. Observe tap listening to [markerWithPhotoTapEvents].
+  Future<void> showPanoramasMarkers() async {
+    await _instance.showPanoramasMarkers();
+  }
+
+  /// Remove all panorama markers from map.
+  Future<void> removePanoramasMarkers() async {
+    await _instance.removePanoramasMarkers();
+  }
+
+  Future<int> overlappedBy(
+      GeoRectMessage outer,
+      GeoRectMessage inner,
+      ) async {
+    return _instance.overlappedBy(outer, inner);
+  }
+
+  /// Checks if [rect] contains [point]
+  Future<bool> contains(
+      GeoRectMessage rect,
+      GeoPointMessage point,
+      ) async {
+    return _instance.contains(rect, point);
+  }
+
+  /// Checks if [outer] rect contains [inner]
+  Future<bool> containsRect(
+      GeoRectMessage outer,
+      GeoRectMessage inner,
+      ) async {
+    return _instance.containsRect(outer, inner);
+  }
+
+  /// Checks if [outer] rect contains [inner]
+  Future<double> pointBearing(
+      GeoPointMessage from,
+      GeoPointMessage to,
+      ) async {
+    return _instance.pointBearing(from, to);
+  }
+
+  /// By default routes is hidden. To show them call [showRoutes].
+  Future<void> setRouteParams(RouteEditorRouteParamsMessage params) async {
+    return _instance.setRouteParams(params);
+  }
+
+  Future<void> hideRoutes() async {
+    return _instance.hideRoutes();
+  }
+
+  Future<void> showRoutes() async {
+    return _instance.showRoutes();
+  }
+
+  /// Starts navigation
+  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
+
+  /// Starts navigation simulation.
+  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
+      _instance.startNavigationSimulation(speedRangeZoom);
+
+  /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
+  Future<void> stopNavigation() => _instance.stopNavigation();
+
+  /// Controls sounds in navigation.
+  Future<void> toggleSound({required bool enabled}) => _instance.toggleSound(enabled: enabled);
+
+  /// Used to setup platform. Should be called when permision was granted.
+  /// Does not request permission by itself.
+  Future<void> onLocationPremissionGranted({
+    DesiredAccuracyMessage desiredAccuracy = DesiredAccuracyMessage.low,
+  }) {
+    return _instance.onLocationPremissionGranted(desiredAccuracy);
+  }
+
+  /// Add panorama markers to map.
+  Future<void> addPanoramasMarkers(List<MarkerWithPhotoMessage> markers) {
+    return _instance.addPanoramasMarkers(AddMarkersWithPhotoMessage(markers: markers));
+  }
+
+  Future<void> addIOLayerObjects(List<LayerPointObjectMessage> objects) {
+    return _instance.showEsriIOLayer(AddLayerPointObjectsMessage(objects: objects));
+  }
+
+  Future<void> removeEsriIOLayer() {
+    return _instance.removeEsriIOLayer();
+  }
+
+  /// Sets map appearance
+  Future<void> setAppearance(MapAppearanceMessage appearance) {
+    return _instance.setAppearance(appearance);
+  }
+
+  /// Sets zoom restrictions for camera
+  Future<void> setZoomRestrictions({double? min, double? max}) {
+    return _instance.setZoomRestrictions(min, max);
+  }
+
+  /// Does not apply filters immediately. Resets inner state.
+  void resetCurrentEvergisFiltersState() => _evergisFilters.clear();
+
   Future<void> setPublicTransportActiveRoute(int routeIndex) {
     return _instance.setPublicTransportActiveRoute(routeIndex);
   }
@@ -560,6 +1116,19 @@ class DgisMapController {
 
   ///Set navigator voice
   Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
+
+  ///Set better route response
+  Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _instance.betterRouteResponse(response);
+
+  ///Get better route settings
+  Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _instance.getBetterRouteSettings();
+
+  ///Set better route settings
+  Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
+
+  ///Set map attribute bool
+  Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
+  rVoice(String id) => _instance.setNavigatorVoice(id);
 
   ///Set better route response
   Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _instance.betterRouteResponse(response);
