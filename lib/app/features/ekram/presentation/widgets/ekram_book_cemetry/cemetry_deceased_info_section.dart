@@ -150,7 +150,8 @@ class _CemetryDeceasedInfoSectionState
                             controller: context
                                 .read<EkramBookCemetryBloc>()
                                 .firstNameController,
-                            enabled: state.allowFillData(),
+                            enabled: state.allowFillData() &&
+                                state.deceasedInfoModel?.firstName == null,
                             onChanged: (String? text) {
                               context
                                   .read<EkramBookCemetryBloc>()
@@ -167,7 +168,8 @@ class _CemetryDeceasedInfoSectionState
                             controller: context
                                 .read<EkramBookCemetryBloc>()
                                 .secondNameController,
-                            enabled: state.allowFillData(),
+                            enabled: state.allowFillData() &&
+                                state.deceasedInfoModel?.secondName == null,
                             onChanged: (String? text) {
                               context
                                   .read<EkramBookCemetryBloc>()
@@ -184,7 +186,8 @@ class _CemetryDeceasedInfoSectionState
                             controller: context
                                 .read<EkramBookCemetryBloc>()
                                 .thirdNameController,
-                            enabled: state.allowFillData(),
+                            enabled: state.allowFillData() &&
+                                state.deceasedInfoModel?.thirdName == null,
                             onChanged: (String? text) {
                               context
                                   .read<EkramBookCemetryBloc>()
@@ -199,7 +202,8 @@ class _CemetryDeceasedInfoSectionState
                                 "${Helpers.translatingWord("ekram_fourth_name")} *",
                             hintText:
                                 Helpers.translatingWord("ekram_fourth_name"),
-                            enabled: state.allowFillData(),
+                            enabled: state.allowFillData() &&
+                                state.deceasedInfoModel?.fourthName == null,
                             controller: context
                                 .read<EkramBookCemetryBloc>()
                                 .fourthNameController,

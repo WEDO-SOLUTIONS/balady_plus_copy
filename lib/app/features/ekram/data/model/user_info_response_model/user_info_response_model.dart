@@ -3,7 +3,7 @@ import 'deceased_info.dart';
 
 class UserInfoResponseModel {
   DeathInfo? deathInfo;
-  DeceasedInfo? deceasedInfo;
+  DeceasedInfoModel? deceasedInfo;
 
   UserInfoResponseModel({this.deathInfo, this.deceasedInfo});
 
@@ -14,7 +14,8 @@ class UserInfoResponseModel {
           : DeathInfo.fromJson(json['deathInfo'] as Map<String, dynamic>),
       deceasedInfo: json['deceasedInfo'] == null
           ? null
-          : DeceasedInfo.fromJson(json['deceasedInfo'] as Map<String, dynamic>),
+          : DeceasedInfoModel.fromJson(
+              json['deceasedInfo'] as Map<String, dynamic>),
     );
   }
 

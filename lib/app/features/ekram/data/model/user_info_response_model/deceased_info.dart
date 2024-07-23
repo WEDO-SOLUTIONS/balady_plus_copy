@@ -1,4 +1,4 @@
-class DeceasedInfo {
+class DeceasedInfoModel {
   String? identityNumber;
   int? identityType;
   dynamic identityTypeName;
@@ -23,7 +23,7 @@ class DeceasedInfo {
   bool? baladyClient;
   dynamic hideDeathInfo;
 
-  DeceasedInfo({
+  DeceasedInfoModel({
     this.identityNumber,
     this.identityType,
     this.identityTypeName,
@@ -49,7 +49,8 @@ class DeceasedInfo {
     this.hideDeathInfo,
   });
 
-  factory DeceasedInfo.fromJson(Map<String, dynamic> json) => DeceasedInfo(
+  factory DeceasedInfoModel.fromJson(Map<String, dynamic> json) =>
+      DeceasedInfoModel(
         identityNumber: json['identityNumber'] as String?,
         identityType: json['identityType'] as int?,
         identityTypeName: json['identityTypeName'] as dynamic,

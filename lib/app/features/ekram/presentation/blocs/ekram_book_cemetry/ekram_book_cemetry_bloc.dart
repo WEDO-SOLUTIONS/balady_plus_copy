@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/deceased_info.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     hide ApplicantInfoSection, AgreementSection;
 import 'package:equatable/equatable.dart';
@@ -455,10 +456,11 @@ class EkramBookCemetryBloc
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
+      DeceasedInfoModel?  deceasedInfoModel = success.data?.result?.deceasedInfo ;
       String firstName = success.data?.result?.deceasedInfo?.firstName ?? "";
       String secondName = success.data?.result?.deceasedInfo?.secondName ?? "";
       String thirdName = success.data?.result?.deceasedInfo?.thirdName ?? "";
-      String fourthName = success.data?.result?.deceasedInfo?.fourthName ?? "";
+      String fourthName = success.data?.result?.deceasedInfo?.fourthName ?? "";    
       String? birthDate = success.data?.result?.deceasedInfo?.birthDate;
       String? gender = success.data?.result?.deceasedInfo?.gender;
       bool? isMuslim = success.data?.result?.deceasedInfo?.isMuslim;
@@ -491,6 +493,7 @@ class EkramBookCemetryBloc
           cemetries: [],
           selectedCemetry: Nullable(null),
           errorMessage: "",
+          deceasedInfoModel:deceasedInfoModel,
           firstName: Nullable(firstName),
           secondName: Nullable(secondName),
           thirdName: Nullable(thirdName),
@@ -501,9 +504,7 @@ class EkramBookCemetryBloc
           isMuslim: Nullable(isMuslim),
           isMuslimEnabled: isMuslim == null ? false : true,
           isEpidamicEnabled: isPandemicDeath == null ? false : true,
-          isBirthDateDisabled: deceasedDataSource == 'MANUALLY'
-              ? false
-              : birthDate == null
+          isBirthDateDisabled:  birthDate == null
                   ? false
                   : true,
           isNationalityEnables: nationality == null ? true : false,

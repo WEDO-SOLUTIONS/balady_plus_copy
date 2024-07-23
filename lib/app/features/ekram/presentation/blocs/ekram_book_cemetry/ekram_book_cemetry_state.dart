@@ -59,6 +59,7 @@ class EkramBookCemetryState extends Equatable {
   final String? fourthName;
   final int? deathCountryId;
   final int? deathCityId;
+  final DeceasedInfoModel? deceasedInfoModel ;
 
   //final LookUpItem? selectedHospital;
   // final String? otherHospitalName;
@@ -113,7 +114,9 @@ class EkramBookCemetryState extends Equatable {
       this.selectedCountry,
       this.selectedDeathCity,
       this.otherDeathCity,
-      this.isNationalityEnables = true});
+      this.isNationalityEnables = true,
+      this.deceasedInfoModel
+      });
 
   EkramBookCemetryState copyWith({
     final BlocStatus? status,
@@ -166,6 +169,7 @@ class EkramBookCemetryState extends Equatable {
     final LookUpItem? selectedCountry,
     final LookUpItem? selectedDeathCity,
     final String? otherDeathCity,
+    final DeceasedInfoModel? deceasedInfoModel
   }) {
     return EkramBookCemetryState(
         status: status ?? this.status,
@@ -228,7 +232,8 @@ class EkramBookCemetryState extends Equatable {
         selectedCountry: selectedCountry ?? this.selectedCountry,
         selectedDeathCity: selectedDeathCity ?? this.selectedDeathCity,
         otherDeathCity: otherDeathCity ?? this.otherDeathCity,
-        isNationalityEnables: isNationalityEnables ?? this.isNationalityEnables
+        isNationalityEnables: isNationalityEnables ?? this.isNationalityEnables,
+        deceasedInfoModel: deceasedInfoModel ?? this.deceasedInfoModel
         );
   }
 
@@ -271,6 +276,7 @@ class EkramBookCemetryState extends Equatable {
         selectedCountry,
         selectedDeathCity,
         otherDeathCity,
+        deceasedInfoModel
       ];
 
   bool allowFillData() {
