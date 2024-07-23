@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/parking_details.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/widgets/lifestyle_layers/parking_lot_row.dart';
 
 class ParkingDetailsContent extends ConsumerWidget {
   final ScrollController scrollController;
@@ -65,50 +65,10 @@ class ParkingDetailsContent extends ConsumerWidget {
             ),
           ),
         ),
-        const _ParkingLotRow(type: ParkingFilter.all),
-        const _ParkingLotRow(type: ParkingFilter.free),
-        const _ParkingLotRow(type: ParkingFilter.paid),
+        const ParkingLotRow(type: ParkingFilter.all),
+        const ParkingLotRow(type: ParkingFilter.free),
+        const ParkingLotRow(type: ParkingFilter.paid),
       ],
-    );
-  }
-}
-
-class _ParkingLotRow extends ConsumerWidget {
-  final ParkingFilter type;
-  const _ParkingLotRow({
-    required this.type,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final parkingDetailsNotifier = ref.watch(parkingDetailsProvider.notifier);
-    final layersControls = ref.watch(layersControlsProvider.notifier);
-    final state = ref.watch(parkingDetailsProvider);
-
-    return SliverToBoxAdapter(
-      child: ContentRow(
-        onTap: () async {
-          await layersControls.enableParking();
-          await parkingDetailsNotifier.setParkingFilter(type);
-        },
-        options: ContentRowOptions(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
-          leadingIcon: type.icon().icon(),
-          wrapperEnabled: true,
-          wrapperColor: Colors.transparent,
-          actionWidget: state.parkingFilter == type
-              ? ContentRowActionOptions(
-                  actionIcon: SystemIcons.checkmark.icon(
-                    color: context.color.textAndIconsStatusAccent,
-                  ),
-                )
-              : null,
-          title: type.title(context.l10n),
-          titleStyle: context.textStyle.text.copyWith(
-            color: context.color.textAndIconsBasePrimary,
-          ),
-        ),
-      ),
     );
   }
 }
