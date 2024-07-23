@@ -64,51 +64,49 @@ class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: Spacing.$2x),
-        child: Expanded(
-          child: CustomScrollView(
-            controller: scrollController,
-            physics: const BouncingScrollPhysics(),
-            scrollBehavior: const CupertinoScrollBehavior(),
-            shrinkWrap: true,
-            slivers: [
-              PagedSliverList<int, OrganizationItem>.separated(
-                shrinkWrapFirstPageIndicators: true,
-                pagingController: pagingController,
-                builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
-                  itemBuilder: (context, item, index) => ContentWrapper(
-                    color: context.color.surfaceBasePrimary,
-                    children: [
-                      ContentRow(
-                        onTap: () {
-                          final id = item.id;
-                          if (id == null) {
-                            return;
-                          }
-                          context.pop();
-                          PoiMapRoute.open(
-                            ref.read(goRouterProvider),
-                            int.parse(id),
-                            zoom: widget.cameraConfig?.zoom,
-                            bearing: widget.cameraConfig?.bearing,
-                            tilt: widget.cameraConfig?.tilt,
-                            latLng: widget.closestPoint,
-                          );
-                        },
-                        options: ContentRowOptions(
-                          title: item.title,
-                          subtitle: item.rubricsNames,
-                          subtitleExtra: item.addressComment,
-                        ),
-                      )
-                    ],
-                  ),
+        child: CustomScrollView(
+          controller: scrollController,
+          physics: const BouncingScrollPhysics(),
+          scrollBehavior: const CupertinoScrollBehavior(),
+          shrinkWrap: true,
+          slivers: [
+            PagedSliverList<int, OrganizationItem>.separated(
+              shrinkWrapFirstPageIndicators: true,
+              pagingController: pagingController,
+              builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
+                itemBuilder: (context, item, index) => ContentWrapper(
+                  color: context.color.surfaceBasePrimary,
+                  children: [
+                    ContentRow(
+                      onTap: () {
+                        final id = item.id;
+                        if (id == null) {
+                          return;
+                        }
+                        context.pop();
+                        PoiMapRoute.open(
+                          ref.read(goRouterProvider),
+                          int.parse(id),
+                          zoom: widget.cameraConfig?.zoom,
+                          bearing: widget.cameraConfig?.bearing,
+                          tilt: widget.cameraConfig?.tilt,
+                          latLng: widget.closestPoint,
+                        );
+                      },
+                      options: ContentRowOptions(
+                        title: item.title,
+                        subtitle: item.rubricsNames,
+                        subtitleExtra: item.addressComment,
+                      ),
+                    )
+                  ],
                 ),
-                separatorBuilder: (context, index) => Spacing.$4x.heightBox,
               ),
-              SliverToBoxAdapter(
-                  child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox),
-            ],
-          ),
+              separatorBuilder: (context, index) => Spacing.$4x.heightBox,
+            ),
+            SliverToBoxAdapter(
+                child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox),
+          ],
         ),
       );
 
