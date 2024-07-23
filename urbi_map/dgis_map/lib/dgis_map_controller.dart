@@ -565,7 +565,7 @@ class DgisMapController {
   Future<void> installVoice(String id) => _instance.installVoice(id);
 
   ///Set navigator voice
-  Future<void> setNavigato  DgisMapController(this._viewId);
+  Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
 
   final int _viewId;
 
