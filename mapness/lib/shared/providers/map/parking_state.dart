@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/parking_details.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,7 +12,6 @@ const parkingTypeKey = 'parking_type_key';
 
 @Riverpod(keepAlive: true)
 class ParkingState extends _$ParkingState {
-  StreamSubscription<ParkingStateEvent>? _parkingSubscription;
   DgisMapController? _dgisController;
 
   @override
@@ -27,29 +27,38 @@ class ParkingState extends _$ParkingState {
   Future<void> _initListeners() async {
     _dgisController = await ref.read(dgisControllerProvider.future);
 
-    await _dgisController?.naviTrafficParkingController.onAttached();
-    _parkingSubscription =
-        _dgisController?.naviTrafficParkingController.parkingStateEvents.listen((event) => state = event);
-
     ref.onDispose(
       () {
-        _parkingSubscription?.cancel();
-        _dgisController?.naviTrafficParkingController.onDetached();
+        _dgisController?.setMapAttributeBool('parkingOn', false);
       },
     );
   }
 
-  Future<void> onParkingTap() async {
+  Future<void> showParking() async {
     final read = ref.read(sharedPrefsProvider);
     final attribute = read.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
-    await _dgisController?.naviTrafficParkingController.setParkingFilter(parkingFilter);
 
     state = ParkingStateEvent(
       filter: parkingFilter,
       visible: true,
     );
 
-    await _dgisController?.naviTrafficParkingController.onParkingClicked();
+    await _dgisController?.setMapAttributeBool('parkingOn', true);
+    await _dgisController?.setMapAttributeBool('parking_filter_paid_on', parkingFilter.paidOn());
+    await _dgisController?.setMapAttributeBool('parking_filter_free_on', parkingFilter.freeOn());
+  }
+
+  Future<void> hideParking() async {
+    final read = ref.read(sharedPrefsProvider);
+    final attribute = read.getString(parkingTypeKey);
+    final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
+
+    state = ParkingStateEvent(
+      filter: parkingFilter,
+      visible: false,
+    );
+
+    await _dgisController?.setMapAttributeBool('parkingOn', false);
   }
 }

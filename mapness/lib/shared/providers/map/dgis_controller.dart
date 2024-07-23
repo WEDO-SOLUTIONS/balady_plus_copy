@@ -49,7 +49,7 @@ class DgisController extends _$DgisController {
     await controller.initialize();
 
     // Styles
-    await controller.loadStyles('assets/maps/styles/common-styles.2gis');
+    await controller.loadStyles('assets/maps/styles/_common-styles.2gis');
 
     // Appearance
     await controller.setZoomRestrictions(

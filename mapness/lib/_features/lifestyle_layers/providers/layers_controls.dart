@@ -360,10 +360,10 @@ class LayersControls extends _$LayersControls {
         ..setSelection()
         ..update(isLoading: false);
 
-      await _toggleParking();
+      await ref.read(parkingStateProvider.notifier).hideParking();
     } else {
       setSelection(selectedType: LayerType.parkingLots);
-      await _toggleParking();
+      await ref.read(parkingStateProvider.notifier).showParking();
     }
   }
 
@@ -639,10 +639,6 @@ class LayersControls extends _$LayersControls {
       ref.read(cameraPositionProvider),
       ref.read(cameraPositionProvider.notifier).animateTo,
     );
-  }
-
-  Future<void> _toggleParking() async {
-    await ref.read(parkingStateProvider.notifier).onParkingTap();
   }
 
   void onError() {

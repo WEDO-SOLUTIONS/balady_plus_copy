@@ -485,8 +485,7 @@ class DgisMapController {
     return _instance.showRoutes();
   }
 
-  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) =>
-      _instance.startNavigation(speedRangeZoom);
+  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
 
   /// Starts navigation sinulation.
   Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
@@ -565,6 +564,8 @@ class DgisMapController {
   Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _instance.getBetterRouteSettings();
 
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
+
+  Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {

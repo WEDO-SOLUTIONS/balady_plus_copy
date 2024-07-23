@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
@@ -23,6 +25,18 @@ extension ParkingFilterExt on ParkingFilter {
         ParkingFilter.paid => GeneralIcons.money,
         _ => GeneralIcons.placeHolder,
       };
+
+  bool paidOn() => switch (this) {
+        ParkingFilter.all => true,
+        ParkingFilter.paid => true,
+        _ => false,
+      };
+
+  bool freeOn() => switch (this) {
+        ParkingFilter.all => true,
+        ParkingFilter.free => true,
+        _ => false,
+      };
 }
 
 class ParkingState {
@@ -42,6 +56,8 @@ class ParkingDetails extends _$ParkingDetails {
     final read = ref.read(sharedPrefsProvider);
     final attribute = read.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
+    unawaited(_applyAttribute(parkingFilter));
+
     return ParkingState(parkingFilter: parkingFilter);
   }
 
@@ -49,11 +65,15 @@ class ParkingDetails extends _$ParkingDetails {
     state = state.copyWith(parkingFilter);
   }
 
-  Future<void> setParkingFilter(ParkingFilter parkingFilter) async {
+  Future<void> _applyAttribute(ParkingFilter parkingFilter) async {
     final _dgisController = await ref.read(dgisControllerProvider.future);
-    await _dgisController.naviTrafficParkingController.setParkingFilter(
-      parkingFilter,
-    );
+    await _dgisController.setMapAttributeBool('parkingOn', true);
+    await _dgisController.setMapAttributeBool('parking_filter_paid_on', parkingFilter.paidOn());
+    await _dgisController.setMapAttributeBool('parking_filter_free_on', parkingFilter.freeOn());
+  }
+
+  Future<void> setParkingFilter(ParkingFilter parkingFilter) async {
+    await _applyAttribute(parkingFilter);
 
     final read = ref.read(sharedPrefsProvider);
     await read.setString(parkingTypeKey, parkingFilter.name);
