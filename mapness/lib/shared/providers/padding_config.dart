@@ -17,12 +17,11 @@ part 'padding_config.g.dart';
 class _PoiPaddingConfig extends _$PoiPaddingConfig {
   @override
   Future<void>? build(
-      DirectoryObjectMessage directoryObject,
-      LatLng? closestPoint,
-      PoiCameraConfig? cameraConfig,
-      )async {
+    DirectoryObjectMessage directoryObject,
+    LatLng? closestPoint,
+    PoiCameraConfig? cameraConfig,
+  ) async {
     final dgisController = ref.watch(dgisControllerProvider);
-
 
     final mediaquery = ref.read(mediaQueryInfoProvider);
 
@@ -39,12 +38,10 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
         right: horizontalPadding,
         top: Markers.defaultHeight + (safeArea?.top ?? 0),
         // Calculate the bottom padding for the camera, use multiplier to calculate the padding
-        bottom: PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5,
+        bottom: (PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5) + 10,
       ),
       sizeOfScreen: sizeOfScreen,
     );
-
-
 
     final isMarkerPositionIsNull = directoryObject.markerPosition == null;
 
@@ -52,12 +49,12 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
         (isMarkerPositionIsNull
             ? null
             : LatLng(
-          latitude: directoryObject.markerPosition!.latitude,
-          longitude: directoryObject.markerPosition!.longitude,
-        ));
+                latitude: directoryObject.markerPosition!.latitude,
+                longitude: directoryObject.markerPosition!.longitude,
+              ));
 
     if (isMarkerPositionIsNull) {
-      return null;
+      return;
     }
 
     final markerPoint = GeoPointMessage(
@@ -129,11 +126,9 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     );
   }
 
-
   Future<bool> _isInViewZone(
-      VisibleRect? rect, AsyncValue<DgisMapController> dgisController, GeoPointMessage markerPoint) async =>
+          VisibleRect? rect, AsyncValue<DgisMapController> dgisController, GeoPointMessage markerPoint) async =>
       rect != null && await dgisController.value!.contains(rect.geoRectMessage(), markerPoint);
-
 
   VisibleRect? _getRectWithPaddings(VisibleRect? rect, PoiPaddingConfig? paddingConfig) {
     if (rect == null) {
@@ -170,7 +165,6 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
       zoom: rect.zoom,
     );
   }
-
 }
 
 const paddingConfigProvider = _poiPaddingConfigProvider;
