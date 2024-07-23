@@ -1,21 +1,32 @@
 part of 'story_frame_widget.dart';
 
+/// A button widget that represents an action in a story frame.
 class StoryFrameActionButton extends StatefulWidget {
+  ///  [StoryFrameActionButton].
   const StoryFrameActionButton({
     required this.actionTheme,
     required this.action,
+    required this.onNext,
     super.key,
   });
 
+  /// The theme data for the action button.
   final StoryActionThemeData actionTheme;
+
+  /// The action associated with the button.
   final StoryFrameAction action;
+
+  /// The callback function that is called when the next button is pressed.
+  final VoidCallback onNext;
 
   @override
   State<StoryFrameActionButton> createState() => _StoryFrameActionButtonState();
 }
 
 class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
+  /// Maps a localization key to its corresponding localized value.
   String _keyToLocale(AppLocalizations l10n, String key) => switch (key) {
+        'next' => l10n.next,
         'try_now' => l10n.tryNow,
         'build_route' => l10n.buildRoute,
         'open_services' => l10n.openServices,
@@ -25,21 +36,24 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
         _ => ''
       };
 
+  /// Returns the title of the action based on the current widget's action type.
   String _getActionTitle() {
     final l10n = context.l10n;
     return switch (widget.action) {
-      NextStoryAction() => l10n.next,
+      NextStoryAction(localeKey: final key) => _keyToLocale(l10n, key),
       NavigationFrameAction(localeKey: final key) => _keyToLocale(l10n, key),
       NetworkLinkFrameAction(title: final title) => title,
     };
   }
 
+  /// Handles the action button press based on the current action type.
   void _onActionPressed(BuildContext context) => switch (widget.action) {
-        NextStoryAction() => () {},
+        NextStoryAction() => widget.onNext(),
         NavigationFrameAction(location: final location) => handleNavigationAction(context, location),
         NetworkLinkFrameAction(url: final url) => handleNetworkLinkAction(url),
       };
 
+  /// Handles the navigation action by pushing the specified location to the router.
   void handleNavigationAction(BuildContext context, String location) {
     final router = GoRouter.of(context);
 
@@ -53,7 +67,7 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
       for (final entry in bottomBarLocations.entries) {
         if (location.contains(entry.value)) {
           router.pop(entry.key);
-          continue;
+          break;
         }
       }
 
@@ -66,6 +80,7 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
     router.pushReplacement(location);
   }
 
+  /// Handles the network link action by opening the specified URL.
   void handleNetworkLinkAction(String url) {
     if (url.startsWith('https://www.joodeskan.sa/')) {
       NavigationService.navigatorKey.currentState?.pushNamed(

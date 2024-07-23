@@ -56,7 +56,7 @@ class RouteStoryData extends StoryTypedData {
                   imageUrl: 'assets/images/route_story_3.png',
                   isAssetImage: true,
                   action: NavigationFrameAction(
-                    location: 'route',
+                    location: '/routing',
                     localeKey: 'try_now',
                   ),
                 ),
@@ -78,9 +78,8 @@ class OnboardingStoryData extends StoryTypedData {
                 imageUrl: 'assets/images/onboarding_story_1.png',
                 isAssetImage: true,
                 duration: 30,
-                action: NavigationFrameAction(
-                  location: '/bottomNavBar/routing',
-                  localeKey: 'build_route',
+                action: NextStoryAction(
+                  localeKey: 'about_routes',
                 ),
               ),
               StoryFrameData(
@@ -88,9 +87,8 @@ class OnboardingStoryData extends StoryTypedData {
                 imageUrl: 'assets/images/onboarding_story_2.png',
                 isAssetImage: true,
                 duration: 30,
-                action: NavigationFrameAction(
-                  location: '/bottomNavBar/routing',
-                  localeKey: 'build_route',
+                action: NextStoryAction(
+                  localeKey: 'balady_features',
                 ),
               ),
               StoryFrameData(
@@ -98,9 +96,8 @@ class OnboardingStoryData extends StoryTypedData {
                 imageUrl: 'assets/images/onboarding_story_3.png',
                 isAssetImage: true,
                 duration: 30,
-                action: NavigationFrameAction(
-                  location: '/bottomNavBar/services',
-                  localeKey: 'open_services',
+                action: NextStoryAction(
+                  localeKey: 'get_started',
                 ),
               ),
             ],

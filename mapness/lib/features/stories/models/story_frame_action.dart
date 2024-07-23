@@ -31,6 +31,14 @@ class NavigationFrameAction extends StoryFrameAction {
 }
 
 /// This action is used to navigate to the next story.
+///
+/// The [localeKey] parameter is an optional locale key that can be used for localization.
+/// By default the title is 'Next'.
+
 class NextStoryAction extends StoryFrameAction {
-  const NextStoryAction();
+  final String localeKey;
+
+  const NextStoryAction({
+    this.localeKey = 'next',
+  });
 }

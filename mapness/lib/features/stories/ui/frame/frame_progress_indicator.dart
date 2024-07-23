@@ -1,34 +1,24 @@
-import 'package:balady_uikit/balady_uikit.dart';
-import 'package:flutter/material.dart';
-import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
+part of 'story_frame_widget.dart';
 
-import 'package:urbi_utils/urbi_utils.dart';
-
-const _height = 72.0;
 const _indicatorHeight = 2.0;
 
 /// A widget that displays a progress indicator for frames in a story.
 class FrameProgressIndicator extends AnimatedWidget {
-  final VoidCallback? onClose;
   final int frameIndex;
   final int framesLength;
   final StoryTrackThemeData trackTheme;
-  final StoryCloseButtonThemeData closeButtonTheme;
 
   /// Creates a [FrameProgressIndicator].
   ///
   /// The [frameIndex] represents the current frame index.
   /// The [framesLength] represents the total number of frames.
   /// The [animation] is used to animate the progress indicator.
-  /// The [onClose] callback is called when the close button is tapped.
   const FrameProgressIndicator({
     required this.frameIndex,
     required this.framesLength,
     required this.trackTheme,
-    required this.closeButtonTheme,
     required Animation<double> animation,
     super.key,
-    this.onClose,
   })  : assert(frameIndex >= 0, 'frameIndex must be greater than 0'),
         assert(framesLength >= 0, 'framesLength must be greater than 0'),
         assert(
@@ -68,40 +58,14 @@ class FrameProgressIndicator extends AnimatedWidget {
           .toList();
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-        width: double.infinity,
-        height: _height,
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: Padding(
-            padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: ProgressIndicatorTheme(
-                    data: ProgressIndicatorThemeData(
-                      linearTrackColor: trackTheme.backgroundColor,
-                      linearMinHeight: _indicatorHeight,
-                      color: trackTheme.color,
-                    ),
-                    child: Row(
-                      children: _framesIndicators,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: Spacing.$4x),
-                AppButton.close(
-                  onTap: onClose,
-                  buttonColorScheme: ButtonColorScheme.onColor,
-                  padding: EdgeInsets.zero,
-                  color: closeButtonTheme.backgroundColor,
-                  innerPadding: const EdgeInsets.all(Spacing.$2x),
-                  iconColor: closeButtonTheme.iconColor,
-                ),
-              ],
-            ),
-          ),
+  Widget build(BuildContext context) => ProgressIndicatorTheme(
+        data: ProgressIndicatorThemeData(
+          linearTrackColor: trackTheme.backgroundColor,
+          linearMinHeight: _indicatorHeight,
+          color: trackTheme.color,
+        ),
+        child: Row(
+          children: _framesIndicators,
         ),
       );
 }

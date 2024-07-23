@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
+import 'package:mapness/features/stories/models/story_frame_texts.dart';
 import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
-import 'package:mapness/features/stories/models/story_localization.dart';
 import 'package:mapness/features/stories/models/story_thumbnail_data.dart';
 import 'package:mapness/features/stories/models/story_typedefs.dart';
 
