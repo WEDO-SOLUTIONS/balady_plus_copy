@@ -12,7 +12,8 @@ class FrameProgressIndicator extends AnimatedWidget {
   final VoidCallback? onClose;
   final int frameIndex;
   final int framesLength;
-  final StoryThumbnailThemeData thumbnailTheme;
+  final StoryTrackThemeData trackTheme;
+  final StoryCloseButtonThemeData closeButtonTheme;
 
   /// Creates a [FrameProgressIndicator].
   ///
@@ -23,7 +24,8 @@ class FrameProgressIndicator extends AnimatedWidget {
   const FrameProgressIndicator({
     required this.frameIndex,
     required this.framesLength,
-    required this.thumbnailTheme,
+    required this.trackTheme,
+    required this.closeButtonTheme,
     required Animation<double> animation,
     super.key,
     this.onClose,
@@ -79,9 +81,9 @@ class FrameProgressIndicator extends AnimatedWidget {
                 Expanded(
                   child: ProgressIndicatorTheme(
                     data: ProgressIndicatorThemeData(
-                      linearTrackColor: thumbnailTheme.backgroundColor,
+                      linearTrackColor: trackTheme.backgroundColor,
                       linearMinHeight: _indicatorHeight,
-                      color: thumbnailTheme.animationColor,
+                      color: trackTheme.color,
                     ),
                     child: Row(
                       children: _framesIndicators,
@@ -93,8 +95,9 @@ class FrameProgressIndicator extends AnimatedWidget {
                   onTap: onClose,
                   buttonColorScheme: ButtonColorScheme.onColor,
                   padding: EdgeInsets.zero,
-                  color: thumbnailTheme.closeButtonColor,
+                  color: closeButtonTheme.backgroundColor,
                   innerPadding: const EdgeInsets.all(Spacing.$2x),
+                  iconColor: closeButtonTheme.iconColor,
                 ),
               ],
             ),

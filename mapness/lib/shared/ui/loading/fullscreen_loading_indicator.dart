@@ -1,35 +1,38 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/loading/loading_circular.dart';
 
+/// A widget that displays a fullscreen loading indicator.
 class FullscreenLoadingIndicator extends StatelessWidget {
-  const FullscreenLoadingIndicator({super.key, this.title});
+  const FullscreenLoadingIndicator({
+    super.key,
+    this.title,
+    this.isDisplayTitle = true,
+  });
+
+  /// The title of the loading indicator.
+  ///
+  /// By default, it is set to "loading".
   final String? title;
 
-  static const _defaultSize = 99.0;
+  /// Whether to display the title or not.
+  final bool isDisplayTitle;
 
   @override
-  Widget build(BuildContext context) => Material(
-        color: Colors.transparent,
-        type: MaterialType.transparency,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const LoadingCircular(
-              size: _defaultSize,
-            ),
-            const SizedBox(height: 32),
-            Text(
-              title ?? context.l10n.loading,
-              style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsBasePrimary),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              context.l10n.loading_in_progress,
-              style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
-            ),
-          ],
+  Widget build(BuildContext context) {
+    final loadingTitle = title ?? context.l10n.loading;
+    return Material(
+      color: Colors.white,
+      child: Center(
+        child: Loading.large(
+          title: loadingTitle,
+          orientation: Axis.vertical,
+          isDisplayTitle: isDisplayTitle,
+          color: context.color.strokeAccent,
+          backgroundColor: context.color.strokeAccent.withOpacity(0.1),
         ),
-      );
+      ),
+    );
+  }
 }

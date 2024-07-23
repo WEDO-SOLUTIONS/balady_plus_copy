@@ -1,3 +1,4 @@
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
@@ -23,7 +24,14 @@ class ContinueButton extends ConsumerWidget {
             action: MetricAction.tap.toString(),
           );
 
-          ref.read(dgisControllerProvider).value?.startNavigation();
+          ref.read(dgisControllerProvider).value?.startNavigation(
+                SpeedRangeZoom(
+                  maxSpeedRange: 5,
+                  minSpeedRange: 0,
+                  routeDistanceMillimeters: 0,
+                  styleZoomValue: 16.5,
+                ),
+              );
         },
       ),
     );

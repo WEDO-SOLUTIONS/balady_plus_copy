@@ -18,6 +18,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
@@ -127,42 +128,47 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Spacing.verticalPaddingInsideWrapper.heightBox,
+                  Spacing.$4x.heightBox,
                   RoutesCarousel(
                     points: widget.points,
-                    startNavigation: () => _startNavigation(navigatingType),
+                    startNavigation: (route) => _startNavigation(route, navigatingType),
                     navType: navigatingType,
                   ),
-                  Spacing.verticalPaddingInsideWrapper.heightBox,
+                  Spacing.$4x.heightBox,
                   RouteTabBar(
                     active: navigatingType,
                     onChanged: _onChanged,
                     points: widget.points,
                   ),
-                  Spacing.verticalPaddingInsideWrapper.heightBox,
+                  Spacing.$4x.heightBox,
                 ],
               ),
             ),
         },
       );
 
-  void _startNavigation(RouteSearchOptionsMessage navigatingType) {
+  void _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) {
     final mapSetting = MapObjectManagerSettings.search();
-    ref.read(
-      mapObjectManagerProvider(
-        named: mapSetting.name,
-        layerId: mapSetting.layerId,
-      ).notifier,
-    ).removeAllMarkers();
+    ref
+        .read(
+          mapObjectManagerProvider(
+            named: mapSetting.name,
+            layerId: mapSetting.layerId,
+          ).notifier,
+        )
+        .removeAllMarkers();
 
     Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.routeSelectionChangeNavType,
+      MetricsConstants.routesKeys.routeSelectionGoButton,
       group: MetricsConstants.routesTag,
       action: MetricAction.tap.toString(),
-      props: {
-        'navType': navigatingType.name,
-        'points':
-            '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
+    );
+
+    ref.read(urbiAnalyticsProvider).track(
+      'startNavigation',
+      properties: {
+        'duration': route.duration,
+        'distance': route.distance,
       },
     );
 
@@ -179,6 +185,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       action: MetricAction.tap.toString(),
       props: {
         'navType': routeSearch.name,
+        'points':
+            '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
       },
     );
 

@@ -23,8 +23,8 @@ class StoryFrameTexts {
         'route2' => l10n.theShortestRoute,
         'route3' => l10n.focusOnTheRoad,
         'onboarding1' => l10n.onboardingBaladyAppTitle,
-        'onboarding2' => l10n.onboardingNavigationTitle,
-        'onboarding3' => l10n.onboardingGovServiceTitle,
+        'onboarding2' => l10n.onboardingRoutesTitle,
+        'onboarding3' => l10n.onboardingCapabilitiesTitle,
         _ => 'No title',
       };
   static String? _descriptionFromId(AppLocalizations l10n, String id) => switch (id) {
@@ -32,8 +32,8 @@ class StoryFrameTexts {
         'route2' => l10n.route2description,
         'route3' => l10n.route3description,
         'onboarding1' => l10n.onboardingBaladyAppDescription,
-        'onboarding2' => l10n.onboardingNavigationDescription,
-        'onboarding3' => l10n.onboardingGovServiceDescription,
+        'onboarding2' => l10n.onboardingRoutesDescription,
+        'onboarding3' => l10n.onboardingCapabilitiesDescription,
         _ => null,
       };
   static String thumbnailTextFromType(AppLocalizations l10n, StoryTypes type) =>

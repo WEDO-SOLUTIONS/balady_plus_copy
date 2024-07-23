@@ -5,7 +5,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
@@ -15,6 +14,7 @@ import 'package:mapness/features/stories/ui/frame_progress_indicator.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'story_frame_action_button.dart';
@@ -190,7 +190,8 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                                 frameIndex: widget.frameIndex,
                                 framesLength: widget.frameLength,
                                 animation: _progress,
-                                thumbnailTheme: storyTheme.thumbnailTheme,
+                                closeButtonTheme: storyTheme.closeButtonTheme,
+                                trackTheme: storyTheme.trackTheme,
                               )
                             else
                               const SizedBox(
@@ -266,20 +267,10 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                 )),
       );
 
-  LoadingImage _buildImage({required String title}) => LoadingImage(
+  LoadingShimmerImage _buildImage({required String title}) => LoadingShimmerImage(
         isAssetImg: widget.frame.isAssetImage,
         onImageReady: _imageLoaded,
         imageUrl: widget.frame.imageUrl!,
         fit: BoxFit.cover,
-        loadingWidget: Container(
-          color: storyTheme.backgroundColor,
-          child: Center(
-            child: Loading.large(
-              style: Brightness.light,
-              orientation: Axis.vertical,
-              title: title,
-            ),
-          ),
-        ),
       );
 }

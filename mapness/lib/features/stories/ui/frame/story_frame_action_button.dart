@@ -19,6 +19,9 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
         'try_now' => l10n.tryNow,
         'build_route' => l10n.buildRoute,
         'open_services' => l10n.openServices,
+        'about_routes' => l10n.onboardingMoreRoutesButton,
+        'balady_features' => l10n.onboardingMoreBaladyFeaturesButton,
+        'get_started' => l10n.onboardingGetStartedButton,
         _ => ''
       };
 

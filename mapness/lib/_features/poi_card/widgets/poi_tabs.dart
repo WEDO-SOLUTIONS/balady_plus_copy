@@ -1,4 +1,3 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,25 +73,27 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
         ),
         Tab(
           iconMargin: EdgeInsets.zero,
-          child: _PoiTabItem(
-            title: context.l10n.photos,
-            count: photoCount,
-            onTap: () {
-              if (photoCount == 0) {
-                widget.tabController.index = widget.tabController.previousIndex;
-                return;
-              }
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
-                  group: MetricsConstants.poiTag,
-                  action: MetricAction.tap.toString(),
-                  props: {
-                    'tab': context.l10n.photos,
-                  });
+          child: photoCount > 0
+              ? _PoiTabItem(
+                  title: context.l10n.photos,
+                  count: photoCount,
+                  onTap: () {
+                    if (photoCount == 0) {
+                      widget.tabController.index = widget.tabController.previousIndex;
+                      return;
+                    }
+                    Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
+                        group: MetricsConstants.poiTag,
+                        action: MetricAction.tap.toString(),
+                        props: {
+                          'tab': context.l10n.photos,
+                        });
 
-              widget.tabController.animateTo(1);
-            },
-            isActive: widget.tabController.index == 1,
-          ),
+                    widget.tabController.animateTo(1);
+                  },
+                  isActive: widget.tabController.index == 1,
+                )
+              : const SizedBox.shrink(),
         ),
         Tab(
           iconMargin: EdgeInsets.zero,
@@ -182,8 +183,9 @@ class _PoiTabItem extends StatelessWidget {
                             // Fix shape for big numbers
                             borderRadius: count! < 100 ? null : BorderRadius.circular(50),
                             shape: count! < 100 ? BoxShape.circle : BoxShape.rectangle,
-                            color:
-                                isActive ?? false ? context.color.strokeAccent : NonThemeColor.color72.withOpacity(0.3),
+                            color: isActive ?? false
+                                ? context.colorsV2.neutralDefault
+                                : context.colorsV2.staticBlack.withOpacity(0.3),
                           ),
                           child: Text(
                             '$count',

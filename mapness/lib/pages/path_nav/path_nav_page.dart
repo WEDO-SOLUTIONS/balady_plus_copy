@@ -29,6 +29,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -85,7 +86,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     );
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-    await dgisController.startNavigation();
+    await dgisController.startNavigation(
+      SpeedRangeZoom(
+        maxSpeedRange: 5,
+        minSpeedRange: 0,
+        routeDistanceMillimeters: 0,
+        styleZoomValue: 16.5,
+      ),
+    );
   }
 
   @override
@@ -278,6 +286,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
       group: MetricsConstants.navigationTag,
       action: MetricAction.tap.toString(),
     );
+    await ref.read(urbiAnalyticsProvider).track('tripStopped');
 
     await _endTrip(() {
       if (context.mounted) {
@@ -310,6 +319,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   // Notify the listeners about the end of the trip
   void _naviEvent(NavigationEvent event) {
     if (event == NavigationEvent.finished) {
+      ref.read(urbiAnalyticsProvider).track('tripCompleted');
       _navigationState.value = PathNavState.finished;
     }
   }

@@ -32,6 +32,12 @@ class DgisMapController {
   /// Names of indoor levels if any. Empty if there are no available levels.
   Stream<IndoorLevelsEvent> get indoorLevelNames => _instance.indoorLevelNames;
 
+  /// Getting the IndoorLevelNames latest record values from a stream
+  IndoorLevelsEvent? get lastIndoorLevelNames => _instance.lastIndoorLevelNames;
+
+  /// Getting the IndoorActiveLevel latest record values from a stream
+  IndoorActiveLevelEvent? get lastIndoorActiveLevel => _instance.lastIndoorActiveLevel;
+
   /// Selected indoor level index in [IndoorLevelsEvent::levelNames] list
   Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _instance.indoorActiveIndex;
 
@@ -479,10 +485,12 @@ class DgisMapController {
     return _instance.showRoutes();
   }
 
-  Future<void> startNavigation() => _instance.startNavigation();
+  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) =>
+      _instance.startNavigation(speedRangeZoom);
 
   /// Starts navigation sinulation.
-  Future<void> startNavigationSimulation() => _instance.startNavigationSimulation();
+  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
+      _instance.startNavigationSimulation(speedRangeZoom);
 
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
   Future<void> stopNavigation() => _instance.stopNavigation();

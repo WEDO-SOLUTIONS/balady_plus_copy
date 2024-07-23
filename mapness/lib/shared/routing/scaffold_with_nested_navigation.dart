@@ -65,13 +65,6 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!isOnboardingShown) {
         StoriesRoute.openOnboarding(context);
-        //   Stories.showOnboarding(
-        //     context,
-        //     StoryTypes.onboarding,
-        //     'onboarding',
-        //     onActionShowNextHistory: false,
-        //     navigationShell: widget.navigationShell,
-        //   );
         ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
       }
     });
@@ -185,7 +178,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                         selected: currentIndex == 0,
                         iconBuilder: (context, selected) => ProfileImageWidget(
                           dimension: 24,
-                          color: selected ? context.color.strokeAccent : context.color.textAndIconsBaseTertiary,
+                          color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
                         ),
                         label: context.l10n.nav_profile,
                       ),
@@ -278,7 +271,7 @@ class _DefaultIcon extends StatelessWidget {
   Widget build(BuildContext context) => Icon(
         icon,
         size: 24,
-        color: selected ? context.color.strokeAccent : context.color.textAndIconsBaseTertiary,
+        color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
       );
 }
 
@@ -294,8 +287,8 @@ class _DefaultLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
         label,
-        style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(
-              color: selected ? context.color.strokeAccent : context.color.textAndIconsBaseTertiary,
-            ),
+        style: context.textStyleV3.captionSmallMedium.copyWith(
+          color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
+        ),
       );
 }

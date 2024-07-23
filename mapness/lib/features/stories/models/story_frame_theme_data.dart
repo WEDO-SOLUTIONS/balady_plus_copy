@@ -1,25 +1,28 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/core/colors/colors_v2/app_colors_theme_v2.dart';
 import 'package:balady_uikit/core/colors/colors_v2/core/base.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
 import 'package:flutter/material.dart';
 
 /// Represents the theme data for a story frame.
 class StoryFrameThemeData {
   final double horizontalPadding;
-  final StoryThumbnailThemeData thumbnailTheme;
   final StoryActionThemeData actionTheme;
+  final StoryCloseButtonThemeData closeButtonTheme;
+  final StoryTrackThemeData trackTheme;
   final TextStyle titleStyle;
   final TextStyle descriptionStyle;
   final Color backgroundColor;
   final Color? gradientColor;
 
-  StoryFrameThemeData._({
-    required this.thumbnailTheme,
+  const StoryFrameThemeData._({
     required this.actionTheme,
     required this.titleStyle,
     required this.descriptionStyle,
     required this.backgroundColor,
+    required this.closeButtonTheme,
+    required this.trackTheme,
     this.horizontalPadding = 0,
     this.gradientColor,
   });
@@ -31,34 +34,33 @@ class StoryFrameThemeData {
     required ThemeTextStylesV3 textTheme,
     bool actionHasGradient = false,
   }) {
-    final thumbnailTheme = StoryThumbnailThemeData.fromId(
-      id,
-      colorTheme: colorTheme,
-    );
     final actionTheme = StoryActionThemeData.fromId(
       id,
       textTheme: textTheme,
     ).copyWith(
       hasGradient: actionHasGradient,
     );
+    final closeButtonTheme = StoryCloseButtonThemeData.fromId(
+      id,
+      colorTheme: colorTheme,
+    );
+    final trackTheme = StoryTrackThemeData.fromId(id);
+
     final baseTheme = StoryFrameThemeData.baseTheme(
       colorTheme: colorTheme,
       textTheme: textTheme,
     ).copyWith(
-      thumbnailTheme: thumbnailTheme,
       actionTheme: actionTheme,
+      closeButtonTheme: closeButtonTheme,
+      trackTheme: trackTheme,
     );
 
     return switch (id) {
       'route1' => baseTheme.copyWith(),
       'route2' => baseTheme.copyWith(),
       'route3' => baseTheme.copyWith(),
-      'onboarding1' => baseTheme.copyWith(
-          gradientColor: const Color(0xFFB7C1FB),
-        ),
-      'onboarding2' => baseTheme.copyWith(
-          gradientColor: const Color(0xFFB7C1FB),
-        ),
+      'onboarding1' => baseTheme.copyWith(),
+      'onboarding2' => baseTheme.copyWith(),
       'onboarding3' => baseTheme.copyWith(),
       _ => baseTheme,
     };
@@ -74,8 +76,9 @@ class StoryFrameThemeData {
         descriptionStyle: textTheme.bodyLargeRegular,
         backgroundColor: colorTheme.backgroundSurface1,
         horizontalPadding: 16,
-        thumbnailTheme: StoryThumbnailThemeData.baseTheme(colorTheme: colorTheme),
         actionTheme: StoryActionThemeData.baseTheme(textTheme: textTheme),
+        closeButtonTheme: StoryCloseButtonThemeData.baseTheme(colorTheme: colorTheme),
+        trackTheme: StoryTrackThemeData.baseTheme(),
       );
 
   /// Merges the network theme data with the current [StoryFrameThemeData].
@@ -96,8 +99,9 @@ class StoryFrameThemeData {
   /// Creates a copy of the [StoryFrameThemeData] instance with the provided properties.
   StoryFrameThemeData copyWith({
     double? horizontalPadding,
-    StoryThumbnailThemeData? thumbnailTheme,
     StoryActionThemeData? actionTheme,
+    StoryCloseButtonThemeData? closeButtonTheme,
+    StoryTrackThemeData? trackTheme,
     TextStyle? titleStyle,
     TextStyle? descriptionStyle,
     Color? gradientColor,
@@ -105,8 +109,9 @@ class StoryFrameThemeData {
   }) =>
       StoryFrameThemeData._(
         horizontalPadding: horizontalPadding ?? this.horizontalPadding,
-        thumbnailTheme: thumbnailTheme ?? this.thumbnailTheme,
         actionTheme: actionTheme ?? this.actionTheme,
+        closeButtonTheme: closeButtonTheme ?? this.closeButtonTheme,
+        trackTheme: trackTheme ?? this.trackTheme,
         titleStyle: titleStyle ?? this.titleStyle,
         descriptionStyle: descriptionStyle ?? this.descriptionStyle,
         backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -165,67 +170,113 @@ class StoryActionThemeData {
     final baseTheme = StoryActionThemeData.baseTheme(
       textTheme: textTheme,
     );
+    final onboardingTheme = baseTheme.copyWith(
+      backgroundColor: AppColor.white,
+      textColor: AppColor.black,
+    );
+    final routeTheme = baseTheme.copyWith(
+      backgroundColor: NonThemeColor.color29,
+      textColor: AppColor.white,
+    );
     return switch (id) {
-      'route1' => baseTheme.copyWith(),
-      'route2' => baseTheme.copyWith(),
-      'route3' => baseTheme.copyWith(),
-      'onboarding1' => baseTheme.copyWith(),
-      'onboarding2' => baseTheme.copyWith(),
-      'onboarding3' => baseTheme.copyWith(),
+      'route1' => routeTheme,
+      'route2' => routeTheme,
+      'route3' => routeTheme,
+      'onboarding1' => onboardingTheme,
+      'onboarding2' => onboardingTheme,
+      'onboarding3' => onboardingTheme,
       _ => baseTheme,
     };
   }
 }
 
 /// Represents the theme data for a story thumbnail.
-class StoryThumbnailThemeData {
+class StoryCloseButtonThemeData {
+  final Color iconColor;
   final Color backgroundColor;
-  final Color animationColor;
-  final Color closeButtonColor;
 
-  const StoryThumbnailThemeData({
+  const StoryCloseButtonThemeData({
     required this.backgroundColor,
-    required this.animationColor,
-    required this.closeButtonColor,
+    required this.iconColor,
   });
 
   /// Creates a copy of the [StoryThumbnailThemeData] instance with the provided properties.
-  StoryThumbnailThemeData copyWith({
+  StoryCloseButtonThemeData copyWith({
     Color? backgroundColor,
-    Color? animationColor,
-    Color? closeButtonColor,
+    Color? iconColor,
   }) =>
-      StoryThumbnailThemeData(
+      StoryCloseButtonThemeData(
         backgroundColor: backgroundColor ?? this.backgroundColor,
-        animationColor: animationColor ?? this.animationColor,
-        closeButtonColor: closeButtonColor ?? this.closeButtonColor,
+        iconColor: iconColor ?? this.iconColor,
       );
 
   /// Creates a base [StoryThumbnailThemeData] instance.
-  factory StoryThumbnailThemeData.baseTheme({
+  factory StoryCloseButtonThemeData.baseTheme({
     required AppColorsThemeV2 colorTheme,
   }) =>
-      StoryThumbnailThemeData(
-        backgroundColor: AppColor.black.withOpacity(0.1),
-        animationColor: AppColor.black,
-        closeButtonColor: colorTheme.foregroundDisabled,
+      StoryCloseButtonThemeData(
+        backgroundColor: colorTheme.backgroundDisabled,
+        iconColor: AppColor.black,
       );
 
   /// Creates a [StoryThumbnailThemeData] instance based on the provided ID.
-  factory StoryThumbnailThemeData.fromId(
+  factory StoryCloseButtonThemeData.fromId(
     String id, {
     required AppColorsThemeV2 colorTheme,
   }) {
-    final baseTheme = StoryThumbnailThemeData.baseTheme(
+    final baseTheme = StoryCloseButtonThemeData.baseTheme(
       colorTheme: colorTheme,
     );
+    final routeTheme = baseTheme.copyWith(
+      iconColor: AppColor.white,
+      backgroundColor: AppColor.white.withOpacity(0.06),
+    );
     return switch (id) {
-      'route1' => baseTheme.copyWith(),
-      'route2' => baseTheme.copyWith(),
-      'route3' => baseTheme.copyWith(),
-      'onboarding1' => baseTheme.copyWith(),
-      'onboarding2' => baseTheme.copyWith(),
-      'onboarding3' => baseTheme.copyWith(),
+      'route1' => routeTheme,
+      'route2' => routeTheme,
+      'route3' => routeTheme,
+      _ => baseTheme,
+    };
+  }
+}
+
+/// Represents the theme data for a story thumbnail.
+class StoryTrackThemeData {
+  final Color color;
+  final Color backgroundColor;
+
+  const StoryTrackThemeData({
+    required this.backgroundColor,
+    required this.color,
+  });
+
+  /// Creates a copy of the [StoryThumbnailThemeData] instance with the provided properties.
+  StoryTrackThemeData copyWith({
+    Color? backgroundColor,
+    Color? color,
+  }) =>
+      StoryTrackThemeData(
+        backgroundColor: backgroundColor ?? this.backgroundColor,
+        color: color ?? this.color,
+      );
+
+  /// Creates a base [StoryThumbnailThemeData] instance.
+  factory StoryTrackThemeData.baseTheme() => StoryTrackThemeData(
+        backgroundColor: AppColor.black.withOpacity(0.1),
+        color: AppColor.black,
+      );
+
+  /// Creates a [StoryThumbnailThemeData] instance based on the provided ID.
+  factory StoryTrackThemeData.fromId(String id) {
+    final baseTheme = StoryTrackThemeData.baseTheme();
+    final routeTheme = baseTheme.copyWith(
+      color: AppColor.white,
+      backgroundColor: AppColor.white.withOpacity(0.1),
+    );
+    return switch (id) {
+      'route1' => routeTheme,
+      'route2' => routeTheme,
+      'route3' => routeTheme,
       _ => baseTheme,
     };
   }

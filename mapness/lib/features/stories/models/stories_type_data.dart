@@ -41,14 +41,20 @@ class RouteStoryData extends StoryTypedData {
               frames: [
                 StoryFrameData(
                   storyId: 'route1',
+                  imageUrl: 'assets/images/route_story_1.png',
+                  isAssetImage: true,
                   action: NextStoryAction(),
                 ),
                 StoryFrameData(
                   storyId: 'route2',
+                  imageUrl: 'assets/images/route_story_2.png',
+                  isAssetImage: true,
                   action: NextStoryAction(),
                 ),
                 StoryFrameData(
                   storyId: 'route3',
+                  imageUrl: 'assets/images/route_story_3.png',
+                  isAssetImage: true,
                   action: NavigationFrameAction(
                     location: 'route',
                     localeKey: 'try_now',
@@ -69,8 +75,9 @@ class OnboardingStoryData extends StoryTypedData {
             frames: [
               StoryFrameData(
                 storyId: 'onboarding1',
-                imageUrl: 'assets/images/route_story_1.png',
+                imageUrl: 'assets/images/onboarding_story_1.png',
                 isAssetImage: true,
+                duration: 30,
                 action: NavigationFrameAction(
                   location: '/bottomNavBar/routing',
                   localeKey: 'build_route',
@@ -78,9 +85,9 @@ class OnboardingStoryData extends StoryTypedData {
               ),
               StoryFrameData(
                 storyId: 'onboarding2',
-                imageUrl: 'assets/images/test_oboarding.png',
-                fullscreenImage: false,
+                imageUrl: 'assets/images/onboarding_story_2.png',
                 isAssetImage: true,
+                duration: 30,
                 action: NavigationFrameAction(
                   location: '/bottomNavBar/routing',
                   localeKey: 'build_route',
@@ -88,9 +95,9 @@ class OnboardingStoryData extends StoryTypedData {
               ),
               StoryFrameData(
                 storyId: 'onboarding3',
-                imageUrl: 'assets/images/test_oboarding.png',
-                fullscreenImage: false,
+                imageUrl: 'assets/images/onboarding_story_3.png',
                 isAssetImage: true,
+                duration: 30,
                 action: NavigationFrameAction(
                   location: '/bottomNavBar/services',
                   localeKey: 'open_services',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/features/stories/models/stories_type_data.dart';
@@ -34,8 +35,11 @@ class StoriesScreen extends ConsumerWidget {
       child: Material(
         child: Directionality(
           textDirection: Directionality.of(context),
-          child: StoriesFullscreen(
-            initialStoryId: initialStoryId ?? storyData.stories.first.storyId,
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.light,
+            child: StoriesFullscreen(
+              initialStoryId: initialStoryId ?? storyData.stories.first.storyId,
+            ),
           ),
         ),
       ),

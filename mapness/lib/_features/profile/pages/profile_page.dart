@@ -27,14 +27,13 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
     final actionIcon = context.isLTR
-        ? SystemIcons.arrowCornerRightSmall.icon(
+        ? SystemIcons.arrowCornerRightLarge.icon(
             color: context.color.textAndIconsBaseSecondary,
           )
-        : SystemIcons.arrowCornerLeftSmall.icon(
+        : SystemIcons.arrowCornerLeftLarge.icon(
             color: context.color.textAndIconsBaseSecondary,
           );
     final userData = ref.watch(authProvider);
-
     return PopScope(
       canPop: false,
       onPopInvoked: (_) {

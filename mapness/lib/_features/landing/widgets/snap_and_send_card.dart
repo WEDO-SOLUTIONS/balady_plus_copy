@@ -83,6 +83,9 @@ class SnapAndSendCard extends ConsumerWidget {
                             ),
                           ),
                           AppButton(
+                            size: ButtonSize.small,
+                            padding: EdgeInsets.zero,
+                            innerPadding: const EdgeInsets.symmetric(horizontal: 8.0),
                             buttonColorScheme: ButtonColorScheme.onColor,
                             color: context.colorsV2.accentContainerDefault.withOpacity(0.1),
                             onTap: () {
