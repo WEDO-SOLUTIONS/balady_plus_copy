@@ -485,9 +485,10 @@ class DgisMapController {
     return _instance.showRoutes();
   }
 
+  /// Starts navigation
   Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
 
-  /// Starts navigation sinulation.
+  /// Starts navigation simulation.
   Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
       _instance.startNavigationSimulation(speedRangeZoom);
 
@@ -559,10 +560,13 @@ class DgisMapController {
 
   Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
 
+  ///Set better route response
   Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _instance.betterRouteResponse(response);
 
+  ///Get better route settings
   Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _instance.getBetterRouteSettings();
 
+  ///Set better route settings
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
 
   Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
