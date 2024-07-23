@@ -56,9 +56,9 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
         'try_now' => StoryLocalization.of(context)?.l10n.tryNow ?? '',
         'build_route' => StoryLocalization.of(context)?.l10n.buildRoute ?? '',
         'open_services' => StoryLocalization.of(context)?.l10n.openServices ?? '',
-        'about_routes' => 'Learn more about routes',
-        'balady_features' => 'More Balady features',
-        'get_started' => 'Get started',
+        'about_routes' => StoryLocalization.of(context)?.l10n.onboardingMoreRoutesButton ?? '',
+        'balady_features' => StoryLocalization.of(context)?.l10n.onboardingMoreBaladyFeaturesButton ?? '',
+        'get_started' => StoryLocalization.of(context)?.l10n.onboardingGetStartedButton ?? '',
         _ => ''
       };
 
@@ -180,7 +180,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) => Material(
-        color: context.color.surfaceBaseInversePrimary,
+        color: Colors.transparent,
         child: SafeArea(
           left: false,
           right: false,
@@ -251,7 +251,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                     Positioned(
                       left: 16,
                       right: 16,
-                      top: 100,
+                      top: 96,
                       bottom: 64,
                       child: Align(
                         alignment: AlignmentDirectional.topStart,
@@ -276,7 +276,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                       widget.onActionPressed != null &&
                       widget.frame.action!.deeplinkUrl.isNotEmpty)
                     Positioned(
-                      bottom: 12,
+                      bottom: widget.frame.action?.verticalPadding ?? 12,
                       left: widget.frame.action?.horizontalPadding ?? 16.0,
                       right: widget.frame.action?.horizontalPadding ?? 16.0,
                       child: AppButton(
