@@ -13,9 +13,8 @@ import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 
 class LayersSheetContent extends ConsumerWidget {
   final ScrollController scrollController;
-  final ValueNotifier<int> _notifierIndexLayersTab = ValueNotifier(0);
 
-  LayersSheetContent({
+  const LayersSheetContent({
     required this.scrollController,
     super.key,
   });
@@ -23,6 +22,7 @@ class LayersSheetContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(layersControlsProvider);
+    final layersControlsProviderNotifier = ref.watch(layersControlsProvider.notifier);
 
     return CustomScrollView(
       controller: scrollController,
@@ -63,24 +63,27 @@ class LayersSheetContent extends ConsumerWidget {
           child: Column(
             children: [
               TabsRow.v2(
+                initialIndex: state.layersType.index,
                 tabsContent: [
                   TabsRowV2Content(title: context.l10n.lifestyle),
                   TabsRowV2Content(title: context.l10n.business),
                 ],
                 onIndexChanged: (index) {
-                  _notifierIndexLayersTab.value = index ?? 0;
+                  layersControlsProviderNotifier.update(
+                    layersType: LayersType.values[index ?? 0],
+                  );
                 },
               ),
               const SizedBox(height: 12),
             ],
           ),
         ),
-        ValueListenableBuilder(
-          valueListenable: _notifierIndexLayersTab,
-          builder: (context, value, _) => LayerSliverList(
-            layerType: value == 0 ? layers_state.LayerType.withoutLifestyle : layers_state.LayerType.withoutBusiness,
-            layersState: state,
-          ),
+        LayerSliverList(
+          layerType: switch (state.layersType) {
+            LayersType.lifestyle => layers_state.LayerType.withoutLifestyle,
+            LayersType.business => layers_state.LayerType.withoutBusiness,
+          },
+          layersState: state,
         ),
       ],
     );

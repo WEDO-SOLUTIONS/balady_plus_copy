@@ -5,9 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/lifestyle_layers/map_controls.dart' as controls;
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/router.dart';
 import 'package:mapness/widgets/lifestyle_layers/layers_sheet_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_details_content.dart';
+
+import '../../app/router.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -17,15 +18,28 @@ class LayersSheet extends ConsumerStatefulWidget {
 }
 
 class LayersSheetState extends ConsumerState<LayersSheet> {
-  late final DraggableScrollableController _draggableScrollableController;
+  static const _layersPanelMaxHeight = .5;
+  static const _layersPanelHideHeight = .11;
+  static const _parkingPanelMaxHeight = .35;
+
+  late final DraggableScrollableController _layersScrollableController;
+  late final DraggableScrollableController _parkingLotsScrollableController;
 
   @override
   void initState() {
     super.initState();
-    _draggableScrollableController = DraggableScrollableController();
-    _draggableScrollableController.addListener(() {
-      if (_draggableScrollableController.isAttached && _draggableScrollableController.size < 0.12) {
+    _layersScrollableController = DraggableScrollableController();
+    _parkingLotsScrollableController = DraggableScrollableController();
+    _layersScrollableController.addListener(() {
+      if (_layersScrollableController.isAttached && _layersScrollableController.size < .10) {
         ref.read(goRouterProvider).pop();
+      }
+    });
+    _parkingLotsScrollableController.addListener(() {
+      if (_parkingLotsScrollableController.isAttached && _parkingLotsScrollableController.size == 0) {
+        ref.watch(layersControlsProvider.notifier).update(
+              layersWidgetType: LayersPanelType.layers,
+            );
       }
     });
   }
@@ -35,7 +49,37 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     final state = ref.watch(layersControlsProvider);
     final direction = ref.watch(uiDirectionProvider);
 
-    final controlsBottomExtent = MediaQuery.of(context).size.height * .5;
+    ref.listen(layersControlsProvider, (_, nextState) async {
+      const duration = Duration(milliseconds: 200);
+      const easeIn = Curves.easeIn;
+
+      switch (nextState.layersPanelType) {
+        case LayersPanelType.layers:
+          await _parkingLotsScrollableController.animateTo(
+            0,
+            duration: duration,
+            curve: easeIn,
+          );
+          await _layersScrollableController.animateTo(
+            _layersPanelMaxHeight,
+            duration: duration,
+            curve: easeIn,
+          );
+        case LayersPanelType.parking:
+          await _layersScrollableController.animateTo(
+            _layersPanelHideHeight,
+            duration: duration,
+            curve: easeIn,
+          );
+          await _parkingLotsScrollableController.animateTo(
+            _parkingPanelMaxHeight,
+            duration: duration,
+            curve: easeIn,
+          );
+      }
+    });
+
+    final controlsBottomExtent = MediaQuery.of(context).size.height * _layersPanelMaxHeight;
 
     return Scaffold(
       body: Stack(
@@ -49,10 +93,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
             bottomExtent: controlsBottomExtent,
           ),
           DraggableScrollableSheet(
-            controller: _draggableScrollableController,
-            minChildSize: 0,
-            maxChildSize: .5,
-            snapSizes: const [.0, .5],
+            controller: _layersScrollableController,
+            minChildSize: .0,
+            maxChildSize: _layersPanelMaxHeight,
+            snapSizes: const [.0, _layersPanelMaxHeight],
             snap: true,
             builder: (context, scrollController) => Directionality(
               textDirection: direction,
@@ -70,14 +114,46 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                 ),
                 child: Stack(
                   children: [
-                    switch (state.layersWidgetType) {
-                      LayersWidgetType.layers => LayersSheetContent(
-                          scrollController: scrollController,
+                    LayersSheetContent(
+                      scrollController: scrollController,
+                    ),
+                    if (state.isLoading)
+                      Center(
+                        child: CircularProgressIndicator(
+                          color: context.color.textAndIconsStatusAccent,
                         ),
-                      LayersWidgetType.parking => ParkingDetailsContent(
-                          scrollController: scrollController,
-                        ),
-                    },
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          DraggableScrollableSheet(
+            controller: _parkingLotsScrollableController,
+            initialChildSize: 0,
+            minChildSize: 0,
+            maxChildSize: _parkingPanelMaxHeight,
+            shouldCloseOnMinExtent: false,
+            snapSizes: const [_parkingPanelMaxHeight],
+            builder: (context, scrollController) => Directionality(
+              textDirection: direction,
+              child: Container(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    ParkingDetailsContent(
+                      scrollController: scrollController,
+                    ),
                     if (state.isLoading)
                       Center(
                         child: CircularProgressIndicator(

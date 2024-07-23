@@ -20,32 +20,7 @@ class ParkingDetailsContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(parkingDetailsProvider);
-    final parkingDetailsNotifier = ref.watch(parkingDetailsProvider.notifier);
     final layersControlsProviderNotifier = ref.watch(layersControlsProvider.notifier);
-
-    Widget buildParkingLotRow(ParkingFilter type) => SliverToBoxAdapter(
-          child: ContentRow(
-            onTap: () => parkingDetailsNotifier.setParkingFilter(type),
-            options: ContentRowOptions(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
-              leadingIcon: type.icon().icon(),
-              wrapperEnabled: true,
-              wrapperColor: Colors.transparent,
-              actionWidget: state.parkingFilter == type
-                  ? ContentRowActionOptions(
-                      actionIcon: SystemIcons.checkmark.icon(
-                        color: context.color.textAndIconsStatusAccent,
-                      ),
-                    )
-                  : null,
-              title: type.title(context.l10n),
-              titleStyle: context.textStyle.text.copyWith(
-                color: context.color.textAndIconsBasePrimary,
-              ),
-            ),
-          ),
-        );
 
     return CustomScrollView(
       controller: scrollController,
@@ -77,7 +52,7 @@ class ParkingDetailsContent extends ConsumerWidget {
                         );
 
                         layersControlsProviderNotifier.update(
-                          layersWidgetType: LayersWidgetType.layers,
+                          layersWidgetType: LayersPanelType.layers,
                         );
                       },
                       padding: EdgeInsets.zero,
@@ -90,10 +65,47 @@ class ParkingDetailsContent extends ConsumerWidget {
             ),
           ),
         ),
-        buildParkingLotRow(ParkingFilter.all),
-        buildParkingLotRow(ParkingFilter.free),
-        buildParkingLotRow(ParkingFilter.paid),
+        const _ParkingLotRow(type: ParkingFilter.all),
+        const _ParkingLotRow(type: ParkingFilter.free),
+        const _ParkingLotRow(type: ParkingFilter.paid),
       ],
+    );
+  }
+}
+
+class _ParkingLotRow extends ConsumerWidget {
+  final ParkingFilter type;
+  const _ParkingLotRow({
+    super.key,
+    required this.type,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final parkingDetailsNotifier = ref.watch(parkingDetailsProvider.notifier);
+    final state = ref.watch(parkingDetailsProvider);
+
+    return SliverToBoxAdapter(
+      child: ContentRow(
+        onTap: () => parkingDetailsNotifier.setParkingFilter(type),
+        options: ContentRowOptions(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+          leadingIcon: type.icon().icon(),
+          wrapperEnabled: true,
+          wrapperColor: Colors.transparent,
+          actionWidget: state.parkingFilter == type
+              ? ContentRowActionOptions(
+                  actionIcon: SystemIcons.checkmark.icon(
+                    color: context.color.textAndIconsStatusAccent,
+                  ),
+                )
+              : null,
+          title: type.title(context.l10n),
+          titleStyle: context.textStyle.text.copyWith(
+            color: context.color.textAndIconsBasePrimary,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -48,7 +48,9 @@ class SelectedLayer extends _$SelectedLayer {
   LayerType? build(LayerType? layerType) => null;
 }
 
-enum LayersWidgetType { layers, parking }
+enum LayersType { lifestyle, business }
+
+enum LayersPanelType { layers, parking }
 
 class LayersState {
   LayersState({
@@ -58,7 +60,8 @@ class LayersState {
     required this.investmentsMarkers,
     required this.polylines,
     required this.polygons,
-    this.layersWidgetType = LayersWidgetType.layers,
+    this.layersPanelType = LayersPanelType.layers,
+    this.layersType = LayersType.lifestyle,
   });
 
   final bool layersVisible;
@@ -69,7 +72,8 @@ class LayersState {
   Map<String, Polyline> polylines = {};
   Map<String, Polygon> polygons = {};
 
-  final LayersWidgetType layersWidgetType;
+  final LayersPanelType layersPanelType;
+  final LayersType layersType;
 
   LayersState copyWith({
     bool? layersVisible,
@@ -78,7 +82,8 @@ class LayersState {
     Map<String, Marker>? investmentsMarkers,
     Map<String, Polyline>? polylines,
     Map<String, Polygon>? polygons,
-    LayersWidgetType? layersWidgetType,
+    LayersPanelType? layersWidgetType,
+    LayersType? layersType,
   }) =>
       LayersState(
         isLoading: isLoading ?? this.isLoading,
@@ -87,7 +92,8 @@ class LayersState {
         investmentsMarkers: investmentsMarkers ?? this.investmentsMarkers,
         polylines: polylines ?? this.polylines,
         polygons: polygons ?? this.polygons,
-        layersWidgetType: layersWidgetType ?? this.layersWidgetType,
+        layersPanelType: layersWidgetType ?? this.layersPanelType,
+        layersType: layersType ?? this.layersType,
       );
 }
 
@@ -228,7 +234,8 @@ class LayersControls extends _$LayersControls {
     Map<String, Marker>? investmentsMarkers,
     Map<String, Polyline>? polylines,
     Map<String, Polygon>? polygons,
-    LayersWidgetType? layersWidgetType,
+    LayersPanelType? layersWidgetType,
+    LayersType? layersType,
   }) {
     state = state.copyWith(
       investmentsMarkers: investmentsMarkers ?? state.investmentsMarkers,
@@ -237,7 +244,8 @@ class LayersControls extends _$LayersControls {
       isLoading: isLoading ?? state.isLoading,
       polygons: polygons ?? state.polygons,
       polylines: polylines ?? state.polylines,
-      layersWidgetType: layersWidgetType ?? state.layersWidgetType,
+      layersWidgetType: layersWidgetType ?? state.layersPanelType,
+      layersType: layersType ?? state.layersType,
     );
   }
 
@@ -263,6 +271,8 @@ class LayersControls extends _$LayersControls {
       ..invalidate(favouriteMarkersProvider);
 
     state = LayersState(
+      layersType: state.layersType,
+      layersPanelType: state.layersPanelType,
       investmentsMarkers: state.investmentsMarkers,
       layersVisible: state.layersVisible,
       selectedType: selectedType,
@@ -469,7 +479,6 @@ class LayersControls extends _$LayersControls {
         .map(_makePolygons)
         .listen((data) async {
       update(isLoading: false);
-      // await mapManager.removeAllPolygons();
       await _removeAll();
       if (state.selectedType == LayerType.fencing) {
         final statePolygons = state.polygons;
@@ -513,7 +522,6 @@ class LayersControls extends _$LayersControls {
         .listen(
       (data) async {
         update(isLoading: false);
-        // await mapObjectManager.removeAllPolyLines();
         await _removeAll();
         if (state.selectedType == LayerType.buildings) {
           final polylineList = _makePolylineWithPoint(data);
@@ -611,7 +619,6 @@ class LayersControls extends _$LayersControls {
 
   Future<void> showIwish() async {
     update(isLoading: true);
-    // await _removeAll();
     const duration = Duration(seconds: 10);
     final markers = await ref.read(iwishMarkersProvider.future).onError((error, stackTrace) {
       onError();
@@ -663,6 +670,6 @@ class LayersControls extends _$LayersControls {
   }
 
   void showParking() {
-    update(layersWidgetType: LayersWidgetType.parking);
+    update(layersWidgetType: LayersPanelType.parking);
   }
 }
