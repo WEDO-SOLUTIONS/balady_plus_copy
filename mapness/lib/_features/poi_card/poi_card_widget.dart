@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -12,6 +13,7 @@ import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
+import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
@@ -22,6 +24,10 @@ import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -30,6 +36,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -281,6 +288,27 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               () => _bottomSheetController.animateTo(Expansion.collapsed),
               widget.closestPoint,
             ),
+            onTapCar: () {
+              final mapSetting = MapObjectManagerSettings.search();
+              ref
+                  .read(
+                    mapObjectManagerProvider(
+                      named: mapSetting.name,
+                      layerId: mapSetting.layerId,
+                    ).notifier,
+                  )
+                  .setMapObjectManagerIsVisible(isVisible: false);
+
+              _openRoutingRoutes(
+                context,
+                ref,
+                data,
+                RouteSearchPoint(
+                  coordinates: data.markerPosition!.toGeoPointMessage(),
+                  dgisObjectId: data.id!,
+                ),
+              );
+            },
           ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
           scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
@@ -333,4 +361,50 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       ),
     );
   }
+
+  void _openRoutingRoutes(
+      BuildContext context, WidgetRef ref, DirectoryObjectMessage data, RouteSearchPoint finishPoint) {
+    final objectMessage = data;
+    Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'object_id': objectMessage.id?.objectId,
+          'finish_point': '${finishPoint.coordinates.latitude},${finishPoint.coordinates.longitude}'
+        });
+
+    final goRouter = ref.read(goRouterProvider);
+    final matches = goRouter.routerDelegate.currentConfiguration.matches;
+    final hasRoutingRoutes = matches.any((element) => element.matchedLocation == RoutingRoutesRoute.path);
+
+    if (hasRoutingRoutes) {
+      context.popRouteUntilFirst();
+      final dgisObjectId = objectMessage.id?.objectId;
+      if (dgisObjectId != null) {
+        PoiMapRoute.open(goRouter, dgisObjectId);
+      }
+    }
+
+    final route = _createRoutingRoute(objectMessage, context.l10n.myLocation);
+    unawaited(route.push(context));
+  }
+
+  RoutingRoutesRoute _createRoutingRoute(
+    DirectoryObjectMessage objectMessage,
+    String startLabel,
+  ) =>
+      RoutingRoutesRoute(
+        finishLabel: objectMessage.title,
+        finishLatitude: objectMessage.markerPosition!.latitude,
+        finishLongitude: objectMessage.markerPosition!.longitude,
+        finishObjectId: objectMessage.id?.objectId,
+        finishEntranceId: objectMessage.id?.entranceId,
+        finishLevelId: objectMessage.levelId,
+        startLabel: startLabel,
+        startLatitude: null,
+        startLongitude: null,
+        startObjectId: null,
+        startEntranceId: null,
+        startLevelId: null,
+      );
 }
