@@ -52,9 +52,7 @@ class MapControls extends ConsumerWidget {
                           Spacer(),
                           CompassControl(),
                           SizedBox(height: 8),
-                          FollowControl(
-                            onlyFollowDirection: false,
-                          ),
+                          FollowControl(),
                         ],
                       ),
                     ],

@@ -100,9 +100,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           Spacer(),
                           ZoomControl(),
                           Spacer(),
-                          FollowControl(
-                            onlyFollowDirection: false,
-                          ),
+                          FollowControl(),
                         ],
                       ),
                     ),
@@ -173,30 +171,30 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                               action: MetricAction.tap.toString(),
                             );
 
-                            context.pop(null);
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    _NearestObject(
-                      nearestObject: nearestObject,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 12,
-                        bottom: 8,
+                              context.pop();
+                            },
+                          ),
+                        ],
                       ),
-                      child: LabeledElevatedButton(
-                        label: context.l10n.done,
-                        onPressed: () {
-                          Metrics.logEventAdvanced(
-                            MetricsConstants.routesKeys.specifyOnMapDone,
-                            group: MetricsConstants.routesTag,
-                            action: MetricAction.tap.toString(),
-                          );
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      _NearestObject(
+                        nearestObject: nearestObject,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 12,
+                          bottom: 8,
+                        ),
+                        child: LabeledElevatedButton(
+                          label: context.l10n.done,
+                          onPressed: () {
+                            Metrics.logEventAdvanced(
+                              MetricsConstants.routesKeys.specifyOnMapDone,
+                              group: MetricsConstants.routesTag,
+                              action: MetricAction.tap.toString(),
+                            );
 
                           switch (nearestObject.value!) {
                             case DGisNearestObject(object: final object):
