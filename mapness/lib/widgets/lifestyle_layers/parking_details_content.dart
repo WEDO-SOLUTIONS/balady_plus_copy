@@ -76,18 +76,21 @@ class ParkingDetailsContent extends ConsumerWidget {
 class _ParkingLotRow extends ConsumerWidget {
   final ParkingFilter type;
   const _ParkingLotRow({
-    super.key,
     required this.type,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final parkingDetailsNotifier = ref.watch(parkingDetailsProvider.notifier);
+    final layersControls = ref.watch(layersControlsProvider.notifier);
     final state = ref.watch(parkingDetailsProvider);
 
     return SliverToBoxAdapter(
       child: ContentRow(
-        onTap: () => parkingDetailsNotifier.setParkingFilter(type),
+        onTap: () async {
+          await layersControls.enableParking();
+          await parkingDetailsNotifier.setParkingFilter(type);
+        },
         options: ContentRowOptions(
           padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
           leadingIcon: type.icon().icon(),

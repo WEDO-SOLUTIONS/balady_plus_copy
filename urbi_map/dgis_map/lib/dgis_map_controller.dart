@@ -558,6 +558,7 @@ class DgisMapController {
 
   Future<void> installVoice(String id) => _instance.installVoice(id);
 
+  ///Set navigator voice
   Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
 
   ///Set better route response
@@ -569,10 +570,12 @@ class DgisMapController {
   ///Set better route settings
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
 
+  ///Set map attribute bool
   Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {
+  ///get time is open now
   static WeekTimeSearchMessage openNow() => WeekTimeSearchMessage(isOpenNow: true);
 }
 

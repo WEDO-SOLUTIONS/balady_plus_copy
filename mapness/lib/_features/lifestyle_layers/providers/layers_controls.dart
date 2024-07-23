@@ -92,7 +92,7 @@ class LayersState {
         investmentsMarkers: investmentsMarkers ?? this.investmentsMarkers,
         polylines: polylines ?? this.polylines,
         polygons: polygons ?? this.polygons,
-        layersPanelType: layersWidgetType ?? this.layersPanelType,
+        layersPanelType: layersWidgetType ?? layersPanelType,
         layersType: layersType ?? this.layersType,
       );
 }
@@ -372,6 +372,15 @@ class LayersControls extends _$LayersControls {
 
       await ref.read(parkingStateProvider.notifier).hideParking();
     } else {
+      setSelection(selectedType: LayerType.parkingLots);
+      await ref.read(parkingStateProvider.notifier).showParking();
+    }
+  }
+
+  Future<void> enableParking() async {
+    await viewPortSubscription?.cancel();
+
+    if (state.selectedType != LayerType.parkingLots) {
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
     }
