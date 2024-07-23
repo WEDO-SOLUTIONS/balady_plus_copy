@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
@@ -21,6 +25,7 @@ import 'package:mapness/_features/poi_card/widgets/footer/poi_card_footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/info_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
@@ -31,6 +36,7 @@ import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -309,6 +315,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                 ),
               );
             },
+            onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
           ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
           scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
@@ -407,4 +414,93 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
         startEntranceId: null,
         startLevelId: null,
       );
+
+  Future<void> _onFavoriteTap({
+    required BuildContext context,
+    required WidgetRef ref,
+    required DirectoryObjectMessage data,
+    FavouriteItem? favouriteItem,
+  }) async {
+    await CommonFunctions.authOrOpen(
+      context,
+      callback: () {
+        Metrics.logEventAdvanced(
+          MetricsConstants.poiKeys.addToFavorite,
+          group: MetricsConstants.poiTag,
+          action: MetricAction.tap.toString(),
+          props: {
+            'objectId': data.id?.objectId,
+          },
+        );
+
+        final favState = ref.read(favouriteCacheProvider).valueOrNull;
+        final favRepo = ref.read(favouriteCacheProvider.notifier);
+
+        /// if already in favourites - remove
+        if (favouriteItem != null) {
+          favRepo.deleteItem(favouriteItem);
+          return;
+        }
+
+        FavouriteItem? favItem = favouriteItem;
+        if (favItem == null && data.markerPosition != null && data.id != null) {
+          favItem = FavouriteItem(
+            coordinates: Coordinates(
+              latitude: data.markerPosition!.latitude,
+              longitude: data.markerPosition!.longitude,
+            ),
+            id: 'overriden',
+            subtitle: data.subtitle,
+            title: data.title,
+            entity: FavouriteItemEntity(
+              sourceType: EntitySourceType.urbi,
+              id: data.id!.objectId.toString(),
+            ),
+          );
+        }
+
+        if (favItem == null) {
+          return;
+        }
+
+        /// do not show dialog if home and work are set
+        if (favState?.home != null && favState?.work != null) {
+          favRepo.addItem(data.mapToFavourite());
+        } else {
+          /// show dialog to choose home, work or regular
+          _showDialog(context, favItem);
+        }
+      },
+    );
+  }
+
+  Future<void> _showDialog(
+    BuildContext context,
+    FavouriteItem newFavourite,
+  ) async {
+    await showDialog(
+      context: context,
+      builder: (contextDialog) => ProviderScope(
+        parent: ProviderScope.containerOf(context),
+        child: Theme(
+          data: Theme.of(context),
+          child: MediaQuery(
+            data: MediaQuery.of(context),
+            child: Directionality(
+              textDirection: Directionality.of(context),
+              child: Localizations.override(
+                context: context,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: PoiFavoriteDialog(
+                    favItem: newFavourite,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
