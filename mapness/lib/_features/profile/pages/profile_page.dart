@@ -8,7 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/routes/profile.dart';
-import 'package:mapness/app/routes/stories.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -212,14 +211,6 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                      child: AppButton(
-                    primaryLabel: 'Test',
-                    onTap: () {
-                      StoriesRoute.openOnboarding(context);
-                    },
-                    buttonColorScheme: ButtonColorScheme.primary,
-                  )),
                 ],
               ),
             ),
