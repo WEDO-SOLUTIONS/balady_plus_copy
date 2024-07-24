@@ -1,8 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_uikit/core/colors/colors_v2/app_colors_theme_v2.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/colors_v2/core/base.dart';
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
 import 'package:flutter/material.dart';
 
 /// Represents the theme data for a story frame.
@@ -165,7 +163,7 @@ class StoryActionThemeData {
   }) =>
       StoryActionThemeData._(
         backgroundColor: BaseColors.extra01,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.all(Spacing.$6x),
         textColor: Colors.white,
         textStyle: textTheme.bodyLargeRegular,
       );
