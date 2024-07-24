@@ -199,10 +199,12 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           );
 
                           switch (nearestObject.value!) {
-                            case DGisNearestObject(object: final object):
+                            case DGisNearestObject(nearestPoint: final nearestPoint):
                               context.pop(
-                                RoutePointDirectoryObject(
-                                  object,
+                                /// We replace RoutePointDirectoryObject with RoutePointCoordinates
+                                /// because we get incorrect route to the object coordinates
+                                RoutePointCoordinates(
+                                  nearestPoint.geoPoint,
                                 ),
                               );
                             case CooridnatesNearestObject(geoPoint: final geoPoint):
