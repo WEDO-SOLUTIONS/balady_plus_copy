@@ -42,19 +42,12 @@ class StoryFrameThemeData {
     ).copyWith(
       hasGradient: actionHasGradient,
     );
-    final closeButtonTheme = StoryCloseButtonThemeData.fromId(
-      id,
-      colorTheme: colorTheme,
-    );
-    final trackTheme = StoryTrackThemeData.fromId(id);
 
     final baseTheme = StoryFrameThemeData.baseTheme(
       colorTheme: colorTheme,
       textTheme: textTheme,
     ).copyWith(
       actionTheme: actionTheme,
-      closeButtonTheme: closeButtonTheme,
-      trackTheme: trackTheme,
     );
 
     return switch (id) {
@@ -70,6 +63,9 @@ class StoryFrameThemeData {
 
   /// Creates a base [StoryFrameThemeData] instance.
   factory StoryFrameThemeData.baseTheme({
+    /// Its not used in the current implementation.
+    /// But if you need to get color from the theme, you can use this parameter.
+    // ignore: avoid_unused_constructor_parameters
     required AppColorsThemeV2 colorTheme,
     required ThemeTextStylesV3 textTheme,
   }) =>
@@ -87,7 +83,7 @@ class StoryFrameThemeData {
           right: 18,
         ),
         actionTheme: StoryActionThemeData.baseTheme(textTheme: textTheme),
-        closeButtonTheme: StoryCloseButtonThemeData.baseTheme(colorTheme: colorTheme),
+        closeButtonTheme: StoryCloseButtonThemeData.baseTheme(),
         trackTheme: StoryTrackThemeData.baseTheme(),
       );
 
@@ -223,30 +219,21 @@ class StoryCloseButtonThemeData {
       );
 
   /// Creates a base [StoryCloseButtonThemeData] instance.
-  factory StoryCloseButtonThemeData.baseTheme({
-    required AppColorsThemeV2 colorTheme,
-  }) =>
-      StoryCloseButtonThemeData(
-        backgroundColor: colorTheme.backgroundDisabled,
-        iconColor: AppColor.black,
+  factory StoryCloseButtonThemeData.baseTheme() => StoryCloseButtonThemeData(
+        iconColor: AppColor.white,
+        backgroundColor: AppColor.white.withOpacity(0.06),
       );
 
   /// Creates a [StoryCloseButtonThemeData] instance based on the provided ID.
-  factory StoryCloseButtonThemeData.fromId(
-    String id, {
-    required AppColorsThemeV2 colorTheme,
-  }) {
-    final baseTheme = StoryCloseButtonThemeData.baseTheme(
-      colorTheme: colorTheme,
-    );
-    final onboardingTheme = baseTheme.copyWith(
-      iconColor: AppColor.white,
-      backgroundColor: AppColor.white.withOpacity(0.06),
-    );
+  /// Its not used in the current implementation.
+  /// But if you neet to specify a theme for a specific story, you can use this method.
+  factory StoryCloseButtonThemeData.fromId(String id) {
+    final baseTheme = StoryCloseButtonThemeData.baseTheme();
+
     return switch (id) {
-      'onboarding1' => onboardingTheme,
-      'onboarding2' => onboardingTheme,
-      'onboarding3' => onboardingTheme,
+      'onboarding1' => baseTheme,
+      'onboarding2' => baseTheme,
+      'onboarding3' => baseTheme,
       _ => baseTheme,
     };
   }
@@ -274,21 +261,19 @@ class StoryTrackThemeData {
 
   /// Creates a base [StoryTrackThemeData] instance.
   factory StoryTrackThemeData.baseTheme() => StoryTrackThemeData(
-        backgroundColor: AppColor.black.withOpacity(0.1),
-        color: AppColor.black,
+        color: AppColor.white,
+        backgroundColor: AppColor.white.withOpacity(0.1),
       );
 
   /// Creates a [StoryTrackThemeData] instance based on the provided ID.
+  /// Its not used in the current implementation.
+  /// But if you neet to specify a theme for a specific story, you can use this method.
   factory StoryTrackThemeData.fromId(String id) {
     final baseTheme = StoryTrackThemeData.baseTheme();
-    final onboardingTheme = baseTheme.copyWith(
-      color: AppColor.white,
-      backgroundColor: AppColor.white.withOpacity(0.1),
-    );
     return switch (id) {
-      'onboarding1' => onboardingTheme,
-      'onboarding2' => onboardingTheme,
-      'onboarding3' => onboardingTheme,
+      'onboarding1' => baseTheme,
+      'onboarding2' => baseTheme,
+      'onboarding3' => baseTheme,
       _ => baseTheme,
     };
   }

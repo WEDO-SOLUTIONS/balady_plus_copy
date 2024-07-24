@@ -21,12 +21,14 @@ class NetworkLinkFrameAction extends StoryFrameAction {
 /// Title is a locale key that should be used to get the title from the localization.
 /// This action is used to navigate to a specific location using [location].
 class NavigationFrameAction extends StoryFrameAction {
+  final String? title;
   final String localeKey;
   final String location;
 
   const NavigationFrameAction({
     required this.location,
     required this.localeKey,
+    this.title,
   });
 }
 
@@ -37,8 +39,10 @@ class NavigationFrameAction extends StoryFrameAction {
 
 class NextStoryAction extends StoryFrameAction {
   final String localeKey;
+  final String? title;
 
   const NextStoryAction({
     this.localeKey = 'next',
+    this.title,
   });
 }

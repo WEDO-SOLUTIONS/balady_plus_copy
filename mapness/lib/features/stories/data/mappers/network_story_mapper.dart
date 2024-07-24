@@ -57,9 +57,24 @@ extension ColorMapper on NetowrkColor {
 }
 
 extension NetworkStoryPageActionMapper on NetworkStoryPageAction {
-  StoryFrameAction? toDomain() => NetworkLinkFrameAction(
+  StoryFrameAction? toDomain() {
+    const navLinkPattern = 'balady:/';
+    if (link.url.startsWith(navLinkPattern)) {
+      return NavigationFrameAction(
+        location: link.url.replaceFirst(navLinkPattern, ''),
+        localeKey: '',
+        title: title,
+      );
+    }
+    if (link.url.startsWith('http')) {
+      return NetworkLinkFrameAction(
         title: title,
         // TODO(someone): support deeplinks in native platforms
-        url: link.url.replaceFirst('balady:/', ''),
+        url: link.url,
       );
+    }
+    return NextStoryAction(
+      title: title,
+    );
+  }
 }

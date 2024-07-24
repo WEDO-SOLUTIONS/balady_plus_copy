@@ -40,8 +40,8 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
   String _getActionTitle() {
     final l10n = context.l10n;
     return switch (widget.action) {
-      NextStoryAction(localeKey: final key) => _keyToLocale(l10n, key),
-      NavigationFrameAction(localeKey: final key) => _keyToLocale(l10n, key),
+      NextStoryAction(localeKey: final key, title: final title) => title ?? _keyToLocale(l10n, key),
+      NavigationFrameAction(localeKey: final key, title: final title) => title ?? _keyToLocale(l10n, key),
       NetworkLinkFrameAction(title: final title) => title,
     };
   }
