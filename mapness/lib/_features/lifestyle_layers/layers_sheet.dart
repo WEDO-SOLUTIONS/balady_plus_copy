@@ -3,12 +3,10 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/_features/lifestyle_layers/map_controls.dart' as controls;
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/widgets/lifestyle_layers/layers_sheet_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_details_content.dart';
-
-import '../../app/router.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -79,8 +77,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
       }
     });
 
-    final controlsBottomExtent = MediaQuery.of(context).size.height * _layersPanelMaxHeight;
-
     return Scaffold(
       body: Stack(
         alignment: Alignment.bottomCenter,
@@ -88,9 +84,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
           ColoredBox(
             color: context.staticColor.surfaceOverlayModal,
             child: GestureDetector(onTap: context.pop),
-          ),
-          controls.MapControls(
-            bottomExtent: controlsBottomExtent,
           ),
           DraggableScrollableSheet(
             controller: _layersScrollableController,
