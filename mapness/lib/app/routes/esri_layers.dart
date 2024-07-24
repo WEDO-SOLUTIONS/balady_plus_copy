@@ -9,8 +9,8 @@ part 'esri_layers.g.dart';
   path: EsriLayersRoute.path,
 )
 class EsriLayersRoute extends GoRouteData {
-
   const EsriLayersRoute();
+
   static const path = '/esri-layers';
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
@@ -32,7 +32,7 @@ class EsriLayersRoute extends GoRouteData {
         opaque: false,
         transitionsBuilder: (_, __, ___, child) => child,
         child: const LayersSheet(key: Key('ESRI CARD WIDGET')),
-    );
+      );
 }
 
 final $layersRoutes = $appRoutes;
