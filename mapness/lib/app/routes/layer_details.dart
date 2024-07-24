@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
-import 'package:mapness/_features/lifestyle_layers/layers_details_widget.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
+import 'package:mapness/widgets/lifestyle_layers/layers_details_widget.dart';
 
 part 'layer_details.g.dart';
 
@@ -11,9 +11,9 @@ part 'layer_details.g.dart';
   path: LayerDetailsRoute.path,
 )
 class LayerDetailsRoute extends GoRouteData {
-
   LayerDetailsRoute();
-static const path = '/layer-details';
+
+  static const path = '/layer-details';
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   static void open(GoRouter router, PointLayersData e) {

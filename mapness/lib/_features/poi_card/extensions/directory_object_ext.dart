@@ -194,16 +194,18 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
       );
     } else {
       final todayOpeningInfo = model.getTodayOpeningInfo(l10n);
-      //final isWeekend = todayOpeningInfo?.isWeekend ?? false;
+      final isWeekend = todayOpeningInfo?.isWeekend ?? false;
 
       final title = StringBuffer()
         ..write(l10n.today)
         ..write(' ');
-      if (todayOpeningInfo != null) {
+      if (todayOpeningInfo != null && todayOpeningInfo.openHour != null && todayOpeningInfo.closeHour != null) {
         title
           ..write(todayOpeningInfo.openHour)
           ..write(' - ')
           ..write(todayOpeningInfo.closeHour);
+      } else if (isWeekend) {
+        title.write(l10n.weekend);
       }
       final days = _createWorkTimeDays(
         model.openingHours,

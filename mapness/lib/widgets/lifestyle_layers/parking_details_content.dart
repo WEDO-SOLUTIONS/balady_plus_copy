@@ -1,0 +1,74 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/widgets/lifestyle_layers/parking_lot_row.dart';
+
+class ParkingDetailsContent extends ConsumerWidget {
+  final ScrollController scrollController;
+
+  const ParkingDetailsContent({
+    required this.scrollController,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final layersControlsProviderNotifier = ref.watch(layersControlsProvider.notifier);
+
+    return CustomScrollView(
+      controller: scrollController,
+      primary: false,
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Material(
+            color: Colors.transparent,
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                const SheetDragger(),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Text(
+                      context.l10n.parkingLots,
+                      style: context.textStyle.heading2,
+                    ),
+                    const Spacer(),
+                    AppButton.close(
+                      onTap: () {
+                        Metrics.logEventAdvanced(
+                          MetricsConstants.layersKeys.exitIcon,
+                          group: MetricsConstants.layersTag,
+                          action: MetricAction.tap.toString(),
+                        );
+
+                        layersControlsProviderNotifier.update(
+                          layersWidgetType: LayersPanelType.layers,
+                        );
+                      },
+                      padding: EdgeInsets.zero,
+                      innerPadding: const EdgeInsets.all(8),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        ),
+        const ParkingLotRow(type: ParkingFilter.all),
+        const ParkingLotRow(type: ParkingFilter.free),
+        const ParkingLotRow(type: ParkingFilter.paid),
+      ],
+    );
+  }
+}

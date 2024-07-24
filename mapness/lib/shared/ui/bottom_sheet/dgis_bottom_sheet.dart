@@ -481,9 +481,9 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                             if (widget.actions != null)
                               Positioned(
                                 top: _initialized ? _maxVisibleHeight - _visibleHeight + actionsHeight : _screenHeight,
-                                height: _visibleHeight,
                                 left: 0,
                                 right: 0,
+                                bottom: 0,
                                 child: Container(
                                   height: _screenHeight,
                                   alignment: Alignment.bottomCenter,

@@ -40,61 +40,82 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     });
   }
 
-  void _deleteItem(FavouriteItem? item, BuildContext context) {
+  /// Special method to delete the item from the cache for home and work cards.
+  /// Combines the logic of the [_onDeleteConfirmation] and [_onDelete] methods.
+  Future<void> _deleteItem(FavouriteItem? item, BuildContext context) async {
     if (item == null) {
       return;
     }
-    _onDeleteConfirmation(item, context);
+    final result = await _onDeleteConfirmation(item, context);
+
+    if (result == true) {
+      _onDelete(item);
+    }
   }
 
-  // We have to pass [ctx] value because of text and colors settings, localization. The easiest way to do this
-  // Also here we have to set color for text styles because [CupertinoActionSheet] make it by default in
-  // Apple / iOS style
-  // We can't control [borderRadius] or [padding]s here. But this is the simple and robust solution
-  void _onDeleteConfirmation(FavouriteItem item, BuildContext ctx) {
-    showCupertinoModalPopup<void>(
-      context: ctx,
-      builder: (context) => CupertinoActionSheet(
-        message: Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 8),
-          child: Text(
-            ctx.l10n.deleteAlertFavourites,
-            style: ctx.textStyle.footNote.copyWith(
-              color: ctx.color.textAndIconsBaseSecondary,
-              letterSpacing: 0,
-            ),
-          ),
-        ),
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            isDefaultAction: true,
-            isDestructiveAction: true,
-            onPressed: () {
-              ref.read(favouriteCacheProvider.notifier).deleteItem(item);
-              Navigator.pop(context);
-            },
+  /// Pure function to delete the item from the cache
+  /// Created specifically to work with dismissible items (Dismissible widget that can be swiped to delete)
+  /// For [Dismissible] this method should be called after the [_onDeleteConfirmation] method
+  ///
+  /// Example:
+  /// ```dart
+  ///   _onDeleteConfirmation(item, context).then((value) {
+  ///    if (value == true) {
+  ///      _onDelete(item);
+  ///    }
+  ///  });
+  /// ```
+  void _onDelete(FavouriteItem item) {
+    ref.read(favouriteCacheProvider.notifier).deleteItem(item);
+  }
+
+  /// We have to pass [ctx] value because of text and colors settings, localization. The easiest way to do this
+  /// Also here we have to set color for text styles because [CupertinoActionSheet] make it by default in
+  /// Apple / iOS style
+  /// We can't control [borderRadius] or [padding]s here. But this is the simple and robust solution
+  ///
+  /// This method should return [bool] value to show if the item should be deleted or not
+  Future<bool?> _onDeleteConfirmation(FavouriteItem item, BuildContext ctx) async => showCupertinoModalPopup<bool>(
+        context: ctx,
+        builder: (context) => CupertinoActionSheet(
+          message: Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: Text(
-              ctx.l10n.delete,
-              style: ctx.textStyle.callout.copyWith(
-                color: ctx.color.textAndIconsStatusNegative,
+              ctx.l10n.deleteAlertFavourites,
+              style: ctx.textStyle.footNote.copyWith(
+                color: ctx.color.textAndIconsBaseSecondary,
+                letterSpacing: 0,
               ),
             ),
           ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text(
-            ctx.l10n.cancel,
-            style: ctx.textStyle.callout.copyWith(
-              color: ctx.color.textAndIconsBasePrimary,
+          actions: <CupertinoActionSheetAction>[
+            CupertinoActionSheetAction(
+              isDefaultAction: true,
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: Text(
+                ctx.l10n.delete,
+                style: ctx.textStyle.callout.copyWith(
+                  color: ctx.color.textAndIconsStatusNegative,
+                ),
+              ),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+            child: Text(
+              ctx.l10n.cancel,
+              style: ctx.textStyle.callout.copyWith(
+                color: ctx.color.textAndIconsBasePrimary,
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
   @override
   Widget build(BuildContext ctx) {
@@ -152,7 +173,6 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                 ],
               ),
             ),
-
             trailing: Row(
               children: [
                 if (isEditing)
@@ -189,7 +209,6 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
               color: ctx.color.textAndIconsBasePrimary,
             ),
             title: ctx.l10n.favourites,
-            // centerTitle: true,
           ),
           backgroundColor: Colors.white,
           body: Padding(
@@ -352,18 +371,18 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                   separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (_, index) {
                     final item = state.items[index];
-                    const radius = Radius.circular(12);
+                    const radius = Radius.circular(RadiusBorder.l);
                     return Container(
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
-                          color: context.color.surfaceBaseSecondary,
-                          borderRadius: BorderRadius.only(
-                            topLeft: index == 0 ? radius : Radius.zero,
-                            topRight: index == 0 ? radius : Radius.zero,
-                            bottomLeft: index == state.items.length - 1 ? radius : Radius.zero,
-                            bottomRight: index == state.items.length - 1 ? radius : Radius.zero,
-                          )),
+                        color: context.color.surfaceBaseSecondary,
+                        borderRadius: BorderRadius.vertical(
+                          top: index == 0 ? radius : Radius.zero,
+                          bottom: index == state.items.length - 1 ? radius : Radius.zero,
+                        ),
+                      ),
                       child: FavouriteItemWidget(
+                        key: ValueKey(item.id),
                         isFirst: index == 0,
                         isLast: index == state.items.length - 1,
                         isSelected: selectedItems.containsKey(item.id),
@@ -377,7 +396,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           });
                         },
                         onShareTap: () => ShareUtil.share(item.entity?.id),
-                        onDelete: () => _deleteItem(item, ctx),
+                        onDelete: () => _onDelete(item),
+                        onDeleteConfirmation: () async => _onDeleteConfirmation(item, ctx),
                         onRouteTap: () {
                           RoutingRoutesRoute(
                             finishLabel: item.title,

@@ -56,7 +56,7 @@ class LayerSliverList extends ConsumerWidget {
             title: value.titleLocale(context.l10n),
             actionWidget: value == layers_state.LayerType.parkingLots
                 ? ContentRowActionOptions(
-                    actionPressed: () {},
+                    actionPressed: () => watch.showParking(),
                     actionIcon: const AppIcons(iconData: SystemIcons.ellipsis),
                   )
                 : null,
