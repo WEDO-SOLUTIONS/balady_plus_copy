@@ -61,7 +61,7 @@ class PoiCardFooter extends ConsumerWidget {
         ItemActionBar(
           icon: TransportIcons.car,
           colorScheme: ButtonColorScheme.primary,
-          label: briefInfo?.first.getBriefRouteDescription(context.l10n) ?? '',
+          label: briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
           onPressed: onTapCar,
         ),
         if (hasContactsAndHasEntrances)
