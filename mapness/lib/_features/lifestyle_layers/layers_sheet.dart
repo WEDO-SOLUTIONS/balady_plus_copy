@@ -15,26 +15,26 @@ class LayersSheet extends ConsumerStatefulWidget {
   ConsumerState<LayersSheet> createState() => LayersSheetState();
 }
 
-class LayersSheetState extends ConsumerState<LayersSheet> {
+class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
   static const _layersPanelMaxHeight = .5;
-  static const _layersPanelHideHeight = .11;
   static const _parkingPanelMaxHeight = .35;
 
-  late final DraggableScrollableController _layersScrollableController;
-  late final DraggableScrollableController _parkingLotsScrollableController;
+  late final DraggableScrollableController _layersController;
+  late final DraggableScrollableController _parkingLotsController;
 
   @override
   void initState() {
     super.initState();
-    _layersScrollableController = DraggableScrollableController();
-    _parkingLotsScrollableController = DraggableScrollableController();
-    _layersScrollableController.addListener(() {
-      if (_layersScrollableController.isAttached && _layersScrollableController.size < .10) {
+    _layersController = DraggableScrollableController();
+    _parkingLotsController = DraggableScrollableController();
+
+    _layersController.addListener(() {
+      if (_layersController.isAttached && _layersController.size < .1) {
         ref.read(goRouterProvider).pop();
       }
     });
-    _parkingLotsScrollableController.addListener(() {
-      if (_parkingLotsScrollableController.isAttached && _parkingLotsScrollableController.size == 0) {
+    _parkingLotsController.addListener(() {
+      if (_parkingLotsController.isAttached && _parkingLotsController.size < .01) {
         ref.watch(layersControlsProvider.notifier).update(
               layersWidgetType: LayersPanelType.layers,
             );
@@ -45,37 +45,45 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(layersControlsProvider);
-    final direction = ref.watch(uiDirectionProvider);
 
-    ref.listen(layersControlsProvider, (_, nextState) async {
-      const duration = Duration(milliseconds: 200);
-      const easeIn = Curves.easeIn;
+    ref.listen(layersControlsProvider, (_, next) {
+      const duration = Duration(milliseconds: 300);
+      const easeIn = Curves.ease;
 
-      switch (nextState.layersPanelType) {
+      switch (next.layersPanelType) {
         case LayersPanelType.layers:
-          await _parkingLotsScrollableController.animateTo(
+          _parkingLotsController
+              .animateTo(
             0,
             duration: duration,
             curve: easeIn,
-          );
-          await _layersScrollableController.animateTo(
-            _layersPanelMaxHeight,
-            duration: duration,
-            curve: easeIn,
-          );
+          )
+              .then((_) {
+            _layersController.animateTo(
+              _layersPanelMaxHeight,
+              duration: duration,
+              curve: easeIn,
+            );
+          });
+
         case LayersPanelType.parking:
-          await _layersScrollableController.animateTo(
-            _layersPanelHideHeight,
+          _layersController
+              .animateTo(
+            .11,
             duration: duration,
             curve: easeIn,
-          );
-          await _parkingLotsScrollableController.animateTo(
-            _parkingPanelMaxHeight,
-            duration: duration,
-            curve: easeIn,
-          );
+          )
+              .then((_) {
+            _parkingLotsController.animateTo(
+              _parkingPanelMaxHeight,
+              duration: duration,
+              curve: easeIn,
+            );
+          });
       }
     });
+
+    final direction = ref.watch(uiDirectionProvider);
 
     return Scaffold(
       body: Stack(
@@ -86,7 +94,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
             child: GestureDetector(onTap: context.pop),
           ),
           DraggableScrollableSheet(
-            controller: _layersScrollableController,
+            controller: _layersController,
             minChildSize: .0,
             maxChildSize: _layersPanelMaxHeight,
             snapSizes: const [.0, _layersPanelMaxHeight],
@@ -122,10 +130,11 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
             ),
           ),
           DraggableScrollableSheet(
-            controller: _parkingLotsScrollableController,
-            initialChildSize: 0,
-            minChildSize: 0,
+            controller: _parkingLotsController,
+            initialChildSize: .001,
+            minChildSize: .001,
             maxChildSize: _parkingPanelMaxHeight,
+            snap: true,
             shouldCloseOnMinExtent: false,
             snapSizes: const [_parkingPanelMaxHeight],
             builder: (context, scrollController) => Directionality(

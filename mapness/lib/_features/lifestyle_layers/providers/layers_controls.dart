@@ -124,31 +124,10 @@ class LayersControls extends _$LayersControls {
       tapSubscription?.cancel();
     });
 
-    tapSubscription = tapSubject.debounceTime(duration).listen((value) {
-      final currentState = state.selectedType;
-
-      cancelToken?.cancel();
-      viewPortSubscription?.cancel();
-
-      _hideAllSelectedMarkers();
-
-      switch (value) {
-        case LayerType.favourites:
-          toggleFavourites(currentState);
-        case LayerType.buildings:
-          toggleComplianceBuildings();
-        case LayerType.invest:
-          toggleInvestOpportunities();
-        case LayerType.fencing:
-          toggleWhiteLands();
-        case LayerType.parkingLots:
-          toggleParking();
-        case LayerType.joy:
-          toggleIwish();
-      }
-    });
+    tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
 
     final selectedLayerState = _getLayerState();
+    toggle(selectedLayerState);
 
     return LayersState(
       layersVisible: false,
@@ -160,10 +139,34 @@ class LayersControls extends _$LayersControls {
     );
   }
 
+  void _tapHandler(value) {
+    final currentState = state.selectedType;
+
+    cancelToken?.cancel();
+    viewPortSubscription?.cancel();
+
+    _hideAllSelectedMarkers();
+
+    switch (value) {
+      case LayerType.favourites:
+        toggleFavourites(currentState);
+      case LayerType.buildings:
+        toggleComplianceBuildings();
+      case LayerType.invest:
+        toggleInvestOpportunities();
+      case LayerType.fencing:
+        toggleWhiteLands();
+      case LayerType.parkingLots:
+        toggleParking();
+      case LayerType.joy:
+        toggleIwish();
+    }
+  }
+
   void updateLayerInfo() {
     final selectedLayerState = _getLayerState();
     if (selectedLayerState != null) {
-      handleTap(selectedLayerState);
+      setSelection(selectedType: selectedLayerState);
     } else {
       setSelection();
     }
@@ -174,7 +177,7 @@ class LayersControls extends _$LayersControls {
     final string = sharedPrefs.getString(MapnessConstants.activeLayerKey);
 
     final layerState = LayerTypeEx.stringToType(string);
-    return layerState == LayerType.favourites ? layerState : null;
+    return layerState;
   }
 
   Future<void> _saveLayersState(LayerType type) async {
@@ -358,6 +361,7 @@ class LayersControls extends _$LayersControls {
     final layers = ref.watch(layersControlsProvider.notifier);
     final currentState = state.selectedType;
     await viewPortSubscription?.cancel();
+    await _removeAll();
 
     if (currentState == LayerType.parkingLots) {
       final manager = ref.read(mapObjectManagerProvider(
@@ -676,6 +680,8 @@ class LayersControls extends _$LayersControls {
     await map.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
+
+    await ref.read(parkingStateProvider.notifier).hideParking();
   }
 
   void showParking() {
