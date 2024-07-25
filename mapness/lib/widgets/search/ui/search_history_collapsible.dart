@@ -39,6 +39,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
       child: Column(
         children: [
           ListView.builder(
+            primary: false,
             shrinkWrap: true,
             padding: EdgeInsets.zero,
             itemBuilder: (context, index) {

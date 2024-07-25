@@ -80,8 +80,8 @@ class LayersSheetContent extends ConsumerWidget {
         ),
         LayerSliverList(
           layerType: switch (state.layersType) {
-            LayersType.lifestyle => layers_state.LayerType.withoutLifestyle,
-            LayersType.business => layers_state.LayerType.withoutBusiness,
+            LayersType.lifestyle => layers_state.LayerType.lifestyle,
+            LayersType.business => layers_state.LayerType.business,
           },
           layersState: state,
         ),

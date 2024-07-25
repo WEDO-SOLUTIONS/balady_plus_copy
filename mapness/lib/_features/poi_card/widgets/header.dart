@@ -9,8 +9,9 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 class PoiHeader extends ConsumerWidget {
@@ -31,12 +32,9 @@ class PoiHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final model = PoiModel(
-      directoryObjectMessage: data,
-    );
-    final address = model.directoryObjectMessage?.address;
-    final subTitle = model.directoryObjectMessage?.subtitle ?? '';
-    final title = address?.buildingName ?? model.directoryObjectMessage?.title ?? '';
+    final address = data.address;
+    final subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
+    final title = address?.buildingName ?? data.title;
 
     final titleTextStyle = context.textStyle.heading1.copyWith(
       color: context.color.textAndIconsBasePrimary,
@@ -142,7 +140,7 @@ class PoiHeader extends ConsumerWidget {
                 ),
                 child: PoiTabs(
                   tabController: tabController,
-                  model: model,
+                  objectId: data.id?.objectId ?? 0,
                   poiCardState: poiCardState,
                 ),
               ),
@@ -154,5 +152,21 @@ class PoiHeader extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// This is temporary solution. We need to show text for parking info
+  /// If parking is not presented for this POI we return null
+  /// Should work for all poi because only parking lots have parking info
+  String? _getParkingSubtitle(DirectoryObjectMessage data, AppLocalizations l10n) {
+    final parkingInfo = data.parkingInfo;
+    if (parkingInfo == null) {
+      return null;
+    }
+    final total = parkingInfo.capacity?.total;
+    final freeText = parkingInfo.isPaid ? l10n.paid : l10n.free;
+    if (total == null) {
+      return freeText;
+    }
+    return '$total ${l10n.lots} • $freeText';
   }
 }
