@@ -55,20 +55,19 @@ class PoiCardFooter extends ConsumerWidget {
     final hasEntrances = data.entrances.isNotEmpty == true;
     final hasContacts = data.contactInfos.isNotEmpty == true;
     final hasContactsAndHasEntrances = hasContacts && hasEntrances;
-    final allItemVisible = hasContactsAndHasEntrances && hasEntrances;
     return BottomActionBar(
       items: [
         ItemActionBar(
           icon: TransportIcons.car,
           colorScheme: ButtonColorScheme.primary,
-          label: allItemVisible ? null : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
+          label: hasContactsAndHasEntrances ? null : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
           onPressed: onTapCar,
         ),
         if (hasContactsAndHasEntrances)
           ItemActionBar(
             icon: GeneralIcons.phoneLTR,
             colorScheme: ButtonColorScheme.secondary,
-            label: allItemVisible ? null : context.l10n.call,
+            label: hasContactsAndHasEntrances ? null : context.l10n.call,
             onPressed: callPhone,
           ),
         if (hasEntrances)
@@ -80,13 +79,13 @@ class PoiCardFooter extends ConsumerWidget {
         ItemActionBar(
           icon: iconData,
           colorScheme: ButtonColorScheme.secondary,
-          label: allItemVisible ? null : context.l10n.save,
+          label: hasContactsAndHasEntrances ? null : context.l10n.save,
           onPressed: () => onTapFavorite(favouriteItem),
         ),
         ItemActionBar(
           icon: SystemIcons.share,
           colorScheme: ButtonColorScheme.secondary,
-          label: allItemVisible ? null : context.l10n.share,
+          label: hasContactsAndHasEntrances ? null : context.l10n.share,
           onPressed: share,
         ),
       ],
