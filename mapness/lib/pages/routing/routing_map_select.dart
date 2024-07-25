@@ -35,16 +35,15 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ref.read(cameraPaddingProvider.notifier).resetPadding(
-          defaultPadding: CameraSetPaddingMessage(
-            bottomPadding: 0,
-            topPadding: 0,
-            leftPadding: 0,
-            rightPadding: 0,
-          ),
-        );
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
   }
 
   @override
@@ -199,9 +198,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           switch (nearestObject.value!) {
                             case DGisNearestObject(object: final object):
                               context.pop(
-                                RoutePointDirectoryObject(
-                                  object,
-                                ),
+                                RoutePointDirectoryObject(object),
                               );
                             case CooridnatesNearestObject(geoPoint: final geoPoint):
                               context.pop(
