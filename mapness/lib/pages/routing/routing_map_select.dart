@@ -100,9 +100,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           Spacer(),
                           ZoomControl(),
                           Spacer(),
-                          FollowControl(
-                            onlyFollowDirection: false,
-                          ),
+                          FollowControl(),
                         ],
                       ),
                     ),
@@ -173,7 +171,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                               action: MetricAction.tap.toString(),
                             );
 
-                            context.pop(null);
+                            context.pop();
                           },
                         ),
                       ],

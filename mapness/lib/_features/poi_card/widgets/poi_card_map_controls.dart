@@ -122,10 +122,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                               const SizedBox(
                                 height: 8,
                               ),
-                              const FollowControl(
-                                //TODO(scroollocker): Double check this
-                                onlyFollowDirection: true,
-                              ),
+                              const FollowControl(),
                             ],
                           ),
                         ],
