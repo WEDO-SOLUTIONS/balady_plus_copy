@@ -7,7 +7,9 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PoiHeader extends ConsumerWidget {
   final PoiCardState? poiCardState;
@@ -26,7 +28,7 @@ class PoiHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final address = data.address;
-    final subTitle = _getParkingSubtitle(data) ?? data.subtitle;
+    final subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
     final title = address?.buildingName ?? data.title;
 
     final titleTextStyle = context.textStyle.heading1.copyWith(
@@ -127,16 +129,16 @@ class PoiHeader extends ConsumerWidget {
   /// This is temporary solution. We need to show text for parking info
   /// If parking is not presented for this POI we return null
   /// Should work for all poi because only parking lots have parking info
-  String? _getParkingSubtitle(DirectoryObjectMessage data) {
-    final total = data.parkingInfo?.capacity?.total;
-    if (total == null) {
-      return null;
-    }
+  String? _getParkingSubtitle(DirectoryObjectMessage data, AppLocalizations l10n) {
     final isPaid = data.parkingInfo?.isPaid;
     if (isPaid == null) {
       return null;
     }
-    final freeText = isPaid ? 'Paid' : 'Free';
-    return '$total Lots • $freeText';
+    final total = data.parkingInfo?.capacity?.total;
+    final freeText = isPaid ? l10n.paid : l10n.free;
+    if (total == null) {
+      return freeText;
+    }
+    return '$total ${l10n.lots} • $freeText';
   }
 }
