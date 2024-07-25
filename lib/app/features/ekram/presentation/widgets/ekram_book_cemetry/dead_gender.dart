@@ -30,7 +30,7 @@ class DeadGenderWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: CustomRadioButtonEnd<String>(
-                    isDisabled: state.gender != null ? true : false,
+                    isDisabled: state.isdeceasedInfoReadOnly,
                     title: ("male").tr(),
                     value: 'MALE',
                     currentSelected: state.gender,
@@ -47,7 +47,7 @@ class DeadGenderWidget extends StatelessWidget {
                 const CustomVerticalSpace(height: 10),
                 Expanded(
                   child: CustomRadioButtonEnd<String>(
-                    isDisabled: state.gender != null ? true : false,
+                    isDisabled: state.isdeceasedInfoReadOnly,
                     title: ("female").tr(),
                     value: 'FEMALE',
                     currentSelected: state.gender,

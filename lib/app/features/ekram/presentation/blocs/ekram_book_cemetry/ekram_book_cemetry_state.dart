@@ -28,8 +28,8 @@ class EkramBookCemetryState extends Equatable {
   final bool isMuslimEnabled;
   //depend on the object coming form the backend
   final bool isEpidamicEnabled;
+  final bool isdeceasedInfoReadOnly;
   //depend on the object coming form the backend
-  final bool isBirthDateEnabled;
   final bool isNationalityEnables;
 
   final bool? agreement;
@@ -59,7 +59,8 @@ class EkramBookCemetryState extends Equatable {
   final String? fourthName;
   final int? deathCountryId;
   final int? deathCityId;
-  final DeceasedInfoModel? deceasedInfoModel ;
+  final DeceasedInfoModel? deceasedInfoModel;
+  final DeathInfo? deathInfo;
 
   //final LookUpItem? selectedHospital;
   // final String? otherHospitalName;
@@ -99,7 +100,7 @@ class EkramBookCemetryState extends Equatable {
       this.isMuslim,
       this.isMuslimEnabled = false,
       this.isEpidamicEnabled = false,
-      this.isBirthDateEnabled = false,
+      this.isdeceasedInfoReadOnly = false,
       this.gender,
       this.firstName,
       this.secondName,
@@ -115,62 +116,62 @@ class EkramBookCemetryState extends Equatable {
       this.selectedDeathCity,
       this.otherDeathCity,
       this.isNationalityEnables = true,
-      this.deceasedInfoModel
-      });
+      this.deceasedInfoModel,
+      this.deathInfo});
 
-  EkramBookCemetryState copyWith({
-    final BlocStatus? status,
-    final String? errorMessage,
-    final int? currentPageValue,
-    final List<LookUpItem>? nationalTypes,
-    final List<LookUpItem>? cities,
-    final List<LookUpItem>? cemetries,
-    final List<LookUpItem>? cemetrySizeItems,
-    final List<LookUpItem>? cemetryTypeItems,
-    final List<LookUpItem>? burialTimeItems,
-    final String? burialDateHijri,
-    final String? burialDateGorgian,
-    final bool? isPandemicDeath,
-    final bool? isFetus,
-    final String? deceassedDOB,
-    final bool? agreement,
-    final String? requestType,
-    final String? relation,
-    final LookUpItem? selectedNationalType,
-    final LookUpItem? selectedCity,
-    final Nullable<LookUpItem?>? selectedCemetry,
-    final LookUpItem? selectedCemetrySize,
-    final LookUpItem? selectedCemetryType,
-    final LookUpItem? selectedTime,
-    final String? otherTimeName,
-    final bool? clearUserInfo,
-    final bool? clearOtherBurialTime,
-    final Nullable<String?>? deceassedId,
-    final int? identityType,
-    final Nullable<String?>? deceassedDOBGorgian,
-    final Nullable<String?>? deceassedDOBHijri,
-    final UserInfoResponse? userInfoResponse,
-    final Nullable<bool?>? isMuslim,
-    final bool? isMuslimEnabled,
-    final bool? isEpidamicEnabled,
-    final bool? isBirthDateDisabled,
-    final bool? isNationalityEnables,
-    final Nullable<String?>? gender,
-    final Nullable<String?>? firstName,
-    final Nullable<String?>? secondName,
-    final Nullable<String?>? thirdName,
-    final Nullable<String?>? fourthName,
-    final int? deathCityId,
-    final int? deathCountryId,
-    final List<LookUpItem>? nationalities,
-    final Nullable<LookUpItem?>? selectedNationality,
-    final List<LookUpItem>? countries,
-    final List<LookUpItem>? deathCities,
-    final LookUpItem? selectedCountry,
-    final LookUpItem? selectedDeathCity,
-    final String? otherDeathCity,
-    final DeceasedInfoModel? deceasedInfoModel
-  }) {
+  EkramBookCemetryState copyWith(
+      {final BlocStatus? status,
+      final String? errorMessage,
+      final int? currentPageValue,
+      final List<LookUpItem>? nationalTypes,
+      final List<LookUpItem>? cities,
+      final List<LookUpItem>? cemetries,
+      final List<LookUpItem>? cemetrySizeItems,
+      final List<LookUpItem>? cemetryTypeItems,
+      final List<LookUpItem>? burialTimeItems,
+      final String? burialDateHijri,
+      final String? burialDateGorgian,
+      final bool? isPandemicDeath,
+      final bool? isFetus,
+      final String? deceassedDOB,
+      final bool? agreement,
+      final String? requestType,
+      final String? relation,
+      final LookUpItem? selectedNationalType,
+      final LookUpItem? selectedCity,
+      final Nullable<LookUpItem?>? selectedCemetry,
+      final LookUpItem? selectedCemetrySize,
+      final LookUpItem? selectedCemetryType,
+      final LookUpItem? selectedTime,
+      final String? otherTimeName,
+      final bool? clearUserInfo,
+      final bool? clearOtherBurialTime,
+      final Nullable<String?>? deceassedId,
+      final int? identityType,
+      final Nullable<String?>? deceassedDOBGorgian,
+      final Nullable<String?>? deceassedDOBHijri,
+      final UserInfoResponse? userInfoResponse,
+      final Nullable<bool?>? isMuslim,
+      final bool? isdeceasedInfoReadOnly,
+      final bool? isMuslimEnabled,
+      final bool? isEpidamicEnabled,
+      final bool? isNationalityEnables,
+      final Nullable<String?>? gender,
+      final Nullable<String?>? firstName,
+      final Nullable<String?>? secondName,
+      final Nullable<String?>? thirdName,
+      final Nullable<String?>? fourthName,
+      final int? deathCityId,
+      final int? deathCountryId,
+      final List<LookUpItem>? nationalities,
+      final Nullable<LookUpItem?>? selectedNationality,
+      final List<LookUpItem>? countries,
+      final List<LookUpItem>? deathCities,
+      final LookUpItem? selectedCountry,
+      final LookUpItem? selectedDeathCity,
+      final String? otherDeathCity,
+      final DeceasedInfoModel? deceasedInfoModel,
+      final DeathInfo? deathInfo}) {
     return EkramBookCemetryState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -215,7 +216,8 @@ class EkramBookCemetryState extends Equatable {
         isMuslim: isMuslim == null ? this.isMuslim : isMuslim.value,
         isMuslimEnabled: isMuslimEnabled ?? this.isMuslimEnabled,
         isEpidamicEnabled: isEpidamicEnabled ?? this.isEpidamicEnabled,
-        isBirthDateEnabled: isBirthDateDisabled ?? isBirthDateEnabled,
+        isdeceasedInfoReadOnly:
+            isdeceasedInfoReadOnly ?? this.isdeceasedInfoReadOnly,
         gender: gender == null ? this.gender : gender.value,
         firstName: firstName == null ? this.firstName : firstName.value,
         secondName: secondName == null ? this.secondName : secondName.value,
@@ -233,8 +235,8 @@ class EkramBookCemetryState extends Equatable {
         selectedDeathCity: selectedDeathCity ?? this.selectedDeathCity,
         otherDeathCity: otherDeathCity ?? this.otherDeathCity,
         isNationalityEnables: isNationalityEnables ?? this.isNationalityEnables,
-        deceasedInfoModel: deceasedInfoModel ?? this.deceasedInfoModel
-        );
+        deceasedInfoModel: deceasedInfoModel ?? this.deceasedInfoModel,
+        deathInfo: deathInfo ?? this.deathInfo);
   }
 
   @override
@@ -276,7 +278,8 @@ class EkramBookCemetryState extends Equatable {
         selectedCountry,
         selectedDeathCity,
         otherDeathCity,
-        deceasedInfoModel
+        deceasedInfoModel,
+        deathInfo
       ];
 
   bool allowFillData() {
