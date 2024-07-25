@@ -66,12 +66,12 @@ class PoiCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) => _Content(
-          objectId: objectId,
-          cameraConfig: cameraConfig,
-          biggestHeight: constraints.biggest.height,
-          biggestWidth: constraints.biggest.width,
-          closestPoint: closestPoint,
-        ),
+            objectId: objectId,
+            cameraConfig: cameraConfig,
+            biggestHeight: constraints.biggest.height,
+            biggestWidth: constraints.biggest.width,
+            closestPoint: closestPoint,
+            key: ValueKey(objectId)),
       );
 }
 
@@ -82,6 +82,7 @@ class _Content extends ConsumerStatefulWidget {
     required this.objectId,
     required this.closestPoint,
     this.cameraConfig,
+    super.key,
   });
 
   final DgisObjectIdMessage objectId;
@@ -103,6 +104,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   late final DgisBottomSheetController _bottomSheetController;
 
+  ScrollController? _scrollController;
+
   @override
   void didUpdateWidget(covariant _Content oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -122,6 +125,10 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     _tabController.addListener(
       () {
         if (_tabController.indexIsChanging) {
+          if (_scrollController?.hasClients == true) {
+            _scrollController?.jumpTo(0);
+          }
+
           switch (_tabController.index) {
             case 0:
               _tabType.value = PoiTabsType.info;
@@ -318,48 +325,54 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
           ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
-          scrollableBody: (context, controller) => DgisBottomSheetScrollableContent(
-            controller: controller,
-            header: PoiHeader(
-              poiCardState: poiCardState,
-              tabController: _tabController,
-              data: data,
-              onTapClose: () {
-                Metrics.logEventAdvanced(
-                  MetricsConstants.poiKeys.exitButton,
-                  group: MetricsConstants.poiTag,
-                  action: MetricAction.tap.toString(),
-                );
+          scrollableBody: (context, controller) {
+            _scrollController = controller;
+            return DgisBottomSheetScrollableContent(
+              controller: _scrollController,
+              header: PoiHeader(
+                poiCardState: poiCardState,
+                tabController: _tabController,
+                data: data,
+                onTapClose: () {
+                  Metrics.logEventAdvanced(
+                    MetricsConstants.poiKeys.exitButton,
+                    group: MetricsConstants.poiTag,
+                    action: MetricAction.tap.toString(),
+                  );
 
-                ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-                ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-                context.pop();
-              },
-            ),
-            bodyPadding: const EdgeInsets.all(Spacing.$4x),
-            body: [
-              ValueListenableBuilder(
-                valueListenable: _tabType,
-                builder: (context, tabType, _) => switch (tabType) {
-                  PoiTabsType.info => InfoWidget(
-                      objectInfo: poiCardState?.gisObjectIdMessage,
-                      qrTradeLicense: poiCardState?.qrTradeLicense,
-                      onEntrancesTap: () => poiActions.toggleEntrances(
-                        data,
-                        () => _bottomSheetController.animateTo(Expansion.collapsed),
-                        widget.closestPoint,
-                      ),
-                    ),
-                  PoiTabsType.photos => PoiPhotoCard(objectId: data.id?.objectId ?? 0),
-                  PoiTabsType.inBuilding => PoiInBuildingWidget(
-                      state: poiCardState,
-                      objectId: widget.objectId,
-                      bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
-                    ),
+                  ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+                  ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+                  context.pop();
                 },
               ),
-            ],
-          ),
+              bodyPadding: const EdgeInsets.all(Spacing.$4x),
+              body: [
+                ValueListenableBuilder(
+                  valueListenable: _tabType,
+                  builder: (context, tabType, _) => AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: switch (tabType) {
+                      PoiTabsType.info => InfoWidget(
+                          objectInfo: poiCardState?.gisObjectIdMessage,
+                          qrTradeLicense: poiCardState?.qrTradeLicense,
+                          onEntrancesTap: () => poiActions.toggleEntrances(
+                            data,
+                            () => _bottomSheetController.animateTo(Expansion.collapsed),
+                            widget.closestPoint,
+                          ),
+                        ),
+                      PoiTabsType.photos => PoiPhotoCard(objectId: data.id?.objectId ?? 0),
+                      PoiTabsType.inBuilding => PoiInBuildingWidget(
+                          state: poiCardState,
+                          objectId: widget.objectId,
+                          bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
+                        ),
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
