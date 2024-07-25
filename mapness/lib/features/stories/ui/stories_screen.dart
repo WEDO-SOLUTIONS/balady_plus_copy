@@ -7,8 +7,10 @@ import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/stories_fullscreen.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-class StoriesScreen extends ConsumerWidget {
+class StoriesScreen extends ConsumerStatefulWidget {
   const StoriesScreen({
     required this.type,
     this.onClose,
@@ -21,16 +23,29 @@ class StoriesScreen extends ConsumerWidget {
   final String? initialStoryId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final storyData = StoryTypedData.fromType(type);
-    void _onClose() {
-      onClose?.call();
-      ref.read(storyServiceProvider.notifier).resumeUpdate();
-      context.pop();
-    }
+  _StoriesScreenState createState() => _StoriesScreenState();
+}
+
+class _StoriesScreenState extends ConsumerState<StoriesScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _reportOpenMetricaEvent();
+  }
+
+  void _onClose() {
+    widget.onClose?.call();
+    _reportCloseMetricaEvent();
+    ref.read(storyServiceProvider.notifier).resumeUpdate();
+    context.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final storyData = StoryTypedData.fromType(widget.type);
 
     return StoryArgsProvider(
-      type: type,
+      type: widget.type,
       onClose: _onClose,
       child: Material(
         child: Directionality(
@@ -38,11 +53,39 @@ class StoriesScreen extends ConsumerWidget {
           child: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.light,
             child: StoriesFullscreen(
-              initialStoryId: initialStoryId ?? storyData.stories.first.storyId,
+              initialStoryId: widget.initialStoryId ?? storyData.stories.first.storyId,
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _reportCloseMetricaEvent() {
+    if (widget.type == StoryTypes.network) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.exploreKeys.storiesClose,
+        action: MetricAction.tap.name,
+        group: MetricsConstants.exploreTag,
+      );
+    }
+  }
+
+  void _reportOpenMetricaEvent() {
+    if (widget.type == StoryTypes.network) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.exploreKeys.storyBanner,
+        action: MetricAction.tap.name,
+        group: MetricsConstants.exploreTag,
+      );
+      return;
+    }
+    if (widget.type == StoryTypes.route) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.routesKeys.searchHistoryItem,
+        action: MetricAction.tap.name,
+        group: MetricsConstants.routesTag,
+      );
+    }
   }
 }
