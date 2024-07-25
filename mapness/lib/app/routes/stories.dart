@@ -66,12 +66,12 @@ class StoriesRoute extends GoRouteData {
   }
 
   /// Opens a story in the app.
-  static void _open(
+  static Future<void> _open(
     BuildContext context,
     StoryTypes type, {
     VoidCallback? onClose,
     String? initialStoryId,
-  }) {
+  }) async {
     final args = StoriesRouteArgs(
       type: type,
       onClose: onClose,
@@ -80,14 +80,19 @@ class StoriesRoute extends GoRouteData {
     const storiesRoute = StoriesRoute();
     final router = GoRouter.of(context);
     if (router.isCurrentRoute(storiesRoute.location)) {
-      router.pushReplacement(storiesRoute.location, extra: args);
+      await router.pushReplacement(
+        storiesRoute.location,
+        extra: args,
+      );
       return;
     }
-    router.push<int?>(storiesRoute.location, extra: args).then((value) {
-      if (value != null) {
-        StatefulNavigationShell.maybeOf(context)?.goBranch(value);
-      }
-    });
+    final index = await router.push<int?>(
+      storiesRoute.location,
+      extra: args,
+    );
+    if (index != null && context.mounted) {
+      StatefulNavigationShell.maybeOf(context)?.goBranch(index);
+    }
   }
 
   @override
@@ -100,7 +105,7 @@ class StoriesRoute extends GoRouteData {
         initialStoryId: args.initialStoryId,
       ),
       fullscreenDialog: true,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) => SlideTransition(
+      transitionsBuilder: (context, animation, _, child) => SlideTransition(
           position: animation.drive(
             Tween<Offset>(
               begin: const Offset(0, 1),
