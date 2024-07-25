@@ -39,27 +39,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
   @override
   void initState() {
     super.initState();
-    ref.read(cameraPaddingProvider.notifier).resetPadding(
-          defaultPadding: CameraSetPaddingMessage(
-            bottomPadding: 0,
-            topPadding: 0,
-            leftPadding: 0,
-            rightPadding: 0,
-          ),
-        );
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ref.read(cameraPaddingProvider.notifier).resetPadding(
-          defaultPadding: CameraSetPaddingMessage(
-            bottomPadding: 0,
-            topPadding: 0,
-            leftPadding: 0,
-            rightPadding: 0,
-          ),
-        );
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
   }
 
   @override
@@ -228,20 +214,11 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                             action: MetricAction.tap.toString(),
                           );
 
-                          switch (nearestObject.value!) {
-                            case DGisNearestObject(nearestPoint: final nearestPoint):
-                              context.pop(
-                                /// We replace RoutePointDirectoryObject with RoutePointCoordinates
-                                /// because we get incorrect route to the object coordinates
-                                RoutePointCoordinates(
-                                  nearestPoint.geoPoint,
-                                ),
-                              );
-                            case CooridnatesNearestObject(geoPoint: final geoPoint):
-                              context.pop(
-                                RoutePointCoordinates(geoPoint),
-                              );
-                          }
+                          final cameraPosition = ref.read(cameraPositionProvider);
+
+                          context.pop(
+                            RoutePointCoordinates(cameraPosition!.point),
+                          );
                         },
                         enabled: nearestObject.unwrapPrevious().hasValue,
                       ),
