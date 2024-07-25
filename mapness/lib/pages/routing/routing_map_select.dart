@@ -16,10 +16,8 @@ import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
-import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class RoutingMapSelect extends ConsumerStatefulWidget {
@@ -51,13 +49,6 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
   @override
   Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);
-    final settings = MapObjectManagerSettings.myLocation();
-    final mapObjectManager = ref.watch(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
-    );
 
     ref.listen(
       nearestObjectProvider,
@@ -78,14 +69,6 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                   ),
                 );
           }
-          mapObjectManager.removeAllMarkers();
-          mapObjectManager.addMarker(Markers.pinMarker(
-            GeoPointWithElevationMessage(
-              latitude: nextValue.nearestPoint.latitude,
-              longitude: nextValue.nearestPoint.longitude,
-              elevation: 1,
-            ),
-          ));
         }
       },
     );
@@ -214,11 +197,16 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                             action: MetricAction.tap.toString(),
                           );
 
-                          final cameraPosition = ref.read(cameraPositionProvider);
-
-                          context.pop(
-                            RoutePointCoordinates(cameraPosition!.point),
-                          );
+                          switch (nearestObject.value!) {
+                            case DGisNearestObject(object: final object):
+                              context.pop(
+                                RoutePointDirectoryObject(object),
+                              );
+                            case CooridnatesNearestObject(geoPoint: final geoPoint):
+                              context.pop(
+                                RoutePointCoordinates(geoPoint),
+                              );
+                          }
                         },
                         enabled: nearestObject.unwrapPrevious().hasValue,
                       ),
