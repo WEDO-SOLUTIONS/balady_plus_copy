@@ -43,8 +43,7 @@ class FavouriteToggle extends _$FavouriteToggle {
   Future<void> toggle() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     final name = LayerType.favourites.name;
-    final currentState =
-        sharedPrefs.getString(MapnessConstants.activeLayerKey) == name;
+    final currentState = sharedPrefs.getString(MapnessConstants.activeLayerKey) == name;
     if (currentState) {
       await sharedPrefs.remove(MapnessConstants.activeLayerKey);
     } else {
