@@ -350,11 +350,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                         widget.closestPoint,
                       ),
                     ),
-                  PoiTabsType.photos => PoiPhotoCard(
-                      model: PoiModel(
-                        directoryObjectMessage: data,
-                      ),
-                    ),
+                  PoiTabsType.photos => PoiPhotoCard(objectId: data.id?.objectId ?? 0),
                   PoiTabsType.inBuilding => PoiInBuildingWidget(
                       state: poiCardState,
                       objectId: widget.objectId,

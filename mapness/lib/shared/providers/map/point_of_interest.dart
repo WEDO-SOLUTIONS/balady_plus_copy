@@ -9,14 +9,6 @@ part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
 
-class PoiModel {
-  PoiModel({
-    required this.directoryObjectMessage,
-  });
-
-  final DirectoryObjectMessage? directoryObjectMessage;
-}
-
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
   PointOfInterestRef ref,
