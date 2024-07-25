@@ -151,7 +151,7 @@ class _CemetryDeceasedInfoSectionState
                                 .read<EkramBookCemetryBloc>()
                                 .firstNameController,
                             enabled: state.allowFillData() &&
-                                state.deceasedInfoModel?.firstName == null,
+                                !state.isdeceasedInfoReadOnly,
                             onChanged: (String? text) {
                               context
                                   .read<EkramBookCemetryBloc>()
@@ -169,7 +169,7 @@ class _CemetryDeceasedInfoSectionState
                                 .read<EkramBookCemetryBloc>()
                                 .secondNameController,
                             enabled: state.allowFillData() &&
-                                state.deceasedInfoModel?.secondName == null,
+                                !state.isdeceasedInfoReadOnly,
                             onChanged: (String? text) {
                               context
                                   .read<EkramBookCemetryBloc>()
@@ -187,7 +187,7 @@ class _CemetryDeceasedInfoSectionState
                                 .read<EkramBookCemetryBloc>()
                                 .thirdNameController,
                             enabled: state.allowFillData() &&
-                                state.deceasedInfoModel?.thirdName == null,
+                                !state.isdeceasedInfoReadOnly,
                             onChanged: (String? text) {
                               context
                                   .read<EkramBookCemetryBloc>()
@@ -203,7 +203,7 @@ class _CemetryDeceasedInfoSectionState
                             hintText:
                                 Helpers.translatingWord("ekram_fourth_name"),
                             enabled: state.allowFillData() &&
-                                state.deceasedInfoModel?.fourthName == null,
+                                !state.isdeceasedInfoReadOnly,
                             controller: context
                                 .read<EkramBookCemetryBloc>()
                                 .fourthNameController,
@@ -226,7 +226,7 @@ class _CemetryDeceasedInfoSectionState
                         ),*/
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
-                        isDisbaled: !state.isNationalityEnables,
+                        isDisbaled: state.isdeceasedInfoReadOnly,
                         items: state.nationalities ?? [],
                         value: state.selectedNationality,
                         onEmptyList: () async {
@@ -250,7 +250,7 @@ class _CemetryDeceasedInfoSectionState
                       const DeadGenderWidget(),
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
-                        isDisbaled: state.deathCountryId != null ? true : false,
+                        isDisbaled: state.deceasedInfoModel?.deceasedDataSource == 'SEHA' ,
                         items: state.countries ?? [],
                         value: state.selectedCountry,
                         onEmptyList: () async {
@@ -272,7 +272,7 @@ class _CemetryDeceasedInfoSectionState
                       ),
                       if (state.selectedCountry?.localCountry == true)
                         CustomLookUpLongDialog(
-                          isDisbaled: state.deathCityId != null ? true : false,
+                          isDisbaled: state.deceasedInfoModel?.deceasedDataSource == 'SEHA' ,
                           items: state.deathCities ?? [],
                           value: state.selectedDeathCity,
                           onEmptyList: () async {

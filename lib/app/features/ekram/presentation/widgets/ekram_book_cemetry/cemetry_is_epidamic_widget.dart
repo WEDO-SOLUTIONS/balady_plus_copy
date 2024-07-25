@@ -28,7 +28,7 @@ class CemetryIsEpidamicWidget extends StatelessWidget {
             ),
             const CustomVerticalSpace(height: 10),
             CustomRadioButtonEnd<bool>(
-              isDisabled: state.isEpidamicEnabled,
+              isDisabled: state.deceasedInfoModel?.deceasedDataSource == 'SEHA',
               title: ("yes").tr(),
               value: true,
               currentSelected: state.isPandemicDeath == true,
@@ -43,7 +43,8 @@ class CemetryIsEpidamicWidget extends StatelessWidget {
             ),
             const CustomVerticalSpace(height: 10),
             CustomRadioButtonEnd<bool>(
-              isDisabled: state.isEpidamicEnabled,
+              isDisabled:
+                  state.isdeceasedInfoReadOnly && state.deathInfo != null,
               title: ("no").tr(),
               value: true,
               currentSelected: state.isPandemicDeath == false,

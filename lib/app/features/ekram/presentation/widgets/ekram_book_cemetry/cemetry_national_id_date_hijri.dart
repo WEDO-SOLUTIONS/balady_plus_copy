@@ -14,7 +14,7 @@ class CemetryNationalDobHijri extends StatelessWidget {
     return BlocBuilder<EkramBookCemetryBloc, EkramBookCemetryState>(
         builder: (context, state) {
       return HijriCalendarDateWidget(
-        isDisabled: state.isBirthDateEnabled,
+        isDisabled: state.isdeceasedInfoReadOnly,
         currentVlaue: state.deceassedDOBHijri,
         fieldName: "${Helpers.translatingWord("cemetry_dob_hijri")} *",
         isMandatory: true,

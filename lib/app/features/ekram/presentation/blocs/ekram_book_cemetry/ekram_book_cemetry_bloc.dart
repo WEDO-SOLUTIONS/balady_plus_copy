@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/death_info.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/deceased_info.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     hide ApplicantInfoSection, AgreementSection;
@@ -285,7 +286,6 @@ class EkramBookCemetryBloc
       fourthName: Nullable(null),
       deceassedDOBGorgian: Nullable(null),
       deceassedDOBHijri: Nullable(null),
-      isBirthDateDisabled: false,
       isMuslim: Nullable(true),
       gender: Nullable(null),
     ));
@@ -456,11 +456,12 @@ class EkramBookCemetryBloc
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-      DeceasedInfoModel?  deceasedInfoModel = success.data?.result?.deceasedInfo ;
+      DeceasedInfoModel? deceasedInfoModel = success.data?.result?.deceasedInfo;
+      DeathInfo? deathInfo = success.data?.result?.deathInfo;
       String firstName = success.data?.result?.deceasedInfo?.firstName ?? "";
       String secondName = success.data?.result?.deceasedInfo?.secondName ?? "";
       String thirdName = success.data?.result?.deceasedInfo?.thirdName ?? "";
-      String fourthName = success.data?.result?.deceasedInfo?.fourthName ?? "";    
+      String fourthName = success.data?.result?.deceasedInfo?.fourthName ?? "";
       String? birthDate = success.data?.result?.deceasedInfo?.birthDate;
       String? gender = success.data?.result?.deceasedInfo?.gender;
       bool? isMuslim = success.data?.result?.deceasedInfo?.isMuslim;
@@ -493,7 +494,8 @@ class EkramBookCemetryBloc
           cemetries: [],
           selectedCemetry: Nullable(null),
           errorMessage: "",
-          deceasedInfoModel:deceasedInfoModel,
+          deceasedInfoModel: deceasedInfoModel,
+          deathInfo: deathInfo,
           firstName: Nullable(firstName),
           secondName: Nullable(secondName),
           thirdName: Nullable(thirdName),
@@ -502,11 +504,10 @@ class EkramBookCemetryBloc
           isPandemicDeath: isPandemicDeath,
           selectedNationality: Nullable(nationality),
           isMuslim: Nullable(isMuslim),
-          isMuslimEnabled: isMuslim == null ? false : true,
+          isMuslimEnabled: isMuslim == null ? true : false,
           isEpidamicEnabled: isPandemicDeath == null ? false : true,
-          isBirthDateDisabled:  birthDate == null
-                  ? false
-                  : true,
+          isdeceasedInfoReadOnly:
+              deceasedDataSource != 'MANUALLY' ? true : false,
           isNationalityEnables: nationality == null ? true : false,
           deathCountryId: deathCountryId,
           deathCityId: deathCityId));

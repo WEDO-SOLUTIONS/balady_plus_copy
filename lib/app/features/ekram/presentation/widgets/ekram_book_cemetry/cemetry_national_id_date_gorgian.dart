@@ -13,7 +13,7 @@ class CemetryNationalDobGorgian extends StatelessWidget {
     return BlocBuilder<EkramBookCemetryBloc, EkramBookCemetryState>(
         builder: (context, state) {
       return GorgianCalendarDateWidget(
-        isDisabled: state.isBirthDateEnabled,
+        isDisabled: state.isdeceasedInfoReadOnly,
         currentVlaue: state.deceassedDOBGorgian,
         fieldName: "${Helpers.translatingWord("cemetry_dob_gorgian")} *",
         isMandatory: true,
