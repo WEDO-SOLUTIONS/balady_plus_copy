@@ -106,15 +106,16 @@ class StoriesRoute extends GoRouteData {
       ),
       fullscreenDialog: true,
       transitionsBuilder: (context, animation, _, child) => SlideTransition(
-          position: animation.drive(
-            Tween<Offset>(
-              begin: const Offset(0, 1),
-              end: Offset.zero,
-            ).chain(
-              CurveTween(curve: Curves.ease),
-            ),
+        position: animation.drive(
+          Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).chain(
+            CurveTween(curve: Curves.ease),
           ),
-          child: child),
+        ),
+        child: child,
+      ),
     );
   }
 }

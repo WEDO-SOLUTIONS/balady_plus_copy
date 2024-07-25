@@ -214,9 +214,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                                 group: MetricsConstants.exploreTag,
                               ),
                             ),
-                            const SizedBox(
-                              height: Spacing.$8x,
-                            ),
                           ],
                         ),
                       ),

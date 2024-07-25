@@ -25,8 +25,11 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   void _precacheFirstFrame() {
     ref.read(storyServiceProvider).whenData((data) {
       for (final story in data) {
+        if (story.frames.isEmpty) {
+          continue;
+        }
         final firstFrame = story.frames.first;
-        if (firstFrame.imageUrl != null) {
+        if (firstFrame.imageUrl != null && context.mounted) {
           precacheImage(NetworkImage(firstFrame.imageUrl!), context);
         }
       }

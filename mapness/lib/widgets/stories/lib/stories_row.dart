@@ -7,6 +7,9 @@ import 'package:mapness/features/stories/models/story_data.dart';
 
 /// A row of stories displayed in a horizontal scrollable list.
 class StoriesRow extends StatelessWidget {
+  final List<StoryData> stories;
+  final void Function(String storyId) onThumbnailPressed;
+
   /// Constructs a [StoriesRow] widget.
   ///
   /// The [onThumbnailPressed] callback is called when a story thumbnail is pressed.
@@ -16,9 +19,6 @@ class StoriesRow extends StatelessWidget {
     required this.stories,
     super.key,
   });
-
-  final List<StoryData> stories;
-  final void Function(String storyId) onThumbnailPressed;
 
   @override
   Widget build(BuildContext context) => Column(
