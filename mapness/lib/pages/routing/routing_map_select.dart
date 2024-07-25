@@ -16,8 +16,10 @@ import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class RoutingMapSelect extends ConsumerStatefulWidget {
@@ -32,6 +34,19 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
   void deactivate() {
     ref.read(cameraPaddingProvider.notifier).resetPadding();
     super.deactivate();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(cameraPaddingProvider.notifier).resetPadding(
+          defaultPadding: CameraSetPaddingMessage(
+            bottomPadding: 0,
+            topPadding: 0,
+            leftPadding: 0,
+            rightPadding: 0,
+          ),
+        );
   }
 
   @override
@@ -50,6 +65,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
   @override
   Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);
+    final settings = MapObjectManagerSettings.myLocation();
+    final mapObjectManager = ref.watch(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
+    );
 
     ref.listen(
       nearestObjectProvider,
@@ -70,6 +92,14 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                   ),
                 );
           }
+          mapObjectManager.removeAllMarkers();
+          mapObjectManager.addMarker(Markers.pinMarker(
+            GeoPointWithElevationMessage(
+              latitude: nextValue.nearestPoint.latitude,
+              longitude: nextValue.nearestPoint.longitude,
+              elevation: 1,
+            ),
+          ));
         }
       },
     );
