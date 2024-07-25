@@ -40,7 +40,6 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
-import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -211,11 +210,11 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       return Column(
         children: [
           const Spacer(flex: 3),
-          ErrorSheet(
-            onRetry: () => ref.invalidate(
-              directoryObjectFromDgisIdProvider(widget.objectId),
-            ),
-          ),
+          ErrorSheet(onRetry: () {
+            if (!state.isRefreshing) {
+              ref.invalidate(viewModelProvider);
+            }
+          }),
         ],
       );
     }
@@ -490,7 +489,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     await showDialog(
       context: context,
       builder: (contextDialog) => ProviderScope(
-        parent: ProviderScope.containerOf(context),
         child: Theme(
           data: Theme.of(context),
           child: MediaQuery(
