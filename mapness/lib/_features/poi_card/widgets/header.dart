@@ -130,12 +130,12 @@ class PoiHeader extends ConsumerWidget {
   /// If parking is not presented for this POI we return null
   /// Should work for all poi because only parking lots have parking info
   String? _getParkingSubtitle(DirectoryObjectMessage data, AppLocalizations l10n) {
-    final isPaid = data.parkingInfo?.isPaid;
-    if (isPaid == null) {
+    final parkingInfo = data.parkingInfo;
+    if (parkingInfo == null) {
       return null;
     }
-    final total = data.parkingInfo?.capacity?.total;
-    final freeText = isPaid ? l10n.paid : l10n.free;
+    final total = parkingInfo.capacity?.total;
+    final freeText = parkingInfo.isPaid ? l10n.paid : l10n.free;
     if (total == null) {
       return freeText;
     }
