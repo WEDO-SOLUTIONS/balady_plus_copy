@@ -73,9 +73,6 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     final favItemsAsync = ref.watch(favouriteCacheProvider);
     final showMarkers = ref.watch(favouriteToggleProvider);
 
-    /// clear markers (for state change handling)
-    await mapObjectManager.removeAllMarkers();
-
     /// don't show markers if user disabled them or if there are no favourites
     if (!showMarkers || favItemsAsync.value == null) {
       return;
