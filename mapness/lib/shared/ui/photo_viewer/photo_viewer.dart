@@ -8,13 +8,14 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class PhotoViewerWidget extends StatefulWidget {
+  final List<String>? photoPaths;
+  final int currentPhotoIndex;
+
   const PhotoViewerWidget({
     required this.photoPaths,
     required this.currentPhotoIndex,
     super.key,
   });
-  final List<String>? photoPaths;
-  final int currentPhotoIndex;
 
   @override
   State<PhotoViewerWidget> createState() => _PhotoViewerWidgetState();
@@ -99,6 +100,7 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
                     itemCount: widget.photoPaths?.length ?? 0,
                     backgroundDecoration: const BoxDecoration(color: backgroundColor),
                     pageController: pageController,
+                    allowImplicitScrolling: true,
                     onPageChanged: (i) {
                       setState(() {
                         _title = getTitle(i);
