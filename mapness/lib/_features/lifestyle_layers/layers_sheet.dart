@@ -156,12 +156,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
                     ParkingDetailsContent(
                       scrollController: scrollController,
                     ),
-                    if (state.isLoading)
-                      Center(
-                        child: CircularProgressIndicator(
-                          color: context.color.textAndIconsStatusAccent,
-                        ),
-                      ),
                   ],
                 ),
               ),
