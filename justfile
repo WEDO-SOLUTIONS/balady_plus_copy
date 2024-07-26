@@ -12,9 +12,6 @@ dart_define := "--dart-define=GIT_BRANCH=\"" + GIT_BRANCH + "\" --dart-define=GI
 # everything regarding release
 import 'justscripts/release.just'
 
-# style helpers
-import 'justscripts/styles.just'
-
 # local overrides feel free to add any there
 import? 'justscripts/local.just'
 
