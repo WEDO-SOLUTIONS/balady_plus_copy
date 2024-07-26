@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
@@ -32,6 +33,8 @@ class PoiHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final direction = ref.watch(uiDirectionProvider);
+
     final address = data.address;
     final subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
     final title = address?.buildingName ?? data.title;
@@ -81,7 +84,7 @@ class PoiHeader extends ConsumerWidget {
                     ),
                     ValueListenableBuilder(
                         valueListenable: expansionState,
-                      child: subTitle != 'Street'
+                      child: subTitle == 'Street' && direction == TextDirection.ltr
                           ? Text(
                               subTitle,
                               style: subTitleTextStyle,
