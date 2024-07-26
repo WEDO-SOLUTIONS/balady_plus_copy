@@ -264,64 +264,68 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             objectId: objectId,
             expansion: _expansion,
           ),
-          actions: PoiCardFooter(
-            data: data,
-            share: () {
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
-                  group: MetricsConstants.poiTag,
-                  action: MetricAction.tap.toString(),
-                  props: {
-                    'object_id': data.id?.objectId,
-                    'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
-                  });
+          actions: ValueListenableBuilder(
+            valueListenable: _expansion,
+            builder: (_, expansion, child) => expansion != Expansion.hidden ? child! : const SizedBox.shrink(),
+            child: PoiCardFooter(
+              data: data,
+              share: () {
+                Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
+                    group: MetricsConstants.poiTag,
+                    action: MetricAction.tap.toString(),
+                    props: {
+                      'object_id': data.id?.objectId,
+                      'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                    });
 
-              poiActions.share(
-                objectId: objectId,
-                markerCoords: widget.closestPoint,
-              );
-            },
-            callPhone: () {
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
-                  group: MetricsConstants.poiTag,
-                  action: MetricAction.tap.toString(),
-                  props: {
-                    'objectId': objectId,
-                  });
+                poiActions.share(
+                  objectId: objectId,
+                  markerCoords: widget.closestPoint,
+                );
+              },
+              callPhone: () {
+                Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
+                    group: MetricsConstants.poiTag,
+                    action: MetricAction.tap.toString(),
+                    props: {
+                      'objectId': objectId,
+                    });
 
-              final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
-                    (element) => element.type == ContactsInfoType.phone,
-                  );
-              if (phoneNumber?.value != null) {
-                poiActions.callPhone(phoneNumber!.value!);
-              }
-            },
-            onEntranceTap: () => poiActions.toggleEntrances(
-              data,
-              () => _bottomSheetController.animateTo(Expansion.collapsed),
-              widget.closestPoint,
-            ),
-            onTapCar: () {
-              final mapSetting = MapObjectManagerSettings.search();
-              ref
-                  .read(
-                    mapObjectManagerProvider(
-                      named: mapSetting.name,
-                      layerId: mapSetting.layerId,
-                    ).notifier,
-                  )
-                  .setMapObjectManagerIsVisible(isVisible: false);
-
-              _openRoutingRoutes(
-                context,
-                ref,
+                final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
+                      (element) => element.type == ContactsInfoType.phone,
+                    );
+                if (phoneNumber?.value != null) {
+                  poiActions.callPhone(phoneNumber!.value!);
+                }
+              },
+              onEntranceTap: () => poiActions.toggleEntrances(
                 data,
-                RouteSearchPoint(
-                  coordinates: data.markerPosition!.toGeoPointMessage(),
-                  dgisObjectId: data.id!,
-                ),
-              );
-            },
-            onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
+                () => _bottomSheetController.animateTo(Expansion.collapsed),
+                widget.closestPoint,
+              ),
+              onTapCar: () {
+                final mapSetting = MapObjectManagerSettings.search();
+                ref
+                    .read(
+                      mapObjectManagerProvider(
+                        named: mapSetting.name,
+                        layerId: mapSetting.layerId,
+                      ).notifier,
+                    )
+                    .setMapObjectManagerIsVisible(isVisible: false);
+
+                _openRoutingRoutes(
+                  context,
+                  ref,
+                  data,
+                  RouteSearchPoint(
+                    coordinates: data.markerPosition!.toGeoPointMessage(),
+                    dgisObjectId: data.id!,
+                  ),
+                );
+              },
+              onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
+            ),
           ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
           scrollableBody: (context, controller) {
@@ -331,6 +335,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               header: PoiHeader(
                 poiCardState: poiCardState,
                 tabController: _tabController,
+                expansionState: _expansion,
                 data: data,
                 onTapClose: () {
                   Metrics.logEventAdvanced(
