@@ -16,7 +16,7 @@ class NetworkLinkFrameAction extends StoryFrameAction {
   });
 }
 
-/// Nvigation frame action.
+/// Navigation frame action.
 ///
 /// Title is a locale key that should be used to get the title from the localization.
 /// This action is used to navigate to a specific location using [location].
