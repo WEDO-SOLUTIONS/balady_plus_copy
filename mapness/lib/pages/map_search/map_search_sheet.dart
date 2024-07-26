@@ -24,7 +24,6 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 /// Search sheet that is shown on the explore screen.
@@ -45,7 +44,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
-  late final _dgisSheetController = DgisBottomSheetController();
+  late final DgisBottomSheetController _dgisSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -55,10 +54,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   ClusteringMapObjectManager? _clustering;
 
   MapObjectManager? searchObjectManager;
+  var _initialExpansion = Expansion.middle;
 
   @override
   void initState() {
     super.initState();
+    _dgisSheetController = DgisBottomSheetController();
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     _setupTapListener();
   }
@@ -103,15 +104,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         clustering: widget.withClustering ? _clustering : null,
       ).notifier,
     );
-    ref
-      ..watch(searchInRectProvider.notifier)
-      ..listen(
-        searchProvider(SearchScopeEnum.map.value),
-        (previous, next) {
-          _drawSearchMarkers(next, previous);
-        },
-      )
-      ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
+    ref.listen(
+      searchProvider(SearchScopeEnum.map.value),
+      (previous, next) {
+        _drawSearchMarkers(next, previous);
+      },
+    );
 
     return Stack(
       alignment: Alignment.bottomLeft,
@@ -120,9 +118,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         NotificationListener<ScrollNotification>(
           onNotification: _onNotification,
           child: DgisBottomSheet(
+            key: const Key('MAP SEARCH SHEET KEY'),
             showBarrier: false,
             controller: _dgisSheetController,
-            initialExpansion: Expansion.middle,
+            initialExpansion: _initialExpansion,
             availableExpansions: const {
               Expansion.hidden,
               Expansion.middle,
@@ -138,7 +137,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
               scrollController.addListener(_unfocusOnScroll);
 
               return ClipRRect(
-                borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
                 child: Material(
                   color: Colors.white,
                   child: SearchScope(
@@ -154,7 +155,15 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
                           ),
                           pinned: true,
                         ),
-                        MapSearchContent(scrollController: scrollController),
+                        MapSearchContent(
+                          scrollController: scrollController,
+                          onResultItemTap: () {
+                            setState(() {
+                              _initialExpansion = Expansion.collapsed;
+                              _dgisSheetController.animateTo(Expansion.collapsed);
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -181,8 +190,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
           : LayersSvgPaths.basicMarker.markerIcon(size: 16);
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
-      final markers =
-          await searchState.results.getMarkers(router: ref.read(goRouterProvider), icon: icon, isRtl: isRtl);
+      final markers = await searchState.results.getMarkers(
+        router: ref.read(goRouterProvider),
+        icon: icon,
+        isRtl: isRtl,
+      );
 
       await searchObjectManager?.removeAllMarkers();
       await searchObjectManager?.addMarkers(markers);
@@ -194,14 +206,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       );
     } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
       await searchObjectManager?.removeAllMarkers();
-    }
-  }
-
-  void _currentRouteListener(RouteState? previous, RouteState? next) {
-    if (next?.currentPath != null && next!.currentPath!.startsWith('/search')) {
-      _dgisSheetController.animateTo(Expansion.expanded);
-    } else {
-      // _dgisSheetController.animateTo(Expansion.collapsed);
     }
   }
 
@@ -279,7 +283,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       final goRouter = ref.read(goRouterProvider);
 
       if (goRouter.isCurrentRoute(SearchRoute.path)) {
-        _removeAllMarkersAndPop();
+        _dgisSheetController.animateTo(Expansion.collapsed);
       }
     });
   }

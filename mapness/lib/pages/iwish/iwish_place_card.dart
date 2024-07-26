@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
@@ -12,7 +13,6 @@ import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
-import 'package:mapness/pages/iwish/map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
@@ -33,19 +33,19 @@ class IwishPlaceCard extends ConsumerWidget {
     final entity = ref.watch(iwishEntityProvider(iwishId));
     final entityNotifier = ref.watch(iwishEntityProvider(iwishId).notifier);
 
+    final controlsBottomExtent =
+        MediaQuery.of(context).size.height * (entity.valueOrNull?.photos.isEmpty == false ? 0.4 : 0.25);
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        const MapControls(),
+        MapControls(bottomExtent: controlsBottomExtent),
         entity.when(
           error: (_, __) => ErrorSheet(
             onRetry: entityNotifier.refresh,
-            buttonLabel: context.l10n.reload,
-            onClose: () => context.pop(),
+            buttonLabel: context.l10n.tryAgain,
           ),
-          loading: () => LoadingSheet(
-            text: context.l10n.loading,
-          ),
+          loading: () => const LoadingSheet(),
           data: (entity) {
             final distance = ref.read(iwishDistanceProvider(entity));
 
@@ -55,7 +55,7 @@ class IwishPlaceCard extends ConsumerWidget {
                 metadata.openingDate != DateTime.fromMillisecondsSinceEpoch(0) ||
                 metadata.areaName != '';
 
-            final minSheetSize = entity.photos.isEmpty ? 0.25 : 0.4;
+            final minSheetSize = entity.photos.isEmpty ? 0.3 : 0.45;
 
             return SafeArea(
               bottom: false,
@@ -99,11 +99,11 @@ class IwishPlaceCard extends ConsumerWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Align(
+                                    const Align(
                                       alignment: Alignment.topCenter,
                                       child: Padding(
-                                        padding: const EdgeInsets.only(top: 8),
-                                        child: const SheetDragger(),
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: SheetDragger(),
                                       ),
                                     ),
                                     const SizedBox(height: 4),

@@ -37,6 +37,8 @@ import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
+import 'package:mapness/shared/ui/loading/loading_overlay.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -191,6 +193,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                     AppStaticColorsThemeExt.palette(colorScheme)
                   ],
                 ),
+                builder: (context, child) => child != null
+                    ? LoadingOverlay(
+                        child: ToastOverlay(
+                          child: child,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
                 locale: language.locale,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,

@@ -28,7 +28,7 @@ class PoiSheetSizes {
     return PoiSheetSizes._(
       middleHeight: middleHeight,
       collapsedHeight: collapsedHeight,
-      hiddenHeight: 130.0,
+      hiddenHeight: 76.0,
     );
   }
 

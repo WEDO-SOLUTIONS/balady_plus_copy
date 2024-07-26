@@ -28,9 +28,8 @@ class IwishCarousel extends ConsumerWidget {
       error: (error, stackTrace) => ErrorSheet(
         onRetry: () => ref.read(iwishMarkersProvider.notifier).refresh(),
         buttonLabel: context.l10n.refresh,
-        onClose: () => context.pop(),
       ),
-      loading: () => LoadingSheet(text: context.l10n.loading),
+      loading: () => const LoadingSheet(),
       data: (data) => CarouselSlider.builder(
         itemCount: data.length,
         itemBuilder: (context, index, realIndex) => Consumer(
@@ -40,7 +39,7 @@ class IwishCarousel extends ConsumerWidget {
               error: (_, __) => Center(
                 child: TextButton(
                   onPressed: () => ref.read(iwishEntityProvider(data[index].id).notifier).refresh(),
-                  child: Text(context.l10n.reload),
+                  child: Text(context.l10n.tryAgain),
                 ),
               ),
               loading: () => const ShimmerEffectWidget(),

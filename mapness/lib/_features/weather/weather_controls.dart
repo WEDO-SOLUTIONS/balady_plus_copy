@@ -59,9 +59,7 @@ class WeatherControls extends ConsumerWidget {
                       SizedBox(
                         height: 8,
                       ),
-                      FollowControl(
-                        onlyFollowDirection: false,
-                      ),
+                      FollowControl(),
                     ],
                   ),
                 ],

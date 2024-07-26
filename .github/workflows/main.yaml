@@ -51,6 +51,9 @@ jobs:
             export CI_GIT_BRANCH=${GITHUB_HEAD_REF}
             export CI_IS_PR="pr-"
           fi
+          source .release_version
+          export CI_RELEASE_VERSION="${major}.${minor}.${patch}-rc${candidate}"
+          echo "CI_RELEASE_VERSION=${CI_RELEASE_VERSION}" >> ${GITHUB_ENV}
           echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
           CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr --complement --squeeze-repeats '[:alnum:]' '-')
           echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
@@ -130,11 +133,11 @@ jobs:
 
       - name: 🤖🔨 Build Android app
         run: |
-          flutter build apk --flavor pre --target lib/main_urbi_pre.dart --dart-define=CI_BUILD_NAME="urbi-pre-${CI_ARTIFACT_SUFFIX}" --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
+          flutter build apk --flavor pre --target lib/main_urbi_pre.dart --dart-define=CI_RELEASE_VERSION="${CI_RELEASE_VERSION}" --dart-define=CI_BUILD_NAME="urbi-pre-${CI_ARTIFACT_SUFFIX}" --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
           mv build/app/outputs/flutter-apk/app-pre-release.apk build/app/outputs/flutter-apk/urbi-pre-${CI_ARTIFACT_SUFFIX}.apk
-          flutter build apk --flavor prod --target lib/main_prod.dart --dart-define=CI_BUILD_NAME="momrah-prod-${CI_ARTIFACT_SUFFIX}" --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
+          flutter build apk --flavor prod --target lib/main_prod.dart --dart-define=CI_RELEASE_VERSION="${CI_RELEASE_VERSION}" --dart-define=CI_BUILD_NAME="momrah-prod-${CI_ARTIFACT_SUFFIX}" --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
           mv build/app/outputs/flutter-apk/app-prod-release.apk build/app/outputs/flutter-apk/momrah-prod-${CI_ARTIFACT_SUFFIX}.apk
-          flutter build apk --flavor stg --target lib/main_stg.dart --dart-define=CI_BUILD_NAME="momrah-stage-${CI_ARTIFACT_SUFFIX}" --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-stage
+          flutter build apk --flavor stg --target lib/main_stg.dart --dart-define=CI_RELEASE_VERSION="${CI_RELEASE_VERSION}" --dart-define=CI_BUILD_NAME="momrah-stage-${CI_ARTIFACT_SUFFIX}" --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-stage
           mv build/app/outputs/flutter-apk/app-stg-release.apk build/app/outputs/flutter-apk/momrah-stage-${CI_ARTIFACT_SUFFIX}.apk
 
       - name: 🤖🔨 Upload Urbi Pre Prod apk

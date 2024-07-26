@@ -1,34 +1,14 @@
-import 'dart:async';
-
-import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
-import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
-import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
-import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/map/object_manager.dart';
-
-part 'widgets/car_item.dart';
-part 'widgets/entrance_item.dart';
-part 'widgets/favorite_item.dart';
-part 'widgets/phone_item.dart';
-part 'widgets/share_item.dart';
-part 'widgets/wrapper.dart';
+import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 
 class PoiCardFooter extends ConsumerWidget {
   static const double height = 40;
@@ -38,6 +18,8 @@ class PoiCardFooter extends ConsumerWidget {
   final VoidCallback share;
   final VoidCallback callPhone;
   final VoidCallback onEntranceTap;
+  final VoidCallback onTapCar;
+  final void Function(FavouriteItem? favouriteItem) onTapFavorite;
   final RouteSearchPoint finishPoint;
 
   PoiCardFooter({
@@ -45,6 +27,8 @@ class PoiCardFooter extends ConsumerWidget {
     required this.share,
     required this.callPhone,
     required this.onEntranceTap,
+    required this.onTapCar,
+    required this.onTapFavorite,
     super.key,
   }) : finishPoint = RouteSearchPoint(
           coordinates: data.markerPosition!.toGeoPointMessage(),
@@ -53,60 +37,57 @@ class PoiCardFooter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(
+        finishPoint: finishPoint,
+        navType: RouteSearchOptionsMessage.car,
+      ),
+    );
+
     final objectId = data.id?.objectId;
+
+    ref.watch(favouriteCacheProvider).valueOrNull;
+    final provider = ref.watch(favouriteCacheProvider.notifier);
+    final isFavourite = objectId != null && provider.isFavourite(objectId);
+    final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
+    final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
 
     final hasEntrances = data.entrances.isNotEmpty == true;
     final hasContacts = data.contactInfos.isNotEmpty == true;
     final hasContactsAndHasEntrances = hasContacts && hasEntrances;
-
-    if (hasContactsAndHasEntrances) {
-      return _Wrapper(
-        children: [
-          _CarItem(
-            finishPoint: finishPoint,
-            objectMessage: data,
-            flex: 2,
-          ),
-          _FavoriteItem(
-            objectMessage: data,
-            objectId: objectId,
-          ),
-          _ShareItem(
-            hasContactsAndHasEntrances: hasContactsAndHasEntrances,
-            flex: 2,
-            onTap: share,
-          ),
-        ],
-      );
-    }
-
-    final carIconFlex = (hasEntrances || hasContacts) ? 3 : 2;
-    return _Wrapper(
-      children: [
-        _CarItem(
-          finishPoint: finishPoint,
-          objectMessage: data,
-          flex: carIconFlex,
+    return BottomActionBar(
+      items: [
+        ItemActionBar(
+          icon: TransportIcons.car,
+          colorScheme: ButtonColorScheme.primary,
+          label:
+              hasContactsAndHasEntrances ? null : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
+          onPressed: onTapCar,
         ),
-        if (hasContacts)
-          _PhoneItem(
-            hasContacts: true,
-            flex: 2,
-            onTap: callPhone,
+        if (hasContactsAndHasEntrances)
+          ItemActionBar(
+            icon: GeneralIcons.phoneLTR,
+            colorScheme: ButtonColorScheme.secondary,
+            label: hasContactsAndHasEntrances ? null : context.l10n.call,
+            onPressed: callPhone,
           ),
         if (hasEntrances)
-          _EntranceItem(
-            hasEntrances: true,
-            onEntranceTap: onEntranceTap,
+          ItemActionBar(
+            icon: SystemIcons.turnRight,
+            colorScheme: ButtonColorScheme.secondary,
+            onPressed: onEntranceTap,
           ),
-        _FavoriteItem(
-          objectMessage: data,
-          objectId: objectId,
+        ItemActionBar(
+          icon: iconData,
+          colorScheme: ButtonColorScheme.secondary,
+          label: hasContactsAndHasEntrances ? null : context.l10n.save,
+          onPressed: () => onTapFavorite(favouriteItem),
         ),
-        _ShareItem(
-          hasContactsAndHasEntrances: hasContactsAndHasEntrances,
-          flex: 2,
-          onTap: share,
+        ItemActionBar(
+          icon: SystemIcons.share,
+          colorScheme: ButtonColorScheme.secondary,
+          label: hasContactsAndHasEntrances ? null : context.l10n.share,
+          onPressed: share,
         ),
       ],
     );
