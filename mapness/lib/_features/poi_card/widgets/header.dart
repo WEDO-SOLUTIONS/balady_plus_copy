@@ -83,21 +83,21 @@ class PoiHeader extends ConsumerWidget {
                       ),
                     ),
                     ValueListenableBuilder(
-                        valueListenable: expansionState,
+                      valueListenable: expansionState,
                       // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
                       child: subTitle == 'Street' && direction == TextDirection.ltr
                           ? Text(
                               subTitle,
                               style: subTitleTextStyle,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.start,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.start,
                             )
                           : null,
                       builder: (_, expansion, child) => AnimatedSize(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                              child: expansion != Expansion.hidden ? child : const SizedBox(),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        child: expansion != Expansion.hidden ? child : const SizedBox(),
                       ),
                     ),
                   ],
