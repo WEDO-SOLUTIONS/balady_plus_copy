@@ -81,24 +81,25 @@ class PoiHeader extends ConsumerWidget {
                     ),
                     ValueListenableBuilder(
                         valueListenable: expansionState,
-                        child: Text(
-                          subTitle,
-                          style: subTitleTextStyle,
+                      child: subTitle != 'Street'
+                          ? Text(
+                              subTitle,
+                              style: subTitleTextStyle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           textAlign: TextAlign.start,
-                        ),
-                        builder: (_, expansion, child) => AnimatedSize(
+                            )
+                          : null,
+                      builder: (_, expansion, child) => AnimatedSize(
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                               child: expansion != Expansion.hidden ? child : const SizedBox(),
-                            )),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(
-                width: Spacing.$3x,
-              ),
+              const SizedBox(width: Spacing.$3x),
               Builder(
                 builder: (context) => Padding(
                   padding: const EdgeInsets.only(bottom: 16),
