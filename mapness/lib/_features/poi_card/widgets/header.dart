@@ -37,6 +37,7 @@ class PoiHeader extends ConsumerWidget {
 
     final address = data.address;
     final subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
+    final subtitleIcon = _getParkingIcon(data);
     final title = address?.buildingName ?? data.title;
 
     final titleTextStyle = context.textStyle.heading1.copyWith(
@@ -83,23 +84,36 @@ class PoiHeader extends ConsumerWidget {
                       ),
                     ),
                     ValueListenableBuilder(
-                      valueListenable: expansionState,
-                      // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
-                      child: subTitle == 'Street' && direction == TextDirection.ltr
-                          ? Text(
-                              subTitle,
-                              style: subTitleTextStyle,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.start,
-                            )
-                          : null,
-                      builder: (_, expansion, child) => AnimatedSize(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        child: expansion != Expansion.hidden ? child : const SizedBox(),
-                      ),
-                    ),
+                        valueListenable: expansionState,
+                        // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
+                        child: subTitle == 'Street' && direction == TextDirection.ltr
+                            ? Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      subTitle,
+                                      style: subTitleTextStyle,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                  if (subtitleIcon != null) ...[
+                                    const SizedBox(width: Spacing.$1x),
+                                    Icon(
+                                      subtitleIcon,
+                                      color: context.color.textAndIconsBaseSecondary,
+                                      size: 24,
+                                    )
+                                  ]
+                                ],
+                              )
+                            : null,
+                        builder: (_, expansion, child) => AnimatedSize(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              child: expansion != Expansion.hidden ? child : const SizedBox(),
+                            )),
                   ],
                 ),
               ),
@@ -173,5 +187,13 @@ class PoiHeader extends ConsumerWidget {
       return freeText;
     }
     return '$total ${l10n.lots} • $freeText';
+  }
+
+  IconData? _getParkingIcon(DirectoryObjectMessage data) {
+    final parkingInfo = data.parkingInfo;
+    if (parkingInfo == null) {
+      return null;
+    }
+    return parkingInfo.isPaid ? GeneralIcons.money : GeneralIcons.checkmarkCircle;
   }
 }
