@@ -7,6 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
+import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
@@ -135,7 +136,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
               children: [
                 const SizedBox(height: 6, width: double.maxFinite),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.verticalBaseToTopSafezone),
+                  padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
                   child: Directionality(
                     // Here we set the text direction according to the current locale to display the correct direction of the widget.
                     textDirection: Directionality.of(context),
@@ -196,7 +197,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                 const Spacer(),
                 const Padding(
                   padding: padding,
-                  child: ZoomControl(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IndoorControl(),
+                      ZoomControl(),
+                    ],
+                  ),
                 ),
                 const Spacer(),
                 const Padding(
