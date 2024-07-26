@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
@@ -32,6 +33,8 @@ class PoiHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final direction = ref.watch(uiDirectionProvider);
+
     final address = data.address;
     final subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
     final title = address?.buildingName ?? data.title;
@@ -80,25 +83,27 @@ class PoiHeader extends ConsumerWidget {
                       ),
                     ),
                     ValueListenableBuilder(
-                        valueListenable: expansionState,
-                        child: Text(
-                          subTitle,
-                          style: subTitleTextStyle,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.start,
-                        ),
-                        builder: (_, expansion, child) => AnimatedSize(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                              child: expansion != Expansion.hidden ? child : const SizedBox(),
-                            )),
+                      valueListenable: expansionState,
+                      // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
+                      child: subTitle == 'Street' && direction == TextDirection.ltr
+                          ? Text(
+                              subTitle,
+                              style: subTitleTextStyle,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.start,
+                            )
+                          : null,
+                      builder: (_, expansion, child) => AnimatedSize(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        child: expansion != Expansion.hidden ? child : const SizedBox(),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(
-                width: Spacing.$3x,
-              ),
+              const SizedBox(width: Spacing.$3x),
               Builder(
                 builder: (context) => Padding(
                   padding: const EdgeInsets.only(bottom: 16),
