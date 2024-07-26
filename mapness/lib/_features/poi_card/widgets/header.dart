@@ -84,6 +84,7 @@ class PoiHeader extends ConsumerWidget {
                     ),
                     ValueListenableBuilder(
                         valueListenable: expansionState,
+                      // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
                       child: subTitle == 'Street' && direction == TextDirection.ltr
                           ? Text(
                               subTitle,
