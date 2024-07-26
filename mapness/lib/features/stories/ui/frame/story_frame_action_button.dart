@@ -1,5 +1,7 @@
 part of 'story_frame_widget.dart';
 
+const _joodeskanPattern = 'https://www.joodeskan.sa/';
+
 /// A button widget that represents an action in a story frame.
 class StoryFrameActionButton extends StatefulWidget {
   ///  [StoryFrameActionButton].
@@ -84,7 +86,7 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
 
   /// Handles the network link action by opening the specified URL.
   void handleNetworkLinkAction(String url) {
-    if (url.startsWith('https://www.joodeskan.sa/')) {
+    if (url.startsWith(_joodeskanPattern)) {
       NavigationService.navigatorKey.currentState?.pushNamed(
         RouteName.jodDonationPage,
       );
