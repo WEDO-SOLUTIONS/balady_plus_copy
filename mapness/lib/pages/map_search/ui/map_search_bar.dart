@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
@@ -75,7 +76,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     });
 
     return BaladySearchWithBackButton(
-      searchInput: BaladyInput.search(
+      searchInput: BaladyInput.searchV2(
         focusNode: _focusNode,
         onChanged: (query) {
           ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
@@ -112,7 +113,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         },
         controller: _controller,
         hintText: context.l10n.search,
+        fillColor: context.colorsV2.neutralContainerDefault,
+        hintColor: context.colorsV2.foregroundSoft,
+        textFieldHeight: 40,
+        textStyle: context.textStyleV3.bodySmallRegular,
       ),
+      backButtonLabel: context.l10n.cancel,
       onBackButtonPressed: () {
         searcher.clear();
         widget.onClose();

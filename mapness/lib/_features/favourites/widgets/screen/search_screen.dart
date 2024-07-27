@@ -34,8 +34,7 @@ class SearchScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: MediaQuery.of(context).padding.top + 12),
               child: BaladySearchWithBackButton(
                 onBackButtonPressed: onBackTap,
-                searchInput: BaladyInput(
-                  higlighFocusedBorder: false,
+                searchInput: BaladyInput.searchV2(
                   autofocus: true,
                   hintText: hintText ?? context.l10n.search,
                   onChanged: (value) {
@@ -45,7 +44,12 @@ class SearchScreen extends ConsumerWidget {
                       ref.read(suggestQueryProvider.notifier).update(value);
                     }
                   },
+                  fillColor: context.colorsV2.neutralContainerDefault,
+                  hintColor: context.colorsV2.foregroundSoft,
+                  textFieldHeight: 40,
+                  textStyle: context.textStyleV3.bodySmallRegular,
                 ),
+                backButtonLabel: context.l10n.cancel,
               ),
             ),
             if (itemCount == 0)
@@ -59,10 +63,10 @@ class SearchScreen extends ConsumerWidget {
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   itemCount: itemCount,
-                separatorBuilder: (_, __) => const Divider(),
-                itemBuilder: itemBuilder,
+                  separatorBuilder: (_, __) => const Divider(),
+                  itemBuilder: itemBuilder,
+                ),
               ),
-            ),
           ],
         ),
       );
