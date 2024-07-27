@@ -95,7 +95,8 @@ class PoiHeader extends ConsumerWidget {
                     ),
                     ValueListenableBuilder(
                         valueListenable: expansionState,
-                        child: expansionState.value != Expansion.fullHidePhoto ? Row(
+                        child: expansionState.value != Expansion.fullHidePhoto
+                            ? Row(
                                 children: [
                                   Flexible(
                                     child: Text(
@@ -115,7 +116,8 @@ class PoiHeader extends ConsumerWidget {
                                     )
                                   ]
                                 ],
-                              ) : null,
+                              )
+                            : null,
                         builder: (_, expansion, child) => AnimatedSize(
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
