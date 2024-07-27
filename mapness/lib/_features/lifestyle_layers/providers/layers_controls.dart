@@ -127,11 +127,18 @@ class LayersControls extends _$LayersControls {
     tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
 
     final selectedLayerState = _getLayerState();
-    toggle(selectedLayerState);
+
+    // Wait for the state to be initialized
+    Future.delayed(Duration.zero, () async {
+      if (selectedLayerState != null) {
+        await _tapHandler(selectedLayerState);
+        await toggle(selectedLayerState);
+      }
+    });
 
     return LayersState(
       layersVisible: false,
-      selectedType: selectedLayerState,
+      selectedType: null,
       isLoading: false,
       investmentsMarkers: {},
       polygons: {},
@@ -139,27 +146,27 @@ class LayersControls extends _$LayersControls {
     );
   }
 
-  void _tapHandler(value) {
+  Future<void> _tapHandler(value) async {
     final currentState = state.selectedType;
 
     cancelToken?.cancel();
-    viewPortSubscription?.cancel();
+    await viewPortSubscription?.cancel();
 
-    _hideAllSelectedMarkers();
+    await _hideAllSelectedMarkers();
 
     switch (value) {
       case LayerType.favourites:
-        toggleFavourites(currentState);
+        await toggleFavourites(currentState);
       case LayerType.buildings:
-        toggleComplianceBuildings();
+        await toggleComplianceBuildings();
       case LayerType.invest:
-        toggleInvestOpportunities();
+        await toggleInvestOpportunities();
       case LayerType.fencing:
-        toggleWhiteLands();
+        await toggleWhiteLands();
       case LayerType.parkingLots:
-        toggleParking();
+        await toggleParking();
       case LayerType.joy:
-        toggleIwish();
+        await toggleIwish();
     }
   }
 
