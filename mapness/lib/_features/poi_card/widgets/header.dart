@@ -14,6 +14,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'package:mapness/widgets/search/ui/search_item.dart';
 
 class PoiHeader extends ConsumerWidget {
   final PoiCardState? poiCardState;
@@ -36,7 +37,16 @@ class PoiHeader extends ConsumerWidget {
     final direction = ref.watch(uiDirectionProvider);
 
     final address = data.address;
-    final subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
+    String subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
+
+    // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
+    if (prefixMapping.containsKey(subTitle)) {
+      subTitle = switch (direction) {
+        TextDirection.ltr => subTitle,
+        TextDirection.rtl => prefixMapping[subTitle]!,
+      };
+    }
+
     final subtitleIcon = _getParkingIcon(data);
     final title = address?.buildingName ?? data.title;
 
@@ -85,9 +95,7 @@ class PoiHeader extends ConsumerWidget {
                     ),
                     ValueListenableBuilder(
                         valueListenable: expansionState,
-                        // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
-                        child: subTitle == 'Street' && direction == TextDirection.ltr
-                            ? Row(
+                        child: expansionState.value != Expansion.fullHidePhoto ? Row(
                                 children: [
                                   Flexible(
                                     child: Text(
@@ -107,8 +115,7 @@ class PoiHeader extends ConsumerWidget {
                                     )
                                   ]
                                 ],
-                              )
-                            : null,
+                              ) : null,
                         builder: (_, expansion, child) => AnimatedSize(
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
