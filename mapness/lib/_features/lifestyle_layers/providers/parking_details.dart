@@ -56,7 +56,6 @@ class ParkingDetails extends _$ParkingDetails {
     final read = ref.read(sharedPrefsProvider);
     final attribute = read.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
-    unawaited(_applyAttribute(parkingFilter));
 
     return ParkingState(parkingFilter: parkingFilter);
   }
