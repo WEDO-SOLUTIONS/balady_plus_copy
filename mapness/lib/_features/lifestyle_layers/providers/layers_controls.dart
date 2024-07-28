@@ -232,14 +232,6 @@ class LayersControls extends _$LayersControls {
     _cancelToken?.cancel();
 
     if (currentState == (LayerType.favourites)) {
-      final mapObjectManager = ref.watch(
-        mapObjectManagerProvider(
-          named: favouritesMapObjectSettings.name,
-          layerId: favouritesMapObjectSettings.layerId,
-        ).notifier,
-      );
-
-      await mapObjectManager.removeAllMarkers();
       await ref.read(favouriteToggleProvider.notifier).disable();
       setSelection();
     } else {
@@ -694,8 +686,15 @@ class LayersControls extends _$LayersControls {
       named: esriMapObjectSettings.name,
       layerId: esriMapObjectSettings.layerId,
     ).notifier);
-    // await ref.watch(selectedMarkerProvider.notifier).removeAllMarkers();
-    // await map.removeAllMarkers();
+
+    final mapObjectManager = ref.watch(
+      mapObjectManagerProvider(
+        named: favouritesMapObjectSettings.name,
+        layerId: favouritesMapObjectSettings.layerId,
+      ).notifier,
+    );
+
+    await mapObjectManager.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
 
