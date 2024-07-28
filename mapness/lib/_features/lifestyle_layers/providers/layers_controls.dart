@@ -24,10 +24,13 @@ import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -45,6 +48,10 @@ class SelectedLayer extends _$SelectedLayer {
   LayerType? build(LayerType? layerType) => null;
 }
 
+enum LayersType { lifestyle, business }
+
+enum LayersPanelType { layers, parking }
+
 class LayersState {
   LayersState({
     required this.isLoading,
@@ -53,7 +60,10 @@ class LayersState {
     required this.investmentsMarkers,
     required this.polylines,
     required this.polygons,
+    this.layersPanelType = LayersPanelType.layers,
+    this.layersType = LayersType.lifestyle,
   });
+
   final bool layersVisible;
   final LayerType? selectedType;
   final bool isLoading;
@@ -61,6 +71,30 @@ class LayersState {
   Map<String, Marker> investmentsMarkers = {};
   Map<String, Polyline> polylines = {};
   Map<String, Polygon> polygons = {};
+
+  final LayersPanelType layersPanelType;
+  final LayersType layersType;
+
+  LayersState copyWith({
+    bool? layersVisible,
+    LayerType? selectedType,
+    bool? isLoading,
+    Map<String, Marker>? investmentsMarkers,
+    Map<String, Polyline>? polylines,
+    Map<String, Polygon>? polygons,
+    LayersPanelType? layersWidgetType,
+    LayersType? layersType,
+  }) =>
+      LayersState(
+        isLoading: isLoading ?? this.isLoading,
+        layersVisible: layersVisible ?? this.layersVisible,
+        selectedType: selectedType ?? this.selectedType,
+        investmentsMarkers: investmentsMarkers ?? this.investmentsMarkers,
+        polylines: polylines ?? this.polylines,
+        polygons: polygons ?? this.polygons,
+        layersPanelType: layersWidgetType ?? layersPanelType,
+        layersType: layersType ?? this.layersType,
+      );
 }
 
 const duration = Duration(milliseconds: 700);
@@ -90,35 +124,21 @@ class LayersControls extends _$LayersControls {
       tapSubscription?.cancel();
     });
 
-    tapSubscription = tapSubject.debounceTime(duration).listen((value) {
-      final currentState = state.selectedType;
-
-      cancelToken?.cancel();
-      viewPortSubscription?.cancel();
-
-      _hideAllSelectedMarkers();
-
-      switch (value) {
-        case LayerType.favourites:
-          toggleFavourites(currentState);
-        case LayerType.buildings:
-          toggleComplianceBuildings();
-        case LayerType.invest:
-          toggleInvestOpportunities();
-        case LayerType.fencing:
-          toggleWhiteLands();
-        case LayerType.parking:
-          toggleParking();
-        case LayerType.joy:
-          toggleIwish();
-      }
-    });
+    tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
 
     final selectedLayerState = _getLayerState();
 
+    // Wait for the state to be initialized
+    Future.delayed(Duration.zero, () async {
+      if (selectedLayerState != null) {
+        await _tapHandler(selectedLayerState);
+        await toggle(selectedLayerState);
+      }
+    });
+
     return LayersState(
       layersVisible: false,
-      selectedType: selectedLayerState,
+      selectedType: null,
       isLoading: false,
       investmentsMarkers: {},
       polygons: {},
@@ -126,10 +146,34 @@ class LayersControls extends _$LayersControls {
     );
   }
 
+  Future<void> _tapHandler(value) async {
+    final currentState = state.selectedType;
+
+    cancelToken?.cancel();
+    await viewPortSubscription?.cancel();
+
+    await _hideAllSelectedMarkers();
+
+    switch (value) {
+      case LayerType.favourites:
+        await toggleFavourites(currentState);
+      case LayerType.buildings:
+        await toggleComplianceBuildings();
+      case LayerType.invest:
+        await toggleInvestOpportunities();
+      case LayerType.fencing:
+        await toggleWhiteLands();
+      case LayerType.parkingLots:
+        await toggleParking();
+      case LayerType.joy:
+        await toggleIwish();
+    }
+  }
+
   void updateLayerInfo() {
     final selectedLayerState = _getLayerState();
     if (selectedLayerState != null) {
-      handleTap(selectedLayerState);
+      setSelection(selectedType: selectedLayerState);
     } else {
       setSelection();
     }
@@ -140,7 +184,7 @@ class LayersControls extends _$LayersControls {
     final string = sharedPrefs.getString(MapnessConstants.activeLayerKey);
 
     final layerState = LayerTypeEx.stringToType(string);
-    return layerState == LayerType.favourites ? layerState : null;
+    return layerState;
   }
 
   Future<void> _saveLayersState(LayerType type) async {
@@ -200,14 +244,18 @@ class LayersControls extends _$LayersControls {
     Map<String, Marker>? investmentsMarkers,
     Map<String, Polyline>? polylines,
     Map<String, Polygon>? polygons,
+    LayersPanelType? layersWidgetType,
+    LayersType? layersType,
   }) {
-    state = LayersState(
+    state = state.copyWith(
       investmentsMarkers: investmentsMarkers ?? state.investmentsMarkers,
       layersVisible: visible ?? state.layersVisible,
       selectedType: state.selectedType,
       isLoading: isLoading ?? state.isLoading,
       polygons: polygons ?? state.polygons,
       polylines: polylines ?? state.polylines,
+      layersWidgetType: layersWidgetType ?? state.layersPanelType,
+      layersType: layersType ?? state.layersType,
     );
   }
 
@@ -233,6 +281,8 @@ class LayersControls extends _$LayersControls {
       ..invalidate(favouriteMarkersProvider);
 
     state = LayersState(
+      layersType: state.layersType,
+      layersPanelType: state.layersPanelType,
       investmentsMarkers: state.investmentsMarkers,
       layersVisible: state.layersVisible,
       selectedType: selectedType,
@@ -318,20 +368,32 @@ class LayersControls extends _$LayersControls {
     final layers = ref.watch(layersControlsProvider.notifier);
     final currentState = state.selectedType;
     await viewPortSubscription?.cancel();
+    await _removeAll();
 
-    if (currentState == LayerType.parking) {
-      await ref
-          .read(mapObjectManagerProvider(
-            named: esriMapObjectSettings.name,
-            layerId: esriMapObjectSettings.layerId,
-          ).notifier)
-          .removeAllMarkers();
+    if (currentState == LayerType.parkingLots) {
+      final manager = ref.read(mapObjectManagerProvider(
+        named: esriMapObjectSettings.name,
+        layerId: esriMapObjectSettings.layerId,
+      ).notifier);
+      await manager.removeAllMarkers();
+
       layers
         ..setSelection()
         ..update(isLoading: false);
+
+      await ref.read(parkingStateProvider.notifier).hideParking();
     } else {
-      setSelection(selectedType: LayerType.parking);
-      await _showParking();
+      setSelection(selectedType: LayerType.parkingLots);
+      await ref.read(parkingStateProvider.notifier).showParking();
+    }
+  }
+
+  Future<void> enableParking() async {
+    await viewPortSubscription?.cancel();
+
+    if (state.selectedType != LayerType.parkingLots) {
+      setSelection(selectedType: LayerType.parkingLots);
+      await ref.read(parkingStateProvider.notifier).showParking();
     }
   }
 
@@ -458,7 +520,6 @@ class LayersControls extends _$LayersControls {
         .map(_makePolygons)
         .listen((data) async {
       update(isLoading: false);
-      // await mapManager.removeAllPolygons();
       await _removeAll();
       if (state.selectedType == LayerType.fencing) {
         final statePolygons = state.polygons;
@@ -502,7 +563,6 @@ class LayersControls extends _$LayersControls {
         .listen(
       (data) async {
         update(isLoading: false);
-        // await mapObjectManager.removeAllPolyLines();
         await _removeAll();
         if (state.selectedType == LayerType.buildings) {
           final polylineList = _makePolylineWithPoint(data);
@@ -600,7 +660,6 @@ class LayersControls extends _$LayersControls {
 
   Future<void> showIwish() async {
     update(isLoading: true);
-    // await _removeAll();
     const duration = Duration(seconds: 10);
     final markers = await ref.read(iwishMarkersProvider.future).onError((error, stackTrace) {
       onError();
@@ -622,10 +681,12 @@ class LayersControls extends _$LayersControls {
         .onError((error, stackTrace) => onError())
         .timeout(duration, onTimeout: onError);
     update(isLoading: false);
-  }
 
-  Future<void> _showParking() async {
-    // TODO: Implement parking in future tasks
+    await computeCameraPosition(
+      markers,
+      ref.read(cameraPositionProvider),
+      ref.read(cameraPositionProvider.notifier).animateTo,
+    );
   }
 
   Future<void> _showJoyParks() async {
@@ -651,5 +712,11 @@ class LayersControls extends _$LayersControls {
     await map.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
+
+    await ref.read(parkingStateProvider.notifier).hideParking();
+  }
+
+  void showParking() {
+    update(layersWidgetType: LayersPanelType.parking);
   }
 }

@@ -62,12 +62,13 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
             color: Colors.white,
             child: Scaffold(
               appBar: BaladyTopBar.iconAndText(
+                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: context.l10n.baladyWebsite,
                 colorEnabled: context.color.textAndIconsStatusAccent,
                 leading: ActionModel(
                   text: context.l10n.back,
                   onPressed: () => context.pop(),
-                  icon: context.isLTR ? SystemIcons.arrowCornerRightSmall : SystemIcons.arrowCornerLeftSmall,
+                  icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                 ),
               ),
               body: _isLoading

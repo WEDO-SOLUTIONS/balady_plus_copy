@@ -9,6 +9,7 @@ import 'package:mapness/pages/routing/ui/routing_search_history.dart';
 import 'package:mapness/pages/routing/ui/routing_search_results.dart';
 import 'package:mapness/pages/routing/ui/routing_suggest_list.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
 class RoutingSearchContent extends ConsumerWidget {
@@ -28,6 +29,16 @@ class RoutingSearchContent extends ConsumerWidget {
   ) {
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
+    ref.listen(searchProvider(scope.value), (_oldState, newState) {
+      if (newState is SearchStateEmpty) {
+        ref.read(urbiAnalyticsProvider).track(
+          'searchFailed',
+          properties: {
+            'text': newState.searchText,
+          },
+        );
+      }
+    });
 
     return searchState.map(
       empty: () => const SliverFillRemaining(

@@ -1,0 +1,143 @@
+# yamllint disable rule:line-length
+---
+name: Feature branch workflow
+
+permissions: write-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
+    branches:
+      - "bugfix/*"
+      - "feat/*"
+      - "feature/*"
+      - "urbi"
+      - "urbi-release-*"
+    paths-ignore:
+      - "**.md"
+      - "doc/**"
+      - ".git/"
+      - ".vscode/"
+
+jobs:
+  check-typos:
+    runs-on: [self-hosted, Linux]
+    steps:
+      - name: typos-action
+        uses: crate-ci/typos@v1.23.1
+        with:
+          files: "mapness/**/*.dart"
+          write_changes: true
+
+  auto-request-review:
+    name: Auto Request Review CODEOWNERS
+    runs-on: [self-hosted, Linux]
+    steps:
+      - name: Request review based on files changes and/or groups the author belongs to. CODEOWNERS
+        uses: urbi-ae/auto-request-review@v0.17.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config: .github/reviewers.yml # Config file location override
+
+  linter:
+    runs-on: [self-hosted, Linux]
+    name: Lint flutter code
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.22.2"
+          channel: "stable"
+          cache: true
+      - name: Download Localazy
+        uses: localazy/download@v1
+        with:
+          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
+          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
+
+      - name: Generate locale
+        run: |
+          cd mapness
+          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
+          sudo chown github:github -R lib/l10n
+          mkdir -p lib/l10n/generated
+          flutter gen-l10n
+
+      - name: Setup requirements
+        env: # Set the secret as an environment variable
+          BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
+        run: |
+          echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
+          chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
+
+      - name: Setup dgis_map_platform_interface
+        run: |
+          cd urbi_map/dgis_map_platform_interface
+          mkdir lib/src/pigeons/
+          mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
+          flutter pub get
+          flutter pub run pigeon --input pigeons/messages.dart
+
+      - name: Setup dgis_map
+        env: # Set the secret as an environment variable
+          BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
+        run: |
+          cd urbi_map/dgis_map
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Download dependenices
+        env:
+          GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
+        run: |
+          eval $(ssh-agent -s)
+          ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
+
+          cd mapness
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+          ssh-agent -k
+          cd ../
+          flutter pub get
+
+      - name: Analyze Flutter
+        uses: ValentinVignal/action-dart-analyze@v0.17
+        with:
+          fail-on: "format"
+          line-length: 120
+          check-renamed-files: true
+
+      - name: Commitsar Action
+        uses: aevea/commitsar@v0.20.2
+
+      - name: Generate Coverage
+        id: coverage-report
+        uses: whynotmake-it/dart-coverage-assistant@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          testing_command: flutter test --coverage
+          lower_threshold: 0
+          upper_threshold: 90
+          generate_badges: none
+
+      - name: Run tests
+        run: |
+          flutter test
+
+      - name: Report tests
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Flutter Tests
+          path: reports/test-*.json
+          reporter: flutter-json

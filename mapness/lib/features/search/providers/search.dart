@@ -1,6 +1,5 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -80,7 +79,8 @@ class Search extends _$Search {
 
     mixpanel?.timeEvent('Search: fetchSuggest');
     final dgisController = await ref.read(dgisControllerProvider.future);
-    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+    final searchRect =
+        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
 
     final searchOperation = CancelableOperation.fromFuture(
       dgisController.fetchSuggest(
@@ -110,7 +110,8 @@ class Search extends _$Search {
     state = SearchStateLoading(searchText: searchQuery);
     _previousType = SearchType.quickSearch;
     _previousQuickSearch = quickSearch;
-    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+    final searchRect =
+        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
     Metrics.logEvent(
       'quickSearch',
       object: runtimeType,
@@ -146,7 +147,8 @@ class Search extends _$Search {
     state = SearchStateLoading(searchText: query);
     _previousType = SearchType.searchByText;
     _previousQuery = query;
-    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+    final searchRect =
+        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
     Metrics.logEvent(
       'searchByText',
       object: runtimeType,
@@ -182,7 +184,8 @@ class Search extends _$Search {
     _previousType = SearchType.searchByQuery;
     _previousQuery = text;
     _previousSearchQueryMessage = query;
-    final searchRect = ref.read(searchInRectProvider.select((value) => value.$1));
+    final searchRect =
+        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
 
     Metrics.logEvent(
       'Search/searchByQuery',
@@ -244,16 +247,18 @@ class Search extends _$Search {
     };
   }
 
+  // TODO(Sergei): remove when search performance is improved (_saRestrictions will be used)
   List<GeoPointMessage>? _getRestrictionFromRect() {
-    final rect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect.geoRectMessage();
+    final rect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
     if (rect == null) {
       return null;
     }
+    const areaExpansion = 0.06;
     return [
-      GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.northEast.longitude),
-      GeoPointMessage(latitude: rect.northEast.latitude, longitude: rect.southWest.longitude),
-      GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.southWest.longitude),
-      GeoPointMessage(latitude: rect.southWest.latitude, longitude: rect.northEast.longitude),
+      GeoPointMessage(latitude: rect.northEastLat + areaExpansion, longitude: rect.northEastLon + areaExpansion),
+      GeoPointMessage(latitude: rect.northEastLat + areaExpansion, longitude: rect.southWestLon - areaExpansion),
+      GeoPointMessage(latitude: rect.southWestLat - areaExpansion, longitude: rect.southWestLon - areaExpansion),
+      GeoPointMessage(latitude: rect.southWestLat - areaExpansion, longitude: rect.northEastLon + areaExpansion),
     ];
   }
 }

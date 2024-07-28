@@ -13,14 +13,14 @@ import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 
-class InBuildingWidget extends ConsumerStatefulWidget {
+class PoiInBuildingWidget extends ConsumerStatefulWidget {
   final PoiCardState? state;
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
   final LatLng? closestPoint;
   final double? bottomTabsHeight;
 
-  const InBuildingWidget({
+  const PoiInBuildingWidget({
     required this.state,
     required this.objectId,
     super.key,
@@ -30,10 +30,10 @@ class InBuildingWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<InBuildingWidget> createState() => _InBuildingWidgetState();
+  ConsumerState<PoiInBuildingWidget> createState() => _PoiInBuildingWidgetState();
 }
 
-class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
+class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
   late final PagingController<int, OrganizationItem> pagingController;
   late final ScrollController scrollController;
   bool init = true;
@@ -62,49 +62,52 @@ class _InBuildingWidgetState extends ConsumerState<InBuildingWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => CustomScrollView(
-        controller: scrollController,
-        physics: const BouncingScrollPhysics(),
-        scrollBehavior: const CupertinoScrollBehavior(),
-        shrinkWrap: true,
-        slivers: [
-          PagedSliverList<int, OrganizationItem>.separated(
-            shrinkWrapFirstPageIndicators: true,
-            pagingController: pagingController,
-            builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
-              itemBuilder: (context, item, index) => ContentWrapper(
-                color: context.color.surfaceBasePrimary,
-                children: [
-                  ContentRow(
-                    onTap: () {
-                      final id = item.id;
-                      if (id == null) {
-                        return;
-                      }
-                      context.pop();
-                      PoiMapRoute.open(
-                        ref.read(goRouterProvider),
-                        int.parse(id),
-                        zoom: widget.cameraConfig?.zoom,
-                        bearing: widget.cameraConfig?.bearing,
-                        tilt: widget.cameraConfig?.tilt,
-                        latLng: widget.closestPoint,
-                      );
-                    },
-                    options: ContentRowOptions(
-                      title: item.title,
-                      subtitle: item.rubricsNames,
-                      subtitleExtra: item.addressComment,
-                    ),
-                  )
-                ],
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: Spacing.$2x),
+        child: CustomScrollView(
+          controller: scrollController,
+          physics: const BouncingScrollPhysics(),
+          scrollBehavior: const CupertinoScrollBehavior(),
+          shrinkWrap: true,
+          slivers: [
+            PagedSliverList<int, OrganizationItem>.separated(
+              shrinkWrapFirstPageIndicators: true,
+              pagingController: pagingController,
+              builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
+                itemBuilder: (context, item, index) => ContentWrapper(
+                  color: context.color.surfaceBasePrimary,
+                  children: [
+                    ContentRow(
+                      onTap: () {
+                        final id = item.id;
+                        if (id == null) {
+                          return;
+                        }
+                        context.pop();
+                        PoiMapRoute.open(
+                          ref.read(goRouterProvider),
+                          int.parse(id),
+                          zoom: widget.cameraConfig?.zoom,
+                          bearing: widget.cameraConfig?.bearing,
+                          tilt: widget.cameraConfig?.tilt,
+                          latLng: widget.closestPoint,
+                        );
+                      },
+                      options: ContentRowOptions(
+                        title: item.title,
+                        subtitle: item.rubricsNames,
+                        subtitleExtra: item.addressComment,
+                      ),
+                    )
+                  ],
+                ),
               ),
+              separatorBuilder: (context, index) => Spacing.$4x.heightBox,
             ),
-            separatorBuilder: (context, index) => Spacing.verticalPaddingInsideWrapper.heightBox,
-          ),
-          SliverToBoxAdapter(
-              child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox),
-        ],
+            SliverToBoxAdapter(
+                child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox),
+          ],
+        ),
       );
 
   Future<void> _fetchPage(int pageKey) async {

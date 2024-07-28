@@ -1,5 +1,4 @@
 import 'package:another_transformer_page_view/another_transformer_page_view.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/data/local_stories_service.dart';
@@ -42,13 +41,14 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
     required VoidCallback onClose,
     void Function(String)? handleDeeplink,
     StoryTypes? localStoryType,
+    bool? onActionShowNextHistory,
   }) =>
       StoriesFullscreen._(
         initialStoryId: initialStoryId,
         onClose: onClose,
         handleDeeplink: handleDeeplink,
         localStoryType: localStoryType,
-        onActionShowNextStory: true,
+        onActionShowNextStory: onActionShowNextHistory ?? true,
       );
 
   @override
@@ -176,7 +176,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
         return !snapshot.hasData
             ? blank
             : Material(
-                color: context.color.surfaceBaseInversePrimary,
+                color: Colors.transparent,
                 child: Directionality(
                   textDirection: Directionality.of(context),
                   child: ValueListenableBuilder(

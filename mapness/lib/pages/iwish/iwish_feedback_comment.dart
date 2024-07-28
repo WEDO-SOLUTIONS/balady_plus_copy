@@ -12,8 +12,7 @@ class IwishFeedbackComment extends ConsumerStatefulWidget {
   final String iwishId;
 
   @override
-  ConsumerState<IwishFeedbackComment> createState() =>
-      _IwishFeedbackCommentState();
+  ConsumerState<IwishFeedbackComment> createState() => _IwishFeedbackCommentState();
 }
 
 class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackComment> {
@@ -22,14 +21,14 @@ class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackComment> {
   }
 
   void onSubmit() {
-    ref
-        .read(iwishFeedbackProvider(widget.iwishId).notifier)
-        .updateComment(comment);
+    final newComment = comment.length > _maxCommentLength ? comment.substring(0, _maxCommentLength) : comment;
+    ref.read(iwishFeedbackProvider(widget.iwishId).notifier).updateComment(newComment);
 
     onClose();
   }
 
   String comment = '';
+  final _maxCommentLength = 1000;
 
   @override
   Widget build(BuildContext context) {
@@ -41,26 +40,36 @@ class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackComment> {
     /// screen is not available when provider is not ready
     final state = ref.read(iwishFeedbackProvider(widget.iwishId)).requireValue;
     comment = state.comment ?? '';
+    const topSpace = 100;
+    final bottomSheetHeight =
+        MediaQuery.sizeOf(context).height - kBottomNavigationBarHeight - kToolbarHeight - topSpace;
 
     return LabeledDraggableSheet(
       onClose: onClose,
       title: context.l10n.shareFeedback,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IwishTextEditingField(
-            onChanged: (text) => comment = text,
-            initialValue: comment,
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: bottomSheetHeight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IwishTextEditingField(
+                onChanged: (text) => comment = text,
+                initialValue: comment,
+                maxLength: _maxCommentLength,
+              ),
+              const SizedBox(height: 16),
+              LabeledElevatedButton(
+                onPressed: onSubmit,
+                label: context.l10n.ready,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(height: bottomPadding),
+            ],
           ),
-          const SizedBox(height: 16),
-          LabeledElevatedButton(
-            onPressed: onSubmit,
-            label: context.l10n.ready,
-          ),
-          const SizedBox(height: 20),
-          SizedBox(height: bottomPadding),
-        ],
+        ),
       ),
     );
   }

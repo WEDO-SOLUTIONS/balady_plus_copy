@@ -41,11 +41,15 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.4.0
+    version: ^2.0.0
+
+  urbi_analytics:
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: ^0.0.4
 
   urbi_utils:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.1.0
+    version: ^1.0.3
 
   localize_and_translate:
     git:
@@ -70,7 +74,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   hive: ^2.2.3
   path_provider: ^2.1.1
-  expansion_widget: ^0.0.3
+  expansion_widget: ^0.1.0
   uuid: ^4.0.0
   carousel_slider: ^4.2.1
   rxdart: ^0.27.7
@@ -107,6 +111,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   add_2_calendar: ^2.2.5
   flutter_bloc: ^8.1.6
+  mocktail: ^1.0.0
 
 dependency_overrides:
   geolocator_android: ^4.2.2
@@ -117,7 +122,6 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.0
   random_string: ^2.3.1
   flutter_lints: ^2.0.3
   # a tool for running code generators

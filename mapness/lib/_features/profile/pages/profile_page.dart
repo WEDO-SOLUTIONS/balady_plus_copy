@@ -26,20 +26,19 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
     final actionIcon = context.isLTR
-        ? SystemIcons.arrowCornerRightSmall.icon(
+        ? SystemIcons.arrowCornerRightLarge.icon(
             color: context.color.textAndIconsBaseSecondary,
           )
-        : SystemIcons.arrowCornerLeftSmall.icon(
+        : SystemIcons.arrowCornerLeftLarge.icon(
             color: context.color.textAndIconsBaseSecondary,
           );
     final userData = ref.watch(authProvider);
-
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) {
         StatefulNavigationShell.of(context).goBranch(
           ref.read(appFeaturesProvider).naviEnabled ? 3 : 2,
         );
-        return false;
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -58,7 +57,7 @@ class ProfilePage extends ConsumerWidget {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.horizontalPaddingInsideWrapper,
+                        horizontal: Spacing.$4x,
                       ),
                       child: userData.maybeWhen(
                         orElse: () => UnautorizedProfile(
@@ -77,13 +76,13 @@ class ProfilePage extends ConsumerWidget {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.horizontalPaddingInsideWrapper,
+                        horizontal: Spacing.$4x,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
+                            height: Spacing.$4x,
                           ),
                           ContentWrapper(
                             color: context.color.surfaceBaseSecondary,
@@ -128,7 +127,7 @@ class ProfilePage extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
+                            height: Spacing.$4x,
                           ),
                           ContentWrapper(
                             color: context.color.surfaceBaseSecondary,
@@ -181,7 +180,7 @@ class ProfilePage extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(
-                            height: Spacing.verticalPaddingInsideWrapper,
+                            height: Spacing.$4x,
                           ),
                           userData.maybeWhen(
                             orElse: () => const SizedBox.shrink(),

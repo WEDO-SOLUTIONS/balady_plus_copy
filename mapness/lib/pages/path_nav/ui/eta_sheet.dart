@@ -45,6 +45,7 @@ class EtaSheet extends ConsumerStatefulWidget {
 
 class _EtaSheetState extends ConsumerState<EtaSheet> {
   bool _isExpanded = false;
+
   ///TODO: discuss to team and move to riverpod provider all the same cases
   StreamSubscription<TapEvent>? _streamSubscription;
 

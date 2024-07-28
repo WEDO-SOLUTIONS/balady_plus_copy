@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class ComplianceCard extends ConsumerWidget {
@@ -26,52 +27,50 @@ class ComplianceCard extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
-          child: SizedBox(
-            height: 237,
-            child: ColoredBox(
-              color: context.colorsV2.backgroundSurface1,
-              child: Padding(
-                padding: const EdgeInsets.only(top: Spacing.$5x),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
-                      child: Text(
-                        context.l10n.complianceCardTitle,
-                        style: context.textStyleV3.h4SemiBold,
+          child: ColoredBox(
+            color: context.colorsV2.backgroundSurface1,
+            child: Padding(
+              padding: const EdgeInsets.only(top: Spacing.$5x),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
+                    child: Text(
+                      context.l10n.complianceCardTitle,
+                      style: context.textStyleV3.h4SemiBold,
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.$1x + Spacing.$0_5x),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
+                    child: Text(
+                      context.l10n.complianceCardDescription.multilines,
+                      style: context.textStyleV3.captionLargeRegular.copyWith(
+                        color: context.colorsV2.foregroundSoft,
                       ),
                     ),
-                    const SizedBox(height: Spacing.$1x + Spacing.$0_5x),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
-                      child: Text(
-                        context.l10n.complianceCardDescription,
-                        style: context.textStyleV3.captionLargeRegular.copyWith(
-                          color: context.colorsV2.foregroundSoft,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: Spacing.$5x + Spacing.$0_5x),
-                    _RowButton(
-                      icon: GeneralIcons.sertificate,
-                      onTap: createCompliance,
-                      label: context.l10n.createCompliance,
-                    ),
-                    const Divider(height: Spacing.px, indent: 63),
-                    _RowButton(
-                      icon: context.isLTR ? GeneralIcons.questionSupportLTR : GeneralIcons.questionSupportRTL,
-                      onTap: CommonFunctions.openComplianceFaq,
-                      label: context.l10n.complianceFAQ,
-                    ),
-                    const Divider(height: Spacing.px, indent: 63),
-                    _RowButton(
-                      icon: context.isLTR ? GeneralIcons.documentDefenceRTL : GeneralIcons.documentDefenceLTR,
-                      onTap: CommonFunctions.openComplianceTerms,
-                      label: context.l10n.complianceRequirements,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: Spacing.$6x - Spacing.$2x),
+                  _RowButton(
+                    icon: GeneralIcons.sertificate,
+                    onTap: createCompliance,
+                    label: context.l10n.createCompliance,
+                  ),
+                  Divider(height: Spacing.px / 2, indent: 63, color: context.colorsV2.borderMuted),
+                  _RowButton(
+                    icon: context.isLTR ? GeneralIcons.questionSupportLTR : GeneralIcons.questionSupportRTL,
+                    onTap: CommonFunctions.openComplianceFaq,
+                    label: context.l10n.complianceFAQ,
+                  ),
+                  Divider(height: Spacing.px / 2, indent: 63, color: context.colorsV2.borderMuted),
+                  _RowButton(
+                    icon: context.isLTR ? GeneralIcons.documentDefenceRTL : GeneralIcons.documentDefenceLTR,
+                    onTap: CommonFunctions.openComplianceTerms,
+                    label: context.l10n.complianceRequirements,
+                  ),
+                  const SizedBox(height: Spacing.$6x - Spacing.$2x),
+                ],
               ),
             ),
           ),
@@ -116,7 +115,6 @@ class _RowButton extends StatelessWidget {
                     ],
                   ),
                   Icon(
-                    /// TODO: fix in uikit, icons not the same as in design.
                     context.isLTR ? SystemIcons.arrowCornerRightSmall : SystemIcons.arrowCornerLeftSmall,
                     color: context.colorsV2.foregroundMuted,
                   ),
