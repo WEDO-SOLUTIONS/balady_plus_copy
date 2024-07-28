@@ -81,7 +81,9 @@ class ServiceConfigItem {
       this.allowDepartmentList,
       this.allowAddTopic,
       this.visitType,
-      this.realEstate});
+      this.realEstate,
+        this.attachmentsConfig
+      });
 
   int? id;
   dynamic name;
@@ -95,6 +97,9 @@ class ServiceConfigItem {
   bool? allowAddTopic;
   bool? realEstate;
   List<VisitType>? visitType;
+  List<AttachmentsConfig>? attachmentsConfig;
+
+
 
   factory ServiceConfigItem.fromJson(Map<String, dynamic> json) =>
       ServiceConfigItem(
@@ -113,6 +118,11 @@ class ServiceConfigItem {
             ? List<VisitType>.from(
                 json["visitType"].map((x) => VisitType.fromJson(x)))
             : null,
+
+        attachmentsConfig: json["attachmentsConfig"] != null
+            ? List<AttachmentsConfig>.from(
+            json["attachmentsConfig"].map((x) => AttachmentsConfig.fromJson(x)))
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -127,6 +137,7 @@ class ServiceConfigItem {
         "allowDepartmentList": allowDepartmentList,
         "allowAddTopic": allowAddTopic,
         "visitType": List<dynamic>.from(visitType!.map((x) => x.toJson())),
+         "attachmentsConfig": List<dynamic>.from(attachmentsConfig!.map((x) => x.toJson())),
       };
 }
 
@@ -149,6 +160,48 @@ class VisitType {
         "name": name,
       };
 }
+
+
+
+class AttachmentsConfig {
+  AttachmentsConfig({
+    this.id,
+    this.uuid,
+    this.name,
+    this.allowedFilesExtension,
+    this.mandatory,
+    this.maxSize
+
+  });
+
+  int? id;
+  int? maxSize;
+  String? uuid;
+  String? name;
+  String? allowedFilesExtension;
+  bool? mandatory;
+  factory AttachmentsConfig.fromJson(Map<String, dynamic> json) => AttachmentsConfig(
+    id: json["id"],
+    uuid: json["uuid"],
+    name: json["name"],
+    maxSize: json["maxSize"],
+    allowedFilesExtension: json["allowedFilesExtension"],
+    mandatory: json["mandatory"],
+
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "uuid": uuid,
+    "maxSize": maxSize,
+    "allowedFilesExtension": allowedFilesExtension,
+    "mandatory": mandatory,
+  };
+}
+
+
+
 
 class StatusDetail {
   StatusDetail({

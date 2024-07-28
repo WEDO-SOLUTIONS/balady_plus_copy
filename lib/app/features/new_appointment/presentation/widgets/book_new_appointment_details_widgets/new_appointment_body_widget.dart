@@ -59,15 +59,15 @@ class _NewAppointmentBody extends State<NewAppointmentBody> {
 
                 Constants.verticalSpaceMedium,
                 // special needs
-                if (model.showSpecialConditionSection())
-                  BookAppointmentSpecialNeedsWidget(
-                    value: model.isSpecialConditionChecked,
-                    onSelected: (bool? isChecked) {
-                      model.hideKeyboard();
-                      model.isSpecialConditionChecked = isChecked;
-                    },
-                  ),
-                Constants.verticalSpaceMedium,
+                // if (model.showSpecialConditionSection())
+                //   BookAppointmentSpecialNeedsWidget(
+                //     value: model.isSpecialConditionChecked,
+                //     onSelected: (bool? isChecked) {
+                //       model.hideKeyboard();
+                //       model.isSpecialConditionChecked = isChecked;
+                //     },
+                //   ),
+                // Constants.verticalSpaceMedium,
               ]),
         ),
       ),
