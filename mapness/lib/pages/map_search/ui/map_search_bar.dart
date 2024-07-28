@@ -41,16 +41,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (widget.requestFocus) {
-      _focusNode.requestFocus();
-    } else {
-      _focusNode.unfocus();
-    }
-  }
-
-  @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();
@@ -110,6 +100,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                   ),
                 );
           }
+          _focusNode.requestFocus();
         },
         controller: _controller,
         hintText: context.l10n.search,
