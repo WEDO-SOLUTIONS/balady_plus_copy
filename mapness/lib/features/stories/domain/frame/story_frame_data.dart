@@ -28,7 +28,7 @@ extension StoryFrameDataX on StoryFrameData {
 class StoryFrameData {
   final String storyId;
   final String title;
-  final String arabicImage;
+  final String Function({required bool isArabic}) imageUrl;
   final String? subtitle;
   final String? description;
   final StoryTextStyle? titleStyle;
@@ -41,14 +41,13 @@ class StoryFrameData {
   final List<Widget> Function(BuildContext context, void Function(StoryFrameAction action)? onActionPressed)?
       additionalContent;
   final Gradient? storyGradient;
-  final String? englishImage;
 
   const StoryFrameData({
     required this.duration,
     required this.storyId,
     required this.isWatched,
     required this.title,
-    required this.arabicImage,
+    required this.imageUrl,
     this.titleStyle,
     this.descriptionStyle,
     this.subtitle,
@@ -58,13 +57,11 @@ class StoryFrameData {
     this.horizontalPadding = 0.0,
     this.additionalContent,
     this.storyGradient,
-    this.englishImage,
   });
 
   StoryFrameData copyWith({
     String? storyId,
     String? title,
-    String? arabicImage,
     String? subtitle,
     String? description,
     StoryTextStyle? titleStyle,
@@ -76,13 +73,13 @@ class StoryFrameData {
     double? horizontalPadding,
     Color? closeButtonColor,
     Gradient? storyGradient,
-    String? englishImage,
+    String Function({required bool isArabic})? imageUrl,
   }) =>
       StoryFrameData(
         isAssetImage: isAssetImage ?? this.isAssetImage,
         storyId: storyId ?? this.storyId,
         title: title ?? this.title,
-        arabicImage: arabicImage ?? this.arabicImage,
+        imageUrl: imageUrl ?? this.imageUrl,
         subtitle: subtitle ?? this.subtitle,
         description: description ?? this.description,
         titleStyle: titleStyle ?? this.titleStyle,
@@ -92,6 +89,5 @@ class StoryFrameData {
         duration: duration ?? this.duration,
         horizontalPadding: horizontalPadding ?? this.horizontalPadding,
         storyGradient: storyGradient ?? this.storyGradient,
-        englishImage: englishImage ?? this.englishImage,
       );
 }

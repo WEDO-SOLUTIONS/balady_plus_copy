@@ -199,10 +199,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                     child: LoadingImage(
                       isAssetImg: widget.frame.isAssetImage,
                       onImageReady: _imageLoaded,
-                      imageUrl: (StoryLocalization.of(context)?.l10n.localeName == 'en'
-                              ? widget.frame.englishImage
-                              : widget.frame.arabicImage) ??
-                          widget.frame.arabicImage,
+                      imageUrl: widget.frame.imageUrl.call(isArabic: StoryLocalization.of(context)?.isArabic ?? true),
                       fit: BoxFit.cover,
                       loadingWidget: Container(
                         color: context.color.textAndIconsBaseInverseTertiary,

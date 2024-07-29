@@ -8,6 +8,8 @@ import 'package:mapness/features/stories/stories.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
+import 'helper/locale_helper.dart';
+
 class StoriesWidget extends ConsumerStatefulWidget {
   const StoriesWidget({super.key});
 
@@ -26,7 +28,8 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
     ref.read(storyServiceProvider).whenData((data) {
       for (final story in data) {
         final firstFrame = story.frames.first;
-        precacheImage(NetworkImage(firstFrame.arabicImage), context);
+        final firstImage = firstFrame.imageUrl.call(isArabic: StoryLocalization.of(context)?.isArabic ?? true);
+        precacheImage(NetworkImage(firstImage), context);
       }
     });
   }
