@@ -318,11 +318,20 @@ class NavigationHandler {
         )
     }
     
-    func restoreNavigationState(state bytes: FlutterStandardTypedData, completion: @escaping (FlutterError?) -> Void) {
+    func restoreNavigationState(
+        state bytes: FlutterStandardTypedData,
+        speedRangeZoom: SpeedRangeZoom,
+        completion: @escaping (FlutterError?) -> Void
+    ) {
         do {
             let state = try PackedNavigationState.fromBytes(data: bytes.data)
-//            self.navigationManager.uiModel.
-            completion(nil)
+            self.startNavigation(
+                finishPoint: state.finishPoint,
+                options: state.routeSearchOptions,
+                route: state.trafficRoute,
+                speedRangeZoom: speedRangeZoom,
+                completion: completion
+            )
         } catch {
             completion(FlutterError(
                 code: "NavigationError",
