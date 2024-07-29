@@ -26,6 +26,7 @@ const prefixMapping = {
   'Park': 'بارك',
   'Hotel': 'الفندق',
   'Coffee shop': 'كافيه',
+  'Paid': 'مدفوع',
 };
 
 class SearchItem extends ConsumerWidget {
