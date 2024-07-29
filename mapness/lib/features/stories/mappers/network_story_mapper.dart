@@ -29,7 +29,7 @@ extension NetworkStoryFrameMapper on NetworkStoryFrame {
   StoryFrameData toDomain(String storyId) => StoryFrameData(
         isWatched: false,
         title: title,
-        imageUrl: background.url,
+        arabicImage: background.url,
         storyId: storyId,
         description: description,
         action: actionButton.toDomain(),

@@ -28,7 +28,7 @@ extension StoryFrameDataX on StoryFrameData {
 class StoryFrameData {
   final String storyId;
   final String title;
-  final String imageUrl;
+  final String arabicImage;
   final String? subtitle;
   final String? description;
   final StoryTextStyle? titleStyle;
@@ -48,7 +48,7 @@ class StoryFrameData {
     required this.storyId,
     required this.isWatched,
     required this.title,
-    required this.imageUrl,
+    required this.arabicImage,
     this.titleStyle,
     this.descriptionStyle,
     this.subtitle,
@@ -64,7 +64,7 @@ class StoryFrameData {
   StoryFrameData copyWith({
     String? storyId,
     String? title,
-    String? imageUrl,
+    String? arabicImage,
     String? subtitle,
     String? description,
     StoryTextStyle? titleStyle,
@@ -82,7 +82,7 @@ class StoryFrameData {
         isAssetImage: isAssetImage ?? this.isAssetImage,
         storyId: storyId ?? this.storyId,
         title: title ?? this.title,
-        imageUrl: imageUrl ?? this.imageUrl,
+        arabicImage: arabicImage ?? this.arabicImage,
         subtitle: subtitle ?? this.subtitle,
         description: description ?? this.description,
         titleStyle: titleStyle ?? this.titleStyle,

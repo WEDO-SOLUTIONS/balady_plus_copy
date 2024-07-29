@@ -26,7 +26,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
     ref.read(storyServiceProvider).whenData((data) {
       for (final story in data) {
         final firstFrame = story.frames.first;
-        precacheImage(NetworkImage(firstFrame.imageUrl), context);
+        precacheImage(NetworkImage(firstFrame.arabicImage), context);
       }
     });
   }

@@ -80,7 +80,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
         continue;
       }
       // Preload images for better performance
-      CachedNetworkImageProvider(frames[i].imageUrl).resolve(ImageConfiguration.empty);
+      CachedNetworkImageProvider(frames[i].arabicImage).resolve(ImageConfiguration.empty);
     }
   }
 
