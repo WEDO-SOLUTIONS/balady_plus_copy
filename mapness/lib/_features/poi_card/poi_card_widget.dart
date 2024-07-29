@@ -27,6 +27,7 @@ import 'package:mapness/_features/poi_card/widgets/info_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_loading_sheet.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
 import 'package:mapness/app/router.dart';
@@ -48,7 +49,6 @@ import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
-import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 class PoiCardWidget extends StatelessWidget {
   final DgisObjectIdMessage objectId;
@@ -182,7 +182,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     if (state.isLoading) {
       return const Align(
         alignment: Alignment.bottomCenter,
-        child: LoadingSheet(),
+        child: PoiLoadingSheet(),
       );
     }
 

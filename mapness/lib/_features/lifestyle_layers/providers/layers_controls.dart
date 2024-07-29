@@ -102,10 +102,11 @@ const duration = Duration(milliseconds: 700);
 @riverpod
 class LayersControls extends _$LayersControls {
   static const duration = Duration(milliseconds: 250);
-  StreamSubscription? viewPortSubscription;
-  CancelToken? cancelToken;
+  StreamSubscription? _viewPortSubscription;
+  CancelToken? _cancelToken;
 
   final esriMapObjectSettings = MapObjectManagerSettings.esri();
+  final favouritesMapObjectSettings = MapObjectManagerSettings.favourites();
 
   final tapSubject = PublishSubject<LayerType>();
   StreamSubscription? tapSubscription;
@@ -120,7 +121,7 @@ class LayersControls extends _$LayersControls {
   @override
   LayersState build() {
     ref.onDispose(() {
-      viewPortSubscription?.cancel();
+      _viewPortSubscription?.cancel();
       tapSubscription?.cancel();
     });
 
@@ -149,8 +150,8 @@ class LayersControls extends _$LayersControls {
   Future<void> _tapHandler(value) async {
     final currentState = state.selectedType;
 
-    cancelToken?.cancel();
-    await viewPortSubscription?.cancel();
+    _cancelToken?.cancel();
+    await _viewPortSubscription?.cancel();
 
     await _hideAllSelectedMarkers();
 
@@ -226,9 +227,10 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleFavourites(LayerType? currentState) async {
-    await viewPortSubscription?.cancel();
+    await _viewPortSubscription?.cancel();
     await _removeAll();
-    cancelToken?.cancel();
+    _cancelToken?.cancel();
+
     if (currentState == (LayerType.favourites)) {
       await ref.read(favouriteToggleProvider.notifier).disable();
       setSelection();
@@ -299,7 +301,7 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleIwish() async {
     final layers = ref.watch(layersControlsProvider.notifier);
     final currentState = state.selectedType;
-    await viewPortSubscription?.cancel();
+    await _viewPortSubscription?.cancel();
 
     if (currentState == LayerType.joy) {
       await ref
@@ -324,7 +326,7 @@ class LayersControls extends _$LayersControls {
       update(isLoading: true);
       await _showBuildingCompliance();
     } else {
-      await viewPortSubscription?.cancel();
+      await _viewPortSubscription?.cancel();
       await _removeAll();
       setSelection();
       update(isLoading: false);
@@ -353,7 +355,7 @@ class LayersControls extends _$LayersControls {
     if (currentState != (LayerType.fencing)) {
       await layersControls._showWhiteLands();
     } else {
-      await viewPortSubscription?.cancel();
+      await _viewPortSubscription?.cancel();
       await _removeAll();
 
       layersControls
@@ -367,7 +369,7 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleParking() async {
     final layers = ref.watch(layersControlsProvider.notifier);
     final currentState = state.selectedType;
-    await viewPortSubscription?.cancel();
+    await _viewPortSubscription?.cancel();
     await _removeAll();
 
     if (currentState == LayerType.parkingLots) {
@@ -389,7 +391,7 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> enableParking() async {
-    await viewPortSubscription?.cancel();
+    await _viewPortSubscription?.cancel();
 
     if (state.selectedType != LayerType.parkingLots) {
       setSelection(selectedType: LayerType.parkingLots);
@@ -427,9 +429,9 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    cancelToken = CancelToken();
+    _cancelToken = CancelToken();
 
-    viewPortSubscription = ref
+    _viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
         .whereNotNull()
@@ -438,7 +440,7 @@ class LayersControls extends _$LayersControls {
         .asyncMap(
           (visibleRect) => controller.getEsriPoints(
             params: _createParams(visibleRect, layerType, env),
-            cancelToken: cancelToken,
+            cancelToken: _cancelToken,
           ),
         )
         .map(_makeMarkers)
@@ -474,9 +476,9 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    cancelToken = CancelToken();
+    _cancelToken = CancelToken();
 
-    viewPortSubscription = ref
+    _viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
         .whereNotNull()
@@ -493,7 +495,7 @@ class LayersControls extends _$LayersControls {
               proxy: env.proxy,
               domain: env.url,
             ),
-            cancelToken,
+            _cancelToken,
           ),
         )
         .map(_makePolygons)
@@ -525,9 +527,9 @@ class LayersControls extends _$LayersControls {
     await _removeAll();
 
     /// Cancel API calls
-    cancelToken = CancelToken();
+    _cancelToken = CancelToken();
 
-    viewPortSubscription = ref
+    _viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
         .whereNotNull()
@@ -536,7 +538,7 @@ class LayersControls extends _$LayersControls {
         .asyncMap(
           (visibleRect) => controller.buildingComplianceCertificate(
             _createParams(visibleRect, LayerType.buildings, env),
-            cancelToken,
+            _cancelToken,
           ),
         )
         .listen(
@@ -684,7 +686,15 @@ class LayersControls extends _$LayersControls {
       named: esriMapObjectSettings.name,
       layerId: esriMapObjectSettings.layerId,
     ).notifier);
-    await map.removeAllMarkers();
+
+    final mapObjectManager = ref.watch(
+      mapObjectManagerProvider(
+        named: favouritesMapObjectSettings.name,
+        layerId: favouritesMapObjectSettings.layerId,
+      ).notifier,
+    );
+
+    await mapObjectManager.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
 
