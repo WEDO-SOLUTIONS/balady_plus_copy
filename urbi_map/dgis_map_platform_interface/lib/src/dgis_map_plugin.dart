@@ -619,8 +619,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.setHighlighted(objectIds);
   }
 
-  Future<void> onLocationPremissionGranted(DesiredAccuracyMessage desiredAccuracy) {
-    return _api.onLocationPremissionGranted(desiredAccuracy);
+  Future<void> onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy) {
+    return _api.onLocationPermissionGranted(desiredAccuracy);
   }
 
   Future<void> addPanoramasMarkers(AddMarkersWithPhotoMessage markers) {

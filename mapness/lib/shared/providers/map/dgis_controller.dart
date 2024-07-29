@@ -107,7 +107,7 @@ class DgisController extends _$DgisController {
       }
 
       if (locationPermission.isGranted) {
-        await controller.onLocationPremissionGranted(
+        await controller.onLocationPermissionGranted(
           desiredAccuracy: DesiredAccuracyMessage.high,
         );
       }

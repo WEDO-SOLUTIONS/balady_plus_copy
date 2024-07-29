@@ -420,7 +420,7 @@ class MapViewModel extends BaseViewModel {
     try {
       final permission = await Permission.location.request();
       if (permission.isGranted) {
-        await controller.onLocationPremissionGranted();
+        await controller.onLocationPermissionGranted();
 
         await controller.toggleFollowState();
 
@@ -454,7 +454,7 @@ class MapViewModel extends BaseViewModel {
         );
       }
     } catch (ex) {
-      await controller.onLocationPremissionGranted();
+      await controller.onLocationPermissionGranted();
       await controller.toggleFollowState();
       await controller.setCameraPosition(
         CameraPositionMessage(
@@ -1425,7 +1425,7 @@ class MapViewModel extends BaseViewModel {
     try {
       final permission = await Permission.location.request();
       if (permission.isGranted) {
-        await controller.onLocationPremissionGranted();
+        await controller.onLocationPermissionGranted();
       }
     } catch (ex) {}
     await controller.toggleFollowState();
