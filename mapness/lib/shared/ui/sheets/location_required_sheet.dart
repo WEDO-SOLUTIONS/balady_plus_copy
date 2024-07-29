@@ -13,14 +13,14 @@ class LocationErrorSheetRoute extends GoRouteData {
   static const path = '/location_error_sheet_route';
 
   const LocationErrorSheetRoute({this.routeOnClose});
+
   final String? routeOnClose;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
-      child: LocationErrorSheet(routeOnClose: routeOnClose)
-    );
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(child: LocationErrorSheet(routeOnClose: routeOnClose));
 }
 
 final $locationErrorBoundaryRoute = $appRoutes;
