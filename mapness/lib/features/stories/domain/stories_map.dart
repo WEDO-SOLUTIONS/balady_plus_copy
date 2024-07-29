@@ -128,7 +128,7 @@ class StoriesMap {
                 isArabic ? 'assets/images/onboarding_story_1_ar.png' : 'assets/images/onboarding_story_1_en.png',
             isWatched: false,
             isAssetImage: true,
-            duration: 30,
+            duration: 15,
             titleStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 30,
@@ -161,7 +161,7 @@ class StoriesMap {
                 isArabic ? 'assets/images/onboarding_story_2_ar.png' : 'assets/images/onboarding_story_2_en.png',
             isWatched: false,
             isAssetImage: true,
-            duration: 30,
+            duration: 15,
             titleStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 24,
@@ -193,7 +193,7 @@ class StoriesMap {
                 isArabic ? 'assets/images/onboarding_story_3_ar.png' : 'assets/images/onboarding_story_3_en.png',
             isWatched: false,
             isAssetImage: true,
-            duration: 30,
+            duration: 15,
             titleStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 24,
