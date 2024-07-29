@@ -10,10 +10,10 @@ class StoryLocalization extends InheritedWidget {
     Key? key,
   }) : super(key: key, child: child);
 
-  static StoryLocalization? of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<StoryLocalization>();
+  static StoryLocalization? of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<StoryLocalization>();
+
+  bool get isArabic => l10n.localeName == 'ar';
 
   @override
-  bool updateShouldNotify(StoryLocalization oldWidget) =>
-      l10n != oldWidget.l10n;
+  bool updateShouldNotify(StoryLocalization oldWidget) => l10n != oldWidget.l10n;
 }
