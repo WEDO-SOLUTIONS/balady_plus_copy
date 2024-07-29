@@ -13,11 +13,15 @@ import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
+  final VoidCallback onResultItemTap;
+
   const MapSearchContent({
     required this.scrollController,
+    required this.onResultItemTap,
     super.key,
   });
 
@@ -67,13 +71,23 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
-
-    ref.listen(
-      networkStatusProvider,
-      (_, hasConnection) {
-        _debouncedUpdate(context, hasConnection);
-      },
-    );
+    ref
+      ..listen(searchProvider(scope.value), (_oldState, newState) {
+        if (newState is SearchStateEmpty) {
+          ref.read(urbiAnalyticsProvider).track(
+            'searchFailed',
+            properties: {
+              'text': newState.searchText,
+            },
+          );
+        }
+      })
+      ..listen(
+        networkStatusProvider,
+        (_, hasConnection) {
+          _debouncedUpdate(context, hasConnection);
+        },
+      );
 
     if (!_hasConnection) {
       return SliverToBoxAdapter(
@@ -135,6 +149,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         child: SafeArea(
           top: false,
           child: MapSearchResults(
+            onResultItemTap: widget.onResultItemTap,
             results: results,
             scrollController: widget.scrollController,
           ),

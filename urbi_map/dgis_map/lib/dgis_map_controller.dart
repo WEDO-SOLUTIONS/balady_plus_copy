@@ -485,9 +485,10 @@ class DgisMapController {
     return _instance.showRoutes();
   }
 
+  /// Starts navigation
   Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
 
-  /// Starts navigation sinulation.
+  /// Starts navigation simulation.
   Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
       _instance.startNavigationSimulation(speedRangeZoom);
 
@@ -536,6 +537,7 @@ class DgisMapController {
   /// Does not apply filters immediately. Resets inner state.
   void resetCurrentEvergisFiltersState() => _evergisFilters.clear();
 
+  ///Set Public Transport Active Route
   Future<void> setPublicTransportActiveRoute(int routeIndex) {
     return _instance.setPublicTransportActiveRoute(routeIndex);
   }
@@ -552,26 +554,40 @@ class DgisMapController {
     );
   }
 
+  ///toggle heatmap
   Future<bool> toggleHeatmap({required WeatherMapMessage message}) => _instance.toggleHeatmap(message);
 
+  ///list packages
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
 
+  ///List voices
   Future<List<PackageMessage?>> listVoices() => _instance.listVoices();
 
+  ///Install package
   Future<void> installPackage(String id) => _instance.installPackage(id);
 
+  ///Install voice
   Future<void> installVoice(String id) => _instance.installVoice(id);
 
+  ///Set navigator voice
   Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
 
+  ///Set better route response
   Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _instance.betterRouteResponse(response);
 
+  ///Get better route settings
   Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _instance.getBetterRouteSettings();
 
+  ///Set better route settings
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
+
+  ///Set map attribute bool
+  Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
+  rVoice(String id) => _instance.setNavigatorVoice(id);
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {
+  ///get time is open now
   static WeekTimeSearchMessage openNow() => WeekTimeSearchMessage(isOpenNow: true);
 }
 

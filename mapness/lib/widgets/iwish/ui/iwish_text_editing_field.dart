@@ -60,9 +60,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
               ),
             ),
           ),
-          const SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
           Expanded(
             child: TextFormField(
               focusNode: _focusNode,
@@ -73,6 +71,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
               style: style,
               cursorColor: context.color.strokeAccent,
               validator: (value) => (value?.length ?? 0) > widget.maxLength ? '' : null,
+              autofocus: true,
               decoration: InputDecoration(
                 counterText: '',
                 filled: true,

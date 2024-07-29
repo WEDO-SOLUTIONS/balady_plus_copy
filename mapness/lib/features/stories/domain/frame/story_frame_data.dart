@@ -1,24 +1,47 @@
+import 'package:flutter/material.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension StoryFrameDataX on StoryFrameData {
-  String titleOrFailback(AppLocalizations locale) => switch (storyId) {
+  String titleOrFallback(AppLocalizations locale) => switch (storyId) {
         'route1' => locale.whatCanTheNavigatorDo,
         'route2' => locale.theShortestRoute,
         'route3' => locale.focusOnTheRoad,
+        'onboarding1' => locale.onboardingBaladyAppTitle,
+        'onboarding2' => locale.onboardingRoutesTitle,
+        'onboarding3' => locale.onboardingCapabilitiesTitle,
         _ => title,
       };
 
-  String? descriptionOrFailback(AppLocalizations locale) => switch (storyId) {
+  String? descriptionOrFallback(AppLocalizations locale) => switch (storyId) {
         'route1' => locale.route1description,
         'route2' => locale.route2description,
         'route3' => locale.route3description,
+        'onboarding1' => locale.onboardingBaladyAppDescription,
+        'onboarding2' => locale.onboardingRoutesDescription,
+        'onboarding3' => locale.onboardingCapabilitiesDescription,
         _ => description,
       };
 }
 
 class StoryFrameData {
+  final String storyId;
+  final String title;
+  final String imageUrl;
+  final String? subtitle;
+  final String? description;
+  final StoryTextStyle? titleStyle;
+  final StoryTextStyle? descriptionStyle;
+  final bool isWatched;
+  final StoryFrameAction? action;
+  final int duration;
+  final bool? isAssetImage;
+  final double horizontalPadding;
+  final List<Widget> Function(BuildContext context, void Function(StoryFrameAction action)? onActionPressed)?
+      additionalContent;
+  final Gradient? storyGradient;
+
   const StoryFrameData({
     required this.duration,
     required this.storyId,
@@ -31,18 +54,10 @@ class StoryFrameData {
     this.description,
     this.action,
     this.isAssetImage = false,
+    this.horizontalPadding = 0.0,
+    this.additionalContent,
+    this.storyGradient,
   });
-  final String storyId;
-  final String title;
-  final String imageUrl;
-  final String? subtitle;
-  final String? description;
-  final StoryTextStyle? titleStyle;
-  final StoryTextStyle? descriptionStyle;
-  final bool isWatched;
-  final StoryFrameAction? action;
-  final int duration;
-  final bool? isAssetImage;
 
   StoryFrameData copyWith({
     String? storyId,
@@ -56,6 +71,9 @@ class StoryFrameData {
     StoryFrameAction? action,
     int? duration,
     bool? isAssetImage,
+    double? horizontalPadding,
+    Color? closeButtonColor,
+    Gradient? storyGradient,
   }) =>
       StoryFrameData(
         isAssetImage: isAssetImage ?? this.isAssetImage,
@@ -69,5 +87,7 @@ class StoryFrameData {
         isWatched: isWatched ?? this.isWatched,
         action: action ?? this.action,
         duration: duration ?? this.duration,
+        horizontalPadding: horizontalPadding ?? this.horizontalPadding,
+        storyGradient: storyGradient ?? this.storyGradient,
       );
 }
