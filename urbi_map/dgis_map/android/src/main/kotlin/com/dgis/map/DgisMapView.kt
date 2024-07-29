@@ -694,7 +694,7 @@ class DgisMapView(
         )
     }
 
-    override fun onLocationPremissionGranted(
+    override fun onLocationPermissionGranted(
             desiredAccuracy: DesiredAccuracyMessage,
             result: Messages.Result<Void>?
     ) {

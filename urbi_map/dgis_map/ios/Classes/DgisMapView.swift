@@ -826,7 +826,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(NSNumber(value: from.geoPoint.bearing(point: to.geoPoint).value), nil)
     }
 
-    func onLocationPremissionGrantedDesiredAccuracy(
+    func onLocationPermissionGranted(
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
     ) {
