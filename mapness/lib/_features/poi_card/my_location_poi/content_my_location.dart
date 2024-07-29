@@ -4,12 +4,14 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
+import 'package:mapness/_features/poi_card/my_location_poi/my_location_image.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
+import 'package:mapness/_features/poi_card/provider/poi_my_location_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
-import 'package:mapness/_features/profile/domain/user_profile_data.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -20,7 +22,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
-import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 import '../ui_kit_tmp/poi_header.dart';
 
@@ -48,8 +49,11 @@ class ContentMyLocation extends ConsumerWidget {
     final language = ref.watch(appLanguageProvider);
     _cameraAnimation(ref);
 
+    final userData = ref.watch(authProvider).requireValue;
+
     final sheetSizes = PoiSheetSizes.myLocation(
       bottomPadding: MediaQuery.of(context).viewPadding.bottom,
+      isAuthorized: userData != null,
     );
 
     return Directionality(
@@ -94,7 +98,8 @@ class ContentMyLocation extends ConsumerWidget {
                   LocationType.deeplinkLocation => PoiDeeplinkPersonActions(
                       onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
                       onGo: () {
-                        ref.read(poiCardActionsProvider.notifier)
+                        ref
+                            .read(poiCardActionsProvider.notifier)
                             .goRoute(
                               startLabel: context.l10n.myLocation,
                               finishLabel: context.l10n.pointToMap,

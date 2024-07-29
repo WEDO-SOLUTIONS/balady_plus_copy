@@ -35,6 +35,7 @@ class PoiSheetSizes {
   /// Factory constructor for the My location card
   factory PoiSheetSizes.myLocation({
     required double bottomPadding,
+    required bool isAuthorized,
   }) {
     /// The hidden height for My location card
     const hiddenHeight = 90.0;
@@ -46,7 +47,7 @@ class PoiSheetSizes {
     final middleHeight = 179 + bottomPadding;
 
     return PoiSheetSizes._(
-      middleHeight: middleHeight,
+      middleHeight: isAuthorized ? middleHeight : middleHeight - 32,
       collapsedHeight: collapsedHeight,
       hiddenHeight: hiddenHeight,
     );
