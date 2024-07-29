@@ -41,6 +41,7 @@ class StoryFrameData {
   final List<Widget> Function(BuildContext context, void Function(StoryFrameAction action)? onActionPressed)?
       additionalContent;
   final Gradient? storyGradient;
+  final String? englishImage;
 
   const StoryFrameData({
     required this.duration,
@@ -57,6 +58,7 @@ class StoryFrameData {
     this.horizontalPadding = 0.0,
     this.additionalContent,
     this.storyGradient,
+    this.englishImage,
   });
 
   StoryFrameData copyWith({
@@ -74,6 +76,7 @@ class StoryFrameData {
     double? horizontalPadding,
     Color? closeButtonColor,
     Gradient? storyGradient,
+    String? englishImage,
   }) =>
       StoryFrameData(
         isAssetImage: isAssetImage ?? this.isAssetImage,
@@ -89,5 +92,6 @@ class StoryFrameData {
         duration: duration ?? this.duration,
         horizontalPadding: horizontalPadding ?? this.horizontalPadding,
         storyGradient: storyGradient ?? this.storyGradient,
+        englishImage: englishImage ?? this.englishImage,
       );
 }
