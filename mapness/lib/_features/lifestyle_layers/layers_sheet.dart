@@ -1,7 +1,6 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/router.dart';
@@ -18,6 +17,10 @@ class LayersSheet extends ConsumerStatefulWidget {
 class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
   static const _layersPanelMaxHeight = .5;
   static const _parkingPanelMaxHeight = .35;
+  static const duration = Duration(milliseconds: 250);
+  static const _showHideDuration = Duration(milliseconds: 150);
+
+  static const curve = Curves.easeIn;
 
   late final DraggableScrollableController _layersController;
   late final DraggableScrollableController _parkingLotsController;
@@ -27,62 +30,19 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
     super.initState();
     _layersController = DraggableScrollableController();
     _parkingLotsController = DraggableScrollableController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showBottomSheet());
+  }
 
-    _layersController.addListener(() {
-      if (_layersController.isAttached && _layersController.size < .1) {
-        ref.read(goRouterProvider).pop();
-      }
-    });
-    _parkingLotsController.addListener(() {
-      if (_parkingLotsController.isAttached && _parkingLotsController.size < .01) {
-        ref.watch(layersControlsProvider.notifier).update(
-              layersWidgetType: LayersPanelType.layers,
-            );
-      }
-    });
+  @override
+  void dispose() {
+    super.dispose();
+    _layersController.dispose();
+    _parkingLotsController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(layersControlsProvider);
-
-    ref.listen(layersControlsProvider, (_, next) {
-      const duration = Duration(milliseconds: 300);
-      const easeIn = Curves.ease;
-
-      switch (next.layersPanelType) {
-        case LayersPanelType.layers:
-          _parkingLotsController
-              .animateTo(
-            0,
-            duration: duration,
-            curve: easeIn,
-          )
-              .then((_) {
-            _layersController.animateTo(
-              _layersPanelMaxHeight,
-              duration: duration,
-              curve: easeIn,
-            );
-          });
-
-        case LayersPanelType.parking:
-          _layersController
-              .animateTo(
-            .11,
-            duration: duration,
-            curve: easeIn,
-          )
-              .then((_) {
-            _parkingLotsController.animateTo(
-              _parkingPanelMaxHeight,
-              duration: duration,
-              curve: easeIn,
-            );
-          });
-      }
-    });
-
     final direction = ref.watch(uiDirectionProvider);
 
     return Scaffold(
@@ -91,11 +51,18 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
         children: [
           ColoredBox(
             color: context.staticColor.surfaceOverlayModal,
-            child: GestureDetector(onTap: context.pop),
+            child: GestureDetector(onTap: () {
+              if (state.layersPanelType == LayersPanelType.layers) {
+                _hideLayersPanel();
+              } else {
+                _showLayersPanel();
+              }
+            }),
           ),
           DraggableScrollableSheet(
             controller: _layersController,
             minChildSize: .0,
+            initialChildSize: .0,
             maxChildSize: _layersPanelMaxHeight,
             snapSizes: const [.0, _layersPanelMaxHeight],
             snap: true,
@@ -117,6 +84,12 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
                   children: [
                     LayersSheetContent(
                       scrollController: scrollController,
+                      tapOnParkingLotsMenu: () {
+                        _showParkingLotsPanel();
+                      },
+                      onClose: () {
+                        _hideLayersPanel();
+                      },
                     ),
                     if (state.isLoading)
                       Center(
@@ -154,6 +127,9 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
                 child: Stack(
                   children: [
                     ParkingDetailsContent(
+                      onPanelClose: () {
+                        _showLayersPanel();
+                      },
                       scrollController: scrollController,
                     ),
                   ],
@@ -164,5 +140,75 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
         ],
       ),
     );
+  }
+
+  void _parkingControllerListener() {
+    if (_parkingLotsController.isAttached && _parkingLotsController.size < .01) {
+      _showLayersPanel();
+    }
+  }
+
+  void _hideLayersPanel() {
+    _layersController.animateTo(
+      .0,
+      duration: _showHideDuration,
+      curve: curve,
+    );
+  }
+
+  void _showLayersPanel() {
+    ref.watch(layersControlsProvider.notifier).update(
+          layersWidgetType: LayersPanelType.layers,
+        );
+    _layersController
+        .animateTo(
+          _layersPanelMaxHeight,
+          duration: duration,
+          curve: curve,
+        )
+        .then((_) {});
+    _parkingLotsController
+      ..removeListener(_parkingControllerListener)
+      ..animateTo(
+        0,
+        duration: duration,
+        curve: curve,
+      );
+  }
+
+  void _showParkingLotsPanel() {
+    ref.watch(layersControlsProvider.notifier).update(
+          layersWidgetType: LayersPanelType.parking,
+        );
+    _layersController.animateTo(
+      .11,
+      duration: duration,
+      curve: curve,
+    );
+    _parkingLotsController
+        .animateTo(
+      _parkingPanelMaxHeight,
+      duration: duration,
+      curve: curve,
+    )
+        .then((_) {
+      _parkingLotsController.addListener(_parkingControllerListener);
+    });
+  }
+
+  void _showBottomSheet() {
+    _layersController
+        .animateTo(
+      _layersPanelMaxHeight,
+      duration: _showHideDuration,
+      curve: curve,
+    )
+        .then((_) {
+      _layersController.addListener(() {
+        if (_layersController.isAttached && _layersController.size < .1) {
+          ref.read(goRouterProvider).pop();
+        }
+      });
+    });
   }
 }
