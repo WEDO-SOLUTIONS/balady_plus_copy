@@ -35,7 +35,7 @@ class MyLocationImageWidget extends ConsumerWidget {
 
 class _DefaultImage extends StatelessWidget {
   final String text;
-  const _DefaultImage({required this.text, super.key});
+  const _DefaultImage({required this.text});
 
   @override
   Widget build(BuildContext context) => Container(
