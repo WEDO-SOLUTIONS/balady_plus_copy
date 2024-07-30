@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
@@ -21,6 +22,7 @@ class PoiHeader extends ConsumerWidget {
   final TabController tabController;
   final DirectoryObjectMessage data;
   final ValueListenable<Expansion> expansionState;
+  final ValueNotifier<PoiTabsType> tabState;
   final Function()? onTapClose;
 
   const PoiHeader({
@@ -28,6 +30,7 @@ class PoiHeader extends ConsumerWidget {
     required this.onTapClose,
     required this.tabController,
     required this.expansionState,
+    required this.tabState,
     super.key,
     this.poiCardState,
   });
@@ -85,7 +88,7 @@ class PoiHeader extends ConsumerWidget {
                   children: [
                     ValueListenableBuilder(
                       valueListenable: expansionState,
-                      builder: (_, expansion, child) => Text(
+                      builder: (_, expansion, __) => Text(
                         title,
                         style: titleTextStyle,
                         overflow: TextOverflow.ellipsis,
@@ -94,35 +97,44 @@ class PoiHeader extends ConsumerWidget {
                       ),
                     ),
                     ValueListenableBuilder(
-                        valueListenable: expansionState,
-                        child: expansionState.value != Expansion.fullHidePhoto
-                            ? Row(
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      subTitle,
-                                      style: subTitleTextStyle,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ),
-                                  if (subtitleIcon != null) ...[
-                                    const SizedBox(width: Spacing.$1x),
-                                    Icon(
-                                      subtitleIcon,
-                                      color: context.color.textAndIconsBaseSecondary,
-                                      size: 24,
-                                    )
-                                  ]
-                                ],
+                      valueListenable: tabState,
+                      builder: (_, tabState, __) => AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: tabState == PoiTabsType.info
+                            ? ValueListenableBuilder(
+                                valueListenable: expansionState,
+                                builder: (_, expansion, child) => AnimatedSize(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                  child: expansion != Expansion.hidden ? child : const SizedBox.shrink(),
+                                ),
+                                child: expansionState.value != Expansion.fullHidePhoto
+                                    ? Row(
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              subTitle,
+                                              style: subTitleTextStyle,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                          if (subtitleIcon != null) ...[
+                                            const SizedBox(width: Spacing.$1x),
+                                            Icon(
+                                              subtitleIcon,
+                                              color: context.color.textAndIconsBaseSecondary,
+                                              size: 24,
+                                            )
+                                          ]
+                                        ],
+                                      )
+                                    : null,
                               )
-                            : null,
-                        builder: (_, expansion, child) => AnimatedSize(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                              child: expansion != Expansion.hidden ? child : const SizedBox(),
-                            )),
+                            : const SizedBox.shrink(),
+                      ),
+                    ),
                   ],
                 ),
               ),
