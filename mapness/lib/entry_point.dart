@@ -132,8 +132,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> restoreState() async {
-    final state = ref.read(sharedPrefsProvider).getString('navigatorState');
-    final type = ref.read(sharedPrefsProvider).getString('navigatorStateType');
+    final state = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
+    final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
 
     if (state != null) {
       final extra = {

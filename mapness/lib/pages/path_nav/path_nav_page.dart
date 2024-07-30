@@ -22,6 +22,7 @@ import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -53,7 +54,7 @@ class PathNavPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => PathNavPageState();
 }
 
-class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
+class PathNavPageState extends ConsumerState<PathNavPage> {
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
   late StreamSubscription? _naviEventsListener;
@@ -86,15 +87,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     final state = await dgisController.saveNavigationState();
-    await ref.read(sharedPrefsProvider).setString('navigatorState', base64.encode(state));
-    await ref.read(sharedPrefsProvider).setString('navigatorStateType', widget.navType.name);
+    await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
+    await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateTypeKey, widget.navType.name);
   }
 
   Future<void> restoreNavigationState() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     final state = base64.decode(
-      ref.read(sharedPrefsProvider).getString('navigatorState')!,
+      ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!,
     );
     await dgisController.restoreNavigationState(
       state,
@@ -108,7 +109,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> clearNavigationState() async {
-    await ref.read(sharedPrefsProvider).remove('navigatorState');
+    await ref.read(sharedPrefsProvider).remove(MapnessConstants.navigatorStateKey);
   }
 
   Future<void> _initNavigation() async {
