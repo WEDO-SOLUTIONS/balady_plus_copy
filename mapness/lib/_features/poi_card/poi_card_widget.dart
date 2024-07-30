@@ -336,6 +336,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                 poiCardState: poiCardState,
                 tabController: _tabController,
                 expansionState: _expansion,
+                tabState: _tabType,
                 data: data,
                 onTapClose: () {
                   Metrics.logEventAdvanced(

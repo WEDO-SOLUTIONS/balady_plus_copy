@@ -1,1 +1,1 @@
-enum PoiTabsType { info, photos, inBuilding}
+enum PoiTabsType { info, photos, inBuilding }
