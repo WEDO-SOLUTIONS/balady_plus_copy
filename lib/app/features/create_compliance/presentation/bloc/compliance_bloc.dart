@@ -609,8 +609,9 @@ requestDetails?.isReadOnly = r.isReadOnly;
         );
 
 return ; 
-      } 
-      if (r.submitterThrough == "BENEFICARY"||r.submitterThrough == "MOMTATHEL") {
+      }
+      //||r.submitterThrough == "MOMTATHEL"
+      if (r.submitterThrough == "BENEFICARY") {
         List<AttachmentData> attachmentData = [];
         List<AttachmentData> viewAttachmentData = [];
 
