@@ -138,11 +138,16 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               }
             case 1:
               _tabType.value = PoiTabsType.photos;
-              _lastUsedExpansion = _expansion.value;
+              if (_expansion.value != Expansion.fullHidePhoto) {
+                _lastUsedExpansion = _expansion.value;
+              }
+
               _expansion.value = Expansion.fullHidePhoto;
             case 2:
               _tabType.value = PoiTabsType.inBuilding;
-              _lastUsedExpansion = _expansion.value;
+              if (_expansion.value != Expansion.fullHidePhoto) {
+                _lastUsedExpansion = _expansion.value;
+              }
               _expansion.value = Expansion.fullHidePhoto;
           }
         }
