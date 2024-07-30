@@ -53,7 +53,10 @@ class PoiMyLocationContent extends StatelessWidget {
                       : null,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.$4x),
+                  padding: EdgeInsets.only(
+                    top: value?.isAuthorized == true ? Spacing.$2x : Spacing.$4x,
+                    bottom: Spacing.$4x,
+                  ),
                   child: Text(
                     text,
                     style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV2.foregroundSoft),

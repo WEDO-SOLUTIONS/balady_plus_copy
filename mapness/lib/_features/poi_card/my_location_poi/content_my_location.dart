@@ -90,6 +90,7 @@ class ContentMyLocation extends ConsumerWidget {
                   LocationType.deeplinkLocation => PoiDeeplinkContent(
                       location: closestPoint!,
                       onTapClose: () => onClose(context, ref),
+                      data: data,
                     )
                 },
                 switch (locationType) {
@@ -192,10 +193,7 @@ class ContentMyLocation extends ConsumerWidget {
 
     return PoiSheetSizes.myLocation(
       bottomPadding: MediaQuery.of(context).viewPadding.bottom,
-      isAuthorized: data.maybeWhen(
-        data: (value) => value?.isAuthorized ?? false,
-        orElse: () => false,
-      ),
+      isAuthorized: locationType != LocationType.deeplinkLocation && isAuthorized,
       isAddressInTwoLines: twoLineAddress,
       isTitleInTwoLine: twoLineTitle,
     );
