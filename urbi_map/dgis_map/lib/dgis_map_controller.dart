@@ -500,10 +500,10 @@ class DgisMapController {
 
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
-  Future<void> onLocationPremissionGranted({
+  Future<void> onLocationPermissionGranted({
     DesiredAccuracyMessage desiredAccuracy = DesiredAccuracyMessage.low,
   }) {
-    return _instance.onLocationPremissionGranted(desiredAccuracy);
+    return _instance.onLocationPermissionGranted(desiredAccuracy);
   }
 
   /// Add panorama markers to map.
