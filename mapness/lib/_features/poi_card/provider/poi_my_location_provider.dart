@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -50,7 +51,7 @@ class PoiMyLocation extends _$PoiMyLocation {
       address: address,
       location: LatLng(latitude: latitude, longitude: longitude),
       title: title,
-      isAuthorized: userData != null,
+      isAuthorized: CommonProperties.isLoggedIn,
     );
   }
 }

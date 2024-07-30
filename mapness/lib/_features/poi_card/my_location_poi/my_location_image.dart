@@ -1,5 +1,3 @@
-// ignore_for_file: dead_code
-
 import 'dart:convert';
 
 import 'package:balady_uikit/balady_uikit.dart';
@@ -12,9 +10,6 @@ import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 class MyLocationImageWidget extends ConsumerWidget {
-  /// Profile size with image padding included
-  static const _profileImgSize = 48.0;
-
   const MyLocationImageWidget({
     super.key,
   });
@@ -26,8 +21,7 @@ class MyLocationImageWidget extends ConsumerWidget {
     final language = ref.read(appLanguageProvider);
     final imageText = userData?.getLocalizedAbbreviatedName(language) ?? '';
 
-    return _DefaultImage(text: imageText);
-    profileImage.maybeWhen(
+    return profileImage.maybeWhen(
       data: (data) => data.imageBase64.isEmpty
           ? _DefaultImage(text: imageText)
           : Picture.large(
