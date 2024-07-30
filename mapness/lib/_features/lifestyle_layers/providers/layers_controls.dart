@@ -393,6 +393,8 @@ class LayersControls extends _$LayersControls {
   Future<void> enableParking() async {
     await _viewPortSubscription?.cancel();
 
+    await _removeMapObjects();
+
     if (state.selectedType != LayerType.parkingLots) {
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
@@ -681,6 +683,11 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> _removeAll() async {
+    await _removeMapObjects();
+    await ref.read(parkingStateProvider.notifier).hideParking();
+  }
+
+  Future<void> _removeMapObjects() async {
     update(polylines: {}, polygons: {}, investmentsMarkers: {});
     final map = ref.watch(mapObjectManagerProvider(
       named: esriMapObjectSettings.name,
@@ -697,8 +704,6 @@ class LayersControls extends _$LayersControls {
     await mapObjectManager.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
-
-    await ref.read(parkingStateProvider.notifier).hideParking();
   }
 
   void showParking() {
