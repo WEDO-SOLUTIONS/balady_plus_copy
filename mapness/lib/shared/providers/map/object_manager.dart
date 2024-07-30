@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -89,12 +90,29 @@ class MapObjectManager extends _$MapObjectManager {
   }
 
   /// -- MARKER --
+  final _markers = <Marker>[];
+  List<Marker> get markers => _markers;
+
+  Marker? markerByGeoPoint(GeoPointWithElevationMessage geoPoint) => _markers.firstWhereOrNull(
+        (element) =>
+            element.options.position.latitude == geoPoint.latitude &&
+            element.options.position.longitude == geoPoint.longitude,
+      );
+
+  Future<Marker> hideMarker(Marker marker) async {
+    final markers = _markers.where((element) => element.id != marker.id).toList();
+    await removeAllMarkers();
+    await addMarkers(markers);
+    return marker;
+  }
 
   Future<void> addMarker(Marker marker) async {
     await ref.read(dgisControllerProvider).value?.addMarker(
           marker,
           toManager: await future,
         );
+
+    _markers.add(marker);
   }
 
   Future<void> addMarkers(List<Marker> markers) async {
@@ -102,6 +120,10 @@ class MapObjectManager extends _$MapObjectManager {
           markers,
           toManager: await future,
         );
+
+    _markers
+      ..clear()
+      ..addAll(markers);
   }
 
   Future<void> setMapObjectManagerIsVisible({required bool isVisible}) async {
@@ -109,16 +131,24 @@ class MapObjectManager extends _$MapObjectManager {
   }
 
   Future<void> removeMarkerById(String markerId) async {
+    final marker = _markers.firstWhereOrNull(
+      (element) => element.id == markerId,
+    );
+
     await ref.read(dgisControllerProvider).value?.removeMarker(
           markerId,
           fromManager: await future,
         );
+
+    _markers.remove(marker);
   }
 
   Future<void> removeAllMarkers() async {
     await ref.read(dgisControllerProvider).value?.removeAllMarkers(
           fromManager: await future,
         );
+
+    _markers.clear();
   }
 
   /// --- POLYLINE ---
