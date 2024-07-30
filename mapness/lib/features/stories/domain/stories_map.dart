@@ -125,10 +125,10 @@ class StoriesMap {
             description:
                 'All the usual services, but also location search, company information, navigation and real-time traffic',
             imageUrl: ({required isArabic}) =>
-                isArabic ? 'assets/images/onboarding_story_1_ar.png' : 'assets/images/onboarding_story_1_en.png',
+                isArabic ? 'assets/images/onboarding_story_1_ar.jpg' : 'assets/images/onboarding_story_1_en.jpg',
             isWatched: false,
             isAssetImage: true,
-            duration: 30,
+            duration: 15,
             titleStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 30,
@@ -158,10 +158,10 @@ class StoriesMap {
             description:
                 'Search for places by address or name,\nplan routes and set off with voice guidance and traffic information',
             imageUrl: ({required isArabic}) =>
-                isArabic ? 'assets/images/onboarding_story_2_ar.png' : 'assets/images/onboarding_story_2_en.png',
+                isArabic ? 'assets/images/onboarding_story_2_ar.jpg' : 'assets/images/onboarding_story_2_en.jpg',
             isWatched: false,
             isAssetImage: true,
-            duration: 30,
+            duration: 15,
             titleStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 24,
@@ -190,10 +190,10 @@ class StoriesMap {
             title: 'Take full advantage\nof Balady\'s capabilities',
             description: 'Get business license, send a claim\nand find investment opportunities',
             imageUrl: ({required isArabic}) =>
-                isArabic ? 'assets/images/onboarding_story_3_ar.png' : 'assets/images/onboarding_story_3_en.png',
+                isArabic ? 'assets/images/onboarding_story_3_ar.jpg' : 'assets/images/onboarding_story_3_en.jpg',
             isWatched: false,
             isAssetImage: true,
-            duration: 30,
+            duration: 15,
             titleStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 24,
