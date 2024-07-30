@@ -50,4 +50,16 @@ extension LocalizedName on SsoUserInfo {
   }
 
   String getLocalizedFirstAndLastName(Language lang) => '${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}';
+  String getLocalizedAbbreviatedName(Language lang) {
+    final firstName = getLocalizedFirstName(lang);
+    final lastName = getLocalizedLastName(lang);
+    if (firstName.isNotEmpty && lastName.isNotEmpty) {
+      return '${firstName[0]}${lastName[0]}';
+    } else if (firstName.isNotEmpty) {
+      return firstName[0];
+    } else if (lastName.isNotEmpty) {
+      return lastName[0];
+    }
+    return '';
+  }
 }
