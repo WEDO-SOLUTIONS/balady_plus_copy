@@ -15,6 +15,10 @@ class StoryFrameData {
   /// Can be an asset image or a network image.
   final String? imageUrl;
 
+  /// The URL of the image associated with the frame in arabic locale.
+  /// Can be only a asset image.
+  final String? arabicImageUrl;
+
   /// Indicates whether the image should be displayed in fullscreen mode.
   final bool fullscreenImage;
 
@@ -41,6 +45,7 @@ class StoryFrameData {
   const StoryFrameData({
     required this.storyId,
     this.imageUrl,
+    this.arabicImageUrl,
     this.action,
     this.duration = 10,
     this.fullscreenImage = true,

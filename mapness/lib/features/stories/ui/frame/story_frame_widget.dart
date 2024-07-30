@@ -301,10 +301,18 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
         ),
       );
 
-  LoadingShimmerImage _buildImage({required String title}) => LoadingShimmerImage(
-        isAssetImg: widget.frame.isAssetImage,
-        onImageReady: _imageLoaded,
-        imageUrl: widget.frame.imageUrl!,
-        fit: BoxFit.cover,
-      );
+  LoadingShimmerImage _buildImage({required String title}) {
+    final isArabic = Directionality.of(context) == TextDirection.rtl;
+    var imageUrl = widget.frame.imageUrl!;
+
+    if (isArabic && widget.frame.arabicImageUrl != null) {
+      imageUrl = widget.frame.arabicImageUrl!;
+    }
+    return LoadingShimmerImage(
+      isAssetImg: widget.frame.isAssetImage,
+      onImageReady: _imageLoaded,
+      imageUrl: imageUrl,
+      fit: BoxFit.cover,
+    );
+  }
 }
