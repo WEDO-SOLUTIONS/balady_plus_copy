@@ -1,6 +1,7 @@
 add-bool-property name default_value:
     #!/bin/bash
     unzip assets/maps/styles/_common-styles.2gis -d assets/maps/styles/_common-styles
+    rm assets/maps/styles/_common-styles.2gis
     printf "\n{{ name }} bool {{ default_value }}" >> assets/maps/styles/_common-styles/zmap/vidoc/zss/zss_props.list
     temp=$(jq ".properties.{{ name }} = { \"type\": \"bool\", \"default_value\": \"{{ default_value }}\" }" assets/maps/styles/_common-styles/zmap/vidoc/zss/properties.json)
     temp=$(jq ".v2properties.{{ name }} = { \"type\": \"bool\", \"default_value\": \"{{ default_value }}\" }" <<< $temp)
