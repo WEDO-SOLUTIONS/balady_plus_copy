@@ -977,6 +977,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
+    func saveNavigationState(completion: @escaping (FlutterStandardTypedData?, FlutterError?) -> Void) {
+        self.navigationHandler?.saveNavigationState(completion: completion)
+    }
+    
+    func restoreNavigationStateState(_ state: FlutterStandardTypedData, speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.restoreNavigationState(state: state, speedRangeZoom: speedRangeZoom, completion: completion)
+    }
+    
     func onCompassClicked(completion: @escaping (FlutterError?) -> Void) {
         self.compassControlHandler?.onClicked()
         completion(nil)

@@ -1353,6 +1353,12 @@ abstract class MapApi {
   void stopNavigation();
 
   @async
+  Uint8List saveNavigationState();
+
+  @async
+  void restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom);
+
+  @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
 
   @async
