@@ -95,4 +95,6 @@ class StoryFrameData {
     required AppLocalizations l10n,
   }) =>
       networkTexts ?? StoryFrameTexts.fromId(l10n, storyId);
+
+  String? imageUrlForLocale(TextDirection direction) => direction == TextDirection.rtl ? arabicImageUrl : imageUrl;
 }

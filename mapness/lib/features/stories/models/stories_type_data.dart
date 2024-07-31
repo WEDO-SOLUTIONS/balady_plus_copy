@@ -75,7 +75,8 @@ class OnboardingStoryData extends StoryTypedData {
             frames: [
               StoryFrameData(
                 storyId: 'onboarding1',
-                imageUrl: 'assets/images/onboarding_story_1.png',
+                imageUrl: 'assets/images/onboarding_story_1_en.jpg',
+                arabicImageUrl: 'assets/images/onboarding_story_1_ar.jpg',
                 isAssetImage: true,
                 duration: 30,
                 action: NextStoryAction(
@@ -84,7 +85,8 @@ class OnboardingStoryData extends StoryTypedData {
               ),
               StoryFrameData(
                 storyId: 'onboarding2',
-                imageUrl: 'assets/images/onboarding_story_2.png',
+                imageUrl: 'assets/images/onboarding_story_2_en.jpg',
+                arabicImageUrl: 'assets/images/onboarding_story_2_ar.jpg',
                 isAssetImage: true,
                 duration: 30,
                 action: NextStoryAction(
@@ -93,7 +95,8 @@ class OnboardingStoryData extends StoryTypedData {
               ),
               StoryFrameData(
                 storyId: 'onboarding3',
-                imageUrl: 'assets/images/onboarding_story_3.png',
+                imageUrl: 'assets/images/onboarding_story_3_en.jpg',
+                arabicImageUrl: 'assets/images/onboarding_story_3_ar.jpg',
                 isAssetImage: true,
                 duration: 30,
                 action: NextStoryAction(
