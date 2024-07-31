@@ -105,6 +105,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   ScrollController? _scrollController;
 
+  Expansion? _lastUsedExpansion;
+
   @override
   void didUpdateWidget(covariant _Content oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -131,11 +133,16 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           switch (_tabController.index) {
             case 0:
               _tabType.value = PoiTabsType.info;
+              if (_lastUsedExpansion != null) {
+                _expansion.value = _lastUsedExpansion!;
+              }
             case 1:
               _tabType.value = PoiTabsType.photos;
+
               _expansion.value = Expansion.fullHidePhoto;
             case 2:
               _tabType.value = PoiTabsType.inBuilding;
+
               _expansion.value = Expansion.fullHidePhoto;
           }
         }
@@ -259,6 +266,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           ),
           onExpansionChanged: (expansion, {byUser = false}) => setState(() {
             _expansion.value = expansion;
+            _lastUsedExpansion = expansion;
           }),
           scrollHeader: PoiPhotosHeader(
             objectId: objectId,

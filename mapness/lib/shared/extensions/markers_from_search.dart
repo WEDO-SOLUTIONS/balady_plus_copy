@@ -102,9 +102,9 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 fontName: _poiMapFont,
                 textOffset: 4,
                 strokeColor: 0xD3FFFFFF,
-                strokeWidth: 2,
+                strokeWidth: 1.25,
                 textPlacement: MarkerTextPlacementMessage(
-                  placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
+                  placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.topRight,
                 ),
               ),
               position: markerInfo.geoPoint,

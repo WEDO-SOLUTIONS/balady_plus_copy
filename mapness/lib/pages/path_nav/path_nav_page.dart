@@ -1,11 +1,13 @@
 // ignore_for_file: prefer_expression_function_bodies
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
@@ -20,6 +22,7 @@ import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -39,9 +42,11 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 /// You don't need to add black background to make the app similar to the other app
 class PathNavPage extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage navType;
+  final bool restoreFromState;
 
   const PathNavPage({
     required this.navType,
+    required this.restoreFromState,
     super.key,
   });
 
@@ -68,7 +73,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   @override
   void deactivate() {
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
-
     super.deactivate();
   }
 
@@ -79,6 +83,35 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     super.dispose();
   }
 
+  Future<void> saveNavigationState() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+
+    final state = await dgisController.saveNavigationState();
+    await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
+    await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateTypeKey, widget.navType.name);
+  }
+
+  Future<void> restoreNavigationState() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+
+    final state = base64.decode(
+      ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!,
+    );
+    await dgisController.restoreNavigationState(
+      state,
+      SpeedRangeZoom(
+        maxSpeedRange: 5,
+        minSpeedRange: 0,
+        routeDistanceMillimeters: 0,
+        styleZoomValue: 16.5,
+      ),
+    );
+  }
+
+  Future<void> clearNavigationState() async {
+    await ref.read(sharedPrefsProvider).remove(MapnessConstants.navigatorStateKey);
+  }
+
   Future<void> _initNavigation() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 
@@ -87,14 +120,19 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     );
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-    await dgisController.startNavigation(
-      SpeedRangeZoom(
-        maxSpeedRange: 5,
-        minSpeedRange: 0,
-        routeDistanceMillimeters: 0,
-        styleZoomValue: 16.5,
-      ),
-    );
+    if (widget.restoreFromState) {
+      await restoreNavigationState();
+    } else {
+      await dgisController.startNavigation(
+        SpeedRangeZoom(
+          maxSpeedRange: 5,
+          minSpeedRange: 0,
+          routeDistanceMillimeters: 0,
+          styleZoomValue: 16.5,
+        ),
+      );
+      await saveNavigationState();
+    }
   }
 
   @override
@@ -115,22 +153,23 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
         child: Stack(
           children: [
             ValueListenableBuilder(
-                valueListenable: _navigationState,
-                builder: (context, state, child) {
-                  if (state == PathNavState.finished) {
-                    return GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        final value = _expansionNotifier.value;
-                        if (value) {
-                          _expansionNotifier.value = !value;
-                        }
-                      },
-                      child: const SizedBox.expand(),
-                    );
-                  }
-                  return const SizedBox();
-                }),
+              valueListenable: _navigationState,
+              builder: (context, state, child) {
+                if (state == PathNavState.finished) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      final value = _expansionNotifier.value;
+                      if (value) {
+                        _expansionNotifier.value = !value;
+                      }
+                    },
+                    child: const SizedBox.expand(),
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -220,35 +259,36 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                   // Here we set the text direction according to the current locale to display the correct direction of the widget.
                   textDirection: Directionality.of(context),
                   child: ValueListenableBuilder(
-                      valueListenable: _navigationState,
-                      builder: (context, state, child) {
-                        switch (state) {
-                          case PathNavState.running:
-                            return Align(
-                              alignment: Alignment.bottomCenter,
-                              child: EtaSheet(
-                                onEndTripPressed: _endTripAndShowHome,
-                                onRoutePressed: _onShowRoutePressed,
-                                onBetterRouteAccept: () => _acceptBetterRoute(context),
-                                onBetterRouteReject: () => _rejectBetterRoute(context),
-                                betterRouteDurationProfit: _betterRouteDurationProfit,
-                                onSizeChanged: _onSizeChanged,
-                              ),
-                            );
-                          case PathNavState.paused:
-                            return EtaContinue(
-                              onTap: _onContinuePressed,
-                              onSizeChanged: _onSizeChanged,
-                            );
-                          case PathNavState.finished:
-                            return EtaFinished(
-                              expansionNotifier: _expansionNotifier,
+                    valueListenable: _navigationState,
+                    builder: (context, state, child) {
+                      switch (state) {
+                        case PathNavState.running:
+                          return Align(
+                            alignment: Alignment.bottomCenter,
+                            child: EtaSheet(
                               onEndTripPressed: _endTripAndShowHome,
-                              onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                              onRoutePressed: _onShowRoutePressed,
+                              onBetterRouteAccept: () => _acceptBetterRoute(context),
+                              onBetterRouteReject: () => _rejectBetterRoute(context),
+                              betterRouteDurationProfit: _betterRouteDurationProfit,
                               onSizeChanged: _onSizeChanged,
-                            );
-                        }
-                      }),
+                            ),
+                          );
+                        case PathNavState.paused:
+                          return EtaContinue(
+                            onTap: _onContinuePressed,
+                            onSizeChanged: _onSizeChanged,
+                          );
+                        case PathNavState.finished:
+                          return EtaFinished(
+                            expansionNotifier: _expansionNotifier,
+                            onEndTripPressed: _endTripAndShowHome,
+                            onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                            onSizeChanged: _onSizeChanged,
+                          );
+                      }
+                    },
+                  ),
                 ),
               ],
             ),
@@ -266,6 +306,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
       await ref.read(dgisControllerProvider).value?.stopNavigation();
       _navigationState.value = PathNavState.finished;
     }
+    await clearNavigationState();
     action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
@@ -328,6 +369,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     if (event == NavigationEvent.finished) {
       ref.read(urbiAnalyticsProvider).track('tripCompleted');
       _navigationState.value = PathNavState.finished;
+      unawaited(
+        clearNavigationState(),
+      );
     }
   }
 

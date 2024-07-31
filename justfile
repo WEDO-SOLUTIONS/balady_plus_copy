@@ -15,6 +15,9 @@ import 'justscripts/release.just'
 # local overrides feel free to add any there
 import? 'justscripts/local.just'
 
+# style helpers
+import 'justscripts/styles.just'
+
 # prebuild: pubget locale_gen build_pigeon download-sdk codegen
 prebuild: locale_gen pubget build_pigeon codegen
 

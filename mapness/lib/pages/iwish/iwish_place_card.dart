@@ -34,7 +34,7 @@ class IwishPlaceCard extends ConsumerWidget {
     final entityNotifier = ref.watch(iwishEntityProvider(iwishId).notifier);
 
     final controlsBottomExtent =
-        MediaQuery.of(context).size.height * (entity.valueOrNull?.photos.isEmpty == false ? 0.4 : 0.25);
+        MediaQuery.of(context).size.height * (entity.valueOrNull?.photos.isEmpty == false ? 0.4 : 0.3);
 
     return Stack(
       alignment: Alignment.bottomCenter,

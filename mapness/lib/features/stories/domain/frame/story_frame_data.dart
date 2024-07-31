@@ -28,6 +28,8 @@ extension StoryFrameDataX on StoryFrameData {
 class StoryFrameData {
   final String storyId;
   final String title;
+
+  ///Use isArabic only for asset images
   final String Function({required bool isArabic}) imageUrl;
   final String? subtitle;
   final String? description;
