@@ -276,6 +276,10 @@ class LayersControls extends _$LayersControls {
           });
     } else {
       _removeLayersState();
+
+      /// FIX(BSA-669): Added this function to remove favorites and other markers when
+      /// we disable it from layers or favorites screen
+      _removeAll();
     }
 
     ref
