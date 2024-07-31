@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:intl/intl.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/lib/enums.dart';
@@ -11,16 +13,20 @@ part 'path_nav_eta.g.dart';
 class _PathNavEta extends _$PathNavEta {
   @override
   PathNavEta? build() {
-    final mapController = ref.read(dgisControllerProvider).value!;
+    unawaited(_subscribe());
+
+    return null;
+  }
+
+  Future<void> _subscribe() async {
+    final mapController = await ref.read(dgisControllerProvider.future);
     final subspcription = mapController.naviDashboardEvents.listen((event) {
       final distance = event.distance.formatDistance();
       final duration = Duration(seconds: event.duration);
 
       state = PathNavEta(
         timeEta: event.duration.formatDuration(),
-        timeEtaUnits: duration >= const Duration(hours: 1)
-            ? TimeUnits.hours
-            : TimeUnits.min,
+        timeEtaUnits: duration >= const Duration(hours: 1) ? TimeUnits.hours : TimeUnits.min,
         distanceEta: distance.value,
         distanceEtaUnits: distance.unit,
         arrivalTime: DateFormat.Hm().format(
@@ -29,7 +35,6 @@ class _PathNavEta extends _$PathNavEta {
       );
     });
     ref.onDispose(subspcription.cancel);
-    return null;
   }
 }
 

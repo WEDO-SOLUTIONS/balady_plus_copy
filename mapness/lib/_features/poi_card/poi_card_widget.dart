@@ -27,6 +27,7 @@ import 'package:mapness/_features/poi_card/widgets/info_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_loading_sheet.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
 import 'package:mapness/app/router.dart';
@@ -48,7 +49,6 @@ import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
-import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 class PoiCardWidget extends StatelessWidget {
   final DgisObjectIdMessage objectId;
@@ -105,6 +105,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   ScrollController? _scrollController;
 
+  Expansion? _lastUsedExpansion;
+
   @override
   void didUpdateWidget(covariant _Content oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -131,11 +133,21 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           switch (_tabController.index) {
             case 0:
               _tabType.value = PoiTabsType.info;
+              if (_lastUsedExpansion != null) {
+                _expansion.value = _lastUsedExpansion!;
+              }
             case 1:
               _tabType.value = PoiTabsType.photos;
+              if (_expansion.value != Expansion.fullHidePhoto) {
+                _lastUsedExpansion = _expansion.value;
+              }
+
               _expansion.value = Expansion.fullHidePhoto;
             case 2:
               _tabType.value = PoiTabsType.inBuilding;
+              if (_expansion.value != Expansion.fullHidePhoto) {
+                _lastUsedExpansion = _expansion.value;
+              }
               _expansion.value = Expansion.fullHidePhoto;
           }
         }
@@ -182,7 +194,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     if (state.isLoading) {
       return const Align(
         alignment: Alignment.bottomCenter,
-        child: LoadingSheet(),
+        child: PoiLoadingSheet(),
       );
     }
 
@@ -336,6 +348,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                 poiCardState: poiCardState,
                 tabController: _tabController,
                 expansionState: _expansion,
+                tabState: _tabType,
                 data: data,
                 onTapClose: () {
                   Metrics.logEventAdvanced(

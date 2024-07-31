@@ -199,7 +199,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                     child: LoadingImage(
                       isAssetImg: widget.frame.isAssetImage,
                       onImageReady: _imageLoaded,
-                      imageUrl: widget.frame.imageUrl,
+                      imageUrl: widget.frame.imageUrl.call(isArabic: StoryLocalization.of(context)?.isArabic ?? true),
                       fit: BoxFit.cover,
                       loadingWidget: Container(
                         color: context.color.textAndIconsBaseInverseTertiary,
@@ -223,6 +223,49 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                     ),
                   ),
 
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// progress indicator and exit button
+                      FrameProgressIndicator(
+                        onClose: widget.onClose,
+                        frameIndex: widget.frameIndex,
+                        framesLength: widget.frameLength,
+                        animation: _progress,
+                        thumbnailData: widget.thumbnailData,
+                      ),
+                      const SizedBox(height: Spacing.$6x),
+                      if (!_isLoading)
+                        StoryFrameContent(
+                          frame: widget.frame,
+                          onActionPressed: (action) => widget.onActionPressed?.call(action),
+                        ),
+                      const Spacer(),
+                      if (widget.frame.action != null &&
+                          widget.onActionPressed != null &&
+                          widget.frame.action!.deeplinkUrl.isNotEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: widget.frame.action?.verticalPadding ?? 12,
+                            horizontal: widget.frame.action?.horizontalPadding ?? 16.0,
+                          ).copyWith(top: 0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: AppButton(
+                              color: widget.frame.action?.backgroundColor,
+                              textColor: widget.frame.action?.textStyle?.color,
+                              buttonColorScheme: widget.frame.action?.backgroundColor == null ||
+                                      widget.frame.action?.textStyle?.color == null
+                                  ? ButtonColorScheme.primary
+                                  : ButtonColorScheme.onColor,
+                              primaryLabel: _actionTitleOrFallback,
+                              onTap: _onActionPressed,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+
                   /// left right click handlers
                   if (!_isLoading)
                     Row(
@@ -244,51 +287,6 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                           ),
                         ),
                       ],
-                    ),
-
-                  /// story content
-                  if (!_isLoading)
-                    Positioned(
-                      left: 16,
-                      right: 16,
-                      top: 96,
-                      bottom: 64,
-                      child: Align(
-                        alignment: AlignmentDirectional.topStart,
-                        child: StoryFrameContent(
-                          frame: widget.frame,
-                          onActionPressed: (action) => widget.onActionPressed?.call(action),
-                        ),
-                      ),
-                    ),
-
-                  /// progress indicator and exit button
-                  FrameProgressIndicator(
-                    onClose: widget.onClose,
-                    frameIndex: widget.frameIndex,
-                    framesLength: widget.frameLength,
-                    animation: _progress,
-                    thumbnailData: widget.thumbnailData,
-                  ),
-
-                  // action button
-                  if (widget.frame.action != null &&
-                      widget.onActionPressed != null &&
-                      widget.frame.action!.deeplinkUrl.isNotEmpty)
-                    Positioned(
-                      bottom: widget.frame.action?.verticalPadding ?? 12,
-                      left: widget.frame.action?.horizontalPadding ?? 16.0,
-                      right: widget.frame.action?.horizontalPadding ?? 16.0,
-                      child: AppButton(
-                        color: widget.frame.action?.backgroundColor,
-                        textColor: widget.frame.action?.textStyle?.color,
-                        buttonColorScheme: widget.frame.action?.backgroundColor == null ||
-                                widget.frame.action?.textStyle?.color == null
-                            ? ButtonColorScheme.primary
-                            : ButtonColorScheme.onColor,
-                        primaryLabel: _actionTitleOrFallback,
-                        onTap: _onActionPressed,
-                      ),
                     ),
                 ],
               ),

@@ -4,4 +4,6 @@ class MapnessConstants {
   static const mapLayerName = 'common-marker-layer';
   static const appStoreId = 'id1522185123';
   static const poiDataBoxName = 'poiDataBoxName';
+  static const navigatorStateKey = 'navigatorState';
+  static const navigatorStateTypeKey = 'navigatorStateType';
 }

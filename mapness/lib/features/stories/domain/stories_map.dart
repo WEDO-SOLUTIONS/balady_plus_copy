@@ -19,15 +19,15 @@ class StoriesMap {
           imageUrl: '',
         ),
         frames: [
-          const StoryFrameData(
+          StoryFrameData(
             storyId: 'route1',
             title: 'ماذا يمكن أن يفعل التنقل الذكي ؟',
             description: 'بعض المزايا والحيل لميزة التنقل الذكي...',
-            imageUrl: 'assets/images/route_story_1.png',
+            imageUrl: ({required isArabic}) => 'assets/images/route_story_1.png',
             isWatched: false,
             isAssetImage: true,
             duration: 10,
-            action: LocaleKeyFrameAction(
+            action: const LocaleKeyFrameAction(
               deeplinkUrl: 'next',
               action: StoryAction.next,
               titleLocaleKey: 'next',
@@ -36,7 +36,7 @@ class StoriesMap {
                 color: Colors.white,
               ),
             ),
-            storyGradient: LinearGradient(
+            storyGradient: const LinearGradient(
               stops: [0, 0.8, 1],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -47,16 +47,16 @@ class StoriesMap {
               ],
             ),
           ),
-          const StoryFrameData(
+          StoryFrameData(
             storyId: 'route2',
             title: 'أقصر طريق',
             description:
                 'يقترح التنقل الذكي ما يصل إلى ثلاث طرق بالنظر إلى الوضع الحالي لحركة المرور. سيقترح أيضًا بالطرق البديلة عند تقاطع الطرق ',
-            imageUrl: 'assets/images/route_story_2.png',
+            imageUrl: ({required isArabic}) => 'assets/images/route_story_2.png',
             isAssetImage: true,
             isWatched: false,
             duration: 10,
-            action: LocaleKeyFrameAction(
+            action: const LocaleKeyFrameAction(
               deeplinkUrl: 'next',
               action: StoryAction.next,
               titleLocaleKey: 'next',
@@ -65,7 +65,7 @@ class StoriesMap {
                 color: Colors.white,
               ),
             ),
-            storyGradient: LinearGradient(
+            storyGradient: const LinearGradient(
               stops: [0, 0.8, 1],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -76,15 +76,15 @@ class StoriesMap {
               ],
             ),
           ),
-          const StoryFrameData(
+          StoryFrameData(
             storyId: 'route3',
             title: 'التركيز على طريقك',
             description: 'مساعدك الصوتي سيبقيك على اطلاع طوال رحلتك',
-            imageUrl: 'assets/images/route_story_3.png',
+            imageUrl: ({required isArabic}) => 'assets/images/route_story_3.png',
             isWatched: false,
             isAssetImage: true,
             duration: 10,
-            action: LocaleKeyFrameAction(
+            action: const LocaleKeyFrameAction(
               deeplinkUrl: 'route',
               action: StoryAction.close,
               titleLocaleKey: 'try_now',
@@ -93,7 +93,7 @@ class StoriesMap {
                 color: Colors.white,
               ),
             ),
-            storyGradient: LinearGradient(
+            storyGradient: const LinearGradient(
               stops: [0, 0.8, 1],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -119,27 +119,28 @@ class StoriesMap {
           iconColor: AppColor.white,
         ),
         frames: [
-          const StoryFrameData(
+          StoryFrameData(
             storyId: 'onboarding1',
             title: 'Balady is more than maps and services',
             description:
                 'All the usual services, but also location search, company information, navigation and real-time traffic',
-            imageUrl: 'assets/images/onboarding_story_1.png',
+            imageUrl: ({required isArabic}) =>
+                isArabic ? 'assets/images/onboarding_story_1_ar.jpg' : 'assets/images/onboarding_story_1_en.jpg',
             isWatched: false,
             isAssetImage: true,
-            duration: 30,
-            titleStyle: StoryTextStyle(
+            duration: 15,
+            titleStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 30,
               height: 36 / 30,
             ),
-            descriptionStyle: StoryTextStyle(
+            descriptionStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 16,
               height: 20 / 16,
             ),
             horizontalPadding: 35,
-            action: LocaleKeyFrameAction(
+            action: const LocaleKeyFrameAction(
               deeplinkUrl: 'next',
               action: StoryAction.close,
               titleLocaleKey: 'about_routes',
@@ -151,27 +152,28 @@ class StoriesMap {
               ),
             ),
           ),
-          const StoryFrameData(
+          StoryFrameData(
             storyId: 'onboarding2',
             title: 'Smart navigation for cars and pedestrians',
             description:
                 'Search for places by address or name,\nplan routes and set off with voice guidance and traffic information',
-            imageUrl: 'assets/images/onboarding_story_2.png',
+            imageUrl: ({required isArabic}) =>
+                isArabic ? 'assets/images/onboarding_story_2_ar.jpg' : 'assets/images/onboarding_story_2_en.jpg',
             isWatched: false,
             isAssetImage: true,
-            duration: 30,
-            titleStyle: StoryTextStyle(
+            duration: 15,
+            titleStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 24,
               height: 30 / 24,
             ),
-            descriptionStyle: StoryTextStyle(
+            descriptionStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 16,
               height: 20 / 16,
             ),
             horizontalPadding: 35,
-            action: LocaleKeyFrameAction(
+            action: const LocaleKeyFrameAction(
               deeplinkUrl: 'next',
               action: StoryAction.close,
               titleLocaleKey: 'balady_features',
@@ -183,26 +185,27 @@ class StoriesMap {
               ),
             ),
           ),
-          const StoryFrameData(
+          StoryFrameData(
             storyId: 'onboarding3',
             title: 'Take full advantage\nof Balady\'s capabilities',
             description: 'Get business license, send a claim\nand find investment opportunities',
-            imageUrl: 'assets/images/onboarding_story_3.png',
+            imageUrl: ({required isArabic}) =>
+                isArabic ? 'assets/images/onboarding_story_3_ar.jpg' : 'assets/images/onboarding_story_3_en.jpg',
             isWatched: false,
             isAssetImage: true,
-            duration: 30,
-            titleStyle: StoryTextStyle(
+            duration: 15,
+            titleStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 24,
               height: 30 / 24,
             ),
-            descriptionStyle: StoryTextStyle(
+            descriptionStyle: const StoryTextStyle(
               color: AppColor.white,
               fontSize: 16,
               height: 20 / 16,
             ),
             horizontalPadding: 35,
-            action: LocaleKeyFrameAction(
+            action: const LocaleKeyFrameAction(
               deeplinkUrl: '/bottomNavigation/services',
               action: StoryAction.next,
               titleLocaleKey: 'get_started',

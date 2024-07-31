@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/data/story_service.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/features/stories/domain/story_data.dart';
+import 'package:mapness/features/stories/helper/locale_helper.dart';
 import 'package:mapness/features/stories/presentation/frame/story_frame_controller.dart';
 import 'package:mapness/features/stories/presentation/frame/story_frame_widget.dart';
 
@@ -76,11 +77,15 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
     super.didChangeDependencies();
     final frames = widget.story.frames;
     for (var i = currentIndex; i < frames.length; i++) {
+      final currentImage = frames[i].imageUrl.call(isArabic: StoryLocalization.of(context)?.isArabic ?? true);
+
       if (frames[i].isAssetImage == true) {
+        precacheImage(AssetImage(currentImage), context);
         continue;
       }
+
       // Preload images for better performance
-      CachedNetworkImageProvider(frames[i].imageUrl).resolve(ImageConfiguration.empty);
+      CachedNetworkImageProvider(currentImage).resolve(ImageConfiguration.empty);
     }
   }
 

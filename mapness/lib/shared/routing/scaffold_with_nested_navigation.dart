@@ -72,7 +72,6 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
           onActionShowNextHistory: true,
           navigationShell: widget.navigationShell,
         );
-
         ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
       }
     });

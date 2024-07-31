@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
@@ -18,12 +19,14 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'package:mapness/widgets/search/ui/search_item.dart';
 
 class PoiHeader extends ConsumerWidget {
   final PoiCardState? poiCardState;
   final TabController tabController;
   final DirectoryObjectMessage data;
   final ValueListenable<Expansion> expansionState;
+  final ValueNotifier<PoiTabsType> tabState;
   final Function()? onTapClose;
 
   const PoiHeader({
@@ -31,6 +34,7 @@ class PoiHeader extends ConsumerWidget {
     required this.onTapClose,
     required this.tabController,
     required this.expansionState,
+    required this.tabState,
     super.key,
     this.poiCardState,
   });
@@ -65,7 +69,16 @@ class PoiHeader extends ConsumerWidget {
 
     final workingHours = data.getOpeningHours(context.l10n);
 
-    final subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
+    String subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
+
+    // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
+    if (prefixMapping.containsKey(subTitle)) {
+      subTitle = switch (direction) {
+        TextDirection.ltr => subTitle,
+        TextDirection.rtl => prefixMapping[subTitle]!,
+      };
+    }
+
     final subtitleIcon = _getParkingIcon(data);
     final title = address?.buildingName ?? data.title;
 
@@ -120,32 +133,40 @@ class PoiHeader extends ConsumerWidget {
                         ),
                       ),
                       ValueListenableBuilder(
-                        valueListenable: expansionState,
-                        child: expansionState.value != Expansion.fullHidePhoto
-                            ? Row(
-                                children: [
-                                  Text(
-                                    subTitle,
-                                    style: subTitleTextStyle,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.start,
-                                  ),
-                                  if (subtitleIcon != null) ...[
-                                    const SizedBox(width: Spacing.$1x),
-                                    Icon(
-                                      subtitleIcon,
-                                      color: context.color.textAndIconsBaseSecondary,
-                                      size: 24,
-                                    )
-                                  ]
-                                ],
-                              )
-                            : null,
-                        builder: (_, expansion, child) => AnimatedSize(
+                        valueListenable: tabState,
+                        builder: (_, tabState, __) => AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                          child: expansion != Expansion.hidden ? child : const SizedBox(),
+                          child: tabState == PoiTabsType.info
+                              ? ValueListenableBuilder(
+                                  valueListenable: expansionState,
+                                  builder: (_, expansion, child) => AnimatedSize(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                    child: expansion != Expansion.hidden ? child : const SizedBox.shrink(),
+                                  ),
+                                  child: expansionState.value != Expansion.fullHidePhoto
+                                      ? Row(
+                                          children: [
+                                            Text(
+                                              subTitle,
+                                              style: subTitleTextStyle,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              textAlign: TextAlign.start,
+                                            ),
+                                            if (subtitleIcon != null) ...[
+                                              const SizedBox(width: Spacing.$1x),
+                                              Icon(
+                                                subtitleIcon,
+                                                color: context.color.textAndIconsBaseSecondary,
+                                                size: 24,
+                                              )
+                                            ]
+                                          ],
+                                        )
+                                      : null,
+                                )
+                              : const SizedBox.shrink(),
                         ),
                       ),
                     ],

@@ -28,7 +28,9 @@ extension StoryFrameDataX on StoryFrameData {
 class StoryFrameData {
   final String storyId;
   final String title;
-  final String imageUrl;
+
+  ///Use isArabic only for asset images
+  final String Function({required bool isArabic}) imageUrl;
   final String? subtitle;
   final String? description;
   final StoryTextStyle? titleStyle;
@@ -62,7 +64,6 @@ class StoryFrameData {
   StoryFrameData copyWith({
     String? storyId,
     String? title,
-    String? imageUrl,
     String? subtitle,
     String? description,
     StoryTextStyle? titleStyle,
@@ -74,6 +75,7 @@ class StoryFrameData {
     double? horizontalPadding,
     Color? closeButtonColor,
     Gradient? storyGradient,
+    String Function({required bool isArabic})? imageUrl,
   }) =>
       StoryFrameData(
         isAssetImage: isAssetImage ?? this.isAssetImage,
