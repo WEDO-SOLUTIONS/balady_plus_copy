@@ -111,6 +111,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
       ),
       backButtonLabel: context.l10n.cancel,
       onBackButtonPressed: () {
+        FocusScope.of(context).unfocus();
         searcher.clear();
         widget.onClose();
       },
