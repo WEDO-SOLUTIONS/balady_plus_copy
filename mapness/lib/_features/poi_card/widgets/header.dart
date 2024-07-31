@@ -106,15 +106,49 @@ class PoiHeader extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ValueListenableBuilder(
-                    valueListenable: expansionState,
-                    builder: (_, expansion, child) => Text(
-                      title,
-                      style: titleTextStyle,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: expansion != Expansion.hidden ? 2 : 1,
-                      textAlign: TextAlign.start,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ValueListenableBuilder(
+                        valueListenable: expansionState,
+                        builder: (_, expansion, child) => Text(
+                          title,
+                          style: titleTextStyle,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: expansion != Expansion.hidden ? 2 : 1,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      ValueListenableBuilder(
+                        valueListenable: expansionState,
+                        child: expansionState.value != Expansion.fullHidePhoto
+                            ? Row(
+                                children: [
+                                  Text(
+                                    subTitle,
+                                    style: subTitleTextStyle,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  if (subtitleIcon != null) ...[
+                                    const SizedBox(width: Spacing.$1x),
+                                    Icon(
+                                      subtitleIcon,
+                                      color: context.color.textAndIconsBaseSecondary,
+                                      size: 24,
+                                    )
+                                  ]
+                                ],
+                              )
+                            : null,
+                        builder: (_, expansion, child) => AnimatedSize(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: expansion != Expansion.hidden ? child : const SizedBox(),
+                        ),
+                      ),
+                    ],
                   ),
                   Row(
                     children: [
@@ -177,12 +211,13 @@ class PoiHeader extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: Spacing.$1x),
-                  Text(
-                    workingHours?.title ?? '',
-                    style: subTitleTextStyleBold.copyWith(
-                      color: context.color.textAndIconsBaseSecondary.withAlpha(123),
+                  if (workingHours?.title != null)
+                    Text(
+                      workingHours?.title ?? '',
+                      style: subTitleTextStyleBold.copyWith(
+                        color: context.color.textAndIconsBaseSecondary.withAlpha(12),
+                      ),
                     ),
-                  ),
                 ],
               ),
               const SizedBox(height: Spacing.$5x),
