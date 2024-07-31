@@ -197,6 +197,8 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   }
 
   void _showBottomSheet() {
+    ref.read(layersControlsProvider.notifier).initialize();
+
     _layersController
         .animateTo(
       _layersPanelMaxHeight,

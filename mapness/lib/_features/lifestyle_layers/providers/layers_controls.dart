@@ -109,7 +109,7 @@ class LayersControls extends _$LayersControls {
   final favouritesMapObjectSettings = MapObjectManagerSettings.favourites();
 
   final tapSubject = PublishSubject<LayerType>();
-  StreamSubscription? tapSubscription;
+  StreamSubscription? _tapSubscription;
 
   Future<void> _hideAllSelectedMarkers() async {
     final selectedPoint = ref.read(selectedMarkerProvider.notifier);
@@ -122,10 +122,10 @@ class LayersControls extends _$LayersControls {
   LayersState build() {
     ref.onDispose(() {
       _viewPortSubscription?.cancel();
-      tapSubscription?.cancel();
+      _tapSubscription?.cancel();
     });
 
-    tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
+    _tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
 
     final selectedLayerState = _getLayerState();
 
@@ -140,6 +140,30 @@ class LayersControls extends _$LayersControls {
     return LayersState(
       layersVisible: false,
       selectedType: null,
+      isLoading: false,
+      investmentsMarkers: {},
+      polygons: {},
+      polylines: {},
+    );
+  }
+
+  void initialize() {
+    final selectedLayerState = _getLayerState();
+
+    Future.delayed(Duration.zero, () async {
+      if (selectedLayerState != null) {
+        await toggle(selectedLayerState);
+      }
+    });
+
+    final LayersType actualSelectedLayersType = LayerType.lifestyle.contains(selectedLayerState ?? LayerType.favourites)
+        ? LayersType.lifestyle
+        : LayersType.business;
+
+    state = LayersState(
+      layersVisible: false,
+      selectedType: null,
+      layersType: actualSelectedLayersType,
       isLoading: false,
       investmentsMarkers: {},
       polygons: {},
