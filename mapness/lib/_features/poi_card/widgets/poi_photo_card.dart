@@ -2,7 +2,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
@@ -13,6 +12,104 @@ import 'package:shimmer/shimmer.dart';
 class PoiPhotoCard extends ConsumerWidget {
   const PoiPhotoCard({required this.objectId, super.key});
   final int objectId;
+
+  List<QuiltedGridTile> get _pattern7 => const [
+        QuiltedGridTile(6, 6),
+        QuiltedGridTile(4, 4),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+      ];
+
+  List<QuiltedGridTile> get _pattern14 => [
+        ..._pattern7,
+        const QuiltedGridTile(6, 6),
+        const QuiltedGridTile(2, 2),
+        const QuiltedGridTile(4, 4),
+        const QuiltedGridTile(2, 2),
+        const QuiltedGridTile(2, 2),
+        const QuiltedGridTile(2, 2),
+        const QuiltedGridTile(2, 2),
+      ];
+
+  List<QuiltedGridTile> _calcPattern(int picturesAmount) => switch (picturesAmount) {
+        1 || 2 => [
+            const QuiltedGridTile(6, 6),
+          ],
+        3 => [
+            const QuiltedGridTile(6, 6),
+            const QuiltedGridTile(3, 3),
+            const QuiltedGridTile(3, 3),
+          ],
+        4 || 5 => [
+            const QuiltedGridTile(6, 6),
+            const QuiltedGridTile(4, 4),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(6, 6),
+          ],
+        6 => [
+            const QuiltedGridTile(6, 6),
+            const QuiltedGridTile(3, 3),
+            const QuiltedGridTile(3, 3),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(2, 2),
+          ],
+        7 => _pattern7,
+        8 => [
+            ..._pattern7,
+            const QuiltedGridTile(6, 6),
+          ],
+        9 => [
+            ..._pattern7,
+            const QuiltedGridTile(6, 6),
+            const QuiltedGridTile(6, 6),
+          ],
+        10 => [
+            ..._pattern7,
+            const QuiltedGridTile(6, 6),
+            const QuiltedGridTile(3, 3),
+            const QuiltedGridTile(3, 3),
+          ],
+        11 => [
+            ..._pattern7,
+            const QuiltedGridTile(6, 6),
+            const QuiltedGridTile(4, 4),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(2, 2),
+          ],
+        12 => [
+            ..._pattern7,
+            const QuiltedGridTile(6, 6),
+            const QuiltedGridTile(4, 4),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(6, 6),
+          ],
+        13 => [
+            ..._pattern7,
+            const QuiltedGridTile(6, 6),
+            const QuiltedGridTile(3, 3),
+            const QuiltedGridTile(3, 3),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(2, 2),
+          ],
+        14 => _pattern14,
+        15 => [
+            ..._pattern14,
+            const QuiltedGridTile(6, 6),
+          ],
+        // 16 and more
+        _ => [
+            ..._pattern14,
+            const QuiltedGridTile(3, 3),
+            const QuiltedGridTile(3, 3),
+          ],
+      };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,35 +145,20 @@ class PoiPhotoCard extends ConsumerWidget {
       primary: false,
       padding: const EdgeInsets.only(bottom: 64),
       gridDelegate: SliverQuiltedGridDelegate(
-        crossAxisCount: 3,
+        crossAxisCount: 6,
         mainAxisSpacing: 4,
         crossAxisSpacing: 4,
-        pattern: const [
-          QuiltedGridTile(3, 3),
-          QuiltedGridTile(2, 2),
-          QuiltedGridTile(1, 1),
-          QuiltedGridTile(1, 1),
-          QuiltedGridTile(1, 1),
-          QuiltedGridTile(1, 1),
-          QuiltedGridTile(1, 1),
-          //
-          QuiltedGridTile(3, 3),
-          QuiltedGridTile(1, 1),
-          QuiltedGridTile(2, 2),
-          QuiltedGridTile(1, 1),
-          QuiltedGridTile(1, 1),
-          QuiltedGridTile(1, 1),
-          QuiltedGridTile(1, 1),
-        ],
+        pattern: _calcPattern(photoItems.length),
       ),
       childrenDelegate: SliverChildBuilderDelegate(
         childCount: photoItems.length,
         (context, index) => ClipRRect(
           borderRadius: BorderRadius.circular(RadiusBorder.xs),
           child: LoadingShimmerImage(
-              imageUrl: photoItems[index].url,
-              fit: BoxFit.cover,
-              onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photosUrls)),
+            imageUrl: photoItems[index].url,
+            fit: BoxFit.cover,
+            onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photosUrls),
+          ),
         ),
       ),
     );
