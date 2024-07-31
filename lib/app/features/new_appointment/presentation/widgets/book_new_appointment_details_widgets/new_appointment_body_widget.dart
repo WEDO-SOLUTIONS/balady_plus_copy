@@ -327,6 +327,8 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           fillColor: Colors.transparent,
           label: ("bookNewAppointmentNotesFieldLabelWord").tr(),
           hintText: ("appointment_purpose_hint").tr(),
+          maxLength: 500,
+
           maxLines: 4,
           keyboardType: TextInputType.multiline,
           inputFormatters: [
@@ -347,6 +349,9 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
                       text.toString()) &&
                   !CommonFunctions.isAppAR) {
                 return ("error_only_arabic").tr();
+              }
+              if(text.toString().length<20) {
+                return ("error_less_20").tr();
               }
             }
             return null;

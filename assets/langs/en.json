@@ -758,6 +758,7 @@
   "inquiry_type1_desc": "Please select the type of inquiry you would like to provide",
   "inq_wait_response": "The reply will appear here when the inquiry is answered by the Balady technical support team. Thank you for your patience.",
   "error_only_arabic": "The reason for the date must have only Arabic or English letters.",
+  "error_less_20": "The reason for the date must have at least 20 characters",
   "inc_label": "Reports",
   "req_label": "Request a service",
   "inq_label": "Inquiries",
