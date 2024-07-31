@@ -156,8 +156,7 @@ class LayersControls extends _$LayersControls {
       }
     });
 
-    final LayersType actualSelectedLayersType =
-    LayerType.lifestyle.contains(selectedLayerState ?? LayerType.favourites)
+    final LayersType actualSelectedLayersType = LayerType.lifestyle.contains(selectedLayerState ?? LayerType.favourites)
         ? LayersType.lifestyle
         : LayersType.business;
 
