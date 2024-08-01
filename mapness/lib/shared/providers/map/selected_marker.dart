@@ -10,37 +10,17 @@ part 'selected_marker.g.dart';
 @riverpod
 class SelectedMarker extends _$SelectedMarker {
   final settings = MapObjectManagerSettings.selectedMarker();
-  final searchSettings = MapObjectManagerSettings.search();
-  Marker? _hiddenMarker;
 
   @override
   Marker? build() => null;
 
   Future<void> showMarker(Marker marker) async {
-    final searchObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: searchSettings.name,
-        layerId: searchSettings.layerId,
-      ).notifier,
-    );
-
-    if (_hiddenMarker != null) {
-      _showHiddenMarker();
-    }
-
-    final currentMarkerId = searchObjectManager.markerByGeoPoint(marker.options.position);
-    if (currentMarkerId != null) {
-      await searchObjectManager.hideMarker(marker);
-      _hiddenMarker = marker;
-    }
-
     final mapObjectManager = ref.read(
       mapObjectManagerProvider(
         named: settings.name,
         layerId: settings.layerId,
       ).notifier,
     );
-
     await mapObjectManager.removeAllMarkers();
     await mapObjectManager.addMarker(marker);
     state = marker;
@@ -53,7 +33,6 @@ class SelectedMarker extends _$SelectedMarker {
         layerId: settings.layerId,
       ).notifier,
     );
-    _showHiddenMarker();
     await read.removeMarkerById(id);
     state = null;
   }
@@ -66,21 +45,6 @@ class SelectedMarker extends _$SelectedMarker {
       ).notifier,
     );
     await read.removeAllMarkers();
-    _showHiddenMarker();
     state = null;
-  }
-
-  void _showHiddenMarker() {
-    if (_hiddenMarker != null) {
-      ref
-          .read(
-            mapObjectManagerProvider(
-              named: searchSettings.name,
-              layerId: searchSettings.layerId,
-            ).notifier,
-          )
-          .addMarker(_hiddenMarker!);
-      _hiddenMarker = null;
-    }
   }
 }
