@@ -119,57 +119,59 @@ class PoiHeader extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ValueListenableBuilder(
-                        valueListenable: expansionState,
-                        builder: (_, expansion, child) => Text(
-                          title,
-                          style: titleTextStyle,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: expansion != Expansion.hidden ? 2 : 1,
-                          textAlign: TextAlign.start,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ValueListenableBuilder(
+                          valueListenable: expansionState,
+                          builder: (_, expansion, child) => Text(
+                            title,
+                            style: titleTextStyle,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: expansion != Expansion.hidden ? 2 : 1,
+                            textAlign: TextAlign.start,
+                          ),
                         ),
-                      ),
-                      ValueListenableBuilder(
-                        valueListenable: tabState,
-                        builder: (_, tabState, __) => AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child: tabState == PoiTabsType.info
-                              ? ValueListenableBuilder(
-                                  valueListenable: expansionState,
-                                  builder: (_, expansion, child) => AnimatedSize(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                    child: expansion != Expansion.hidden ? child : const SizedBox.shrink(),
-                                  ),
-                                  child: expansionState.value != Expansion.fullHidePhoto
-                                      ? Row(
-                                          children: [
-                                            Text(
-                                              subTitle,
-                                              style: subTitleTextStyle,
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              textAlign: TextAlign.start,
-                                            ),
-                                            if (subtitleIcon != null) ...[
-                                              const SizedBox(width: Spacing.$1x),
-                                              Icon(
-                                                subtitleIcon,
-                                                color: context.color.textAndIconsBaseSecondary,
-                                                size: 24,
-                                              )
-                                            ]
-                                          ],
-                                        )
-                                      : null,
-                                )
-                              : const SizedBox.shrink(),
+                        ValueListenableBuilder(
+                          valueListenable: tabState,
+                          builder: (_, tabState, __) => AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            child: tabState == PoiTabsType.info
+                                ? ValueListenableBuilder(
+                                    valueListenable: expansionState,
+                                    builder: (_, expansion, child) => AnimatedSize(
+                                      duration: const Duration(milliseconds: 300),
+                                      curve: Curves.easeInOut,
+                                      child: expansion != Expansion.hidden ? child : const SizedBox.shrink(),
+                                    ),
+                                    child: expansionState.value != Expansion.fullHidePhoto
+                                        ? Row(
+                                            children: [
+                                              Text(
+                                                subTitle,
+                                                style: subTitleTextStyle,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              if (subtitleIcon != null) ...[
+                                                const SizedBox(width: Spacing.$1x),
+                                                Icon(
+                                                  subtitleIcon,
+                                                  color: context.color.textAndIconsBaseSecondary,
+                                                  size: 24,
+                                                )
+                                              ]
+                                            ],
+                                          )
+                                        : null,
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   Row(
                     children: [
