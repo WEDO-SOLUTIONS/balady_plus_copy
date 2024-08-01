@@ -193,7 +193,8 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                             Step4SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                             if (state.requestDetails?.submitterThrough ==
-                                "BENEFICARY")
+                                "BENEFICARY" || state.requestDetails?.submitterThrough ==
+                                "MOMTATHEL" )
                               Step5SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                             Step6SummeryWidget(),
