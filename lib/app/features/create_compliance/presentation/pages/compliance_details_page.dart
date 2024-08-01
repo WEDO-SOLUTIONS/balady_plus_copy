@@ -192,9 +192,9 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                             LocationSummuryWidget(),
                             Step4SummeryWidget(),
                             CustomVerticalSpace(height: 16),
-                            if (state.requestDetails?.submitterThrough ==
-                                "BENEFICARY" || state.requestDetails?.submitterThrough ==
-                                "MOMTATHEL" )
+                            // if (state.requestDetails?.submitterThrough ==
+                            //     "BENEFICARY" || state.requestDetails?.submitterThrough ==
+                            //     "MOMTATHEL" )
                               Step5SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                             Step6SummeryWidget(),
