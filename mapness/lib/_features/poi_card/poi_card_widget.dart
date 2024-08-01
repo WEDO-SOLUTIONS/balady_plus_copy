@@ -138,16 +138,11 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               }
             case 1:
               _tabType.value = PoiTabsType.photos;
-              if (_expansion.value != Expansion.fullHidePhoto) {
-                _lastUsedExpansion = _expansion.value;
-              }
 
               _expansion.value = Expansion.fullHidePhoto;
             case 2:
               _tabType.value = PoiTabsType.inBuilding;
-              if (_expansion.value != Expansion.fullHidePhoto) {
-                _lastUsedExpansion = _expansion.value;
-              }
+
               _expansion.value = Expansion.fullHidePhoto;
           }
         }
@@ -271,6 +266,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           ),
           onExpansionChanged: (expansion, {byUser = false}) => setState(() {
             _expansion.value = expansion;
+            _lastUsedExpansion = expansion;
           }),
           scrollHeader: PoiPhotosHeader(
             objectId: objectId,
@@ -348,7 +344,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                 poiCardState: poiCardState,
                 tabController: _tabController,
                 expansionState: _expansion,
-                tabState: _tabType,
                 data: data,
                 onTapClose: () {
                   Metrics.logEventAdvanced(
