@@ -609,7 +609,8 @@ requestDetails?.isReadOnly = r.isReadOnly;
         );
 
 return ; 
-      } 
+      }
+      //||r.submitterThrough == "MOMTATHEL"
       if (r.submitterThrough == "BENEFICARY") {
         List<AttachmentData> attachmentData = [];
         List<AttachmentData> viewAttachmentData = [];

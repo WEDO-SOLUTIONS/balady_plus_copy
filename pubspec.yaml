@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
 #version: 3.11.3+213
-version: 3.30.2+409
+version: 3.30.2+411
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
@@ -123,8 +123,6 @@ dependencies:
   flutter_timezone: ^1.0.7
   youtube_player_flutter: 8.1.2
   launch_review: ^3.0.1
-  mocktail: ^1.0.4
-  flutter_riverpod: ^2.4.1
 
   flutter_appauth:
     path: packages/flutter_appauth/flutter_appauth
@@ -189,7 +187,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^2.0.0
+    version: ^1.4.0
 
   mapness:
     path: mapness
