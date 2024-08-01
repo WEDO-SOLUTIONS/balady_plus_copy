@@ -19,13 +19,18 @@ import 'package:mapness/widgets/profile/unathorized_profile.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
-class ProfilePage extends ConsumerWidget {
-  ProfilePage({super.key});
-
-  final loadingNotifier = ValueNotifier<bool>(false);
+class ProfilePage extends ConsumerStatefulWidget {
+  const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends ConsumerState<ProfilePage> {
+  bool loading = false;
+
+  @override
+  Widget build(BuildContext context) {
     final textDirection = Directionality.of(context);
     final actionIcon = context.isLTR
         ? SystemIcons.arrowCornerRightLarge.icon(
@@ -217,18 +222,12 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  ValueListenableBuilder<bool>(
-                      valueListenable: loadingNotifier,
-                      builder: (context, value, c) {
-                        if (value) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: context.color.textAndIconsStatusAccent,
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      }),
+                  if (loading)
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: context.color.textAndIconsStatusAccent,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -247,10 +246,14 @@ class ProfilePage extends ConsumerWidget {
           if (!context.mounted) {
             return;
           }
-          loadingNotifier.value = true;
+          setState(() {
+            loading = true;
+          });
           Navigator.of(ctx).pop();
           await ref.read(authProvider.notifier).logOut();
-          loadingNotifier.value = false;
+          setState(() {
+            loading = false;
+          });
         },
         title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
         logOutText: context.l10n.logOut,
