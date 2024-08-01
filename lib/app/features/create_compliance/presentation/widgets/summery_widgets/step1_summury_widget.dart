@@ -20,10 +20,7 @@ class Step1SummeryWidget extends StatelessWidget {
           title: ("complinace_submission").tr(),
           leading: SvgPicture.asset(IconPath.vdSummurySPL),
           children: [
-            FieldData(
-                title: state.benificiaryTypeSelection == 1
-                    ? "representation_radio_option1".tr()
-                    : "representation_radio_option2".tr()),
+            FieldData(title: state.requestDetails?.submitterDto!.submitterTypeDesc??""),
           ],
         );
       },
