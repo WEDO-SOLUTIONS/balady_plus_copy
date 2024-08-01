@@ -32,7 +32,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       layerId: searchSettings.layerId,
     ).notifier,
   );
-
   final icon = searchObjectManager.currentMarkerIcon?.bigIconPath;
 
   if (closestPoint == null) {

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -90,13 +91,20 @@ class MapObjectManager extends _$MapObjectManager {
 
   /// -- MARKER --
   String? currentMarkerIcon;
+  final _markers = <Marker>[];
 
+  Marker? markerByGeoPoint(LatLng geoPoint) => _markers.firstWhereOrNull(
+        (element) =>
+            element.options.position.latitude == geoPoint.latitude &&
+            element.options.position.longitude == geoPoint.longitude,
+      );
   Future<void> addMarker(Marker marker) async {
     await ref.read(dgisControllerProvider).value?.addMarker(
           marker,
           toManager: await future,
         );
 
+    _markers.add(marker);
     currentMarkerIcon = marker.options.icon?.path;
   }
 
@@ -106,6 +114,7 @@ class MapObjectManager extends _$MapObjectManager {
           toManager: await future,
         );
 
+    _markers.addAll(markers);
     currentMarkerIcon = markers.firstOrNull?.options.icon?.path;
   }
 
@@ -114,10 +123,13 @@ class MapObjectManager extends _$MapObjectManager {
   }
 
   Future<void> removeMarkerById(String markerId) async {
+    final manager = await future;
     await ref.read(dgisControllerProvider).value?.removeMarker(
           markerId,
-          fromManager: await future,
+          fromManager: manager,
         );
+
+    _markers.removeWhere((element) => element.id == markerId);
   }
 
   Future<void> removeAllMarkers() async {
@@ -125,6 +137,7 @@ class MapObjectManager extends _$MapObjectManager {
           fromManager: await future,
         );
 
+    _markers.clear();
     currentMarkerIcon = null;
   }
 
