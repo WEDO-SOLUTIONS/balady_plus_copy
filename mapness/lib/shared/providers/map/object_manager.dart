@@ -89,11 +89,15 @@ class MapObjectManager extends _$MapObjectManager {
   }
 
   /// -- MARKER --
+  String? currentMarkerIcon;
+
   Future<void> addMarker(Marker marker) async {
     await ref.read(dgisControllerProvider).value?.addMarker(
           marker,
           toManager: await future,
         );
+
+    currentMarkerIcon = marker.options.icon?.path;
   }
 
   Future<void> addMarkers(List<Marker> markers) async {
@@ -101,6 +105,8 @@ class MapObjectManager extends _$MapObjectManager {
           markers,
           toManager: await future,
         );
+
+    currentMarkerIcon = markers.firstOrNull?.options.icon?.path;
   }
 
   Future<void> setMapObjectManagerIsVisible({required bool isVisible}) async {
@@ -118,6 +124,8 @@ class MapObjectManager extends _$MapObjectManager {
     await ref.read(dgisControllerProvider).value?.removeAllMarkers(
           fromManager: await future,
         );
+
+    currentMarkerIcon = null;
   }
 
   /// --- POLYLINE ---

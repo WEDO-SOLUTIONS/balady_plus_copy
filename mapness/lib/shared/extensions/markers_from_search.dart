@@ -165,3 +165,12 @@ extension IconPathFromMapMarkersType on MapMarkersType {
         MapMarkersType.schools => '$_pathPrefix/ic_school_ltr.svg',
       };
 }
+
+extension BigIconPath on String {
+  static const _pathPrefix = 'packages/mapness/assets/icons/svg/places_big/';
+
+  String get bigIconPath {
+    final iconName = split('/').last;
+    return '$_pathPrefix$iconName';
+  }
+}

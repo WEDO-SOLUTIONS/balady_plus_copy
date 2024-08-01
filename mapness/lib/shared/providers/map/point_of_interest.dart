@@ -1,6 +1,8 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,6 +25,16 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     longitude: directoryObject?.markerPosition!.longitude ?? 0,
   );
 
+  final searchSettings = MapObjectManagerSettings.search();
+  final searchObjectManager = ref.read(
+    mapObjectManagerProvider(
+      named: searchSettings.name,
+      layerId: searchSettings.layerId,
+    ).notifier,
+  );
+
+  final icon = searchObjectManager.currentMarkerIcon?.bigIconPath;
+
   if (closestPoint == null) {
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.showMarker(
@@ -32,6 +44,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
           longitude: position.longitude,
           elevation: 1,
         ),
+        icon: icon,
+        width: 36,
         id: poiPinId,
       ),
     );
