@@ -227,7 +227,7 @@ class PoiHeader extends ConsumerWidget {
                     Text(
                       workingHours?.title ?? '',
                       style: subTitleTextStyleBold.copyWith(
-                        color: context.color.textAndIconsBaseSecondary.withAlpha(12),
+                        color: context.color.textAndIconsBaseSecondary.withAlpha(125),
                       ),
                     ),
                 ],
