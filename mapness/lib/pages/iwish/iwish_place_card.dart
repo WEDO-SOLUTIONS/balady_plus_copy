@@ -57,7 +57,7 @@ class IwishPlaceCard extends ConsumerWidget {
                 metadata.openingDate != DateTime.fromMillisecondsSinceEpoch(0) ||
                 metadata.areaName != '';
 
-            final minSheetSize = entity.photos.isEmpty ? minSizeInPhoto : minSize;
+            final minSheetSize = entity.photos.isEmpty ? minSize : minSizeInPhoto;
 
             return SafeArea(
               bottom: false,
