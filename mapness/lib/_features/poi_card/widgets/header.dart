@@ -8,12 +8,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
+import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 
@@ -38,6 +42,31 @@ class PoiHeader extends ConsumerWidget {
     final direction = ref.watch(uiDirectionProvider);
 
     final address = data.address;
+
+    final finishPoint = RouteSearchPoint(
+      coordinates: data.markerPosition?.toGeoPointMessage() ??
+          GeoPointMessage(
+            latitude: 0,
+            longitude: 0,
+          ),
+      dgisObjectId: data.id!,
+    );
+
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(
+        finishPoint: finishPoint,
+        navType: RouteSearchOptionsMessage.car,
+      ),
+    );
+
+    final fullAddress = data.getFullAddress(
+      briefInfo,
+      context.l10n,
+      () {},
+    );
+
+    final workingHours = data.getOpeningHours(context.l10n);
+
     String subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
 
     // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
@@ -54,7 +83,12 @@ class PoiHeader extends ConsumerWidget {
     final titleTextStyle = context.textStyle.heading1.copyWith(
       color: context.color.textAndIconsBasePrimary,
     );
+
     final subTitleTextStyle = context.textStyle.footNote.copyWith(
+      color: context.color.textAndIconsBaseSecondary,
+    );
+
+    final subTitleTextStyleBold = context.textStyle.footNoteBold.copyWith(
       color: context.color.textAndIconsBaseSecondary,
     );
 
@@ -76,109 +110,183 @@ class PoiHeader extends ConsumerWidget {
           const SizedBox(height: Spacing.$2x),
           const Center(child: SheetDragger()),
           const SizedBox(height: Spacing.$3x),
-          Row(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ValueListenableBuilder(
-                      valueListenable: expansionState,
-                      builder: (_, expansion, __) => Text(
-                        title,
-                        style: titleTextStyle,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: expansion != Expansion.hidden ? 2 : 1,
-                        textAlign: TextAlign.start,
-                      ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ValueListenableBuilder(
+                          valueListenable: expansionState,
+                          builder: (_, expansion, __) => Text(
+                            title,
+                            style: titleTextStyle,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: expansion != Expansion.hidden ? 2 : 1,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        ValueListenableBuilder(
+                          valueListenable: expansionState,
+                          builder: (_, expansion, child) => AnimatedSize(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            child: expansion != Expansion.hidden ? child : const SizedBox.shrink(),
+                          ),
+                          child: expansionState.value != Expansion.fullHidePhoto
+                              ? Row(
+                                  children: [
+                                    Text(
+                                      subTitle,
+                                      style: subTitleTextStyle,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                    if (subtitleIcon != null) ...[
+                                      const SizedBox(width: Spacing.$1x),
+                                      Icon(
+                                        subtitleIcon,
+                                        color: context.color.textAndIconsBaseSecondary,
+                                        size: 24,
+                                      )
+                                    ]
+                                  ],
+                                )
+                              : null,
+                        ),
+                      ],
                     ),
-                    ValueListenableBuilder(
-                      valueListenable: expansionState,
-                      builder: (_, expansion, child) => AnimatedSize(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        child: expansion != Expansion.hidden ? child : const SizedBox.shrink(),
-                      ),
-                      child: expansionState.value != Expansion.fullHidePhoto
-                          ? Row(
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    subTitle,
-                                    style: subTitleTextStyle,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.start,
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(width: Spacing.$3x),
+                      Builder(
+                        builder: (context) => Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Material(
+                            borderRadius: borderRadius,
+                            child: InkWell(
+                              borderRadius: borderRadius,
+                              onTap: onTapClose,
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: context.color.textAndIconsBasePrimary.withAlpha(10),
+                                ),
+                                padding: const EdgeInsets.all(Spacing.$2x),
+                                child: SvgPicture.asset(
+                                  'assets/icons/svg/ic_search_close.svg',
+                                  semanticsLabel: 'MinApps Screen',
+                                  package: PackageConfig.packageName,
+                                  colorFilter: ColorFilter.mode(
+                                    context.color.textAndIconsBasePrimary.withOpacity(0.7),
+                                    BlendMode.srcIn,
                                   ),
                                 ),
-                                if (subtitleIcon != null) ...[
-                                  const SizedBox(width: Spacing.$1x),
-                                  Icon(
-                                    subtitleIcon,
-                                    color: context.color.textAndIconsBaseSecondary,
-                                    size: 24,
-                                  )
-                                ]
-                              ],
-                            )
-                          : null,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: Spacing.$3x),
-              Builder(
-                builder: (context) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Material(
-                    borderRadius: borderRadius,
-                    child: InkWell(
-                      borderRadius: borderRadius,
-                      onTap: onTapClose,
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: context.color.textAndIconsBasePrimary.withAlpha(10),
-                        ),
-                        padding: const EdgeInsets.all(Spacing.$2x),
-                        child: SvgPicture.asset(
-                          'assets/icons/svg/ic_search_close.svg',
-                          semanticsLabel: 'MinApps Screen',
-                          package: PackageConfig.packageName,
-                          colorFilter: ColorFilter.mode(
-                            context.color.textAndIconsBasePrimary.withOpacity(0.7),
-                            BlendMode.srcIn,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
+                ],
+              ),
+              const SizedBox(height: Spacing.$3x),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          fullAddress.address,
+                          style: context.textStyle.footNote,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      const SizedBox(width: Spacing.$1x),
+                      Text(
+                        fullAddress.distance,
+                        style: subTitleTextStyleBold,
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: Spacing.$1x),
+                  if (workingHours?.title != null)
+                    Text(
+                      workingHours?.title ?? '',
+                      style: subTitleTextStyleBold.copyWith(
+                        color: context.color.textAndIconsBaseSecondary.withAlpha(125),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: Spacing.$5x),
+              ValueListenableBuilder(
+                valueListenable: expansionState,
+                // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
+                child: subTitle == 'Street' && direction == TextDirection.ltr
+                    ? Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              subTitle,
+                              style: subTitleTextStyle,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          if (subtitleIcon != null) ...[
+                            const SizedBox(width: Spacing.$1x),
+                            Icon(
+                              subtitleIcon,
+                              color: context.color.textAndIconsBaseSecondary,
+                              size: 24,
+                            )
+                          ]
+                        ],
+                      )
+                    : null,
+                builder: (_, expansion, child) => AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: expansion != Expansion.hidden ? child : const SizedBox(),
                 ),
               ),
             ],
           ),
           ValueListenableBuilder(
-              valueListenable: expansionState,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: Spacing.$2x,
-                  bottom: Spacing.$3x,
-                ),
-                child: PoiTabs(
-                  tabController: tabController,
-                  objectId: data.id?.objectId ?? 0,
-                  poiCardState: poiCardState,
-                ),
+            valueListenable: expansionState,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: Spacing.$2x,
+                bottom: Spacing.$3x,
               ),
-              builder: (_, expansion, child) => AnimatedSize(
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.easeInOut,
-                    child: expansion != Expansion.hidden ? child : const SizedBox(),
-                  )),
+              child: PoiTabs(
+                tabController: tabController,
+                objectId: data.id?.objectId ?? 0,
+                poiCardState: poiCardState,
+              ),
+            ),
+            builder: (_, expansion, child) => AnimatedSize(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+              child: expansion != Expansion.hidden ? child : const SizedBox(),
+            ),
+          ),
         ],
       ),
     );

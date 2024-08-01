@@ -161,7 +161,7 @@ class _PoiTabItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: context.textStyle.footNoteBold.copyWith(
+                      style: context.textStyle.footNote.copyWith(
                         color: isActive ?? false
                             ? context.color.textAndIconsBasePrimary
                             : context.color.textAndIconsBasePrimary.withOpacity(0.5),
