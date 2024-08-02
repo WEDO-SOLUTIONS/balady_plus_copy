@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -123,13 +126,18 @@ class MapObjectManager extends _$MapObjectManager {
   }
 
   Future<void> removeMarkerById(String markerId) async {
-    final manager = await future;
-    await ref.read(dgisControllerProvider).value?.removeMarker(
-          markerId,
-          fromManager: manager,
-        );
-
     _markers.removeWhere((element) => element.id == markerId);
+    final manager = await future;
+    try {
+      unawaited(
+        ref.read(dgisControllerProvider).value?.removeMarker(
+              markerId,
+              fromManager: manager,
+            ),
+      );
+    } catch (ex, __) {
+      debugPrint(ex.toString());
+    }
   }
 
   Future<void> removeAllMarkers() async {
