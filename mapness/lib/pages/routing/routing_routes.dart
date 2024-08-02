@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,12 +9,16 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
-import 'package:mapness/pages/routing/lib/route_point_extension.dart';
+import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -42,18 +45,12 @@ class RoutingRoutesPage extends ConsumerStatefulWidget {
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late List<RouteParamsPoint?> points;
   late List<String> labels;
-  late List<RouteSearchPointMessage?> searchPoints;
 
   @override
   void initState() {
     super.initState();
     points = widget.points;
     labels = widget.labels;
-    searchPoints = widget.points
-        .map(
-          (e) => e?.routeSearchPointMessage,
-        )
-        .toList();
   }
 
   @override
@@ -161,7 +158,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     setState(() {
       points = points.reversed.toList();
       labels = labels.reversed.toList();
-      searchPoints = searchPoints.reversed.toList();
     });
   }
 
@@ -183,7 +179,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         // change original data only when user confirms
         points: List.of(points),
         labels: List.of(labels),
-        searchPoints: List.of(searchPoints),
+
         onClose: context.pop,
         // We have to pass external context to the sheet to be able to get the colors, text styles, etc.
         externalContext: context,
@@ -194,12 +190,10 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   /// Confirm the reordering of the points. Also close the bottom sheet
   void onConfirm(
     List<RouteParamsPoint?> points,
-    List<RouteSearchPointMessage?> searchPoints,
     List<String> labels,
   ) {
     setState(() {
       this.points = points;
-      this.searchPoints = searchPoints;
       this.labels = labels;
     });
     context.pop();
@@ -237,7 +231,36 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     }
   }
 
-  void onTap(int index) {}
+  void onTap(int index) {
+    Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
+        group: MetricsConstants.routesTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'isMyLocation': labels[index] == context.l10n.myLocation,
+        });
+
+    ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
+
+    RoutingSearchRoute(
+      placeholder: index == 0 ? context.l10n.from : context.l10n.to,
+      showMyLocation: labels[index] == context.l10n.myLocation,
+    ).push(context).then(
+      (value) {
+        if (value != null && value is RoutePoint) {
+          final newPoint = RouteParamsPoint(
+            latitude: value.latitude!,
+            longitude: value.longitude!,
+            objectId: value.objectId,
+            entranceId: value.entranceId,
+            levelId: value.levelId,
+          );
+          points[index] = newPoint;
+          labels[index] = value.title(context.l10n) ?? labels[index];
+          updatePoints(points);
+        }
+      },
+    );
+  }
 
   void updatePoints(List<RouteParamsPoint?> points) {}
 }

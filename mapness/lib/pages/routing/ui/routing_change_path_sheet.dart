@@ -1,6 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -8,8 +7,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-typedef ConfirmReorder = void Function(
-    List<RouteParamsPoint?> points, List<RouteSearchPointMessage?> searchPoints, List<String> labels);
+typedef ConfirmReorder = void Function(List<RouteParamsPoint?> points, List<String> labels);
 
 /// This widget is used to change the path order. We use here the [ABRoute] widget to show the points
 ///
@@ -19,7 +17,7 @@ class ChangePathSheet extends StatefulWidget {
   final ConfirmReorder onConfirm;
   final void Function(int) onTap;
   final List<RouteParamsPoint?> points;
-  final List<RouteSearchPointMessage?> searchPoints;
+
   final List<String> labels;
   final VoidCallback onClose;
   final BuildContext externalContext;
@@ -30,7 +28,6 @@ class ChangePathSheet extends StatefulWidget {
     required this.labels,
     required this.onClose,
     required this.externalContext,
-    required this.searchPoints,
     super.key,
   });
 
@@ -108,7 +105,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
                     child: AppButton(
                       buttonColorScheme: ButtonColorScheme.primary,
                       onTap: () {
-                        widget.onConfirm(widget.points, widget.searchPoints, widget.labels);
+                        widget.onConfirm(widget.points, widget.labels);
                       },
                       primaryLabel: widget.externalContext.l10n.set,
                     ),
@@ -134,7 +131,6 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     setState(() {
       _swap(widget.points, oldIndex, newIndex_);
       _swap(widget.labels, oldIndex, newIndex_);
-      _swap(widget.searchPoints, oldIndex, newIndex_);
     });
   }
 
