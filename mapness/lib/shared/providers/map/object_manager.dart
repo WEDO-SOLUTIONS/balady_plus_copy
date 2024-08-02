@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
@@ -123,13 +125,14 @@ class MapObjectManager extends _$MapObjectManager {
   }
 
   Future<void> removeMarkerById(String markerId) async {
-    final manager = await future;
-    await ref.read(dgisControllerProvider).value?.removeMarker(
-          markerId,
-          fromManager: manager,
-        );
-
     _markers.removeWhere((element) => element.id == markerId);
+    final manager = await future;
+    unawaited(
+      ref.read(dgisControllerProvider).value?.removeMarker(
+            markerId,
+            fromManager: manager,
+          ),
+    );
   }
 
   Future<void> removeAllMarkers() async {
