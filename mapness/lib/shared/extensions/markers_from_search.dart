@@ -168,9 +168,35 @@ extension IconPathFromMapMarkersType on MapMarkersType {
 
 extension BigIconPath on String {
   static const _pathPrefix = 'packages/mapness/assets/icons/svg/places_big/';
+  // Because we need to replace only this markers with big icons
+  // If you need to add more icons, please add it in this list
+  static const _markersList = [
+    'ic_markets.svg',
+    'ic_beach.svg',
+    'ic_gym.svg',
+    'ic_gasstation_ltr.svg',
+    'ic_events_ltr.svg',
+    'ic_car_services.svg',
+    'ic_hospital_place.svg',
+    'ic_hotels.svg',
+    'ic_medicine_ltr.svg',
+    'ic_mosques.svg',
+    'ic_park.svg',
+    'ic_qibla.svg',
+    'ic_restaurant.svg',
+    'ic_wc.svg',
+    'ic_tooth.svg',
+    'ic_school_ltr.svg',
+  ];
 
-  String get bigIconPath {
+  String? get bigIconPath {
     final iconName = split('/').last;
-    return '$_pathPrefix$iconName';
+    if (_markersList.contains(iconName)) {
+      final path = '$_pathPrefix$iconName';
+
+      return path;
+    } else {
+      return null;
+    }
   }
 }
