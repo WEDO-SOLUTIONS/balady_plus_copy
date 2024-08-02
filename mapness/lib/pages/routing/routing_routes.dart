@@ -12,6 +12,7 @@ import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
+import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -113,9 +114,9 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
-                    left: Spacing.horizontalPaddingInsideWrapper,
-                    right: Spacing.horizontalPaddingInsideWrapper,
-                    top: Spacing.verticalPaddingInsideWrapper,
+                    left: Spacing.$4x,
+                    right: Spacing.$4x,
+                    top: Spacing.$4x,
                   ),
                   child: Row(
                     children: <Widget>[
@@ -132,12 +133,13 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                         buttonColorScheme: ButtonColorScheme.tertiary,
                         onTap: _onSwipeRoutes,
                       ),
-                      Expanded(child: ABPoints(locations: labels)),
-                    ]
-                        .insertBetween(
-                          Spacing.horizontalGapBetweenCellContent.widthBox,
-                        )
-                        .toList(),
+                      Expanded(
+                        child: ABPoints(
+                          locations: labels,
+                          onTap: _changeRoute,
+                        ),
+                      ),
+                    ].insertBetween(Spacing.$3x.widthBox).toList(),
                   ),
                 ),
                 RoutingInfo(points: points),
@@ -161,6 +163,46 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       labels = labels.reversed.toList();
       searchPoints = searchPoints.reversed.toList();
     });
+  }
+
+  /// On tap of the ABPoints widget, show the bottom sheet to change the route
+  void _changeRoute() {
+    const shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(Spacing.$4x),
+      ),
+    );
+    showModalBottomSheet(
+      backgroundColor: context.color.surfaceBasePrimary,
+      shape: shape,
+      context: context,
+      builder: (context) => ChangePathSheet(
+        onConfirm: onConfirm,
+        onTap: onTap,
+        // We need to pass the points and labels as copy (List.of) to manipulate the data and
+        // change original data only when user confirms
+        points: List.of(points),
+        labels: List.of(labels),
+        searchPoints: List.of(searchPoints),
+        onClose: context.pop,
+        // We have to pass external context to the sheet to be able to get the colors, text styles, etc.
+        externalContext: context,
+      ),
+    );
+  }
+
+  /// Confirm the reordering of the points. Also close the bottom sheet
+  void onConfirm(
+    List<RouteParamsPoint?> points,
+    List<RouteSearchPointMessage?> searchPoints,
+    List<String> labels,
+  ) {
+    setState(() {
+      this.points = points;
+      this.searchPoints = searchPoints;
+      this.labels = labels;
+    });
+    context.pop();
   }
 
   void _onClose() {
@@ -194,4 +236,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         const RoutingRoute().pushReplacement(context);
     }
   }
+
+  void onTap(int index) {}
+
+  void updatePoints(List<RouteParamsPoint?> points) {}
 }
