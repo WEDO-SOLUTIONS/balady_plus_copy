@@ -129,10 +129,12 @@ class MapObjectManager extends _$MapObjectManager {
     _markers.removeWhere((element) => element.id == markerId);
     final manager = await future;
     try {
-      await ref.read(dgisControllerProvider).value?.removeMarker(
-            markerId,
-            fromManager: manager,
-          );
+      unawaited(
+        ref.read(dgisControllerProvider).value?.removeMarker(
+              markerId,
+              fromManager: manager,
+            ),
+      );
     } catch (ex, __) {
       debugPrint(ex.toString());
     }

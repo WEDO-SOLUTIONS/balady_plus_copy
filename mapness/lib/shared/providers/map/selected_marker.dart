@@ -25,7 +25,7 @@ class SelectedMarker extends _$SelectedMarker {
     );
 
     if (_hiddenMarker != null) {
-      await _showHiddenMarker();
+      _showHiddenMarker();
     }
 
     final position = LatLng(
@@ -35,7 +35,7 @@ class SelectedMarker extends _$SelectedMarker {
     final currentSearchMarker = searchObjectManager.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
       _hiddenMarker = currentSearchMarker;
-      await searchObjectManager.removeMarkerById(currentSearchMarker.id);
+      unawaited(searchObjectManager.removeMarkerById(currentSearchMarker.id));
     }
 
     final mapObjectManager = ref.read(
@@ -57,8 +57,8 @@ class SelectedMarker extends _$SelectedMarker {
         layerId: settings.layerId,
       ).notifier,
     );
-    await _showHiddenMarker();
-    await read.removeMarkerById(id);
+    _showHiddenMarker();
+    unawaited(read.removeMarkerById(id));
     state = null;
   }
 
@@ -70,13 +70,13 @@ class SelectedMarker extends _$SelectedMarker {
       ).notifier,
     );
     await read.removeAllMarkers();
-    await _showHiddenMarker();
+    _showHiddenMarker();
     state = null;
   }
 
-  Future<void> _showHiddenMarker() async {
+  void _showHiddenMarker() {
     if (_hiddenMarker != null) {
-      await ref
+      ref
           .read(
             mapObjectManagerProvider(
               named: searchSettings.name,
