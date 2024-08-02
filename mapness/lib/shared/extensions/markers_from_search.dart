@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' as io;
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
@@ -169,8 +170,14 @@ extension IconPathFromMapMarkersType on MapMarkersType {
 extension BigIconPath on String {
   static const _pathPrefix = 'packages/mapness/assets/icons/svg/places_big/';
 
-  String get bigIconPath {
+  String? get bigIconPath {
     final iconName = split('/').last;
-    return '$_pathPrefix$iconName';
+    final path = '$_pathPrefix$iconName';
+
+    if (io.File(path).existsSync()) {
+      return path;
+    } else {
+      return null;
+    }
   }
 }

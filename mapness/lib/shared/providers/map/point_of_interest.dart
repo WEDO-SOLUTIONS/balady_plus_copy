@@ -44,7 +44,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
           elevation: 1,
         ),
         icon: icon,
-        width: 36,
+        width: icon != null ? 36 : null,
         id: poiPinId,
       ),
     );
