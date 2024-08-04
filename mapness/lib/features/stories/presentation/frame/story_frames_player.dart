@@ -77,10 +77,13 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
     super.didChangeDependencies();
     final frames = widget.story.frames;
     for (var i = currentIndex; i < frames.length; i++) {
+      final currentImage = frames[i].imageUrl.call(isArabic: StoryLocalization.of(context)?.isArabic ?? true);
+
       if (frames[i].isAssetImage == true) {
+        precacheImage(AssetImage(currentImage), context);
         continue;
       }
-      final currentImage = frames[i].imageUrl.call(isArabic: StoryLocalization.of(context)?.isArabic ?? true);
+
       // Preload images for better performance
       CachedNetworkImageProvider(currentImage).resolve(ImageConfiguration.empty);
     }

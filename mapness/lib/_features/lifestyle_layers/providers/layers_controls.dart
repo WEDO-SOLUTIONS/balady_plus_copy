@@ -109,7 +109,7 @@ class LayersControls extends _$LayersControls {
   final favouritesMapObjectSettings = MapObjectManagerSettings.favourites();
 
   final tapSubject = PublishSubject<LayerType>();
-  StreamSubscription? tapSubscription;
+  StreamSubscription? _tapSubscription;
 
   Future<void> _hideAllSelectedMarkers() async {
     final selectedPoint = ref.read(selectedMarkerProvider.notifier);
@@ -122,10 +122,10 @@ class LayersControls extends _$LayersControls {
   LayersState build() {
     ref.onDispose(() {
       _viewPortSubscription?.cancel();
-      tapSubscription?.cancel();
+      _tapSubscription?.cancel();
     });
 
-    tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
+    _tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
 
     final selectedLayerState = _getLayerState();
 
@@ -140,6 +140,30 @@ class LayersControls extends _$LayersControls {
     return LayersState(
       layersVisible: false,
       selectedType: null,
+      isLoading: false,
+      investmentsMarkers: {},
+      polygons: {},
+      polylines: {},
+    );
+  }
+
+  void initialize() {
+    final selectedLayerState = _getLayerState();
+
+    Future.delayed(Duration.zero, () async {
+      if (selectedLayerState != null) {
+        await toggle(selectedLayerState);
+      }
+    });
+
+    final LayersType actualSelectedLayersType = LayerType.lifestyle.contains(selectedLayerState ?? LayerType.favourites)
+        ? LayersType.lifestyle
+        : LayersType.business;
+
+    state = LayersState(
+      layersVisible: false,
+      selectedType: null,
+      layersType: actualSelectedLayersType,
       isLoading: false,
       investmentsMarkers: {},
       polygons: {},
@@ -276,6 +300,10 @@ class LayersControls extends _$LayersControls {
           });
     } else {
       _removeLayersState();
+
+      /// FIX(BSA-669): Added this function to remove favorites and other markers when
+      /// we disable it from layers or favorites screen
+      _removeAll();
     }
 
     ref
@@ -392,6 +420,8 @@ class LayersControls extends _$LayersControls {
 
   Future<void> enableParking() async {
     await _viewPortSubscription?.cancel();
+
+    await _removeMapObjects();
 
     if (state.selectedType != LayerType.parkingLots) {
       setSelection(selectedType: LayerType.parkingLots);
@@ -685,6 +715,11 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> _removeAll() async {
+    await _removeMapObjects();
+    await ref.read(parkingStateProvider.notifier).hideParking();
+  }
+
+  Future<void> _removeMapObjects() async {
     update(polylines: {}, polygons: {}, investmentsMarkers: {});
     final map = ref.watch(mapObjectManagerProvider(
       named: esriMapObjectSettings.name,
@@ -701,8 +736,6 @@ class LayersControls extends _$LayersControls {
     await mapObjectManager.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
-
-    await ref.read(parkingStateProvider.notifier).hideParking();
   }
 
   void showParking() {

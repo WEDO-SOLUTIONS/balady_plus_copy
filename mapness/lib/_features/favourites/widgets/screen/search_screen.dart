@@ -35,7 +35,7 @@ class SearchScreen extends ConsumerWidget {
               child: BaladySearchWithBackButton(
                 onBackButtonPressed: onBackTap,
                 searchInput: BaladyInput.searchV2(
-                  autofocus: false,
+                  autofocus: true,
                   hintText: hintText ?? context.l10n.search,
                   onChanged: (value) {
                     if (value.isEmpty) {

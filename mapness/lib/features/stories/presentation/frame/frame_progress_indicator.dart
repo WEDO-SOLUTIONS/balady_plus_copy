@@ -65,7 +65,6 @@ class FrameProgressIndicator extends AnimatedWidget {
   @override
   Widget build(BuildContext context) => SizedBox(
         width: double.infinity,
-        height: 72,
         child: Directionality(
           textDirection: Directionality.of(context),
           child: Padding(

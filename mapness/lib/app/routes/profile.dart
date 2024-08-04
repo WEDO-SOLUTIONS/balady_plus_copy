@@ -38,14 +38,13 @@ part 'profile.g.dart';
   ],
 )
 class ProfileRoute extends GoRouteData {
-
   const ProfileRoute();
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
-      child: ProfilePage(),
-    );
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
+        child: ProfilePage(),
+      );
 }
 
 class SettingsRoute extends GoRouteData {
@@ -54,8 +53,7 @@ class SettingsRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
         child: SettingsPage(),
       );
 }
@@ -81,8 +79,7 @@ class HelpCenterRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
         child: HelpCenterPage(),
       );
 }
@@ -93,8 +90,7 @@ class AboutBaladyRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
         child: AboutBaladyPage(),
       );
 }
@@ -105,8 +101,7 @@ class MomraWebsitePageRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
         child: MomraWebsitePage(),
       );
 }
@@ -117,8 +112,7 @@ class ProfileInfoPageRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
         child: ProfileInfoPage(),
       );
 }

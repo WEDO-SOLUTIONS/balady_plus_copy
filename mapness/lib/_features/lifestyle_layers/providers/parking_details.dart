@@ -64,13 +64,6 @@ class ParkingDetails extends _$ParkingDetails {
     state = state.copyWith(parkingFilter);
   }
 
-  Future<void> _applyAttribute(ParkingFilter parkingFilter) async {
-    final _dgisController = await ref.read(dgisControllerProvider.future);
-    await _dgisController.setMapAttributeBool('parkingOn', true);
-    await _dgisController.setMapAttributeBool('parking_filter_paid_on', parkingFilter.paidOn());
-    await _dgisController.setMapAttributeBool('parking_filter_free_on', parkingFilter.freeOn());
-  }
-
   Future<void> setParkingFilter(ParkingFilter parkingFilter) async {
     await _applyAttribute(parkingFilter);
 
@@ -78,5 +71,12 @@ class ParkingDetails extends _$ParkingDetails {
     await read.setString(parkingTypeKey, parkingFilter.name);
 
     update(parkingFilter);
+  }
+
+  Future<void> _applyAttribute(ParkingFilter parkingFilter) async {
+    final _dgisController = await ref.read(dgisControllerProvider.future);
+    await _dgisController.setMapAttributeBool('parkingOn', true);
+    await _dgisController.setMapAttributeBool('parking_filter_paid_on', parkingFilter.paidOn());
+    await _dgisController.setMapAttributeBool('parking_filter_free_on', parkingFilter.freeOn());
   }
 }
