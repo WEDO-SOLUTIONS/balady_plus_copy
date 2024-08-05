@@ -128,7 +128,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     super.didChangeAppLifecycleState(state);
   }
 
-
   @override
   void deactivate() {
     _streamSubscription?.cancel();
