@@ -39,7 +39,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheet> with Wi
   }
 
   Future<void> _checkPermissionGranted() async {
-    final result = await ref.read(locationProvider.notifier).checkPermissionLocation();
+    final result = await ref.read(locationProvider.notifier).checkOnLocationPermissionGranted();
 
     if (result && mounted) {
       context.pop(result);

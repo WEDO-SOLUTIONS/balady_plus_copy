@@ -43,10 +43,10 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     if (location != null) {
       unawaited(_calculateNavigationType(location));
     } else {
-      _locationListener = ref.listenManual(locationProvider, (_, next) {
-        if (next != null && _isNavTypeLoading.value == true) {
+      _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
+        if (next != null) {
           _locationListener?.close();
-          unawaited(_calculateNavigationType(location));
+          unawaited(_calculateNavigationType(next));
         }
       });
     }
@@ -55,7 +55,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   @override
   void dispose() {
     _navType.dispose();
-    _isNavTypeLoading.dispose();
     _locationListener?.close();
     super.dispose();
   }
