@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ class _SliderListViewState<T> extends State<SliderListView<T>> {
                 child: widget.items.isEmpty
                     ? widget.itemBuilder(null)
                     : PageView.builder(
+                        reverse: context.isRTL,
                         padEnds: false,
                         physics: const BouncingScrollPhysics(),
                         controller: controller,
@@ -64,6 +66,7 @@ class _SliderListViewState<T> extends State<SliderListView<T>> {
             const SizedBox(height: Spacing.$3x),
             if (widget.items.isNotEmpty)
               SmoothPageIndicator(
+                textDirection: TextDirection.ltr,
                 onDotClicked: (index) {
                   controller.animateToPage(
                     index,

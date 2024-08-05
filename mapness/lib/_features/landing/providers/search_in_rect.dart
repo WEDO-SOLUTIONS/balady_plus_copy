@@ -34,7 +34,7 @@ class SearchInRect extends _$SearchInRect {
     });
 
     return (
-      ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect.geoRectMessage(),
+      ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage(),
       false,
     );
   }

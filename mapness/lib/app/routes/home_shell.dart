@@ -92,6 +92,7 @@ class RoutingBranch extends StatefulShellBranchData {
 class RoutingRoute extends GoRouteData {
   static const path = '/routing';
   const RoutingRoute({this.collapseInitially = false});
+
   /// open page with collapsed bottom sheet
   final bool collapseInitially;
 
@@ -133,7 +134,7 @@ class ProfilesRoute extends GoRouteData {
   const ProfilesRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const ProfilePage();
+  Widget build(BuildContext context, GoRouterState state) => ProfilePage();
 }
 
 RouteBase homeShellRoute({required bool naviEnabled}) => StatefulShellRouteData.$route(

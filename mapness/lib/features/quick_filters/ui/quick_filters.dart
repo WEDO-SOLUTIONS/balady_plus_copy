@@ -92,10 +92,11 @@ class QuickFilters extends ConsumerWidget {
       ...favourites,
       ...models.QuickFilter.values.map(
         (filter) => FilterItem(
-            filterType: FilterType.quick,
-            title: filter.title(context.l10n),
-            selected: filter == selectedQuickFilter,
-            onTap: () => onQuickFilterTap(filter)),
+          filterType: FilterType.quick,
+          title: filter.title(context.l10n),
+          selected: filter == selectedQuickFilter,
+          onTap: () => onQuickFilterTap(filter),
+        ),
       ),
     ];
 

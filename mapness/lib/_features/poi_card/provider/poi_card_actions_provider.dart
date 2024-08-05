@@ -111,12 +111,8 @@ class PoiCardActions extends _$PoiCardActions {
     }
   }
 
-  Future<void> callPhone({
-    String? value,
-  }) async {
-    if (value != null) {
-      await launchUrl(Uri(scheme: 'tel', path: value));
-    }
+  Future<void> callPhone(String value) async {
+    await launchUrl(Uri(scheme: 'tel', path: value));
   }
 
   void resetMapControlsState() {
@@ -190,7 +186,7 @@ class PoiCardActions extends _$PoiCardActions {
           latitude: minCoords.latitude,
           longitude: minCoords.longitude,
         ),
-        zoom: 18,
+        zoom: 17.3,
         tilt: cameraPosition?.tilt ?? 0,
         bearing: cameraPosition?.tilt ?? 0,
       ),

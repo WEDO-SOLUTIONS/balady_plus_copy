@@ -6,6 +6,7 @@ import 'package:mapness/_features/landing/providers/quick_filter_request_source_
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
+import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
@@ -72,26 +73,27 @@ class MapControls extends ConsumerWidget {
                       right: 12,
                       bottom: bottomPadding,
                     ),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const LayersControl(),
-                          const SizedBox(height: 8),
-                          const TrafficControl(),
-                          const Spacer(),
-                          const ZoomControl(),
-                          const Spacer(),
-                          const CompassControl(),
-                          const SizedBox(height: 8),
-                          ComplianceBuildingLegend(),
-                          const SizedBox(height: 8),
-                          const FollowControl(
-                            onlyFollowDirection: false,
-                          ),
-                        ],
-                      ),
+                    child: Row(
+                      children: [
+                        const IndoorControl(),
+                        const Spacer(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const LayersControl(),
+                            const SizedBox(height: 8),
+                            const TrafficControl(),
+                            const Spacer(),
+                            const ZoomControl(),
+                            const Spacer(),
+                            const CompassControl(),
+                            const SizedBox(height: 8),
+                            ComplianceBuildingLegend(),
+                            const SizedBox(height: 8),
+                            const FollowControl(),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),

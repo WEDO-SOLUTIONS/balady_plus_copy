@@ -15,6 +15,7 @@ import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 class MapQuickFilters extends ConsumerStatefulWidget {
@@ -91,6 +92,12 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         },
       ),
       onQuickFilterTap: (quickFilter) {
+        ref.read(urbiAnalyticsProvider).track(
+          'quickFilterSearch',
+          properties: {
+            'filter': quickFilter.name,
+          },
+        );
         ref.read(goRouterProvider).push(const SearchRoute(requestFocus: false).location);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);

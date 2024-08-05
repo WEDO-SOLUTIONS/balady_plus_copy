@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/dismissible/app_dismissible.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 
 class SearchHistoryCollapsible extends ConsumerStatefulWidget {
@@ -30,46 +31,30 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
   bool _collapsed = true;
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) => Dismissible(
-                key: ValueKey(widget.history[index].hashKey),
-                onDismissed: (direction) {
-                  widget.onDelete(widget.history[index]);
-                },
-                background: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: NonThemeColor.color50,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.filled(
-                      2,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Text(
-                          context.l10n.delete,
-                          style: context.textStyle.footNote.copyWith(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+  Widget build(BuildContext context) {
+    final hasManyResults = widget.history.length > 10;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          ListView.builder(
+            primary: false,
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, index) {
+              final isLastItem = index == widget.history.length - 1;
+              final isFirst = index == 0;
+              return AppDismissible(
+                isFirst: isFirst,
+                isLast: isLastItem,
+                onDismiss: () => widget.onDelete(widget.history[index]),
+                elementKey: ValueKey(widget.history[index].hashKey),
                 child: Material(
                   color: context.color.surfaceBaseSecondary,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(index == 0 ? CornerRadius.baseContainer : 0),
-                    bottom: index == widget.history.length - 1 && widget.history.length <= 10
-                        ? const Radius.circular(CornerRadius.baseContainer)
-                        : const Radius.circular(0),
+                    top: Radius.circular(index == 0 ? RadiusBorder.xl : 0),
+                    bottom: Radius.circular(isLastItem && !hasManyResults ? RadiusBorder.xl : 0),
                   ),
                   child: SearchTapHandler(
                     onTap: () => widget.onTap(widget.history[index]),
@@ -82,61 +67,67 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                         ),
                         title: widget.history[index].title,
                         subtitle: widget.history[index].address,
-                        dividerEnabled: index != widget.history.length - 1 || widget.history.length > 10,
+                        dividerEnabled: !isLastItem || hasManyResults,
                       ),
                     ),
                   ),
                 ),
+              );
+            },
+            itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
+          ),
+          if (hasManyResults) ...[
+            Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(start: 56),
+                child: Divider(
+                  thickness: 1,
+                  height: 2,
+                  color: context.color.surfaceBasePrimary,
+                ),
               ),
-              itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
             ),
-            if (widget.history.length > 10) ...[
-              Container(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 56),
-                  child: Divider(
-                    thickness: 1,
-                    height: 2,
-                    color: context.color.surfaceBasePrimary,
+            Material(
+              color: context.color.surfaceBaseSecondary,
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(RadiusBorder.xl),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: ContentRow(
+                  onTap: () => setState(() => _collapsed = !_collapsed),
+                  options: ContentRowOptions(
+                    leadingIcon: AppIcons(
+                      iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
+                      color: context.color.textAndIconsBaseSecondary,
+                      size: 24,
+                    ),
+                    title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
                   ),
                 ),
               ),
-              Material(
-                color: context.color.surfaceBaseSecondary,
-                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(CornerRadius.baseContainer)),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
-                  child: ContentRow(
-                    onTap: () => setState(() => _collapsed = !_collapsed),
-                    options: ContentRowOptions(
-                      leadingIcon: AppIcons(
-                        iconData: _collapsed ? SystemIcons.arrowCornerDownSmall : SystemIcons.arrowCornerUpSmall,
-                        color: context.color.textAndIconsBaseSecondary,
-                        size: 24,
-                      ),
-                      title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-            if (!_collapsed)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: Spacing.verticalPaddingInsideCell),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: AppButton(
-                        buttonColorScheme: ButtonColorScheme.tertiary,
-                        onTap: widget.onClear,
-                        primaryLabel: context.l10n.deleteHistory,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            ),
           ],
-        ),
-      );
+          if (!_collapsed)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: Spacing.$3x,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      buttonColorScheme: ButtonColorScheme.tertiary,
+                      onTap: widget.onClear,
+                      primaryLabel: context.l10n.deleteHistory,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }

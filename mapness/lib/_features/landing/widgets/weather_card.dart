@@ -49,6 +49,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
     final weatherData = ref.watch(forecastWeatherProvider);
     final conditionLabel = weatherData?.current?.condition?.text?.toString() ?? '-';
     final currentTemperature = weatherData?.current?.tempC?.toInt();
+    final gradient = [const Color(0xFF42B6E7), const Color(0xFF0B9EDE)];
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(RadiusBorder.xl),
@@ -64,57 +65,67 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
         child: SizedBox(
           height: 118,
           child: DecoratedBox(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF42B6E7), Color(0xFF0B9EDE)],
+                colors: context.isLTR ? gradient : gradient.reversed.toList(),
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Stack(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, start: Spacing.$4x),
-                        child: Text(
-                          '${currentTemperature ?? '-'}°',
-                          style: context.textStyleV3.h2Medium.copyWith(
-                            color: context.colorsV2.staticWhite,
-                          ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Transform(
+                        alignment: Alignment.center,
+                        transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                        child: SvgPicture.asset(
+                          'assets/images_svg/weather-sunny.svg',
+                          package: PackageConfig.packageName,
                         ),
                       ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
-                        child: Text(
-                          '$conditionLabel\n'
-                          '${context.l10n.weatherTemperature(
-                            highestTemperatures != 0 ? highestTemperatures.toInt() : '-',
-                            lowestTemperatures != double.infinity ? lowestTemperatures.toInt() : '-',
-                          )}',
-                          style: context.textStyleV3.captionLargeRegular.copyWith(
-                            color: context.colorsV2.staticWhite,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Transform(
-                    alignment: Alignment.center,
-                    transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
-                    child: SvgPicture.asset(
-                      'assets/images_svg/weather-sunny.svg',
-                      package: PackageConfig.packageName,
                     ),
-                  ),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, start: Spacing.$4x),
+                            child: Text(
+                              '${currentTemperature ?? '-'}°',
+                              style: context.textStyleV3.h2Medium.copyWith(
+                                color: context.colorsV2.staticWhite,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
+                            child: Text(
+                              '$conditionLabel\n'
+                              '${context.l10n.weatherTemperature(
+                                highestTemperatures != 0 ? highestTemperatures.toInt() : '-',
+                                lowestTemperatures != double.infinity ? lowestTemperatures.toInt() : '-',
+                              )}',
+                              style: context.textStyleV3.captionLargeRegular.copyWith(
+                                color: context.colorsV2.staticWhite,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
