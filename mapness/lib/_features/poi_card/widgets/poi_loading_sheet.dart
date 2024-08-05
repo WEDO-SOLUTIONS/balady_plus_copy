@@ -1,12 +1,13 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class PoiLoadingSheet extends StatelessWidget {
-  const PoiLoadingSheet({super.key});
+  final Function() onClose;
+
+  const PoiLoadingSheet({required this.onClose, super.key});
 
   @override
   Widget build(BuildContext context) => Material(
@@ -27,9 +28,7 @@ class PoiLoadingSheet extends StatelessWidget {
               Positioned(
                 right: 16,
                 top: 16,
-                child: CustomCloseButton(
-                  onClose: () => context.pop(),
-                ),
+                child: CustomCloseButton(onClose: onClose),
               ),
               Center(
                 child: Loading.medium(title: context.l10n.loading),
