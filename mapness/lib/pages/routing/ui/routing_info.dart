@@ -39,7 +39,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   @override
   void initState() {
     super.initState();
-    if (widget.points.any((element) => element != null)) {
+    if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
       unawaited(_calculateNavigationType(null));
     } else {
       final location = ref.read(locationProvider);
