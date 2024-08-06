@@ -39,16 +39,20 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   @override
   void initState() {
     super.initState();
-    final location = ref.read(locationProvider);
-    if (location != null) {
-      unawaited(_calculateNavigationType(location));
+    if (widget.points.any((element) => element != null)) {
+      unawaited(_calculateNavigationType(null));
     } else {
-      _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
-        if (next != null) {
-          _locationListener?.close();
-          unawaited(_calculateNavigationType(next));
-        }
-      });
+      final location = ref.read(locationProvider);
+      if (location != null) {
+        unawaited(_calculateNavigationType(location));
+      } else {
+        _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
+          if (next != null) {
+            _locationListener?.close();
+            unawaited(_calculateNavigationType(next));
+          }
+        });
+      }
     }
   }
 
