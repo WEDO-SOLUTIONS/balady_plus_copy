@@ -143,17 +143,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         'data': RouteSearchOptionsMessageExt.fromString(type!),
         'restoreFromState': true,
       };
-      final location = ref.read(locationProvider);
-      if (location != null) {
-        ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
-      } else {
-        _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
-          if (next != null) {
-            _locationListener?.close();
-            ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
-          }
-        });
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final location = ref.read(locationProvider);
+        if (location != null) {
+          ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+        } else {
+          _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
+            if (next != null) {
+              _locationListener?.close();
+              ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+            }
+          });
+        }
+      });
     }
   }
 
