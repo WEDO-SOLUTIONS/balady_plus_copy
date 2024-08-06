@@ -74,7 +74,13 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheet> with Wi
                 assetImage: 'assets/images_svg/lost_location.svg',
                 package: PackageConfig.packageName,
                 onRetry: () async {
-                  await openAppSettings();
+                  final permissionStatus = await Permission.location.status;
+
+                  if (permissionStatus.isPermanentlyDenied) {
+                    await openAppSettings();
+                  } else if (!permissionStatus.isGranted) {
+                    await Permission.location.request();
+                  }
                 },
               ),
             ),

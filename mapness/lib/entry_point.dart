@@ -140,7 +140,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         'data': RouteSearchOptionsMessageExt.fromString(type!),
         'restoreFromState': true,
       };
-      ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+      await Future.delayed(Duration.zero, () {
+        ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+      });
     }
   }
 
@@ -158,9 +160,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       _debugOverlay = OverlayEntry(
         builder: (context) => Theme(
           data: Theme.of(context),
-          child: ProviderScope(
-            parent: ProviderScope.containerOf(context),
-            child: const DebugOverlay(),
+          child: const ProviderScope(
+            child: DebugOverlay(),
           ),
         ),
       );

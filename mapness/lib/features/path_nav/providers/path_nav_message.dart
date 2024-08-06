@@ -16,13 +16,10 @@ class _PathNavMessage extends _$PathNavMessage {
   PathNavMessage? build() {
     final mapController = ref.watch(dgisControllerProvider);
 
-    subscription =
-        mapController.value?.naviMessageController.events.listen((event) {
-      subscription =
-          mapController.value?.naviMessageController.events.listen((event) {
-        state = event.state.getNaviMessage();
-      });
+    subscription = mapController.value?.naviMessageController.events.listen((event) {
+      state = event.state.getNaviMessage();
     });
+
     ref.onDispose(() {
       subscription?.cancel();
     });
