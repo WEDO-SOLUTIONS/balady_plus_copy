@@ -7,6 +7,7 @@ import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
@@ -97,19 +98,25 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     final state = base64.decode(
       ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!,
     );
-    await dgisController.restoreNavigationState(
-      state,
-      SpeedRangeZoom(
-        maxSpeedRange: 5,
-        minSpeedRange: 0,
-        routeDistanceMillimeters: 0,
-        styleZoomValue: 16.5,
-      ),
-    );
+    try {
+      await dgisController.restoreNavigationState(
+        state,
+        SpeedRangeZoom(
+          maxSpeedRange: 5,
+          minSpeedRange: 0,
+          routeDistanceMillimeters: 0,
+          styleZoomValue: 16.5,
+        ),
+      );
+    } catch (e) {
+      await clearNavigationState();
+      context.pop();
+    }
   }
 
   Future<void> clearNavigationState() async {
     await ref.read(sharedPrefsProvider).remove(MapnessConstants.navigatorStateKey);
+    await ref.read(sharedPrefsProvider).remove(MapnessConstants.navigatorStateTypeKey);
   }
 
   Future<void> _initNavigation() async {
