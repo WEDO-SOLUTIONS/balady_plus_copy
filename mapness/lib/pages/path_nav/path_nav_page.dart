@@ -55,7 +55,7 @@ class PathNavPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => PathNavPageState();
 }
 
-class PathNavPageState extends ConsumerState<PathNavPage> {
+class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
   late StreamSubscription? _naviEventsListener;
@@ -65,8 +65,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   final _expansionNotifier = ValueNotifier<bool>(false);
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      saveNavigationState();
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initNavigation();
     WakelockPlus.enable();
   }
@@ -79,6 +87,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _naviEventsListener?.cancel();
     WakelockPlus.disable();
     super.dispose();
