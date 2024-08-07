@@ -135,18 +135,15 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
       group: MetricsConstants.routesTag,
       action: MetricAction.tap.toString(),
     );
-    var newIndex_ = newIndex;
 
     /// According to the [ReorderableListView] documentation
     /// https://api.flutter.dev/flutter/material/ReorderableListView-class.html
-    if (oldIndex < newIndex_) {
-      newIndex_ -= 1;
-    }
+    final currentIndex = newIndex > oldIndex ? newIndex - 1 : newIndex;
 
     setState(() {
-      _swap(points, oldIndex, newIndex_);
-      _swap(pointsModels, oldIndex, newIndex_);
-      _swap(labels, oldIndex, newIndex_);
+      _swap(points, oldIndex, currentIndex);
+      _swap(pointsModels, oldIndex, currentIndex);
+      _swap(labels, oldIndex, currentIndex);
     });
   }
 
