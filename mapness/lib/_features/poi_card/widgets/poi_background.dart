@@ -27,8 +27,13 @@ class PoiBackground extends StatelessWidget {
 
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: opacity > 0.5 ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-            child: ColoredBox(
-              color: Color.fromRGBO(20, 20, 20, opacity),
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              child: IgnorePointer(
+                child: ColoredBox(
+                  color: Color.fromRGBO(20, 20, 20, opacity),
+                ),
+              ),
             ),
           );
         },
