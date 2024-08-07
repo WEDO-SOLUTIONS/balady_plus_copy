@@ -1,10 +1,8 @@
 import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_bottom_sheet_config.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photos_row.dart';
 
@@ -13,54 +11,62 @@ const _photosHeightDelta = 68.0;
 
 class PoiPhotosHeader extends ConsumerWidget {
   const PoiPhotosHeader({
-    required this.bottomSheetAspectRatio,
     required this.objectId,
     super.key,
   });
 
-  final ValueListenable<double> bottomSheetAspectRatio;
   final int objectId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final photos = ref.watch(poiPhotoProvider(objectId));
-    final maxHeight = (MediaQuery.sizeOf(context).height - MediaQuery.paddingOf(context).vertical) * 0.2 - 20;
     final isPhotosNotEmpty = !photos.hasValue || photos.requireValue.items.isEmpty;
-    return ValueListenableBuilder(
-      valueListenable: bottomSheetAspectRatio,
-      builder: (context, aspectRatio, child) {
-        final height = _minPhotosHeight + (aspectRatio * _photosHeightDelta);
 
-        var opacity = 1.0;
-        if (aspectRatio < PoiBottomSheetConfig.lowerAspectRatio) {
-          opacity =
-              (aspectRatio - PoiBottomSheetConfig.fadeAspectRatioDelta) / PoiBottomSheetConfig.fadeAspectRatioDelta -
-                  PoiBottomSheetConfig.fadeAspectRatioDelta * 10;
-        }
+    return _HeaderComponent(
+      isPhotosNotEmpty: isPhotosNotEmpty,
+      objectId: objectId,
+    );
+  }
+}
 
-        final isInFadeDelta = aspectRatio > PoiBottomSheetConfig.middleAspectRatio &&
-            aspectRatio <= PoiBottomSheetConfig.middleAspectRatio + PoiBottomSheetConfig.fadeAspectRatioDelta;
-        if (isInFadeDelta) {
-          opacity =
-              (1 - aspectRatio - PoiBottomSheetConfig.fadeAspectRatioDelta) / PoiBottomSheetConfig.fadeAspectRatioDelta;
-        }
-        if (aspectRatio > PoiBottomSheetConfig.middleAspectRatio + PoiBottomSheetConfig.fadeAspectRatioDelta) {
-          opacity = 0.0;
-        }
-        return Opacity(
-          opacity: opacity.clamp(0, 1),
-          child: SizedBox(
-            height: isPhotosNotEmpty ? 0.0 : min(height, maxHeight),
-            child: child,
-          ),
+class _HeaderComponent extends BottomSheetComponentWidget<BottomSheetState> {
+  final bool isPhotosNotEmpty;
+  final int objectId;
+
+  const _HeaderComponent({
+    required this.isPhotosNotEmpty,
+    required this.objectId,
+  }) : super(
+          defaultState: BottomSheetState.halfOpen,
         );
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          bottom: Spacing.$3x,
-        ),
-        child: PoiPhotosRow(
-          objectId: objectId,
+
+  @override
+  Widget build(BuildContext context, BottomSheetState state, double interpolation) {
+    final maxHeight = (MediaQuery.sizeOf(context).height - MediaQuery.paddingOf(context).vertical) * 0.2 - 20;
+    final opacity = switch (state) {
+      BottomSheetState.hidden => interpolation * 2 - 1,
+      BottomSheetState.halfOpen => 1.0,
+      BottomSheetState.open => 1 - interpolation * 2,
+      BottomSheetState.expanded => 0.0,
+    };
+    final height = switch (state) {
+      BottomSheetState.hidden => _minPhotosHeight,
+      BottomSheetState.halfOpen => _minPhotosHeight + (interpolation * _photosHeightDelta),
+      BottomSheetState.open => _minPhotosHeight + _photosHeightDelta,
+      BottomSheetState.expanded => 0.0,
+    };
+
+    return Opacity(
+      opacity: opacity.clamp(0, 1),
+      child: SizedBox(
+        height: isPhotosNotEmpty ? 0.0 : min(height, maxHeight),
+        child: Padding(
+          padding: const EdgeInsets.only(
+            bottom: Spacing.$3x,
+          ),
+          child: PoiPhotosRow(
+            objectId: objectId,
+          ),
         ),
       ),
     );
