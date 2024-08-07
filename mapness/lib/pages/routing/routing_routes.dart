@@ -170,7 +170,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       shape: shape,
       context: context,
       builder: (context) => ChangePathSheet(
-        onConfirm: onConfirm,
+        onConfirm: _onConfirm,
         onTap: () {
           // Don't want to pass ref to the sheet, so we have to clear the search results here
           ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
@@ -188,7 +188,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   /// Confirm the reordering of the points. Also close the bottom sheet
-  void onConfirm(
+  void _onConfirm(
     List<RouteParamsPoint?> points,
     List<String> labels,
   ) {
@@ -230,6 +230,4 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         const RoutingRoute().pushReplacement(context);
     }
   }
-
-  void updatePoints(List<RouteParamsPoint?> points) {}
 }
