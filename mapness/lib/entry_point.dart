@@ -121,7 +121,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
       // Init camera position point
       initCameraPositionPoint();
-      restoreState();
+      // TODO(Scroollocker): Disable this feature. Because need to research fail restore cases
+      // restoreState();
       clearCache();
     });
   }
