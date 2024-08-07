@@ -37,6 +37,7 @@ import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
@@ -107,6 +108,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
+  ProviderSubscription? _locationListener;
 
   @override
   void initState() {
@@ -127,6 +129,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   @override
   void dispose() {
     _linkSubscription?.cancel();
+    _locationListener?.close();
 
     super.dispose();
   }
@@ -140,7 +143,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         'data': RouteSearchOptionsMessageExt.fromString(type!),
         'restoreFromState': true,
       };
-      ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final location = ref.read(locationProvider);
+        if (location != null) {
+          ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+        } else {
+          _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
+            if (next != null) {
+              _locationListener?.close();
+              ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+            }
+          });
+        }
+      });
     }
   }
 
@@ -158,9 +173,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       _debugOverlay = OverlayEntry(
         builder: (context) => Theme(
           data: Theme.of(context),
-          child: ProviderScope(
-            parent: ProviderScope.containerOf(context),
-            child: const DebugOverlay(),
+          child: const ProviderScope(
+            child: DebugOverlay(),
           ),
         ),
       );
