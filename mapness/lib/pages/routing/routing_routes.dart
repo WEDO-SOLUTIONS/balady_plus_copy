@@ -9,16 +9,13 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
-import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -29,14 +26,14 @@ import 'package:mapness/widgets/routing/ui_kit/ab_point/ab_points.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class RoutingRoutesPage extends ConsumerStatefulWidget {
+  final List<RouteParamsPoint?> points;
+  final List<String> labels;
+
   const RoutingRoutesPage({
     required this.points,
     required this.labels,
     super.key,
   });
-
-  final List<RouteParamsPoint?> points;
-  final List<String> labels;
 
   @override
   ConsumerState<RoutingRoutesPage> createState() => _RoutingRoutesPageState();
@@ -174,7 +171,10 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       context: context,
       builder: (context) => ChangePathSheet(
         onConfirm: onConfirm,
-        onTap: onTap,
+        onTap: () {
+          // Don't want to pass ref to the sheet, so we have to clear the search results here
+          ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
+        },
         // We need to pass the points and labels as copy (List.of) to manipulate the data and
         // change original data only when user confirms
         points: List.of(points),
@@ -229,37 +229,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       default:
         const RoutingRoute().pushReplacement(context);
     }
-  }
-
-  void onTap(int index) {
-    Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
-        group: MetricsConstants.routesTag,
-        action: MetricAction.tap.toString(),
-        props: {
-          'isMyLocation': labels[index] == context.l10n.myLocation,
-        });
-
-    ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
-
-    RoutingSearchRoute(
-      placeholder: index == 0 ? context.l10n.from : context.l10n.to,
-      showMyLocation: labels[index] == context.l10n.myLocation,
-    ).push(context).then(
-      (value) {
-        if (value != null && value is RoutePoint) {
-          final newPoint = RouteParamsPoint(
-            latitude: value.latitude!,
-            longitude: value.longitude!,
-            objectId: value.objectId,
-            entranceId: value.entranceId,
-            levelId: value.levelId,
-          );
-          points[index] = newPoint;
-          labels[index] = value.title(context.l10n) ?? labels[index];
-          updatePoints(points);
-        }
-      },
-    );
   }
 
   void updatePoints(List<RouteParamsPoint?> points) {}
