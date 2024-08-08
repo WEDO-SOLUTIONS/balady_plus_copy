@@ -138,27 +138,25 @@ class PoiHeader extends ConsumerWidget {
                             curve: Curves.easeInOut,
                             child: expansion != Expansion.hidden ? child : const SizedBox.shrink(),
                           ),
-                          child: expansionState.value != Expansion.fullHidePhoto
-                              ? Row(
-                                  children: [
-                                    Text(
-                                      subTitle,
-                                      style: subTitleTextStyle,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.start,
-                                    ),
-                                    if (subtitleIcon != null) ...[
-                                      const SizedBox(width: Spacing.$1x),
-                                      Icon(
-                                        subtitleIcon,
-                                        color: context.color.textAndIconsBaseSecondary,
-                                        size: 24,
-                                      )
-                                    ]
-                                  ],
+                          child: Row(
+                            children: [
+                              Text(
+                                subTitle,
+                                style: subTitleTextStyle,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.start,
+                              ),
+                              if (subtitleIcon != null) ...[
+                                const SizedBox(width: Spacing.$1x),
+                                Icon(
+                                  subtitleIcon,
+                                  color: context.color.textAndIconsBaseSecondary,
+                                  size: 24,
                                 )
-                              : null,
+                              ]
+                            ],
+                          ),
                         ),
                       ],
                     ),
