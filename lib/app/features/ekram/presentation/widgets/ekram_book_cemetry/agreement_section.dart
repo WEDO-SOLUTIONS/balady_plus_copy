@@ -204,7 +204,7 @@ class DeceasedInfo extends StatelessWidget {
               const CustomVerticalSpace(height: 16),
               FieldData(
                 title: ("sex").tr(),
-                subTitle: state.gender == 2 ? ("female").tr() : ("male").tr(),
+                subTitle: state.gender == 'FEMALE' ? ("female").tr() : ("male").tr(),
               ),
               const CustomVerticalSpace(height: 16),
               FieldData(

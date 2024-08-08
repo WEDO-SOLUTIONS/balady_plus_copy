@@ -11,7 +11,7 @@ class BookCemetryParamas {
   int? prayId;
   int? nationalityId;
   bool? isMuslim;
-  int? gender;
+  String? gender;
 
   int burialCityId;
   String burialDate;
@@ -22,7 +22,7 @@ class BookCemetryParamas {
   bool isPandemicDeath;
   String? relationship;
   bool fetus;
-  int graveTypeId;
+  int? graveTypeId;
   String? prayOther;
   BookCemetryParamas({
     required this.firstName,
@@ -61,11 +61,7 @@ class BookCemetryParamas {
           "birthDate": birthDate,
           "nationalityId": nationalityId,
           "isMuslim": isMuslim,
-          "gender": gender == 1
-              ? "MALE"
-              : gender == 2
-                  ? "FEMALE"
-                  : null,
+          "gender": gender,
         },
         "applicantInfo": {"relationshipOthers": relationship},
         "burialInfo": {

@@ -33,6 +33,7 @@ class DeceasedInfoDto extends Equatable {
   final LookUpItem? selectedTime;
   final String? otherTimeName;
   final String? deceassedId;
+  final int? identityType;
   final String? deceassedDOBGorgian;
   final String? deceassedDOBHijri;
   final UserInfoResponse? userInfoResponse;
@@ -64,6 +65,7 @@ class DeceasedInfoDto extends Equatable {
     this.selectedTime,
     this.otherTimeName,
     this.deceassedId,
+    this.identityType,
     this.deceassedDOBGorgian,
     this.deceassedDOBHijri,
     this.userInfoResponse,
