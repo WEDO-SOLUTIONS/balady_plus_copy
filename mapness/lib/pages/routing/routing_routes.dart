@@ -160,6 +160,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
   /// On tap of the ABPoints widget, show the bottom sheet to change the route
   void _changeRoute() {
+    final myLocation = ref.watch(locationProvider);
     const shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(Spacing.$4x),
@@ -171,6 +172,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       context: context,
       builder: (context) => ChangePathSheet(
         onConfirm: _onConfirm,
+        myLocation: myLocation,
         onTap: () {
           // Don't want to pass ref to the sheet, so we have to clear the search results here
           ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();

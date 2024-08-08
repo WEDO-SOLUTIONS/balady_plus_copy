@@ -1,5 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/routes/routing.dart';
@@ -22,6 +23,7 @@ class ChangePathSheet extends StatefulWidget {
   final List<String> labels;
   final VoidCallback onClose;
   final BuildContext externalContext;
+  final GeoPointMessage? myLocation;
   const ChangePathSheet({
     required this.onConfirm,
     required this.onTap,
@@ -29,6 +31,7 @@ class ChangePathSheet extends StatefulWidget {
     required this.labels,
     required this.onClose,
     required this.externalContext,
+    required this.myLocation,
     super.key,
   });
 
@@ -38,33 +41,32 @@ class ChangePathSheet extends StatefulWidget {
 
 class _ChangePathSheetState extends State<ChangePathSheet> {
   final pointsModels = <ABRouteModel>[];
-  final points = <RouteParamsPoint?>[];
-  final labels = <String>[];
+  late final List<RouteParamsPoint?> points;
+  late final List<String> labels;
   @override
   void initState() {
     super.initState();
-    points
-      ..clear()
-      ..addAll(widget.points);
-    labels
-      ..clear()
-      ..addAll(widget.labels);
+    points = widget.points;
+    labels = widget.labels;
     _updatePoints();
   }
 
   void _updatePoints() {
     pointsModels.clear();
+    final ctx = widget.externalContext;
     for (int i = 0; i < points.length; i++) {
-      final labelForMyLocation = labels[i] == widget.externalContext.l10n.myLocation;
+      final labelForMyLocation = labels[i] == ctx.l10n.myLocation;
       final icon = labelForMyLocation
-          ? widget.externalContext.isLTR
+          ? ctx.isLTR
               ? TransportIcons.locationFullLTR
               : TransportIcons.locationFullLTR
           : GeneralIcons.bulletCircleSolid;
-      final color =
-          i == 0 ? widget.externalContext.colorsV2.successActive : widget.externalContext.colorsV2.accentActive;
+      final color = i == 0 ? ctx.colorsV2.successActive : ctx.colorsV2.accentActive;
       pointsModels.add(
-        ABRouteModel(title: labels[i], icon: Icon(icon, color: color)),
+        ABRouteModel(
+          title: labels[i],
+          icon: Icon(icon, color: color),
+        ),
       );
     }
   }
@@ -159,38 +161,48 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
   ///
   /// Here we can change the location of the points
   Future<void> _onTap(int index) async {
+    final l10n = widget.externalContext.l10n;
     Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
         group: MetricsConstants.routesTag,
         action: MetricAction.tap.toString(),
         props: {
-          'isMyLocation': labels[index] == context.l10n.myLocation,
+          'isMyLocation': labels[index] == l10n.myLocation,
         });
 
     // Callback from the parent widget on tap
     widget.onTap();
 
-    final isMyLocation = labels[index] == context.l10n.myLocation;
+    final isMyLocation = labels[index] == l10n.myLocation;
+    final isContainsMyLocation = labels.contains(l10n.myLocation);
 
     // Show the search route screen and get new value from it
     final value = await RoutingSearchRoute(
-      placeholder: index == 0 ? context.l10n.from : context.l10n.to,
-      showMyLocation: isMyLocation,
+      placeholder: index == 0 ? l10n.from : l10n.to,
+      showMyLocation: !isMyLocation && !isContainsMyLocation,
     ).push(context);
 
     if (value != null && value is RoutePoint) {
-      final newPoint = RouteParamsPoint(
-        latitude: value.latitude!,
-        longitude: value.longitude!,
-        objectId: value.objectId,
-        entranceId: value.entranceId,
-        levelId: value.levelId,
-      );
-      points[index] = newPoint;
-      labels[index] = value.title(context.l10n) ?? labels[index];
-      _updatePoints();
+      var latitude = value.latitude;
+      var longitude = value.longitude;
+      if (value is RoutePointMyLocation && widget.myLocation != null) {
+        latitude = widget.myLocation!.latitude;
+        longitude = widget.myLocation!.longitude;
+      }
+      if (longitude != null && latitude != null) {
+        final newPoint = RouteParamsPoint(
+          latitude: latitude,
+          longitude: longitude,
+          objectId: value.objectId,
+          entranceId: value.entranceId,
+          levelId: value.levelId,
+        );
+        points[index] = newPoint;
+        labels[index] = value.title(l10n) ?? labels[index];
+        _updatePoints();
 
-      // Don't use setState in [_updatePoints] because it will cause an error during the initState
-      setState(() {});
+        // Don't use setState in [_updatePoints] because it will cause an error during the initState
+        setState(() {});
+      }
     }
   }
 }
