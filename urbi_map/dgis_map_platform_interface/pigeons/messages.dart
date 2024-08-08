@@ -1051,6 +1051,29 @@ class SpeedRangeZoom {
   final double styleZoomValue;
 }
 
+/// Represents the types of sound toggles.
+///
+/// The [SoundToggleType] enum defines three types of sound toggles:
+/// - [none]: Represents no sound toggle.
+/// - [important]: Represents an important sound toggle.
+/// - [all]: Represents all sound toggle.
+enum SoundToggleType {
+  /// Represents no sound toggle.
+  none,
+
+  /// Represents an important sound toggle.
+  important,
+
+  /// Represents all sound toggle.
+  all,
+}
+
+enum AudioVolume {
+  standard,
+  low,
+  minimal,
+}
+
 /// Settings for better route searching
 /// [routeSearchDelay] - delay (in seconds) before searching for alternative routes when starting a trip on a route or after switching
 /// to another route. Must be not less than 5 seconds
@@ -1368,7 +1391,13 @@ abstract class MapApi {
   void setPublicTransportActiveRoute(int routeIndex);
 
   @async
-  void toggleSound(bool enabled);
+  void toggleSound(SoundToggleType toggleType);
+
+  @async
+  void muteSound(bool mute);
+
+  @async
+  void setVolume(AudioVolume volume);
 
   @async
   void onTrafficAndParkingAttached();
@@ -1424,6 +1453,9 @@ abstract class MapApi {
 
   @async
   void setNavigatorVoice(String id);
+
+  @async
+  void toggleSounds(bool enabled);
 
   @async
   bool toggleHeatmap(WeatherMapMessage message);

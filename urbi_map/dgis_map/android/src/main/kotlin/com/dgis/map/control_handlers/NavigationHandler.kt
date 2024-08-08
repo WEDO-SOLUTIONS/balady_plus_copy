@@ -10,6 +10,7 @@ import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.BetterRouteResponseMessage
 import com.dgis.map.map_api.Messages.BetterRouteSettingsMessage
 import com.dgis.map.map_api.Messages.Result
+import com.dgis.map.map_api.Messages.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.ScreenSize
@@ -144,10 +145,15 @@ class NavigationHandler(
         betterRouteCloseable.close()
     }
 
-    fun toggleSounds(enabled: Boolean) {
-        dashboardControlModel.toggleSounds(enabled)
+    fun toggleSounds(toggleType: SoundToggleType) {
+        dashboardControlModel.toggleSounds(toggleType)
     }
-
+    fun setVolume(volume: Messages.AudioVolume) {
+        dashboardControlModel.setVolume(volume)
+    }
+    fun muteSound( mute: Boolean) {
+        dashboardControlModel.muteSound(mute)
+    }
     fun setNavigatorVoice(id: String, result: Messages.Result<Void>?) {
         navigationManager.voiceSelector.voice = voicesManager.voices.firstOrNull { it.id == id }?.navigationVoice
         result?.success(null)

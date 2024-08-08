@@ -1,11 +1,16 @@
 package com.dgis.map.control_handlers.navigation_controls;
 
+import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.Messages.AudioVolume
+import com.dgis.map.map_api.Messages.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.navigation.Model
 import ru.dgis.sdk.navigation.NavigationManager
 import ru.dgis.sdk.navigation.SoundCategory
 import ru.dgis.sdk.navigation.duration
+import ru.dgis.sdk.navigation.mute
+import ru.dgis.sdk.navigation.notificationVolume
 import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.meters
 import ru.dgis.sdk.routing.minus
@@ -57,12 +62,23 @@ class DashboardControlModel(
             )
         )
     }
-    
-    fun toggleSounds(enabled: Boolean) {
-        if (enabled) {
-            this.navigationManager.soundNotificationSettings.enabledSoundCategories = EnumSet.allOf(SoundCategory::class.java)
-        } else {
-            this.navigationManager.soundNotificationSettings.enabledSoundCategories = EnumSet.noneOf(SoundCategory::class.java);
+
+    fun setVolume(volume: Messages.AudioVolume) {
+        this.navigationManager.soundNotificationSettings.notificationVolume = ru.dgis.sdk.navigation.AudioVolume.valueOf(volume.name)
+    }
+    fun muteSound(mute: Boolean) {
+        this.navigationManager.soundNotificationSettings.mute = mute
+
+    }
+    fun toggleSounds(toggleType: SoundToggleType) {
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories = soundToggleMapper(toggleType)
+    }
+
+    private fun soundToggleMapper(toggleType: SoundToggleType): EnumSet<SoundCategory> {
+     return when (toggleType) {
+            SoundToggleType.NONE -> EnumSet.noneOf(SoundCategory::class.java)
+            SoundToggleType.ALL -> EnumSet.allOf(SoundCategory::class.java)
+            SoundToggleType.IMPORTANT -> EnumSet.of(SoundCategory.NO_STOPPING_CONTROL_CAMERAS, SoundCategory.ACCIDENTS)
         }
     }
 

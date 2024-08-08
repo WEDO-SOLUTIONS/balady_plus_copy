@@ -718,8 +718,16 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.stopFreeRoam();
   }
 
-  Future<void> toggleSound({required bool enabled}) {
-    return _api.toggleSound(enabled);
+  Future<void> toggleSound({required SoundToggleType toggleType}) {
+    return _api.toggleSound(toggleType);
+  }
+
+  Future<void> setVolume({required AudioVolume volume}) {
+    return _api.setVolume(volume);
+  }
+
+  Future<void> muteSound({required bool mute}) {
+    return _api.muteSound(mute);
   }
 
   Future<void> onTrafficAndParkingAttached() {

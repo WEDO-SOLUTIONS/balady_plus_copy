@@ -501,7 +501,8 @@ class DgisMapController {
   Future<void> stopNavigation() => _instance.stopNavigation();
 
   /// Controls sounds in navigation.
-  Future<void> toggleSound({required bool enabled}) => _instance.toggleSound(enabled: enabled);
+  Future<void> toggleSound({required SoundToggleType toggleType}) =>
+      _instance.toggleSound(toggleType: toggleType);
 
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
@@ -583,7 +584,6 @@ class DgisMapController {
 
   ///Set map attribute bool
   Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
-  rVoice(String id) => _instance.setNavigatorVoice(id);
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {
