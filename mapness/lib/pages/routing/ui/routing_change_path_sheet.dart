@@ -51,7 +51,12 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     _updatePoints();
   }
 
+  // Update [pointsModels] list with the new values from [points] and [labels]
   void _updatePoints() {
+    // In async gap we have to check if the widget is mounted to use the context
+    if (!widget.externalContext.mounted) {
+      return;
+    }
     pointsModels.clear();
     final ctx = widget.externalContext;
     for (int i = 0; i < points.length; i++) {
@@ -161,6 +166,10 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
   ///
   /// Here we can change the location of the points
   Future<void> _onTap(int index) async {
+    // In async gap we have to check if the widget is mounted to use the context
+    if (!widget.externalContext.mounted) {
+      return;
+    }
     final l10n = widget.externalContext.l10n;
     Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
         group: MetricsConstants.routesTag,
