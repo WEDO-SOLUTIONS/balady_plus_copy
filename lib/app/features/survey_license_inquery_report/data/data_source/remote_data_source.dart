@@ -40,7 +40,6 @@ class SurveyInqueryRemoteDataSourceImplementation
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      // "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -50,8 +49,6 @@ class SurveyInqueryRemoteDataSourceImplementation
         dioError: error,
       );
     } catch (ex) {
-      // "Catched $ex".errorLog();
-
       if (ex is ServerException) {
         rethrow;
       } else {

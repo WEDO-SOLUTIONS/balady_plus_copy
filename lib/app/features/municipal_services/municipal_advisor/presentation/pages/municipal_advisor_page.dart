@@ -52,7 +52,7 @@ class _MunicipalAdvisorPageState extends State<MunicipalAdvisorPage> {
         child: const Column(
           children: [
             EmptyChat(),
-            ChatList(),
+            Expanded(child: ChatList()),
             SizedBox(
               height: 30,
             )
