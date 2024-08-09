@@ -429,27 +429,6 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  Future<void> toggleJoyParks() async {
-    final layers = ref.watch(layersControlsProvider.notifier);
-    final currentState = state.selectedType;
-    await viewPortSubscription?.cancel();
-
-    if (currentState == LayerType.joy) {
-      await ref
-          .read(mapObjectManagerProvider(
-            named: esriMapObjectSettings.name,
-            layerId: esriMapObjectSettings.layerId,
-          ).notifier)
-          .removeAllMarkers();
-      layers
-        ..setSelection()
-        ..update(isLoading: false);
-    } else {
-      setSelection(selectedType: LayerType.joy);
-      await _showJoyParks();
-    }
-  }
-
   MapRequestParams _createParams(
     VisibleRect visibleRect,
     LayerType layer,
@@ -719,10 +698,6 @@ class LayersControls extends _$LayersControls {
       ref.read(cameraPositionProvider),
       ref.read(cameraPositionProvider.notifier).animateTo,
     );
-  }
-
-  Future<void> _showJoyParks() async {
-    // TODO: Implement showing closest joy park in future tasks
   }
 
   void onError() {
