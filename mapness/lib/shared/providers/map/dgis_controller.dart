@@ -8,6 +8,7 @@ import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -48,7 +49,7 @@ class DgisController extends _$DgisController {
     await controller.initialize();
 
     // Styles
-    await controller.loadStyles('assets/maps/styles/common-styles.2gis');
+    await controller.loadStyles('assets/maps/styles/_common-styles.2gis');
 
     // Appearance
     await controller.setZoomRestrictions(
@@ -106,7 +107,7 @@ class DgisController extends _$DgisController {
       }
 
       if (locationPermission.isGranted) {
-        await controller.onLocationPremissionGranted(
+        await controller.onLocationPermissionGranted(
           desiredAccuracy: DesiredAccuracyMessage.high,
         );
       }
@@ -142,6 +143,9 @@ class DgisController extends _$DgisController {
   }
 
   void _listenVisibleRectangle(VisibleRectEvent event) {
+    ref.read(urbiAnalyticsProvider).track(
+          'mapInteraction',
+        );
     if (!_visibleRectSubject.isClosed) {
       _visibleRectSubject.add(event);
     }

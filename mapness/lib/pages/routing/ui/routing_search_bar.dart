@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:provider/provider.dart';
 
@@ -60,7 +62,7 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
       }
     });
     return BaladySearchWithBackButton(
-      searchInput: BaladyInput.search(
+      searchInput: BaladyInput.searchV2(
         focusNode: _focusNode,
         onChanged: (query) {
           Metrics.logEventAdvanced(
@@ -88,6 +90,10 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
         },
         controller: _controller,
         hintText: widget.placeholder,
+        fillColor: context.colorsV2.neutralContainerDefault,
+        hintColor: context.colorsV2.foregroundSoft,
+        textFieldHeight: 40,
+        textStyle: context.textStyleV3.bodySmallRegular,
       ),
       onBackButtonPressed: () {
         Metrics.logEventAdvanced(
@@ -95,8 +101,10 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
           group: MetricsConstants.routesTag,
           action: MetricAction.tap.toString(),
         );
+        FocusScope.of(context).unfocus();
         context.pop();
       },
+      backButtonLabel: context.l10n.cancel,
     );
   }
 }

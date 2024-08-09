@@ -621,7 +621,7 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun startNavigation(result: Messages.Result<Void>?) {
+    override fun startNavigation(speedRangeZoom: SpeedRangeZoom, result: Messages.Result<Void>?) {
         val routeHandler = routeHandler ?: kotlin.run {
             result?.error(Exception("RouteHandler not initialized"))
             return
@@ -631,11 +631,12 @@ class DgisMapView(
                 finishPoint = routeHandler.finishPoint,
                 options = routeHandler.options,
                 route = routeHandler.selectedRoute,
+                speedRangeZoom = speedRangeZoom,
                 result = result
         )
     }
 
-    override fun startNavigationSimulation(result: Messages.Result<Void>?) {
+    override fun startNavigationSimulation(speedRangeZoom: SpeedRangeZoom, result: Messages.Result<Void>?) {
         val routeHandler = routeHandler ?: kotlin.run {
             result?.error(Exception("RouteHandler not initialized"))
             return
@@ -645,7 +646,20 @@ class DgisMapView(
                 finishPoint = routeHandler.finishPoint,
                 options = routeHandler.options,
                 route = routeHandler.selectedRoute,
+                speedRangeZoom = speedRangeZoom,
                 result = result
+        )
+    }
+
+    override fun saveNavigationState(result: Messages.Result<ByteArray>?) {
+        navigationHandler.saveNavigationState(result = result)
+    }
+
+    override fun restoreNavigationState(state: ByteArray, speedRangeZoom: SpeedRangeZoom, result: Messages.Result<Void>?) {
+        navigationHandler.restoreNavigationState(
+            state = state,
+            speedRangeZoom = speedRangeZoom,
+            result = result
         )
     }
 
@@ -692,7 +706,7 @@ class DgisMapView(
         )
     }
 
-    override fun onLocationPremissionGranted(
+    override fun onLocationPermissionGranted(
             desiredAccuracy: DesiredAccuracyMessage,
             result: Messages.Result<Void>?
     ) {

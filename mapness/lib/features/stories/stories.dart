@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
@@ -10,6 +11,7 @@ import 'package:mapness/features/stories/presentation/frame/dismissible_overlay.
 import 'package:mapness/features/stories/presentation/stories_fullscreen.dart';
 import 'package:mapness/features/stories/presentation/story_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/routing/bottom_nav_bar_mapper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'helper/locale_helper.dart';
@@ -35,22 +37,24 @@ class Stories {
 
   static void showStory(BuildContext context, Widget storyWidget) {
     _overlayEntry = OverlayEntry(
-      builder: (_) => StoryLocalizations(
-        locale: context.l10n,
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: ProviderScope(
-            parent: ProviderScope.containerOf(context),
-            child: Theme(
-              data: Theme.of(context),
-              child: Consumer(
-                builder: (context, ref, child) => DismissibleTransition(
-                  key: _transitionState,
-                  onDismiss: () {
-                    ref.read(storyServiceProvider.notifier).resumeUpdate();
-                    _hide();
-                  },
-                  child: storyWidget,
+      builder: (_) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: StoryLocalizations(
+          locale: context.l10n,
+          child: Directionality(
+            textDirection: Directionality.of(context),
+            child: ProviderScope(
+              child: Theme(
+                data: Theme.of(context),
+                child: Consumer(
+                  builder: (context, ref, child) => DismissibleTransition(
+                    key: _transitionState,
+                    onDismiss: () {
+                      ref.read(storyServiceProvider.notifier).resumeUpdate();
+                      _hide();
+                    },
+                    child: storyWidget,
+                  ),
                 ),
               ),
             ),
@@ -93,7 +97,19 @@ class Stories {
     StoryTypes type,
     String id, {
     VoidCallback? onClose,
+    bool? onActionShowNextHistory,
+    StatefulNavigationShell? navigationShell,
   }) {
+    void handleDeeplink(String url) {
+      final router = GoRouter.of(rootNavigatorKey.currentContext!);
+
+      if (url.startsWith(RouteName.bottomNavigation)) {
+        navigationShell?.mapDeeplinkToBottomNavBar(url);
+      } else {
+        router.push(url);
+      }
+    }
+
     final storyWidget = StoryLocalization(
       l10n: context.l10n,
       child: StoriesFullscreen.onboadring(
@@ -103,6 +119,8 @@ class Stories {
           _transitionState.currentState?.dismiss();
           onClose?.call();
         },
+        onActionShowNextHistory: onActionShowNextHistory,
+        handleDeeplink: handleDeeplink,
       ),
     );
 

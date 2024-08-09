@@ -13,20 +13,16 @@ class MyLocationPoiActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = context.textStyle.footNoteBold;
-    final accent = context.color.textAndIconsStatusAccent;
+    final accent = context.colorsV2.accentDefault;
+    final secondary = context.staticColor.surfaceStatusContrastAccent;
     final primary = context.color.textAndIconsBaseInversePrimary;
+    final secondaryText = context.color.textAndIconsStatusAccent;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: context.color.surfaceBasePrimary,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            offset: const Offset(0.0, -1.0),
-            blurRadius: 2,
-          ),
-        ],
+        boxShadow: Shadows.s,
       ),
       padding: const EdgeInsets.all(8),
       child: SafeArea(
@@ -49,10 +45,11 @@ class MyLocationPoiActions extends StatelessWidget {
               FooterIconButton(
                 desc: Text(
                   context.l10n.copy,
-                  style: textStyle.copyWith(color: accent),
+                  style: textStyle.copyWith(color: secondaryText),
                 ),
                 assetName: 'assets/icons/svg/ic_copy.svg',
-                colorIcon: accent,
+                colorIcon: secondaryText,
+                colorButton: secondary,
                 onTap: onCopy,
               ),
             ],

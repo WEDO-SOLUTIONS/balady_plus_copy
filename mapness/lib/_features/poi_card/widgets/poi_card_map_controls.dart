@@ -1,9 +1,8 @@
-import 'package:balady_uikit/balady_uikit.dart' as uiKit;
+import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
-import 'package:mapness/_features/landing/widgets/happines_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
@@ -20,9 +19,9 @@ class PoiCardMapControls extends ConsumerStatefulWidget {
   final double biggestHeight;
   final ValueNotifier<double> bottomSheetSize;
 
-  static const horizontalPadding = uiKit.NumericBase.$3x;
-  static const topPadding = uiKit.NumericBase.$3x;
-  static const bottomPadding = uiKit.NumericBase.$4x;
+  static const horizontalPadding = ui_kit.Spacing.$3x;
+  static const topPadding = ui_kit.Spacing.$3x;
+  static const bottomPadding = ui_kit.Spacing.$4x;
 
   @override
   ConsumerState<PoiCardMapControls> createState() => _PoiCardMapControlsState();
@@ -88,14 +87,12 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                       ),
                       child: Row(
                         children: [
-                          Column(
+                          const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const HappinesControl(),
-                              const Spacer(),
-                              const IndoorControl(),
-                              const Spacer(),
-
+                              Spacer(),
+                              IndoorControl(),
+                              Spacer(),
                             ],
                           ),
                           const Spacer(),
@@ -125,10 +122,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                               const SizedBox(
                                 height: 8,
                               ),
-                              const FollowControl(
-                                //TODO(scroollocker): Double check this
-                                onlyFollowDirection: true,
-                              ),
+                              const FollowControl(),
                             ],
                           ),
                         ],

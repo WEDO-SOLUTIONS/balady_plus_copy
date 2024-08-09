@@ -18,11 +18,10 @@ class PoiHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleTextStyle = context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary);
+    final titleTextStyle = context.textStyleV3.h4SemiBold.copyWith(color: context.colorsV2.foregroundDefault);
+    final subTitleStyle = context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV2.foregroundSoft);
 
-    final subTitleStyle = context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary);
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         if (profileImage != null) ...[

@@ -1,19 +1,21 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
+import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
 import 'package:mapness/features/stories/helper/locale_helper.dart';
 import 'package:mapness/features/stories/presentation/frame/frame_progress_indicator.dart';
 import 'package:mapness/features/stories/presentation/frame/story_frame_content.dart';
 import 'package:mapness/features/stories/presentation/frame/story_frame_controller.dart';
+import 'package:mapness/shared/ui/loading_image/loading_image.dart';
 
 class StoryFrameWidget extends StatefulWidget {
   final StoryFrameData frame;
   final int frameIndex;
   final int frameLength;
   final int duration;
+  final StoryThumbnailData thumbnailData;
 
   final StoryFrameController? controller;
 
@@ -30,6 +32,7 @@ class StoryFrameWidget extends StatefulWidget {
     required this.onClose,
     required this.onNext,
     required this.onPrevious,
+    required this.thumbnailData,
     super.key,
     this.onActionPressed,
     this.controller,
@@ -51,14 +54,20 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
   String _keyToLocale(String key) => switch (key) {
         'next' => StoryLocalization.of(context)?.l10n.next ?? '',
         'try_now' => StoryLocalization.of(context)?.l10n.tryNow ?? '',
+        'build_route' => StoryLocalization.of(context)?.l10n.buildRoute ?? '',
+        'open_services' => StoryLocalization.of(context)?.l10n.openServices ?? '',
+        'about_routes' => StoryLocalization.of(context)?.l10n.onboardingMoreRoutesButton ?? '',
+        'balady_features' => StoryLocalization.of(context)?.l10n.onboardingMoreBaladyFeaturesButton ?? '',
+        'get_started' => StoryLocalization.of(context)?.l10n.onboardingGetStartedButton ?? '',
         _ => ''
       };
 
-  String get _actionTitleOrFailback {
+  String get _actionTitleOrFallback {
     final action = widget.frame.action;
     return switch (action) {
       VerbatimStoryFrameAction() => action.title,
       LocaleKeyFrameAction() => _keyToLocale(action.titleLocaleKey),
+      DeeplinkStoryFrameAction() => '',
       null => '',
     };
   }
@@ -153,7 +162,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
     _lastTap = DateTime.now();
   }
 
-  void _onTapUp(VoidCallback action) {
+  void _onPauseOrResume(VoidCallback action) {
     if (DateTime.now().difference(_lastTap) < const Duration(milliseconds: 150)) {
       action();
     } else {
@@ -171,7 +180,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) => Material(
-        color: context.color.surfaceBaseInversePrimary,
+        color: Colors.transparent,
         child: SafeArea(
           left: false,
           right: false,
@@ -190,7 +199,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                     child: LoadingImage(
                       isAssetImg: widget.frame.isAssetImage,
                       onImageReady: _imageLoaded,
-                      imageUrl: widget.frame.imageUrl,
+                      imageUrl: widget.frame.imageUrl.call(isArabic: StoryLocalization.of(context)?.isArabic ?? true),
                       fit: BoxFit.cover,
                       loadingWidget: Container(
                         color: context.color.textAndIconsBaseInverseTertiary,
@@ -209,32 +218,53 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                       height: MediaQuery.of(context).size.height / 2,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          stops: const [0, 0.8, 1],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            const Color(0xff000000).withOpacity(0.4),
-                            const Color(0xff000000).withOpacity(0.06),
-                            const Color(0xff000000).withOpacity(0)
-                          ],
-                        ),
+                        gradient: widget.frame.storyGradient,
                       ),
                     ),
                   ),
 
-                  /// story content
-                  if (!_isLoading)
-                    Positioned(
-                      left: 16,
-                      right: 16,
-                      top: 100,
-                      bottom: 64,
-                      child: Align(
-                        alignment: AlignmentDirectional.topStart,
-                        child: StoryFrameContent(frame: widget.frame),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// progress indicator and exit button
+                      FrameProgressIndicator(
+                        onClose: widget.onClose,
+                        frameIndex: widget.frameIndex,
+                        framesLength: widget.frameLength,
+                        animation: _progress,
+                        thumbnailData: widget.thumbnailData,
                       ),
-                    ),
+                      const SizedBox(height: Spacing.$6x),
+                      if (!_isLoading)
+                        StoryFrameContent(
+                          frame: widget.frame,
+                          onActionPressed: (action) => widget.onActionPressed?.call(action),
+                        ),
+                      const Spacer(),
+                      if (widget.frame.action != null &&
+                          widget.onActionPressed != null &&
+                          widget.frame.action!.deeplinkUrl.isNotEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: widget.frame.action?.verticalPadding ?? 12,
+                            horizontal: widget.frame.action?.horizontalPadding ?? 16.0,
+                          ).copyWith(top: 0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: AppButton(
+                              color: widget.frame.action?.backgroundColor,
+                              textColor: widget.frame.action?.textStyle?.color,
+                              buttonColorScheme: widget.frame.action?.backgroundColor == null ||
+                                      widget.frame.action?.textStyle?.color == null
+                                  ? ButtonColorScheme.primary
+                                  : ButtonColorScheme.onColor,
+                              primaryLabel: _actionTitleOrFallback,
+                              onTap: _onActionPressed,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
 
                   /// left right click handlers
                   if (!_isLoading)
@@ -244,45 +274,19 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                           flex: 30,
                           child: GestureDetector(
                             onTapDown: _onTapDown,
-                            onTapUp: (_) => _onTapUp(_onPrevious),
+                            onTapUp: (_) => _onPauseOrResume(_onPrevious),
+                            onHorizontalDragStart: (_) => _onPauseOrResume(_onPrevious),
                           ),
                         ),
                         Expanded(
                           flex: 70,
                           child: GestureDetector(
                             onTapDown: _onTapDown,
-                            onTapUp: (_) => _onTapUp(_onNext),
+                            onTapUp: (_) => _onPauseOrResume(_onNext),
+                            onHorizontalDragStart: (_) => _onPauseOrResume(_onNext),
                           ),
                         ),
                       ],
-                    ),
-
-                  /// progress indicator and exit button
-                  FrameProgressIndicator(
-                    onClose: widget.onClose,
-                    frameIndex: widget.frameIndex,
-                    framesLength: widget.frameLength,
-                    animation: _progress,
-                  ),
-
-                  // action button
-                  if (widget.frame.action != null &&
-                      widget.onActionPressed != null &&
-                      widget.frame.action!.deeplinkUrl.isNotEmpty)
-                    Positioned(
-                      bottom: 12,
-                      left: 16,
-                      right: 16,
-                      child: AppButton(
-                        color: widget.frame.action?.backgroundColor,
-                        textColor: widget.frame.action?.textStyle?.color,
-                        buttonColorScheme: widget.frame.action?.backgroundColor == null ||
-                                widget.frame.action?.textStyle?.color == null
-                            ? ButtonColorScheme.primary
-                            : ButtonColorScheme.onColor,
-                        primaryLabel: _actionTitleOrFailback,
-                        onTap: _onActionPressed,
-                      ),
                     ),
                 ],
               ),

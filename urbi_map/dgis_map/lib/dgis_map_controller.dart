@@ -32,6 +32,12 @@ class DgisMapController {
   /// Names of indoor levels if any. Empty if there are no available levels.
   Stream<IndoorLevelsEvent> get indoorLevelNames => _instance.indoorLevelNames;
 
+  /// Getting the IndoorLevelNames latest record values from a stream
+  IndoorLevelsEvent? get lastIndoorLevelNames => _instance.lastIndoorLevelNames;
+
+  /// Getting the IndoorActiveLevel latest record values from a stream
+  IndoorActiveLevelEvent? get lastIndoorActiveLevel => _instance.lastIndoorActiveLevel;
+
   /// Selected indoor level index in [IndoorLevelsEvent::levelNames] list
   Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _instance.indoorActiveIndex;
 
@@ -479,10 +485,17 @@ class DgisMapController {
     return _instance.showRoutes();
   }
 
-  Future<void> startNavigation() => _instance.startNavigation();
+  /// Starts navigation
+  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
 
-  /// Starts navigation sinulation.
-  Future<void> startNavigationSimulation() => _instance.startNavigationSimulation();
+  /// Starts navigation simulation.
+  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
+      _instance.startNavigationSimulation(speedRangeZoom);
+
+  Future<Uint8List> saveNavigationState() => _instance.saveNavigationState();
+
+  Future<void> restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom) =>
+      _instance.restoreNavigationState(state, speedRangeZoom);
 
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
   Future<void> stopNavigation() => _instance.stopNavigation();
@@ -492,10 +505,10 @@ class DgisMapController {
 
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
-  Future<void> onLocationPremissionGranted({
+  Future<void> onLocationPermissionGranted({
     DesiredAccuracyMessage desiredAccuracy = DesiredAccuracyMessage.low,
   }) {
-    return _instance.onLocationPremissionGranted(desiredAccuracy);
+    return _instance.onLocationPermissionGranted(desiredAccuracy);
   }
 
   /// Add panorama markers to map.
@@ -524,6 +537,7 @@ class DgisMapController {
   /// Does not apply filters immediately. Resets inner state.
   void resetCurrentEvergisFiltersState() => _evergisFilters.clear();
 
+  ///Set Public Transport Active Route
   Future<void> setPublicTransportActiveRoute(int routeIndex) {
     return _instance.setPublicTransportActiveRoute(routeIndex);
   }
@@ -540,26 +554,40 @@ class DgisMapController {
     );
   }
 
+  ///toggle heatmap
   Future<bool> toggleHeatmap({required WeatherMapMessage message}) => _instance.toggleHeatmap(message);
 
+  ///list packages
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
 
+  ///List voices
   Future<List<PackageMessage?>> listVoices() => _instance.listVoices();
 
+  ///Install package
   Future<void> installPackage(String id) => _instance.installPackage(id);
 
+  ///Install voice
   Future<void> installVoice(String id) => _instance.installVoice(id);
 
+  ///Set navigator voice
   Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
 
+  ///Set better route response
   Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _instance.betterRouteResponse(response);
 
+  ///Get better route settings
   Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _instance.getBetterRouteSettings();
 
+  ///Set better route settings
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
+
+  ///Set map attribute bool
+  Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
+  rVoice(String id) => _instance.setNavigatorVoice(id);
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {
+  ///get time is open now
   static WeekTimeSearchMessage openNow() => WeekTimeSearchMessage(isOpenNow: true);
 }
 

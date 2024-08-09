@@ -4,14 +4,15 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
+import 'package:mapness/_features/poi_card/my_location_poi/my_location_image.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
+import 'package:mapness/_features/poi_card/provider/poi_my_location_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
-import 'package:mapness/_features/profile/domain/user_profile_data.dart';
 import 'package:mapness/app/routes/routing.dart';
-import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -20,7 +21,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
-import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 import '../ui_kit_tmp/poi_header.dart';
 
@@ -48,9 +48,13 @@ class ContentMyLocation extends ConsumerWidget {
     final language = ref.watch(appLanguageProvider);
     _cameraAnimation(ref);
 
-    final sheetSizes = PoiSheetSizes.myLocation(
-      bottomPadding: MediaQuery.of(context).viewPadding.bottom,
+    final data = ref.watch(
+      poiMyLocationProvider(
+        latitude: closestPoint!.latitude,
+        longitude: closestPoint!.longitude,
+      ),
     );
+    final sheetSizes = _calculateSheetSize(context, data);
 
     return Directionality(
       textDirection: switch (language) {
@@ -80,10 +84,13 @@ class ContentMyLocation extends ConsumerWidget {
                   LocationType.myLocation => PoiMyLocationContent(
                       location: closestPoint!,
                       onTapClose: () => onClose(context, ref),
+                      data: data,
+                      height: sheetSizes.middleHeight,
                     ),
                   LocationType.deeplinkLocation => PoiDeeplinkContent(
                       location: closestPoint!,
                       onTapClose: () => onClose(context, ref),
+                      data: data,
                     )
                 },
                 switch (locationType) {
@@ -94,7 +101,8 @@ class ContentMyLocation extends ConsumerWidget {
                   LocationType.deeplinkLocation => PoiDeeplinkPersonActions(
                       onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
                       onGo: () {
-                        ref.read(poiCardActionsProvider.notifier)
+                        ref
+                            .read(poiCardActionsProvider.notifier)
                             .goRoute(
                               startLabel: context.l10n.myLocation,
                               finishLabel: context.l10n.pointToMap,
@@ -150,5 +158,50 @@ class ContentMyLocation extends ConsumerWidget {
             ),
           );
     }
+  }
+
+  PoiSheetSizes _calculateSheetSize(BuildContext context, AsyncValue<PoiMyLocationState?> data) {
+    bool twoLineAddress = false;
+    bool twoLineTitle = false;
+    final sizeOfAddress = _textSize(
+      data.maybeWhen(
+        data: (value) => value?.address ?? '',
+        orElse: () => '',
+      ),
+      context.textStyleV3.bodySmallRegular,
+    );
+    final isAuthorized = data.maybeWhen(
+      data: (value) => value?.isAuthorized ?? false,
+      orElse: () => false,
+    );
+
+    if (sizeOfAddress.width > MediaQuery.of(context).size.width - Spacing.$4x) {
+      twoLineAddress = true;
+    }
+
+    final sizeOfTitle = _textSize(
+      data.maybeWhen(
+        data: (value) => value?.title ?? '',
+        orElse: () => '',
+      ),
+      context.textStyleV3.h4SemiBold,
+    );
+
+    if (sizeOfTitle.width > MediaQuery.of(context).size.width - Spacing.$4x - (isAuthorized ? 48 : 0) - 40) {
+      twoLineTitle = true;
+    }
+
+    return PoiSheetSizes.myLocation(
+      bottomPadding: MediaQuery.of(context).viewPadding.bottom,
+      isAuthorized: locationType != LocationType.deeplinkLocation && isAuthorized,
+      isAddressInTwoLines: twoLineAddress,
+      isTitleInTwoLine: twoLineTitle,
+    );
+  }
+
+  Size _textSize(String text, TextStyle style) {
+    final TextPainter textPainter =
+        TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)..layout();
+    return textPainter.size;
   }
 }
