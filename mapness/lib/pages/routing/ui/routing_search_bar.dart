@@ -46,7 +46,6 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
 
   @override
   void dispose() {
-    _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
