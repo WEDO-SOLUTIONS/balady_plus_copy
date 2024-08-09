@@ -5,13 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-// TODO: This is template
-class FeedbackCompanyNamePage extends StatelessWidget {
-  final String initialCompanyName;
-
-  const FeedbackCompanyNamePage({
-    required this.initialCompanyName,
+/// Basic wrapper for feedback pages
+class FeedbackPageTemplate extends StatelessWidget {
+  final Widget child;
+  final String title;
+  final VoidCallback? onBack;
+  const FeedbackPageTemplate({
+    required this.child,
+    required this.title,
     super.key,
+    this.onBack,
   });
 
   @override
@@ -21,15 +24,13 @@ class FeedbackCompanyNamePage extends StatelessWidget {
           color: context.colorsV2.backgroundSurface4,
           child: Scaffold(
             appBar: BaladyTopBar.iconAndText(
-              title: context.l10n.feedbackCompanyName,
+              title: title,
               leading: ActionModel(
-                icon: SystemIcons.arrowCornerLeftLarge,
-                onPressed: () {
-                  context.pop();
-                },
+                icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                onPressed: onBack ?? context.pop,
               ),
             ),
-            body: const Placeholder(),
+            body: child,
           ),
         ),
       );
