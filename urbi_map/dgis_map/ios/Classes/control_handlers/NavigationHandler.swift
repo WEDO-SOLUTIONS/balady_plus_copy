@@ -361,8 +361,8 @@ class NavigationHandler {
         self.navigationManager.stop()
     }
 
-    func toggleSounds(enabled: Bool) {
-        self.dashboardControlModel.toggleSounds(enabled: enabled)
+    func toggleSounds(toggleType: SoundToggleType) {
+        self.dashboardControlModel.toggleSounds(toggleType: toggleType)
     }
     
     func calcPositionForRoute(options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {

@@ -501,8 +501,14 @@ class DgisMapController {
   Future<void> stopNavigation() => _instance.stopNavigation();
 
   /// Controls sounds in navigation.
-  Future<void> toggleSound({required SoundToggleType toggleType}) =>
-      _instance.toggleSound(toggleType: toggleType);
+  Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) =>
+      _instance.toggleVoiceInstruction(toggleType: toggleType);
+
+  /// Mute other apps sounds when navigation notification recieved.
+  Future<void> muteOtherSounds({required bool mute}) => _instance.muteOtherSounds(mute: mute);
+
+  /// Set navigator volume.
+  Future<void> setNavigatorVolume({required AudioVolumeMessage volume}) => _instance.setNavigatorVolume(volume: volume);
 
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.

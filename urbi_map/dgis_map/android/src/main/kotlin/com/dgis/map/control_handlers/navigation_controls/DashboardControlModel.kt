@@ -63,14 +63,14 @@ class DashboardControlModel(
         )
     }
 
-    fun setVolume(volume: Messages.AudioVolume) {
+    fun setNavigatorVolume(volume: Messages.AudioVolumeMessage) {
         this.navigationManager.soundNotificationSettings.notificationVolume = ru.dgis.sdk.navigation.AudioVolume.valueOf(volume.name)
     }
-    fun muteSound(mute: Boolean) {
+    fun muteOtherSounds(mute: Boolean) {
         this.navigationManager.soundNotificationSettings.mute = mute
 
     }
-    fun toggleSounds(toggleType: SoundToggleType) {
+    fun toggleVoiceInstruction(toggleType: SoundToggleType) {
         this.navigationManager.soundNotificationSettings.enabledSoundCategories = soundToggleMapper(toggleType)
     }
 

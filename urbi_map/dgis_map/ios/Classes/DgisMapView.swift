@@ -3,6 +3,7 @@ import Flutter
 import DGis
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
+
     private class Events {
         static let zoomOutEvent = "zoomOutState"
         static let zoomInEvent = "zoomInState"
@@ -998,11 +999,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.stopFreeRoam()
         completion(nil)
     }
-
-    func toggleSoundEnabled(_ enabled: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.toggleSounds(enabled: enabled.boolValue)
-        completion(nil)
-    }
     
     func setPublicTransportActiveRouteRouteIndex(_ routeIndex: NSNumber, completion: @escaping (FlutterError?) -> Void) {
         routeHandler?.setActiveRouteIndex(routeIndex.uint64Value)
@@ -1131,4 +1127,33 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         navigationHandler?.setBetterRouteSettings(settings: message)
         completion(nil)
     }
+
+    func toggleVoiceInstructionToggleType(_ toggleType: SoundToggleType, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleSounds(toggleType: toggleType)
+        completion(nil)
+    }
+  
+    func setNavigatorVolumeVolume(_ volume: AudioVolumeMessage, completion: @escaping (FlutterError?) -> Void) {
+        sdk.audioSettings.audioVolume = audioVolumeMapper(volume: volume)
+        completion(nil)
+    }
+    
+    private func audioVolumeMapper(volume: AudioVolumeMessage)-> AudioVolume{
+        return switch volume{
+            case .standard:
+                AudioVolume.standard
+            case .low:
+                AudioVolume.low
+            case .minimal:
+                AudioVolume.minimal
+                
+            default: AudioVolume.standard
+        }
+    }
+  
+    func muteOtherSoundsMute(_ mute: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        sdk.audioSettings.muteOtherSounds = mute.boolValue
+        completion(nil)
+    }
+
 }

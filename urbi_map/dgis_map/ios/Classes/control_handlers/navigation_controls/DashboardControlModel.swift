@@ -62,14 +62,14 @@ class DashboardControlModel {
         ])
     }
     
-    func toggleSounds(enabled: Bool) {
-        if enabled {
+    func toggleSounds(toggleType: SoundToggleType) {
+        if toggleType == SoundToggleType.all {
             self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories
         } else {
             self.navigationManager.soundNotificationSettings.enabledSoundCategories = []
         }
     }
-    
+
     func cancel() {
         self.cancelable.forEach { $0.cancel() }
         self.cancelable.removeAll()

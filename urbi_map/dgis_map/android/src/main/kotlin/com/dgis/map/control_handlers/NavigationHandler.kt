@@ -145,14 +145,14 @@ class NavigationHandler(
         betterRouteCloseable.close()
     }
 
-    fun toggleSounds(toggleType: SoundToggleType) {
-        dashboardControlModel.toggleSounds(toggleType)
+    fun toggleVoiceInstruction(toggleType: SoundToggleType) {
+        dashboardControlModel.toggleVoiceInstruction(toggleType)
     }
-    fun setVolume(volume: Messages.AudioVolume) {
-        dashboardControlModel.setVolume(volume)
+    fun setNavigatorVolume(volume: Messages.AudioVolumeMessage) {
+        dashboardControlModel.setNavigatorVolume(volume)
     }
-    fun muteSound( mute: Boolean) {
-        dashboardControlModel.muteSound(mute)
+    fun muteOtherSounds( mute: Boolean) {
+        dashboardControlModel.muteOtherSounds(mute)
     }
     fun setNavigatorVoice(id: String, result: Messages.Result<Void>?) {
         navigationManager.voiceSelector.voice = voicesManager.voices.firstOrNull { it.id == id }?.navigationVoice

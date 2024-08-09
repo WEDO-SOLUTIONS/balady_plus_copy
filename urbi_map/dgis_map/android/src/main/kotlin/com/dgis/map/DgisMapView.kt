@@ -846,17 +846,17 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun toggleSound(toggleType: SoundToggleType, result: Messages.Result<Void>?) {
-        navigationHandler.toggleSounds(toggleType)
+    override fun toggleVoiceInstruction(toggleType: SoundToggleType, result: Messages.Result<Void>?) {
+        navigationHandler.toggleVoiceInstruction(toggleType)
         result?.success(null)
     }
-    override fun muteSound(mute: Boolean, result: Messages.Result<Void>?) {
-        navigationHandler.muteSound(mute)
+    override fun muteOtherSounds(mute: Boolean, result: Messages.Result<Void>?) {
+        navigationHandler.muteOtherSounds(mute)
         result?.success(null)
     }
 
-    override fun setVolume(volume: Messages.AudioVolume, result: Messages.Result<Void>?) {
-        navigationHandler.setVolume(volume)
+    override fun setNavigatorVolume(volume: AudioVolumeMessage, result: Messages.Result<Void>?) {
+        navigationHandler.setNavigatorVolume(volume)
         result?.success(null)
     }
 

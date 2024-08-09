@@ -1068,7 +1068,7 @@ enum SoundToggleType {
   all,
 }
 
-enum AudioVolume {
+enum AudioVolumeMessage {
   standard,
   low,
   minimal,
@@ -1391,13 +1391,13 @@ abstract class MapApi {
   void setPublicTransportActiveRoute(int routeIndex);
 
   @async
-  void toggleSound(SoundToggleType toggleType);
+  void toggleVoiceInstruction(SoundToggleType toggleType);
 
   @async
-  void muteSound(bool mute);
+  void muteOtherSounds(bool mute);
 
   @async
-  void setVolume(AudioVolume volume);
+  void setNavigatorVolume(AudioVolumeMessage volume);
 
   @async
   void onTrafficAndParkingAttached();
@@ -1453,9 +1453,6 @@ abstract class MapApi {
 
   @async
   void setNavigatorVoice(String id);
-
-  @async
-  void toggleSounds(bool enabled);
 
   @async
   bool toggleHeatmap(WeatherMapMessage message);
