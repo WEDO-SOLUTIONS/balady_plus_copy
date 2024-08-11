@@ -94,7 +94,7 @@ class _RemoteConfig {
   static final pegaURL = _initValues<String>(
     devVal: "https://crmustg.momra.gov.sa",
     stgVal: "https://crmustg.momra.gov.sa",
-    preVal: "https://crumupre.momra.gov.sa",
+    preVal: "https://crmpre.momra.gov.sa",
     prodVal: "https://crm.balady.gov.sa",
     urbiPreVal: "https://crumupre.momra.gov.sa",
   );
