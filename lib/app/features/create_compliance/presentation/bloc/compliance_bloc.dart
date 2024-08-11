@@ -609,8 +609,9 @@ requestDetails?.isReadOnly = r.isReadOnly;
         );
 
 return ; 
+
       } 
-       if (r.submitterThrough == "BENEFICARY"||r.submitterThrough == "MOMTATHEL") {
+      // if (r.submitterThrough == "BENEFICARY"||r.submitterThrough == "MOMTATHEL") {
         List<AttachmentData> attachmentData = [];
         List<AttachmentData> viewAttachmentData = [];
 
@@ -681,12 +682,12 @@ return ;
         } else {
           setUpDraft(r);
         }
-      } else {
-        CommonFunctions.openBaldyWithRefreshCookie(
-          event.redirectUrl,
-          pushReplacement: true,
-        );
-      }
+      // } else {
+      //   CommonFunctions.openBaldyWithRefreshCookie(
+      //     event.redirectUrl,
+      //     pushReplacement: true,
+      //   );
+      // }
     });
 
     // await _(ComplianceCertificateItemsRequest(requestId: state.requestId, ));
