@@ -9,6 +9,9 @@ import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
 import '../../domain/entities/city_params.dart';
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
 class CityRepositoryImpl implements CityRepository {
   final CityRemoteDataSource remoteDataSource;
   final CityLocalDataSource localDataSource;
@@ -23,7 +26,14 @@ class CityRepositoryImpl implements CityRepository {
       final data = await remoteDataSource.getCities(params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
@@ -36,7 +46,14 @@ class CityRepositoryImpl implements CityRepository {
       final data = await remoteDataSource.getMainServices(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

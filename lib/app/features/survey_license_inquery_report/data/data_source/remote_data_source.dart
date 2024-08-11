@@ -9,6 +9,7 @@ import 'package:dio/dio.dart' show DioError;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import '../model/survey_inquery_data_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class SurveyInqueryRemoteDataSource {
   Future<ResponseBodyModel<SurveyDataModel>> getLicenseData(
@@ -39,7 +40,14 @@ class SurveyInqueryRemoteDataSourceImplementation
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -48,14 +56,21 @@ class SurveyInqueryRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );

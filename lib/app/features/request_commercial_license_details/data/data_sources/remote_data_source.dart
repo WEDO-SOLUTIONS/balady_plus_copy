@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/request_commercial_license_details/data
 import 'package:dio/dio.dart' show DioError, Options;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class RequestCommercialLicenseDetailsRemoteDataSource {
   Future<RequestCommercialLicenseDetailsModel>
@@ -35,7 +36,14 @@ class RequestCommercialLicenseDetailsRemoteDataSourceImplementation
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return RequestCommercialLicenseDetailsModel.fromJson(result!);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -45,15 +53,22 @@ class RequestCommercialLicenseDetailsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
@@ -79,7 +94,14 @@ class RequestCommercialLicenseDetailsRemoteDataSourceImplementation
 //         .map<InvoiceStatusModel>(
 //             (e) => InvoiceStatusModel.fromMap(e as Map<String, dynamic>))
 //         .toList();
-//   } on DioError catch (error) {
+//   } on DioError catch (error, stackTrace) {
+//       LogsViewModel().sendEventFromModel(
+//         event: ErrorExceptionModel(
+//           nameEvent: EventsName.handledException,
+//           message: error.toString(),
+//           stackTrace: stackTrace.toString(),
+//         ),
+//       );
 //     "DioError $error".errorLog();
 //     if (error is NoDataFoundException) {
 //       rethrow;
@@ -89,14 +111,21 @@ class RequestCommercialLicenseDetailsRemoteDataSourceImplementation
 //       statusCode: error.response?.statusCode,
 //       dioError: error,
 //     );
-//   } catch (ex) {
-//     "Catched $ex".errorLog();
-//     if (ex is ServerException) {
+//   } catch (error, stackTrace) {
+//       LogsViewModel().sendEventFromModel(
+//         event: ErrorExceptionModel(
+//           nameEvent: EventsName.handledException,
+//           message: error.toString(),
+//           stackTrace: stackTrace.toString(),
+//         ),
+//       );
+//     "Catched $error".errorLog();
+//     if (error is ServerException) {
 //       rethrow;
 //     } else {
 //       throw ServerException("errors_server_error_2".tr(),
 //           exception: APIException(
-//             errorMessage: ex.toString(),
+//             errorMessage: error.toString(),
 //           ),
 //           response: response);
 //     }

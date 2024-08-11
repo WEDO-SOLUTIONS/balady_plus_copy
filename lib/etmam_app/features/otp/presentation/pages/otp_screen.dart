@@ -12,6 +12,7 @@ import 'package:sms_user_consent/sms_user_consent.dart';
 
 import '../../../../core/utils/utils_exports.dart';
 import '../../../_shared_feature_/shared/shared_feature_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class EtmamOtpScreen extends StatefulWidget {
   const EtmamOtpScreen({Key? key}) : super(key: key);
@@ -139,8 +140,15 @@ class _EtmamOtpScreenState extends State<EtmamOtpScreen> {
         });
         smsUserConsent?.requestSms();
       }
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
     }
   }
 }

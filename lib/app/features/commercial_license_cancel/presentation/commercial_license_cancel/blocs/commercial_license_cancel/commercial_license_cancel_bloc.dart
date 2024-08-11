@@ -13,6 +13,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../../core/services/global/web_service.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'commercial_license_cancel_event.dart';
 
@@ -74,21 +75,25 @@ class CommercialLicenseCancelBloc
       saveCancellationReasonResponse =
           SaveCancellationReasonResponse.fromJson(result);
       emitter(const CommercialLicenseCancelSucceededState());
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      emitter(CommercialLicenseCancelFailureState(exception.toString()));
+      emitter(CommercialLicenseCancelFailureState(error.toString()));
       return;
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      emitter(CommercialLicenseCancelFailureState(exception.toString()));
+      emitter(CommercialLicenseCancelFailureState(error.toString()));
       return;
     }
   }
@@ -119,21 +124,25 @@ class CommercialLicenseCancelBloc
 
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.CancelCommercialLicense_Open_Success_Page_Event);
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      emitter(CommercialLicenseCancelFailureState(exception.toString()));
+      emitter(CommercialLicenseCancelFailureState(error.toString()));
       return;
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      emitter(CommercialLicenseCancelFailureState(exception.toString()));
+      emitter(CommercialLicenseCancelFailureState(error.toString()));
       return;
     }
   }

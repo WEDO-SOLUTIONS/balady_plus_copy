@@ -283,13 +283,27 @@ class ApprovalSequenceAttachmentsScreen extends StatelessWidget {
 //           } else {
 //             OpenFile.open(fileDownloaded.path);
 //           }
-//         } catch (ex) {
+//         } catch (error, stackTrace) {
+//       LogsViewModel().sendEventFromModel(
+//         event: ErrorExceptionModel(
+//           nameEvent: EventsName.handledException,
+//           message: error.toString(),
+//           stackTrace: stackTrace.toString(),
+//         ),
+//       );
 //           EasyLoading.dismiss();
 //
-//           print(ex);
+//           print(error);
 //         }
 //       }
-//     } catch (ex) {
+//     } catch (error, stackTrace) {
+//       LogsViewModel().sendEventFromModel(
+//         event: ErrorExceptionModel(
+//           nameEvent: EventsName.handledException,
+//           message: error.toString(),
+//           stackTrace: stackTrace.toString(),
+//         ),
+//       );
 //       EasyLoading.dismiss();
 //     }
 //   }

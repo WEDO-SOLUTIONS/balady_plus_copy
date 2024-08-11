@@ -36,6 +36,7 @@ import '../../models/upload_file_resepnse.dart';
 import '../repository/appointment_repository.dart';
 import 'new_appointment_first_step_view_model.dart';
 import 'new_appointment_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NewAppointmentViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();
@@ -549,8 +550,15 @@ class NewAppointmentViewModel extends BaseViewModel {
         showError(response.item2 ?? "");
       }
       return null;
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       hideLoading();
     }
   }
@@ -751,7 +759,15 @@ class NewAppointmentViewModel extends BaseViewModel {
           }
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     isUserOld = isOld;
     return isOld;
   }

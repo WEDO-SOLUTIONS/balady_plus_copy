@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class InvestmentDetailsResponse {
   InvestmentDetailsResponse({
@@ -302,7 +303,14 @@ class Result {
         return initialWarrantyPercentage! / 100;
       }
       return 25 / 100;
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return 25 / 100;
     }
   }
@@ -381,7 +389,15 @@ class Result {
         date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
             .format(DateTime.parse(bidEndDate!));
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     if (CommonFunctions.isAppAR)
       date = CommonFunctions.replaceArabicNumberWithEnglish(date);
 
@@ -408,7 +424,15 @@ class Result {
                   .replaceAll("ـ", yearsForAnnualRaise.toString());
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     return paymentType ?? "";
   }
@@ -770,7 +794,15 @@ String getFormattedDateAndTimeV2(String dateStr) {
           .replaceAll("م", ("pm_full").tr());
     }
     formmatedDateAndTime = date + "  |  " + time;
-  } catch (ex) {}
+  } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   if (CommonFunctions.isAppAR)
     formmatedDateAndTime =
         CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);

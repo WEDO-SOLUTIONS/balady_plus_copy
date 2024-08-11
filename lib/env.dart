@@ -86,21 +86,37 @@ abstract class AppEnv {
       ..dismissOnTap = false;
   }
 
-  static Future<void> _deleteCacheDir() async {
-    try {
-      final cacheDir = await getTemporaryDirectory();
-      if (cacheDir.existsSync()) {
-        cacheDir.deleteSync(recursive: true);
-      }
-    } catch (ex) {}
-  }
-
-  static Future<void> _deleteAppDir() async {
-    try {
-      final appDir = await getApplicationSupportDirectory();
-      if (appDir.existsSync()) {
-        appDir.deleteSync(recursive: true);
-      }
-    } catch (ex) {}
-  }
+  // static Future<void> _deleteCacheDir() async {
+  //   try {
+  //     final cacheDir = await getTemporaryDirectory();
+  //     if (cacheDir.existsSync()) {
+  //       cacheDir.deleteSync(recursive: true);
+  //     }
+  //   } catch (error, stackTrace) {
+  //   LogsViewModel().sendEventFromModel(
+  //     event: ErrorExceptionModel(
+  //       nameEvent: EventsName.handledException,
+  //       message: error.toString(),
+  //       stackTrace: stackTrace.toString(),
+  //     ),
+  //   );
+  // }
+  // }
+  //
+  // static Future<void> _deleteAppDir() async {
+  //   try {
+  //     final appDir = await getApplicationSupportDirectory();
+  //     if (appDir.existsSync()) {
+  //       appDir.deleteSync(recursive: true);
+  //     }
+  //   } catch (error, stackTrace) {
+  //   LogsViewModel().sendEventFromModel(
+  //     event: ErrorExceptionModel(
+  //       nameEvent: EventsName.handledException,
+  //       message: error.toString(),
+  //       stackTrace: stackTrace.toString(),
+  //     ),
+  //   );
+  // }
+  // }
 }

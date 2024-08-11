@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
@@ -49,7 +50,15 @@ class NearByViewModel extends BaseViewModel {
         await controller.releasePage(searchResultMessage.value!.firstPage!);
       }
       searchResultMessage.notifyListeners();
-    } catch (e) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   List<DistanceRequestMessage> _mapToDistanceRequest(

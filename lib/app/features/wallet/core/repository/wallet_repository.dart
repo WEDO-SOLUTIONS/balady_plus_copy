@@ -8,6 +8,7 @@ import '../../../../core/remote_services/api_constants.dart';
 import '../../../../core/remote_services/web_service.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../models/wallet_response.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class WalletRepository {
   final webServices = locator<WebService>();
@@ -32,10 +33,25 @@ class WalletRepository {
       if (state != true) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
-        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, WalletResponse?>(state, error, result);
   }
@@ -65,9 +81,25 @@ class WalletRepository {
               url: ApiConstants.printWalletLicense,
               data: data,
               errorMsg: body.toString() ?? "");
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }

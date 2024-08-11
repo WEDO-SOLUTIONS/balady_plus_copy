@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'constants/app_color.dart';
 import 'constants/constans.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 //FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -30,8 +31,15 @@ class CommonFunctions {
                 fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
-      } catch (ex) {
-        //print(ex);
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+        //print(error);
       }
     }
   }
@@ -39,7 +47,15 @@ class CommonFunctions {
   static void sendEventToAnalytics(String event) {
     try {
       //fbAnalytics.logEvent(name: event);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   static void sendSentryLog(
@@ -78,8 +94,15 @@ class CommonFunctions {
             ? headersM
                 .map((key, value) => MapEntry(key, value?.toString() ?? ""))
             : null;
-      } catch (ex) {
-        //print(ex);
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+        //print(error);
       }
 
       SentryMessage msg = SentryMessage(data != null ? data.toString() : "");
@@ -100,9 +123,16 @@ class CommonFunctions {
       );
       Sentry.captureEvent(event).then((value) => //print(value));
       //print("sent log");
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       //print("exx");
-      //print(ex);
+      //print(error);
     }*/
   }
 
@@ -116,8 +146,15 @@ class CommonFunctions {
           statusCode: response?.statusCode,
           headers: response?.requestOptions.headers,
           enviroment: sl<EnvType>().name);
-    } catch (ex) {
-      //print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      //print(error);
     }
   }
 
@@ -156,8 +193,15 @@ class CommonFunctions {
       DateTime tempTime = DateFormat("hh:mm").parse(biddingEndingTime);
       String time = DateFormat("h:mm a", 'ar_SA').format(tempTime).toString();
       formattedTime = time;
-    } catch (ex) {
-      //print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      //print(error);
     }
     return replaceArabicNumberWithEnglish(formattedTime);
   }
@@ -260,9 +304,16 @@ class CommonFunctions {
         return v1UUID.replaceAll("-", "");
       else
         return DateTime.now().millisecondsSinceEpoch.toString();
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       //print("EXXXXXX GUId");
-      //print(ex);
+      //print(error);
       return DateTime.now().millisecondsSinceEpoch.toString();
     }
   }

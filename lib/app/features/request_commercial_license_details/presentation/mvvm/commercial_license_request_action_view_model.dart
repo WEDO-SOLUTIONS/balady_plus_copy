@@ -10,6 +10,8 @@ import 'package:balady_plus/app/features/commercial_license_details/data/models/
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/reason_cancel.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/data/models/request_allowed_actions.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 
 class RequestCommercialLicenseActionViewModel extends BaseViewModel {
   final WebService webService;
@@ -42,7 +44,15 @@ class RequestCommercialLicenseActionViewModel extends BaseViewModel {
           .where((element) => element.id == "edit")
           .toList();
       // actions = actions;
-    } catch (e) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     isLoading = false;
     notifyListeners();
   }

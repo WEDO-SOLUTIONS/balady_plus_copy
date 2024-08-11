@@ -7,6 +7,8 @@ import 'package:balady_plus/app/features/tobacco_services/data/models/facility.d
 import 'package:balady_plus/app/features/tobacco_services/data/models/tobacco_schedule.dart';
 import 'package:balady_plus/app/features/tobacco_services/data/repositories/repository_implementation.dart';
 import 'package:dio/dio.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 
 class DisclosedMonthsViewModel extends BaseViewModel {
   final TobaccoListRepositoryImplementation repository;
@@ -39,20 +41,24 @@ class DisclosedMonthsViewModel extends BaseViewModel {
           fileUploaded = file;
         },
       );
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      showError(exception.toString());
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+      showError(error.toString());
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      showError(exception.toString());
+      showError(error.toString());
     }
     isLoading = false;
     notifyListeners();
@@ -102,7 +108,7 @@ class DisclosedMonthsViewModel extends BaseViewModel {
   //     CommonFunctions.sendEvent(
   //       dioError: null,
   //       response: response,
-  //       ex: Exception(exception.toString()),
+  //       ex: Exception(error.toString()),
   //     );
   //   }
   //   isLoading = false;

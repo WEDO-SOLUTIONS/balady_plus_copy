@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/presentation/widgets/create_objection_page/objection_reason_attachment.dart';
@@ -127,8 +128,15 @@ class AttachmentWidget extends StatelessWidget {
           // });
         }
       }
-    } on PlatformException catch (e) {
-      debugPrint("Unsupported operation" + e.toString());
+    } on PlatformException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      debugPrint("Unsupported operation" + error.toString());
     }
   }
 

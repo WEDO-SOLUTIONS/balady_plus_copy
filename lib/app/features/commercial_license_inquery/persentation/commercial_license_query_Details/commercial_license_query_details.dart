@@ -12,6 +12,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../domain/entity/commercial_license_data_entity.dart';
 import '../bloc/commercial_license_query_details_cubit.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CommercialLicenseQueryDetails extends StatefulWidget {
   const CommercialLicenseQueryDetails({super.key});
@@ -376,7 +377,15 @@ class _CommercialLicenseQueryDetailsState
                         }
 
                         await launchUrl(Uri.parse(url));
-                      } catch (ex) {}
+                      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
                     },
                   )
                 ],

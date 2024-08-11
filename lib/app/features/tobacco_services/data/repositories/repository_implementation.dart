@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/tobacco_services/data/models/facility.d
 import 'package:balady_plus/app/features/tobacco_services/data/models/tobacco_schedule.dart';
 import 'package:dartz/dartz.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class TobaccoListRepositoryImplementation {
   final TobaccoListRemoteDataSource remoteDataSource;
@@ -19,7 +20,14 @@ class TobaccoListRepositoryImplementation {
       return Right(data);
     } on NoDataFoundException {
       return const Right([]);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       print("object");
       return Left(
         ServerFailure(
@@ -39,7 +47,14 @@ class TobaccoListRepositoryImplementation {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -50,7 +65,14 @@ class TobaccoListRepositoryImplementation {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -62,7 +84,14 @@ class TobaccoListRepositoryImplementation {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }

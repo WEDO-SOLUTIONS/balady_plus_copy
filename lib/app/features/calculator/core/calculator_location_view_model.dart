@@ -14,6 +14,7 @@ import '../../../core/services/local/helpers.dart';
 import '../../../core/utils/constants/remote_config.dart';
 import '../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../transaction_inquiry/presentation/core/models/selected_location.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CalculatorLocationViewModel extends BaseViewModel {
   final webServices = locator<WebService>();
@@ -95,9 +96,16 @@ class CalculatorLocationViewModel extends BaseViewModel {
       } else {
         showError(error);
       }
-    } catch (ex) {
-      print(ex);
-      showError(error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      showError(error.toString());
       Helpers.sendLog(
           url: RemoteConfig.gis + ApiConstants.GisGetLocation,
           qeuryParms: query,

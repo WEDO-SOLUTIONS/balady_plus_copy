@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart' show Failure, CacheFailure;
 import '../../services_exports.dart'
     show ServiceEntity, ServicesLocalDataSource, ServicesRepository;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ServicesRepositoryImplementation implements ServicesRepository {
   final ServicesLocalDataSource localDataSource;
@@ -16,7 +17,14 @@ class ServicesRepositoryImplementation implements ServicesRepository {
     try {
       final services = await localDataSource.getEkramServices();
       return Right(services);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(CacheFailure());
     }
   }
@@ -26,7 +34,14 @@ class ServicesRepositoryImplementation implements ServicesRepository {
     try {
       final services = await localDataSource.getIslamicServices();
       return Right(services);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(CacheFailure());
     }
   }
@@ -37,7 +52,14 @@ class ServicesRepositoryImplementation implements ServicesRepository {
     try {
       final services = await localDataSource.getBusinessLicenseServices();
       return Right(services);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(CacheFailure());
     }
   }
@@ -47,7 +69,14 @@ class ServicesRepositoryImplementation implements ServicesRepository {
     try {
       final services = await localDataSource.getHelpServices();
       return Right(services);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(CacheFailure());
     }
   }
@@ -57,7 +86,14 @@ class ServicesRepositoryImplementation implements ServicesRepository {
     try {
       final services = await localDataSource.getMunicipalServices();
       return Right(services);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(CacheFailure());
     }
   }

@@ -18,6 +18,7 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
 import '../../../force_update/presentation/core/force_update_view_model.dart';
 import '../../../location/presentation/pages/acquire_location_page.dart';
 import '../../splash_exports.dart' show SplashAnimator;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -71,7 +72,15 @@ class _SplashPageState extends State<SplashPage>
   void checkVersionInfo() {
     try {
       locator<ForceUpdateViewModel>().getVersionInfo();
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   @override

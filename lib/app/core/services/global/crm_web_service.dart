@@ -1,6 +1,10 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/events_logs/controller/logs_controller.dart';
+import 'package:balady_plus/app/events_logs/events_names.dart';
+import 'package:balady_plus/app/events_logs/models/request_api_model.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -130,6 +134,16 @@ class AppInterceptors extends Interceptor {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
 
+    String? curl = cURLRepresentation(err.requestOptions);
+    String? responseData = err.response?.data;
+    LogsViewModel().sendEventFromModel(
+      event: RequestApiModel(
+        nameEvent: EventsName.requestAPIError,
+        message: responseData ?? err.toString(),
+        cUrl: curl,
+      ),
+    );
+
     switch (err.type) {
       case DioErrorType.connectionTimeout:
       case DioErrorType.sendTimeout:
@@ -177,6 +191,24 @@ class AppInterceptors extends Interceptor {
     throw BadRequestException(err.requestOptions, err.response);
 
     return handler.next(err);
+  }
+
+
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    String curl = cURLRepresentation(response.requestOptions);
+    String responseData = response.data;
+    if(response.statusCode == 200 || response.statusCode == 201) {
+      LogsViewModel().sendEventFromModel(
+        event: RequestApiModel(
+          nameEvent: EventsName.requestAPISuccessful,
+          message: responseData,
+          cUrl: curl,
+        ),
+      );
+    }
+    return handler.next(response);
   }
 
   String get languageCode => translator.activeLanguageCode;
