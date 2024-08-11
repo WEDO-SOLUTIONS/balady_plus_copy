@@ -97,6 +97,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
               onPressed: () => Navigator.of(context).pop(),
               label: context.l10n.cancel,
             ),
+            const SizedBox(height: 32),
           ],
         ),
       ),

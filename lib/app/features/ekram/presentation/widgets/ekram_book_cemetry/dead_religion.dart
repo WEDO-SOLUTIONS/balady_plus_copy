@@ -20,7 +20,7 @@ class DeadReligionWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextWidget(
-              ("ekramReligion").tr(),
+              "${("ekramReligion").tr()} *",
               fontColor: AppColor.blackModern700Light,
               fontSize: 17.0,
               textAlign: TextAlign.start,
@@ -30,6 +30,8 @@ class DeadReligionWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: CustomRadioButtonEnd<bool>(
+                    isDisabled:
+                       !state.isMuslimEnabled,
                     title: ("muslim").tr(),
                     value: true,
                     currentSelected: state.isMuslim == true,
@@ -43,9 +45,11 @@ class DeadReligionWidget extends StatelessWidget {
                     textSize: 16,
                   ),
                 ),
-                CustomVerticalSpace(height: 10),
+                const CustomVerticalSpace(height: 10),
                 Expanded(
                   child: CustomRadioButtonEnd<bool>(
+                    isDisabled:
+                        state.deceasedInfoModel?.deceasedDataSource == 'NIC' && !state.isMuslimEnabled,
                     title: ("non_muslim").tr(),
                     value: true,
                     currentSelected: state.isMuslim == false,

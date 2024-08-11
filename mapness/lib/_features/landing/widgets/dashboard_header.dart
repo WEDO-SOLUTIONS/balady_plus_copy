@@ -83,6 +83,7 @@ class DashboardHeader extends ConsumerWidget {
           topRight: Radius.circular(16),
           topLeft: Radius.circular(16),
         ),
+        boxShadow: [Elevation.s],
       ),
       child: Column(
         children: [
@@ -110,9 +111,13 @@ class DashboardHeader extends ConsumerWidget {
                 );
               },
               child: AbsorbPointer(
-                child: BaladyInput.search(
+                child: BaladyInput.searchV2(
                   hintText: context.l10n.searchPlaceOrAddress,
                   readOnly: true,
+                  fillColor: context.colorsV2.neutralContainerDefault,
+                  hintColor: context.colorsV2.foregroundSoft,
+                  textFieldHeight: 40,
+                  textStyle: context.textStyleV3.bodySmallRegular,
                 ),
               ),
             ),

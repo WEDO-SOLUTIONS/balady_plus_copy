@@ -21,12 +21,14 @@ class ViolationDetailsBloc
 
   final ValidateObjectableTransaction validateObjectableTransaction;
 
-  ViolationDetailsBloc()
+  ViolationDetailsBloc({required ViolationsEntity? violationDetails})
       : _getViolationDetails = GetViolationDetails(repository: sl()),
         _getGisData = GetGISData(repository: sl()),
         validateObjectableTransaction =
             ValidateObjectableTransaction(repository: sl()),
-        super(const ViolationDetailsState()) {
+        super(ViolationDetailsState(
+          violationsEntity: violationDetails,
+      )) {
     on<ViolationDetailsEvent>((event, emit) {});
 
     on<GetViolationDetailsEvent>(_getViolationDetailsHandler);

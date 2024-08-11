@@ -1,47 +1,76 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:flutter/material.dart';
 
+/// SDK values that we receive. Mainly we will not use all of it but we have to
+/// parse it to be sure that we can cover all possible cases
+///
+/// Link to SDK: https://docs.2gis.com/en/android/sdk/reference/10.5/ru.dgis.sdk.directory.ContactInfo
 enum ContactsInfoType {
-  phone,
-  website,
   email,
+  website,
+  phone,
+  fax,
+  pobox,
+  icq,
+  jabber,
+  skype,
+  vkontakte,
   twitter,
+  odnoklassniki,
+  youtube,
+  linkedin,
+  googleplus,
+  pinterest,
+  whatsapp,
+  viber,
+  telegram,
+
+  /// Not in SDK documentation
   mobile,
+
+  /// Not in SDK documentation
+  /// Because in Russian Federation government prohibited to use this social networks and 2GIS SDK located
+  /// in the jurisdiction of Russia they have to remove it from public SDK documentation
   instagram,
   facebook,
-  whatsApp,
-  youtube,
-  telegram,
-  linkedin,
 }
 
 extension ContactsInfoTypeExt on ContactsInfoType {
-  IconData getIconResource(bool isLtr) => switch (this) {
-        ContactsInfoType.phone => isLtr?GeneralIcons.phoneLTR:GeneralIcons.phoneRTL,
-        ContactsInfoType.mobile => isLtr?GeneralIcons.phoneLTR:GeneralIcons.phoneRTL,
-        ContactsInfoType.website => GeneralIcons.web,
-        ContactsInfoType.email => GeneralIcons.email,
-        ContactsInfoType.twitter => SocialIcons.twitter,
-        ContactsInfoType.instagram => SocialIcons.instagram,
-        ContactsInfoType.facebook => SocialIcons.facebook,
-        ContactsInfoType.whatsApp => SocialIcons.whatsapp,
-        ContactsInfoType.youtube => SocialIcons.youtube,
-        ContactsInfoType.telegram => SocialIcons.telegram,
-        ContactsInfoType.linkedin => SocialIcons.linkedin,
-      };
-
   static ContactsInfoType fromString(String typeName) => switch (typeName) {
-        'phone' => ContactsInfoType.phone,
-        'website' => ContactsInfoType.website,
         'email' => ContactsInfoType.email,
+        'website' => ContactsInfoType.website,
+        'phone' => ContactsInfoType.phone,
+        'fax' => ContactsInfoType.fax,
+        'pobox' => ContactsInfoType.pobox,
+        'icq' => ContactsInfoType.icq,
+        'jabber' => ContactsInfoType.jabber,
+        'skype' => ContactsInfoType.skype,
+        'vkontakte' => ContactsInfoType.vkontakte,
         'twitter' => ContactsInfoType.twitter,
+        'odnoklassniki' => ContactsInfoType.odnoklassniki,
+        'youtube' => ContactsInfoType.youtube,
+        'linkedin' => ContactsInfoType.linkedin,
+        'googleplus' => ContactsInfoType.googleplus,
+        'pinterest' => ContactsInfoType.pinterest,
+        'whatsApp' => ContactsInfoType.whatsapp,
+        'viber' => ContactsInfoType.viber,
+        'telegram' => ContactsInfoType.telegram,
         'mobile' => ContactsInfoType.mobile,
         'instagram' => ContactsInfoType.instagram,
-        'linkedin' => ContactsInfoType.linkedin,
         'facebook' => ContactsInfoType.facebook,
-        'whatsApp' => ContactsInfoType.whatsApp,
-        'youtube' => ContactsInfoType.youtube,
-        'telegram' => ContactsInfoType.telegram,
         _ => ContactsInfoType.website
+      };
+
+  /// There are not present, for example, [ContactsInfoType.phone] because we want to show it in different place
+  /// So if some of the types will not included in this list - return null
+  PoiContentSocialMediaType? get socialMediaType => switch (this) {
+        ContactsInfoType.email => PoiContentSocialMediaType.email,
+        ContactsInfoType.website => PoiContentSocialMediaType.website,
+        ContactsInfoType.instagram => PoiContentSocialMediaType.instagram,
+        ContactsInfoType.facebook => PoiContentSocialMediaType.facebook,
+        ContactsInfoType.youtube => PoiContentSocialMediaType.youtube,
+        ContactsInfoType.linkedin => PoiContentSocialMediaType.linkedin,
+        ContactsInfoType.whatsapp => PoiContentSocialMediaType.whatsapp,
+        ContactsInfoType.telegram => PoiContentSocialMediaType.telegram,
+        _ => null
       };
 }

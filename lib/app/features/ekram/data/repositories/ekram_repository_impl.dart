@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_respons
 import 'package:balady_plus/app/features/ekram/data/model/deceased_transport_requests/transport_request_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/active_grave_request_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/apply_deceased_response.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_request_details/deceased_request_details.dart';
@@ -28,7 +29,6 @@ import '../../domain/entities/cemetry_requests/cemetry_request_response.dart';
 import '../../domain/entities/get_cemetries_params.dart';
 import '../../domain/entities/user_info_request_params.dart';
 import '../model/upload_letter_params.dart';
-import '../model/user_info_response_model.dart';
 
 class EkramRepositoryImpl implements EkramRepository {
   final EkramRemoteDataSource remoteDataSource;

@@ -16,7 +16,6 @@ import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
@@ -36,8 +35,21 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);
+
     ref.listen(
       nearestObjectProvider,
       (prev, next) {
@@ -60,6 +72,8 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
         }
       },
     );
+
+    final additionPadding = MediaQuery.of(context).viewPadding.top * MediaQuery.of(context).devicePixelRatio;
 
     return Material(
       type: MaterialType.transparency,
@@ -85,16 +99,16 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           Spacer(),
                           ZoomControl(),
                           Spacer(),
-                          FollowControl(
-                            onlyFollowDirection: false,
-                          ),
+                          FollowControl(),
                         ],
                       ),
                     ),
                   ),
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 48),
+                      padding: EdgeInsets.only(
+                        bottom: additionPadding,
+                      ),
                       child: SvgPicture.asset(
                         'assets/icons/svg/ic_pin.svg',
                         height: 48,
@@ -106,117 +120,98 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                 ],
               ),
             ),
-            WidgetSizeNotifier(
-              onSizeChanged: (value) {
-                final pixelSize = MediaQuery.of(context).devicePixelRatio;
-                final topPadding = MediaQuery.of(context).viewPadding.top;
-                final double screenHeight = MediaQuery.of(context).size.height;
-                final extendSize = screenHeight - value.height;
-                // TODO(Sergei): refactor this (we need additional research)
-                final additionalPadding = extendSize / 2 - 80;
-
-                ref.read(cameraPaddingProvider.notifier).setPadding(
-                      CameraSetPaddingMessage(
-                        leftPadding: 0,
-                        topPadding: (topPadding * pixelSize).floor(),
-                        rightPadding: 0,
-                        bottomPadding: ((value.height + additionalPadding) * pixelSize).floor(),
-                      ),
-                    );
-              },
-              child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                  color: Colors.white,
+            Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(16),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
-                child: SafeArea(
-                  top: false,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 6),
-                          child: SheetDragger(),
-                        ),
+                color: Colors.white,
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6),
+                        child: SheetDragger(),
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  context.l10n.pointToMap,
-                                  style: context.textStyle.heading2.copyWith(
-                                    color: context.color.textAndIconsBasePrimary,
-                                  ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                context.l10n.pointToMap,
+                                style: context.textStyle.heading2.copyWith(
+                                  color: context.color.textAndIconsBasePrimary,
                                 ),
-                                Text(
-                                  context.l10n.moveMap,
-                                  style: context.textStyle.footNote.copyWith(
-                                    color: context.color.textAndIconsBaseTertiary,
-                                  ),
+                              ),
+                              Text(
+                                context.l10n.moveMap,
+                                style: context.textStyle.footNote.copyWith(
+                                  color: context.color.textAndIconsBaseTertiary,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          AppCloseButton(
-                            onPressed: () {
-                              Metrics.logEventAdvanced(
-                                MetricsConstants.routesKeys.specifyOnMapExit,
-                                group: MetricsConstants.routesTag,
-                                action: MetricAction.tap.toString(),
-                              );
-
-                              context.pop(null);
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      _NearestObject(
-                        nearestObject: nearestObject,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 12,
-                          bottom: 8,
                         ),
-                        child: LabeledElevatedButton(
-                          label: context.l10n.done,
+                        AppCloseButton(
                           onPressed: () {
                             Metrics.logEventAdvanced(
-                              MetricsConstants.routesKeys.specifyOnMapDone,
+                              MetricsConstants.routesKeys.specifyOnMapExit,
                               group: MetricsConstants.routesTag,
                               action: MetricAction.tap.toString(),
                             );
 
-                            switch (nearestObject.value!) {
-                              case DGisNearestObject(object: final object):
-                                context.pop(
-                                  RoutePointDirectoryObject(
-                                    object,
-                                  ),
-                                );
-                              case CooridnatesNearestObject(geoPoint: final geoPoint):
-                                context.pop(
-                                  RoutePointCoordinates(geoPoint),
-                                );
-                            }
+                            context.pop();
                           },
-                          enabled: nearestObject.unwrapPrevious().hasValue,
                         ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    _NearestObject(
+                      nearestObject: nearestObject,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 12,
+                        bottom: 8,
                       ),
-                    ],
-                  ),
+                      child: LabeledElevatedButton(
+                        label: context.l10n.done,
+                        onPressed: () {
+                          Metrics.logEventAdvanced(
+                            MetricsConstants.routesKeys.specifyOnMapDone,
+                            group: MetricsConstants.routesTag,
+                            action: MetricAction.tap.toString(),
+                          );
+
+                          switch (nearestObject.value!) {
+                            case DGisNearestObject(nearestPoint: final nearestPoint):
+                              context.pop(
+                                // We need to pass the coordinates of the nearest point
+                                // because coordinates of object like street or districts are so far from the selected point
+                                RoutePointCoordinates(nearestPoint.geoPoint),
+                              );
+                            case CooridnatesNearestObject(geoPoint: final geoPoint):
+                              context.pop(
+                                RoutePointCoordinates(geoPoint),
+                              );
+                          }
+                        },
+                        enabled: nearestObject.unwrapPrevious().hasValue,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

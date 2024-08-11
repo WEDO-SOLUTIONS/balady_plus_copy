@@ -1,10 +1,10 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/pages/path_nav/lib/no_overscroll_behavior.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 /// widget contains scrollable common content layout for [DgisBottomSheet]: fixed header and scrollable body
 class DgisBottomSheetScrollableContent extends StatelessWidget {
-
   const DgisBottomSheetScrollableContent({
     required this.header,
     required this.body,
@@ -12,6 +12,7 @@ class DgisBottomSheetScrollableContent extends StatelessWidget {
     this.controller,
     this.bodyPadding = const EdgeInsets.all(8),
   });
+
   /// Pinned header, has handle and paddings
   final Widget header;
 
@@ -25,7 +26,7 @@ class DgisBottomSheetScrollableContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = Color(0xFFF4F4F5);
+    final backgroundColor = context.color.surfaceBaseSecondary;
 
     return ScrollConfiguration(
       behavior: NoOverscrollBehavior(),

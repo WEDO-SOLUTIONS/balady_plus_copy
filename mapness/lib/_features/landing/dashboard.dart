@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/icons/general_32_icons.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
@@ -21,6 +22,7 @@ import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/landing/widgets/weather_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -30,6 +32,7 @@ import 'package:mapness/features/stories/stories.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
@@ -106,6 +109,15 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           Stories.hide();
           return false;
         }
+
+        // TODO(Ayat): goroute has problems with WillPopScope and push method, this is as a temporary solution.
+        //  We are waiting for an update, now the latest version is 14.2.1
+        final currentRoute = ref.read(currentRouteProvider);
+        if (currentRoute?.currentPath == PhotoViewerRoute.path) {
+          context.pop();
+          return false;
+        }
+
         return true;
       },
       child: NotificationListener<ScrollNotification>(
@@ -211,7 +223,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                               const ComplianceCard(),
                               const SizedBox(height: Spacing.$8x),
                               const PrayerCard(),
-                              const SizedBox(height: Spacing.$8x),
                               CalendarSliderCard(
                                 colorScheme: ref.read(colorSchemeProvider),
                                 onShowAll: () => Metrics.logEventAdvanced(
@@ -219,9 +230,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                                   action: MetricAction.tap.name,
                                   group: MetricsConstants.exploreTag,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: Spacing.$8x,
                               ),
                             ],
                           ),

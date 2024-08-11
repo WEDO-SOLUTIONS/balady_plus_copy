@@ -826,7 +826,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(NSNumber(value: from.geoPoint.bearing(point: to.geoPoint).value), nil)
     }
 
-    func onLocationPremissionGrantedDesiredAccuracy(
+    func onLocationPermissionGrantedDesiredAccuracy(
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
     ) {
@@ -930,8 +930,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.routeHandler?.setRoutesVisible(true)
         completion(nil);
     }
-    
-    func startNavigation(completion: @escaping (FlutterError?) -> Void) {
+
+
+    func startNavigationSpeedRangeZoom(_ speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
         guard let routeHandler = self.routeHandler else {
             completion(FlutterError(
                 code: "NavigationError",
@@ -946,11 +947,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             finishPoint: routeHandler.finishPoint,
             options: routeHandler.options,
             route: routeHandler.selectedRoute,
+            speedRangeZoom: speedRangeZoom,
             completion: completion
         )
     }
     
-    func startNavigationSimulation(completion: @escaping (FlutterError?) -> Void) {
+    func startNavigationSimulationSpeedRangeZoom(_ speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
         guard let routeHandler = self.routeHandler else {
             completion(FlutterError(
                 code: "NavigationError",
@@ -965,6 +967,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             finishPoint: routeHandler.finishPoint,
             options: routeHandler.options,
             route: routeHandler.selectedRoute,
+            speedRangeZoom: speedRangeZoom,
             completion: completion
         )
     }
@@ -972,6 +975,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func stopNavigation(completion: @escaping (FlutterError?) -> Void) {
         self.navigationHandler?.stopNavigation()
         completion(nil)
+    }
+    
+    func saveNavigationState(completion: @escaping (FlutterStandardTypedData?, FlutterError?) -> Void) {
+        self.navigationHandler?.saveNavigationState(completion: completion)
+    }
+    
+    func restoreNavigationStateState(_ state: FlutterStandardTypedData, speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.restoreNavigationState(state: state, speedRangeZoom: speedRangeZoom, completion: completion)
     }
     
     func onCompassClicked(completion: @escaping (FlutterError?) -> Void) {

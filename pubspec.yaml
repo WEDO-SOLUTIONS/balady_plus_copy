@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.11.6+216
-#version: 3.30.2+404
+version: 3.11.6+219
+#version: 3.30.2+417
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
@@ -123,6 +123,8 @@ dependencies:
   flutter_timezone: ^1.0.7
   youtube_player_flutter: 8.1.2
   launch_review: ^3.0.1
+  mocktail: ^1.0.4
+  flutter_riverpod: ^2.4.1
 
   flutter_appauth:
     path: packages/flutter_appauth/flutter_appauth
@@ -187,7 +189,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.4.0
+    version: ^2.0.0
 
   mapness:
     path: mapness

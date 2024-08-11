@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +6,7 @@ import 'package:mapness/_features/debug_overlay/widgets/better_route_settings_wi
 import 'package:mapness/_features/debug_overlay/widgets/colorscheme_toggler.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_controll.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
+import 'package:mapness/_features/debug_overlay/widgets/onboarding_button.dart';
 import 'package:mapness/_features/debug_overlay/widgets/sso_credential_view.dart';
 import 'package:mapness/_features/debug_overlay/widgets/voice_picker.dart';
 import 'package:mapness/entry_point.dart';
@@ -70,26 +71,51 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                         children: [
                           Text(
                             'development-menu',
-                            style: Theme.of(context)
-                                .extension<ThemeTextStyles>()?.heading1.copyWith(color: Colors.black),
+                            style: context.textStyle.heading1.copyWith(color: Colors.black),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Urbi Release Version: ',
+                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
+                                ),
+                                TextSpan(
+                                  text: PackageConfig.releaseVersion,
+                                  style: context.textStyle.footNoteBold.copyWith(
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           RichText(
                             text: TextSpan(
                               children: [
                                 TextSpan(
                                   text: 'App version: ',
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()
-                                      ?.footNote
-                                      .copyWith(color: Colors.black54),
+                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
                                 ),
                                 TextSpan(
-                                  text:
-                                      '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()
-                                      ?.footNoteBold
-                                      .copyWith(color: Colors.black87),
+                                  text: '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
+                                  style: context.textStyle.footNoteBold.copyWith(color: Colors.black87),
+                                ),
+                              ],
+                            ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'CI build version: \n',
+                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
+                                ),
+                                TextSpan(
+                                  text: PackageConfig.buildName,
+                                  style: context.textStyle.footNoteBold.copyWith(
+                                    color: Colors.black87,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
@@ -116,57 +142,48 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   ),
                   Text(
                     'Git branch:',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
+                    style: context.textStyle.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitBranch,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
+                    style: context.textStyle.heading2.copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     'Git commit:',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
+                    style: context.textStyle.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitCommit,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
+                    style: context.textStyle.heading2.copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     'Vendor:',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
+                    style: context.textStyle.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.vendorConfig,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
+                    style: context.textStyle.heading2.copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     'Uuid:',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
+                    style: context.textStyle.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     ref.watch(uuidProviderProvider),
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()?.footNoteBold.copyWith(color: Colors.black),
+                    style: context.textStyle.footNoteBold.copyWith(color: Colors.black),
                   ),
                   const SizedBox(height: 8),
                   LabeledElevatedButton(
-                    onPressed: () =>
-                        ref.read(uuidProviderProvider.notifier).randomize(),
+                    onPressed: () => ref.read(uuidProviderProvider.notifier).randomize(),
                     label: 'randomize uuid',
                   ),
                   const DebugServerUrl(),
@@ -176,6 +193,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const BetterRouteSettingsWidget(),
                   const DebugNavigationControll(),
                   const ColorschemeToggler(),
+                  const ShowOnboardingButton(),
                 ],
               ),
             ),

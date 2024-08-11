@@ -50,6 +50,9 @@ jobs:
             export CI_GIT_BRANCH=${GITHUB_HEAD_REF}
             export CI_IS_PR="pr-"
           fi
+          source .release_version
+          export CI_RELEASE_VERSION="${major}.${minor}.${patch}-rc${candidate}"
+          echo "CI_RELEASE_VERSION=${CI_RELEASE_VERSION}" >> ${GITHUB_ENV}
           echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
           CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr -c -s '[:alnum:]' '-')
           echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}" >> ${GITHUB_ENV}
@@ -133,7 +136,7 @@ jobs:
           security unlock-keychain -p $KC_PASS $KC
           security find-identity -p codesigning
 
-          fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_prod.dart --flavor prod
+          fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_prod.dart --flavor prod  --dart-define=CI_BUILD_NAME="${CI_ARTIFACT_SUFFIX}" --dart-define=CI_RELEASE_VERSION="${CI_RELEASE_VERSION}"
           BUILD_URL=$(curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/momrah-${CI_ARTIFACT_SUFFIX}  | jq -r '.install_link')
           echo "BUILD_URL_PROD=${BUILD_URL}" >> ${GITHUB_ENV}
 

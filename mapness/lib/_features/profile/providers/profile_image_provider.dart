@@ -31,7 +31,7 @@ class ProfileImage extends _$ProfileImage {
   @override
   Future<UserProfileData> build() async {
     if (!_isUpdated) {
-      await updateImageFromBackend();
+      await _updateImageFromBackend();
     }
 
     return UserProfileData(
@@ -39,25 +39,31 @@ class ProfileImage extends _$ProfileImage {
     );
   }
 
-  Future<void> updateImageFromBackend() async {
+  Future<void> _updateImageFromBackend() async {
     final backendImage = await _downloadProfileImageToBytes();
 
-    if (backendImage.isNotEmpty) {
-      final imgBase64 = await _saveImageBytes(backendImage);
-      if (imgBase64 != null) {
-        state = AsyncData(UserProfileData(imageBase64: imgBase64));
-      }
-    }
+    await _updateImageState(backendImage);
     _isUpdated = true;
   }
 
   Future<void> changeUserProfileImageByBytes(Uint8List bytes) async {
     try {
+      await _updateImageState(bytes);
+
       await _uploadImage(bytes);
 
-      await updateImageFromBackend();
+      await _updateImageFromBackend();
     } catch (error, trace) {
       _log(error, trace);
+    }
+  }
+
+  Future<void> _updateImageState(Uint8List bytes) async {
+    if (bytes.isNotEmpty) {
+      final imgBase64 = await _saveImageBytes(bytes);
+      if (imgBase64 != null) {
+        state = AsyncData(UserProfileData(imageBase64: imgBase64));
+      }
     }
   }
 

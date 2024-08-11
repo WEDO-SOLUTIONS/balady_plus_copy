@@ -97,6 +97,7 @@ class DgisBottomSheet extends StatefulWidget {
     this.hiddenHeight = 0,
     this.controller,
     this.mapControlsBuilder,
+    this.borderRadius,
     this.scrollBehavior = const DisabledOverscrollScrollBehavior(),
   })  : assert(
           !availableExpansions.contains(Expansion.collapsed) || collapsedHeight != null && collapsedHeight > 0,
@@ -151,12 +152,15 @@ class DgisBottomSheet extends StatefulWidget {
   /// show barrier (background) when bottom sheet is expanded. May increase fps when backgound is map
   final bool showBarrier;
 
-  /// Устанавливает, какие состояния доступны
+  /// Set what states is available
   final Set<Expansion> availableExpansions;
   final void Function(Expansion expansion, {bool byUser})? onExpansionChanged;
   final ValueChanged<double>? onVisibleHeightChanged;
   final bool printDebugLogs;
   final ScrollBehavior scrollBehavior;
+
+  /// Set clipper for the scrollable body for design view
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   State<DgisBottomSheet> createState() => _DgisBottomSheetState();
@@ -477,9 +481,9 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                             if (widget.actions != null)
                               Positioned(
                                 top: _initialized ? _maxVisibleHeight - _visibleHeight + actionsHeight : _screenHeight,
-                                height: _visibleHeight,
                                 left: 0,
                                 right: 0,
+                                bottom: 0,
                                 child: Container(
                                   height: _screenHeight,
                                   alignment: Alignment.bottomCenter,
@@ -540,12 +544,15 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                         child: widget.scrollHeader!,
                       ),
                     Expanded(
-                      child: widget.scrollableBody == null
-                          ? SingleChildScrollView(
-                              controller: _scrollController,
-                              child: widget.body!(context),
-                            )
-                          : widget.scrollableBody!(context, _scrollController),
+                      child: ClipRRect(
+                        borderRadius: widget.borderRadius ?? BorderRadius.zero,
+                        child: widget.scrollableBody == null
+                            ? SingleChildScrollView(
+                                controller: _scrollController,
+                                child: widget.body!(context),
+                              )
+                            : widget.scrollableBody!(context, _scrollController),
+                      ),
                     ),
                   ],
                 ),

@@ -1037,6 +1037,20 @@ enum FollowStateMessage {
 
 enum BetterRouteResponseMessage { accept, reject, timeout }
 
+class SpeedRangeZoom {
+  SpeedRangeZoom({
+    required this.minSpeedRange,
+    required this.maxSpeedRange,
+    required this.routeDistanceMillimeters,
+    required this.styleZoomValue,
+  });
+
+  final double minSpeedRange;
+  final double maxSpeedRange;
+  final double routeDistanceMillimeters;
+  final double styleZoomValue;
+}
+
 /// Settings for better route searching
 /// [routeSearchDelay] - delay (in seconds) before searching for alternative routes when starting a trip on a route or after switching
 /// to another route. Must be not less than 5 seconds
@@ -1279,7 +1293,7 @@ abstract class MapApi {
   void setHighlighted(List<DgisObjectIdMessage> objectIds);
 
   @async
-  void onLocationPremissionGranted(DesiredAccuracyMessage desiredAccuracy);
+  void onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy);
 
   @async
   void addPanoramasMarkers(AddMarkersWithPhotoMessage message);
@@ -1330,13 +1344,19 @@ abstract class MapApi {
   void showRoutes();
 
   @async
-  void startNavigation();
+  void startNavigation(SpeedRangeZoom speedRangeZoom);
 
   @async
-  void startNavigationSimulation();
+  void startNavigationSimulation(SpeedRangeZoom speedRangeZoom);
 
   @async
   void stopNavigation();
+
+  @async
+  Uint8List saveNavigationState();
+
+  @async
+  void restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom);
 
   @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);

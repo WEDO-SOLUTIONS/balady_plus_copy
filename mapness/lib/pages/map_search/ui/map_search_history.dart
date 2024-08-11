@@ -67,7 +67,6 @@ class MapSearchHistory extends ConsumerWidget {
                               ErrorSheet(
                                 buttonLabel: context.l10n.tryAgain,
                                 errorLabel: context.l10n.placeWasNotFound,
-                                onClose: () => Navigator.of(contextDialog).pop(false),
                                 onRetry: () => Navigator.of(contextDialog).pop(true),
                               ),
                             ],

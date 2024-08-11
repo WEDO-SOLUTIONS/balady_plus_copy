@@ -29,8 +29,7 @@ class FavouritesPicker extends ConsumerWidget {
     }
     if (asyncState.hasError) {
       return ErrorSheet(
-        buttonLabel: context.l10n.reload,
-        onClose: () => context.pop(),
+        buttonLabel: context.l10n.tryAgain,
         onRetry: () => ref.invalidate(favouriteCacheProvider),
       );
     }
@@ -73,7 +72,7 @@ class FavouritesPicker extends ConsumerWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(8),
                           child: Icon(
-                            context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+                            context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                             color: context.color.textAndIconsBasePrimary,
                           ),
                         ),
@@ -118,6 +117,7 @@ class FavouritesPicker extends ConsumerWidget {
                             padding:
                                 index == (state.items.length - 1) ? const EdgeInsets.only(bottom: 8) : EdgeInsets.zero,
                             child: FavouriteItemWidget(
+                              key: ValueKey(item.id),
                               onTap: () => context.pop(item),
                               isEditing: false,
                               isDeletable: false,

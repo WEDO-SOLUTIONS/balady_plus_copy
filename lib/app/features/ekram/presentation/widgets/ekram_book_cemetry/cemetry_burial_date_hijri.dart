@@ -13,8 +13,7 @@ class CemetryBurialDateHijri extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime today = DateTime.now();
-    DateTime tomrrow = DateTime.now().add(Duration(days: 1));
-
+    DateTime tomrrow = DateTime.now().add(const Duration(days: 1));
     return BlocBuilder<EkramBookCemetryBloc, EkramBookCemetryState>(
         builder: (context, state) {
       return HijriCalendarDateWidget(
@@ -22,7 +21,7 @@ class CemetryBurialDateHijri extends StatelessWidget {
         maxValue: HijriCalendar.fromDate(tomrrow),
         currentVlaue: state.burialDateHijri,
         fieldName:
-            Helpers.translatingWord("cemetry_deceassed_burial_date_hijri"),
+            "${Helpers.translatingWord("cemetry_deceassed_burial_date_hijri")} *",
         isMandatory: true,
         onChanged: (String? date) {
           print(date);

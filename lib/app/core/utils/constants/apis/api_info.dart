@@ -746,7 +746,7 @@ class ApiUrl {
   static const ekramAttachments =
       'v1/ekram-mobile-services/download-attachments';
 
-  static const residentInfo = 'v1/ekram-mobile-services/resident-info';
+  static const residentInfo = 'v1/ekram-mobile-services/check-deceased-info';
 
   static const ekramActiveCities = 'v2/ekram-mobile-services/cities-cemetries';
 

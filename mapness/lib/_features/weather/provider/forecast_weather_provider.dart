@@ -16,19 +16,13 @@ class _ForecastWeather extends _$ForecastWeather {
     final controller = ref.watch(dgisControllerProvider).value;
     final repository = ref.watch(weatherRepository.notifier);
 
-    controller?.getCameraPosition().then((value) async => _onEvent(
-          value,
-          repository,
-          cancelToken,
-        ),);
+    controller?.getCameraPosition().then(
+          (value) async => _onEvent(value, repository, cancelToken),
+        );
 
-    final subscription = controller?.cameraPositionEvents
-        .debounceTime(const Duration(seconds: 1))
-        .listen((value) async => _onEvent(
-              value,
-              repository,
-              cancelToken,
-            ),);
+    final subscription = controller?.cameraPositionEvents.debounceTime(const Duration(seconds: 1)).listen(
+          (value) async => _onEvent(value, repository, cancelToken),
+        );
 
     ref.onDispose(() {
       subscription?.cancel();
@@ -36,6 +30,16 @@ class _ForecastWeather extends _$ForecastWeather {
     });
 
     return null;
+  }
+
+  Future<void> forceRefresh() async {
+    final cancelToken = CancelToken();
+    final controller = ref.watch(dgisControllerProvider).value;
+    final repository = ref.watch(weatherRepository.notifier);
+    final position = await controller?.getCameraPosition();
+    if (position != null) {
+      await _onEvent(position, repository, cancelToken);
+    }
   }
 
   Future<void> _onEvent(
@@ -51,11 +55,7 @@ class _ForecastWeather extends _$ForecastWeather {
       5,
       cancelToken,
     );
-    _listener(result);
-  }
-
-  void _listener(AllWeatherInfoModel? event) {
-    state = event;
+    state = result;
   }
 }
 

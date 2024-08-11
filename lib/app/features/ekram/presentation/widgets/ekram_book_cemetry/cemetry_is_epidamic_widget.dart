@@ -20,14 +20,15 @@ class CemetryIsEpidamicWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextWidget(
-              ("cemetry_deceassed_epidamic").tr(),
+              "${("cemetry_deceassed_epidamic").tr()} *",
               fontColor: AppColor.primary900Light,
               fontSize: 13.0,
               textAlign: TextAlign.start,
               fontWeight: AppFontWeight.bold,
             ),
-            CustomVerticalSpace(height: 10),
+            const CustomVerticalSpace(height: 10),
             CustomRadioButtonEnd<bool>(
+              isDisabled: state.deceasedInfoModel?.deceasedDataSource == 'SEHA',
               title: ("yes").tr(),
               value: true,
               currentSelected: state.isPandemicDeath == true,
@@ -40,8 +41,10 @@ class CemetryIsEpidamicWidget extends StatelessWidget {
               unSelectedBackgroundColor: Colors.transparent,
               textSize: 16,
             ),
-            CustomVerticalSpace(height: 10),
+            const CustomVerticalSpace(height: 10),
             CustomRadioButtonEnd<bool>(
+              isDisabled:
+                  state.isdeceasedInfoReadOnly && state.deathInfo != null,
               title: ("no").tr(),
               value: true,
               currentSelected: state.isPandemicDeath == false,
