@@ -69,6 +69,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (state == AppLifecycleState.paused) {
       saveNavigationState();
     }
+    if (state == AppLifecycleState.resumed) {
+      ref.read(locationProvider.notifier).checkLocationPermission();
+    }
   }
 
   @override
