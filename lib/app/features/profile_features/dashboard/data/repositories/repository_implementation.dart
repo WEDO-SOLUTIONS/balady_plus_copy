@@ -11,6 +11,7 @@ import '../../dashboard_exports.dart'
         DashboardProductsParams,
         DashboardStatisticsEntity,
         DashboardStatisticsParams;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class DashboardRepositoryImplementation implements DashboardRepository {
   final DashboardRemoteDataSource remoteDataSource;
@@ -24,7 +25,14 @@ class DashboardRepositoryImplementation implements DashboardRepository {
     try {
       final data = await remoteDataSource.getDashboardCards();
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -35,7 +43,14 @@ class DashboardRepositoryImplementation implements DashboardRepository {
     try {
       final data = await remoteDataSource.getCardProducts(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -46,7 +61,14 @@ class DashboardRepositoryImplementation implements DashboardRepository {
     try {
       final data = await remoteDataSource.getCardStatistics(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }

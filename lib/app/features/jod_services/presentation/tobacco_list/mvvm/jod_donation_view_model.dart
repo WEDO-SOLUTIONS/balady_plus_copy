@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/_shared_feature_/data/models/response_b
 import 'package:balady_plus/app/features/jod_services/presentation/models/regions.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class JodDonationViewModel extends BaseViewModel {
   final WebService repository;
@@ -45,20 +46,24 @@ class JodDonationViewModel extends BaseViewModel {
       isLoading = false;
       notifyListeners();
       return result['url'];
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      showError(exception.toString());
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+      showError(error.toString());
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      showError(exception.toString());
+      showError(error.toString());
     }
     isLoading = false;
     notifyListeners();
@@ -75,20 +80,24 @@ class JodDonationViewModel extends BaseViewModel {
       regions = result.map((e) => Regions.fromMap(e)).toList();
       isLoading = false;
       notifyListeners();
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      showError(exception.toString());
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+      showError(error.toString());
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      showError(exception.toString());
+      showError(error.toString());
     }
     isLoading = false;
     notifyListeners();

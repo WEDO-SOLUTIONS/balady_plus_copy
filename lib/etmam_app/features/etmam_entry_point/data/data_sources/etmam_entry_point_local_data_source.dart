@@ -4,6 +4,7 @@ import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
     show NoType;
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/data/models/profile_model.dart';
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/domain/entities/profile.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class EtmamEntryPointLocalDataSource {
   Future<bool> saveProfile(Profile params);
@@ -23,7 +24,14 @@ class EtmamEntryPointLocalDataSourceImpl
       } else {
         throw AuthNotFoundedException();
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw AuthNotFoundedException();
     }
   }
@@ -33,7 +41,14 @@ class EtmamEntryPointLocalDataSourceImpl
     try {
       sharedPrefs.setUserProfile(params.toModel);
       return Future.value(true);
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
       );

@@ -6,6 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../utils_exports.dart' show Log, ResponseDataInMapFormat;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 enum ApiResponse {
   //? First solution, "In case of messages is static"
@@ -56,7 +57,15 @@ enum ApiResponse {
       ApigeeResponseModel? m;
       try {
         m = ApigeeResponseModel.fromMap(response.data);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       message =
           m?.data?.getRefResponseMessage() ?? trans("errors_server_error_1");
     }

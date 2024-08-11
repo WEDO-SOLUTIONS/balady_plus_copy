@@ -29,7 +29,10 @@ import '../../../domain/use_cases/validate_salama_bill.dart';
 import '../../../domain/use_cases/validate_salama_report.dart';
 import '../../step3/bloc/map_bloc.dart';
 import 'package:collection/collection.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 part 'cr_step4_shop_data_state.dart';
+
 
 class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   final GetAccommodationTypes _getAccommodationTypes;
@@ -742,8 +745,15 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
               id: int.tryParse(
                   requestData?.shopInfo?.mallDto["id"].toString() ?? ""));
         }
-      } catch (ex) {
-        print("EXXXXXX $ex");
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+        print("EXXXXXX $error");
       }
       print("EXXXXXX {$selectedMall}");
 

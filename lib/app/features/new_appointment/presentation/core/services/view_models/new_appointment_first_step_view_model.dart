@@ -17,6 +17,7 @@ import '../../models/service_config_reseponse.dart';
 import '../../models/sub_class_response.dart';
 import '../../models/sub_municipalitiy_model.dart';
 import 'new_appointment_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NewAppointmentFirstStepViewModel extends BaseViewModel {
   bool withPreviousTransaction = false;
@@ -357,7 +358,15 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         isFormValid = isValid;
         notifyListeners();
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     notifyListeners();
   }
 

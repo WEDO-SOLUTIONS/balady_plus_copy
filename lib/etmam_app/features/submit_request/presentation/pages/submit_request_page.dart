@@ -32,6 +32,7 @@ import '../../../_shared_feature_/shared/shared_feature_exports.dart'
 
 import '../../submit_request_exports.dart' show RelationBloc;
 import '../widgets/submit_request/form_item_widget.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SubmitRequestPage extends StatefulWidget {
   const SubmitRequestPage({Key? key}) : super(key: key);
@@ -61,7 +62,15 @@ class _SubmitRequestPageState extends State<SubmitRequestPage> {
           var relationBloc;
           try {
             relationBloc = args.releationBloc;
-          } catch (e) {}
+          } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
           return SubmitRequestBloc(
               relationBloc: relationBloc,

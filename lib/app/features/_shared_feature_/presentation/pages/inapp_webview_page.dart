@@ -11,6 +11,7 @@ import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/use_case.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonProperties, Log;
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class InAppWebViewPage extends StatefulWidget {
   const InAppWebViewPage({
@@ -85,7 +86,15 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                 _controller?.evaluateJavascript(
                     source:
                         "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
-              } catch (ex) {}
+              } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
               if (args.isObjections == true &&
                   ((url?.path
@@ -101,7 +110,15 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                   _controller?.evaluateJavascript(
                       source:
                           "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
-                } catch (ex) {}
+                } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
                 const Duration interval = Duration(seconds: 2);
                 const Duration timeout = Duration(minutes: 2);
@@ -112,7 +129,15 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                     _controller?.evaluateJavascript(
                         source:
                             "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
-                  } catch (ex) {}
+                  } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
                   if (timer.tick >= timeout.inSeconds) {
                     timer.cancel();
                     print('Timer stopped after 2 minutes.');

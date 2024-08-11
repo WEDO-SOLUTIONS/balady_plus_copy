@@ -16,6 +16,7 @@ import 'package:dio/dio.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/errors/failures.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class BaladyCalendarYearsListViewModel extends BaseViewModel {
   final BaladyCalendarRepository repository;
@@ -70,20 +71,24 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
           notifyListeners();
         },
       );
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        // response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      errorMessage = exception.toString();
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        // response: response,
-        ex: Exception(exception.toString()),
+      errorMessage = error.toString();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      errorMessage = exception.toString();
+      errorMessage = error.toString();
     }
     isLoading = false;
     notifyListeners();
@@ -135,20 +140,24 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
           notifyListeners();
         },
       );
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        // response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      errorMessage = exception.toString();
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        // response: response,
-        ex: Exception(exception.toString()),
+      errorMessage = error.toString();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      errorMessage = exception.toString();
+      errorMessage = error.toString();
     }
     isLoading = false;
     notifyListeners();
@@ -186,14 +195,14 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
   //         // response: response,
   //         ex: exception,
   //       );
-  //       errorMessage = exception.toString();
+  //       errorMessage = error.toString();
   //     } catch (exception) {
   //       CommonFunctions.sendEvent(
   //         dioError: null,
   //         // response: response,
-  //         ex: Exception(exception.toString()),
+  //         ex: Exception(error.toString()),
   //       );
-  //       errorMessage = exception.toString();
+  //       errorMessage = error.toString();
   //     }
   //     isLoading = false;
   //     notifyListeners();

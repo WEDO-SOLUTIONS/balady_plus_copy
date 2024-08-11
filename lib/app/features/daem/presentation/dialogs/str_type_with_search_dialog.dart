@@ -140,7 +140,15 @@ class _DaemTypeWithSearchDialog extends State<DaemTypeWithSearchDialog> {
     //     _scrollController.animateTo(rowHeight * index,
     //         duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn)
     //   });
-    // } catch (ex) {}
+    // } catch (error, stackTrace) {
+  //   LogsViewModel().sendEventFromModel(
+  //     event: ErrorExceptionModel(
+  //       nameEvent: EventsName.handledException,
+  //       message: error.toString(),
+  //       stackTrace: stackTrace.toString(),
+  //     ),
+  //   );
+  // }
   }
 }
 
@@ -275,6 +283,14 @@ class _LookupTypeWithSearchDialog extends State<LookupTypeWithSearchDialog> {
     //     _scrollController.animateTo(rowHeight * index,
     //         duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn)
     //   });
-    // } catch (ex) {}
+    // } catch (error, stackTrace) {
+  //   LogsViewModel().sendEventFromModel(
+  //     event: ErrorExceptionModel(
+  //       nameEvent: EventsName.handledException,
+  //       message: error.toString(),
+  //       stackTrace: stackTrace.toString(),
+  //     ),
+  //   );
+  // }
   }
 }

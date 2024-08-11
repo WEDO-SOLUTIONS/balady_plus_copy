@@ -11,6 +11,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 
 import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/errors/failures.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class RequestOwnershipTransferDetailsRemoteDataSource {
   Future<CommercialLicenceDetails> getRequestOwnershipTransferDetails(
@@ -43,22 +44,26 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return CommercialLicenceDetails.fromJson(result!);
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      throw ServerException(exception.toString(),
+      throw ServerException(error.toString(),
           exception: APIException(),
           response: response);
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      throw ServerException(exception.toString(),
+      throw ServerException(error.toString(),
           exception: APIException(),
           response: response);
     }
@@ -79,25 +84,27 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
       } else {
         return false;
       }
-    } on ServerException catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: exception,
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-
-      throw ServerException(exception.toString(),
+      throw ServerException(error.toString(),
           exception: APIException(),
           response: response);
-
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
 
-      throw ServerException(exception.toString(),
+      throw ServerException(error.toString(),
           exception: APIException(),
           response: response);
 
@@ -123,22 +130,26 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
       } else {
         return false;
       }
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      throw ServerException(exception.toString(),
+      throw ServerException(error.toString(),
           exception: APIException(),
           response: response);
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      throw ServerException(exception.toString(),
+      throw ServerException(error.toString(),
           exception: APIException(),
           response: response);
     }
@@ -162,7 +173,14 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
 //         .map<InvoiceStatusModel>(
 //             (e) => InvoiceStatusModel.fromMap(e as Map<String, dynamic>))
 //         .toList();
-//   } on DioError catch (error) {
+//   } on DioError catch (error, stackTrace) {
+//       LogsViewModel().sendEventFromModel(
+//         event: ErrorExceptionModel(
+//           nameEvent: EventsName.handledException,
+//           message: error.toString(),
+//           stackTrace: stackTrace.toString(),
+//         ),
+//       );
 //     "DioError $error".errorLog();
 //     if (error is NoDataFoundException) {
 //       rethrow;
@@ -172,14 +190,21 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
 //       statusCode: error.response?.statusCode,
 //       dioError: error,
 //     );
-//   } catch (ex) {
-//     "Catched $ex".errorLog();
-//     if (ex is ServerException) {
+//   } catch (error, stackTrace) {
+//       LogsViewModel().sendEventFromModel(
+//         event: ErrorExceptionModel(
+//           nameEvent: EventsName.handledException,
+//           message: error.toString(),
+//           stackTrace: stackTrace.toString(),
+//         ),
+//       );
+//     "Catched $error".errorLog();
+//     if (error is ServerException) {
 //       rethrow;
 //     } else {
 //       throw ServerException("errors_server_error_2".tr(),
 //           exception: APIException(
-//             errorMessage: ex.toString(),
+//             errorMessage: error.toString(),
 //           ),
 //           response: response);
 //     }

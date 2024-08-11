@@ -14,6 +14,8 @@ import '../../../../../_shared_feature_/presentation/widgets/custom_cupertino_dr
 import '../../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     hide Picker, DateTimePickerAdapter;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 
 class TextBoxAddetionalField extends StatefulWidget {
   final String fieldName;
@@ -335,7 +337,14 @@ class _HijriCalendarAddetionalFieldState
 
         this.selectedDate = hijriCalender;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       this.selectedDate = HijriCalendar.now();
     }
   }
@@ -435,7 +444,14 @@ class _GorgianCalendarAddetionalFieldState
         this.selectedDate = selectedDate;
       } else
         this.selectedDate = DateTime.now();
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       this.selectedDate = DateTime.now();
     }
   }

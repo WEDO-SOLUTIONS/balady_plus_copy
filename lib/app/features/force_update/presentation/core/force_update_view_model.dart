@@ -8,6 +8,7 @@ import '../../../../core/remote_services/api_constants.dart';
 import '../../../../core/remote_services/web_service.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../data/VersionInfo.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ForceUpdateViewModel extends BaseViewModel {
   final webService = locator<WebService>();
@@ -29,7 +30,15 @@ class ForceUpdateViewModel extends BaseViewModel {
                 autoLogout: false)
             .timeout(const Duration(seconds: 10));
         isSuccess = body["state"];
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       if (isSuccess == true) {
         VersionInfo response =
@@ -49,7 +58,15 @@ class ForceUpdateViewModel extends BaseViewModel {
                   autoLogout: false)
               .timeout(const Duration(seconds: 10));
           isSuccess = body["state"];
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
         if (isSuccess == true) {
           VersionInfo response =
@@ -60,7 +77,15 @@ class ForceUpdateViewModel extends BaseViewModel {
               response.data?.result?.forceUpdate);
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   void compareVersion(

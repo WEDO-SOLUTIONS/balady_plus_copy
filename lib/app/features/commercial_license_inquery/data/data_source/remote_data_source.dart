@@ -13,6 +13,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 
 import '../../domain/entity/commercial_license_data_entity.dart';
 import '../model/commercial_license_data_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class CommercialLicenseQueryRemoteDataSource {
   Future<ResponseBodyModel<CommercialLicenseDataModel>>
@@ -49,7 +50,14 @@ class CommercialLicenseQueryRemoteDataSourceImplementation
       // final result = ResponseBodyModel.fromMap(data).data?.result;
       // CommercialLicenseDataModel commercialLicencedata = CommercialLicenseDataModel.fromJson(result!);
       // return  commercialLicencedata;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -59,16 +67,23 @@ class CommercialLicenseQueryRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
 
-      if (ex is ServerException) {
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );

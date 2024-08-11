@@ -19,6 +19,7 @@ import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.d
 import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../transaction_inquiry/presentation/core/models/attachment_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class DaemAttachmentInfoSection extends StatefulWidget {
   List<AttachmentData> uploadedFiles;
@@ -118,8 +119,15 @@ class _DaemAttachmentInfoSectionState extends State<DaemAttachmentInfoSection> {
           }
         }
       }
-    } on PlatformException catch (e) {
-      debugPrint("Unsupported operation" + e.toString());
+    } on PlatformException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      debugPrint("Unsupported operation" + error.toString());
     }
   }
 }

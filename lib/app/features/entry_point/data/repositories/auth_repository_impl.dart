@@ -7,6 +7,7 @@ import '../../../../core/errors/errors_exports.dart'
 import '../../entry_point_exports.dart';
 import '../models/get_permission_params_model.dart';
 import '../models/permission_response_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class EntryPointRepositoryImpl implements EntryPointRepository {
   final EntryPointRemoteDataSource remoteDataSource;
@@ -20,7 +21,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.authorize();
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -31,7 +39,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await localDataSource.saveAuth(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -42,7 +57,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await localDataSource.getAuth();
       return Right(data);
-    } on Exception catch (_) {
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(AuthNotFoundedFailure());
     }
   }
@@ -54,7 +76,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
       final data = await remoteDataSource.endSession();
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.toString(),
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
@@ -66,7 +95,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.refreshToken(refreshToken);
       return Right(data);
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(""));
     }
   }
@@ -77,7 +113,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
       final data = await remoteDataSource.getProfile();
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -88,7 +131,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await localDataSource.checkProfile();
       return Right(data);
-    } on Exception catch (error) {
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(AuthNotFoundedFailure());
     }
   }*/
@@ -98,7 +148,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await localDataSource.saveProfile(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -110,7 +167,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.createProfile();
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -122,7 +186,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.updateProfile(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -134,7 +205,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.addDeviceToken(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -146,7 +224,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.updateDeviceToken(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -157,7 +242,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.logout();
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -169,7 +261,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.getForceVersion(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -183,7 +282,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
         return Right(data);
       else
         return Left(ServerFailure(""));
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -194,7 +300,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await localDataSource.saveSSOProfile(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -205,7 +318,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await localDataSource.checkSSOProfile();
       return Right(data);
-    } on Exception catch (_) {
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(AuthNotFoundedFailure());
     }
   }
@@ -220,7 +340,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
         return Left(ServerFailure(
           "",
         ));
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -231,7 +358,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.getAPIgeeToken();
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -242,7 +376,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.getDataTest();
       return Right(data);
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(""));
     }
   }
@@ -253,7 +394,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.getEkramRules(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -264,7 +412,14 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       final data = await remoteDataSource.getPaymentURL(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

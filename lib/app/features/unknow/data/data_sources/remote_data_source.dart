@@ -11,6 +11,7 @@ import '../../../../core/utils/constants/apis/api_info.dart';
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../profile_features/incidents/domain/entities/download_file_params.dart';
 import '../../../transaction_inquiry/presentation/core/models/download_file_result.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class RequestsRemoteDataSource {
   Future<DownloadIMSFileResult?> downloadFile(
@@ -43,7 +44,14 @@ class RequestsRemoteDataSourceImplementation
       final result = DownloadIMSFileResult.fromJson(response.data);
 
       return result;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       var errorCode;
 
       throw ServerException(
@@ -52,16 +60,31 @@ class RequestsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }

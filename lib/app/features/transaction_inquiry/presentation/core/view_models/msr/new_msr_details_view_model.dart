@@ -10,6 +10,9 @@ import '../../models/gis_location_result.dart';
 import '../../models/selected_location.dart';
 import '../../services/customer_voice_repository.dart';
 import 'new_msr_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
 
 class NewMSRDetailsViewModel extends BaseViewModel {
   final _repositry = locator<CustomerVoiceRepository>();
@@ -149,7 +152,15 @@ class NewMSRDetailsViewModel extends BaseViewModel {
         isFormValid = isvalid;
         notifyListeners();
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   bool showSPLBuisinessTypeOption() {
@@ -179,7 +190,14 @@ class NewMSRDetailsViewModel extends BaseViewModel {
       } else {
         hideSplBuisnessField = false;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       hideSplBuisnessField = false;
     }
   }

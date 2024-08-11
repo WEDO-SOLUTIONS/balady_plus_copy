@@ -23,6 +23,7 @@ import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 import '../../data/models/get_permission_params_model.dart';
 import '../../domain/use_cases/get_ekram_permission.dart';
 import '../../entry_point_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'auth_state.dart';
 
@@ -201,7 +202,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           BlocProvider.of<DashboardBloc>(
                   NavigationService.navigatorKey.currentContext!)
               .add(DashboardEventInitial());
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
     });
 
@@ -358,7 +367,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           _saveSSOProfile(success);
         }
       });
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   Future<void> checkVersion() async {
@@ -460,7 +477,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           CommonProperties.showEkramDriver = false;
         }
       });
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     CommonProperties.showEkramDriver =
         sharedPrefs.isEkramDriver() ?? CommonProperties.showEkramDriver;
     if (allowTracking) {

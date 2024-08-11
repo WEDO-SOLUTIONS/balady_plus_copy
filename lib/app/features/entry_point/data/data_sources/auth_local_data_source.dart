@@ -2,6 +2,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/local/shared_prefs_manager.dart';
 import '../../../../core/services/local/use_case.dart';
 import '../../entry_point_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class EntryPointLocalDataSource {
   Future<bool> saveAuth(SSOToken params);
@@ -21,7 +22,14 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
     try {
       sharedPrefs.setSSOToken(params.toModel);
       return Future.value(true);
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
       );
@@ -37,7 +45,14 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
       } else {
         throw AuthNotFoundedException();
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw AuthNotFoundedException();
     }
   }
@@ -47,7 +62,14 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
     try {
       sharedPrefs.setSSOToken(null);
       return Future.value(NoType());
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw AuthNotFoundedException();
     }
   }
@@ -57,7 +79,14 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
     try {
       sharedPrefs.setSSOUserProfile(params.toModel);
       return Future.value(true);
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
       );
@@ -73,7 +102,14 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
       } else {
         throw AuthNotFoundedException();
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw AuthNotFoundedException();
     }
   }

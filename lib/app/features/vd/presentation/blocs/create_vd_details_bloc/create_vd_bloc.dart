@@ -50,6 +50,10 @@ import '../../../../_shared_feature_/data/entities/validators/name_validation.da
 import '../../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
 import '../../dialogs/duplicate_request_dialog.dart';
 
+
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
 part 'create_vd_event.dart';
 
 part 'create_vd_state.dart';
@@ -691,12 +695,27 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
             timeLimit: Duration(seconds: 6)));
         if (pos == null) pos = (await Geolocator.getLastKnownPosition());
         emitter(state.copyWith(status: BlocStatus.success));
-      } catch (ex) {
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
         emitter(state.copyWith(status: BlocStatus.success));
         if (pos == null)
           try {
             pos = (await Geolocator.getLastKnownPosition());
-          } catch (ex) {}
+          } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
       if (pos != null)
         currentLocation = GISParams(x: pos.longitude, y: pos.latitude);

@@ -13,6 +13,8 @@ import 'package:balady_plus/app/features/tobacco_services/data/models/tobacco_sc
 import 'package:balady_plus/app/features/tobacco_services/data/repositories/repository_implementation.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 
 class TobaccoDetailsViewModel extends BaseViewModel {
   final TobaccoListRepositoryImplementation repository;
@@ -50,8 +52,15 @@ class TobaccoDetailsViewModel extends BaseViewModel {
         },
       );
       isLoading = false;
-    } catch (e) {
-      errorMessage = e.toString();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      errorMessage = error.toString();
       isLoading = false;
     }
     notifyListeners();

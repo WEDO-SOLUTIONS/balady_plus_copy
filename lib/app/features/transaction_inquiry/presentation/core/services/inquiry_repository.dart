@@ -14,6 +14,7 @@ import '../models/classification.dart';
 import '../models/classification_response_model.dart';
 import '../models/create_incident_result.dart';
 import '../models/gis_location_result.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class InquiryRepository {
   final webServices = locator<WebService>();
@@ -37,15 +38,30 @@ class InquiryRepository {
       } else {
         CommonFunctions.showError(error);
       }
-    } catch (ex) {
-      CommonFunctions.showError(error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      CommonFunctions.showError(error.toString());
       try {
         Helpers.sendLog(
             url: RemoteConfig.gis + ApiConstants.GisGetLocation,
             data: data,
             qeuryParms: query,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       return null;
     }
   }
@@ -79,12 +95,27 @@ class InquiryRepository {
       if (response.data.isEmpty) {
         error = ("spl_classification_error").tr();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
         Helpers.sendLog(url: url, data: data, qeuryParms: queryString);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, ClassificationResponse?>(
         state, error, result);
@@ -119,7 +150,14 @@ class InquiryRepository {
       if (response.data.isEmpty) {
         error = ("main_classification_error").tr();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -128,8 +166,16 @@ class InquiryRepository {
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, ClassificationResponse?>(
         state, error, result);
@@ -163,7 +209,14 @@ class InquiryRepository {
       if (response.data.isEmpty) {
         error = ("main_classification_error").tr();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // error = error ?? Helpers.translatingWord("errors_server_error_1");
 
       try {
@@ -174,8 +227,16 @@ class InquiryRepository {
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, ClassificationResponse?>(
         state, error, result);
@@ -206,13 +267,28 @@ class InquiryRepository {
       SubMainClassification response =
           SubMainClassification.fromMap(json.decode(data));
       result = response;
-    } catch (ex) {
-      error = error ?? ("errors_server_error_1").tr();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // error = error ?? ("errors_server_error_1").tr();
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
         Helpers.sendLog(url: url, data: data, qeuryParms: queryString);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, SubMainClassification?>(state, error, result);
   }
@@ -245,7 +321,14 @@ class InquiryRepository {
       if (response.data.isEmpty) {
         error = ("sub_classification_error").tr();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -253,8 +336,16 @@ class InquiryRepository {
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, ClassificationResponse?>(
         state, error, result);
@@ -288,7 +379,15 @@ class InquiryRepository {
       if (response.data.isEmpty) {
         error = ("spl_classification_error").tr();
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, ClassificationResponse?>(
         state, error, result);
   }
@@ -307,11 +406,26 @@ class InquiryRepository {
     CreateIncidentResult? response;
     try {
       response = CreateIncidentResult.fromJson(json.decode(data));
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
-            url: url, data: data, body: body, errorMsg: ex.toString());
-      } catch (ex) {}
+            url: url, data: data, body: body, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, CreateIncidentResult?>(
         state, error, response);

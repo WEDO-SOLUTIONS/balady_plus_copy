@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import 'package:dartz/dartz.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
@@ -22,7 +23,14 @@ class ConstructionLicenseInqueryRepositoryImplementation
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }

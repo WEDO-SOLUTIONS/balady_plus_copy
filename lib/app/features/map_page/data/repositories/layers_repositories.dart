@@ -30,6 +30,7 @@ import '../model/investment_details_response.dart';
 import '../model/rental_details_response.dart';
 import '../model/requests/map_requests_params.dart';
 import '../model/resturant_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class LayersRepositories {
   final WebService webService;
@@ -57,21 +58,22 @@ class LayersRepositories {
                 element.id != 9)
             .toList();
       }
-    } on DioError catch (error) {
-      "DioError $error".errorLog();
-      try {
-        CommonFunctions.sendEvent(dioError: error, response: null, ex: null);
-      } catch (ex) {}
-    } catch (ex) {
-      try {
-        CommonFunctions.sendEvent(
-          response: layersType,
-          ex: APIException(
-            errorMessage: ex.toString(),
-          ),
-        );
-      } catch (ex) {}
-      try {} catch (ex) {}
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
     }
     return null;
   }
@@ -93,7 +95,15 @@ class LayersRepositories {
         return subLayersFromJson(layersType.data['data']['result']
             ['drawingInfo']['renderer']['uniqueValueInfos']);
       }
-    } catch (e) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return null;
   }
 
@@ -175,21 +185,23 @@ class LayersRepositories {
             points.data['data']['result']['features'],
           );
       }
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
-      try {
-        CommonFunctions.sendEvent(dioError: error, response: null, ex: null);
-      } catch (ex) {}
-    } catch (ex) {
-      try {
-        CommonFunctions.sendEvent(
-          response: points,
-          ex: APIException(
-            errorMessage: ex.toString(),
-          ),
-        );
-      } catch (ex) {}
-      try {} catch (ex) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
     }
     return null;
   }
@@ -233,7 +245,15 @@ class LayersRepositories {
             points.data['data']['result']['features'],
           );
       }
-    } catch (e) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return null;
   }
 
@@ -258,7 +278,15 @@ class LayersRepositories {
           InvestmentDetailsResponse.fromJson(response.data);
 
       return investmentDetailsResponse;
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   Future<RentalDetailsResponse?> getTempRentalDetails(
@@ -282,6 +310,14 @@ class LayersRepositories {
           RentalDetailsResponse.fromJson(response.data);
 
       return investmentDetailsResponse;
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 }

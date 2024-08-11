@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_picker_plus/flutter_picker_plus.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +99,14 @@ class _RetriveDateState extends State<RetriveDate> {
         this.selectedDate = selectedDate;
       } else
         this.selectedDate = DateTime.now();
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       this.selectedDate = DateTime.now();
     }
   }

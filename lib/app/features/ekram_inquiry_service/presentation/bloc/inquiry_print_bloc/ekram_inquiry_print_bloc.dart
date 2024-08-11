@@ -25,6 +25,7 @@ import '../../../domain/use_cases/verify_otp_for_print.dart';
 import '../../pages/inquiry_print/print_otp_screen.dart';
 import 'ekram_inquiry_print_event.dart';
 import 'ekram_inquiry_print_state.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class EkramInquiryPrintBloc
     extends Bloc<EkramInquiryPrintEvent, EkramInquiryPrintState> {
@@ -176,7 +177,15 @@ class EkramInquiryPrintBloc
         });
         smsUserConsent?.requestSms();
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     emit(state.copyWith(status: BlocStatus.success));
   }
 }

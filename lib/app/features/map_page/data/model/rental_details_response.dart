@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class RentalDetailsResponse {
   RentalDetailsResponse({
@@ -79,7 +80,15 @@ class TempRentalResult {
     String id = caseID ?? "";
     try {
       id = id.split(" ").last;
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     return id;
   }
@@ -427,7 +436,15 @@ class Details {
       String date = DateFormat.yMMMMd('ar_SA').format(dateAndTime).toString();
 
       formmatedDateAndTime = date;
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     formmatedDateAndTime =
         CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);

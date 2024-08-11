@@ -29,6 +29,8 @@ import '../../../vd/domain/entities/categories/category_item.dart';
 import '../../../vd/presentation/dialogs/vd_all_types_dialog.dart';
 import '../../services_exports.dart';
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 class ServiceIcon extends StatelessWidget {
   final ServiceEntity service;
   final double? width;
@@ -288,8 +290,15 @@ class ServiceIcon extends StatelessWidget {
                     .honoringTheDeadServices,
                 service.title.tr()
               ));
-            } catch (ex) {
-              print(ex);
+            } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+              print(error);
             }
           }
         },

@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/loading_list_widget.dart';
@@ -65,7 +66,17 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                                 "crType": "",
                                               },
                                             );
-                                          } catch (e) {}
+                                          } catch (error, stackTrace) {
+                                            LogsViewModel().sendEventFromModel(
+                                              event: ErrorExceptionModel(
+                                                nameEvent:
+                                                    EventsName.handledException,
+                                                message: error.toString(),
+                                                stackTrace:
+                                                    stackTrace.toString(),
+                                              ),
+                                            );
+                                          }
                                         }
                                         break;
                                     }

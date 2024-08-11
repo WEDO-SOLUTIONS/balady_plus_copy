@@ -19,6 +19,7 @@ import '../../../../../new_appointment/presentation/core/models/confirm_appointm
 import '../../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../../../new_appointment/presentation/core/services/repository/appointment_repository.dart';
 import 'my_appointments_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class AppointmentDetailsViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();
@@ -72,8 +73,15 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   AppointmentItemInfo getAppointmentsInfo() {
     try {
       return appointmentDetailsResponse?.data?.result ?? AppointmentItemInfo();
-    } catch (e) {
-      print(e);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       return AppointmentItemInfo();
     }
   }
@@ -119,8 +127,15 @@ class AppointmentDetailsViewModel extends BaseViewModel {
 
         Share.shareFiles([filetemp.path]);
       }
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
     }
   }
 
@@ -135,12 +150,23 @@ class AppointmentDetailsViewModel extends BaseViewModel {
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
 
-        OpenFile.open(filetemp.path).then((value) => CommonFunctions.sendEvent(
+        OpenFile.open(filetemp.path).then(
+          (value) => CommonFunctions.sendEvent(
             dioError: DioException(
                 requestOptions: RequestOptions(baseUrl: "OpenFile")),
-            ex: Exception(value)));
+            ex: Exception(value),
+          ),
+        );
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   Future<CancelAppointmentResponse?> cancelAppointment() async {

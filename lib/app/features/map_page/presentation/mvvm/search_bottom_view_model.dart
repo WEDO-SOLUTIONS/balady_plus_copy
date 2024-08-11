@@ -5,6 +5,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 
 import 'map_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 FocusNode searchFocusNode = FocusNode();
 
@@ -69,7 +70,14 @@ class SearchBottomViewModel extends BaseViewModel {
           removeSuggestList();
         }
       }
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       isLoadingData.value = false;
       isLoadingData.notifyListeners();
 
@@ -87,7 +95,14 @@ class SearchBottomViewModel extends BaseViewModel {
       suggestResultMessageHistory.value =
           await sharedPrefs.getSuggestResultHistory();
       suggestResultMessageHistory.notifyListeners();
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );}
   }
 
   void removeSuggestList() {
@@ -114,7 +129,15 @@ class SearchBottomViewModel extends BaseViewModel {
     );
     try {
       sharedPrefs.setSuggestResultHistory(suggestResultMessageHistory.value!);
-    } catch (e) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     suggestResultMessageHistory.notifyListeners();
   }
 }
