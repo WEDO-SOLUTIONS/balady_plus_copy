@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:dgis_map/library.dart';
+import 'package:mapness/entities/feedback/feedback.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -18,5 +21,9 @@ class PoiFeedback extends _$PoiFeedback {
     );
 
     return data;
+  }
+
+  Future<void> sendFeedback(FeedbackData data) async {
+    log('Sending feedback');
   }
 }

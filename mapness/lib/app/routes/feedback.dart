@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/pages/feedback/feedback_pages/feedback_address_page.dart';
 import 'package:mapness/pages/feedback/feedback_pages/feedback_area_of_activity_page.dart';
+import 'package:mapness/pages/feedback/feedback_pages/feedback_company_closed_page.dart';
 import 'package:mapness/pages/feedback/feedback_pages/feedback_company_name_page.dart';
+import 'package:mapness/pages/feedback/feedback_pages/feedback_other_page.dart';
+import 'package:mapness/pages/feedback/feedback_pages/feedback_phone_number_page.dart';
+import 'package:mapness/pages/feedback/feedback_pages/feedback_website_page.dart';
+import 'package:mapness/pages/feedback/feedback_pages/feedback_working_hours_page.dart';
+import 'package:mapness/pages/feedback/feedback_success_page.dart';
 import 'package:mapness/pages/feedback/feedback_types_page.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 
@@ -19,6 +26,7 @@ part 'feedback.g.dart';
     TypedGoRoute<FeedbackWebsiteOrSocialMediaRoute>(path: 'website_or_social_media'),
     TypedGoRoute<FeedbackCompanyHasBeenClosedRoute>(path: 'company_has_been_closed'),
     TypedGoRoute<FeedbackOtherRoute>(path: 'other'),
+    TypedGoRoute<FeedbackSuccessRoute>(path: 'success'),
   ],
 )
 
@@ -47,28 +55,29 @@ class FeedbackRoute extends GoRouteData {
 
 /// Company name feedback page. If the user decides to report an error in the company name.
 ///
-/// We have to provide [initialCompanyName] and [objectId] to the page.
+/// We have to provide [initialValue] and [objectId] to the page.
 class FeedbackCompanyNameRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   /// Initial company name to show in the text field.
-  final String initialCompanyName;
+  final String initialValue;
 
   /// Object id to report feedback for.
   final String objectId;
 
-  const FeedbackCompanyNameRoute(this.initialCompanyName, this.objectId);
+  const FeedbackCompanyNameRoute({required this.initialValue, required this.objectId});
 
-  /// Static method to open the route with the given [initialCompanyName] and [objectId].
-  static void open(GoRouter router, String initialCompanyName, String objectId) {
-    final route = FeedbackCompanyNameRoute(initialCompanyName, objectId);
+  /// Static method to open the route with the given [initialValue] and [objectId].
+  static void open(GoRouter router, String initialValue, String objectId) {
+    final route = FeedbackCompanyNameRoute(initialValue: initialValue, objectId: objectId);
     router.push(route.location);
   }
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: FeedbackCompanyNamePage(
-          initialCompanyName: initialCompanyName,
+          initialCompanyName: initialValue,
+          objectId: objectId,
         ),
       );
 }
@@ -76,7 +85,7 @@ class FeedbackCompanyNameRoute extends GoRouteData {
 /// Area of activity feedback page. If the user decides to report an error of the activity of
 /// the object (e.g. a restaurant is marked as a shop).
 ///
-/// We have to provide [initialAreaOfActivity] and [objectId] to the page.
+/// We have to provide [initialValue] and [objectId] to the page.
 class FeedbackAreaOfActivityRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
@@ -86,11 +95,11 @@ class FeedbackAreaOfActivityRoute extends GoRouteData {
   /// Object id to report feedback for.
   final String objectId;
 
-  const FeedbackAreaOfActivityRoute(this.initialAreaOfActivity, this.objectId);
+  const FeedbackAreaOfActivityRoute({required this.initialAreaOfActivity, required this.objectId});
 
-  /// Static method to open the route with the given [initialAreaOfActivity] and [objectId].
-  static void open(GoRouter router, String initialAreaOfActivity, String objectId) {
-    final route = FeedbackCompanyNameRoute(initialAreaOfActivity, objectId);
+  /// Static method to open the route with the given [initialValue] and [objectId].
+  static void open(GoRouter router, String initialValue, String objectId) {
+    final route = FeedbackCompanyNameRoute(initialValue: initialValue, objectId: objectId);
     router.push(route.location);
   }
 
@@ -124,7 +133,9 @@ class FeedbackAddressRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => UnimplementedError();
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
+        child: FeedbackAddressPage(initialAddress: initialValue),
+      );
 }
 
 /// Working hours feedback page. If the user decides to report an error of the working hours of
@@ -147,7 +158,9 @@ class FeedbackWorkingHoursRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => UnimplementedError();
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
+        child: FeedbackWorkingHoursPage(),
+      );
 }
 
 /// Phone number feedback page. If the user decides to report an error of the phone number of
@@ -173,7 +186,11 @@ class FeedbackPhoneNumberRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => UnimplementedError();
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
+        child: FeedbackPhoneNumberPage(
+          initialPhoneNumber: initialValue,
+        ),
+      );
 }
 
 /// Website or social media feedback page. If the user decides to report an error of the website or social media of
@@ -196,7 +213,9 @@ class FeedbackWebsiteOrSocialMediaRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => UnimplementedError();
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
+        child: FeedbackWebsitePage(),
+      );
 }
 
 /// Company has been closed feedback page. If the user decides to report that the company has been closed.
@@ -218,7 +237,9 @@ class FeedbackCompanyHasBeenClosedRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => UnimplementedError();
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
+        child: FeedbackCompanyClosedPage(),
+      );
 }
 
 /// Other feedback page. If the user decides to report an error that is not covered by the other types.
@@ -240,7 +261,30 @@ class FeedbackOtherRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => UnimplementedError();
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
+        child: FeedbackOtherPage(),
+      );
+}
+
+class FeedbackSuccessRoute extends GoRouteData {
+  /// Object id to report feedback for.
+  final String objectId;
+
+  const FeedbackSuccessRoute({required this.objectId});
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  static void open(GoRouter router, String objectId) {
+    final route = FeedbackSuccessRoute(objectId: objectId);
+    router.push(route.location);
+  }
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
+        child: FeedbackSuccessPage(
+          username: '-',
+        ),
+      );
 }
 
 final $feedbackRoutes = $appRoutes;

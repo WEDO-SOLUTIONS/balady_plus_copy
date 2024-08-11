@@ -2,14 +2,18 @@ import 'package:balady_plus/app/features/map_page/extensions/directory_object_ex
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
+import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/app/routes/feedback.dart';
 import 'package:mapness/entities/feedback/feedback_type.dart';
 import 'package:mapness/features/feedback/poi_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/feedback/feedback_page_template.dart';
 
 class FeedbackTypesPage extends ConsumerWidget {
   final String? objectId;
@@ -20,58 +24,71 @@ class FeedbackTypesPage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => FeedbackPageTemplate(
-        title: context.l10n.feedbackWhatsWrong,
-        child: Builder(
-          builder: (context) {
-            if (objectId == null) {
-              return const SizedBox();
-            }
-            final id = int.tryParse(objectId!);
-            if (id == null) {
-              return Center(child: Loading.large());
-            }
-            final data = ref.watch(poiFeedbackProvider(id));
-            return data.maybeWhen(
-              data: (data) => Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: Spacing.$4x),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSizes.xs),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(data?.title ?? '', style: context.textStyle.callout),
-                        const SizedBox(height: 5),
-                        Text(data?.makeAddress() ?? '', style: context.textStyleV3.bodySmallRegular),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: Spacing.$4x),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    child: Material(
-                      shape: smoothBorder(RadiusBorder.l),
-                      color: context.colorsV2.backgroundSurface1,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) => _FeedbackTypeItem(
-                          type: FeedbackType.values[index],
-                          onTap: () => _onTap(context, FeedbackType.values[index], data!),
-                        ),
-                        separatorBuilder: (context, index) => const _Divider(),
-                        itemCount: FeedbackType.values.length,
-                      ),
-                    ),
-                  ),
-                ],
+  Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Material(
+          color: context.colorsV2.backgroundSurface4,
+          child: Scaffold(
+            appBar: BaladyTopBar.iconAndText(
+              title: context.l10n.feedbackWhatsWrong,
+              leading: ActionModel(
+                icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                onPressed: context.pop,
               ),
-              orElse: () => Center(child: Loading.large()),
-            );
-          },
+              colorEnabled: context.colorsV2.accentDefault,
+            ),
+            body: Builder(
+              builder: (context) {
+                if (objectId == null) {
+                  return const SizedBox();
+                }
+                final id = int.tryParse(objectId!);
+                if (id == null) {
+                  return Center(child: Loading.large());
+                }
+                final data = ref.watch(poiFeedbackProvider(id));
+                return data.maybeWhen(
+                  data: (data) => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: Spacing.$4x),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: AppSizes.xs),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(data?.title ?? '', style: context.textStyle.callout),
+                            const SizedBox(height: 5),
+                            Text(data?.makeAddress() ?? '', style: context.textStyleV3.bodySmallRegular),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.$4x),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                        child: Material(
+                          shape: smoothBorder(RadiusBorder.l),
+                          color: context.colorsV2.backgroundSurface1,
+                          child: ListView.separated(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) => _FeedbackTypeItem(
+                              type: FeedbackType.values[index],
+                              onTap: () => _onTap(context, FeedbackType.values[index], data!),
+                            ),
+                            separatorBuilder: (context, index) => const _Divider(),
+                            itemCount: FeedbackType.values.length,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  orElse: () => Center(child: Loading.large()),
+                );
+              },
+            ),
+          ),
         ),
       );
 
@@ -80,19 +97,34 @@ class FeedbackTypesPage extends ConsumerWidget {
     if (localObjectId == null) {
       return;
     }
+    final objectId = localObjectId.toString();
     switch (type) {
       case FeedbackType.companyName:
-        FeedbackCompanyNameRoute(data.title, localObjectId.toString()).push(context);
+        FeedbackCompanyNameRoute(initialValue: data.title, objectId: objectId).push(context);
         break;
       case FeedbackType.areaOfActivity:
-        FeedbackAreaOfActivityRoute(data.subtitle, localObjectId.toString()).push(context);
+        FeedbackAreaOfActivityRoute(initialAreaOfActivity: data.subtitle, objectId: objectId).push(context);
         break;
       case FeedbackType.address:
+        FeedbackAddressRoute(initialValue: data.makeAddress(), objectId: objectId).push(context);
+        break;
       case FeedbackType.workingHours:
+        FeedbackWorkingHoursRoute(objectId: objectId).push(context);
+        break;
       case FeedbackType.phoneNumber:
+        final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
+              (element) => element.type == ContactsInfoType.phone,
+            );
+        FeedbackPhoneNumberRoute(initialValue: phoneNumber?.displayText ?? '', objectId: objectId).push(context);
+        break;
       case FeedbackType.websiteOrSocialMedia:
+        FeedbackWebsiteOrSocialMediaRoute(objectId: objectId).push(context);
+        break;
       case FeedbackType.companyHasBeenClosed:
+        FeedbackCompanyHasBeenClosedRoute(objectId: objectId).push(context);
+        break;
       case FeedbackType.other:
+        FeedbackOtherRoute(objectId: objectId).push(context);
         break;
     }
   }

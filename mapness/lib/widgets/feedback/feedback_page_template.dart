@@ -10,11 +10,14 @@ class FeedbackPageTemplate extends StatelessWidget {
   final Widget child;
   final String title;
   final VoidCallback? onBack;
+  final VoidCallback? onSend;
+
   const FeedbackPageTemplate({
     required this.child,
     required this.title,
     super.key,
     this.onBack,
+    this.onSend,
   });
 
   @override
@@ -29,6 +32,11 @@ class FeedbackPageTemplate extends StatelessWidget {
                 icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                 onPressed: onBack ?? context.pop,
               ),
+              trailing: ActionModel(
+                text: context.l10n.send,
+                onPressed: onSend,
+              ),
+              colorEnabled: context.colorsV2.accentDefault,
             ),
             body: child,
           ),

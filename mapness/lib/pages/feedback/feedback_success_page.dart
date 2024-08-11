@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +7,8 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FeedbackSuccessPage extends StatelessWidget {
-  final VoidCallback onTap;
   final String username;
-  const FeedbackSuccessPage({required this.onTap, required this.username, super.key});
+  const FeedbackSuccessPage({required this.username, super.key});
 
   @override
   Widget build(BuildContext context) => Material(
@@ -56,7 +56,9 @@ class FeedbackSuccessPage extends StatelessWidget {
                     ),
                     buttonColorScheme: ButtonColorScheme.primary,
                     primaryLabel: context.l10n.complete,
-                    onTap: onTap,
+                    onTap: () {
+                      context.popRouteUntilFirst();
+                    },
                   ),
                 ),
               ],
