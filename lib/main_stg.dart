@@ -7,41 +7,12 @@ import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
+import 'package:flutter/material.dart' ;
+
 import 'app/events_logs/balady_logs.dart';
 
-
-import 'package:flutter_embed_unity/flutter_embed_unity.dart';
-import 'package:flutter/material.dart' ;
-// show MaterialApp, Scaffold, runApp
 void main() async {
-  // runApp(MaterialApp(
-  //   home: Scaffold(
-  //     body: Column(
-  //       children: [
-  //         Expanded(
-  //           child: EmbedUnity(
-  //             onMessageFromUnity: (String message) {
-  //               // Receive message from Unity
-  //             },
-  //           ),
-  //         ),
-  //         ElevatedButton(
-  //           onPressed: () {
-  //             // Send message to Unity
-  //             sendToUnity(
-  //               "MyGameObject",  // Game object name
-  //               "SetRotationSpeed",  // Unity script function name
-  //               "42",  // Message
-  //             );
-  //           },
-  //           child: const Text("Set rotation speed"),
-  //         )
-  //       ],
-  //     ),
-  //   ),
-  // ));
-
-
+  unhandledExceptionBaladyLogs( () async {
   await runMapnessApp(() async {
     await AppEnv.setupEnv(EnvType.stg);
 
@@ -74,5 +45,6 @@ void main() async {
     });
 
 
+  });
   });
 }
