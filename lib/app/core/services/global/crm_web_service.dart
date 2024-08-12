@@ -8,7 +8,6 @@ import 'package:balady_plus/app/events_logs/models/request_api_model.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http_certificate_pinning/http_certificate_pinning.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -16,34 +15,26 @@ import 'package:sentry_dio/sentry_dio.dart';
 
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import '../../../features/_shared_feature_/shared_feature_exports.dart'
-    show AuthData, AuthDataModel;
 import '../../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../errors/errors_exports.dart'
     show
         BadRequestException,
         ConflictException,
         DeadlineExceededException,
-        FailedToGenerateTokenException,
         InternalServerErrorException,
         MethodNotAllowedException,
         NoDataFoundException,
         NoInternetConnectionException,
         RequestNotFoundException,
-        TokenHasExpiredException,
-        TokenNotFoundException,
         UnAuthorizedException;
 import '../../utils/utils_exports.dart'
     show
         ApiHeader,
         ApiPOST,
-        ApiParam,
         CommonFunctions,
         CommonProperties,
-        EnvType,
-        Log,
-        WithDelay;
-import '../services_exports.dart' show AppCertificatePinningInterceptor, NavigationService, NetworkConnection;
+        Log;
+import '../services_exports.dart' show NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
 class CRMWebService {
@@ -135,7 +126,7 @@ class AppInterceptors extends Interceptor {
     "Opps, recieved Error: ${err.response?.data}".errorLog();
 
     String? curl = cURLRepresentation(err.requestOptions);
-    String? responseData = err.response?.data;
+    String? responseData = err.response?.data?.toString();
     LogsViewModel().sendEventFromModel(
       event: RequestApiModel(
         nameEvent: EventsName.requestAPIError,
@@ -198,7 +189,7 @@ class AppInterceptors extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     String curl = cURLRepresentation(response.requestOptions);
-    String responseData = response.data;
+    String responseData = response.data.toString();
     if(response.statusCode == 200 || response.statusCode == 201) {
       LogsViewModel().sendEventFromModel(
         event: RequestApiModel(

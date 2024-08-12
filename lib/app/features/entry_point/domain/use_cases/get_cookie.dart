@@ -45,13 +45,14 @@ class GetCookie extends UseCase<String, NoParams> {
                   : RemoteConfig.momraDomain,
               expiresDate: cookieExpiration);
         } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );}
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       } else if (element.contains("ASPXFORMSAUTH")) {
         int valueStartIndex =
             element.indexOf(".ASPXFORMSAUTH=") + ".ASPXFORMSAUTH=".length;
@@ -66,13 +67,14 @@ class GetCookie extends UseCase<String, NoParams> {
               domain: RemoteConfig.momraDomain,
               expiresDate: cookieExpiration);
         } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );}
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       } else if (element.contains("idsrv.session")) {
         int valueStartIndex =
             element.indexOf(".idsrv.session=") + ".idsrv.session=".length;
@@ -88,13 +90,14 @@ class GetCookie extends UseCase<String, NoParams> {
                   : RemoteConfig.momraDomain,
               expiresDate: cookieExpiration);
         } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );}
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       } else if (element.contains(RemoteConfig.webCookieHeader)) {
         int valueStartIndex =
             element.indexOf(".${RemoteConfig.webCookieHeader}=") +
@@ -112,13 +115,14 @@ class GetCookie extends UseCase<String, NoParams> {
                   : RemoteConfig.momraDomain,
               expiresDate: cookieExpiration);
         } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );}
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
     });
     return appCookie;

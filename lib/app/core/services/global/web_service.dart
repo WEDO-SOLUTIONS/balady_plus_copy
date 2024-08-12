@@ -26,26 +26,20 @@ import '../../errors/errors_exports.dart'
         BadRequestException,
         ConflictException,
         DeadlineExceededException,
-        FailedToGenerateTokenException,
         InternalServerErrorException,
         MethodNotAllowedException,
         NoDataFoundException,
         NoInternetConnectionException,
-        RequestNotFoundException,
-        TokenHasExpiredException,
-        TokenNotFoundException,
-        UnAuthorizedException;
+        RequestNotFoundException;
 import '../../utils/utils_exports.dart'
     show
         ApiHeader,
         ApiPOST,
-        ApiParam,
         CommonFunctions,
         CommonProperties,
         EnvType,
-        Log,
-        WithDelay;
-import '../services_exports.dart' show NavigationService, NetworkConnection;
+        Log;
+import '../services_exports.dart' show NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
 class WebService {
@@ -291,12 +285,10 @@ class AppInterceptors extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    print(err.type);
-    print(err);
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
     String? curl = cURLRepresentation(err.requestOptions);
-    String? responseData = err.response?.data;
+    String? responseData = err.response?.data?.toString();
     LogsViewModel().sendEventFromModel(
       event: RequestApiModel(
         nameEvent: EventsName.requestAPIError,
@@ -367,11 +359,10 @@ class AppInterceptors extends Interceptor {
     return handler.next(err);
   }
 
-
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     String curl = cURLRepresentation(response.requestOptions);
-    String responseData = response.data;
+    String responseData = response.data.toString();
     if(response.statusCode == 200 || response.statusCode == 201) {
       LogsViewModel().sendEventFromModel(
         event: RequestApiModel(
@@ -383,8 +374,6 @@ class AppInterceptors extends Interceptor {
     }
     return handler.next(response);
   }
-
-
 
   String get languageCode => translator.activeLanguageCode;
 
