@@ -38,7 +38,10 @@ class FeedbackPageTemplate extends StatelessWidget {
               ),
               colorEnabled: context.colorsV2.accentDefault,
             ),
-            body: child,
+            body: Padding(
+              padding: const EdgeInsets.all(Spacing.$4x),
+              child: child,
+            ),
           ),
         ),
       );

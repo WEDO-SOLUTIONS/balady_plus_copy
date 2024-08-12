@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mapness/widgets/feedback/feedback_label.dart';
 
 class FeedbackImages extends StatelessWidget {
   final List<XFile> images;
@@ -12,29 +13,17 @@ class FeedbackImages extends StatelessWidget {
   final void Function(int) removeImage;
 
   const FeedbackImages({
-    super.key,
     required this.images,
     required this.addImage,
     required this.removeImage,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.$2x),
-                  child: Text(
-                    'Images',
-                    style: context.textStyle.caption,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          const FeedbackLabel(text: 'Images'),
           Wrap(
             spacing: 8,
             runSpacing: 8,
