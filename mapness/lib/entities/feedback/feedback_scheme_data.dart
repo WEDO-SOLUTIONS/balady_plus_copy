@@ -135,36 +135,3 @@ final class FeedbackFieldImagesData extends FeedbackFieldData {
 
   const FeedbackFieldImagesData() : super(type: typeValue);
 }
-
-// TODO: Тут нужен парсер текста в иконку
-// TODO: Нужно для каждого типа поля создать свой класс
-// Тут нам важен id фидбека и id POI для того, чтобы передать данные
-// Сами же поля мы выстраиваем по схеме из fields
-const dataMocked = '''
-{
-  "feedbacks": [
-   {
-    "id": "company_name",
-    "title": "Company name",
-    "icon": "GeneralIcons.building", 
-    "payload": {
-     "app_bar": "Company name",
-     "fields": [
-      {
-         "type": "input",
-         "label": "Company name", 
-         "hint": "Enter company name",
-         "error": "Company name is required"
-       },
-      {
-        "type": "comment"
-      },
-      {
-        "type": "business_owner"
-      },
-      {
-       "type": "images"
-      }
-   },
- ]}
- ''';
