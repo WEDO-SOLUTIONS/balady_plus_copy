@@ -52,6 +52,7 @@ class _FeedbackCompanyClosedPageState extends State<FeedbackCompanyClosedPage> {
                   leadingIcon: GeneralIcons.questionCircle,
                 ),
               ],
+              label: 'Label',
             ),
             FeedbackComment(
               onChanged: (value) {

@@ -85,7 +85,7 @@ class InfoWidget extends ConsumerWidget {
 
     final feedback = PoiContentFeedback(
       onFeedbackTap: () {
-        FeedbackRoute(objectId: data.id!.objectId.toString()).push(context);
+        FeedbackBaseRoute(objectId: data.id!.objectId.toString()).push(context);
       },
       title: context.l10n.reportError,
       buttonText: context.l10n.send,

@@ -75,7 +75,7 @@ class _FeedbackCompanyNamePageState extends State<FeedbackCompanyNamePage> {
       );
 
   void _onSend() {
-    FeedbackSuccessRoute(objectId: widget.objectId).push(context);
+    FeedbackSuccessRoute(objectId: widget.objectId, schemeId: '').push(context);
   }
 
   Future<void> addImage() async {

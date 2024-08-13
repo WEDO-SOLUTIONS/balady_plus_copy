@@ -51,21 +51,25 @@ class _Button extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => InkWell(
-        onTap: onTap,
-        child: Container(
-          height: 62,
-          width: 62,
-          decoration: BoxDecoration(
-            color: context.colorsV2.backgroundSurface1,
-            borderRadius: BorderRadius.circular(RadiusBorder.l),
-          ),
-          // TODO: Add icon "Plus cicle"
-          child: Center(
-            child: Icon(
-              GeneralIcons.circleNull,
-              color: context.colorsV2.accentDefault,
-              size: 24,
+  Widget build(BuildContext context) => ClipRRect(
+        borderRadius: BorderRadius.circular(RadiusBorder.l),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(RadiusBorder.l),
+          child: SizedBox(
+            height: 62,
+            width: 62,
+
+            // TODO: Add icon "Plus cicle"
+            child: ColoredBox(
+              color: context.colorsV2.backgroundSurface1,
+              child: Center(
+                child: Icon(
+                  GeneralIcons.circleNull,
+                  color: context.colorsV2.accentDefault,
+                  size: 24,
+                ),
+              ),
             ),
           ),
         ),
