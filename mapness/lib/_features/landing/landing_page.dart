@@ -127,6 +127,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   Widget build(BuildContext context) {
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
+
+    _testSimulator();
+
     ref
       ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
@@ -274,5 +277,11 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     );
 
     ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
+  }
+
+  Future<void> _testSimulator() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    await dgisController.toggleOverSpeeding(overSpeeding: false);
+    await dgisController.toggleVoiceInstruction(toggleType: SoundToggleType.important);
   }
 }

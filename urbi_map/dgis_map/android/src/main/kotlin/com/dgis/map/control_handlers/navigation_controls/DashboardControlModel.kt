@@ -1,7 +1,7 @@
 package com.dgis.map.control_handlers.navigation_controls;
 
+import android.util.Log
 import com.dgis.map.map_api.Messages
-import com.dgis.map.map_api.Messages.AudioVolume
 import com.dgis.map.map_api.Messages.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
@@ -27,7 +27,6 @@ class DashboardControlModel(
     private var routeLength: RouteDistance = RouteDistance(0)
 
     companion object {
-        private val allSounds = SoundCategory.values()
         private val dateFormat = SimpleDateFormat("HH:mm")
     }
     
@@ -66,20 +65,47 @@ class DashboardControlModel(
     fun setNavigatorVolume(volume: Messages.AudioVolumeMessage) {
         this.navigationManager.soundNotificationSettings.notificationVolume = ru.dgis.sdk.navigation.AudioVolume.valueOf(volume.name)
     }
+
     fun muteOtherSounds(mute: Boolean) {
         this.navigationManager.soundNotificationSettings.mute = mute
-
     }
+
     fun toggleVoiceInstruction(toggleType: SoundToggleType) {
         this.navigationManager.soundNotificationSettings.enabledSoundCategories = soundToggleMapper(toggleType)
     }
 
+    fun toggleOverSpeeding(overSpeeding: Boolean) {
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories =
+            if (overSpeeding) {
+                EnumSet.allOf(SoundCategory::class.java)
+            } else {
+                EnumSet.complementOf(EnumSet.of(SoundCategory.EXCEED_SPEED_LIMITS))
+            }
+    }
+
+    fun toggleRoadCameras(roadCameras: Boolean) {
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories = if (roadCameras) {
+            EnumSet.complementOf(
+                EnumSet.of(
+                    SoundCategory.CROSSROAD_CAMERAS,
+                    SoundCategory.LANE_CAMERAS,
+                    SoundCategory.NO_STOPPING_CONTROL_CAMERAS,
+                    SoundCategory.ROAD_MARKING_CAMERAS,
+                    SoundCategory.AVERAGE_SPEED_CAMERAS,
+                    SoundCategory.MAX_SPEED_CAMERAS
+                )
+            )
+        } else {
+            EnumSet.allOf(SoundCategory::class.java)
+        }
+    }
+
     private fun soundToggleMapper(toggleType: SoundToggleType): EnumSet<SoundCategory> {
      return when (toggleType) {
-            SoundToggleType.NONE -> EnumSet.noneOf(SoundCategory::class.java)
-            SoundToggleType.ALL -> EnumSet.allOf(SoundCategory::class.java)
-            SoundToggleType.IMPORTANT -> EnumSet.of(SoundCategory.NO_STOPPING_CONTROL_CAMERAS, SoundCategory.ACCIDENTS)
-        }
+         SoundToggleType.NONE -> EnumSet.noneOf(SoundCategory::class.java)
+         SoundToggleType.ALL -> EnumSet.allOf(SoundCategory::class.java)
+         SoundToggleType.IMPORTANT -> EnumSet.complementOf(EnumSet.of(SoundCategory.INSTRUCTIONS))
+     }
     }
 
     override fun close() {

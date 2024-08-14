@@ -850,6 +850,17 @@ class DgisMapView(
         navigationHandler.toggleVoiceInstruction(toggleType)
         result?.success(null)
     }
+
+    override fun toggleRoadCameras(roadCameras: Boolean, result: Messages.Result<Void>?) {
+        navigationHandler.toggleRoadCameras(roadCameras)
+        result?.success(null)
+    }
+
+    override fun toggleOverSpeeding(overSpeeding: Boolean, result: Messages.Result<Void>?) {
+        navigationHandler.toggleOverSpeeding(overSpeeding)
+        result?.success(null)
+    }
+
     override fun muteOtherSounds(mute: Boolean, result: Messages.Result<Void>?) {
         navigationHandler.muteOtherSounds(mute)
         result?.success(null)

@@ -722,6 +722,14 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.toggleVoiceInstruction(toggleType);
   }
 
+  Future<void> toggleRoadCameras({required bool roadCameras}) {
+    return _api.toggleRoadCameras(roadCameras);
+  }
+
+  Future<void> toggleOverSpeeding({required bool overSpeeding}) {
+    return _api.toggleOverSpeeding(overSpeeding);
+  }
+
   Future<void> setNavigatorVolume({required AudioVolumeMessage volume}) {
     return _api.setNavigatorVolume(volume);
   }

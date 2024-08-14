@@ -63,12 +63,38 @@ class DashboardControlModel {
     }
     
     func toggleSounds(toggleType: SoundToggleType) {
-        if toggleType == SoundToggleType.all {
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories
-        } else {
+        switch toggleType {
+        case .none:
             self.navigationManager.soundNotificationSettings.enabledSoundCategories = []
+
+        case .all:
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories
+
+        case .important:
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories.subtracting([.instructions])
+
+        @unknown default:
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories
         }
     }
+    
+    func toggleRoadCameras(roadCameras: Bool) {
+        self.navigationManager.soundNotificationSettings.enabledSoundCategories = roadCameras ?
+            Self.allCategories.subtracting([.crossroadCameras,
+                                                    .laneCameras,
+                                                    .noStoppingControlCameras,
+                                                    .roadMarkingCameras,
+                                                    .averageSpeedCameras,
+                                                    .maxSpeedCameras])
+            : Self.allCategories
+    }
+
+    func toggleOverSpeeding(overSpeeding: Bool) {
+        self.navigationManager.soundNotificationSettings.enabledSoundCategories = overSpeeding ?
+              Self.allCategories
+            : Self.allCategories.subtracting([.exceedSpeedLimits])
+    }
+
 
     func cancel() {
         self.cancelable.forEach { $0.cancel() }

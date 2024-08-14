@@ -504,6 +504,13 @@ class DgisMapController {
   Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) =>
       _instance.toggleVoiceInstruction(toggleType: toggleType);
 
+  /// Controls sounds in navigation.
+  Future<void> toggleOverSpeeding({required bool overSpeeding}) =>
+      _instance.toggleOverSpeeding(overSpeeding: overSpeeding);
+
+  /// Controls sounds Cameras in navigation.
+  Future<void> toggleRoadCameras({required bool roadCameras}) => _instance.toggleRoadCameras(roadCameras: roadCameras);
+
   /// Mute other apps sounds when navigation notification recieved.
   Future<void> muteOtherSounds({required bool mute}) => _instance.muteOtherSounds(mute: mute);
 

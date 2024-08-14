@@ -1394,6 +1394,12 @@ abstract class MapApi {
   void toggleVoiceInstruction(SoundToggleType toggleType);
 
   @async
+  void toggleRoadCameras(bool roadCameras);
+
+  @async
+  void toggleOverSpeeding(bool overSpeeding);
+
+  @async
   void muteOtherSounds(bool mute);
 
   @async

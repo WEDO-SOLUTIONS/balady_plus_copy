@@ -148,23 +148,34 @@ class NavigationHandler(
     fun toggleVoiceInstruction(toggleType: SoundToggleType) {
         dashboardControlModel.toggleVoiceInstruction(toggleType)
     }
+
+    fun toggleRoadCameras(roadCameras: Boolean) {
+        dashboardControlModel.toggleRoadCameras(roadCameras)
+    }
+
+    fun toggleOverSpeeding(overSpeeding: Boolean) {
+        dashboardControlModel.toggleOverSpeeding(overSpeeding)
+    }
+
     fun setNavigatorVolume(volume: Messages.AudioVolumeMessage) {
         dashboardControlModel.setNavigatorVolume(volume)
     }
-    fun muteOtherSounds( mute: Boolean) {
+
+    fun muteOtherSounds(mute: Boolean) {
         dashboardControlModel.muteOtherSounds(mute)
     }
-    fun setNavigatorVoice(id: String, result: Messages.Result<Void>?) {
+
+    fun setNavigatorVoice(id: String, result: Result<Void>?) {
         navigationManager.voiceSelector.voice = voicesManager.voices.firstOrNull { it.id == id }?.navigationVoice
         result?.success(null)
     }
 
-    fun saveNavigationState(result: Messages.Result<ByteArray>?)  {
+    fun saveNavigationState(result: Result<ByteArray>?)  {
         val state = PackedNavigationState.fromModel(model = this.navigationManager.uiModel)
         result?.success(state.toBytes())
     }
 
-    fun restoreNavigationState(state: ByteArray, speedRangeZoom: Messages.SpeedRangeZoom, result: Messages.Result<Void>?) {
+    fun restoreNavigationState(state: ByteArray, speedRangeZoom: Messages.SpeedRangeZoom, result: Result<Void>?) {
         try {
             val state = PackedNavigationState.fromBytes(state)
             this.startNavigation(

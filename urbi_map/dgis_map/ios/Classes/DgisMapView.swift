@@ -1132,6 +1132,16 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.toggleSounds(toggleType: toggleType)
         completion(nil)
     }
+
+    func toggleOverSpeeding(_ overSpeeding: Bool, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleOverSpeeding(overSpeeding: overSpeeding)
+        completion(nil)
+    }
+
+    func toggleRoadCameras(_ roadCameras: Bool, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleRoadCameras(roadCameras: roadCameras)
+        completion(nil)
+    }
   
     func setNavigatorVolumeVolume(_ volume: AudioVolumeMessage, completion: @escaping (FlutterError?) -> Void) {
         sdk.audioSettings.audioVolume = audioVolumeMapper(volume: volume)
