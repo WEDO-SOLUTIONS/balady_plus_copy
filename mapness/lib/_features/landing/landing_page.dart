@@ -138,9 +138,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   Widget build(BuildContext context) {
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
-
-    _testSimulator();
-
     ref
       ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
