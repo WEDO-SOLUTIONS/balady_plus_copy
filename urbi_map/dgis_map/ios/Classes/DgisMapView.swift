@@ -3,7 +3,6 @@ import Flutter
 import DGis
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
-
     private class Events {
         static let zoomOutEvent = "zoomOutState"
         static let zoomInEvent = "zoomInState"
@@ -1133,13 +1132,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
 
-    func toggleOverSpeeding(_ overSpeeding: Bool, completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.toggleOverSpeeding(overSpeeding: overSpeeding)
+    func toggleOverSpeedingToggleType(_ overSpeeding: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleOverSpeeding(overSpeeding: overSpeeding.boolValue)
         completion(nil)
     }
 
-    func toggleRoadCameras(_ roadCameras: Bool, completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.toggleRoadCameras(roadCameras: roadCameras)
+    func toggleRoadCamerasToggleType(_ roadCameras: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleRoadCameras(roadCameras: roadCameras.boolValue)
         completion(nil)
     }
   

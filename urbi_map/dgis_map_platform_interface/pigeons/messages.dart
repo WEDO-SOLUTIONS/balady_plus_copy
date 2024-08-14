@@ -1082,15 +1082,14 @@ enum AudioVolumeMessage {
 /// [betterRouteLengthThreshold] - minimum total length (in millimeters) of route edges that differ between the original route
 /// and the alternative route at which the alternative route is considered a better route
 class BetterRouteSettingsMessage {
-  final int betterRouteTimeCostThreshold;
-  final int betterRouteLengthThreshold;
-  final int routeSearchDelay;
-
   const BetterRouteSettingsMessage({
     required this.betterRouteTimeCostThreshold,
     required this.betterRouteLengthThreshold,
     required this.routeSearchDelay,
   });
+  final int betterRouteTimeCostThreshold;
+  final int betterRouteLengthThreshold;
+  final int routeSearchDelay;
 }
 
 @ConfigurePigeon(
@@ -1394,10 +1393,10 @@ abstract class MapApi {
   void toggleVoiceInstruction(SoundToggleType toggleType);
 
   @async
-  void toggleRoadCameras(bool roadCameras);
+  void toggleRoadCameras(bool toggleType);
 
   @async
-  void toggleOverSpeeding(bool overSpeeding);
+  void toggleOverSpeeding(bool toggleType);
 
   @async
   void muteOtherSounds(bool mute);
