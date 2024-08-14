@@ -5,13 +5,13 @@ import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/feedback.dart';
 import 'package:mapness/entities/feedback/feedback_scheme_data.dart';
 import 'package:mapness/entities/feedback/feedback_type.dart';
 import 'package:mapness/features/feedback/feedback_scheme.dart';
 import 'package:mapness/features/feedback/poi_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/feedback/feedback_page_template.dart';
 
 class FeedbackTypesPage extends ConsumerWidget {
   final String? objectId;
@@ -22,81 +22,69 @@ class FeedbackTypesPage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Material(
-          color: context.colorsV2.backgroundSurface4,
-          child: Scaffold(
-            appBar: BaladyTopBar.iconAndText(
-              title: context.l10n.feedbackWhatsWrong,
-              leading: ActionModel(
-                icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
-                onPressed: context.pop,
-              ),
-              colorEnabled: context.colorsV2.accentDefault,
-            ),
-            body: Builder(
-              builder: (context) {
-                if (objectId == null) {
-                  return const SizedBox();
-                }
-                final id = int.tryParse(objectId!);
-                if (id == null) {
-                  return Center(child: Loading.large());
-                }
-                final poiData = ref.watch(poiFeedbackProvider(id));
-                final schemes = ref.watch(feedbackSchemeProvider);
-                if (poiData.isLoading || schemes.isLoading) {
-                  return Center(child: Loading.large());
-                } else if (poiData.hasError || schemes.hasError) {
-                  return Center(child: Text(context.l10n.failedToLoadData));
-                }
-                final poiDataValue = poiData.value;
-                final schemeValue = schemes.value;
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: Spacing.$4x),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSizes.xs),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(poiDataValue?.title ?? '', style: context.textStyle.callout),
-                          const SizedBox(height: 5),
-                          Text(poiDataValue?.makeAddress() ?? '', style: context.textStyleV3.bodySmallRegular),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: Spacing.$4x),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                      child: Material(
-                        shape: smoothBorder(RadiusBorder.l),
-                        color: context.colorsV2.backgroundSurface1,
-                        child: ListView.separated(
-                          padding: const EdgeInsets.symmetric(vertical: 6),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) => _FeedbackTypeItem(
-                            title: schemeValue.feedbacks[index].title,
-                            icon: schemeValue.feedbacks[index].icon,
-                            onTap: () => _onTap(
-                              context,
-                              schemeValue.feedbacks[index],
-                              poiDataValue?.id?.objectId,
-                            ),
-                          ),
-                          separatorBuilder: (context, index) => const _Divider(),
-                          itemCount: schemeValue!.feedbacks.length,
+  Widget build(BuildContext context, WidgetRef ref) => FeedbackPageTemplate(
+        title: context.l10n.feedbackWhatsWrong,
+        isSendVisible: false,
+        child: Builder(
+          builder: (context) {
+            if (objectId == null) {
+              return const SizedBox();
+            }
+            final id = int.tryParse(objectId!);
+            if (id == null) {
+              return Center(child: Loading.large());
+            }
+            final poiData = ref.watch(poiFeedbackProvider(id));
+            final schemes = ref.watch(feedbackSchemeProvider);
+            if (poiData.isLoading || schemes.isLoading) {
+              return Center(child: Loading.large());
+            } else if (poiData.hasError || schemes.hasError) {
+              return Center(child: Text(context.l10n.failedToLoadData));
+            }
+            final poiDataValue = poiData.value;
+            final schemeValue = schemes.value;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: Spacing.$4x),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.xs),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(poiDataValue?.title ?? '', style: context.textStyle.callout),
+                      const SizedBox(height: 5),
+                      Text(poiDataValue?.makeAddress() ?? '', style: context.textStyleV3.bodySmallRegular),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: Spacing.$4x),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  child: Material(
+                    shape: smoothBorder(RadiusBorder.l),
+                    color: context.colorsV2.backgroundSurface1,
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) => _FeedbackTypeItem(
+                        title: schemeValue.feedbacks[index].title,
+                        icon: schemeValue.feedbacks[index].icon,
+                        onTap: () => _onTap(
+                          context,
+                          schemeValue.feedbacks[index],
+                          poiDataValue?.id?.objectId,
                         ),
                       ),
+                      separatorBuilder: (context, index) => const _Divider(),
+                      itemCount: schemeValue!.feedbacks.length,
                     ),
-                  ],
-                );
-              },
-            ),
-          ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       );
 

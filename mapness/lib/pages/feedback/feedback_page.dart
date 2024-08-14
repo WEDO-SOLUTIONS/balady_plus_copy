@@ -11,6 +11,8 @@ import 'package:mapness/entities/feedback/feedback_scheme_data.dart';
 import 'package:mapness/entities/feedback/feedback_type.dart';
 import 'package:mapness/features/feedback/feedback_scheme.dart';
 import 'package:mapness/features/feedback/poi_feedback.dart';
+import 'package:mapness/pages/feedback/pages/feedback_failure.dart';
+import 'package:mapness/pages/feedback/pages/feedback_loading.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/feedback_business_owner.dart';
 import 'package:mapness/widgets/feedback/feedback_chips.dart';
@@ -32,43 +34,40 @@ class FeedbackPage extends ConsumerStatefulWidget {
 class _FeedbackPageState extends ConsumerState<FeedbackPage> {
   final _fields = <String, dynamic>{};
   String title = 'Feedback';
+
   @override
-  Widget build(BuildContext context) => FeedbackPageTemplate(
-        title: title,
-        onSend: _sendFeedback,
-        child: Builder(
-          builder: (context) {
-            final objectId = int.tryParse(widget.poiId);
-            if (objectId == null) {
-              return Center(child: Text(context.l10n.failedToLoadData));
-            }
-            final poiData = ref.watch(poiFeedbackProvider(objectId));
-            final schemes = ref.watch(feedbackSchemeProvider);
-            if (poiData.isLoading || schemes.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (poiData.hasError || schemes.hasError) {
-              return Center(child: Text(context.l10n.failedToLoadData));
-            }
-            final poiDataValue = poiData.value;
-            final schemeValue = schemes.value;
-            final scheme = schemeValue?.feedbacks.firstWhereOrNull((element) => element.id == widget.schemeId);
+  Widget build(BuildContext context) {
+    final objectId = int.tryParse(widget.poiId);
+    if (objectId == null) {
+      return const FeedbackFailure();
+    }
+    final poiData = ref.watch(poiFeedbackProvider(objectId));
+    final schemes = ref.watch(feedbackSchemeProvider);
+    if (poiData.isLoading || schemes.isLoading) {
+      return const FeedbackLoading();
+    } else if (poiData.hasError || schemes.hasError) {
+      return const FeedbackFailure();
+    }
+    final poiDataValue = poiData.value;
+    final schemeValue = schemes.value;
+    final scheme = schemeValue?.feedbacks.firstWhereOrNull((element) => element.id == widget.schemeId);
 
-            title = scheme?.appBar ?? 'Feedback';
+    title = scheme?.appBar ?? 'Feedback';
 
-            final fields = scheme?.fields;
-            return ListView(
-              padding: EdgeInsets.zero,
-              primary: true,
-              shrinkWrap: true,
-              children: fields
-                      ?.map((e) => _buildField(context, e, poiDataValue))
-                      .insertBetween(Spacing.$4x.heightBox)
-                      .toList() ??
-                  [],
-            );
-          },
-        ),
-      );
+    final fields = scheme?.fields;
+
+    return FeedbackPageTemplate(
+      title: title,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        primary: true,
+        shrinkWrap: true,
+        children:
+            fields?.map((e) => _buildField(context, e, poiDataValue)).insertBetween(Spacing.$4x.heightBox).toList() ??
+                [],
+      ),
+    );
+  }
 
   Widget _buildField(
     BuildContext context,
