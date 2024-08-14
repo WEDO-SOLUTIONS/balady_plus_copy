@@ -278,10 +278,4 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
     ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
   }
-
-  Future<void> _testSimulator() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-    await dgisController.toggleOverSpeeding(overSpeeding: false);
-    await dgisController.toggleVoiceInstruction(toggleType: SoundToggleType.important);
-  }
 }
