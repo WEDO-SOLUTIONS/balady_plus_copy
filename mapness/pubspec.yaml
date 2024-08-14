@@ -158,3 +158,4 @@ flutter:
     - assets/icons/svg/poi_card/
     - assets/images/
     - assets/images_svg/
+    - assets/feedback_scheme_mock.json

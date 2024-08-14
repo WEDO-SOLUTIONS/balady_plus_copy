@@ -1,0 +1,92 @@
+{
+    "feedbacks": [
+        {
+            "id": "company_name",
+            "title": "Company name",
+            "icon": "nameChange",
+            "app_bar": "Company name",
+            "fields": [
+                {
+                    "type": "input",
+                    "label": "Company name",
+                    "hint": "Enter company name",
+                    "error": "Company name is required",
+                    "id": "company_name"
+                },
+                {
+                    "type": "comment"
+                },
+                {
+                    "type": "business_owner"
+                },
+                {
+                    "type": "images"
+                }
+            ]
+        },
+        {
+            "id": "area_of_activity",
+            "title": "Area of activity",
+            "icon": "messageText",
+            "app_bar": "Area of activity",
+            "fields": [
+                {
+                    "type": "input",
+                    "label": "Area of activity",
+                    "hint": "Enter area of activity",
+                    "error": "Area of activity is required",
+                    "id": "area_of_activity"
+                },
+                {
+                    "type": "comment"
+                },
+                {
+                    "type": "business_owner"
+                },
+                {
+                    "type": "images"
+                }
+            ]
+        },
+        {
+            "id": "company_closed",
+            "title": "Company has been closed",
+            "icon": "clearCircle",
+            "app_bar": "Company closed",
+            "fields": [
+                {
+                    "type": "chips",
+                    "label": "What’s happened",
+                    "can_be_chosen": 1,
+                    "values": [
+                        {
+                            "text": "There is no such company here",
+                            "icon": "сlearCircle"
+                        },
+                        {
+                            "text": "Temporarily closed",
+                            "icon": "timeQuarter"
+                        },
+                        {
+                            "text": "Company has moved",
+                            "icon": "pin"
+                        },
+                        {
+                            "text": "Other",
+                            "icon": "questionCircle"
+                        }
+                    ]
+                },
+                {
+                    "type": "comment"
+                },
+                {
+                    "type": "business_owner"
+                },
+                {
+                    "type": "images"
+                }
+            ]
+        }
+    ]
+}
