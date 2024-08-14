@@ -46,9 +46,8 @@ class FeedbackTypesPage extends ConsumerWidget {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: Spacing.$4x),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.xs),
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -59,27 +58,24 @@ class FeedbackTypesPage extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: Spacing.$4x),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  child: Material(
-                    shape: smoothBorder(RadiusBorder.l),
-                    color: context.colorsV2.backgroundSurface1,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) => _FeedbackTypeItem(
-                        title: schemeValue.feedbacks[index].title,
-                        icon: schemeValue.feedbacks[index].icon,
-                        onTap: () => _onTap(
-                          context,
-                          schemeValue.feedbacks[index],
-                          poiDataValue?.id?.objectId,
-                        ),
+                Material(
+                  shape: smoothBorder(RadiusBorder.l),
+                  color: context.colorsV2.backgroundSurface1,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) => _FeedbackTypeItem(
+                      title: schemeValue.feedbacks[index].title,
+                      icon: schemeValue.feedbacks[index].icon,
+                      onTap: () => _onTap(
+                        context,
+                        schemeValue.feedbacks[index],
+                        poiDataValue?.id?.objectId,
                       ),
-                      separatorBuilder: (context, index) => const _Divider(),
-                      itemCount: schemeValue!.feedbacks.length,
                     ),
+                    separatorBuilder: (context, index) => const _Divider(),
+                    itemCount: schemeValue!.feedbacks.length,
                   ),
                 ),
               ],
