@@ -5,8 +5,7 @@ extension FeedbackTypeExt on String {
   IconData? feedbackIcon({required bool isLTR}) {
     switch (this) {
       case 'nameChange':
-        // TODO: Add new icon in UIKit
-        return GeneralIcons.circleNull;
+        return GeneralIcons.nameChange;
       case 'messageText':
         return isLTR ? GeneralIcons.messageTextLTR : GeneralIcons.messageTextRTL;
       case 'pin':
