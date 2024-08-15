@@ -961,6 +961,13 @@ class BriefRouteInfoMessage {
   final BriefExtraRouteInfoMessage extraInfo;
 }
 
+class VoiceMessage {
+  VoiceMessage(this.language, this.packageMessage);
+
+  final String language;
+  final PackageMessage packageMessage;
+}
+
 class PackageMessage {
   PackageMessage(this.id, this.info);
 
@@ -1448,7 +1455,7 @@ abstract class MapApi {
   List<PackageMessage?> listPackages();
 
   @async
-  List<PackageMessage?> listVoices();
+  List<VoiceMessage?> listVoices();
 
   @async
   void installPackage(String id);

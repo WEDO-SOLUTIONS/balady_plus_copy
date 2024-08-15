@@ -2,7 +2,6 @@ rootProject.name = 'dgis_map'
 
 include ':_delete_me_'
 
-pluginManagement {
     buildscript {
         repositories {
             mavenCentral()
@@ -16,4 +15,3 @@ pluginManagement {
             classpath("com.android.tools:r8:8.2.16-dev")
         }
     }
-}

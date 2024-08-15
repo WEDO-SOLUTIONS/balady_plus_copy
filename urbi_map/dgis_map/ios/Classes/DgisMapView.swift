@@ -1095,7 +1095,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         packagesHandler?.installPackage(id, completion: completion)
     }
 
-    func listVoices(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
+    func listVoices(completion: @escaping ([VoiceMessage]?, FlutterError?) -> Void) {
         packagesHandler?.listVoices(completion: completion)
     }
 

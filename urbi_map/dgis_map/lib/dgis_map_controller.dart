@@ -575,7 +575,7 @@ class DgisMapController {
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
 
   ///List voices
-  Future<List<PackageMessage?>> listVoices() => _instance.listVoices();
+  Future<List<VoiceMessage?>> listVoices() => _instance.listVoices();
 
   ///Install package
   Future<void> installPackage(String id) => _instance.installPackage(id);

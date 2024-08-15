@@ -25,10 +25,10 @@ class DgisPackages extends _$DgisPackages {
 @riverpod
 class VoicePackages extends _$VoicePackages {
   @override
-  List<PackageMessage> build() {
+  List<VoiceMessage> build() {
     final dgisController = ref.watch(dgisControllerProvider);
     dgisController.value?.listVoices().then(
-          (value) => state = value.whereType<PackageMessage>().toList(),
+          (value) => state = value.whereType<VoiceMessage>().toList(),
         );
 
     return [];

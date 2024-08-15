@@ -974,7 +974,7 @@ class DgisMapView(
         packagesHandler.installPackage(id, result)
     }
 
-    override fun listVoices(result: Messages.Result<List<PackageMessage>>?) {
+    override fun listVoices(result: Messages.Result<List<VoiceMessage>>?) {
         packagesHandler.listVoices(result)
     }
 

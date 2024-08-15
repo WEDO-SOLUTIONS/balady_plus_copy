@@ -782,7 +782,7 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.listPackages();
   }
 
-  Future<List<PackageMessage?>> listVoices() {
+  Future<List<VoiceMessage?>> listVoices() {
     return _api.listVoices();
   }
 
