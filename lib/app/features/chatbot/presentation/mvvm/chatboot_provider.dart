@@ -8,7 +8,8 @@ import 'package:balady_plus/app/features/chatbot/domain/use_cases/chat_bot_use_c
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/message_chatboot_provider.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
-
+import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
+import 'package:uuid/uuid.dart';
 class ChatBotProvider extends BaseViewModel {
   final SendQuestionMessageChatBot repository;
   final int sectionId;
@@ -49,14 +50,14 @@ class ChatBotProvider extends BaseViewModel {
           notifyListeners();
         }
 
-        if (scrollController.position.maxScrollExtent >
+        /* if (scrollController.position.maxScrollExtent >
             scrollController.offset) {
           scrollController.animateTo(
             scrollController.position.maxScrollExtent + 100,
             curve: Curves.linear,
             duration: const Duration(milliseconds: 600),
           );
-        }
+        }*/
       });
       return chatBotMessage;
     } catch (exception) {
@@ -93,6 +94,7 @@ class ChatBotProvider extends BaseViewModel {
         (isEnabled) {
           isLoadingEnabled = false;
           this.isEnabled = isEnabled;
+          sharedPrefs.setChatbotSessionId(Uuid().v4());
           notifyListeners();
         },
       );

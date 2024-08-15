@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/_shared_feature_/data/models/response_b
 import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_model.dart';
 import 'package:dio/dio.dart' show Options, ResponseType, Response, DioError;
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 
 abstract class ChatBotDataSources {
   Future<Stream> sendQuestionMessageSSE({required String question});
@@ -122,7 +123,7 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         options: Options(
           headers: {
             "Accept": "*/*",
-            "sessionId": "001c44b8-2eee-415a-912d-601616e724be"
+            "sessionId":sharedPrefs.getChatbotSessionId(),//"001c44b8-2eee-415a-912d-601616e724be"
           },
           responseType: ResponseType.stream,
         ),
@@ -135,33 +136,35 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
       StreamTransformer<String, String> stringTransformer =
           StreamTransformer.fromHandlers(
         handleData: (data, sink) {
+          print("sink : $data");
           // String sOne = data.substring(7);
           // String sOne = data.replaceAll("u","");
-          String sOne = data.replaceAll("\"", "");
+          // String sOne = data.replaceAll("\"", "");
           // sOne = sOne.replaceAll("\\", "");
           // var s = utf8.encode(sOne);
           // var y = utf8.decode(sOne.codeUnits);
           // var t = utf8.decode(sOne.runes.toList());
           // String data = String.fromCharCodes(dataUint8List);
 
-          if (sOne != "\\" &&
-              sOne != "end" &&
-              sOne != "start" &&
-              sOne.isNotEmpty) {
-            // var re = RegExp(r'u(?<codePoint>[0-9A-Fa-f\u0621-\u064A]{4})');
-            // var matches = re.allMatches(sOne);
-            // var matches = sOne.split("u");
-            // var codePoints = [
-            //   for (var match in matches)
-            //     int.parse(match.namedGroup('codePoint')!, radix: 16),
-            // ];
-            // var codepoint = int.parse(sOne, radix: 16);
-            // String unicodeString = String.fromCharCode(codepoint);
-            // print(unicodeString);
-            // sink.add(String.fromCharCodes(codePoints));
-            sink.add(sOne);
-          }
-          sink.add("");
+          // if (sOne != "\\" &&
+          //     sOne != "end" &&
+          //     sOne != "start" &&
+          //     sOne.isNotEmpty) {
+          //   // var re = RegExp(r'u(?<codePoint>[0-9A-Fa-f\u0621-\u064A]{4})');
+          //   // var matches = re.allMatches(sOne);
+          //   // var matches = sOne.split("u");
+          //   // var codePoints = [
+          //   //   for (var match in matches)
+          //   //     int.parse(match.namedGroup('codePoint')!, radix: 16),
+          //   // ];
+          //   // var codepoint = int.parse(sOne, radix: 16);
+          //   // String unicodeString = String.fromCharCode(codepoint);
+          //   // print(unicodeString);
+          //   // sink.add(String.fromCharCodes(codePoints));
+          //   sink.add(sOne);//
+          // }
+
+          sink.add(data);
         },
       );
       Stream stream = response.data?.stream
