@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/dependency_injection/commercial_injection_container.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
@@ -38,23 +39,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart'
 import 'package:get_it/get_it.dart' show GetIt;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     show InternetConnectionChecker;
-import 'package:balady_plus/app/core/dependency_injection/features/commercials_tobacco_injection.dart';
+import 'package:balady_plus/app/commercial_model/dependency_injection/commercials_tobacco_injection.dart';
 import '../../features/_shared_feature_/balady_features/services/services.dart';
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
-import '../../features/commercial_license_ownership_transfer/approval_sequence/data/data_sources/remote_data_source.dart';
-import '../../features/commercial_license_ownership_transfer/approval_sequence/data/repositories/repository_implementation.dart';
-import '../../features/commercial_license_ownership_transfer/approval_sequence/domain/repositories/repository.dart';
-import '../../features/commercial_license_ownership_transfer/old_owner_transfer/data/data_source/remote_data_source.dart';
-import '../../features/commercial_license_ownership_transfer/old_owner_transfer/data/repositories/repository_implementation.dart';
-import '../../features/commercial_license_ownership_transfer/old_owner_transfer/domain/repository/repository.dart';
-import '../../features/commercial_license_ownership_transfer/request_details/data/data_sources/remote_data_source.dart';
-import '../../features/commercial_license_ownership_transfer/request_details/data/repositories/repository_implementation.dart';
-import '../../features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
-import '../../features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import '../../features/force_update/presentation/core/force_update_view_model.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
@@ -90,15 +81,15 @@ import '../services/services_exports.dart'
         WebService;
 import '../utils/enums/bottom_nav_bar.dart';
 import 'features/calendar_injection.dart';
-import 'features/commercials_permits24_injection.dart';
-import 'features/commercials_posters_injection.dart';
+import '../../commercial_model/dependency_injection/commercials_permits24_injection.dart';
+import '../../commercial_model/dependency_injection/commercials_posters_injection.dart';
 import 'features/compliance_injection.dart';
 import 'features/dc_injection.dart';
 import 'features/ekram_injection.dart';
 import 'features/events_injection.dart';
 import 'features/objectable_transactions_injection.dart';
 import 'features/objections_injection.dart';
-import 'features/renew_commercial_injection.dart';
+import '../../commercial_model/dependency_injection/renew_commercial_injection.dart';
 import 'features/retrive_dc_injection.dart';
 import 'features/violation_guide_injection.dart';
 import 'features/weather_alerts_injection.dart';
@@ -107,6 +98,14 @@ import 'features/weather_alerts_injection.dart';
 final sl = GetIt.instance;
 
 void initialize() {
+
+  /////////////// get All Commercial Injection Container
+  CommercialInjectionContainer.init();
+  /////////////// End
+
+
+
+
   OLDInjection.init();
   //! Features
   //? Entry Point
@@ -260,35 +259,6 @@ void initialize() {
       () => CalendarBaladyRemoteDataSourceImpl(webService: sl()));
   sl.registerLazySingleton<BaladyCalendarRepository>(
       () => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
-
-// transfer license ownership
-  sl.registerLazySingleton<LicensePermitsRemoteDataSource>(
-      () => LicensePermitsRemoteDataSourceImplementation(webService: sl()));
-  sl.registerLazySingleton<TransferLicenseRepository>(
-      () => TransferLicenseRepositoryImplementation(remoteDataSource: sl()));
-
-  //transfer request ownership
-  sl.registerLazySingleton<RequestOwnershipTransferDetailsRemoteDataSource>(
-      () => RequestOwnershipTransferRemoteDataSourceImplementation(
-          webService: sl()));
-
-  sl.registerLazySingleton<RequestApprovalSequenceRepository>(() =>
-      RequestApprovalSequenceRepositoryImplementation(remoteDataSource: sl()));
-
-  sl.registerLazySingleton<RequestPermitsRemoteDataSource>(
-      () => RequestPermitsRemoteDataSourceImplementation(webService: sl()));
-
-  sl.registerLazySingleton<RequestOwnershipTransferDetailsRepository>(() =>
-      RequestOwnershipTransferRepositoryImplementation(remoteDataSource: sl()));
-
-  sl.registerLazySingleton<AcceptOrRejectRequestOwnershipTransferRepository>(
-      () => RequestOwnershipTransferRepositoryImplementation(
-          remoteDataSource: sl()));
-
-  sl.registerLazySingleton<RequestOwnershipTransferDetailsCubit>(() =>
-      RequestOwnershipTransferDetailsCubit(
-          requestOwnershipTransferDetailsRepository: sl(),
-          acceptOrRejectRequestOwnershipTransferRepository: sl()));
 
   //noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
