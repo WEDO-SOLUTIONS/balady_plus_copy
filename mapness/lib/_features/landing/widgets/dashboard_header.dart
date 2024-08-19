@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,9 +111,13 @@ class DashboardHeader extends ConsumerWidget {
                 );
               },
               child: AbsorbPointer(
-                child: BaladyInput.search(
+                child: BaladyInput.searchV2(
                   hintText: context.l10n.searchPlaceOrAddress,
                   readOnly: true,
+                  fillColor: context.colorsV2.neutralContainerDefault,
+                  hintColor: context.colorsV2.foregroundSoft,
+                  textFieldHeight: 40,
+                  textStyle: context.textStyleV3.bodySmallRegular,
                 ),
               ),
             ),

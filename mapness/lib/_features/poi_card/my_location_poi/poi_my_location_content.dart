@@ -1,69 +1,88 @@
 part of 'content_my_location.dart';
 
-class PoiMyLocationContent extends ConsumerWidget {
+class PoiMyLocationContent extends StatelessWidget {
   final Function()? onTapClose;
   final LatLng location;
+  final AsyncValue<PoiMyLocationState?> data;
+  final double height;
 
   const PoiMyLocationContent({
     required this.onTapClose,
     required this.location,
+    required this.data,
+    required this.height,
     super.key,
   });
 
-  /// Profile size with image padding included
-  static const _profileImgSize = 52.0;
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Container(
+  Widget build(BuildContext context) => Container(
         width: double.infinity,
-        padding: const EdgeInsets.only(left: 16, right: 16),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         decoration: const ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(Spacing.$4x),
             ),
           ),
         ),
-        child: Builder(
-          builder: (context) {
-            final userData = ref.watch(authProvider).requireValue;
-            final language = ref.read(appLanguageProvider);
-            final title = userData?.getLocalizedFirstAndLastName(language) ??
-                context.l10n.guestName;
-            final subTitle = context.l10n.myLocationSubtitle;
+        child: data.maybeWhen(
+          data: (value) {
+            final isAuthorized = value?.isAuthorized ?? false;
+            final title = value?.title ?? context.l10n.myLocation;
+            final subTitle = isAuthorized ? context.l10n.myLocationSubtitle : null;
+            final text = value?.address ?? '${location.latitude}, ${location.longitude}';
 
             return Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 16),
+                const SizedBox(height: 6),
+                const Center(child: SheetDragger()),
+                const SizedBox(height: 6),
                 PoiHeader(
                   onTapClose: onTapClose,
                   text: title,
                   subTitle: subTitle,
-                  profileImage: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: NumericBase.$1x),
-                    child: ProfileImageWidget(
-                      dimension: _profileImgSize,
-                      color: context.color.strokeAccent,
-                    ),
-                  ),
+                  profileImage: isAuthorized
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(vertical: Spacing.$1x),
+                          child: MyLocationImageWidget(),
+                        )
+                      : null,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: Spacing.verticalPaddingInsideCell),
+                  padding: EdgeInsets.only(
+                    top: value?.isAuthorized == true ? Spacing.$2x : Spacing.$4x,
+                    bottom: Spacing.$4x,
+                  ),
                   child: Text(
-                    '${location.latitude}, ${location.longitude}',
-                    style: context.textStyle.text,
+                    text,
+                    style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV2.foregroundSoft),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             );
           },
+          orElse: () => Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 6),
+              const Center(child: SheetDragger()),
+              const SizedBox(height: 6),
+              Container(
+                height: height - 90,
+                alignment: Alignment.center,
+                color: Colors.white,
+                child: Loading.medium(),
+              ),
+            ],
+          ),
         ),
       );
 }

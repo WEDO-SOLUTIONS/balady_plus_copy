@@ -7,9 +7,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'indoor_levels.g.dart';
 
 class LevelsState {
-  LevelsState(this.levels, this.active);
   final List<IndoorLevel> levels;
   final int active;
+
+  LevelsState(this.levels, this.active);
 
   LevelsState copyWith({
     List<IndoorLevel>? levels,

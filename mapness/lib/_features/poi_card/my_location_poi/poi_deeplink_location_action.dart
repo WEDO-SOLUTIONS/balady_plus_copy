@@ -22,13 +22,7 @@ class PoiDeeplinkPersonActions extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: context.color.surfaceBasePrimary,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            offset: const Offset(0.0, -1.0),
-            blurRadius: 2,
-          ),
-        ],
+        boxShadow: Shadows.s,
       ),
       padding: const EdgeInsets.all(8),
       child: SafeArea(

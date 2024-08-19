@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/sheets/location_required_sheet.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
@@ -61,7 +62,7 @@ class _Location extends _$Location {
 
         unawaited(
           router
-              .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
+              .push(LocationErrorSheetRoute(routeOnClose: routeOnClose).location)
               .then((value) => CommonFunctions.locationDialogShowed = false),
         );
         return false;
@@ -82,11 +83,29 @@ class _Location extends _$Location {
 
       unawaited(
         router
-            .push(LocationErrorSheet(routeOnClose: routeOnClose).location)
+            .push(LocationErrorSheetRoute(routeOnClose: routeOnClose).location)
             .then((value) => CommonFunctions.locationDialogShowed = false),
       );
     }
 
+    return false;
+  }
+
+  Future<bool> checkOnLocationPermissionGranted() async {
+    final status = await perm.Permission.location.status;
+
+    if (status.isGranted) {
+      final dgisController = await ref.read(dgisControllerProvider.future);
+      unawaited(
+        dgisController.onLocationPermissionGranted(
+          desiredAccuracy: DesiredAccuracyMessage.high,
+        ),
+      );
+      ref.invalidateSelf();
+      return true;
+    }
+
+    state = null;
     return false;
   }
 }

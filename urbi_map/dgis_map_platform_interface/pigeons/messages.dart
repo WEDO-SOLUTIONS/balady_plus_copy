@@ -1293,7 +1293,7 @@ abstract class MapApi {
   void setHighlighted(List<DgisObjectIdMessage> objectIds);
 
   @async
-  void onLocationPremissionGranted(DesiredAccuracyMessage desiredAccuracy);
+  void onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy);
 
   @async
   void addPanoramasMarkers(AddMarkersWithPhotoMessage message);
@@ -1351,6 +1351,12 @@ abstract class MapApi {
 
   @async
   void stopNavigation();
+
+  @async
+  Uint8List saveNavigationState();
+
+  @async
+  void restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom);
 
   @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);

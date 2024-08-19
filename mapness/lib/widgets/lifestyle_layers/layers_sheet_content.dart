@@ -2,7 +2,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart' as layers_state;
@@ -13,9 +12,13 @@ import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 
 class LayersSheetContent extends ConsumerWidget {
   final ScrollController scrollController;
+  final Function() tapOnParkingLotsMenu;
+  final Function() onClose;
 
   const LayersSheetContent({
     required this.scrollController,
+    required this.tapOnParkingLotsMenu,
+    required this.onClose,
     super.key,
   });
 
@@ -47,8 +50,7 @@ class LayersSheetContent extends ConsumerWidget {
                         group: MetricsConstants.layersTag,
                         action: MetricAction.tap.toString(),
                       );
-
-                      context.pop();
+                      onClose();
                     },
                     padding: EdgeInsets.zero,
                     innerPadding: const EdgeInsets.all(8),
@@ -79,9 +81,10 @@ class LayersSheetContent extends ConsumerWidget {
           ),
         ),
         LayerSliverList(
+          tapOnParkingLotsMenu: tapOnParkingLotsMenu,
           layerType: switch (state.layersType) {
-            LayersType.lifestyle => layers_state.LayerType.withoutLifestyle,
-            LayersType.business => layers_state.LayerType.withoutBusiness,
+            LayersType.lifestyle => layers_state.LayerType.lifestyle,
+            LayersType.business => layers_state.LayerType.business,
           },
           layersState: state,
         ),
