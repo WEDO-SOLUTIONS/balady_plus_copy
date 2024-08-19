@@ -29,6 +29,7 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/stories/data/story_service.dart';
 import 'package:mapness/features/stories/stories.dart';
+import 'package:mapness/features/stories/stories_widget.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -178,6 +179,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const StoriesWidget(),
+                              const SizedBox(height: Spacing.$8x),
                               JoyParksCard(widget.scrollableController),
                               const SizedBox(height: Spacing.$3x),
                               const Padding(
