@@ -39,6 +39,7 @@ class FavouritesSearch extends ConsumerWidget {
         await onSearchTap(ref, context, object);
       },
       onBackTap: () {
+        FocusScope.of(context).unfocus();
         context.pop();
       },
       itemCount: searchResult.length,

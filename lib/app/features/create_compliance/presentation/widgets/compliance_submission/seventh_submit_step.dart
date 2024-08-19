@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/create_compliance/presentation/bloc/com
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_state.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_submission/previous_next_buttons.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
+import 'package:balady_plus/app/features/profile_features/dashboard/presentation/widgets/no_data_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,11 +57,19 @@ class _SeventhSubmitComplianceSubmitStepState
                 const SizedBox(
                   height: 32,
                 ),
-
-                  if (state.appointmentsStatus == BlocStatus.failure )
-                        ReloadWidget(onTab: () {
-    context.read<ComplianceBloc>().add(const GetAppointments());
-                        }), 
+                if (state.appointmentsStatus == BlocStatus.failure &&
+                    state.responseCode != "CIS-401")
+                  ReloadWidget(onTab: () {
+                    context.read<ComplianceBloc>().add(const GetAppointments());
+                  }),
+                if (state.appointmentsStatus == BlocStatus.failure &&
+                    state.responseCode == "CIS-401")
+                  Center(
+                    child: NoDataWidget(
+                      // state.errorMessage ?? "",
+                      // textAlign: TextAlign.center,
+                    ),
+                  ),
                 SizedBox(
                     height: 120,
                     child: ListView.builder(
@@ -75,23 +84,31 @@ class _SeventhSubmitComplianceSubmitStepState
                               const CustomHorizontalSpace(width: 16),
                             DateBoxWidget(
                               currentDate: state.visitDate?.slotDate ?? "",
-                              date: state.complainceAppointmentResponse?.result[index].slotDate ??
+                              date: state.complainceAppointmentResponse
+                                      ?.result[index].slotDate ??
                                   "",
-                                  dayName: state.complainceAppointmentResponse?.result[index].day ?? "",
+                              dayName: state.complainceAppointmentResponse
+                                      ?.result[index].day ??
+                                  "",
                               onSelect: () {
-
-context.read<ComplianceBloc>().add( ChangeSelectedAppointmentDay(item: state.complainceAppointmentResponse!.result[index]!)); 
+                                context.read<ComplianceBloc>().add(
+                                    ChangeSelectedAppointmentDay(
+                                        item: state
+                                            .complainceAppointmentResponse!
+                                            .result[index]!));
                               },
                             ),
                           ],
                         );
                       },
                     )),
-                      const Divider(
+                const Divider(
                   height: 1,
                   color: AppColor.kGray115,
                 ),
-                const SizedBox(height: 16,), 
+                const SizedBox(
+                  height: 16,
+                ),
                 if (state.visitDate != null)
                   GridView.builder(
                     shrinkWrap: true,
@@ -113,12 +130,16 @@ context.read<ComplianceBloc>().add( ChangeSelectedAppointmentDay(item: state.com
                       selectedVisitTime:
                           "${state.visitTimeFrom} - ${state.visitTimeTo}",
                       onSelect: () {
-                        context.read<ComplianceBloc>().add( ChangeSelectedAppointmentSlot(visitFrom: state.visitDate?.slots[index].startTime, visitTo:state.visitDate?.slots[index].endTime )); 
-
+                        context.read<ComplianceBloc>().add(
+                            ChangeSelectedAppointmentSlot(
+                                visitFrom:
+                                    state.visitDate?.slots[index].startTime,
+                                visitTo:
+                                    state.visitDate?.slots[index].endTime));
                       },
                     ),
                   ),
-                  const  SizedBox(
+                const SizedBox(
                   height: 32,
                 ),
                 const PreviousNextButtons()
@@ -134,14 +155,14 @@ context.read<ComplianceBloc>().add( ChangeSelectedAppointmentDay(item: state.com
 class DateBoxWidget extends StatefulWidget {
   String date;
   String currentDate;
-  String dayName; 
+  String dayName;
   Function onSelect;
 
   DateBoxWidget(
       {Key? key,
       required this.date,
       required this.currentDate,
-      required this.dayName, 
+      required this.dayName,
       required this.onSelect})
       : super(key: key);
 
@@ -172,7 +193,7 @@ class _DateBoxWidgetState extends State<DateBoxWidget> {
             children: [
               CustomTextWidget(
                 widget.dayName.toLowerCase().tr(),
-                fontWeight: AppFontWeight.medium, 
+                fontWeight: AppFontWeight.medium,
                 fontColor: widget.currentDate == widget.date
                     ? AppColor.primary900Light
                     : AppColor.blackModern500Light,
@@ -186,7 +207,6 @@ class _DateBoxWidgetState extends State<DateBoxWidget> {
                 fontSize: 13,
                 fontFamily: Constants.lucidaGrandFontType,
               ),
-            
             ],
           )),
     );

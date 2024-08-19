@@ -12,9 +12,11 @@ import 'package:mapness/widgets/lifestyle_layers/parking_lot_row.dart';
 
 class ParkingDetailsContent extends ConsumerWidget {
   final ScrollController scrollController;
+  final VoidCallback onPanelClose;
 
   const ParkingDetailsContent({
     required this.scrollController,
+    required this.onPanelClose,
     super.key,
   });
 
@@ -45,6 +47,7 @@ class ParkingDetailsContent extends ConsumerWidget {
                     const Spacer(),
                     AppButton.close(
                       onTap: () {
+                        onPanelClose();
                         Metrics.logEventAdvanced(
                           MetricsConstants.layersKeys.exitIcon,
                           group: MetricsConstants.layersTag,

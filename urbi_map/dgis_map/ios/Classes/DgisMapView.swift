@@ -826,7 +826,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(NSNumber(value: from.geoPoint.bearing(point: to.geoPoint).value), nil)
     }
 
-    func onLocationPremissionGrantedDesiredAccuracy(
+    func onLocationPermissionGrantedDesiredAccuracy(
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
     ) {
@@ -975,6 +975,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func stopNavigation(completion: @escaping (FlutterError?) -> Void) {
         self.navigationHandler?.stopNavigation()
         completion(nil)
+    }
+    
+    func saveNavigationState(completion: @escaping (FlutterStandardTypedData?, FlutterError?) -> Void) {
+        self.navigationHandler?.saveNavigationState(completion: completion)
+    }
+    
+    func restoreNavigationStateState(_ state: FlutterStandardTypedData, speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.restoreNavigationState(state: state, speedRangeZoom: speedRangeZoom, completion: completion)
     }
     
     func onCompassClicked(completion: @escaping (FlutterError?) -> Void) {

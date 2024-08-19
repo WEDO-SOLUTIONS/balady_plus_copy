@@ -102,13 +102,14 @@ const duration = Duration(milliseconds: 700);
 @riverpod
 class LayersControls extends _$LayersControls {
   static const duration = Duration(milliseconds: 250);
-  StreamSubscription? viewPortSubscription;
-  CancelToken? cancelToken;
+  StreamSubscription? _viewPortSubscription;
+  CancelToken? _cancelToken;
 
   final esriMapObjectSettings = MapObjectManagerSettings.esri();
+  final favouritesMapObjectSettings = MapObjectManagerSettings.favourites();
 
   final tapSubject = PublishSubject<LayerType>();
-  StreamSubscription? tapSubscription;
+  StreamSubscription? _tapSubscription;
 
   Future<void> _hideAllSelectedMarkers() async {
     final selectedPoint = ref.read(selectedMarkerProvider.notifier);
@@ -120,39 +121,25 @@ class LayersControls extends _$LayersControls {
   @override
   LayersState build() {
     ref.onDispose(() {
-      viewPortSubscription?.cancel();
-      tapSubscription?.cancel();
+      _viewPortSubscription?.cancel();
+      _tapSubscription?.cancel();
     });
 
-    tapSubscription = tapSubject.debounceTime(duration).listen((value) {
-      final currentState = state.selectedType;
-
-      cancelToken?.cancel();
-      viewPortSubscription?.cancel();
-
-      _hideAllSelectedMarkers();
-
-      switch (value) {
-        case LayerType.favourites:
-          toggleFavourites(currentState);
-        case LayerType.buildings:
-          toggleComplianceBuildings();
-        case LayerType.invest:
-          toggleInvestOpportunities();
-        case LayerType.fencing:
-          toggleWhiteLands();
-        case LayerType.parkingLots:
-          toggleParking();
-        case LayerType.joy:
-          toggleIwish();
-      }
-    });
+    _tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
 
     final selectedLayerState = _getLayerState();
 
+    // Wait for the state to be initialized
+    Future.delayed(Duration.zero, () async {
+      if (selectedLayerState != null) {
+        await _tapHandler(selectedLayerState);
+        await toggle(selectedLayerState);
+      }
+    });
+
     return LayersState(
       layersVisible: false,
-      selectedType: selectedLayerState,
+      selectedType: null,
       isLoading: false,
       investmentsMarkers: {},
       polygons: {},
@@ -160,10 +147,58 @@ class LayersControls extends _$LayersControls {
     );
   }
 
+  void initialize() {
+    final selectedLayerState = _getLayerState();
+
+    Future.delayed(Duration.zero, () async {
+      if (selectedLayerState != null) {
+        await toggle(selectedLayerState);
+      }
+    });
+
+    final LayersType actualSelectedLayersType = LayerType.lifestyle.contains(selectedLayerState ?? LayerType.favourites)
+        ? LayersType.lifestyle
+        : LayersType.business;
+
+    state = LayersState(
+      layersVisible: false,
+      selectedType: null,
+      layersType: actualSelectedLayersType,
+      isLoading: false,
+      investmentsMarkers: {},
+      polygons: {},
+      polylines: {},
+    );
+  }
+
+  Future<void> _tapHandler(value) async {
+    final currentState = state.selectedType;
+
+    _cancelToken?.cancel();
+    await _viewPortSubscription?.cancel();
+
+    await _hideAllSelectedMarkers();
+
+    switch (value) {
+      case LayerType.favourites:
+        await toggleFavourites(currentState);
+      case LayerType.buildings:
+        await toggleComplianceBuildings();
+      case LayerType.invest:
+        await toggleInvestOpportunities();
+      case LayerType.fencing:
+        await toggleWhiteLands();
+      case LayerType.parkingLots:
+        await toggleParking();
+      case LayerType.joy:
+        await toggleIwish();
+    }
+  }
+
   void updateLayerInfo() {
     final selectedLayerState = _getLayerState();
     if (selectedLayerState != null) {
-      handleTap(selectedLayerState);
+      setSelection(selectedType: selectedLayerState);
     } else {
       setSelection();
     }
@@ -174,7 +209,7 @@ class LayersControls extends _$LayersControls {
     final string = sharedPrefs.getString(MapnessConstants.activeLayerKey);
 
     final layerState = LayerTypeEx.stringToType(string);
-    return layerState == LayerType.favourites ? layerState : null;
+    return layerState;
   }
 
   Future<void> _saveLayersState(LayerType type) async {
@@ -216,9 +251,10 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleFavourites(LayerType? currentState) async {
-    await viewPortSubscription?.cancel();
+    await _viewPortSubscription?.cancel();
     await _removeAll();
-    cancelToken?.cancel();
+    _cancelToken?.cancel();
+
     if (currentState == (LayerType.favourites)) {
       await ref.read(favouriteToggleProvider.notifier).disable();
       setSelection();
@@ -264,6 +300,10 @@ class LayersControls extends _$LayersControls {
           });
     } else {
       _removeLayersState();
+
+      /// FIX(BSA-669): Added this function to remove favorites and other markers when
+      /// we disable it from layers or favorites screen
+      _removeAll();
     }
 
     ref
@@ -289,7 +329,7 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleIwish() async {
     final layers = ref.watch(layersControlsProvider.notifier);
     final currentState = state.selectedType;
-    await viewPortSubscription?.cancel();
+    await _viewPortSubscription?.cancel();
 
     if (currentState == LayerType.joy) {
       await ref
@@ -314,7 +354,7 @@ class LayersControls extends _$LayersControls {
       update(isLoading: true);
       await _showBuildingCompliance();
     } else {
-      await viewPortSubscription?.cancel();
+      await _viewPortSubscription?.cancel();
       await _removeAll();
       setSelection();
       update(isLoading: false);
@@ -343,7 +383,7 @@ class LayersControls extends _$LayersControls {
     if (currentState != (LayerType.fencing)) {
       await layersControls._showWhiteLands();
     } else {
-      await viewPortSubscription?.cancel();
+      await _viewPortSubscription?.cancel();
       await _removeAll();
 
       layersControls
@@ -357,7 +397,8 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleParking() async {
     final layers = ref.watch(layersControlsProvider.notifier);
     final currentState = state.selectedType;
-    await viewPortSubscription?.cancel();
+    await _viewPortSubscription?.cancel();
+    await _removeAll();
 
     if (currentState == LayerType.parkingLots) {
       final manager = ref.read(mapObjectManagerProvider(
@@ -378,7 +419,9 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> enableParking() async {
-    await viewPortSubscription?.cancel();
+    await _viewPortSubscription?.cancel();
+
+    await _removeMapObjects();
 
     if (state.selectedType != LayerType.parkingLots) {
       setSelection(selectedType: LayerType.parkingLots);
@@ -416,9 +459,9 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    cancelToken = CancelToken();
+    _cancelToken = CancelToken();
 
-    viewPortSubscription = ref
+    _viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
         .whereNotNull()
@@ -427,7 +470,7 @@ class LayersControls extends _$LayersControls {
         .asyncMap(
           (visibleRect) => controller.getEsriPoints(
             params: _createParams(visibleRect, layerType, env),
-            cancelToken: cancelToken,
+            cancelToken: _cancelToken,
           ),
         )
         .map(_makeMarkers)
@@ -463,9 +506,9 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    cancelToken = CancelToken();
+    _cancelToken = CancelToken();
 
-    viewPortSubscription = ref
+    _viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
         .whereNotNull()
@@ -482,7 +525,7 @@ class LayersControls extends _$LayersControls {
               proxy: env.proxy,
               domain: env.url,
             ),
-            cancelToken,
+            _cancelToken,
           ),
         )
         .map(_makePolygons)
@@ -514,9 +557,9 @@ class LayersControls extends _$LayersControls {
     await _removeAll();
 
     /// Cancel API calls
-    cancelToken = CancelToken();
+    _cancelToken = CancelToken();
 
-    viewPortSubscription = ref
+    _viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
         .whereNotNull()
@@ -525,7 +568,7 @@ class LayersControls extends _$LayersControls {
         .asyncMap(
           (visibleRect) => controller.buildingComplianceCertificate(
             _createParams(visibleRect, LayerType.buildings, env),
-            cancelToken,
+            _cancelToken,
           ),
         )
         .listen(
@@ -668,12 +711,25 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> _removeAll() async {
+    await _removeMapObjects();
+    await ref.read(parkingStateProvider.notifier).hideParking();
+  }
+
+  Future<void> _removeMapObjects() async {
     update(polylines: {}, polygons: {}, investmentsMarkers: {});
     final map = ref.watch(mapObjectManagerProvider(
       named: esriMapObjectSettings.name,
       layerId: esriMapObjectSettings.layerId,
     ).notifier);
-    await map.removeAllMarkers();
+
+    final mapObjectManager = ref.watch(
+      mapObjectManagerProvider(
+        named: favouritesMapObjectSettings.name,
+        layerId: favouritesMapObjectSettings.layerId,
+      ).notifier,
+    );
+
+    await mapObjectManager.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
   }

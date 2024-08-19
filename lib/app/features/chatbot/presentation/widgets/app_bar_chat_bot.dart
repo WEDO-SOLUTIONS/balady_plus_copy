@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -16,11 +17,11 @@ class AppBarChatBot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChatBotProvider provider = context.watch<ChatBotProvider>();
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (bool didPop) async {
         closeScreen(context, provider);
-        return false;
       },
+      // canPop: false,
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -62,9 +63,22 @@ class AppBarChatBot extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 12, height: 8),
-                      Text(
-                        'municipal_advisor'.tr(),
-                        style: AppStyle.countTextAthkarStyle.copyWith(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'chat_bot'.tr(),
+                            style: AppStyle.countTextAthkarStyle.copyWith(),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "(${"beta".tr()})",
+                            style: AppStyle.countTextAthkarStyle
+                                .copyWith(color: AppColor.redBrown),
+                          ),
+                        ],
                       ),
                       listMessages.isEmpty
                           ? Card(
@@ -128,7 +142,8 @@ class AppBarChatBot extends StatelessWidget {
       builder: (_) => const CloseChatBotPopup(),
     ).then((value) {
       if (value == true) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        // Navigator.of(context).popUntil((route) => route.isFirst);
+        Navigator.of(context).pop();
         if (provider.chatBotMessage.value.isNotEmpty) {
           BottomSheetDialog.showSheet(
             context,
@@ -142,7 +157,7 @@ class AppBarChatBot extends StatelessWidget {
             isFullHeight: false,
             isScrollControlled: true,
             backgroundColor: Colors.white,
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.65,
           );
         }
       }

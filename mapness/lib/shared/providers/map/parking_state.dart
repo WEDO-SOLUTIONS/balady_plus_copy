@@ -20,12 +20,14 @@ class ParkingState extends _$ParkingState {
 
     return const ParkingStateEvent(
       filter: ParkingFilter.all,
-      visible: true,
+      visible: false,
     );
   }
 
   Future<void> _initListeners() async {
     _dgisController = await ref.read(dgisControllerProvider.future);
+
+    await _dgisController?.setMapAttributeBool('parkingOn', false);
 
     ref.onDispose(
       () {

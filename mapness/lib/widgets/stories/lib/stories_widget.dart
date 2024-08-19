@@ -28,9 +28,13 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
         if (story.frames.isEmpty) {
           continue;
         }
+        if (!context.mounted) {
+          return;
+        }
         final firstFrame = story.frames.first;
-        if (firstFrame.imageUrl != null && context.mounted) {
-          precacheImage(NetworkImage(firstFrame.imageUrl!), context);
+        final imageUrl = firstFrame.imageUrlForLocale(Directionality.of(context));
+        if (imageUrl != null) {
+          precacheImage(NetworkImage(imageUrl), context);
         }
       }
     });
