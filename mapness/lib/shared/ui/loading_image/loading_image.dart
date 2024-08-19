@@ -12,6 +12,7 @@ class LoadingImage extends ConsumerStatefulWidget {
   final VoidCallback? onImageReady;
   final bool? isAssetImg;
   final Function(String name, {bool? isAsset})? onImageTap;
+  final FilterQuality? filterQuality;
 
   const LoadingImage({
     required this.imageUrl,
@@ -21,6 +22,7 @@ class LoadingImage extends ConsumerStatefulWidget {
     this.fit,
     this.onImageTap,
     this.isAssetImg = false,
+    this.filterQuality,
   });
 
   @override
@@ -72,6 +74,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
               color: context.color.surfaceBasePrimary,
               child: const SizedBox.shrink(),
             ),
+            filterQuality: widget.filterQuality ?? FilterQuality.low,
           )
         : CachedNetworkImage(
             imageUrl: imageUrl,
