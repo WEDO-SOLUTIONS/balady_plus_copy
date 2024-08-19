@@ -83,22 +83,18 @@ class ComplianceState extends Equatable {
   final String? visitTimeFrom;
   final String? visitTimeTo;
   final ComplainceAppointmentResponse? complainceAppointmentResponse;
-  final BlocStatus appointmentsStatus;
-  final String responseCode;
+  final BlocStatus appointmentsStatus; 
 
   PhoneNumberValidation get phoneValidator => contactMobileNumber == null
       ? PhoneNumberValidation.pure()
       : PhoneNumberValidation.dirty(value: contactMobileNumber);
-
   String? get phoneErrorText => phoneValidator.error?.message != null
       ? (phoneValidator.error?.message ?? "").tr()
       : null;
 
   ComplianceState(
       {required this.currentStep,
-      this.responseCode = "",
-      this.status = BlocStatus.initial,
-      this.appointmentsStatus = BlocStatus.initial,
+      this.status = BlocStatus.initial, this.appointmentsStatus = BlocStatus.initial, 
       this.mainUsagesStatus = BlocRequestStatus.initial,
       this.enginnerOfficesStatus = BlocRequestStatus.initial,
       this.subUsagesStatus = BlocRequestStatus.initial,
@@ -149,12 +145,10 @@ class ComplianceState extends Equatable {
       this.visitTimeFrom,
       this.visitTimeTo,
       this.complainceAppointmentResponse});
-
   ComplianceState copyWith(
       {final BlocStatus? status,
-      final BlocStatus? appointmentsStatus,
+      final BlocStatus? appointmentsStatus, 
       final int? currentStep,
-      final String? responseCode,
       final int? benificiaryTypeSelection,
       final int? documentTypeSelection,
       final int? requestId,
@@ -207,8 +201,7 @@ class ComplianceState extends Equatable {
       final ComplainceAppointmentResponse? complainceAppointmentResponse}) {
     return ComplianceState(
         status: status ?? this.status,
-        responseCode: responseCode ?? "",
-        appointmentsStatus: appointmentsStatus ?? this.appointmentsStatus,
+        appointmentsStatus: appointmentsStatus ?? this.appointmentsStatus, 
         contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
         visitDate: visitDate ?? this.visitDate,
         visitTimeFrom: visitTimeFrom ?? this.visitTimeFrom,
@@ -358,9 +351,10 @@ class ComplianceState extends Equatable {
     } else if ((currentStep == 6)) {
       if (requestDetails?.isRequestReturnedFromMunicipality == true &&
           (applicantNotes?.isEmpty ?? true)) return false;
-    } else if ((currentStep == 7) && !showNewAppointments) {
+    } else if ((currentStep == 7) && ! showNewAppointments) {
       return agreement ?? false;
-    } else if ((currentStep == 8 && showNewAppointments)) {
+    }
+    else if ((currentStep == 8 && showNewAppointments) ) {
       return agreement ?? false;
     }
     return true;
@@ -478,7 +472,7 @@ class ComplianceState extends Equatable {
   List<Object?> get props => [
         status,
         gisResponse,
-        appointmentsStatus,
+        appointmentsStatus, 
         gisParams,
         currentStep,
         requestId,
@@ -526,11 +520,8 @@ class ComplianceState extends Equatable {
         visitDate
       ];
 
-  bool get showNewAppointments =>
-      ((requestDetails?.showMomtathelVisitSection ?? false) &&
-          (requestDetails?.isReadOnly == false));
+      bool get showNewAppointments => ((requestDetails?.showMomtathelVisitSection ?? false) && (requestDetails?.isReadOnly == false) ) ;
 
-  bool get editOnlyAppointment =>
-      ((requestDetails?.showMomtathelVisitSection ?? false) &&
-          (requestDetails?.isReadOnly == true));
+        bool get editOnlyAppointment => ((requestDetails?.showMomtathelVisitSection ?? false) &&  (requestDetails?.isReadOnly == true) ); 
+
 }

@@ -46,7 +46,7 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: BaladyInput.search(
-            hintText: context.l10n.search,
+            hintText: context.l10n.searchPlaceOrAddress,
             controller: _textEditingController,
           ),
         );

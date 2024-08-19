@@ -619,8 +619,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.setHighlighted(objectIds);
   }
 
-  Future<void> onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy) {
-    return _api.onLocationPermissionGranted(desiredAccuracy);
+  Future<void> onLocationPremissionGranted(DesiredAccuracyMessage desiredAccuracy) {
+    return _api.onLocationPremissionGranted(desiredAccuracy);
   }
 
   Future<void> addPanoramasMarkers(AddMarkersWithPhotoMessage markers) {
@@ -670,20 +670,12 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.showRoutes();
   }
 
-  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) {
-    return _api.startNavigation(speedRangeZoom);
+  Future<void> startNavigation(SpeedRangeZoom speedRangeZoon) {
+    return _api.startNavigation(speedRangeZoon);
   }
 
-  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) {
-    return _api.startNavigationSimulation(speedRangeZoom);
-  }
-
-  Future<Uint8List> saveNavigationState() {
-    return _api.saveNavigationState();
-  }
-
-  Future<void> restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom) {
-    return _api.restoreNavigationState(state, speedRangeZoom);
+  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoon) {
+    return _api.startNavigationSimulation(speedRangeZoon);
   }
 
   Future<void> stopNavigation() {

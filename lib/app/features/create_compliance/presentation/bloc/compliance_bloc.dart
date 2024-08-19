@@ -357,11 +357,11 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       state.requestDetails?.locationResponseInfoDto?.x ?? state.gisParams?.x.toString() ?? "",
       state.requestDetails?.locationResponseInfoDto?.y ?? state.gisParams?.y.toString() ?? ""
     ));
+
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
         appointmentsStatus: BlocStatus.failure,
-        responseCode: l.errorCode,
       ));
     }, (r) async {
       emitter(state.copyWith(

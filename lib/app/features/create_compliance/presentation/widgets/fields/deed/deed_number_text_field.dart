@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,13 +36,9 @@ class _DeadNumberTextFieldState extends State<DeadNumberTextField> {
                       .add(UpdateFieldsEvent(ownershipText: text));
                 },
                 verify: () {
-                  if(controller.text.isNotEmpty){
-                    context
-                        .read<ComplianceBloc>()
-                        .add(const GetComplianceDeedInfoEvent());
-                  } else {
-                    CommonFunctions.showError("required_field_must_number_12_digits".tr());
-                  }
+                  context
+                      .read<ComplianceBloc>()
+                      .add(const GetComplianceDeedInfoEvent());
                 },
                 backgroundColor: Colors.transparent,
                 isValidate: state.deedInfo?.deedNumber != null,

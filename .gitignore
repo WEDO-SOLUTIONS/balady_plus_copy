@@ -57,7 +57,6 @@ analysis_benchmark.json
 /build/
 /android/app/build/
 **/.fvm/flutter_sdk
-/devtools_options.yaml
 
 # Android related
 **/android/**/gradle-wrapper.jar

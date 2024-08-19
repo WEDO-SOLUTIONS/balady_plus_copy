@@ -35,15 +35,16 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
+    ref.read(cameraPaddingProvider.notifier).resetPadding(
+          defaultPadding: CameraSetPaddingMessage(
+            bottomPadding: 0,
+            topPadding: 0,
+            leftPadding: 0,
+            rightPadding: 0,
+          ),
+        );
   }
 
   @override
@@ -99,7 +100,9 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           Spacer(),
                           ZoomControl(),
                           Spacer(),
-                          FollowControl(),
+                          FollowControl(
+                            onlyFollowDirection: false,
+                          ),
                         ],
                       ),
                     ),
@@ -170,7 +173,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                               action: MetricAction.tap.toString(),
                             );
 
-                            context.pop();
+                            context.pop(null);
                           },
                         ),
                       ],
@@ -196,11 +199,11 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           );
 
                           switch (nearestObject.value!) {
-                            case DGisNearestObject(nearestPoint: final nearestPoint):
+                            case DGisNearestObject(object: final object):
                               context.pop(
-                                // We need to pass the coordinates of the nearest point
-                                // because coordinates of object like street or districts are so far from the selected point
-                                RoutePointCoordinates(nearestPoint.geoPoint),
+                                RoutePointDirectoryObject(
+                                  object,
+                                ),
                               );
                             case CooridnatesNearestObject(geoPoint: final geoPoint):
                               context.pop(

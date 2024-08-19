@@ -19,18 +19,11 @@ import 'package:mapness/widgets/profile/unathorized_profile.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
-class ProfilePage extends ConsumerStatefulWidget {
+class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
 
   @override
-  ConsumerState<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends ConsumerState<ProfilePage> {
-  bool loading = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
     final actionIcon = context.isLTR
         ? SystemIcons.arrowCornerRightLarge.icon(
@@ -54,180 +47,170 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           child: SafeArea(
             child: Directionality(
               textDirection: textDirection,
-              child: Stack(
-                children: [
-                  CustomScrollView(
-                    slivers: [
-                      const SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: 20,
-                        ),
+              child: CustomScrollView(
+                slivers: [
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 20,
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Spacing.$4x,
                       ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Spacing.$4x,
-                          ),
-                          child: userData.maybeWhen(
-                            orElse: () => UnautorizedProfile(
-                              onConnect: ref.read(authProvider.notifier).doAuth,
-                            ),
-                            data: (userData) => userData == null
-                                ? UnautorizedProfile(
-                                    onConnect: ref.read(authProvider.notifier).doAuth,
-                                  )
-                                : AuthorizedWidget(
-                                    userData: userData,
-                                  ),
-                          ),
+                      child: userData.maybeWhen(
+                        orElse: () => UnautorizedProfile(
+                          onConnect: ref.read(authProvider.notifier).doAuth,
                         ),
+                        data: (userData) => userData == null
+                            ? UnautorizedProfile(
+                                onConnect: ref.read(authProvider.notifier).doAuth,
+                              )
+                            : AuthorizedWidget(
+                                userData: userData,
+                              ),
                       ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Spacing.$4x,
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Spacing.$4x,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: Spacing.$4x,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          ContentWrapper(
+                            color: context.color.surfaceBaseSecondary,
                             children: [
-                              const SizedBox(
-                                height: Spacing.$4x,
-                              ),
-                              ContentWrapper(
-                                color: context.color.surfaceBaseSecondary,
-                                children: [
-                                  userData.maybeWhen(
-                                    orElse: () => const SizedBox.shrink(),
-                                    data: (data) => data == null
-                                        ? const SizedBox.shrink()
-                                        : ContentRow(
-                                            options: ContentRowOptions(
-                                              actionWidget: ContentRowActionOptions(
-                                                actionIcon: actionIcon,
-                                              ),
-                                              leadingIcon: Icon(
-                                                GeneralIcons.user,
-                                                color: context.color.textAndIconsStatusAccent,
-                                              ),
-                                              title: context.l10n.personalData,
-                                            ),
-                                            onTap: () => const ProfileInfoPageRoute().push(context),
+                              userData.maybeWhen(
+                                orElse: () => const SizedBox.shrink(),
+                                data: (data) => data == null
+                                    ? const SizedBox.shrink()
+                                    : ContentRow(
+                                        options: ContentRowOptions(
+                                          actionWidget: ContentRowActionOptions(
+                                            actionIcon: actionIcon,
                                           ),
-                                  ),
-                                  ContentRow(
-                                    options: ContentRowOptions(
-                                      actionWidget: ContentRowActionOptions(
-                                        actionIcon: actionIcon,
+                                          leadingIcon: Icon(
+                                            GeneralIcons.user,
+                                            color: context.color.textAndIconsStatusAccent,
+                                          ),
+                                          title: context.l10n.personalData,
+                                        ),
+                                        onTap: () => const ProfileInfoPageRoute().push(context),
                                       ),
-                                      leadingIcon: Icon(
-                                        SystemIcons.settings,
-                                        color: context.color.textAndIconsStatusAccent,
-                                      ),
-                                      title: context.l10n.settings,
-                                    ),
-                                    onTap: () => const SettingsRoute().push(context),
-                                  ),
-                                  userData.maybeWhen(
-                                    orElse: () => const SizedBox.shrink(),
-                                    data: (data) => data == null
-                                        ? const SizedBox.shrink()
-                                        : NotificationsSettingsRow(actionIcon: actionIcon),
-                                  ),
-                                ],
                               ),
-                              const SizedBox(
-                                height: Spacing.$4x,
-                              ),
-                              ContentWrapper(
-                                color: context.color.surfaceBaseSecondary,
-                                children: [
-                                  ContentRow(
-                                    options: ContentRowOptions(
-                                      actionWidget: ContentRowActionOptions(
-                                        actionIcon: actionIcon,
-                                      ),
-                                      leadingIcon: Icon(
-                                        GeneralIcons.questionCircle,
-                                        color: context.color.textAndIconsStatusAccent,
-                                      ),
-                                      title: context.l10n.helpCenter,
-                                    ),
-                                    onTap: () => const HelpCenterRoute().push(context),
+                              ContentRow(
+                                options: ContentRowOptions(
+                                  actionWidget: ContentRowActionOptions(
+                                    actionIcon: actionIcon,
                                   ),
-                                  ContentRow(
-                                    options: ContentRowOptions(
-                                      actionWidget: ContentRowActionOptions(
-                                        actionIcon: actionIcon,
-                                      ),
-                                      leadingIcon: Icon(
-                                        GeneralIcons.infoCircle,
-                                        color: context.color.textAndIconsStatusAccent,
-                                      ),
-                                      title: context.l10n.aboutApp,
-                                    ),
-                                    onTap: () {
-                                      const AboutBaladyRoute().push(context);
-                                    },
+                                  leadingIcon: Icon(
+                                    SystemIcons.settings,
+                                    color: context.color.textAndIconsStatusAccent,
                                   ),
-                                  ContentRow(
-                                    options: ContentRowOptions(
-                                      actionWidget: ContentRowActionOptions(
-                                        actionIcon: actionIcon,
-                                      ),
-                                      leadingIcon: Icon(
-                                        GeneralIcons.star,
-                                        color: context.color.textAndIconsStatusAccent,
-                                      ),
-                                      title: context.l10n.rateBaladyApp,
-                                    ),
-                                    onTap: () {
-                                      inAppReview.openStoreListing(
-                                        appStoreId: MapnessConstants.appStoreId,
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: Spacing.$4x,
+                                  title: context.l10n.settings,
+                                ),
+                                onTap: () => const SettingsRoute().push(context),
                               ),
                               userData.maybeWhen(
                                 orElse: () => const SizedBox.shrink(),
                                 data: (data) => data == null
                                     ? const SizedBox.shrink()
-                                    : ContentWrapper(
-                                        color: context.color.surfaceBaseSecondary,
-                                        children: [
-                                          ContentRow(
-                                            onTap: () => _logOut(context, ref),
-                                            options: ContentRowOptions(
-                                              titleStyle: context.textStyle.text
-                                                  .copyWith(color: context.color.textAndIconsStatusNegative),
-                                              title: context.l10n.logOut,
-                                              leadingIcon: SvgPicture.asset(
-                                                'assets/icons/svg/ic_profile_logout.svg',
-                                                height: 24,
-                                                width: 24,
-                                                matchTextDirection: true,
-                                                package: PackageConfig.packageName,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    : NotificationsSettingsRow(actionIcon: actionIcon),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (loading)
-                    Center(
-                      child: CircularProgressIndicator(
-                        color: context.color.textAndIconsStatusAccent,
+                          const SizedBox(
+                            height: Spacing.$4x,
+                          ),
+                          ContentWrapper(
+                            color: context.color.surfaceBaseSecondary,
+                            children: [
+                              ContentRow(
+                                options: ContentRowOptions(
+                                  actionWidget: ContentRowActionOptions(
+                                    actionIcon: actionIcon,
+                                  ),
+                                  leadingIcon: Icon(
+                                    GeneralIcons.questionCircle,
+                                    color: context.color.textAndIconsStatusAccent,
+                                  ),
+                                  title: context.l10n.helpCenter,
+                                ),
+                                onTap: () => const HelpCenterRoute().push(context),
+                              ),
+                              ContentRow(
+                                options: ContentRowOptions(
+                                  actionWidget: ContentRowActionOptions(
+                                    actionIcon: actionIcon,
+                                  ),
+                                  leadingIcon: Icon(
+                                    GeneralIcons.infoCircle,
+                                    color: context.color.textAndIconsStatusAccent,
+                                  ),
+                                  title: context.l10n.aboutApp,
+                                ),
+                                onTap: () {
+                                  const AboutBaladyRoute().push(context);
+                                },
+                              ),
+                              ContentRow(
+                                options: ContentRowOptions(
+                                  actionWidget: ContentRowActionOptions(
+                                    actionIcon: actionIcon,
+                                  ),
+                                  leadingIcon: Icon(
+                                    GeneralIcons.star,
+                                    color: context.color.textAndIconsStatusAccent,
+                                  ),
+                                  title: context.l10n.rateBaladyApp,
+                                ),
+                                onTap: () {
+                                  inAppReview.openStoreListing(
+                                    appStoreId: MapnessConstants.appStoreId,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: Spacing.$4x,
+                          ),
+                          userData.maybeWhen(
+                            orElse: () => const SizedBox.shrink(),
+                            data: (data) => data == null
+                                ? const SizedBox.shrink()
+                                : ContentWrapper(
+                                    color: context.color.surfaceBaseSecondary,
+                                    children: [
+                                      ContentRow(
+                                        onTap: () => _logOut(context, ref),
+                                        options: ContentRowOptions(
+                                          titleStyle: context.textStyle.text
+                                              .copyWith(color: context.color.textAndIconsStatusNegative),
+                                          title: context.l10n.logOut,
+                                          leadingIcon: SvgPicture.asset(
+                                            'assets/icons/svg/ic_profile_logout.svg',
+                                            height: 24,
+                                            width: 24,
+                                            matchTextDirection: true,
+                                            package: PackageConfig.packageName,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ],
                       ),
                     ),
+                  ),
                 ],
               ),
             ),
@@ -246,14 +229,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           if (!context.mounted) {
             return;
           }
-          setState(() {
-            loading = true;
-          });
-          Navigator.of(ctx).pop();
           await ref.read(authProvider.notifier).logOut();
-          setState(() {
-            loading = false;
-          });
+          Navigator.of(ctx).pop();
         },
         title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
         logOutText: context.l10n.logOut,

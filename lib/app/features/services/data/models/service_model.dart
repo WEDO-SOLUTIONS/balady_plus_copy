@@ -17,8 +17,7 @@ class ServiceModel extends ServiceEntity {
       required super.action,
       super.cards = const [],
       super.warning,
-      super.requireLogin,
-      super.beta});
+      super.requireLogin});
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     json.addAll(json["ar"] as Map<String, dynamic>);
@@ -39,7 +38,6 @@ class ServiceModel extends ServiceEntity {
         action: ServiceActionModel.fromJson(json['action']),
         cards: cardList,
         warning: json['warning'] as String?,
-        requireLogin: json["requireLogin"],
-        beta: json["beta"] ?? false);
+        requireLogin: json["requireLogin"]);
   }
 }

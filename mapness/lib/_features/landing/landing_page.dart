@@ -41,7 +41,7 @@ class LandingPage extends ConsumerStatefulWidget {
   ConsumerState<LandingPage> createState() => _LandingPageState();
 }
 
-class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
+class _LandingPageState extends ConsumerState<LandingPage> {
   StreamSubscription<TapEvent>? _streamSubscription;
   bool needToShow = true;
   final ValueNotifier<bool> _onScroll = ValueNotifier(false);
@@ -51,7 +51,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
 
     _draggableScrollableController = DraggableScrollableController();
     setupTapListener();
@@ -113,19 +112,9 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _draggableScrollableController.dispose();
     _onScroll.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      ref.read(locationProvider.notifier).checkOnLocationPermissionGranted();
-    }
-
-    super.didChangeAppLifecycleState(state);
   }
 
   @override

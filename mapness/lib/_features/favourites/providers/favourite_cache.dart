@@ -36,9 +36,8 @@ class _FavouriteCache extends _$FavouriteCache {
 
   DateTime? _lastUpdate;
 
-  bool _isForceRefresh = false;
-
-  bool get isCacheValid => _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
+  bool get isCacheValid =>
+      _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
 
   Future<void> deleteAll() async {
     if (!state.hasValue) {
@@ -128,7 +127,8 @@ class _FavouriteCache extends _$FavouriteCache {
 
   Future<void> _addToDeletionSync(List<FavouriteItem> items) async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-    final deleteSync = (await favoritesBox.get(_keyDeleteSync, defaultValue: []) as List<dynamic>)
+    final deleteSync = (await favoritesBox.get(_keyDeleteSync, defaultValue: [])
+            as List<dynamic>)
         .cast<FavoriteCacheItem>()
       ..addAll(items.map((e) => e.toHive()));
 
@@ -139,7 +139,8 @@ class _FavouriteCache extends _$FavouriteCache {
     if (!state.hasValue) {
       return;
     }
-    if (state.requireValue.items.any((element) => element.id == item.id) || state.requireValue.work?.id == item.id) {
+    if (state.requireValue.items.any((element) => element.id == item.id) ||
+        state.requireValue.work?.id == item.id) {
       await deleteItem(item);
     }
 
@@ -151,7 +152,8 @@ class _FavouriteCache extends _$FavouriteCache {
     if (!state.hasValue) {
       return;
     }
-    if (state.requireValue.items.any((element) => element.id == item.id) || state.requireValue.home?.id == item.id) {
+    if (state.requireValue.items.any((element) => element.id == item.id) ||
+        state.requireValue.home?.id == item.id) {
       await deleteItem(item);
     }
 
@@ -163,11 +165,13 @@ class _FavouriteCache extends _$FavouriteCache {
     if (!state.hasValue) {
       return;
     }
-    if (state.requireValue.work?.id == item.id || state.requireValue.home?.id == item.id) {
+    if (state.requireValue.work?.id == item.id ||
+        state.requireValue.home?.id == item.id) {
       await deleteItem(item);
     }
 
-    final newState = state.requireValue.copyWith(items: [...state.requireValue.items, item]);
+    final newState =
+        state.requireValue.copyWith(items: [...state.requireValue.items, item]);
     await _addItem(item, newState);
   }
 
@@ -184,7 +188,8 @@ class _FavouriteCache extends _$FavouriteCache {
       favouriteState.work,
     ];
 
-    return items.firstWhereOrNull((element) => element?.entity?.id == objectId.toString());
+    return items.firstWhereOrNull(
+        (element) => element?.entity?.id == objectId.toString());
   }
 
   bool isFavourite(int objectId) {
@@ -229,13 +234,15 @@ class _FavouriteCache extends _$FavouriteCache {
 
   Future<void> _sync() async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-    final cache = favoritesBox.get(_keyCache, defaultValue: FavoriteCacheState()) as FavoriteCacheState?;
+    final cache = favoritesBox.get(_keyCache,
+        defaultValue: FavoriteCacheState()) as FavoriteCacheState?;
     final workId = cache?.work?.toDomain().id;
     final homeId = cache?.home?.toDomain().id;
 
     try {
-      final deleteSync =
-          (await favoritesBox.get(_keyDeleteSync, defaultValue: []) as List<dynamic>).cast<FavoriteCacheItem>();
+      final deleteSync = (await favoritesBox
+              .get(_keyDeleteSync, defaultValue: []) as List<dynamic>)
+          .cast<FavoriteCacheItem>();
 
       if (deleteSync.isNotEmpty) {
         await _deleteRequest(
@@ -250,8 +257,9 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     try {
-      final addSync =
-          (await favoritesBox.get(_keyAddSync, defaultValue: []) as List<dynamic>).cast<FavoriteCacheItem>();
+      final addSync = (await favoritesBox.get(_keyAddSync, defaultValue: [])
+              as List<dynamic>)
+          .cast<FavoriteCacheItem>();
 
       if (addSync.isNotEmpty) {
         await _addItemsRequest(
@@ -326,10 +334,12 @@ class _FavouriteCache extends _$FavouriteCache {
     );
     try {
       final raw = await dio.post('favourites', data: request.writeToBuffer());
-      final newState = proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
+      final newState =
+          proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
       await _updateState(newState);
     } on DioException catch (e) {
-      debugPrint(proto.ErrorResponse.fromBuffer(e.response!.data as List<int>).toString());
+      debugPrint(proto.ErrorResponse.fromBuffer(e.response!.data as List<int>)
+          .toString());
     }
     mixpanel?.track('Favorites: addItems');
   }
@@ -341,14 +351,6 @@ class _FavouriteCache extends _$FavouriteCache {
     final response = proto.FavouritesResponse.fromBuffer(raw.data as List<int>);
     mixpanel?.track('Favorites: fetchFavourites');
     return response.toDomain();
-  }
-
-  Future<void> forceRefresh() async {
-    _isForceRefresh = true;
-    try {
-      await build();
-    } catch (_) {}
-    _isForceRefresh = false;
   }
 
   @override
@@ -369,7 +371,7 @@ class _FavouriteCache extends _$FavouriteCache {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
 
     try {
-      if (_isForceRefresh || !isCacheValid) {
+      if (!isCacheValid) {
         final apiData = await _fetchFavourites();
         await favoritesBox.put(_keyCache, apiData.toHive());
         _lastUpdate = DateTime.now();
@@ -379,7 +381,8 @@ class _FavouriteCache extends _$FavouriteCache {
       debugPrint(e.toString());
     }
 
-    final cache = favoritesBox.get(_keyCache, defaultValue: FavoriteCacheState()) as FavoriteCacheState?;
+    final cache = favoritesBox.get(_keyCache,
+        defaultValue: FavoriteCacheState()) as FavoriteCacheState?;
 
     final homeItem = cache?.home;
     final workItem = cache?.work;

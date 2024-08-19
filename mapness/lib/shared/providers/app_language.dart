@@ -4,7 +4,6 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -79,8 +78,6 @@ class AppLanguage extends _$AppLanguage {
     ref.read(sharedPrefsProvider).setString(_prefsKey, value.name);
     ref.read(navigatorVoiceProvider.notifier).update(value.navigatorVoice);
 
-    // Update cached text for the favourites items
-    ref.read(favouriteCacheProvider.notifier).forceRefresh();
     // Update condition text for the weather texts
     ref.read(forecastWeatherProvider.notifier).forceRefresh();
     CommonFunctions.changeLanguage(lang: value.baladyCompat);

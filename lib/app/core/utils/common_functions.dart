@@ -60,7 +60,6 @@ import '../../features/profile_features/delegators/domain/entities/user_profile_
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
 import '../../features/vd/presentation/dialogs/vd_all_types_dialog.dart';
-import '../errors/exceptions.dart';
 import './utils_exports.dart'
     show
         AppColor,
@@ -1173,11 +1172,6 @@ class CommonFunctions {
                 response?.data.toString()) ??
             (errorMessage ?? ex.toString());
 
-        if (dioError != null &&  dioError is NoDataFoundException)
-        {
-          message = "Data Not Found";
-        }
-
         message = message.isEmpty ? (errorMessage ?? ex.toString()) : message;
         print("MessageMessage ${message}");
 
@@ -1486,8 +1480,6 @@ class CommonProperties {
   static bool showEkramDriver = false;
 
   static Uuid uuidInstance = Uuid();
-  static List<String> allowedSHAFingerprints = ["DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"];
-
 
   //static String get token =>
   //  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2OTEzMTQxMTEsImlhdCI6MTY5MTMxNDExMSwiZXhwIjoxNjkyNTIzNzExLCJhdWQiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsImh0dHBzOi8vc3NvYXBwZGV2Lm1vbXJhLmdvdi5zYS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl0sImNsaWVudF9pZCI6ImJhbGFkeV9tb2JpbGVfYXBwIiwic3ViIjoiN2MzNjY3NzgtYTAyMS00NzA3LTgyNDMtN2MzZGY1OWM3ZmY4IiwiYXV0aF90aW1lIjoxNjkxMzE0MTEwLCJpZHAiOiJsb2NhbCIsImVtYWlsIjoibS5haG1lZEBpbm5vc29mdC5tZXh4IiwicGhvbmVfbnVtYmVyIjoiNTkyODQyMjc1IiwibmFtZSI6IjIxMTE2OTI1OTIiLCJtYWlsIjoibS5haG1lZEBpbm5vc29mdC5tZXh4Iiwic2V4IjoiMSIsImRvYiI6IjMxLzA1LzE5OTUiLCJwaG9uZSI6IjA1OTI4NDIyNzUiLCJhcl9uYW1lIjoi2YXYrdmF2YjYryDZhdit2YXYr9io2YfYp9ih2KfZhNiv2YrZhiAg2KfYrdmF2K8iLCJlbl9uYW1lIjoiTUFITU9VRCBNT0hBTUVEQkFIQUVMREkgIEFITUVEIiwiaWRfbm8iOiIyMTExNjkyNTkyIiwibmlkIjoiMjA3IiwibmF0aW9uYWxpdHkiOiLZhdi12LEiLCJpZF90eXBlIjoiMiIsInNuYW1lIjoi2YXYrdmF2YjYryzZhdit2YXYr9io2YfYp9ih2KfZhNiv2YrZhiws2KfYrdmF2K8iLCJzaWQiOiI2REM4OEI1MDQ4NTRFNjE0Q0FFQUVENjJFODM4QTczRSIsImp0aSI6IjMxMDM4MjkxNEI1NzVDOUNFMzE5OUFBQUM1RjIwRjlFIn0.nQsrmyFoDuI9Qj1eRfAUAuqDIgvKIyZWRFanZChXQV0f-YZuMOlnYGRffegL0BhTSM2sRup57OicRhBQsEtAZHxaDmvjYp4cF0JSFTnIz5DWW5ZnCaoCVL-Jzzyyy5GC55oLiXrgrlWS_O0Y2SA-mkdzgGz-nTBjdiqYoY6BO7SWUiZb8RJLf7KJZEWALsqspEo1F836dvnCOPmKBT8Vr3iDxD5cbEL-u2R9Xt4VMXAO9B7ziXcW21kd6Si6mNPOSe29ga0HE4E5gRNMBUWQ3nLHfKrmNI0OYMdGGhclzEu8p1qaKJAIOPBbF6tuBXova0DpdjwZloM5ebSLF1FTBA";

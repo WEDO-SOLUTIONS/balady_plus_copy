@@ -43,7 +43,8 @@ class FavouriteToggle extends _$FavouriteToggle {
   Future<void> toggle() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     final name = LayerType.favourites.name;
-    final currentState = sharedPrefs.getString(MapnessConstants.activeLayerKey) == name;
+    final currentState =
+        sharedPrefs.getString(MapnessConstants.activeLayerKey) == name;
     if (currentState) {
       await sharedPrefs.remove(MapnessConstants.activeLayerKey);
     } else {
@@ -71,6 +72,9 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     final router = ref.watch(goRouterProvider);
     final favItemsAsync = ref.watch(favouriteCacheProvider);
     final showMarkers = ref.watch(favouriteToggleProvider);
+
+    /// clear markers (for state change handling)
+    await mapObjectManager.removeAllMarkers();
 
     /// don't show markers if user disabled them or if there are no favourites
     if (!showMarkers || favItemsAsync.value == null) {

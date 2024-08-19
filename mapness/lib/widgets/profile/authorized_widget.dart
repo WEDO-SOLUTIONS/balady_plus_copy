@@ -114,9 +114,7 @@ class AuthorizedWidget extends ConsumerWidget {
         builder: (context) => Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 6),
                 const SheetDragger(),
-                const SizedBox(height: 6),
                 ContentRow(
                   options: ContentRowOptions(
                     title: context.l10n.profilePhoto,

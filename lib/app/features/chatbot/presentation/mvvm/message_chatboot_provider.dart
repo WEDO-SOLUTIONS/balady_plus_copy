@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
@@ -44,31 +43,20 @@ class MessageChatBotProvider extends BaseViewModel {
             timeStampReceived: DateTime.now(),
           );
           message.notifyListeners();
-          if (isLoading != false) {
-            isLoading = false;
-            notifyListeners();
-          }
+          isLoading = false;
+          notifyListeners();
           scrollControllerAction();
         },
         (stream) {
-          print("STAAAART STREAM 11");
           if (!isClose) {
-            String typeData = "";
             listen = stream.listen((messageType) {
-              if(messageType.indexOf('\\') > 0 && messageType.indexOf('n') == -1) {
-                typeData = messageType; // what are the steps to apply to a commercial license
-              } else if (messageType.isNotEmpty) {
-                typeData += messageType;
-                String editMessage = typeData.replaceAll("\\n", "\n");
-                message.value = message.value.copyWith(
-                  answer: "${message.value.answer}$editMessage",
-                );
-                typeData = "";
-                isLoading = false;
-                notifyListeners();
-                message.notifyListeners();
-                scrollControllerAction();
-              }
+              String editMessage = messageType.replaceAll("\\n", "\n");
+              message.value = message.value.copyWith(
+                answer: "${message.value.answer}$editMessage",
+                // answer: message.value.answer + [messageType]
+              );
+              message.notifyListeners();
+              scrollControllerAction();
             });
             listen!.onDone(() {
               message.value = message.value.copyWith(
@@ -76,11 +64,11 @@ class MessageChatBotProvider extends BaseViewModel {
               );
               isLoading = false;
               notifyListeners();
-
               listen!.cancel();
               scrollControllerAction();
             });
             listen!.onError((error) {
+              // message.value.answer.add(error.toString());
               message.value = message.value.copyWith(
                 answer: message.value.answer + error.toString(),
                 haveError: true,
@@ -129,12 +117,11 @@ class MessageChatBotProvider extends BaseViewModel {
   }
 
   void scrollControllerAction() {
-    if (scrollController.position.maxScrollExtent - 80 >
-        scrollController.offset) {
+    if (scrollController.position.maxScrollExtent > scrollController.offset) {
       scrollController.animateTo(
-        scrollController.position.maxScrollExtent + 20,
+        scrollController.position.maxScrollExtent + 100,
         curve: Curves.linear,
-        duration: const Duration(milliseconds: 450),
+        duration: const Duration(milliseconds: 550),
       );
     }
   }

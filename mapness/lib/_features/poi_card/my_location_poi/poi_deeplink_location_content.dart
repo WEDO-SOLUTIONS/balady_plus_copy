@@ -3,12 +3,10 @@ part of 'content_my_location.dart';
 class PoiDeeplinkContent extends ConsumerWidget {
   final Function()? onTapClose;
   final LatLng location;
-  final AsyncValue<PoiMyLocationState?> data;
 
   const PoiDeeplinkContent({
     required this.onTapClose,
     required this.location,
-    required this.data,
     super.key,
   });
 
@@ -40,18 +38,10 @@ class PoiDeeplinkContent extends ConsumerWidget {
                   text: title,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                    top: Spacing.$4x,
-                    bottom: Spacing.$4x,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Text(
-                    data.maybeWhen(
-                      data: (value) => value?.address ?? '${location.latitude}, ${location.longitude}',
-                      orElse: () => '',
-                    ),
-                    style: context.textStyleV3.bodySmallRegular.copyWith(
-                      color: context.colorsV2.foregroundSoft,
-                    ),
+                    '${location.latitude}, ${location.longitude}',
+                    style: context.textStyle.text,
                   ),
                 ),
               ],

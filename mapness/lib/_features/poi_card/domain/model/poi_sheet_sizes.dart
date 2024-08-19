@@ -28,16 +28,13 @@ class PoiSheetSizes {
     return PoiSheetSizes._(
       middleHeight: middleHeight,
       collapsedHeight: collapsedHeight,
-      hiddenHeight: 76.0,
+      hiddenHeight: 130.0,
     );
   }
 
   /// Factory constructor for the My location card
   factory PoiSheetSizes.myLocation({
     required double bottomPadding,
-    required bool isAuthorized,
-    required bool isAddressInTwoLines,
-    required bool isTitleInTwoLine,
   }) {
     /// The hidden height for My location card
     const hiddenHeight = 90.0;
@@ -46,16 +43,7 @@ class PoiSheetSizes {
     const collapsedHeight = 100.0;
 
     /// Default middle height for My location card. Have been calculated and added safe area padding
-    double middleHeight = 170 + bottomPadding;
-
-    /// If the address is in two lines, add 18 pixels to the middle height
-    middleHeight = isAddressInTwoLines ? middleHeight + 18 : middleHeight;
-
-    /// If the user is authorized, remove 16 pixels of the middle height
-    middleHeight = isAuthorized ? middleHeight : middleHeight - 8;
-
-    /// If the title is in two lines, add 10 pixels to the middle height
-    middleHeight = isTitleInTwoLine ? middleHeight + 10 : middleHeight;
+    final middleHeight = 179 + bottomPadding;
 
     return PoiSheetSizes._(
       middleHeight: middleHeight,

@@ -338,12 +338,7 @@ class CreateComplianceRepositoryImplementation
           await remoteDataSource.getComplainceAppointment(params.$1, params.$2);
       return Right(data);
     } on ServerException catch (error) {
-      return Left(
-        ServerFailure(
-          error.errorMessage,
-          errorCode: error.errorCode,
-        ),
-      );
+      return Left(ServerFailure(error.errorMessage));
     }
   }
 }

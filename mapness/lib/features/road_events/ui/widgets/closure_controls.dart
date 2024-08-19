@@ -82,7 +82,9 @@ class ClosureControls extends ConsumerWidget {
                     const SizedBox(height: 8),
                     ComplianceBuildingLegend(),
                     const SizedBox(height: 8),
-                    const FollowControl(),
+                    const FollowControl(
+                      onlyFollowDirection: false,
+                    ),
                   ],
                 ),
               ],

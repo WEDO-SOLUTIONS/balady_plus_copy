@@ -651,18 +651,6 @@ class DgisMapView(
         )
     }
 
-    override fun saveNavigationState(result: Messages.Result<ByteArray>?) {
-        navigationHandler.saveNavigationState(result = result)
-    }
-
-    override fun restoreNavigationState(state: ByteArray, speedRangeZoom: SpeedRangeZoom, result: Messages.Result<Void>?) {
-        navigationHandler.restoreNavigationState(
-            state = state,
-            speedRangeZoom = speedRangeZoom,
-            result = result
-        )
-    }
-
     override fun stopNavigation(result: Messages.Result<Void>?) {
         navigationHandler.stopNavigation()
         result?.success(null)
@@ -706,7 +694,7 @@ class DgisMapView(
         )
     }
 
-    override fun onLocationPermissionGranted(
+    override fun onLocationPremissionGranted(
             desiredAccuracy: DesiredAccuracyMessage,
             result: Messages.Result<Void>?
     ) {

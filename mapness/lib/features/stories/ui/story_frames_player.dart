@@ -77,10 +77,9 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       if (frame.isAssetImage == true) {
         continue;
       }
-      final imageUrl = frame.imageUrlForLocale(Directionality.of(context));
-      if (imageUrl != null) {
+      if (frame.imageUrl != null) {
         // Preload images for better performance
-        CachedNetworkImageProvider(imageUrl).resolve(ImageConfiguration.empty);
+        CachedNetworkImageProvider(frame.imageUrl!).resolve(ImageConfiguration.empty);
       }
     }
   }

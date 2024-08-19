@@ -19,8 +19,10 @@ class AppDismissible extends StatelessWidget {
   final bool isDismissibleEnabled;
 
   /// Callback when the Dismissible is dismissed. Works only when [isDismissibleEnabled] is true
-  /// Called as confirmation with bottom sheet with options "Delete" or "Cancel"
   final VoidCallback onDismiss;
+
+  /// Callback for confirming the dismiss action. Works only when [isDismissibleEnabled] is true
+  final Future<bool?> Function(DismissDirection)? confirmDismiss;
 
   const AppDismissible({
     required this.elementKey,
@@ -29,6 +31,7 @@ class AppDismissible extends StatelessWidget {
     required this.child,
     required this.onDismiss,
     this.isDismissibleEnabled = true,
+    this.confirmDismiss,
     super.key,
   });
 
@@ -36,17 +39,10 @@ class AppDismissible extends StatelessWidget {
   Widget build(BuildContext context) => isDismissibleEnabled
       ? Dismissible(
           direction: DismissDirection.endToStart,
-          confirmDismiss: (direction) async {
-            // Here we call "confirmation" sheet. This sheet and method overall will decide: delete or not
-            // [Dismissible] class will not delete or dismiss any widget. We should do it only by providers and
-            // controllers
-            onDismiss();
-            // Return false to not remove this item from the list. [Dismissible] class visually remove item
-            // but do not delete it from the cache or database.
-            return false;
-          },
+          confirmDismiss: confirmDismiss,
           movementDuration: const Duration(milliseconds: 300),
           key: elementKey,
+          onDismissed: (_) => onDismiss(),
           background: AppDismissibleBackground(
             isFirst: isFirst,
             isLast: isLast,

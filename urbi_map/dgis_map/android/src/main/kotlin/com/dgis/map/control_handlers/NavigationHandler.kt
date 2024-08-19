@@ -153,27 +153,6 @@ class NavigationHandler(
         result?.success(null)
     }
 
-    fun saveNavigationState(result: Messages.Result<ByteArray>?)  {
-        val state = PackedNavigationState.fromModel(model = this.navigationManager.uiModel)
-        result?.success(state.toBytes())
-    }
-
-    fun restoreNavigationState(state: ByteArray, speedRangeZoom: Messages.SpeedRangeZoom, result: Messages.Result<Void>?) {
-        try {
-            val state = PackedNavigationState.fromBytes(state)
-            this.startNavigation(
-                finishPoint = state.finishPoint,
-                options = state.routeSearchOptions,
-                route = state.trafficRoute,
-                speedRangeZoom = speedRangeZoom,
-                result = result
-            )
-        } catch (e: Exception) {
-            result?.error(e)
-            return
-        }
-    }
-
     fun startNavigation(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,

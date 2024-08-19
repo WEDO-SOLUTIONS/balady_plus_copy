@@ -75,7 +75,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           showCustomDialog(ComplianceMunicipalityMSRDialog());
         } else if (success.guid == null) {
           CommonFunctions.showError("complianec_no_guid_error".tr());
-        } /* else if (success.targetBuilding == false) {
+        } else if (success.targetBuilding == false) {
           showCustomDialog(ConfirmCancelRequestDialog(
             onSelect: (value) {
               if (value == true) {
@@ -88,8 +88,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
               }
             },
           ));
-        } */
-        else {
+        } else {
           NavigationService.navigatorKey.currentState?.pop(
               MapScreenParams(gisParams: e.params, complianceGIS: success));
         }

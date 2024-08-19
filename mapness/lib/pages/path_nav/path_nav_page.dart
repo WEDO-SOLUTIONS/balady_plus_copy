@@ -1,16 +1,12 @@
 // ignore_for_file: prefer_expression_function_bodies
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
-import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
@@ -23,7 +19,6 @@ import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -43,11 +38,9 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 /// You don't need to add black background to make the app similar to the other app
 class PathNavPage extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage navType;
-  final bool restoreFromState;
 
   const PathNavPage({
     required this.navType,
-    required this.restoreFromState,
     super.key,
   });
 
@@ -55,7 +48,7 @@ class PathNavPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => PathNavPageState();
 }
 
-class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
+class PathNavPageState extends ConsumerState<PathNavPage> {
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
   late StreamSubscription? _naviEventsListener;
@@ -65,19 +58,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   final _expansionNotifier = ValueNotifier<bool>(false);
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      saveNavigationState();
-    }
-    if (state == AppLifecycleState.resumed) {
-      ref.read(locationProvider.notifier).checkLocationPermission();
-    }
-  }
-
-  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _initNavigation();
     WakelockPlus.enable();
   }
@@ -85,50 +67,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   void deactivate() {
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
+
     super.deactivate();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _naviEventsListener?.cancel();
     WakelockPlus.disable();
     super.dispose();
-  }
-
-  Future<void> saveNavigationState() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-
-    final state = await dgisController.saveNavigationState();
-    await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
-    await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateTypeKey, widget.navType.name);
-  }
-
-  Future<void> restoreNavigationState() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-
-    final state = base64.decode(
-      ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!,
-    );
-    try {
-      await dgisController.restoreNavigationState(
-        state,
-        SpeedRangeZoom(
-          maxSpeedRange: 5,
-          minSpeedRange: 0,
-          routeDistanceMillimeters: 0,
-          styleZoomValue: 16.5,
-        ),
-      );
-    } catch (e) {
-      await clearNavigationState();
-      context.pop();
-    }
-  }
-
-  Future<void> clearNavigationState() async {
-    await ref.read(sharedPrefsProvider).remove(MapnessConstants.navigatorStateKey);
-    await ref.read(sharedPrefsProvider).remove(MapnessConstants.navigatorStateTypeKey);
   }
 
   Future<void> _initNavigation() async {
@@ -139,19 +86,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     );
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-    if (widget.restoreFromState) {
-      await restoreNavigationState();
-    } else {
-      await dgisController.startNavigation(
-        SpeedRangeZoom(
-          maxSpeedRange: 5,
-          minSpeedRange: 0,
-          routeDistanceMillimeters: 0,
-          styleZoomValue: 16.5,
-        ),
-      );
-      await saveNavigationState();
-    }
+    await dgisController.startNavigation(
+      SpeedRangeZoom(
+        maxSpeedRange: 5,
+        minSpeedRange: 0,
+        routeDistanceMillimeters: 0,
+        styleZoomValue: 16.5,
+      ),
+    );
   }
 
   @override
@@ -172,29 +114,28 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         child: Stack(
           children: [
             ValueListenableBuilder(
-              valueListenable: _navigationState,
-              builder: (context, state, child) {
-                if (state == PathNavState.finished) {
-                  return GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      final value = _expansionNotifier.value;
-                      if (value) {
-                        _expansionNotifier.value = !value;
-                      }
-                    },
-                    child: const SizedBox.expand(),
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
+                valueListenable: _navigationState,
+                builder: (context, state, child) {
+                  if (state == PathNavState.finished) {
+                    return GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        final value = _expansionNotifier.value;
+                        if (value) {
+                          _expansionNotifier.value = !value;
+                        }
+                      },
+                      child: const SizedBox.expand(),
+                    );
+                  }
+                  return const SizedBox();
+                }),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const SizedBox(height: 6, width: double.maxFinite),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+                  padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.verticalBaseToTopSafezone),
                   child: Directionality(
                     // Here we set the text direction according to the current locale to display the correct direction of the widget.
                     textDirection: Directionality.of(context),
@@ -255,13 +196,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                 const Spacer(),
                 const Padding(
                   padding: padding,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IndoorControl(),
-                      ZoomControl(),
-                    ],
-                  ),
+                  child: ZoomControl(),
                 ),
                 const Spacer(),
                 const Padding(
@@ -278,36 +213,35 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                   // Here we set the text direction according to the current locale to display the correct direction of the widget.
                   textDirection: Directionality.of(context),
                   child: ValueListenableBuilder(
-                    valueListenable: _navigationState,
-                    builder: (context, state, child) {
-                      switch (state) {
-                        case PathNavState.running:
-                          return Align(
-                            alignment: Alignment.bottomCenter,
-                            child: EtaSheet(
-                              onEndTripPressed: _endTripAndShowHome,
-                              onRoutePressed: _onShowRoutePressed,
-                              onBetterRouteAccept: () => _acceptBetterRoute(context),
-                              onBetterRouteReject: () => _rejectBetterRoute(context),
-                              betterRouteDurationProfit: _betterRouteDurationProfit,
+                      valueListenable: _navigationState,
+                      builder: (context, state, child) {
+                        switch (state) {
+                          case PathNavState.running:
+                            return Align(
+                              alignment: Alignment.bottomCenter,
+                              child: EtaSheet(
+                                onEndTripPressed: _endTripAndShowHome,
+                                onRoutePressed: _onShowRoutePressed,
+                                onBetterRouteAccept: () => _acceptBetterRoute(context),
+                                onBetterRouteReject: () => _rejectBetterRoute(context),
+                                betterRouteDurationProfit: _betterRouteDurationProfit,
+                                onSizeChanged: _onSizeChanged,
+                              ),
+                            );
+                          case PathNavState.paused:
+                            return EtaContinue(
+                              onTap: _onContinuePressed,
                               onSizeChanged: _onSizeChanged,
-                            ),
-                          );
-                        case PathNavState.paused:
-                          return EtaContinue(
-                            onTap: _onContinuePressed,
-                            onSizeChanged: _onSizeChanged,
-                          );
-                        case PathNavState.finished:
-                          return EtaFinished(
-                            expansionNotifier: _expansionNotifier,
-                            onEndTripPressed: _endTripAndShowHome,
-                            onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
-                            onSizeChanged: _onSizeChanged,
-                          );
-                      }
-                    },
-                  ),
+                            );
+                          case PathNavState.finished:
+                            return EtaFinished(
+                              expansionNotifier: _expansionNotifier,
+                              onEndTripPressed: _endTripAndShowHome,
+                              onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                              onSizeChanged: _onSizeChanged,
+                            );
+                        }
+                      }),
                 ),
               ],
             ),
@@ -325,7 +259,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       await ref.read(dgisControllerProvider).value?.stopNavigation();
       _navigationState.value = PathNavState.finished;
     }
-    await clearNavigationState();
     action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
@@ -388,9 +321,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (event == NavigationEvent.finished) {
       ref.read(urbiAnalyticsProvider).track('tripCompleted');
       _navigationState.value = PathNavState.finished;
-      unawaited(
-        clearNavigationState(),
-      );
     }
   }
 

@@ -492,11 +492,6 @@ class DgisMapController {
   Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
       _instance.startNavigationSimulation(speedRangeZoom);
 
-  Future<Uint8List> saveNavigationState() => _instance.saveNavigationState();
-
-  Future<void> restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom) =>
-      _instance.restoreNavigationState(state, speedRangeZoom);
-
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
   Future<void> stopNavigation() => _instance.stopNavigation();
 
@@ -505,10 +500,10 @@ class DgisMapController {
 
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
-  Future<void> onLocationPermissionGranted({
+  Future<void> onLocationPremissionGranted({
     DesiredAccuracyMessage desiredAccuracy = DesiredAccuracyMessage.low,
   }) {
-    return _instance.onLocationPermissionGranted(desiredAccuracy);
+    return _instance.onLocationPremissionGranted(desiredAccuracy);
   }
 
   /// Add panorama markers to map.

@@ -23,13 +23,13 @@ class IndoorControl extends ConsumerWidget {
 }
 
 class _IndoorControl extends StatelessWidget {
-  final LevelsState state;
-  final void Function(IndoorLevel) onSelect;
-
   const _IndoorControl({
     required this.state,
     required this.onSelect,
   });
+
+  final LevelsState state;
+  final void Function(IndoorLevel) onSelect;
 
   @override
   Widget build(BuildContext context) => Column(

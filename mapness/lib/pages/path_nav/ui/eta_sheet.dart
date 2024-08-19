@@ -66,6 +66,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     final eta = ref.watch(pathNavEtaProvider);
     final sound = ref.watch(pathNavSoundProviderProvider);
     final dark = ref.watch(darkModeProvider);
+    if (eta == null) {
+      return const SizedBox();
+    }
 
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
@@ -77,12 +80,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
         roadPanelModel: RoadPanelModelEnable(
           enabledHeader: _isExpanded,
           distanceChild: NaviChildModel(
-              description: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
-              title: eta != null ? formatDistance(eta.distanceEta) : '--'),
-          arrivalChild: NaviChildModel(description: context.l10n.arrival, title: eta != null ? eta.arrivalTime : '--'),
-          drivingChild: NaviChildModel(
-              description: eta != null ? eta.timeEtaUnits.getDescription(context) : '--',
-              title: eta != null ? eta.timeEta : '--'),
+              description: eta.distanceEtaUnits.getDescription(context), title: formatDistance(eta.distanceEta)),
+          arrivalChild: NaviChildModel(description: context.l10n.arrival, title: eta.arrivalTime),
+          drivingChild: NaviChildModel(description: eta.timeEtaUnits.getDescription(context), title: eta.timeEta),
           contentRows: [
             ContentRow(
               onToggle: (_) {
@@ -145,7 +145,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             )
           ],
           onTapBurger: toggle,
-          onTapRoute: eta != null ? widget.onRoutePressed : () {},
+          onTapRoute: widget.onRoutePressed,
         ),
       ),
     );

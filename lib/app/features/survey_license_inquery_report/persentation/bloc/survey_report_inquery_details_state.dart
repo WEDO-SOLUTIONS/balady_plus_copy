@@ -21,7 +21,7 @@ class SurveyReportInqueryDetailsState extends Equatable {
   }) {
     return SurveyReportInqueryDetailsState(
       status: status ?? this.status,
-      licenceQueryDetails: commercialLicenceDetails ?? licenceQueryDetails,
+      licenceQueryDetails: commercialLicenceDetails ?? this.licenceQueryDetails,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

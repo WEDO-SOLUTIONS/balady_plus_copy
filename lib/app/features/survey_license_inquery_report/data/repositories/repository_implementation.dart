@@ -17,11 +17,10 @@ class SurveyInqueryRepositoryImplementation implements SurveyInqueryRepository {
   Future<Either<Failure, ResponseBodyModel<SurveyInqueryData>>> getLicenseData(
       int licenseNumber, String date) async {
     try {
-
       final data = await remoteDataSource.getLicenseData(licenseNumber, date);
       return Right(data);
-    } on NoDataFoundException catch (error) {
-      return Left(ServerFailure(error.toString()));
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }

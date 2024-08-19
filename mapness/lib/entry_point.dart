@@ -17,16 +17,13 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
-import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
-import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
@@ -37,12 +34,10 @@ import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
-import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
-import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -108,7 +103,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
-  ProviderSubscription? _locationListener;
 
   @override
   void initState() {
@@ -121,8 +115,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
       // Init camera position point
       initCameraPositionPoint();
-      // TODO(Scroollocker): Disable this feature. Because need to research fail restore cases
-      // restoreState();
       clearCache();
     });
   }
@@ -130,34 +122,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   @override
   void dispose() {
     _linkSubscription?.cancel();
-    _locationListener?.close();
 
     super.dispose();
-  }
-
-  Future<void> restoreState() async {
-    final state = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
-    final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
-
-    if (state != null) {
-      final extra = {
-        'data': RouteSearchOptionsMessageExt.fromString(type!),
-        'restoreFromState': true,
-      };
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final location = ref.read(locationProvider);
-        if (location != null) {
-          ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
-        } else {
-          _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
-            if (next != null) {
-              _locationListener?.close();
-              ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
-            }
-          });
-        }
-      });
-    }
   }
 
   @override
@@ -174,8 +140,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       _debugOverlay = OverlayEntry(
         builder: (context) => Theme(
           data: Theme.of(context),
-          child: const ProviderScope(
-            child: DebugOverlay(),
+          child: ProviderScope(
+            parent: ProviderScope.containerOf(context),
+            child: const DebugOverlay(),
           ),
         ),
       );
@@ -227,9 +194,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 ),
                 builder: (context, child) => child != null
                     ? LoadingOverlay(
-                        child: ToastOverlay(
-                          child: child,
-                        ),
+                        child: child,
                       )
                     : const SizedBox.shrink(),
                 locale: language.locale,

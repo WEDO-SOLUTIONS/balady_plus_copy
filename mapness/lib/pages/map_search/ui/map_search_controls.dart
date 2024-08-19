@@ -89,7 +89,9 @@ class MapSearchSheetControls extends ConsumerWidget {
                               //   onTap: _searchInArea,
                               // ),
                               Spacer(),
-                              FollowControl(),
+                              FollowControl(
+                                onlyFollowDirection: false,
+                              ),
                             ],
                           ),
                         ],

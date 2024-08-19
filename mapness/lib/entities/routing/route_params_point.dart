@@ -5,13 +5,13 @@ class RouteParamsPoint {
     required this.latitude,
     required this.longitude,
     this.objectId,
-    this.entranceId,
+    this.entraceId,
     this.levelId,
   });
   final double latitude;
   final double longitude;
   final int? objectId;
-  final int? entranceId;
+  final int? entraceId;
   final int? levelId;
 }
 
@@ -21,8 +21,9 @@ extension GeoPoint on RouteParamsPoint {
         longitude: longitude,
       );
 
-  DgisObjectIdMessage? get dgisObjectId =>
-      objectId != null ? DgisObjectIdMessage(objectId: objectId!, entranceId: entranceId ?? 0) : null;
+  DgisObjectIdMessage? get dgisObjectId => objectId != null
+      ? DgisObjectIdMessage(objectId: objectId!, entranceId: entraceId ?? 0)
+      : null;
 
   RouteEditorRoutePointMessage get pointMessage => RouteEditorRoutePointMessage(
         point: geoPoint,

@@ -27,16 +27,14 @@ class IwishPlaceCard extends ConsumerWidget {
   const IwishPlaceCard({required this.iwishId, super.key});
 
   final String iwishId;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const double minSizeInPhoto = 0.45;
-    const double minSize = 0.3;
-
     final entity = ref.watch(iwishEntityProvider(iwishId));
     final entityNotifier = ref.watch(iwishEntityProvider(iwishId).notifier);
 
     final controlsBottomExtent =
-        MediaQuery.of(context).size.height * (entity.valueOrNull?.photos.isEmpty == false ? minSizeInPhoto : minSize);
+        MediaQuery.of(context).size.height * (entity.valueOrNull?.photos.isEmpty == false ? 0.4 : 0.25);
 
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -57,7 +55,7 @@ class IwishPlaceCard extends ConsumerWidget {
                 metadata.openingDate != DateTime.fromMillisecondsSinceEpoch(0) ||
                 metadata.areaName != '';
 
-            final minSheetSize = entity.photos.isEmpty ? minSize : minSizeInPhoto;
+            final minSheetSize = entity.photos.isEmpty ? 0.25 : 0.4;
 
             return SafeArea(
               bottom: false,
@@ -90,6 +88,7 @@ class IwishPlaceCard extends ConsumerWidget {
                                 padding: const EdgeInsets.only(
                                   left: 16,
                                   right: 16,
+                                  bottom: 16,
                                 ),
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
@@ -173,7 +172,7 @@ class IwishPlaceCard extends ConsumerWidget {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 16),
                               if (showMetadata)
                                 Container(
                                   margin: const EdgeInsets.symmetric(

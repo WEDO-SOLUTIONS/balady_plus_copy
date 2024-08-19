@@ -20,12 +20,10 @@ class PathNavRoute extends GoRouteData {
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>?;
     final navType = extra?['data'] as RouteSearchOptionsMessage;
-    final restoreFromState = extra?['restoreFromState'] as bool;
     return _pathNavTransition(
       context: context,
       child: PathNavPage(
         navType: navType,
-        restoreFromState: restoreFromState,
       ),
     );
   }
@@ -33,10 +31,7 @@ class PathNavRoute extends GoRouteData {
   static void open(GoRouter router, RouteSearchOptionsMessage navType) {
     const route = PathNavRoute();
     final location = route.location;
-    final extra = {
-      'data': navType,
-      'restoreFromState': false,
-    };
+    final extra = {'data': navType};
     router.go(location, extra: extra);
   }
 }

@@ -16,7 +16,6 @@ class ServiceEntity extends Equatable {
   final List<ServiceCardEntity> cards;
   final String? warning;
   final bool? requireLogin;
-  final bool? beta;
 
   const ServiceEntity(
       {required this.id,
@@ -31,8 +30,7 @@ class ServiceEntity extends Equatable {
       required this.action,
       this.cards = const [],
       this.warning,
-      this.requireLogin = false,
-      this.beta});
+      this.requireLogin = false});
 
   @override
   List<Object?> get props => [
@@ -47,7 +45,6 @@ class ServiceEntity extends Equatable {
         action,
         cards,
         warning,
-        requireLogin,
-        beta
+        requireLogin
       ];
 }

@@ -21,21 +21,10 @@ extension TimeunitsExt on TimeUnits {
 
 extension PathNavManeuverStateExt on NaviMessageEventState {
   PathNavMessage? getNaviMessage() => switch (this) {
-        NaviMessageEventState.gpsLost => const PathNavMessage(state: PathNavMessageState.gpsConnectionLost),
-        NaviMessageEventState.routeResearch => const PathNavMessage(state: PathNavMessageState.reroute),
+        NaviMessageEventState.gpsLost =>
+          const PathNavMessage(state: PathNavMessageState.gpsConnectionLost),
+        NaviMessageEventState.routeResearch =>
+          const PathNavMessage(state: PathNavMessageState.reroute),
         NaviMessageEventState.none => null,
-      };
-}
-
-extension RouteSearchOptionsMessageExt on RouteSearchOptionsMessage {
-  static RouteSearchOptionsMessage fromString(String value) => switch (value) {
-        'car' => RouteSearchOptionsMessage.car,
-        'publicTransport' => RouteSearchOptionsMessage.publicTransport,
-        'bicycle' => RouteSearchOptionsMessage.bicycle,
-        'pedestrian' => RouteSearchOptionsMessage.pedestrian,
-        'scooter' => RouteSearchOptionsMessage.scooter,
-        'truck' => RouteSearchOptionsMessage.truck,
-        'taxi' => RouteSearchOptionsMessage.taxi,
-        _ => throw UnimplementedError(),
       };
 }

@@ -4,7 +4,6 @@ import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http_certificate_pinning/http_certificate_pinning.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -39,7 +38,7 @@ import '../../utils/utils_exports.dart'
         EnvType,
         Log,
         WithDelay;
-import '../services_exports.dart' show AppCertificatePinningInterceptor, NavigationService, NetworkConnection;
+import '../services_exports.dart' show NavigationService, NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
 class CRMWebService {
@@ -57,9 +56,7 @@ class CRMWebService {
     if (!kReleaseMode) {
       dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
     }
-   // dio.interceptors.add(
-   //     AppCertificatePinningInterceptor(allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,callFollowingErrorInterceptor: true)
-   //  );
+
     dio.interceptors.add(PrettyDioLogger(
       requestHeader: false,
       requestBody: false,
@@ -163,7 +160,6 @@ class AppInterceptors extends Interceptor {
       case DioErrorType.cancel:
         break;
       case DioErrorType.badCertificate:
-        throw NoInternetConnectionException(err.requestOptions);
         break;
       case DioErrorType.connectionError:
         throw NoInternetConnectionException(err.requestOptions);

@@ -396,7 +396,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           });
                         },
                         onShareTap: () => ShareUtil.share(item.entity?.id),
-                        onDelete: () => _deleteItem(item, ctx),
+                        onDelete: () => _onDelete(item),
+                        onDeleteConfirmation: () async => _onDeleteConfirmation(item, ctx),
                         onRouteTap: () {
                           RoutingRoutesRoute(
                             finishLabel: item.title,

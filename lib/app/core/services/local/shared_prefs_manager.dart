@@ -402,18 +402,6 @@ class SharedPrefs {
   bool? getLocationConsent() {
     return _sharedPreferences?.getBool('locationConsent');
   }
-
-  setChatbotSessionId(String? sessionId) async {
-    if (sessionId != null) {
-      _sharedPreferences?.setString('chatbot_session_id', sessionId);
-    } else {
-      _sharedPreferences?.remove("chatbot_session_id");
-    }
-  }
-
-  String? getChatbotSessionId() {
-    return _sharedPreferences?.getString('chatbot_session_id');
-  }
 }
 
 final sharedPrefs = SharedPrefs();

@@ -7,15 +7,16 @@ import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 class PoiTabs extends ConsumerStatefulWidget {
   final PoiCardState? poiCardState;
-  final int objectId;
+  final PoiModel model;
   final TabController tabController;
 
   const PoiTabs({
     required this.tabController,
-    required this.objectId,
+    required this.model,
     super.key,
     this.poiCardState,
   });
@@ -41,7 +42,8 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
 
   @override
   Widget build(BuildContext context) {
-    final photos = ref.watch(poiPhotoProvider(widget.objectId));
+    final objectId = widget.model.directoryObjectMessage?.id?.objectId ?? 0;
+    final photos = ref.watch(poiPhotoProvider(objectId));
 
     final photoCount = photos.whenOrNull(data: (data) => data.items.length) ?? 0;
     final inBuildingCount = widget.poiCardState?.organizations?.count ?? 0;
@@ -161,7 +163,7 @@ class _PoiTabItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: context.textStyle.footNote.copyWith(
+                      style: context.textStyle.footNoteBold.copyWith(
                         color: isActive ?? false
                             ? context.color.textAndIconsBasePrimary
                             : context.color.textAndIconsBasePrimary.withOpacity(0.5),

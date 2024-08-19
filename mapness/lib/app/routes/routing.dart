@@ -105,7 +105,7 @@ class RoutingRoutesRoute extends GoRouteData {
         latitude: startLatitude!,
         longitude: startLongitude!,
         objectId: startObjectId,
-        entranceId: startEntranceId,
+        entraceId: startEntranceId,
         levelId: startLevelId,
       );
     }
@@ -119,7 +119,7 @@ class RoutingRoutesRoute extends GoRouteData {
         latitude: finishLatitude!,
         longitude: finishLongitude!,
         objectId: finishObjectId,
-        entranceId: finishEntranceId,
+        entraceId: finishEntranceId,
         levelId: finishLevelId,
       );
     }
