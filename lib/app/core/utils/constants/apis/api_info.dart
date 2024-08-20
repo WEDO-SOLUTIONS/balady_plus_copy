@@ -914,6 +914,7 @@ class ApiUrl {
       'v1/superapp-commercial-ownership-services/transfer/upload-attachment/$attachTypeId/attachments/$requestId';
 
 
+  static  getDebts ({required String transactionType, required int transactionId}) => 'v1/debt-collection-services/mobile/debts/$transactionType/$transactionId';
 
 
 
