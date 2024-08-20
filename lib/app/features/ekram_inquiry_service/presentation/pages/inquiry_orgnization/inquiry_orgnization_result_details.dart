@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/services/local/navigation_services.dart';
@@ -11,15 +10,12 @@ import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import '../../../../posters/presentation/widgets/steps/step2/field_data.dart';
 import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../data/models/orgnization_charity_list.dart';
-import '../../bloc/inquiry_cemetry_bloc/ekram_inquiry_cemetry_bloc.dart';
 
 class InquiryOrgnizationResultsDetailsPage extends StatefulWidget {
   const InquiryOrgnizationResultsDetailsPage({super.key});
