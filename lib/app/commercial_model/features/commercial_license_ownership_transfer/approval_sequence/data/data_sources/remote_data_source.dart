@@ -21,22 +21,28 @@ import '../models/transfer_attachment_response/request_attachments_response.dart
 
 import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 abstract class RequestPermitsRemoteDataSource {
   Future<RequestPermitsModel> getRequestPermits(int requestNumber);
 
   Future<bool> saveSelectedRequestsPermits(
       int requestNumber, SaveSelectedRequestsPermitsRequest params);
+
   Future saveShopDetails({required SaveShopDetailsRequest params});
+
   Future<bool> saveShopInfo(int requestNumber, SaveShopInfoRequest params);
-  Future<List<RequestAttachmentsResponse>> requestAttachments(int requestNumber);
+
+  Future<List<RequestAttachmentsResponse>> requestAttachments(
+      int requestNumber);
+
   Future<bool>? uploadAttachments({required CrAttachmentRequest params});
-  Future<bool> saveAttachment( CrAttachmentRequest params);
-  Future<bool>? uploadCredence( CrAttachmentRequest params);
+
+  Future<bool> saveAttachment(CrAttachmentRequest params);
+
+  Future<bool>? uploadCredence(CrAttachmentRequest params);
+
   Future<bool> submitApprovel(int requestNumber);
-
-
-
 }
 
 class RequestPermitsRemoteDataSourceImplementation
@@ -50,8 +56,8 @@ class RequestPermitsRemoteDataSourceImplementation
     Response? response;
 
     try {
-      response =
-          await webService.dio.get(ApiUrl.getRequestPermits(requestNumber));
+      response = await webService.dio
+          .get(CommercialModelEndPoints.getRequestPermits(requestNumber));
       final data = response.data;
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -103,7 +109,7 @@ class RequestPermitsRemoteDataSourceImplementation
 
     try {
       response = await webService.dio.post(
-          ApiUrl.saveSelectedRequestPermits(requestNumber),
+          CommercialModelEndPoints.saveSelectedRequestPermits(requestNumber),
           data: params.toJson());
       final data = response.data;
 
@@ -158,8 +164,9 @@ class RequestPermitsRemoteDataSourceImplementation
     Response? response;
 
     try {
-      response = await webService.dio
-          .post(ApiUrl.transferShopInfo(requestNumber), data: params.toJson());
+      response = await webService.dio.post(
+          CommercialModelEndPoints.transferShopInfo(requestNumber),
+          data: params.toJson());
       final data = response.data;
 
       final statusCode = ResponseBodyModel.fromMap(data).statusDetails!.code;
@@ -213,12 +220,10 @@ class RequestPermitsRemoteDataSourceImplementation
 
     try {
       response = await webService.dio.post(
-          ApiUrl.ComercialLicenseTransferShopInfo(
+          CommercialModelEndPoints.comercialLicenseTransferShopInfo(
             params.requestId!,
           ),
           data: params.toMap());
-
-
 
       final decodedResponse =
           ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
@@ -240,14 +245,14 @@ class RequestPermitsRemoteDataSourceImplementation
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -270,14 +275,14 @@ class RequestPermitsRemoteDataSourceImplementation
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -288,25 +293,22 @@ class RequestPermitsRemoteDataSourceImplementation
   }
 
   @override
-  Future<List<RequestAttachmentsResponse>> requestAttachments(int requestNumber) async {
+  Future<List<RequestAttachmentsResponse>> requestAttachments(
+      int requestNumber) async {
     Response? response;
 
     try {
-      response =
-          await webService.dio.get(ApiUrl.transferRequestAttachments(requestNumber));
+      response = await webService.dio.get(
+          CommercialModelEndPoints.transferRequestAttachments(requestNumber));
       final data = response.data;
 
       // final dataResponse = ResponseBodyModel.fromMap(data).data!;
-
-
-
 
       List<RequestAttachmentsResponse> lst = (data["data"]["result"] as List)
           .map((data) => RequestAttachmentsResponse.fromJson(data))
           .toList();
 
       return lst;
-
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -346,19 +348,20 @@ class RequestPermitsRemoteDataSourceImplementation
     }
   }
 
-
   @override
   Future<bool>? uploadAttachments({required CrAttachmentRequest params}) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
     final body = await locator<web.WebService>().uploadFileSSO(
-      ApiUrl.uploadCredences(params.requestId!, params.data!.id),
+      CommercialModelEndPoints.uploadCredences(
+          params.requestId!, params.data!.id),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
       mimeType: mimeType,
     );
     ;
-    print(ApiUrl.uploadCredences(params.requestId!, params.data!.id));
+    print(CommercialModelEndPoints.uploadCredences(
+        params.requestId!, params.data!.id));
     bool state = body['state'];
     dynamic data = body['data'];
 
@@ -381,23 +384,6 @@ class RequestPermitsRemoteDataSourceImplementation
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
-      try {
-        Helpers.sendLog(
-            url: ApiUrl.complianceAttachment(
-                params.requestId.toString(), params.data!.id),
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-
       throw ServerException(
         "errors_server_error_2".tr(),
         exception: APIException(
@@ -407,13 +393,13 @@ class RequestPermitsRemoteDataSourceImplementation
     }
   }
 
-
   @override
-  Future<bool> saveAttachment( CrAttachmentRequest params) async {
+  Future<bool> saveAttachment(CrAttachmentRequest params) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
     final body = await locator<web.WebService>().uploadFileSSO(
-      ApiUrl.crAttachment(params.requestId!, params.data!.id!),
+      CommercialModelEndPoints.crAttachment(
+          params.requestId!, params.data!.id!),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
       mimeType: mimeType,
@@ -442,23 +428,6 @@ class RequestPermitsRemoteDataSourceImplementation
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
-      try {
-        Helpers.sendLog(
-            url: ApiUrl.complianceAttachment(
-                params.requestId.toString(), params.data!.id),
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-
       throw ServerException(
         "errors_server_error_2".tr(),
         exception: APIException(
@@ -468,21 +437,20 @@ class RequestPermitsRemoteDataSourceImplementation
     }
   }
 
-
-
-
   @override
-  Future<bool>? uploadCredence( CrAttachmentRequest params) async {
+  Future<bool>? uploadCredence(CrAttachmentRequest params) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
     final body = await locator<web.WebService>().uploadFileSSO(
-      ApiUrl.uploadCredences(params.requestId!, params.data!.id),
+      CommercialModelEndPoints.uploadCredences(
+          params.requestId!, params.data!.id),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
       mimeType: mimeType,
     );
     ;
-    print(ApiUrl.uploadCredences(params.requestId!, params.data!.id));
+    print(CommercialModelEndPoints.uploadCredences(
+        params.requestId!, params.data!.id));
     bool state = body['state'];
     dynamic data = body['data'];
     String error = body['error'] ?? ("errors_server_error_1").tr();
@@ -506,23 +474,6 @@ class RequestPermitsRemoteDataSourceImplementation
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
-      try {
-        Helpers.sendLog(
-            url: ApiUrl.complianceAttachment(
-                params.requestId.toString(), params.data!.id),
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-
       throw ServerException(
         "errors_server_error_2".tr(),
         exception: APIException(
@@ -532,17 +483,15 @@ class RequestPermitsRemoteDataSourceImplementation
     }
   }
 
-
   @override
-  Future<bool> submitApprovel(
-      int requestNumber) async {
+  Future<bool> submitApprovel(int requestNumber) async {
     Response? response;
 
     try {
-
       SubmitApprovelModel obj = SubmitApprovelModel();
-      response = await webService.dio
-          .post(ApiUrl.submitApprovel(requestNumber) ,data: obj.toJson());
+      response = await webService.dio.post(
+          CommercialModelEndPoints.submitApprovel(requestNumber),
+          data: obj.toJson());
       final data = response.data;
 
       final statusCode = ResponseBodyModel.fromMap(data).statusDetails!.code;
@@ -589,6 +538,4 @@ class RequestPermitsRemoteDataSourceImplementation
       }
     }
   }
-
-
 }

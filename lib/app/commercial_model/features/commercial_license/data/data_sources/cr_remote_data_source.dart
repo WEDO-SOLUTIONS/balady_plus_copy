@@ -28,6 +28,7 @@ import '../models/cr_submit_response_model.dart';
 import '../models/qr/qr_lookup.dart';
 import '../models/save_com_submitter_and_owner_request_model.dart';
 import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 import '../models/qr/addetional_qr_data_request.dart';
 import '../models/qr/qr_details_model.dart';
 import '../models/qr/save_enterprise_data_request.dart';
@@ -145,7 +146,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.accommodationTypesCL);
+      response = await webService.dio.get(CommercialModelEndPoints.accommodationTypesCL);
 
       var data = response.data;
 
@@ -199,7 +200,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(ApiUrl.addIsicActivities,
+      response = await webService.dio.post(CommercialModelEndPoints.addIsicActivities,
           data: params.toJson(),
           options: Options(
             headers: {"sid": ""},
@@ -252,7 +253,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.recordInfo(crNumber: crNumber, role: role),
+        CommercialModelEndPoints.recordInfo(crNumber: crNumber, role: role),
       );
 
       var data = response.data["data"]["result"];
@@ -331,7 +332,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.subActivities.replaceAll("isicCode", isicCode),
+        CommercialModelEndPoints.subActivities.replaceAll("isicCode", isicCode),
       );
 
       var data = response.data;
@@ -387,7 +388,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response =
-          await webService.dio.get(ApiUrl.subActivityDetails + subActivityId);
+          await webService.dio.get(CommercialModelEndPoints.subActivityDetails + subActivityId);
 
       var data = response.data["data"]["result"];
 
@@ -469,7 +470,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(ApiUrl.saveComSubmitterAndOwner,
+      response = await webService.dio.post(CommercialModelEndPoints.saveComSubmitterAndOwner,
           data: params?.toMap(),
           queryParameters: params?.requestId != null
               ? {"requestId": params!.requestId!}
@@ -548,7 +549,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.saveActivityDetails(params!.requestId!),
+          CommercialModelEndPoints.saveActivityDetails(params!.requestId!),
           data: params.toMap());
 
       var data = response.data["data"]?["result"];
@@ -624,7 +625,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.saveLocationDetails(params!.requestId!),
+          CommercialModelEndPoints.saveLocationDetails(params!.requestId!),
           data: params?.toMap());
 
       var data = response.data["data"]["result"];
@@ -708,7 +709,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio
-          .get(ApiUrl.cleanContracts(params!.requestId), data: params.toMap());
+          .get(CommercialModelEndPoints.cleanContracts(params!.requestId), data: params.toMap());
 
       var data = response.data["data"];
 
@@ -789,7 +790,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-          ApiUrl.deedInfoOwnwerShip(
+          CommercialModelEndPoints.deedInfoOwnwerShip(
               requestId: params!.requestId, type: params.ownershipType!),
           options: Options(headers: {"deedNumber": params.deedNumber}));
 
@@ -872,7 +873,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response =
-          await webService.dio.post(ApiUrl.ejarInfo, data: params?.toMap());
+          await webService.dio.post(CommercialModelEndPoints.ejarInfo, data: params?.toMap());
 
       var data = response.data["data"]["result"];
 
@@ -954,7 +955,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-          ApiUrl.investmentContracts(params!.requestId),
+          CommercialModelEndPoints.investmentContracts(params!.requestId),
           data: params.toMap());
 
       var data = response.data["data"];
@@ -1036,7 +1037,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.crIssueAttachments(params!));
+      response = await webService.dio.get(CommercialModelEndPoints.crIssueAttachments(params!));
 
       var data = response.data["data"];
 
@@ -1116,7 +1117,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
     final body = await locator<web.WebService>().uploadFileSSO(
-      ApiUrl.crAttachment(params.requestId!, params.data!.id!),
+      CommercialModelEndPoints.crAttachment(params.requestId!, params.data!.id!),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
       mimeType: mimeType,
@@ -1145,23 +1146,6 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
-      try {
-        Helpers.sendLog(
-            url: ApiUrl.complianceAttachment(
-                params.requestId.toString(), params.data!.id),
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-
       throw ServerException(
         "errors_server_error_2".tr(),
         exception: APIException(
@@ -1178,7 +1162,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.crCalculateFess(
+          CommercialModelEndPoints.crCalculateFess(
             params.requestId!,
           ),
           data: params.toMap());
@@ -1262,7 +1246,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.addBeneficiaryNotes(
+          CommercialModelEndPoints.addBeneficiaryNotes(
             params.requestId!,
           ),
           data: params.toMap());
@@ -1342,7 +1326,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.crSubmit(
+          CommercialModelEndPoints.crSubmit(
             params.requestId!,
           ),
           data: params.toMap());
@@ -1426,7 +1410,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.saveShopDetails(
+          CommercialModelEndPoints.saveShopDetails(
             params.requestId!,
           ),
           data: params.toMap());
@@ -1505,7 +1489,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.cleanOptions(
+        CommercialModelEndPoints.cleanOptions(
           params,
         ),
       );
@@ -1589,7 +1573,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.deedOptions(
+        CommercialModelEndPoints.deedOptions(
           params,
         ),
       );
@@ -1669,7 +1653,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.getCredences(params));
+      response = await webService.dio.get(CommercialModelEndPoints.getCredences(params));
 
       var data = response.data["data"]["result"];
 
@@ -1747,13 +1731,13 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
     final body = await locator<web.WebService>().uploadFileSSO(
-      ApiUrl.uploadCredences(params.requestId!, params.data!.id),
+      CommercialModelEndPoints.uploadCredences(params.requestId!, params.data!.id),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
       mimeType: mimeType,
     );
     ;
-    print(ApiUrl.uploadCredences(params.requestId!, params.data!.id));
+    print(CommercialModelEndPoints.uploadCredences(params.requestId!, params.data!.id));
     bool state = body['state'];
     dynamic data = body['data'];
     String error = body['error'] ?? ("errors_server_error_1").tr();
@@ -1777,23 +1761,6 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
-      try {
-        Helpers.sendLog(
-            url: ApiUrl.complianceAttachment(
-                params.requestId.toString(), params.data!.id),
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-
       throw ServerException(
         "errors_server_error_2".tr(),
         exception: APIException(
@@ -1809,7 +1776,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.validateApprovals(
+        CommercialModelEndPoints.validateApprovals(
           params,
         ),
       );
@@ -1890,7 +1857,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-        ApiUrl.validateSalamaAttachmentsInfo(
+        CommercialModelEndPoints.validateSalamaAttachmentsInfo(
           params.requestId!,
         ),
         data: params.toMap(),
@@ -1971,7 +1938,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.fawrySalamaBills(
+        CommercialModelEndPoints.fawrySalamaBills(
           params,
         ),
       );
@@ -2051,7 +2018,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.fawrySalamaReports(
+        CommercialModelEndPoints.fawrySalamaReports(
           params,
         ),
       );
@@ -2132,7 +2099,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-        ApiUrl.applyCommercialRequest(
+        CommercialModelEndPoints.applyCommercialRequest(
           params,
         ),
       );
@@ -2217,7 +2184,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.getQrCodeDetails(
+        CommercialModelEndPoints.getQrCodeDetails(
           params,
         ),
       );
@@ -2304,7 +2271,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.saveQrEnterpriseData(
+          CommercialModelEndPoints.saveQrEnterpriseData(
             params.requestId!,
           ),
           data: params.toJson());
@@ -2385,7 +2352,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.saveQrWorkTimesData(
+          CommercialModelEndPoints.saveQrWorkTimesData(
             params.requestId!,
           ),
           data: params.toJson());
@@ -2466,7 +2433,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.saveAddetionalQrData(
+          CommercialModelEndPoints.saveAddetionalQrData(
             params.requestId!,
           ),
           data: params.toJson());
@@ -2546,7 +2513,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.qrAttachments(params!));
+      response = await webService.dio.get(CommercialModelEndPoints.qrAttachments(params!));
 
       var data = response.data["data"];
 
@@ -2626,7 +2593,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
     final body = await locator<web.WebService>().uploadFileSSO(
-      ApiUrl.qrUploadAttachments(params.requestId!, params.data!.id!),
+      CommercialModelEndPoints.qrUploadAttachments(params.requestId!, params.data!.id!),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
       mimeType: mimeType,
@@ -2655,23 +2622,6 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
-      try {
-        Helpers.sendLog(
-            url: ApiUrl.complianceAttachment(
-                params.requestId.toString(), params.data!.id),
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-
       throw ServerException(
         "errors_server_error_2".tr(),
         exception: APIException(
@@ -2687,7 +2637,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.qrSubmit(
+          CommercialModelEndPoints.qrSubmit(
             params!,
           ),
           data: params.toJson());
@@ -2770,7 +2720,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-          ApiUrl.qrLookUp(
+          CommercialModelEndPoints.qrLookUp(
             params,
           ),
           data: params.toJson());
@@ -2853,7 +2803,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.addetionalActivites(
+      response = await webService.dio.get(CommercialModelEndPoints.addetionalActivites(
         subActivityId!,
       ));
 
@@ -2937,7 +2887,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.addetionalDetailsActivity(
+      response = await webService.dio.get(CommercialModelEndPoints.addetionalDetailsActivity(
         params!.subActivityId,
         params.addetionalActivityId,
       ));
@@ -3024,7 +2974,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-          ApiUrl.mallsList(
+          CommercialModelEndPoints.mallsList(
             params,
           ),
           data: params.toJson());
@@ -3108,7 +3058,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.validateSalamaBill(params.requestId, params.number),
+        CommercialModelEndPoints.validateSalamaBill(params.requestId, params.number),
       );
 
       var data = response.data["data"]["result"];
@@ -3187,7 +3137,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-          ApiUrl.validateSalamaPermit(
+          CommercialModelEndPoints.validateSalamaPermit(
             params.requestId,
           ),
           options: Options(headers: {"salamaPermitNumber": params.number}));
@@ -3268,7 +3218,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.validateSalamaReport(params.requestId, params.number),
+        CommercialModelEndPoints.validateSalamaReport(params.requestId, params.number),
       );
 
       var data = response.data["data"]["result"];
@@ -3347,7 +3297,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio
-          .post(ApiUrl.salamaWarningMessage, data: params.toJson());
+          .post(CommercialModelEndPoints.salamaWarningMessage, data: params.toJson());
 
       var data = response.data["data"]["result"] != null
           ? (response.data["data"]["result"]?["message"] ?? "")
@@ -3427,7 +3377,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio
-          .post(ApiUrl.salamaWarningWorkFlowMessage, data: params.toJson());
+          .post(CommercialModelEndPoints.salamaWarningWorkFlowMessage, data: params.toJson());
 
       var data = response.data["data"]["result"] != null
           ? response.data["data"]["result"][0]["workflowName"]
@@ -3506,7 +3456,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.boardContracts(params),
+        CommercialModelEndPoints.boardContracts(params),
       );
 
       var data = response.data["data"];
@@ -3590,7 +3540,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio
-          .get(ApiUrl.crCitizenInfo, queryParameters: params.toMap());
+          .get(CommercialModelEndPoints.crCitizenInfo, queryParameters: params.toMap());
 
       var data = response.data["data"]["result"];
 
@@ -3671,7 +3621,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response =
-          await webService.dio.get(ApiUrl.requestDetailsCommercial(params));
+          await webService.dio.get(CommercialModelEndPoints.requestDetailsCommercial(params));
 
       var data = response.data["data"]["result"];
 
@@ -3755,7 +3705,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response =
-          await webService.dio.get(ApiUrl.requestConclusionCommercial(params));
+          await webService.dio.get(CommercialModelEndPoints.requestConclusionCommercial(params));
 
       var data = response.data["data"]["result"];
 

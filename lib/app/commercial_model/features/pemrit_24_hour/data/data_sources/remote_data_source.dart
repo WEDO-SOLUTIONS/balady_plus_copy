@@ -16,6 +16,7 @@ import '../models/permit_submit_response_model.dart';
 import '../models/permit_request_details_model.dart';
 import '../models/permits_alerts_response.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 abstract class Permits24RemoteDataSource {
   Future<Permit24AllowedAction> getPermitAllowedActions({required int params});
@@ -44,7 +45,7 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
     var response;
     try {
       response = await webService.dio.post(
-        ApiUrl.permit24Submit(params),
+        CommercialModelEndPoints.permit24Submit(params),
       );
 
       final data = response.data;
@@ -92,7 +93,7 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
     var response;
     try {
       response = await webService.dio.delete(
-        ApiUrl.deletePermit24Request(requestId),
+        CommercialModelEndPoints.deletePermit24Request(requestId),
       );
 
       final data = response.data;
@@ -140,7 +141,7 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.permits24Alerts(type),
+        CommercialModelEndPoints.permits24Alerts(type),
       );
 
       final data = response.data;
@@ -189,7 +190,7 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
     var response;
     try {
       response =
-          await webService.dio.get(ApiUrl.permit24AlllowedAction(params));
+          await webService.dio.get(CommercialModelEndPoints.permit24AlllowedAction(params));
 
       final data = response.data;
       data.toString().successLog();
@@ -236,7 +237,7 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
     var response;
     try {
       response =
-          await webService.dio.get(ApiUrl.permit24ValidateBeforeApply(params));
+          await webService.dio.get(CommercialModelEndPoints.permit24ValidateBeforeApply(params));
 
       final data = response.data;
       data.toString().successLog();
@@ -285,7 +286,7 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.permit24RequestDetails(params),
+        CommercialModelEndPoints.permit24RequestDetails(params),
       );
 
       final data = response.data;
@@ -338,7 +339,7 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.permit24Calclaute(params),
+        CommercialModelEndPoints.permit24Calclaute(params),
       );
 
       final data = response.data;

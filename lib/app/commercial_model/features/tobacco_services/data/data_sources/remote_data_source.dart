@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
-import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/commercial_model/features/tobacco_services/data/models/disclosure_request.dart';
@@ -34,7 +34,7 @@ class TobaccoListRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getUserFacilities,
+        CommercialModelEndPoints.getUserFacilities,
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -92,7 +92,7 @@ class TobaccoListRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getTobaccoDisclosure,
+        CommercialModelEndPoints.getTobaccoDisclosure,
         queryParameters: {
           "registrationNumber": registrationNumber,
         },
@@ -153,7 +153,7 @@ class TobaccoListRemoteDataSourceImplementation
         },
       );
       response = await webService.dio.post(
-        ApiUrl.getTobaccoDisclosureUploadFile,
+        CommercialModelEndPoints.getTobaccoDisclosureUploadFile,
         data: formData,
         options: Options(
           headers: {
@@ -207,7 +207,7 @@ class TobaccoListRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio.post(
-        ApiUrl.getTobaccoDisclosureUpload,
+        CommercialModelEndPoints.getTobaccoDisclosureUpload,
         data: disclosureRequest.toJson(),
       );
       final data = response.data;

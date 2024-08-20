@@ -11,6 +11,7 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license_det
 import 'package:balady_plus/app/commercial_model/features/commercial_license_details/data/models/reason_cancel.dart';
 import 'package:balady_plus/app/commercial_model/features/request_commercial_license_details/data/models/request_allowed_actions.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 
 class RequestCommercialLicenseActionViewModel extends BaseViewModel {
@@ -37,7 +38,7 @@ class RequestCommercialLicenseActionViewModel extends BaseViewModel {
       isLoading = true;
       notifyListeners();
       var response = await webService.dio
-          .get(ApiUrl.getAllowedActionsForRequests(requestId));
+          .get(CommercialModelEndPoints.getAllowedActionsForRequests(requestId));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       actions = requestAllowedActionsListFromJson(result)

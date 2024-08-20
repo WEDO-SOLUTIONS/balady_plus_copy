@@ -8,6 +8,7 @@ import 'package:dio/dio.dart' show DioError, Options;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 abstract class RequestCommercialLicenseDetailsRemoteDataSource {
   Future<RequestCommercialLicenseDetailsModel>
@@ -29,7 +30,7 @@ class RequestCommercialLicenseDetailsRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio
-          .get(ApiUrl.getRequestCommercialLicenseDetails(requestId),
+          .get(CommercialModelEndPoints.getRequestCommercialLicenseDetails(requestId),
               options: Options(headers: {
                 'x-channel-id': 'mobile',
               }));
@@ -82,7 +83,7 @@ class RequestCommercialLicenseDetailsRemoteDataSourceImplementation
 //
 //   try {
 //     response = await webService.dio.get(
-//       ApiUrl.invoiceStatuses,
+//       CommercialModelEndPoints.invoiceStatuses,
 //     );
 //
 //     final data = response.data;

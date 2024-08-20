@@ -28,6 +28,7 @@ import '../models/permit_poster_types_response.dart';
 import '../models/permit_submit_response_model.dart';
 import '../models/poster_request_details_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 abstract class PostersRemoteDataSource {
   Future<PermitsLicensesResponse> getLicensePermits(
@@ -79,7 +80,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio.get(
-          ApiUrl.getLicensesForPermits(
+          CommercialModelEndPoints.getLicensesForPermits(
               crNumber: params.crNumber!, groupId: params.groupId!),
           queryParameters: params.toMap(),
           options: Options(
@@ -131,7 +132,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getGroupsItems,
+        CommercialModelEndPoints.getGroupsItems,
       );
 
       final data = response.data;
@@ -179,7 +180,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio
-          .post(ApiUrl.savePoster(params.requestId!), data: params.toJson());
+          .post(CommercialModelEndPoints.savePoster(params.requestId!), data: params.toJson());
 
       final data = response.data;
       data.toString().successLog();
@@ -227,7 +228,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getPermitAttachmentTypes(
+        CommercialModelEndPoints.getPermitAttachmentTypes(
             requestId: params.requestId!, typeId: params.typeId!),
       );
 
@@ -275,7 +276,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
   Future<PermitPosterTypeResponse> getPErmitPosterTypes() async {
     var response;
     try {
-      response = await webService.dio.get(ApiUrl.getPermitPosterTypes);
+      response = await webService.dio.get(CommercialModelEndPoints.getPermitPosterTypes);
 
       final data = response.data;
       data.toString().successLog();
@@ -323,7 +324,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio
-          .post(ApiUrl.applyPermitGroupLicense, data: params.toJson());
+          .post(CommercialModelEndPoints.applyPermitGroupLicense, data: params.toJson());
 
       final data = response.data;
       data.toString().successLog();
@@ -372,7 +373,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     final mimeType = lookupMimeType(params.filePath ?? "");
 
     final body = await locator<web.WebService>().uploadFileSSO(
-        ApiUrl.permitUploadAttachment(params.requestId!, params.id!),
+        CommercialModelEndPoints.permitUploadAttachment(params.requestId!, params.id!),
         base64: base64Decode(params.base64 ?? ""),
         fileName: params.fileName,
         mimeType: mimeType,
@@ -415,7 +416,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       print(error);
       try {
         Helpers.sendLog(
-            url: ApiUrl.permitUploadAttachment(params.requestId!, params.id!),
+            url: CommercialModelEndPoints.permitUploadAttachment(params.requestId!, params.id!),
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
@@ -446,7 +447,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio.post(
-        ApiUrl.postersSubmit(params),
+        CommercialModelEndPoints.postersSubmit(params),
       );
 
       final data = response.data;
@@ -494,7 +495,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio.post(
-        ApiUrl.addIndivisualRequests(params),
+        CommercialModelEndPoints.addIndivisualRequests(params),
       );
 
       final data = response.data;
@@ -544,7 +545,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.postersRequestDetails(params),
+        CommercialModelEndPoints.postersRequestDetails(params),
       );
 
       final data = response.data;
@@ -596,7 +597,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio.delete(
-        ApiUrl.deleteLicenseFromPermit(requestId, licenseId),
+        CommercialModelEndPoints.deleteLicenseFromPermit(requestId, licenseId),
       );
 
       final data = response.data;
@@ -644,7 +645,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio.delete(
-        ApiUrl.deletePermitRequest(requestId),
+        CommercialModelEndPoints.deletePermitRequest(requestId),
       );
 
       final data = response.data;
@@ -692,7 +693,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.postersAlerts,
+        CommercialModelEndPoints.postersAlerts,
       );
 
       final data = response.data;
@@ -739,7 +740,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
   Future<PermitApplyGroupResponse> applyLicense({required int? params}) async {
     var response;
     try {
-      response = await webService.dio.post(ApiUrl.applyLicense(params));
+      response = await webService.dio.post(CommercialModelEndPoints.applyLicense(params));
 
       final data = response.data;
       data.toString().successLog();
@@ -787,7 +788,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     var response;
     try {
       response =
-          await webService.dio.get(ApiUrl.posterRequestAlllowedAction(params));
+          await webService.dio.get(CommercialModelEndPoints.posterRequestAlllowedAction(params));
 
       final data = response.data;
       data.toString().successLog();

@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/_shared_feature_/data/models/response_b
 import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/data/models/commercial_license_permits.dart';
 import 'package:dio/dio.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 class SelectedPermitsViewModel extends BaseViewModel {
   final WebService webService;
@@ -28,7 +29,7 @@ class SelectedPermitsViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      response = await webService.dio.get(ApiUrl.getRequestPermits(requestId));
+      response = await webService.dio.get(CommercialModelEndPoints.getRequestPermits(requestId));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       permits = result['permits']

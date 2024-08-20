@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/_shared_feature_/data/models/response_b
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
 import 'package:dio/dio.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 class CommercialLicenseAttachmentsViewModel extends BaseViewModel {
   final WebService webService;
@@ -33,7 +34,7 @@ class CommercialLicenseAttachmentsViewModel extends BaseViewModel {
       isLoading = true;
       notifyListeners();
       response = await webService.dio.get(
-        ApiUrl.getLicenseAttachments(licenseId),
+        CommercialModelEndPoints.getLicenseAttachments(licenseId),
         queryParameters: accessedRequestId != null
             ? {"accessedRequestId": accessedRequestId}
             : null,

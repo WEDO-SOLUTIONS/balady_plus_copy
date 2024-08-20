@@ -14,7 +14,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import '../../domain/entity/commercial_license_data_entity.dart';
 import '../model/commercial_license_data_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 abstract class CommercialLicenseQueryRemoteDataSource {
   Future<ResponseBodyModel<CommercialLicenseDataModel>>
       getCommercialLicenseData(int licenseNumber, int unifiedFacilityNumber);
@@ -34,7 +34,7 @@ class CommercialLicenseQueryRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getCommercialLicenseData(licenseNumber, unifiedFacilityNumber),
+        CommercialModelEndPoints.getCommercialLicenseData(licenseNumber, unifiedFacilityNumber),
       );
       final data = response.data;
 

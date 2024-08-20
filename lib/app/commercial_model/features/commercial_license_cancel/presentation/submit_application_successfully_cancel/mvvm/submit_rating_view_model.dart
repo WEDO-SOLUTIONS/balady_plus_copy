@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/_shared_feature_/data/models/response_b
 import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/data/models/submit_response.dart';
 import 'package:dio/dio.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 class SubmitRatingViewModel extends BaseViewModel {
   final WebService webService;
@@ -28,7 +29,7 @@ class SubmitRatingViewModel extends BaseViewModel {
       isLoading = true;
       notifyListeners();
       response = await webService.dio.post(
-        ApiUrl.commercialLicenseCancelSubmitRating,
+        CommercialModelEndPoints.commercialLicenseCancelSubmitRating,
         data: {
           "engOfficeId": null,
           "origin": "BENIFICIARY",

@@ -7,6 +7,7 @@ import 'package:dio/dio.dart' show DioError;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 abstract class CommercialLicenseDetailsRemoteDataSource {
   Future<CommercialLicenceDetails> getCommercialLicenseDetails(
@@ -27,7 +28,7 @@ class CommercialLicenseDetailsRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getCommercialLicenseDetails(commercialLicenseId),
+        CommercialModelEndPoints.getCommercialLicenseDetails(commercialLicenseId),
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -80,7 +81,7 @@ class CommercialLicenseDetailsRemoteDataSourceImplementation
 //
 //   try {
 //     response = await webService.dio.get(
-//       ApiUrl.invoiceStatuses,
+//       CommercialModelEndPoints.invoiceStatuses,
 //     );
 //
 //     final data = response.data;

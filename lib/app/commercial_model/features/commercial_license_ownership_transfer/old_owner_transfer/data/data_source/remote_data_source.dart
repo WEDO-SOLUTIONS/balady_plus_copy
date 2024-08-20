@@ -19,6 +19,8 @@ import '../model/validate_license_data_model.dart';
 import '../model/validate_owner_data_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
+
 abstract class LicensePermitsRemoteDataSource {
   Future<ResponseBodyModel<PermitsResponseDataModel>> getLicensePermits(
       String licenseNumber);
@@ -44,7 +46,7 @@ class LicensePermitsRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getLicensePermits(licenseNumber),
+        CommercialModelEndPoints.getLicensePermits(licenseNumber),
       );
       final data = response.data;
 
@@ -103,7 +105,7 @@ class LicensePermitsRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.validateNewOwner(licenseNumber, crNumber),
+        CommercialModelEndPoints.validateNewOwner(licenseNumber, crNumber),
       );
       final data = response.data;
 
@@ -161,7 +163,7 @@ class LicensePermitsRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.validateLicenseTrnasfer(licenseNumber),
+        CommercialModelEndPoints.validateLicenseTrnasfer(licenseNumber),
       );
       final data = response.data;
 
@@ -219,7 +221,7 @@ class LicensePermitsRemoteDataSourceImplementation
     var response;
     try {
       response = await webService.dio
-          .post(ApiUrl.sendToNewOwner(licenseNumber), data: request.toJson());
+          .post(CommercialModelEndPoints.sendToNewOwner(licenseNumber), data: request.toJson());
       final data = response.data;
 
       var parsedResult =

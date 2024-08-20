@@ -12,6 +12,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 abstract class RequestOwnershipTransferDetailsRemoteDataSource {
   Future<CommercialLicenceDetails> getRequestOwnershipTransferDetails(
@@ -38,7 +39,7 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
     Response? response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getOwnershipCommercialRequestDetails(
+        CommercialModelEndPoints.getOwnershipCommercialRequestDetails(
             int.parse(commercialRequestId)),
       );
       final data = response.data;
@@ -75,7 +76,7 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
     Response? response;
     try {
       response = await webService.dio.post(
-          ApiUrl.acceptCommercialRequestTransfer(
+          CommercialModelEndPoints.acceptCommercialRequestTransfer(
               int.parse(commercialRequestId)));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).statusDetails!.code;
@@ -121,7 +122,7 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
     Response? response;
     try {
       response = await webService.dio.post(
-          ApiUrl.rejectCommercialRequestTransfer(
+          CommercialModelEndPoints.rejectCommercialRequestTransfer(
               int.parse(commercialRequestId)));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).statusDetails!.code;
@@ -161,7 +162,7 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
 //
 //   try {
 //     response = await webService.dio.get(
-//       ApiUrl.invoiceStatuses,
+//       CommercialModelEndPoints.invoiceStatuses,
 //     );
 //
 //     final data = response.data;

@@ -12,6 +12,9 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license_det
 import 'package:balady_plus/app/commercial_model/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:dio/dio.dart';
 
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
+
+
 class CommercialLicenseActionViewModel extends BaseViewModel {
   final WebService webService;
   final int licenseId;
@@ -34,7 +37,7 @@ class CommercialLicenseActionViewModel extends BaseViewModel {
       isLoading = true;
       notifyListeners();
       response = await webService.dio
-          .get(ApiUrl.getCommercialLicenseAllowedActions(licenseId));
+          .get(CommercialModelEndPoints.getCommercialLicenseAllowedActions(licenseId));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       actions = allowedActionsListFromJson(result);

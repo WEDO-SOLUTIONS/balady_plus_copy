@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dio/dio.dart';
@@ -69,7 +70,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     try {
       //4312216452 test data
       response = await webService.dio
-          .get(ApiUrl.cleanContracts(params!.requestId), data: params.toMap());
+          .get(CommercialModelEndPoints.cleanContracts(params!.requestId), data: params.toMap());
 
       var data = response.data["data"];
 
@@ -150,7 +151,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
 
     try {
       response =
-          await webService.dio.post(ApiUrl.deedInfo(), data: params!.toMap());
+          await webService.dio.post(CommercialModelEndPoints.deedInfo(), data: params!.toMap());
 
       var data = response.data["data"]["result"];
 
@@ -231,7 +232,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
 
     try {
       response =
-          await webService.dio.post(ApiUrl.ejarInfo, data: params?.toMap());
+          await webService.dio.post(CommercialModelEndPoints.ejarInfo, data: params?.toMap());
 
       var data = response.data["data"]["result"];
 
@@ -313,7 +314,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-          ApiUrl.investmentContracts(params!.requestId),
+          CommercialModelEndPoints.investmentContracts(params!.requestId),
           data: params.toMap());
 
       var data = response.data["data"];
@@ -395,7 +396,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.renewAttachments(params!));
+      response = await webService.dio.get(CommercialModelEndPoints.renewAttachments(params!));
 
       var data = response.data["data"];
 
@@ -475,7 +476,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
     final body = await locator<web.WebService>().uploadFileSSO(
-      ApiUrl.crAttachment(params.requestId!, params.data!.id!),
+      CommercialModelEndPoints.crAttachment(params.requestId!, params.data!.id!),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
       mimeType: mimeType,
@@ -507,7 +508,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
       print(error);
       try {
         Helpers.sendLog(
-            url: ApiUrl.uploadAttachments(params.requestId!, params.data!.id),
+            url: CommercialModelEndPoints.uploadAttachments(params.requestId!, params.data!.id),
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
@@ -534,7 +535,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.renewRequestDetails(
+      response = await webService.dio.get(CommercialModelEndPoints.renewRequestDetails(
         params!,
       ));
 
@@ -616,7 +617,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(ApiUrl.renewSubmit(
+      response = await webService.dio.post(CommercialModelEndPoints.renewSubmit(
         params,
       ));
 
@@ -698,7 +699,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
 
     try {
       response = await webService.dio
-          .post(ApiUrl.renewApply(params!.licenseId), data: params.toMap());
+          .post(CommercialModelEndPoints.renewApply(params!.licenseId), data: params.toMap());
 
       int? data = response.data["data"]["result"];
 
@@ -776,7 +777,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(ApiUrl.validateBeforeApply(params!));
+      response = await webService.dio.post(CommercialModelEndPoints.validateBeforeApply(params!));
 
       bool? data = response.data["data"]["result"];
 
@@ -870,7 +871,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.renewYears(params!));
+      response = await webService.dio.get(CommercialModelEndPoints.renewYears(params!));
       print("HHH");
       List d = response.data["data"]["result"];
       List<int> data = [];
@@ -1013,7 +1014,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-          ApiUrl.calculateRequestInfo(params!.requestId),
+          CommercialModelEndPoints.calculateRequestInfo(params!.requestId),
           options: Options(headers: params.toMap()));
 
       var data = response.data["data"]["result"];
@@ -1097,7 +1098,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          ApiUrl.saveRenewRequestInfo(params!.requestId!),
+          CommercialModelEndPoints.saveRenewRequestInfo(params!.requestId!),
           data: params.toMap());
 
       // var data = response.data["data"]["result"];
@@ -1176,7 +1177,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(ApiUrl.saveAttachments(params!));
+      response = await webService.dio.post(CommercialModelEndPoints.saveAttachments(params!));
 
       // var data = response.data["data"]["result"];
 

@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/data/models/save_cancellation_reason_response.dart';
@@ -68,7 +68,7 @@ class CommercialLicenseCancelBloc
         data['activityCancellationDate'] = "$year/$month/$day";
       }
       response = await webService.dio.post(
-        ApiUrl.commercialLicenseCancelSaveCancellationReason(requestId),
+        CommercialModelEndPoints.commercialLicenseCancelSaveCancellationReason(requestId),
         data: data,
       );
       final result = ResponseBodyModel.fromMap(response.data).data?.result;
@@ -107,7 +107,7 @@ class CommercialLicenseCancelBloc
         UXCamEvents.CancelCommercialLicense_Send_Request_Event);
     try {
       response = await webService.dio.post(
-        ApiUrl.commercialLicenseCancelSubmit(requestId),
+        CommercialModelEndPoints.commercialLicenseCancelSubmit(requestId),
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;

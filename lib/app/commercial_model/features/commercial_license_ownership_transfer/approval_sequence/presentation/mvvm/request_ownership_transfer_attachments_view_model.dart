@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart' as http;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 class RequestOwnerShipTransferAttachmentsViewModel extends BaseViewModel {
   final WebService webService;
@@ -32,7 +33,7 @@ class RequestOwnerShipTransferAttachmentsViewModel extends BaseViewModel {
       isLoading = true;
       notifyListeners();
       response = await webService.dio.get(
-        ApiUrl.transferRequestAttachments(requestId),
+        CommercialModelEndPoints.transferRequestAttachments(requestId),
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -86,7 +87,7 @@ class RequestOwnerShipTransferAttachmentsViewModel extends BaseViewModel {
         },
       );
       response = await webService.dio.post(
-        ApiUrl.commercialLicenseOwnershipServicesUploadAttachments(
+        CommercialModelEndPoints.commercialLicenseOwnershipServicesUploadAttachments(
           requestId,
           attachTypeId,
         ),

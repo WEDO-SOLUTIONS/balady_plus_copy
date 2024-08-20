@@ -20,6 +20,7 @@ import '../models/permit_request_details_model.dart';
 import '../models/permits_alerts_response.dart';
 import '../models/validate_hotel_license.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 abstract class PermitsTobaccoRemoteDataSource {
   Future<PermitTobaccoAllowedAction> getPermitAllowedActions(
@@ -55,7 +56,7 @@ class PermitsTobaccoRemoteDataSourceImpl
     var response;
     try {
       response = await webService.dio.post(
-          ApiUrl.permitTobaccoSubmit(params.licenseNumber),
+          CommercialModelEndPoints.permitTobaccoSubmit(params.licenseNumber),
           queryParameters: {
             if (params.requestId != null) "requestId": params.requestId
           },
@@ -110,7 +111,7 @@ class PermitsTobaccoRemoteDataSourceImpl
     var response;
     try {
       response = await webService.dio.delete(
-        ApiUrl.deletePermitTobaccoRequest(requestId),
+        CommercialModelEndPoints.deletePermitTobaccoRequest(requestId),
       );
 
       final data = response.data;
@@ -158,7 +159,7 @@ class PermitsTobaccoRemoteDataSourceImpl
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.permitsTobaccoAlerts,
+        CommercialModelEndPoints.permitsTobaccoAlerts,
       );
 
       final data = response.data;
@@ -207,7 +208,7 @@ class PermitsTobaccoRemoteDataSourceImpl
     var response;
     try {
       response =
-          await webService.dio.get(ApiUrl.permitTobaccoAlllowedAction(params));
+          await webService.dio.get(CommercialModelEndPoints.permitTobaccoAlllowedAction(params));
 
       final data = response.data;
       data.toString().successLog();
@@ -254,7 +255,7 @@ class PermitsTobaccoRemoteDataSourceImpl
     var response;
     try {
       response = await webService.dio
-          .get(ApiUrl.permitTobaccoValidateBeforeApply(params));
+          .get(CommercialModelEndPoints.permitTobaccoValidateBeforeApply(params));
 
       final data = response.data;
       data.toString().successLog();
@@ -303,7 +304,7 @@ class PermitsTobaccoRemoteDataSourceImpl
 
     try {
       response = await webService.dio.get(
-        ApiUrl.permitTobaccoRequestDetails(params),
+        CommercialModelEndPoints.permitTobaccoRequestDetails(params),
       );
 
       final data = response.data;
@@ -356,7 +357,7 @@ class PermitsTobaccoRemoteDataSourceImpl
 
     try {
       response = await webService.dio.get(
-          ApiUrl.permitTobaccoCalclaute(params.licenseNumber),
+          CommercialModelEndPoints.permitTobaccoCalclaute(params.licenseNumber),
           queryParameters: {
             "insideHotel": params.insideHotel,
             if (params.hotelLicenseNumber != null)
@@ -414,7 +415,7 @@ class PermitsTobaccoRemoteDataSourceImpl
 
     try {
       response = await webService.dio.get(
-        ApiUrl.PermitTobaccoValidateHotelLicense(
+        CommercialModelEndPoints.PermitTobaccoValidateHotelLicense(
             params.licenseNumber, params.hotelLicense),
       );
 
