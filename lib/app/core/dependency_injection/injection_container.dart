@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/commercial_model/dependency_injection/commercial_injection_container.dart';
+import 'package:balady_plus/app/commercial_model/dependency_injection/commercial_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';

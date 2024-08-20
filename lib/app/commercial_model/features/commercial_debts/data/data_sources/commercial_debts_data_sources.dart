@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
-import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
-import 'package:balady_plus/app/features/commercial_debts/data/models/commercial_debts_model.dart';
-import 'package:balady_plus/app/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_model.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
 import 'package:dio/dio.dart' show Response, DioError;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
@@ -31,7 +31,7 @@ class ChatBotDataSourcesImplementation extends CommercialDebtsDataSources {
     Response? response;
     try {
       response = await webService.dio.post(
-        ApiUrl.getDebts(
+        CommercialModelEndPoints.getDebts(
           transactionId: transactionId,
           transactionType: transactionType.name,
         ),

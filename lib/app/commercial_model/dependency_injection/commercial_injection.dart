@@ -1,5 +1,11 @@
-
-
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
+////////////////////////////////////////////////
+import 'package:balady_plus/app/commercial_model/dependency_injection/commercial_debt_injection.dart';
+import 'package:balady_plus/app/commercial_model/dependency_injection/commercials_permits24_injection.dart';
+import 'package:balady_plus/app/commercial_model/dependency_injection/commercials_posters_injection.dart';
+import 'package:balady_plus/app/commercial_model/dependency_injection/commercials_tobacco_injection.dart';
+import 'package:balady_plus/app/commercial_model/dependency_injection/renew_commercial_injection.dart';
+////////////////////////////////////////////////
 import 'package:balady_plus/app/commercial_model/features/commercial_license_ownership_transfer/approval_sequence/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_ownership_transfer/approval_sequence/data/repositories/repository_implementation.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_ownership_transfer/approval_sequence/domain/repositories/repository.dart';
@@ -10,12 +16,19 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license_own
 import 'package:balady_plus/app/commercial_model/features/commercial_license_ownership_transfer/request_details/data/repositories/repository_implementation.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
-import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 
 class CommercialInjectionContainer {
   static void init() {
 
-// transfer license ownership
+
+    CommercialDebtInjection.init();
+    RenewCommercialInjection.init();
+    CrInjection.init();
+    CommercialsTobaccoInjection.init();
+    CommercialsPostersInjection.init();
+    CommercialsPermits24Injection.init();
+
+  // transfer license ownership
     sl.registerLazySingleton<LicensePermitsRemoteDataSource>(
             () => LicensePermitsRemoteDataSourceImplementation(webService: sl()));
     sl.registerLazySingleton<TransferLicenseRepository>(

@@ -571,8 +571,6 @@ class ApiUrl {
       '/v1/balady-consultation-services/commercial-offices';
   static const validActivitiesAreasUrl =
       '/v1/balady-commercial-services/business-rules/valid-activities-areas';
-
-  static  getDebts ({required String transactionType, required int transactionId}) => 'v1/debt-collection-services/mobile/debts/$transactionType/$transactionId';
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

@@ -342,5 +342,10 @@ class CommercialModelEndPoints {
   static String PermitTobaccoValidateHotelLicense(int license, int hotel) =>
       "v1/supperapp-commercial-tobbaco-permission-services/validate-hotel-license/$license/$hotel";
 
+////////////////////////// Debts /////////////////////////////
+  static  getDebts ({required String transactionType, required int transactionId}) => 'v1/debt-collection-services/mobile/debts/$transactionType/$transactionId';
+
+
+
 
 }
