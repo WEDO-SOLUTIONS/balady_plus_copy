@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart' show Spacing;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
@@ -10,7 +11,10 @@ import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/free_roam.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
+import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 class MapControls extends ConsumerWidget {
   // Calculate the topbar and bottom padding
@@ -29,7 +33,7 @@ class MapControls extends ConsumerWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     bool hideControls = false;
-    double bottomPadding = 16;
+    double bottomPadding = Spacing.$4x;
 
     double currentSize = 0;
 
@@ -46,9 +50,9 @@ class MapControls extends ConsumerWidget {
     if (draggableScrollableController.isAttached) {
       if (currentSize > 0.28 && currentSize < 0.4) {
         // for a new feature you need to change and replace the magic number, now these numbers are taken by taking into account all the indents, the height of the bottom nav bar
-        bottomPadding = 16 + padding - screenPadding;
+        bottomPadding = Spacing.$4x + padding - screenPadding;
       } else {
-        bottomPadding = 16;
+        bottomPadding = Spacing.$4x;
       }
     }
 
@@ -68,9 +72,9 @@ class MapControls extends ConsumerWidget {
                   child: AnimatedPadding(
                     duration: const Duration(milliseconds: 400),
                     padding: EdgeInsets.only(
-                      left: 12,
-                      top: 12,
-                      right: 12,
+                      left: Spacing.$3x,
+                      top: Spacing.$3x,
+                      right: Spacing.$3x,
                       bottom: bottomPadding,
                     ),
                     child: Row(
@@ -81,15 +85,15 @@ class MapControls extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             const LayersControl(),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: Spacing.$2x),
                             const TrafficControl(),
                             const Spacer(),
                             const ZoomControl(),
                             const Spacer(),
                             const CompassControl(),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: Spacing.$2x),
                             ComplianceBuildingLegend(),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: Spacing.$2x),
                             const FollowControl(),
                           ],
                         ),
@@ -103,11 +107,20 @@ class MapControls extends ConsumerWidget {
                 duration: const Duration(milliseconds: 250),
                 child: Directionality(
                   textDirection: ref.watch(uiDirectionProvider),
-                  child: const Padding(
-                    padding: EdgeInsets.only(bottom: 12),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
                     child: MapQuickFilters(
                       forMap: true,
                       id: QuickFilterScreen.controls,
+                      customFilters: [
+                        FilterItem(
+                          filterType: FilterType.custom,
+                          icon: 'assets/icons/svg/quick_filters/free_roam.svg',
+                          onTap: () {
+                            FreeRoamRoute.open(ref.watch(goRouterProvider));
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),

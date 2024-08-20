@@ -23,7 +23,7 @@ extension ParkingFilterExt on ParkingFilter {
         ParkingFilter.all => TransportIcons.parkingEnable,
         ParkingFilter.free => GeneralIcons.checkmarkCircle,
         ParkingFilter.paid => GeneralIcons.money,
-        _ => GeneralIcons.placeHolder,
+        _ => GeneralIcons.placeholder,
       };
 
   bool paidOn() => switch (this) {

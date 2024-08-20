@@ -9,12 +9,15 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/free_roam.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
 class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -131,11 +134,27 @@ class DashboardHeader extends ConsumerWidget {
                   double.infinity,
                   remainingSpaceForQuickFilters,
                 ),
-                child: const Column(mainAxisSize: MainAxisSize.min, children: [
-                  SizedBox(height: Spacing.$4x),
-                  MapQuickFilters(id: QuickFilterScreen.dashboard, isDashboard: true),
-                  SizedBox(height: Spacing.$4x),
-                ]),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: Spacing.$4x),
+                    MapQuickFilters(
+                      id: QuickFilterScreen.dashboard,
+                      isDashboard: true,
+                      customFilters: [
+                        FilterItem(
+                          filterType: FilterType.custom,
+                          title: 'Go',
+                          icon: 'assets/icons/svg/quick_filters/free_roam.svg',
+                          onTap: () {
+                            FreeRoamRoute.open(ref.watch(goRouterProvider));
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: Spacing.$4x),
+                  ],
+                ),
               ),
             ),
           ),

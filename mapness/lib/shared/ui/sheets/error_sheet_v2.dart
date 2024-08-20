@@ -106,9 +106,12 @@ class ErrorSheetV2 extends StatelessWidget {
               child: styledText(errorContent ?? ''),
             ),
             const SizedBox(height: 24),
-            LabeledElevatedButton(
-              onPressed: onRetry,
-              label: buttonLabel ?? '',
+            SizedBox(
+              height: 48,
+              child: LabeledElevatedButton(
+                onPressed: onRetry,
+                label: buttonLabel ?? '',
+              ),
             ),
           ],
         ),

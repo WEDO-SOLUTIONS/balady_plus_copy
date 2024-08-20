@@ -88,8 +88,8 @@ class QuickFilters extends ConsumerWidget {
     final customItems = customFilters ?? [];
 
     final items = [
-      ...customItems,
       ...favourites,
+      ...customItems,
       ...models.QuickFilter.values.map(
         (filter) => FilterItem(
           filterType: FilterType.quick,

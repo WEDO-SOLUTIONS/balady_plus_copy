@@ -1,0 +1,115 @@
+import 'package:balady_uikit/balady_uikit.dart' hide TrafficControlStatus;
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/parking_state.dart';
+import 'package:mapness/shared/providers/map/traffic_state.dart';
+
+class TrafficParkingControl extends ConsumerStatefulWidget {
+  const TrafficParkingControl({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _TrafficParkingState();
+}
+
+class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
+  @override
+  Widget build(Object context) {
+    final trafficState = ref.watch(trafficStateProvider);
+    final trafficNotifier = ref.read(trafficStateProvider.notifier);
+    final isTrafficVisable = trafficState.status != TrafficControlStatus.hidden;
+    final isTrafficEnabled = trafficState.status == TrafficControlStatus.enabled;
+
+    final parkingState = ref.watch(parkingStateProvider);
+    final parkingNotifier = ref.read(parkingStateProvider.notifier);
+    final isParkingEnabled = parkingState.visible;
+
+    return SizedBox(
+      width: 50,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _TrafficControl(
+            isEnabled: isTrafficEnabled,
+            trafficState: trafficNotifier,
+            isVisable: isTrafficVisable,
+          ),
+          _ParkingWidget(
+            isEnabled: isParkingEnabled,
+            parkingState: parkingNotifier,
+            isNoTopBorderRadius: isTrafficVisable,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _ParkingWidget extends StatelessWidget {
+  final bool isEnabled;
+  final bool isNoTopBorderRadius;
+  final ParkingState parkingState;
+
+  const _ParkingWidget({
+    required this.isEnabled,
+    required this.parkingState,
+    this.isNoTopBorderRadius = false,
+  });
+
+  @override
+  Widget build(BuildContext context) => MapButton(
+        borderRadius: isNoTopBorderRadius
+            ? const BorderRadius.only(
+                bottomLeft: Radius.circular(RadiusBorder.ml),
+                bottomRight: Radius.circular(RadiusBorder.ml),
+              )
+            : null,
+        onTap: isEnabled ? parkingState.hideParking : parkingState.showParking,
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: Icon(
+            TransportIcons.parkingEnable,
+            color: isEnabled ? context.colorsV2.extra06OnContainer : context.colorsV2.foregroundDefault,
+          ),
+        ),
+      );
+}
+
+class _TrafficControl extends StatelessWidget {
+  static const _tag = MetricsConstants.exploreTag;
+
+  final bool isEnabled;
+  final bool isVisable;
+  final TrafficState trafficState;
+
+  const _TrafficControl({
+    required this.isEnabled,
+    required this.isVisable,
+    required this.trafficState,
+  });
+
+  @override
+  Widget build(
+    BuildContext context,
+  ) =>
+      TrafficControl(
+        opacity: isVisable ? 1 : 0,
+        isEnabled: isEnabled,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(RadiusBorder.ml),
+          topRight: Radius.circular(RadiusBorder.ml),
+        ),
+        onTap: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.trafficLightButton,
+            group: _tag,
+            action: MetricAction.tap.name,
+          );
+          trafficState.onTrafficTap();
+        },
+      );
+}

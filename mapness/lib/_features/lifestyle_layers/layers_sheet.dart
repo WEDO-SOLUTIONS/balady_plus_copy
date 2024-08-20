@@ -49,16 +49,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          ColoredBox(
-            color: context.staticColor.surfaceOverlayModal,
-            child: GestureDetector(onTap: () {
-              if (state.layersPanelType == LayersPanelType.layers) {
-                _hideLayersPanel();
-              } else {
-                _showLayersPanel();
-              }
-            }),
-          ),
           DraggableScrollableSheet(
             controller: _layersController,
             minChildSize: .0,
