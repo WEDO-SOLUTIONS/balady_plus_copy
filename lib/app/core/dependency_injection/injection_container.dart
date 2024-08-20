@@ -25,21 +25,13 @@ import 'package:balady_plus/app/features/weather/weather_exports.dart'
         WeatherLocalDataSource,
         WeatherLocalDataSourceImpl,
         GetWeatherInfo,
-        GetWeatherInfoImpl,
-        WeatherBloc,
-        WeatherState,
-        GetWeatherForLocation,
-        BlocStatus,
-        ServerFailure,
-        WeatherParams,
-        AllWeatherInfoEntity;
+        WeatherBloc;
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     show FlutterSecureStorage;
 import 'package:get_it/get_it.dart' show GetIt;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     show InternetConnectionChecker;
-import 'package:balady_plus/app/commercial_model/dependency_injection/commercials_tobacco_injection.dart';
 import '../../features/_shared_feature_/balady_features/services/services.dart';
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
@@ -54,11 +46,9 @@ import '../../features/notifications/data/repositories/notification_repository_i
 import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/unknow/data/repositories/repository_implementation.dart';
 import '../../features/unknow/domain/repositories/repository.dart';
-import '../../features/weather/presentation/bloc/weather_bloc.dart';
 import '../../features/weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show
-        CrInjection,
         DashboardInjection,
         DelegatorsInjection,
         EntryPointInjection,
@@ -81,15 +71,11 @@ import '../services/services_exports.dart'
         WebService;
 import '../utils/enums/bottom_nav_bar.dart';
 import 'features/calendar_injection.dart';
-import '../../commercial_model/dependency_injection/commercials_permits24_injection.dart';
-import '../../commercial_model/dependency_injection/commercials_posters_injection.dart';
 import 'features/compliance_injection.dart';
-import 'features/dc_injection.dart';
 import 'features/ekram_injection.dart';
 import 'features/events_injection.dart';
 import 'features/objectable_transactions_injection.dart';
 import 'features/objections_injection.dart';
-import '../../commercial_model/dependency_injection/renew_commercial_injection.dart';
 import 'features/retrive_dc_injection.dart';
 import 'features/violation_guide_injection.dart';
 import 'features/weather_alerts_injection.dart';
@@ -112,7 +98,7 @@ void initialize() {
   EntryPointInjection.init();
   //? OTP
   OTPInjection.init();
-  ;
+
   //? Sign-Up
   SignUpInjection.init();
   //? Services
@@ -145,10 +131,6 @@ void initialize() {
   //? Violation Guide
   ViolationGuideInjection.init();
 
-  //? Posters Guide
-  CommercialsPostersInjection.init();
-  CommercialsPermits24Injection.init();
-  CommercialsTobaccoInjection.init();
 
 //? Objections
   ObjectionsInjection.init();
@@ -161,9 +143,7 @@ void initialize() {
 
   CRMRequestsInjection.init();
 //? Cr
-  CrInjection.init();
 //? Renew Commercial
-  RenewCommercialInjection.init();
   //?
   ComplianceInjection.init();
 
@@ -251,8 +231,6 @@ void initialize() {
   sl.registerLazySingleton<ChatBotRepository>(
       () => ChatBotRepositoryImplementation(sl()));
   sl.registerLazySingleton(() => SendQuestionMessageChatBot(sl()));
-  // sl.registerLazySingleton(() => SendQuestionMessageChatBot());
-  // sl.registerLazySingleton(() => SendQuestionMessageChatBot());
 
   //Balady Calendar
   sl.registerLazySingleton<BaladyCalendarRemoteDataSource>(

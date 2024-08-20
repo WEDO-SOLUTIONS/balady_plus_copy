@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 ////////////////////////////////////////////////
+import 'package:balady_plus/app/commercial_model/dependency_injection/cr_injection.dart';
 import 'package:balady_plus/app/commercial_model/dependency_injection/commercial_debt_injection.dart';
 import 'package:balady_plus/app/commercial_model/dependency_injection/commercials_permits24_injection.dart';
 import 'package:balady_plus/app/commercial_model/dependency_injection/commercials_posters_injection.dart';
