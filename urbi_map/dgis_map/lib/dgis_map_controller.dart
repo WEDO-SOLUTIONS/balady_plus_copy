@@ -577,6 +577,9 @@ class DgisMapController {
   ///List voices
   Future<List<VoiceMessage?>> listVoices() => _instance.listVoices();
 
+  /// Play Welcome Voice
+  Future<void> voicePlayWelcome(String id) => _instance.voicePlayWelcome(id);
+
   ///Install package
   Future<void> installPackage(String id) => _instance.installPackage(id);
 

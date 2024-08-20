@@ -1164,5 +1164,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         sdk.audioSettings.muteOtherSounds = mute.boolValue
         completion(nil)
     }
-
+    
+    func voicePlayWelcomeId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        completion(nil)
+    }
 }

@@ -85,6 +85,11 @@ class PackagesHandler(
         result?.success(voiceManager.voices.map { it.toVoiceMessage() }.toList())
     }
 
+    fun voicePlayWelcome(id: String, result: Messages.Result<Void>?) {
+        voiceManager.voices.find { it.id == id }?.playWelcome()
+        result?.success(null)
+    }
+
     fun installPackage(id: String, result: Messages.Result<Void>?) {
         val pakage = packageManager.packages.firstOrNull { it.id == id }
         if (pakage != null) {

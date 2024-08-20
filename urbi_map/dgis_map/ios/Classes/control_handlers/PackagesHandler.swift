@@ -115,6 +115,10 @@ class PackagesHandler {
         completion(voiceManager.voices.map { $0.toVoiceMessage() }, nil)
     }
     
+    func voicePlayWelcome(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        completion(nil)
+    }
+    
     func installVoice(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         if let package = voiceManager.voices.first(where: { $0.id == id }) {
             cancelable.append(package.progressChannel.sink { [weak self] in

@@ -1458,6 +1458,9 @@ abstract class MapApi {
   List<VoiceMessage?> listVoices();
 
   @async
+  void voicePlayWelcome(String id);
+
+  @async
   void installPackage(String id);
 
   @async

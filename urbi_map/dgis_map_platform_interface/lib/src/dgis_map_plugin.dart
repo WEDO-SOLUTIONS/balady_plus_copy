@@ -786,6 +786,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.listVoices();
   }
 
+  Future<void> voicePlayWelcome(String id) {
+    return _api.voicePlayWelcome(id);
+  }
+
   Future<void> installPackage(String id) {
     return _api.installPackage(id);
   }

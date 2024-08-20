@@ -978,6 +978,10 @@ class DgisMapView(
         packagesHandler.listVoices(result)
     }
 
+    override fun voicePlayWelcome(id: String, result: Messages.Result<Void>?) {
+        packagesHandler.voicePlayWelcome(id, result)
+    }
+
     override fun installVoice(id: String, result: Messages.Result<Void>?) {
         packagesHandler.installVoice(id, result)
     }

@@ -67,7 +67,7 @@ class DashboardControlModel(
     }
 
     fun muteOtherSounds(mute: Boolean) {
-        this.navigationManager.soundNotificationSettings.mute = mute
+        //TODO(Ayat) Waited in Sdk for add muteOtherSounds in Android
     }
 
     fun toggleVoiceInstruction(toggleType: SoundToggleType) {
