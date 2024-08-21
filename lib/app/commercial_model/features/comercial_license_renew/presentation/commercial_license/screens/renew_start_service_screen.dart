@@ -1,5 +1,3 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -35,65 +33,60 @@ class _RenewStartServiceState extends State<RenewStartService> {
   @override
   Widget build(BuildContext context) {
     int licenseId = ModalRoute.of(context)!.settings.arguments as int;
-    return CommercialDebtsScreen(
-      transactionType: TransactionType.LICENSE,
-      transactionId: licenseId,
-      steps: const [RenewSteps.validateBeforeApplySteps],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (BuildContext context) =>
-                RenewStartServiceBloc(licenseId: licenseId),
-          ),
-          ChangeNotifierProvider(
-            create: (BuildContext context) => ServiceDataViewModel(
-              webService: sl(),
-              serviceId: 10485,
-            ),
-          ),
-        ],
-        child: BlocConsumer<RenewStartServiceBloc, RenewStartServiceState>(
-          listener: (context, state) {
-            if (state.status == BlocStatus.failure) {
-              CommonFunctions.showError(state.errorMessage ?? "");
-            }
-          },
-          builder: (context, state) {
-            return Scaffold(
-              body: Stack(
-                children: [
-                  Column(
-                    children: [
-                      const Expanded(child: ServiceCardDescDynamicWidget()),
-                      Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(36),
-                            topRight: Radius.circular(36),
-                          ),
-                          color: Colors.white,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 26,
-                        ),
-                        child: state.status == BlocStatus.loading
-                            ? const Center(child: CustomCircularLoadingWidget())
-                            : ElevatedButtonWidget.startService(
-                                onPressed: () async {
-                                  context.read<RenewStartServiceBloc>().add(
-                                        const ValidateBeforeApplyEvent(),
-                                      );
-                                },
-                              ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (BuildContext context) =>
+              RenewStartServiceBloc(licenseId: licenseId),
         ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) => ServiceDataViewModel(
+            webService: sl(),
+            serviceId: 10485,
+          ),
+        ),
+      ],
+      child: BlocConsumer<RenewStartServiceBloc, RenewStartServiceState>(
+        listener: (context, state) {
+          if (state.status == BlocStatus.failure) {
+            CommonFunctions.showError(state.errorMessage ?? "");
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            body: Stack(
+              children: [
+                Column(
+                  children: [
+                    const Expanded(child: ServiceCardDescDynamicWidget()),
+                    Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(36),
+                          topRight: Radius.circular(36),
+                        ),
+                        color: Colors.white,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 26,
+                      ),
+                      child: state.status == BlocStatus.loading
+                          ? const Center(child: CustomCircularLoadingWidget())
+                          : ElevatedButtonWidget.startService(
+                        onPressed: () async {
+                          context.read<RenewStartServiceBloc>().add(
+                            const ValidateBeforeApplyEvent(),
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
