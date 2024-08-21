@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_response.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -17,12 +18,14 @@ import '../../step12/page/cr_step12_calculator.dart';
 import '../../step13/page/cr_step13_review.dart';
 
 part 'commercial_license_event.dart';
+
 part 'commercial_license_state.dart';
 
 class CommercialLicenseBloc
     extends Bloc<CommercialLicenseEvent, CommercialLicenseState> {
   PageController controller = PageController();
   GetCommercialRequestData _getCommercialRequestData;
+
   CommercialLicenseBloc()
       : _getCommercialRequestData = GetCommercialRequestData(repository: sl()),
         super(const CommercialLicenseState()) {
@@ -43,8 +46,13 @@ class CommercialLicenseBloc
     controller.jumpToPage(nextPage);
 
     emit(
-        state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
+      state.copyWith(
+        status: BlocStatus.success,
+        currentPageValue: nextPage,
+      ),
+    );
     sendEventBasedOnPage(nextPage);
+    checkIfHaveDebts(nextPage);
 
     hideKeyboard();
   }
@@ -64,9 +72,14 @@ class CommercialLicenseBloc
 
       controller.jumpToPage(nextPage);
 
-      emitter(state.copyWith(
-          status: BlocStatus.success, currentPageValue: nextPage));
+      emitter(
+        state.copyWith(
+          status: BlocStatus.success,
+          currentPageValue: nextPage,
+        ),
+      );
       sendEventBasedOnPage(nextPage);
+      checkIfHaveDebts(nextPage);
     }
 
     hideKeyboard();
@@ -86,9 +99,12 @@ class CommercialLicenseBloc
       controller.jumpToPage(prvoiusPage);
 
       emitter(state.copyWith(
-          status: BlocStatus.success, currentPageValue: prvoiusPage));
+        status: BlocStatus.success,
+        currentPageValue: prvoiusPage,
+      ));
 
       sendEventBasedOnPage(prvoiusPage);
+      checkIfHaveDebts(prvoiusPage);
     }
 
     hideKeyboard();
@@ -132,6 +148,10 @@ class CommercialLicenseBloc
     }
 
     CommonFunctions.sendUXCamEvent(eventName);
+  }
+
+  void checkIfHaveDebts(int indexPage) {
+    debtsCubit.getDebts(indexPage, state.requestId!);
   }
 
   Future<void> _updateRequestIdHandler(
@@ -192,29 +212,37 @@ class CommercialLicenseBloc
     });
   }
 
-  void initState({int? requestId}) {
-    emit(state.copyWith(
-      status: BlocStatus.initial,
-      isDraft: requestId != null ? true : false,
-      currentPageValue: 0,
-      requestId: Nullable(requestId),
-      requestData: Nullable(null),
-      pagesList: const [
-        CRStep1ApplicantData(),
-        CRStep2ActivityData(),
-        CRStep3GeolocationData(),
-        CRStep4ShopData(),
-        CRStep5AttachmentData(),
-        CRStep6EstablishmentData(),
-        //  CRStep7EstablishmentContactData(),
-        //  CRStep8EmployeeData(),
-        CRStep9WorkTimes(),
-        CRStep10AdditionalData(),
-        CRStep11AttachmentData(),
-        CRStep12CalculatorReview(),
-        CRStep13Review(),
-      ],
-    ));
+  late CommercialDebtsCubit debtsCubit;
+
+  void initState({
+    int? requestId,
+    required CommercialDebtsCubit debtsCubit,
+  }) {
+    this.debtsCubit = debtsCubit;
+    emit(
+      state.copyWith(
+        status: BlocStatus.initial,
+        isDraft: requestId != null ? true : false,
+        currentPageValue: 0,
+        requestId: Nullable(requestId),
+        requestData: Nullable(null),
+        pagesList: const [
+          CRStep1ApplicantData(),
+          CRStep2ActivityData(),
+          CRStep3GeolocationData(),
+          CRStep4ShopData(),
+          CRStep5AttachmentData(),
+          CRStep6EstablishmentData(), // out of debts
+          //  CRStep7EstablishmentContactData(),
+          //  CRStep8EmployeeData(),
+          CRStep9WorkTimes(), // out of debts
+          CRStep10AdditionalData(), // out of debts
+          CRStep11AttachmentData(), // out of debts
+          CRStep12CalculatorReview(),
+          CRStep13Review(),
+        ],
+      ),
+    );
 
     if (requestId != null && state.requestData == null) {
       print("getCommercialRequestData");

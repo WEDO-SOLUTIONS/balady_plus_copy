@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import '../../../commercial_license_exports.dart';
 
 class CommercialLicenseBody extends StatefulWidget {
   final int? requestId;
+
   const CommercialLicenseBody({super.key, this.requestId});
 
   @override
@@ -17,9 +19,10 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
   void initState() {
     super.initState();
 
-    context
-        .read<CommercialLicenseBloc>()
-        .initState(requestId: widget.requestId);
+    context.read<CommercialLicenseBloc>().initState(
+          requestId: widget.requestId,
+          debtsCubit: context.read<CommercialDebtsCubit>(),
+        );
   }
 
   @override

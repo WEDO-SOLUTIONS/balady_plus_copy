@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/commercial_debts_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
@@ -76,8 +78,26 @@ class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
           create: (context) => CrStep13ReviewDataCubit(),
         ),
       ],
-      child: CommercialLicenseBody(
-        requestId: requestId,
+      child: CommercialDebtsScreen(
+        transactionType: TransactionType.REQUEST,
+        transactionId: requestId,
+        /// have in  Issue Steps on mobile 11 but vildet on 7
+        steps: const [
+          "", // add Fake Step
+          IssueSteps.saveActivity,
+          IssueSteps.saveLocation,
+          IssueSteps.saveShopInfo,
+          IssueSteps.saveAttachments,
+          "", // add Fake Step
+          "", // add Fake Step
+          "", // add Fake Step
+          "", // add Fake Step
+          IssueSteps.calculateFees,
+          IssueSteps.submitSteps,
+        ],
+        child: CommercialLicenseBody(
+          requestId: requestId,
+        ),
       ),
     );
   }
