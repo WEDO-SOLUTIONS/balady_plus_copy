@@ -1,52 +1,87 @@
-
-
 class CommercialDebtRenewStates {
   static const String noDebts = "no-debts";
   static const String warning = "warning";
   static const String blocked = "blocked";
 }
 
-
-enum TransactionType {REQUEST,LICENSE}
-
+enum TransactionType { REQUEST, LICENSE }
 
 class RenewSteps {
   // Step 1
-  static const String validateBeforeApplySteps =
-      "commercial.renew.mobile.validate-before-apply";
+  // static const String validateBeforeApplySteps =
+  //     "commercial.renew.mobile.validate-before-apply";
+
   // Step 2
   // static const String applySteps = "commercial.renew.mobile.apply";
   // Step 3
-  static const String saveRequestInfoSteps = "commercial.renew.mobile.save-request-info";
-  // Step 3
-  static const String saveAttachments = "commercial.renew.mobile.save-attachments";
+  static const String saveRequestInfoSteps =
+      "commercial.renew.mobile.save-request-info";
+
+  // Step 4
+  static const String saveAttachments =
+      "commercial.renew.mobile.save-attachments";
+
   // Step 5
-  static const String calculateFeesSteps = "commercial.renew.mobile.calculate-fees";
-  // Step 6
-  // static const String submitSteps = "commercial.renew.mobile.submit";
+  static const String calculateFeesSteps =
+      "commercial.renew.mobile.calculate-fees";
+// Step 6
+// static const String submitSteps = "commercial.renew.mobile.submit";
 }
 
 class CancelSteps {
   // Step Two
-  static const String applySteps = "commercial.cancel.mobile.apply";
+  // static const String applySteps = "commercial.cancel.mobile.apply";
+
   // Step Three
-  static const String saveRequestInfoSteps = "commercial.cancel.mobile.save-cancellation-info";
+  static const String saveRequestInfoSteps =
+      "commercial.cancel.mobile.save-cancellation-info";
+
   // Step Four
-  static const String calculateFeesSteps = "commercial.cancel.mobile.calculate-fees";
+  static const String calculateFeesSteps =
+      "commercial.cancel.mobile.calculate-fees";
+
   // Step Five
   static const String submitSteps = "commercial.cancel.mobile.submit";
 }
 
 class IssueSteps {
-  static const String applySteps = "commercial.issue.mobile.apply";
-  static const String saveActivity = "commercial.issue.mobile.save-activity";
-  static const String saveLocation = "commercial.issue.mobile.save-location";
-  static const String saveShopInfo = "commercial.issue.mobile.save-shop-info";
-  static const String saveAttachments = "commercial.issue.mobile.save-attachments";
-  static const String calculateFees = "commercial.issue.mobile.calculate-fees";
-  static const String submitSteps = "commercial.issue.mobile.submit";
+  static const String saveActivity =
+      "commercial.issue.mobile.save-activity"; // when call this events have screen but the screen in after the step one
+  static const String saveLocation =
+      "commercial.issue.mobile.save-location"; // this is step 3
+  static const String saveShopInfo =
+      "commercial.issue.mobile.save-shop-info"; // step 4
+  static const String saveAttachments =
+      "commercial.issue.mobile.save-attachments"; // Step 5
+  //  EstablishmentData
+  //  WorkTimes
+  //  AdditionalData
+  //  Attachment
+  static const String calculateFees =
+      "commercial.issue.mobile.calculate-fees"; //   CalculatorReview
+  static const String submitSteps = "commercial.issue.mobile.submit"; //  Review
 }
 
+
+
+// New Dsgin for Step
+// enum IssueStepsEnum {
+//   saveActivity,
+//   saveLocation,
+//   saveShopInfo,
+//   saveAttachments,
+//   calculateFees,
+//   submitSteps,
+// }
+//
+// const Map<IssueStepsEnum,String> issueSteps  = {
+//   IssueStepsEnum.saveActivity : "commercial.issue.mobile.save-activity",
+//   IssueStepsEnum.saveLocation : "commercial.issue.mobile.save-location",
+//   IssueStepsEnum.saveShopInfo : "commercial.issue.mobile.save-shop-info",
+//   IssueStepsEnum.saveAttachments : "commercial.issue.mobile.save-attachments",
+//   IssueStepsEnum.calculateFees : "commercial.issue.mobile.calculate-fees",
+//   IssueStepsEnum.submitSteps : "commercial.issue.mobile.submit",
+// };
 
 
 
