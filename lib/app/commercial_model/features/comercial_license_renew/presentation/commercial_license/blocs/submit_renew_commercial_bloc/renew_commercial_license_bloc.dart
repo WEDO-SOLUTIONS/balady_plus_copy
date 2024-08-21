@@ -96,8 +96,14 @@ class RenewCommercialLicenseBloc
           currentPageValue: nextPage,
         ),
       );
-      debtsCubit.getBoardsContracts(nextPage);
       sendStepEvent(nextPage);
+
+      if(state.requestId != null) {
+        debtsCubit.getDebts(
+          nextPage,
+          state.requestId!,
+        );
+      }
     }
 
     hideKeyboard();
