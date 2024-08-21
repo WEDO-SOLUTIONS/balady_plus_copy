@@ -2,6 +2,7 @@ import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_state.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/widgets/field_commercial_debt_widget.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/widgets/have_debt_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,38 +41,7 @@ class CommercialDebtsScreen extends StatelessWidget {
             showDialog(
               barrierDismissible: false,
               context: context,
-              builder: (context) => AlertDialog(
-                // title: const Text("title"),
-                content: Column(
-                  children: [
-                    Icon(
-                      state.commercialDebt.status ==
-                              CommercialDebtRenewStates.blocked
-                          ? Icons.block
-                          : Icons.warning,
-                      color: state.commercialDebt.status ==
-                              CommercialDebtRenewStates.blocked
-                          ? Colors.red.shade800
-                          : Colors.yellow.shade700,
-                      size: 50,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(state.commercialDebt.infoMessage ?? ""),
-                  ],
-                ),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (state.commercialDebt.status == CommercialDebtRenewStates.blocked) {
-                        // Navigator.of(context, rootNavigator: true).pop();
-                      } else {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    child: const Text("ok"),
-                  )
-                ],
-              ),
+              builder: (context) => HaveDebtAlertDialog(state: state),
             );
           }
         },
