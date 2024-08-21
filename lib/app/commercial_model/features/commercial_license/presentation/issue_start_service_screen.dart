@@ -36,7 +36,6 @@ class _IssueStartServiceState extends State<IssueStartService> {
   @override
   Widget build(BuildContext context) {
     int? requestId = ModalRoute.of(context)!.settings.arguments as int?;
-
     return MultiBlocProvider(
         providers: [
           ChangeNotifierProvider(
@@ -54,11 +53,12 @@ class _IssueStartServiceState extends State<IssueStartService> {
                   const Expanded(child: ServiceCardDescDynamicWidget()),
                   Container(
                     decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(36),
-                          topRight: Radius.circular(36),
-                        ),
-                        color: Colors.white),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(36),
+                        topRight: Radius.circular(36),
+                      ),
+                      color: Colors.white,
+                    ),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 18, vertical: 26),
                     child: ElevatedButtonWidget.startService(
@@ -66,8 +66,9 @@ class _IssueStartServiceState extends State<IssueStartService> {
                         if (CommonProperties.isLoggedIn) {
                           if (CommonProperties.selectedDelegator != null) {
                             Navigator.of(context).pushNamed(
-                                RouteName.commercialLicensePage,
-                                arguments: requestId);
+                              RouteName.commercialLicensePage,
+                              arguments: requestId,
+                            );
                           } else {
                             await BottomSheetDialog.showDraggableSheet(
                               context,
@@ -81,30 +82,31 @@ class _IssueStartServiceState extends State<IssueStartService> {
                           }
                         } else {
                           showDialog(
-                              context: context,
-                              builder: (ctx) => NeedLoginDialog(
-                                      onSuccessLogin: (bool? isSuccess) async {
-                                    if (isSuccess ?? false) {
-                                      if (CommonProperties.selectedDelegator !=
-                                          null) {
-                                        Navigator.of(context).pushNamed(
-                                            RouteName.commercialLicensePage,
-                                            arguments: requestId);
-                                      } else {
-                                        await BottomSheetDialog
-                                            .showDraggableSheet(
-                                          context,
-                                          isFullHeight: false,
-                                          dialogKeyName: DialogName
-                                              .notAuthorizedIndivisualDialog,
-                                          currentRouteName: RouteName
-                                              .commercialLicenseServicePage,
-                                          child:
-                                              NotAuthorizedIndivisualDialog(),
-                                        );
-                                      }
-                                    }
-                                  }));
+                            context: context,
+                            builder: (ctx) => NeedLoginDialog(
+                              onSuccessLogin: (bool? isSuccess) async {
+                                if (isSuccess ?? false) {
+                                  if (CommonProperties.selectedDelegator !=
+                                      null) {
+                                    Navigator.of(context).pushNamed(
+                                      RouteName.commercialLicensePage,
+                                      arguments: requestId,
+                                    );
+                                  } else {
+                                    await BottomSheetDialog.showDraggableSheet(
+                                      context,
+                                      isFullHeight: false,
+                                      dialogKeyName: DialogName
+                                          .notAuthorizedIndivisualDialog,
+                                      currentRouteName: RouteName
+                                          .commercialLicenseServicePage,
+                                      child: NotAuthorizedIndivisualDialog(),
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          );
                         }
                       },
                     ),
