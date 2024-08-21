@@ -30,6 +30,16 @@ class DashboardControlModel {
         .routeEnd
     ]
     
+    private let roadCameraCategories: SoundCategoryOptionSet = [
+        .crossroadCameras,
+        .laneCameras,
+        .noStoppingControlCameras,
+        .roadMarkingCameras,
+        .averageSpeedCameras,
+        .maxSpeedCameras
+    ]
+
+    
     private static let dateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
@@ -63,36 +73,49 @@ class DashboardControlModel {
     }
     
     func toggleSounds(toggleType: SoundToggleType) {
+        let currentCategories = self.navigationManager.soundNotificationSettings.enabledSoundCategories
+        
         switch toggleType {
-        case .none:
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories = []
+        case SoundToggleType.none:
+            // Удаляем все категории, связанные с звуковыми уведомлениями
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting(Self.allCategories)
 
-        case .all:
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories
+        case SoundToggleType.all:
+            // Добавляем все категории
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(Self.allCategories)
 
-        case .important:
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories.subtracting([.instructions])
+        case SoundToggleType.important:
+            // Удаляем только категорию инструкций, оставляя остальные
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting([.instructions])
 
         @unknown default:
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories
+            // Добавляем все категории как запасной вариант
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(Self.allCategories)
         }
     }
     
     func toggleRoadCameras(roadCameras: Bool) {
-        self.navigationManager.soundNotificationSettings.enabledSoundCategories = roadCameras ?
-            Self.allCategories.subtracting([.crossroadCameras,
-                                                    .laneCameras,
-                                                    .noStoppingControlCameras,
-                                                    .roadMarkingCameras,
-                                                    .averageSpeedCameras,
-                                                    .maxSpeedCameras])
-            : Self.allCategories
+        let currentCategories = self.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+           if roadCameras {
+               // При включении дорожных камер: исключаем из текущих категорий
+               self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting(roadCameraCategories)
+           } else {
+               // При выключении дорожных камер: возвращаем категории в текущие
+               self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(roadCameraCategories)
+           }
     }
 
     func toggleOverSpeeding(overSpeeding: Bool) {
-        self.navigationManager.soundNotificationSettings.enabledSoundCategories = overSpeeding ?
-              Self.allCategories
-            : Self.allCategories.subtracting([.exceedSpeedLimits])
+        let currentCategories = self.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+        if overSpeeding {
+            // При включении превышения скорости: устанавливаем все категории
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(.exceedSpeedLimits)
+        } else {
+            // При выключении превышения скорости: убираем категорию превышения скорости
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting(.exceedSpeedLimits)
+        }
     }
 
 
