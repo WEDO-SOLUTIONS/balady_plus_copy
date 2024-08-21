@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/request_commercial_license_details/data
 import 'package:balady_plus/app/features/request_commercial_license_details/data/models/commercial_license_details_model.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class RequestCommercialLicenseDetailsRepositoryImplementation
     implements RequestCommercialLicenseDetailsRepository {
@@ -21,7 +22,14 @@ class RequestCommercialLicenseDetailsRepositoryImplementation
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }

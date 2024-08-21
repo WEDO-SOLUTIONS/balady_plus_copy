@@ -10,6 +10,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/errors/failures.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class BaladyCalendarMonthsListViewModel extends BaseViewModel {
   final BaladyCalendarRepository repository;
@@ -47,20 +48,24 @@ class BaladyCalendarMonthsListViewModel extends BaseViewModel {
           notifyListeners();
         },
       );
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        // response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      errorMessage = exception.toString();
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        // response: response,
-        ex: Exception(exception.toString()),
+      errorMessage = error.toString();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      errorMessage = exception.toString();
+      errorMessage = error.toString();
     }
     isLoading = false;
     notifyListeners();

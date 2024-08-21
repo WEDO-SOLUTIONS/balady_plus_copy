@@ -39,6 +39,7 @@ import '../../../../../app/core/utils/common_functions.dart'
     show CommonProperties;
 import '../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../app/features/_shared_feature_/data/models/drop_down_item_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class DynamicFormRemoteDataSource {
   Future<ApigeeResponse<List<CreateFormItemResponseModel>>> createForm(
@@ -124,20 +125,42 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         dioError: error,
         statusCode: error.response?.statusCode,
       );
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -174,20 +197,42 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       print(error);
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -225,7 +270,14 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       var errorCode;
       try {
         final decodedResponse =
@@ -233,7 +285,15 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       throw ServerException(
         error.toString(),
@@ -241,13 +301,28 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -282,19 +357,41 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -331,7 +428,14 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       var data = error.response?.data;
 
       if (data != null) {
@@ -349,13 +453,28 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -390,20 +509,42 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -440,7 +581,14 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       var errorCode;
       try {
         final decodedResponse =
@@ -448,7 +596,15 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       throw ServerException(
         error.toString(),
@@ -456,14 +612,29 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
         errorCode: errorCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -493,20 +664,42 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -536,20 +729,42 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -579,17 +794,39 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -620,17 +857,39 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -666,17 +925,39 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -711,16 +992,38 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -768,21 +1071,43 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       print(error);
       print(error);
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
           CommonFunctions.sendExceptionLog(
-            exception: ex,
+            exception:  error,
           );
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }

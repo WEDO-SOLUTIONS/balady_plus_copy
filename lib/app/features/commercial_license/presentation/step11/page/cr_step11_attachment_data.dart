@@ -22,6 +22,9 @@ import '../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../transaction_inquiry/customer_voice_exports.dart';
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
 class CRStep11AttachmentData extends StatefulWidget {
   const CRStep11AttachmentData({Key? key}) : super(key: key);
 
@@ -203,13 +206,27 @@ class AttachmentListWidget extends StatelessWidget {
           } else {
             OpenFile.open(fileDownloaded.path);
           }
-        } catch (ex) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           EasyLoading.dismiss();
 
-          print(ex);
+          print(error);
         }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       EasyLoading.dismiss();
     }
   }

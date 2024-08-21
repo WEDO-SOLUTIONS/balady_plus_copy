@@ -15,6 +15,7 @@ import '../models/calculate_cost_response_model.dart';
 import '../models/permit_submit_response_model.dart';
 import '../models/permit_request_details_model.dart';
 import '../models/permits_alerts_response.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class Permits24RemoteDataSource {
   Future<Permit24AllowedAction> getPermitAllowedActions({required int params});
@@ -50,7 +51,14 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
       data.toString().successLog();
 
       return PermitSubmitResponseModel.fromJson(data["data"]["result"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -58,14 +66,21 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -84,7 +99,14 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
       data.toString().successLog();
 
       return data["data"]["result"] as bool;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -92,14 +114,21 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -118,7 +147,14 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
       data.toString().successLog();
 
       return PermitAlertsResponse.fromJson(data["data"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -126,14 +162,21 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -152,7 +195,14 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
       data.toString().successLog();
 
       return Permit24AllowedAction.fromJson(data["data"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -160,14 +210,21 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -185,7 +242,14 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
       data.toString().successLog();
 
       return data["data"]["result"];
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -193,14 +257,21 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -221,7 +292,14 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
       data.toString().successLog();
 
       return Permit24RequestDetailsModel.fromJson(data["data"]?["result"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       print(error);
       "DioError $error".errorLog();
 
@@ -230,16 +308,23 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       ;
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -260,7 +345,14 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
       data.toString().successLog();
 
       return CalculateCost24PermitResponse.fromJson(data["data"]?["result"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       print(error);
       "DioError $error".errorLog();
 
@@ -269,16 +361,23 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       ;
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }

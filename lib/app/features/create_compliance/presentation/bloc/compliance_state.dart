@@ -23,6 +23,7 @@ import '../../domain/entities/complinace_licenses_response.dart';
 import '../../domain/entities/land_subsidy_contract.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
 import '../../domain/entities/send_otp_response.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ComplianceState extends Equatable {
   final BlocStatus status;
@@ -459,7 +460,15 @@ class ComplianceState extends Equatable {
           return null;
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   Future<String?> getOwnerShipDateStr() async {

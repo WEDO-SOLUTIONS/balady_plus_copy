@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/bloc/self_rating_event.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/bloc/self_rating_state.dart';
 import 'package:flutter/services.dart';
@@ -58,6 +59,14 @@ class SelfRatingBloc extends Bloc<SelfRatingEvent, SelfRatingState> {
           : null;
 
       emitter(state.copyWith(items: d, status: BlocStatus.success));
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 }

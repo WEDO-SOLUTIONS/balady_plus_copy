@@ -11,6 +11,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart' as http;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class TobaccoListRemoteDataSource {
   Future<List<Facility>> getUserFacilities();
@@ -39,7 +40,14 @@ class TobaccoListRemoteDataSourceImplementation
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return List<Facility>.from(result.map((e) => Facility.fromJson(e)))
           .toList();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -56,14 +64,21 @@ class TobaccoListRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(errorMessage: ex.toString()),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -85,7 +100,14 @@ class TobaccoListRemoteDataSourceImplementation
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return TobaccoSchedule.fromJson(result);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -95,14 +117,21 @@ class TobaccoListRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(errorMessage: ex.toString()),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -135,7 +164,14 @@ class TobaccoListRemoteDataSourceImplementation
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return result['attachmentId'];
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -145,14 +181,21 @@ class TobaccoListRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(errorMessage: ex.toString()),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -170,7 +213,14 @@ class TobaccoListRemoteDataSourceImplementation
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return result;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -180,14 +230,21 @@ class TobaccoListRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(errorMessage: ex.toString()),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }

@@ -27,6 +27,7 @@ import '../models/permit_license_response_model.dart';
 import '../models/permit_poster_types_response.dart';
 import '../models/permit_submit_response_model.dart';
 import '../models/poster_request_details_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class PostersRemoteDataSource {
   Future<PermitsLicensesResponse> getLicensePermits(
@@ -48,6 +49,7 @@ abstract class PostersRemoteDataSource {
       {required PermitAttachmentItem params});
 
   Future<PostersSubmitResponseModel> submit({required int params});
+
   Future<bool> addIndivisualRequests({required int params});
 
   Future<PosterRequestDetailsModel> getPosterRequestDetails(
@@ -87,7 +89,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return PermitsLicensesResponse.fromJson(data["data"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -95,15 +104,22 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -122,7 +138,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return GroupItemResponseModel.fromJson(data["data"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -130,14 +153,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -155,7 +185,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return true;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -163,14 +200,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -191,7 +235,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return AttachmentResponseModel.fromJson(data["data"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -199,14 +250,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -223,7 +281,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return PermitPosterTypeResponse.fromJson(data["data"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -231,14 +296,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -257,7 +329,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return PermitApplyGroupResponse.fromJson(data["data"]["result"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -265,14 +344,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -296,7 +382,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     ;
     bool state = body['state'];
     dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    String errorString = body['error'] ?? ("errors_server_error_1").tr();
     print(params.id!);
     try {
       print(body["data"]);
@@ -305,36 +391,51 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
             json.decode(body["data"])["data"]["result"]);
       } else {
         print("fff");
-        error = ResponseBodyModel.fromMap(json.decode(body["data"]))
+        errorString = ResponseBodyModel.fromMap(json.decode(body["data"]))
                 .data
                 ?.responseMessage ??
-            error;
-        print(error);
+            errorString;
+        print(errorString);
 
         throw ServerException(
-          error,
+          errorString,
           exception: APIException(
             errorMessage: data,
           ),
         );
       }
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       try {
         Helpers.sendLog(
             url: ApiUrl.permitUploadAttachment(params.requestId!, params.id!),
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
-      error = ResponseBodyModel.fromMap(json.decode(body["data"]))
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+      errorString = ResponseBodyModel.fromMap(json.decode(body["data"]))
               .data
               ?.responseMessage ??
-          error;
+          errorString;
 
       throw ServerException(
-        error,
+        errorString.toString(),
         exception: APIException(
-          errorMessage: ex.toString(),
+          errorMessage: error.toString(),
         ),
       );
     }
@@ -352,7 +453,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return PostersSubmitResponseModel.fromJson(data["data"]["result"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -360,14 +468,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -386,7 +501,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return data["data"]["result"] as bool;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -394,14 +516,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -422,7 +551,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return PosterRequestDetailsModel.fromJson(data["data"]?["result"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       print(error);
       "DioError $error".errorLog();
 
@@ -431,16 +567,23 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       ;
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -460,7 +603,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return data["data"]["result"] as bool;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -468,14 +618,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -494,7 +651,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return data["data"]["result"] as bool;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -502,14 +666,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -528,7 +699,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return PermitAlertsResponse.fromJson(data["data"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -536,14 +714,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -560,7 +745,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return PermitApplyGroupResponse.fromJson(data["data"]["result"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -568,14 +760,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -594,7 +793,14 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
       data.toString().successLog();
 
       return PosterAllowedAction.fromJson(data["data"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       throw ServerException(
@@ -602,14 +808,21 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }

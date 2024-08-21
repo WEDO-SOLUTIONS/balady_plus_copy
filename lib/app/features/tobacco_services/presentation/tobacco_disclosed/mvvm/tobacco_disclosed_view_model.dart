@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:balady_plus/app/features/tobacco_services/data/models/disclosure_request.dart';
 import 'package:balady_plus/app/features/tobacco_services/data/repositories/repository_implementation.dart';
@@ -36,10 +37,24 @@ class TobaccoDisclosedViewModel extends BaseViewModel {
       isLoading = false;
       notifyListeners();
       return data;
-    } on Exception catch (exception) {
-      showError(exception.toString());
-    } catch (exception) {
-      showError(exception.toString());
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      showError(error.toString());
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      showError(error.toString());
     }
     isLoading = false;
     notifyListeners();

@@ -17,6 +17,7 @@ import '../model/apply_request_data_model.dart';
 import '../model/permits_response_data_model.dart';
 import '../model/validate_license_data_model.dart';
 import '../model/validate_owner_data_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class LicensePermitsRemoteDataSource {
   Future<ResponseBodyModel<PermitsResponseDataModel>> getLicensePermits(
@@ -55,7 +56,14 @@ class LicensePermitsRemoteDataSourceImplementation
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       // if (error is NoDataFoundException) {
       //   rethrow;
@@ -65,16 +73,23 @@ class LicensePermitsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
 
-      if (ex is ServerException) {
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
@@ -99,7 +114,14 @@ class LicensePermitsRemoteDataSourceImplementation
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       // if (error is NoDataFoundException) {
       //   rethrow;
@@ -109,16 +131,23 @@ class LicensePermitsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
 
-      if (ex is ServerException) {
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
@@ -143,7 +172,14 @@ class LicensePermitsRemoteDataSourceImplementation
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       // if (error is NoDataFoundException) {
       //   rethrow;
@@ -153,16 +189,23 @@ class LicensePermitsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
 
-      if (ex is ServerException) {
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
@@ -186,7 +229,14 @@ class LicensePermitsRemoteDataSourceImplementation
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       // if (error is NoDataFoundException) {
       //   rethrow;
@@ -196,16 +246,23 @@ class LicensePermitsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
 
-      if (ex is ServerException) {
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );

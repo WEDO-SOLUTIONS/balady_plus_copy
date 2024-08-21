@@ -11,6 +11,7 @@ import 'package:balady_plus/app/features/create_compliance/data/models/comliance
 import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart' as http;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class RequestAttachmentsViewModel extends BaseViewModel {
   final WebService webService;
@@ -44,17 +45,21 @@ class RequestAttachmentsViewModel extends BaseViewModel {
         }
         return attachment;
       }).toList();
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
     }
     isLoading = false;
@@ -92,20 +97,24 @@ class RequestAttachmentsViewModel extends BaseViewModel {
         ),
       );
       await getCommercialLicenseCancelAttachments(requestId);
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      showError(exception.toString());
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+      showError(error.toString());
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-      showError(exception.toString());
+      showError(error.toString());
     }
     if (isLoading) {
       isLoading = false;

@@ -41,6 +41,7 @@ import '../../../../../../app/core/utils/constants/route_names.dart';
 import '../../../../../../app/core/utils/enums/bloc_status.dart';
 import '../../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../core/utils/enums/dynamic_forms.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'edit_bidding_form_event.dart';
 part 'edit_bidding_form_state.dart';
@@ -127,8 +128,15 @@ class EdtiBiddingFormBloc
           }
           return e;
         }).toList();
-      } catch (ex) {
-        print(ex);
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+        print(error);
       }
       CreateFormItemResponse? result = success.data?.result;
       result?.items = items;

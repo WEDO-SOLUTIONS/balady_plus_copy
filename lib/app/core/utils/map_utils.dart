@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 
 import 'constants/constants.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class MapUtils {
   static BitmapDescriptor? locationMarker;
@@ -43,7 +44,15 @@ class MapUtils {
           BitmapDescriptor.fromBytes(pinMarkerLightGreenIcon!);
 
       mapIconMarker = BitmapDescriptor.fromBytes(pinMarkerDarkGreenIcon!);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   static Future<Uint8List> getBytesFromAsset(String path, int width) async {

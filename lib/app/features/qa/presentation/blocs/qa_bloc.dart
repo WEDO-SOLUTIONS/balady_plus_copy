@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/qa/data/qa_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
@@ -38,7 +39,15 @@ class QABloc extends Bloc<QADataEvent, QAState> {
           : null;
 
       emitter(state.copyWith(list: d, filtered: d));
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   Future<void> _getQaDataSearchedHandler(
@@ -54,6 +63,14 @@ class QABloc extends Bloc<QADataEvent, QAState> {
           [];
 
       emitter(state.copyWith(filtered: d, status: BlocStatus.success));
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 }

@@ -23,6 +23,7 @@ import '../../../../../transaction_inquiry/presentation/core/models/attachment_m
 import '../../blocs/submit_renew_commercial_bloc/renew_commercial_license_bloc.dart';
 import '../cr_header_desc.dart';
 import '../previous_next_button.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CommercialRenewStep2 extends StatefulWidget {
   const CommercialRenewStep2({Key? key}) : super(key: key);
@@ -184,13 +185,27 @@ class AttachmentListWidget extends StatelessWidget {
           } else {
             OpenFile.open(fileDownloaded.path);
           }
-        } catch (ex) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           EasyLoading.dismiss();
 
-          print(ex);
+          print(error);
         }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       EasyLoading.dismiss();
     }
   }

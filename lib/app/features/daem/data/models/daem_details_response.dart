@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 
 import '../../../../core/services/local/helpers.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 DaemDetailsResponse daemDetailsResponseFromJson(String str) =>
     DaemDetailsResponse.fromJson(json.decode(str));
@@ -182,7 +183,14 @@ class DaemHistoryDetail {
 
         dateTime = DateTime.parse(dateWithT).toLocal();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       String dateWithT =
           recordInsertDateTime!.substring(0, 8); //+ 'T' + date.substring(8);
       dateTime = DateTime.parse(dateWithT);

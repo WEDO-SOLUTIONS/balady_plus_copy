@@ -12,6 +12,8 @@ import '../../domain/entities/search_calendar/search_calendar_params.dart';
 import '../../domain/entities/search_calendar/search_calendar_response.dart';
 import '../../domain/repository/events_repository.dart';
 import '../datasource/calendar_data_source.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CalendarRepositoryImpl implements CalendarRepository {
   final CalendarRemoteDataSource remoteDataSource;
@@ -25,7 +27,14 @@ class CalendarRepositoryImpl implements CalendarRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(
         error.errorMessage,
         statusCode: error.statusCode,
@@ -39,7 +48,14 @@ class CalendarRepositoryImpl implements CalendarRepository {
     try {
       final data = await remoteDataSource.getEventCategory(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(
         error.errorMessage,
         errorCode: error.errorCode,
@@ -55,7 +71,14 @@ class CalendarRepositoryImpl implements CalendarRepository {
       final data = await remoteDataSource.getEventDetails(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(
         error.errorMessage,
         statusCode: error.statusCode,

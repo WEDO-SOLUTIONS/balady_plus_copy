@@ -16,6 +16,7 @@ import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CameraWidget extends StatefulWidget {
   const CameraWidget({super.key});
@@ -47,8 +48,15 @@ class _CameraWidgetState extends State<CameraWidget>
       } else if (state == AppLifecycleState.resumed) {
         context.read<CameraBloc>().add(OnNewCameraSelected());
       }
-    } catch (ex) {
-      print("EXXXXXXX $ex");
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print("EXXXXXXX $error");
     }
   }
 

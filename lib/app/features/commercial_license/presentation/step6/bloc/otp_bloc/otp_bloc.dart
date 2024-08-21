@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:sms_user_consent/sms_user_consent.dart';
 
 import '../cr_step6_establishment_data_cubit.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'otp_event.dart';
 part 'otp_state.dart';
@@ -47,7 +48,15 @@ class CommercialOtpBloc extends Bloc<CommercialOTPEvent, CommercialOTPState> {
         });
         smsUserConsent?.requestSms();
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     emitter(state.copyWith(status: BlocStatus.success));
   }
 }

@@ -16,6 +16,7 @@ import '../../../features/entry_point/data/models/sso_token_model.dart';
 import '../../../features/entry_point/data/models/sso_user_info_model.dart';
 import '../../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../utils/utils_exports.dart' show LocalStorageKey;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SharedPrefs {
   static SharedPreferences? _sharedPreferences;
@@ -186,7 +187,14 @@ class SharedPrefs {
       } else {
         _sharedPreferences?.remove("guestMobile");
       }
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );}
   }
 
   String? getGuestFirstName() {

@@ -17,6 +17,7 @@ import '../../../../../new_appointment/presentation/core/models/confirm_appointm
 import '../../../../../new_appointment/presentation/core/models/my_appointments_response.dart';
 import '../../../../../new_appointment/presentation/core/models/save_appointment_reseponse.dart';
 import '../../../../../../core/services/global/web_service.dart' as web;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class AppointmentRepository {
   final webServices = locator<WebService>();
@@ -46,14 +47,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.MyAppointments,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, MyAppointmentsResponse?>(
         state, error, result);
@@ -72,15 +88,29 @@ class AppointmentRepository {
       AppointmentDetails response = AppointmentDetails.fromJson(res.data);
 
       return Tuple3<bool?, String?, AppointmentDetails?>(true, "", response);
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Tuple3<bool?, String?, AppointmentDetails?>(
-          false, ex.toString(), null);
+          false, error.toString(), null);
     }
   }
 
@@ -99,14 +129,29 @@ class AppointmentRepository {
 
     try {
       result = data;
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.PrintAppointmentDetails,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
@@ -130,14 +175,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.CancelAppointment,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, CancelAppointmentResponse?>(
         state, error, result);
@@ -163,14 +223,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.ConfirmAppointment,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
         state, error, result);
@@ -192,14 +267,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentSave,
             body: reqBody,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, SaveAppointmentResponse?>(
         state, error, result);
@@ -225,15 +315,30 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
  
       try {
         Helpers.sendLog(
             url: ApiConstants.RatingInfo,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, RatingInfoResponse?>(state, error, result);
   }

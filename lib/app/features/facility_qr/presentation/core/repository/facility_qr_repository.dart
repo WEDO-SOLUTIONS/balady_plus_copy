@@ -15,6 +15,7 @@ import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/remote_services/api_constants.dart';
 import '../../../../../core/remote_services/web_service.dart';
 import '../../../../../core/services/local/helpers.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class FacilityQRRepository {
   final webServices = locator<WebService>();
@@ -35,16 +36,31 @@ class FacilityQRRepository {
       } else {
         CommonFunctions.showError(error);
       }
-    } catch (ex) {
-      CommonFunctions.showError(error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      CommonFunctions.showError(error.toString());
 
       try {
         Helpers.sendLog(
             url: ApiConstants.QrDetailsUrl,
             data: data,
             qeuryParms: licenseId,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       return null;
     }
   }
@@ -68,14 +84,29 @@ class FacilityQRRepository {
       return response;
       // else
       //   showError(error);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.QrLicenseUserLatesetRatingItemsUrl,
             data: data,
             qeuryParms: licenseId,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       // showError(error);
     }
   }
@@ -94,13 +125,28 @@ class FacilityQRRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.QrLicenseRatingItemsUrl,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, LicenseRatingItems?>(state, error, result);
   }
@@ -123,19 +169,41 @@ class FacilityQRRepository {
       });
 
       result = SubmitRatingResponse.fromJson(body.data);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       errorMsg = error.response?.data?["data"]?["responseMessage"] ??
           ("errors_server_error_1").tr();
       //throw ServerException(error.toString(),
       //     statusCode: error.response?.statusCode);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         // MM send data
         Helpers.sendLog(
             url: ApiConstants.QrPostRating,
             //   data:data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
 
     return Tuple3<bool?, String?, SubmitRatingResponse?>(

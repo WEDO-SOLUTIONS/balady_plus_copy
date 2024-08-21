@@ -20,6 +20,7 @@ import '../../../transaction_inquiry/presentation/core/models/selected_location.
 import '../../../transaction_inquiry/presentation/core/services/customer_voice_repository.dart';
 import '../../../vd/presentation/widgets/map_address_card.dart';
 import '../widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class MapView extends StatefulWidget {
   final SelectedLocation selectedLocation;
@@ -181,12 +182,27 @@ class _MapViewState extends State<MapView> {
       selectedLocation?.selectedLocation =
           LatLng(position.latitude, position.longitude);
       animateCamera(position.latitude, position.longitude);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       EasyLoading.dismiss();
       Position? position;
       try {
         position = await Geolocator.getLastKnownPosition();
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       if (position != null) {
         selectedLocation?.userLocation =
@@ -205,7 +221,15 @@ class _MapViewState extends State<MapView> {
           CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
         ),
       );
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   void setMapLoading() {

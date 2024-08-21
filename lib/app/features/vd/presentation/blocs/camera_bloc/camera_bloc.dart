@@ -28,6 +28,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../../../../core/utils/animators/route_animator.dart';
 import '../../../../../core/utils/enums/enums.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'camera_event.dart';
 
@@ -59,8 +60,15 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       emit(state.copyWith(status: BlocStatus.loading));
       try {
         cameras = await availableCameras();
-      } catch (ex) {
-        ex.toString();
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+        error.toString();
       }
       if (cameras?.length != 0) {
         try {
@@ -71,7 +79,15 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
           await cameraController?.initialize();
           initializingCamera = false;
           cameraController?.setFlashMode(FlashMode.off);
-        } catch (e) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
       emit(state.copyWith(
           isFlashOn: false,
@@ -125,10 +141,25 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
             desiredAccuracy: LocationAccuracy.best,
             timeLimit: const Duration(seconds: 20));
         emitter(state.copyWith(status: BlocStatus.success));
-      } catch (ex) {
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
         try {
           position = await Geolocator.getLastKnownPosition();
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         if (position != null) {
           emitter(state.copyWith(
             status: BlocStatus.success,
@@ -184,9 +215,16 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       } else {
         emitter(state.copyWith(status: BlocStatus.failure, errorMessage: ""));
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       emitter(state.copyWith(
-          status: BlocStatus.failure, errorMessage: ex.toString()));
+          status: BlocStatus.failure, errorMessage: error.toString()));
     }
   }
 
@@ -209,7 +247,15 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       await _controller.initialize();
       initializingCamera = false;
       _controller.setFlashMode(FlashMode.off);
-    } on CameraException catch (e) {}
+    } on CameraException catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     emitter(state.copyWith(
         status: BlocStatus.success,
         isCameraInitialized: cameraController?.value.isInitialized));
@@ -242,7 +288,15 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
           emitter(state.copyWith(isFlashOn: true));
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   Future<void> _onReTakePhotoHandler(

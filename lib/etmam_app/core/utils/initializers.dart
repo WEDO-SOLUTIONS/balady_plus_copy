@@ -13,6 +13,7 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
         AppColorsTheme,
         CommonProperties,
         CommonFunctions;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class Initializers {
   static void loadData() async {
@@ -39,23 +40,53 @@ class Initializers {
       var ip;
       try {
         ip = await Ipify.ipv4(format: Format.TEXT);
-      } catch (ex) {
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
         try {
           ip = await NetworkInfo().getWifiIP();
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
 
       try {
         CommonProperties.clientIP = ip.toString();
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       if (CommonProperties.clientIP == null ||
           (CommonProperties.clientIP != null &&
               CommonProperties.clientIP!.isEmpty)) {
         CommonProperties.clientIP = "1";
       }
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
     }
   }
 }

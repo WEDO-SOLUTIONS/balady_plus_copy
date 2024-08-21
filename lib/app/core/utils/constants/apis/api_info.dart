@@ -895,6 +895,9 @@ class ApiUrl {
   static validateRealEstate(String id) =>
       'v1/appointments-mobile-services/validate-real-estate/$id';
 
+  static  deleteAppointment (String udid)=> "v1/mobile-appointment/appointmentsapi/attachments/$udid";
+
+
 
   //! POST
 

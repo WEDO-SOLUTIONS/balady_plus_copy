@@ -5,6 +5,8 @@ import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/utils/common_functions.dart';
 import '../../../../../new_appointment/presentation/core/models/my_appointments_response.dart';
 import '../../../../../new_appointment/presentation/core/services/repository/appointment_repository.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class MyAppointmentsViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();
@@ -112,10 +114,25 @@ class MyAppointmentsViewModel extends BaseViewModel {
                   .toList() ??
               []
           : null;
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         //MM  Helpers.sendLog(url: "getMyAppointmentsList", errorMsg: e.toString());
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       return null;
     }
   }
@@ -134,10 +151,25 @@ class MyAppointmentsViewModel extends BaseViewModel {
                   0)
               .toList() ??
           [];
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         //MM  Helpers.sendLog(url: "getMyAppointmentsList", errorMsg: e.toString());
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       return [];
     }
   }
@@ -158,7 +190,14 @@ class MyAppointmentsViewModel extends BaseViewModel {
                   element.statusId == 6)
               .toList() ??
           [];
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return [];
     }
   }

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_message_entities.dart';
 import 'package:balady_plus/app/features/chatbot/domain/use_cases/chat_bot_use_cases.dart';
 import 'package:dartz/dartz.dart';
@@ -99,12 +100,14 @@ class MessageChatBotProvider extends BaseViewModel {
         },
       );
       return message.value;
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: null,
-        ex: Exception(exception.toString()),
-      );
+    } catch (error, stackTrace) {
+  LogsViewModel().sendEventFromModel(
+    event: ErrorExceptionModel(
+      nameEvent: EventsName.handledException,
+      message: error.toString(),
+      stackTrace: stackTrace.toString(),
+    ),
+  );
       message.value = message.value.copyWith(
         answer: 'error_please_try_again_later'.tr(),
         haveError: true,

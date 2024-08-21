@@ -20,6 +20,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/services/local/shared_prefs_manager.dart';
 import '../../data/models/quran_aya_model.dart';
 import '../../data/models/quran_book_mark_item_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'quran_event.dart';
 
@@ -102,8 +103,15 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
         raf.writeFromSync(response.data);
         await raf.close();
         return file;
-      } catch (e) {
-        print(e);
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+        print(error);
       }
       return null;
     }
@@ -126,7 +134,15 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
           await outputFile.writeAsBytes(data);
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   File getImagePath(String pageNumper) {
@@ -283,7 +299,15 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
           suraNo: state.currentSuraNo ?? 0));
 
       emitter(state.copyWith(showBookMark: isMarked));
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   int getSuraPageNumber(int suraNumber) {

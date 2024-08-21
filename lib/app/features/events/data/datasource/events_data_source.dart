@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/services/global/web_service.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class EventsRemoteDataSource {
   final String token =
@@ -44,7 +45,14 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return SearchEventResponseModel.fromMap(result);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -54,13 +62,20 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -82,19 +97,33 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return EventsDetailsItemModel.fromJson(result);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -114,18 +143,32 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
       var data = response.data;
 
       return EventsCategoryResponseModel.fromMap(data["data"]);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode,
           dioError: error,
           errorCode: error is NoDataFoundException ? "2" : null);
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }

@@ -25,6 +25,8 @@ import '../../models/selected_location.dart';
 import '../../models/upload_file_result.dart';
 import '../../services/customer_voice_repository.dart';
 import 'new_msr_details_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 
 class NewMSRViewModel extends BaseViewModel {
   final _repositry = locator<CustomerVoiceRepository>();
@@ -256,9 +258,16 @@ class NewMSRViewModel extends BaseViewModel {
         }
         return Future.value(false);
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // hideLoading();
-      showError(error);
+      showError(error.toString());
       return Future.value(false);
     }
   }
@@ -287,7 +296,14 @@ class NewMSRViewModel extends BaseViewModel {
           return Future.value(false);
         }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // hideLoading();
       // showError(trans("server_error_1"));
       return Future.value(false);

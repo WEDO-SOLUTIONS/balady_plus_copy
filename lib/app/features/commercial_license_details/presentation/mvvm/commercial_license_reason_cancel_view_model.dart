@@ -10,6 +10,7 @@ import 'package:balady_plus/app/features/commercial_license_details/data/models/
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/reason_cancel.dart';
 import 'package:dio/dio.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CommercialLicenseReasonCancelViewModel extends BaseViewModel {
   final WebService webService;
@@ -39,17 +40,21 @@ class CommercialLicenseReasonCancelViewModel extends BaseViewModel {
           .map<ReasonCancel>(
               (e) => ReasonCancel.fromJson(e as Map<String, dynamic>))
           .toList();
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: response,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: response,
-        ex: Exception(exception.toString()),
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
     }
     isLoading = false;

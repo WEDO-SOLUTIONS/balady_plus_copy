@@ -12,6 +12,7 @@ import '../../../_shared_feature_/presentation/enhanced_widgets/pickers/hijri_pi
     as hijri_picker;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, DropDownWithTitle;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ComplianceDatePicker extends StatefulWidget {
   final String title;
@@ -105,7 +106,15 @@ class _ComplianceDatePickerState extends State<ComplianceDatePicker> {
 
     try {
       date = currentDate == null ? null : HijriCalendar.fromDate(currentDate);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     hijri_picker.Picker(
       isAr: CommonFunctions.isAppAR,
       confirmTextStyle: AppStyle.textButtonStyle.copyWith(

@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:balady_plus/etmam_app/core/utils/enums/order_actions.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/domain/entities/order_item.dart';
 import 'package:intl/intl.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class OrderDetailsResponse extends Equatable {
   OrderDetailsResponse(
@@ -61,7 +62,15 @@ class OrderDetailsResponse extends Equatable {
       if (time != null) {
         return dateFormat.format(time);
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return "";
   }
 

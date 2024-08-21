@@ -16,6 +16,7 @@ import 'package:dartz/dartz.dart' show Either, Left, Right;
 import '../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
   final DynamicFormRemoteDataSource remoteDataSource;
@@ -27,7 +28,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.createForm(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -39,7 +47,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.getFormFieldData(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -51,7 +66,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.findByRequestType();
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
@@ -63,7 +85,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.submitForm(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -75,7 +104,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.validateForm(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -87,7 +123,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.getFormData(paramas: paramas);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -99,7 +142,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.getOffers(paramas: paramas);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
@@ -111,7 +161,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.acceptOffer(paramas: paramas);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -123,7 +180,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.rejectOffer(paramas: paramas);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -135,7 +199,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.submitOrder(paramas: paramas);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -147,7 +218,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.cancelRequest(paramas: paramas);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -159,7 +237,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.getEditFormData(paramas: paramas);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -171,7 +256,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.editForm(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -183,7 +275,14 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
     try {
       final data = await remoteDataSource.uploadBidAttachment(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

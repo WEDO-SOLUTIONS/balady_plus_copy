@@ -13,6 +13,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../customer_voice_exports.dart'
     show DownloadFileResult, FullImageView, PDFViewer;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class AttachmentSection extends StatelessWidget {
   List<DownloadFileResult> files;
@@ -165,8 +166,24 @@ class _AttachmentItemState extends State<AttachmentItem> {
           File filetemp = File("$dir/" + file.attachName);
           await filetemp.writeAsBytes(bytes);
           OpenFile.open(filetemp.path);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 }
