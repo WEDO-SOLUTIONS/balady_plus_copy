@@ -98,7 +98,7 @@ class RenewCommercialLicenseBloc
       );
       sendStepEvent(nextPage);
 
-      if(state.requestId != null) {
+      if (state.requestId != null) {
         debtsCubit.getDebts(
           nextPage,
           state.requestId!,
@@ -579,13 +579,6 @@ class RenewCommercialLicenseBloc
       iqamaNumber = id;
     }
 
-    EjarInfoRequest? ejar = EjarInfoRequest(
-        iqamaNumber: iqamaNumber,
-        nationalId: nationalId,
-        tenancyContractNumber: state.info?.ownershipResponseDto
-            ?.tenancyContractInfo?.tenancyContractNumber,
-        versionNumber: state
-            .info?.ownershipResponseDto?.tenancyContractInfo?.versionNumber);
 
     final bool? insidePetrolStation = state.info?.insidePetrolStation;
 
@@ -619,40 +612,7 @@ class RenewCommercialLicenseBloc
         ),
       );
     });
-    /* bool Function(Route<dynamic>) predicate =
-          ModalRoute.withName(RouteName.bottomNavigation);
-      NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-          RouteName.successRoute, predicate,
-          arguments: SuccessScreenArgs(
-              type: PAGE_TYPE.renewCommercial,
-              fromHomePage: false,
-              thanksMessage: success.data?.responseMessage));
-   
-
-    */
   }
-
-/*
-  void getInvestmentContracts() async {
-    if (state.crContractType == CRContractType.invest &&
-        state.crSubmitterType == CRSubmitterType.rental &&
-        state.crContractOption == CRContractOption.service) {
-      int requestId = state.requestId!;
-
-      emit(state.copyWith(investmentListStatus: BlocStatus.loading));
-      final response = await _getInvestmentContracts(
-          InvestmentContractRequest(requestId: 4413209184));
-      response.fold(
-          (failure) => emit(state.copyWith(
-                investmentListStatus: BlocStatus.failure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              )), (success) {
-        emit(state.copyWith(
-            investmentListStatus: BlocStatus.success,
-            investmentContractResponse: success));
-      });
-    }
-  }*/
 
   Future<void> _changeInsidePetrolStationHandler(
       ChangeInsidePetrolStationEvent e, Emitter emitter) async {

@@ -4,13 +4,11 @@ import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
-import 'package:balady_plus/app/events_logs/controller/logs_controller.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/data/models/cancellation_rquest_response.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_details/data/models/reason_cancel.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/src/response.dart';
 import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
 class ApplyCancelViewModel extends BaseViewModel {

@@ -1,5 +1,3 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -27,14 +25,17 @@ class ApplyCancelScreen extends StatefulWidget {
 class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    CommonFunctions.sendEventToAnalytics(AppEvents.cancelCommercialLicenseOpen);
+    CommonFunctions.sendEventToAnalytics(
+      AppEvents.cancelCommercialLicenseOpen,
+    );
     CommonFunctions.sendUXCamEvent(
-        UXCamEvents.startCardServiceCancelLicenseService);
+      UXCamEvents.startCardServiceCancelLicenseService,
+    );
 
     CommonFunctions.sendUXCamEvent(
-        UXCamEvents.CancelCommercialLicense_Open_Service_Card_Event);
+      UXCamEvents.CancelCommercialLicense_Open_Service_Card_Event,
+    );
   }
 
   @override
@@ -64,23 +65,22 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
                     topRight: Radius.circular(36),
                   ),
                   color: Colors.white),
-              padding:
-              const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
               child: Selector<ApplyCancelViewModel, bool>(
                 selector: (context, provider) => provider.isLoading,
                 builder: (BuildContext context, isLoading, Widget? child) {
                   return isLoading
                       ? const ShimmerEffectWidget(
-                    height: 55,
-                    borderRadius: 6,
-                  )
+                          height: 55,
+                          borderRadius: 6,
+                        )
                       : child!;
                 },
                 child: ElevatedButtonWidget.startService(
                   onPressed: () async {
                     NavigatorState navigator = Navigator.of(context);
                     CancellationRequestResponse? cancellationRequest =
-                    await viewModel.applyCommercialLicenseCancellation();
+                        await viewModel.applyCommercialLicenseCancellation();
                     if (cancellationRequest != null) {
                       navigator.popAndPushNamed(
                         RouteName.commercialLicenseCancel,
@@ -89,7 +89,7 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
                           "requestId": cancellationRequest.requestId,
                           "reasonCancel": viewModel.reasonCancel,
                           "availableCloseDate":
-                          cancellationRequest.availableCloseDate,
+                              cancellationRequest.availableCloseDate,
                           "crNumber": viewModel.submitterInfo.crNumber ?? "",
                           "crType": viewModel.submitterInfo.crType!,
                         },
@@ -102,13 +102,14 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
                         barrierDismissible: false,
                         builder: (ctx) => CustomPopUp(
                           child: Html(
-                              data: viewModel.messageHtml,
-                              onLinkTap: (String? url,
-                                  Map<String, String> attributes, element) {
-                                if (url != null) {
-                                  launchUrl(Uri.parse(url));
-                                }
-                              }),
+                            data: viewModel.messageHtml,
+                            onLinkTap: (String? url,
+                                Map<String, String> attributes, element) {
+                              if (url != null) {
+                                launchUrl(Uri.parse(url));
+                              }
+                            },
+                          ),
                         ),
                       );
                     }

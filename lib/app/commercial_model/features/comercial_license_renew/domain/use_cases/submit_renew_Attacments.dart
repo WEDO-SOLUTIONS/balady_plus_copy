@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart' show Either;
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/use_case.dart';
 import '../../renew_commercial_license_exports.dart' show RenewCrRepository;
-import '../entities/cr_attachment_request.dart';
 
 class SubmitRenewAttachments extends UseCase<dynamic, int> {
   final RenewCrRepository repository;

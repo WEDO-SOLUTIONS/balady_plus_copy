@@ -5,9 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/app_style.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import '../../../../../../../features/_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -43,7 +40,7 @@ class _CommercialRenewStep3State extends State<CommercialRenewStep3> {
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  margin: EdgeInsets.only(top: 24, left: 16, right: 16),
+                  margin: const EdgeInsets.only(top: 24, left: 16, right: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -59,6 +56,7 @@ class _CommercialRenewStep3State extends State<CommercialRenewStep3> {
                 ),
               ),
             ),
+            /// Warning need Fix
             CalcualtorWidget()
           ],
         );
@@ -82,12 +80,12 @@ class Step1SummeryWidget extends StatelessWidget {
               title: ("submission_document").tr(),
               subTitle: "",
             ),
-            CustomVerticalSpace(height: 8),
+            const CustomVerticalSpace(height: 8),
             FieldData(
               title: ("license_no").tr(),
               subTitle: state.renewRequestDetails?.statusName,
             ),
-            CustomVerticalSpace(height: 8),
+            const CustomVerticalSpace(height: 8),
           ],
         );
       },

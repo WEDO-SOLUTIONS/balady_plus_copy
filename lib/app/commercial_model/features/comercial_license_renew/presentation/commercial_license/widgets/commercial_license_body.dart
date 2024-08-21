@@ -45,7 +45,7 @@ class CommercialLicenseBody extends StatelessWidget {
                         FocusManager.instance.primaryFocus?.unfocus();
                         bool Function(Route<dynamic>) predicate =
                             ModalRoute.withName(RouteName.bottomNavigation);
-                        Navigator.of(context).popUntil((predicate));
+                        Navigator.of(context).popUntil((predicate),);
                       },
                       requestNum: state.requestId),
                   body: PageView.builder(

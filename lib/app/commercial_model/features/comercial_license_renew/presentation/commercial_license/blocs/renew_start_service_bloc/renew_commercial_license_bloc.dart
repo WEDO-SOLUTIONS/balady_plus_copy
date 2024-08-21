@@ -5,7 +5,6 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
@@ -14,12 +13,13 @@ import '../../../../renew_commercial_license_exports.dart'
     show RenewApply, RenewApplyRequest, ValidateRenewBeforeApply;
 
 part 'renew_commercial_license_event.dart';
+
 part 'renew_commercial_license_state.dart';
 
 class RenewStartServiceBloc
     extends Bloc<RenewStartServiceEvent, RenewStartServiceState> {
-  ValidateRenewBeforeApply _validateRenewBeforeApply;
-  RenewApply _renewApply;
+  final ValidateRenewBeforeApply _validateRenewBeforeApply;
+  final RenewApply _renewApply;
 
   RenewStartServiceBloc({
     required int licenseId,
@@ -36,18 +36,12 @@ class RenewStartServiceBloc
     final failOrSuccess = await _validateRenewBeforeApply(state.licenseId!);
 
     failOrSuccess.fold((l) {
-      emitter(state.copyWith(
+      emitter(
+        state.copyWith(
           status: BlocStatus.failure,
-          errorMessage: (l as ServerFailure).errorMessage));
-
-/*
-      emitter(state.copyWith(status: BlocStatus.success));
-
-      NavigationService.navigatorKey.currentState!.pushNamed(
-          RouteName.renewCommercialLicenseSubmitForm,
-          arguments: 4517288276);
-
-          */
+          errorMessage: (l as ServerFailure).errorMessage,
+        ),
+      );
     }, (r) {
       emitter(state.copyWith(status: BlocStatus.success));
       add(const RenewApplyEvent());
@@ -56,25 +50,32 @@ class RenewStartServiceBloc
 
   Future<void> _renewApplyEvent(RenewApplyEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
-    final failOrSuccess = await _renewApply(RenewApplyRequest(
-      licenseId: state.licenseId!,
-      mobileNumber: CommonProperties.userInfo!.getPhone(),
-      submitterBirthDate: CommonProperties.userInfo!.getHijriBirthDate(),
-    ));
+    final failOrSuccess = await _renewApply(
+      RenewApplyRequest(
+        licenseId: state.licenseId!,
+        mobileNumber: CommonProperties.userInfo!.getPhone(),
+        submitterBirthDate: CommonProperties.userInfo!.getHijriBirthDate(),
+      ),
+    );
 
-    failOrSuccess.fold((l) {
-      emitter(state.copyWith(
-          status: BlocStatus.failure,
-          errorMessage: (l as ServerFailure).errorMessage));
-    }, (r) {
-      emitter(state.copyWith(status: BlocStatus.success));
-      NavigationService.navigatorKey.currentState?.pushNamed(
+    failOrSuccess.fold(
+      (l) {
+        emitter(state.copyWith(
+            status: BlocStatus.failure,
+            errorMessage: (l as ServerFailure).errorMessage));
+      },
+      (r) {
+        emitter(state.copyWith(status: BlocStatus.success));
+        NavigationService.navigatorKey.currentState?.pushNamed(
           RouteName.renewCommercialLicenseSubmitForm,
-          arguments: r.data!.result);
+          arguments: r.data!.result,
+        );
 
-      CommonFunctions.sendUXCamEvent(
-          UXCamEvents.startServiceRenewLicenseService);
-    });
+        CommonFunctions.sendUXCamEvent(
+          UXCamEvents.startServiceRenewLicenseService,
+        );
+      },
+    );
   }
 
   hideKeyboard() {

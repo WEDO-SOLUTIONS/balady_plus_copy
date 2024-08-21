@@ -1,6 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 
 class EjarInfoRequest extends Equatable {
@@ -30,6 +27,7 @@ class EjarInfoRequest extends Equatable {
     if (nationalId?.isNotEmpty ?? false) return nationalId ?? "";
 
     if (iqamaNumber?.isNotEmpty ?? false) return iqamaNumber ?? "";
+    return null;
   }
 
   @override

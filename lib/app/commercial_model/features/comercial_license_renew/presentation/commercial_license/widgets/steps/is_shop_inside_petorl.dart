@@ -20,16 +20,17 @@ class IsShopInsidePetroStationWidget extends StatelessWidget {
     return BlocBuilder<RenewCommercialLicenseBloc, RenewCommercialLicenseState>(
       builder: (context, state) {
         return YesNoRadioGroupWidget(
-            groupName: "is_license_inside_petrol_station".tr(),
-            currentValue: state.insidePetrolStation,
-            onChanged: (value) {
-              if (value != null) {
-                context
-                    .read<RenewCommercialLicenseBloc>()
-                    .add(ChangeInsidePetrolStationEvent(value: value));
-              }
-            });
-
+          groupName: "is_license_inside_petrol_station".tr(),
+          currentValue: state.insidePetrolStation,
+          onChanged: (value) {
+            if (value != null) {
+              context
+                  .read<RenewCommercialLicenseBloc>()
+                  .add(ChangeInsidePetrolStationEvent(value: value));
+            }
+          },
+        );
+        /// Warning need Fix
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
@@ -7,18 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
-import '../../../../../../../features/_shared_feature_/data/entities/radio_item.dart';
-import '../../../../../../../features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import '../../../../../../../features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_list.dart';
-import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
-import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import '../../../../../../../features/_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
-import '../../../../../../../features/_shared_feature_/presentation/widgets/notes_widget.dart';
-import '../../../../../../../features/_shared_feature_/presentation/widgets/radio_buttons/horizontal_radio_group_component.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/radio_buttons/vertical_radio_group_component.dart';
-import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../../commercial_license/presentation/step4/widgets/yes_no_radio_group_widget.dart';
 import '../../../../renew_commercial_license_exports.dart'
     show
@@ -43,7 +32,6 @@ class CommercialRenewStep1 extends StatefulWidget {
 }
 
 class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
-  TextEditingController _deedServiceController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -253,11 +241,11 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                               ? "done_check".tr()
                               : "verify".tr(),
                           onPressed: () {
-                            if (state.deedOwnerIdValidator.isValid)
+                            if (state.deedOwnerIdValidator.isValid) {
                               context
                                   .read<RenewCommercialLicenseBloc>()
                                   .getDeedInfoHandler();
-                            else {
+                            } else {
                               CommonFunctions.showError(state
                                       .deedOwnerIdValidator.error?.message
                                       .tr() ??
@@ -499,7 +487,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         state.contractsListStatus == BlocStatus.success) ...[
                       ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount:
                               state.cleanContractsResponse?.items?.length ?? 0,
                           itemBuilder: (ctx, index) {
@@ -536,7 +524,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         (state.showSalamaReport() &&
                             state.salamaExists == false))
                       CustomTextFieldWidget(
-                        key: Key("slamaReportNumber"),
+                        key: const Key("slamaReportNumber"),
                         label: "slamaReportNumber".tr(),
                         hintText: "slamaReportNumber".tr(),
                         isDigitsOnly: true,
@@ -563,7 +551,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if ((state.showSalamaBill() && !state.showSalmaExists()) ||
                         (state.showSalamaBill() && state.salamaExists == false))
                       CustomTextFieldWidget(
-                        key: Key("slamaBillNumber"),
+                        key: const Key("slamaBillNumber"),
                         label: "bill_number_name".tr(),
                         hintText: "bill_number_name".tr(),
                         isDigitsOnly: true,
@@ -587,7 +575,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         (state.showSalamaPermit() &&
                             state.salamaExists == true))
                       CustomTextFieldWidget(
-                        key: Key("slamaNumber"),
+                        key: const Key("slamaNumber"),
                         label: "salamaIssueNo".tr(),
                         hintText: "salamaIssueNo".tr(),
                         bottomMargin: 24,

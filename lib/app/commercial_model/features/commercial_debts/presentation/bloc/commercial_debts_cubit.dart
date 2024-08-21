@@ -29,7 +29,6 @@ class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
 
   void getDebts(int stepNumber, int transactionId) async {
     try {
-
       // check if have Fake Step to agnore the action
       // and check on index of step
       if (steps[stepNumber].isNotEmpty &&

@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
-import '../../../../../../features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class CardCostInfoWidget extends StatelessWidget {

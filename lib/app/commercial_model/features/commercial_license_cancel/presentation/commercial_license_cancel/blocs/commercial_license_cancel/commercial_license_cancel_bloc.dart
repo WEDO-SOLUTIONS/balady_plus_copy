@@ -10,7 +10,6 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
-import 'package:meta/meta.dart';
 
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';

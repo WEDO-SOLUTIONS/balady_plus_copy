@@ -1,7 +1,5 @@
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_state.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -30,33 +28,6 @@ class FieldCommercialDebtWidget extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              // showDialog(
-              //   barrierDismissible: false,
-              //   useRootNavigator: false,
-              //   useSafeArea: false,
-              //   context: context,
-              //   builder: (context) => AlertDialog(
-              //     // title: const Text("title"),
-              //     content: Column(
-              //       mainAxisSize: MainAxisSize.min,
-              //       children: [
-              //         Icon(
-              //            Icons.warning,
-              //           color:  Colors.yellow.shade700,
-              //         ),
-              //         Text("state.commercialDebt.infoMessage"),
-              //       ],
-              //     ),
-              //     actions: [
-              //       ElevatedButton(
-              //         onPressed: () {
-              //
-              //         },
-              //         child: const Text("ok"),
-              //       )
-              //     ],
-              //   ),
-              // );
               cubit.getDebts(
                 state.stepNumber,
                 state.transactionId,

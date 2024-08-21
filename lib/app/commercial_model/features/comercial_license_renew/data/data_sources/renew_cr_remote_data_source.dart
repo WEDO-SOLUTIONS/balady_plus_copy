@@ -16,7 +16,6 @@ import '../../domain/entities/save_renew_request.dart';
 import '../../renew_commercial_license_exports.dart';
 import '../models/clean_contracts_response_model.dart';
 import '../models/cr_attachment_response_model.dart';
-import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
 import '../models/investment_contracts_response_model.dart';
 import '../models/renew_request_details.dart';
 import '../models/renew_request_info_model.dart' hide DeedInfoResponseModel;
@@ -68,9 +67,9 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      //4312216452 test data
-      response = await webService.dio
-          .get(CommercialModelEndPoints.cleanContracts(params!.requestId), data: params.toMap());
+      response = await webService.dio.get(
+          CommercialModelEndPoints.cleanContracts(params!.requestId),
+          data: params.toMap());
 
       var data = response.data["data"];
 
@@ -98,14 +97,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -128,14 +127,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -150,8 +149,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response =
-          await webService.dio.post(CommercialModelEndPoints.deedInfo(), data: params!.toMap());
+      response = await webService.dio
+          .post(CommercialModelEndPoints.deedInfo(), data: params!.toMap());
 
       var data = response.data["data"]["result"];
 
@@ -179,14 +178,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -209,14 +208,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -231,8 +230,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response =
-          await webService.dio.post(CommercialModelEndPoints.ejarInfo, data: params?.toMap());
+      response = await webService.dio
+          .post(CommercialModelEndPoints.ejarInfo, data: params?.toMap());
 
       var data = response.data["data"]["result"];
 
@@ -260,14 +259,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -290,14 +289,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -344,14 +343,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -374,14 +373,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -396,7 +395,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(CommercialModelEndPoints.renewAttachments(params!));
+      response = await webService.dio
+          .get(CommercialModelEndPoints.renewAttachments(params!));
 
       var data = response.data["data"];
 
@@ -424,14 +424,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -454,14 +454,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -476,7 +476,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
     final body = await locator<web.WebService>().uploadFileSSO(
-      CommercialModelEndPoints.crAttachment(params.requestId!, params.data!.id!),
+      CommercialModelEndPoints.crAttachment(
+          params.requestId!, params.data!.id!),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
       mimeType: mimeType,
@@ -508,18 +509,19 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
       print(error);
       try {
         Helpers.sendLog(
-            url: CommercialModelEndPoints.uploadAttachments(params.requestId!, params.data!.id),
+            url: CommercialModelEndPoints.uploadAttachments(
+                params.requestId!, params.data!.id),
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         "errors_server_error_2".tr(),
@@ -535,7 +537,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(CommercialModelEndPoints.renewRequestDetails(
+      response =
+          await webService.dio.get(CommercialModelEndPoints.renewRequestDetails(
         params!,
       ));
 
@@ -564,14 +567,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -594,14 +597,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -646,14 +649,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -676,14 +679,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -698,8 +701,9 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio
-          .post(CommercialModelEndPoints.renewApply(params!.licenseId), data: params.toMap());
+      response = await webService.dio.post(
+          CommercialModelEndPoints.renewApply(params!.licenseId),
+          data: params.toMap());
 
       int? data = response.data["data"]["result"];
 
@@ -724,14 +728,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -754,14 +758,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -777,7 +781,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(CommercialModelEndPoints.validateBeforeApply(params!));
+      response = await webService.dio
+          .post(CommercialModelEndPoints.validateBeforeApply(params!));
 
       bool? data = response.data["data"]["result"];
 
@@ -802,14 +807,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -832,14 +837,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -871,7 +876,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(CommercialModelEndPoints.renewYears(params!));
+      response = await webService.dio
+          .get(CommercialModelEndPoints.renewYears(params!));
       print("HHH");
       List d = response.data["data"]["result"];
       List<int> data = [];
@@ -901,14 +907,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -931,14 +937,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -1044,14 +1050,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -1074,14 +1080,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -1125,14 +1131,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -1155,14 +1161,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -1177,7 +1183,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(CommercialModelEndPoints.saveAttachments(params!));
+      response = await webService.dio
+          .post(CommercialModelEndPoints.saveAttachments(params!));
 
       // var data = response.data["data"]["result"];
 
@@ -1204,14 +1211,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -1234,14 +1241,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),

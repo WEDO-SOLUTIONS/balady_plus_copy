@@ -1,5 +1,3 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/data/models/reason_cancel.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_details/data/models/reason_cancel.dart';
 
 class CancellationRequestResponse {
   int requestId;

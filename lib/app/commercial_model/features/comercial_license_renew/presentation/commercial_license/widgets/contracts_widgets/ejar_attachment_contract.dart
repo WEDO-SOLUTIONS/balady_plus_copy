@@ -1,15 +1,9 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import '../../../../../../../features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import '../../../../../../../features/_shared_feature_/presentation/buttons/elevated_icon_button_widgets.dart';
-import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../blocs/submit_renew_commercial_bloc/renew_commercial_license_bloc.dart';
@@ -76,13 +70,15 @@ class AttachContract extends StatelessWidget {
                               fontWeight: AppFontWeight.bold,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 32,
                           ),
-                          Expanded(
-                              child: const CustomSvgIconWidget(
-                                  IconPath.receiveSquare,
-                                  iconSize: 14.0)),
+                          const Expanded(
+                            child: CustomSvgIconWidget(
+                              IconPath.receiveSquare,
+                              iconSize: 14.0,
+                            ),
+                          ),
                         ],
                       ),
                     ],

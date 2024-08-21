@@ -14,6 +14,7 @@ class InvestMentContractCard extends StatelessWidget {
   final InvestmentContractItem item;
   final Function onSelect;
   final InvestmentContractItem? selected;
+
   const InvestMentContractCard(
       {super.key, required this.item, required this.onSelect, this.selected});
 
@@ -24,7 +25,9 @@ class InvestMentContractCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(top: 16),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16), color: AppColor.white),
+        borderRadius: BorderRadius.circular(16),
+        color: AppColor.white,
+      ),
       child: Column(
         children: [
           Row(
@@ -75,7 +78,7 @@ class InvestMentContractCard extends StatelessWidget {
                 ),
             ],
           ),
-          Spacer(),
+          const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

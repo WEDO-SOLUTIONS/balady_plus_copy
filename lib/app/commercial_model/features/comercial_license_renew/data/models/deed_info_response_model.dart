@@ -1,5 +1,3 @@
-import 'package:equatable/equatable.dart';
-
 import '../../renew_commercial_license_exports.dart' show DeedInfoResponse;
 
 class DeedInfoResponseModel extends DeedInfoResponse {

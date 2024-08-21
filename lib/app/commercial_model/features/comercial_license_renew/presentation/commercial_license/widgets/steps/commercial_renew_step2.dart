@@ -76,7 +76,7 @@ class _CommercialRenewStep2State extends State<CommercialRenewStep2> {
                                 filePath: filePath);
                           },
                         ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
                     ],
@@ -136,9 +136,9 @@ class AttachmentListWidget extends StatelessWidget {
               fileName: attachments[index].fileName,
               onPress: () {
                 if (attachments[index].filePath != null &&
-                    !attachments[index].filePath!.startsWith("http"))
+                    !attachments[index].filePath!.startsWith("http")) {
                   CommonFunctions.openFile(File(attachments[index].filePath!));
-                else if (attachments[index].filePath != null &&
+                } else if (attachments[index].filePath != null &&
                     attachments[index].filePath!.startsWith("http")) {
                   showFile(attachments[index].filePath ?? "",
                       attachments[index].fileName!);
@@ -162,7 +162,6 @@ class AttachmentListWidget extends StatelessWidget {
           fileName.toLowerCase().contains(".jpeg") ||
           fileName.toLowerCase().contains(".jpg")) {
         //MM
-        print("HEETT");
         NavigationService.navigatorKey.currentState!
             .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
       } else {
@@ -185,16 +184,14 @@ class AttachmentListWidget extends StatelessWidget {
             OpenFile.open(fileDownloaded.path);
           }
         } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
           EasyLoading.dismiss();
-
-          print(error);
         }
       }
     } catch (error, stackTrace) {
@@ -222,7 +219,6 @@ class AttachmentListWidget extends StatelessWidget {
 
     dio.options.responseType = ResponseType.bytes;
     dio.interceptors.add(AppInterceptors());
-    ;
     Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url));
 
     String dir = (await getTemporaryDirectory()).path;

@@ -9,7 +9,6 @@ import '../../../../../../features/_shared_feature_/presentation/buttons/elevate
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../domain/entities/clean_contracts_response.dart';
-import '../../../domain/entities/investment_contracts_response.dart';
 
 class CleanContractCard extends StatelessWidget {
   final CleanContractItem item;
@@ -76,7 +75,7 @@ class CleanContractCard extends StatelessWidget {
                 ),
             ],
           ),
-          Spacer(),
+          const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -91,7 +90,7 @@ class CleanContractCard extends StatelessWidget {
                   ),
                   const CustomVerticalSpace(height: 8),
                   CustomTextWidget(
-                    item.unifiedCleanContractNo.toString() ?? "",
+                    item.unifiedCleanContractNo?.toString() ?? "",
                     fontColor: AppColor.blackModern600Light,
                     fontSize: 14,
                     fontWeight: AppFontWeight.bold,

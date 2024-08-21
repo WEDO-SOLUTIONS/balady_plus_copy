@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 class CrCalculateFeesResponse {
   final double? totalCost;

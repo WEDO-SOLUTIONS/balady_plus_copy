@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final renewRequestDetails = renewRequestDetailsFromJson(jsonString);
-
-import 'dart:convert';
 
 class RenewRequestDetails {
   final int? requestId;

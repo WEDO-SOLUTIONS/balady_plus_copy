@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
