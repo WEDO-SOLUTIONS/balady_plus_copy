@@ -118,9 +118,10 @@ class _CommercialLicenseCancelScreenState
                           currentPageValue++;
                         });
                         goToNewPage();
-                        context
-                            .read<CommercialDebtsCubit>()
-                            .getBoardsContracts(currentPageValue);
+                        context.read<CommercialDebtsCubit>().getDebts(
+                              currentPageValue,
+                              data['requestId'],
+                            );
                       }
                       if (state is SubmitCancelRequestSucceededState) {
                         Navigator.of(context).popAndPushNamed(
