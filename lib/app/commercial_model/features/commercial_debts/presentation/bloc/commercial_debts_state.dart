@@ -15,15 +15,17 @@ class LoadingCommercialDebtState extends CommercialDebtsState {
 class FieldCommercialDebtState extends CommercialDebtsState {
   final String errorMessage;
   final int stepNumber;
+  final int transactionId;
 
   const FieldCommercialDebtState({
     required this.errorMessage,
     required this.stepNumber,
+    required this.transactionId,
   });
 
   @override
   List<Object?> get props {
-    return [errorMessage];
+    return [errorMessage,transactionId,stepNumber];
   }
 }
 

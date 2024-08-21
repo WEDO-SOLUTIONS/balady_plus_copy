@@ -57,7 +57,10 @@ class FieldCommercialDebtWidget extends StatelessWidget {
               //     ],
               //   ),
               // );
-              cubit.getBoardsContracts(state.stepNumber);
+              cubit.getDebts(
+                state.stepNumber,
+                state.transactionId,
+              );
             },
             child: Text("reload".tr()),
           ),

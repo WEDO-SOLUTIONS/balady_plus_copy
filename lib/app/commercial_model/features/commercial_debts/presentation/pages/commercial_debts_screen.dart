@@ -13,7 +13,7 @@ class CommercialDebtsScreen extends StatelessWidget {
   final List<String> steps;
 
   // this is requestId of request or invoiceId of invoice
-  final int transactionId;
+  final int? transactionId;
 
   final Widget child;
 
