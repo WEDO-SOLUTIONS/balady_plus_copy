@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -29,6 +30,7 @@ import '../../../../domain/use_cases/submit_renew_Attacments.dart';
 import '../../../../renew_commercial_license_exports.dart';
 
 part 'renew_commercial_license_event.dart';
+
 part 'renew_commercial_license_state.dart';
 
 class RenewCommercialLicenseBloc
@@ -47,7 +49,9 @@ class RenewCommercialLicenseBloc
   final SubmitRenew _submitRenew;
   final GetDeedInfo _getDeedInfo;
 
-  RenewCommercialLicenseBloc({required int requestId})
+  final CommercialDebtsCubit debtsCubit;
+
+  RenewCommercialLicenseBloc({required this.debtsCubit, required int requestId})
       : _getRenewYears = GetRenewYears(repository: sl()),
         _calculateRequestInfo = CalculateRequestInfo(repository: sl()),
         _getEjarInfo = GetEjarInfo(repository: sl()),
@@ -80,11 +84,19 @@ class RenewCommercialLicenseBloc
 
       emitter(state.copyWith(status: BlocStatus.performing, errorMessage: ""));
 
-      await controller.animateToPage(nextPage,
-          duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+      await controller.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeIn,
+      );
 
-      emitter(state.copyWith(
-          status: BlocStatus.success, currentPageValue: nextPage));
+      emitter(
+        state.copyWith(
+          status: BlocStatus.success,
+          currentPageValue: nextPage,
+        ),
+      );
+      debtsCubit.getBoardsContracts(nextPage);
       sendStepEvent(nextPage);
     }
 
@@ -387,7 +399,8 @@ class RenewCommercialLicenseBloc
 
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
-    final response = await _saveRenewRequestInfo(SaveRenewRequest(
+    final response = await _saveRenewRequestInfo(
+      SaveRenewRequest(
         requestId: requestId,
         citizenPledgedToClean: citizenPledgedToClean,
         deedInfoRequest: state.deedInfoRequst,
@@ -408,7 +421,9 @@ class RenewCommercialLicenseBloc
         salamaReportNumber: state.salamaReportNumber,
         insidePetrolStation: state.insidePetrolStation,
         salamaPermitExist:
-            state.salamaExists == true /*|| state.isOnlyPermit()*/));
+            state.salamaExists == true /*|| state.isOnlyPermit()*/,
+      ),
+    );
     response.fold((failure) {
       print(failure);
       emit(
@@ -610,6 +625,7 @@ class RenewCommercialLicenseBloc
 
     */
   }
+
 /*
   void getInvestmentContracts() async {
     if (state.crContractType == CRContractType.invest &&

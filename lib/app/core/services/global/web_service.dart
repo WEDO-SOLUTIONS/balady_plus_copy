@@ -380,6 +380,14 @@ class AppInterceptors extends Interceptor {
   bool get mounted => true;
 }
 
+
+// need Add next Headers
+/*
+x-fe-client-ip
+"x-platform-id": "balady",
+"x-channel-id": "mobile",
+
+ */
 class ApiHeaders {
   static const authorization = "authorization";
 

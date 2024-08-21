@@ -1,10 +1,9 @@
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_state.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/widgets/field_commercial_debt_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 
 class CommercialDebtsScreen extends StatelessWidget {
   /// Transaction get from [TransactionType]
@@ -35,17 +34,40 @@ class CommercialDebtsScreen extends StatelessWidget {
         steps: steps,
       ),
       child: BlocConsumer<CommercialDebtsCubit, CommercialDebtsState>(
-        listener: (BuildContext context, state) {
+        listener: (BuildContext contextCuit, state) {
           // when get debt show dialog
           if (state is SuccessCommercialDebtState) {
             showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text("title"),
-                content: Text(state.commercialDebt.infoMessage),
+                // title: const Text("title"),
+                content: Column(
+                  children: [
+                    Icon(
+                      state.commercialDebt.status ==
+                              CommercialDebtRenewStates.blocked
+                          ? Icons.block
+                          : Icons.warning,
+                      color: state.commercialDebt.status ==
+                              CommercialDebtRenewStates.blocked
+                          ? Colors.red.shade800
+                          : Colors.yellow.shade700,
+                      size: 50,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(state.commercialDebt.infoMessage ?? ""),
+                  ],
+                ),
                 actions: [
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (state.commercialDebt.status == CommercialDebtRenewStates.blocked) {
+                        // Navigator.of(context, rootNavigator: true).pop();
+                      } else {
+                        Navigator.of(context).pop();
+                      }
+                    },
                     child: const Text("ok"),
                   )
                 ],
@@ -54,19 +76,14 @@ class CommercialDebtsScreen extends StatelessWidget {
           }
         },
         // Build new UI in two state loading and field
-        builder: (BuildContext context, state) {
+        builder: (BuildContext contextCuit, state) {
           if (state is LoadingCommercialDebtState) {
             return const Center(child: CircularProgressIndicator());
           }
+
           // show Widget to try again
           if (state is FieldCommercialDebtState) {
-            return BaseErrorWidget(
-              onRetry: () {
-                CommercialDebtsCubit cubit =
-                    context.watch<CommercialDebtsCubit>();
-                cubit.getBoardsContracts(state.stepNumber);
-              },
-            );
+            return FieldCommercialDebtWidget(state: state);
           }
           // show
           return child;

@@ -26,13 +26,6 @@ class CommercialDebtRepository {
       );
       return data;
     } on ServerException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
       rethrow;
     }
   }

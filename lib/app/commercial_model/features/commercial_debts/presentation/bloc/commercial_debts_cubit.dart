@@ -3,6 +3,8 @@ import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/repositories/commercial_debts_repository.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_state.dart';
+import 'package:balady_plus/app/core/errors/exceptions.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
@@ -13,7 +15,6 @@ class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
   final List<String> steps;
 
   ////////////////////////////////////////////////////////////////////////////
-
   CommercialDebtsCubit({
     required this.transactionType,
     required this.transactionId,
@@ -40,11 +41,25 @@ class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
           emit(const NoDebtsCommercialDebtState());
           break;
       }
-    } catch (e) {
+    } on ServerException catch (error) {
       emit(
         FieldCommercialDebtState(
-          errorMessage: e.toString(),
+          errorMessage: error.errorMessage,
           stepNumber: stepNumber,
+        ),
+      );
+    } catch (error, stackTrace) {
+      emit(
+        FieldCommercialDebtState(
+          errorMessage: error.toString(),
+          stepNumber: stepNumber,
+        ),
+      );
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
         ),
       );
     }

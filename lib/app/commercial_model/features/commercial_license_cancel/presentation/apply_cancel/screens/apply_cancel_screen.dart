@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -39,82 +41,87 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
   Widget build(BuildContext context) {
     ApplyCancelViewModel viewModel =
         ModalRoute.of(context)!.settings.arguments as ApplyCancelViewModel;
-
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (BuildContext context) => viewModel,
-        ),
-        ChangeNotifierProvider(
-          create: (BuildContext context) => ServiceDataViewModel(
-            webService: sl(),
-            serviceId: 10492,
+    return CommercialDebtsScreen(
+      transactionType: TransactionType.LICENSE,
+      transactionId: viewModel.licenseId,
+      steps: const [CancelSteps.applySteps],
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (BuildContext context) => viewModel,
           ),
-        ),
-      ],
-      child: Scaffold(
-        body: Column(
-          children: [
-            const Expanded(child: ServiceCardDescDynamicWidget()),
-            Container(
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(36),
-                    topRight: Radius.circular(36),
-                  ),
-                  color: Colors.white),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
-              child: Selector<ApplyCancelViewModel, bool>(
-                selector: (context, provider) => provider.isLoading,
-                builder: (BuildContext context, isLoading, Widget? child) {
-                  return isLoading
-                      ? const ShimmerEffectWidget(
-                          height: 55,
-                          borderRadius: 6,
-                        )
-                      : child!;
-                },
-                child: ElevatedButtonWidget.startService(
-                  onPressed: () async {
-                    NavigatorState navigator = Navigator.of(context);
-                    CancellationRequestResponse? cancellationRequest =
-                        await viewModel.applyCommercialLicenseCancellation();
-                    if (cancellationRequest != null) {
-                      navigator.popAndPushNamed(
-                        RouteName.commercialLicenseCancel,
-                        arguments: {
-                          "from": "licenses",
-                          "requestId": cancellationRequest.requestId,
-                          "reasonCancel": viewModel.reasonCancel,
-                          "availableCloseDate":
-                              cancellationRequest.availableCloseDate,
-                          "crNumber": viewModel.submitterInfo.crNumber ?? "",
-                          "crType": viewModel.submitterInfo.crType!,
-                        },
-                      );
-                      CommonFunctions.sendUXCamEvent(
-                          UXCamEvents.startServiceCancelLicenseService);
-                    } else if (viewModel.messageHtml != null) {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (ctx) => CustomPopUp(
-                          child: Html(
-                              data: viewModel.messageHtml,
-                              onLinkTap: (String? url,
-                                  Map<String, String> attributes, element) {
-                                if (url != null) {
-                                  launchUrl(Uri.parse(url));
-                                }
-                              }),
-                        ),
-                      );
-                    }
+          ChangeNotifierProvider(
+            create: (BuildContext context) => ServiceDataViewModel(
+              webService: sl(),
+              serviceId: 10492,
+            ),
+          ),
+        ],
+        child: Scaffold(
+          body: Column(
+            children: [
+              const Expanded(child: ServiceCardDescDynamicWidget()),
+              Container(
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(36),
+                      topRight: Radius.circular(36),
+                    ),
+                    color: Colors.white),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                child: Selector<ApplyCancelViewModel, bool>(
+                  selector: (context, provider) => provider.isLoading,
+                  builder: (BuildContext context, isLoading, Widget? child) {
+                    return isLoading
+                        ? const ShimmerEffectWidget(
+                            height: 55,
+                            borderRadius: 6,
+                          )
+                        : child!;
                   },
+                  child: ElevatedButtonWidget.startService(
+                    onPressed: () async {
+                      NavigatorState navigator = Navigator.of(context);
+                      CancellationRequestResponse? cancellationRequest =
+                          await viewModel.applyCommercialLicenseCancellation();
+                      if (cancellationRequest != null) {
+                        navigator.popAndPushNamed(
+                          RouteName.commercialLicenseCancel,
+                          arguments: {
+                            "from": "licenses",
+                            "requestId": cancellationRequest.requestId,
+                            "reasonCancel": viewModel.reasonCancel,
+                            "availableCloseDate":
+                                cancellationRequest.availableCloseDate,
+                            "crNumber": viewModel.submitterInfo.crNumber ?? "",
+                            "crType": viewModel.submitterInfo.crType!,
+                          },
+                        );
+                        CommonFunctions.sendUXCamEvent(
+                            UXCamEvents.startServiceCancelLicenseService);
+                      } else if (viewModel.messageHtml != null) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (ctx) => CustomPopUp(
+                            child: Html(
+                                data: viewModel.messageHtml,
+                                onLinkTap: (String? url,
+                                    Map<String, String> attributes, element) {
+                                  if (url != null) {
+                                    launchUrl(Uri.parse(url));
+                                  }
+                                }),
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

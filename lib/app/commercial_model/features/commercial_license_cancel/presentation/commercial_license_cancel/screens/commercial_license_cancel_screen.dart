@@ -1,3 +1,6 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
@@ -49,119 +52,130 @@ class _CommercialLicenseCancelScreenState
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
-    return WillPopScope(
-      onWillPop: () async {
-        if (currentPageValue < 0) {
-          setState(() {
-            currentPageValue == 0;
-          });
-          goToNewPage();
-          return Future<bool>.value(false);
-        } else {
-          return (await showBackDialog());
-        }
-      },
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (BuildContext context) {
-              return RequestAttachmentsViewModel(
-                webService: sl(),
-                requestId: data['requestId'],
-              );
-            },
-          ),
-          ChangeNotifierProvider(
-            create: (BuildContext context) =>
-                CommercialLicenseReasonCancelViewModel(
-              webService: sl(),
-              licenseId: 0000,
-              submitterInfo: null,
-            ),
-          ),
-        ],
-        child: MultiBlocProvider(
+    return CommercialDebtsScreen(
+      transactionType: TransactionType.REQUEST,
+      transactionId: data['requestId'],
+      steps: const [
+        CancelSteps.saveRequestInfoSteps,
+        CancelSteps.calculateFeesSteps,
+      ],
+      child: WillPopScope(
+        onWillPop: () async {
+          if (currentPageValue < 0) {
+            setState(() {
+              currentPageValue == 0;
+            });
+            goToNewPage();
+            return Future<bool>.value(false);
+          } else {
+            return (await showBackDialog());
+          }
+        },
+        child: MultiProvider(
           providers: [
-            // BlocProvider(
-            //   create: (context) => CommercialLicenseCancelPagesBloc(),
-            // ),
-            BlocProvider(
-              create: (context) => CommercialLicenseCancelBloc(
+            ChangeNotifierProvider(
+              create: (BuildContext context) {
+                return RequestAttachmentsViewModel(
+                  webService: sl(),
+                  requestId: data['requestId'],
+                );
+              },
+            ),
+            ChangeNotifierProvider(
+              create: (BuildContext context) =>
+                  CommercialLicenseReasonCancelViewModel(
                 webService: sl(),
-                from: data['from'],
-                crNumber: data['crNumber'],
-                crType: data['crType'],
-                reasonCancel: data['reasonCancel'],
-                requestId: data['requestId'],
-                availableCloseDate: data['availableCloseDate'],
+                licenseId: 0000,
+                submitterInfo: null,
               ),
             ),
           ],
-          child: Column(
-            children: [
-              Expanded(
-                child: BlocListener<CommercialLicenseCancelBloc,
-                    CommercialLicenseCancelState>(
-                  listener: (BuildContext context, state) {
-                    if (state is CommercialLicenseCancelSucceededState) {
-                      setState(() {
-                        currentPageValue++;
-                      });
-                      goToNewPage();
-                    }
-                    if (state is SubmitCancelRequestSucceededState) {
-                      Navigator.of(context).popAndPushNamed(
-                        RouteName.submitApplicationSuccessfullyCancel,
-                        arguments: (
-                          data['from'],
-                          state.submitResponse,
-                          state.totalCost,
+          child: MultiBlocProvider(
+            providers: [
+              // BlocProvider(
+              //   create: (context) => CommercialLicenseCancelPagesBloc(),
+              // ),
+              BlocProvider(
+                create: (context) => CommercialLicenseCancelBloc(
+                  webService: sl(),
+                  from: data['from'],
+                  crNumber: data['crNumber'],
+                  crType: data['crType'],
+                  reasonCancel: data['reasonCancel'],
+                  requestId: data['requestId'],
+                  availableCloseDate: data['availableCloseDate'],
+                ),
+              ),
+            ],
+            child: Column(
+              children: [
+                Expanded(
+                  child: BlocListener<CommercialLicenseCancelBloc,
+                      CommercialLicenseCancelState>(
+                    listener: (BuildContext context, state) {
+                      if (state is CommercialLicenseCancelSucceededState) {
+                        setState(() {
+                          currentPageValue++;
+                        });
+                        goToNewPage();
+                        context
+                            .read<CommercialDebtsCubit>()
+                            .getBoardsContracts(currentPageValue);
+                      }
+                      if (state is SubmitCancelRequestSucceededState) {
+                        Navigator.of(context).popAndPushNamed(
+                          RouteName.submitApplicationSuccessfullyCancel,
+                          arguments: (
+                            data['from'],
+                            state.submitResponse,
+                            state.totalCost,
+                          ),
+                        );
+                      }
+                      if (state is CommercialLicenseCancelFailureState) {
+                        // show
+                        CommonFunctions.showError(state.errorMessage);
+                      }
+                    },
+                    child: GestureDetector(
+                      onTap: () => hideKeyboard(),
+                      child: Scaffold(
+                        appBar: DetailsAppBarTwo(
+                          pageLength: pagesList.length,
+                          currentStep: currentPageValue + 1,
+                          backOnPress: () {
+                            if (currentPageValue > 0) {
+                              setState(() {
+                                currentPageValue--;
+                              });
+                              goToNewPage();
+                            } else {
+                              showBackDialog();
+                            }
+                          },
+                          onTapCloseAction: () => showBackDialog(),
+                          requestNum: data['requestId'],
                         ),
-                      );
-                    }
-                    if (state is CommercialLicenseCancelFailureState) {
-                      // show
-                      CommonFunctions.showError(state.errorMessage);
-                    }
-                  },
-                  child: GestureDetector(
-                    onTap: () => hideKeyboard(),
-                    child: Scaffold(
-                      appBar: DetailsAppBarTwo(
-                        pageLength: pagesList.length,
-                        currentStep: currentPageValue + 1,
-                        backOnPress: () {
-                          if (currentPageValue > 0) {
-                            setState(() {
-                              currentPageValue--;
-                            });
-                            goToNewPage();
-                          } else {
-                            showBackDialog();
-                          }
-                        },
-                        onTapCloseAction: () => showBackDialog(),
-                        requestNum: data['requestId'],
-                      ),
-                      body: PageView.builder(
-                        itemCount: pagesList.length,
-                        scrollDirection: Axis.vertical,
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: controller,
-                        itemBuilder: (context, position) {
-                          return AnimatedContainer(
-                            curve: Curves.easeIn,
-                            duration: const Duration(milliseconds: 300),
-                            child: pagesList[position],
-                          );
-                        },
+                        body: PageView.builder(
+                          itemCount: pagesList.length,
+                          scrollDirection: Axis.vertical,
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: controller,
+                          itemBuilder: (context, position) {
+                            return AnimatedContainer(
+                              curve: Curves.easeIn,
+                              duration: const Duration(milliseconds: 300),
+                              child: pagesList[position],
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              // const PreviousCancelButtons(isBtnDisabled: false),
-            ],
+                // const PreviousCancelButtons(isBtnDisabled: false),
+              ],
+            ),
           ),
         ),
       ),

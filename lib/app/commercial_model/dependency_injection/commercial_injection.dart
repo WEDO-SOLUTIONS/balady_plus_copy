@@ -20,15 +20,6 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license_own
 
 class CommercialInjectionContainer {
   static void init() {
-
-
-    CommercialDebtInjection.init();
-    RenewCommercialInjection.init();
-    CrInjection.init();
-    CommercialsTobaccoInjection.init();
-    CommercialsPostersInjection.init();
-    CommercialsPermits24Injection.init();
-
   // transfer license ownership
     sl.registerLazySingleton<LicensePermitsRemoteDataSource>(
             () => LicensePermitsRemoteDataSourceImplementation(webService: sl()));
@@ -57,6 +48,16 @@ class CommercialInjectionContainer {
         RequestOwnershipTransferDetailsCubit(
             requestOwnershipTransferDetailsRepository: sl(),
             acceptOrRejectRequestOwnershipTransferRepository: sl()));
+
+
+    //////////////////////////////////////////////////////////
+    RenewCommercialInjection.init();
+    CrInjection.init();
+    CommercialsTobaccoInjection.init();
+    CommercialsPostersInjection.init();
+    CommercialsPermits24Injection.init();
+
+    CommercialDebtInjection.init();
 
   }
 }

@@ -13,13 +13,13 @@ export 'events_names.dart';
 
 void unhandledExceptionBaladyLogs(FutureOr<void> Function() main) async {
   FlutterError.onError = (FlutterErrorDetails details) {
-    // //this line prints the default flutter gesture caught exception in console
-    // //FlutterError.dumpErrorToConsole(details);
-    // print("Error From INSIDE FRAME_WORK");
-    // print("--------------------------------");
-    // print("Error :  ${details.exception}");
-    // print("StackTrace :  ${details.stack}");
-    //
+    //this line prints the default flutter gesture caught exception in console
+    //FlutterError.dumpErrorToConsole(details);
+    print("Error From INSIDE FRAME_WORK");
+    print("--------------------------------");
+    print("Error :  ${details.exception}");
+    print("StackTrace :  ${details.stack}");
+
     LogsViewModel().sendEventFromModel(
       event: ErrorExceptionModel(
         nameEvent: EventsName.unhandledUIException,
@@ -37,10 +37,10 @@ void unhandledExceptionBaladyLogs(FutureOr<void> Function() main) async {
       // if (error is BadRequestException) {
       //   print("Response :  ${error.response}");
       // } else if (error is TypeError) {}
-      // print("Error FROM OUT_SIDE FRAMEWORK ");
-      // print("--------------------------------");
-      // print("Error :  $error");
-      // print("StackTrace :  $stackTrace");
+      print("Error FROM OUT_SIDE FRAMEWORK ");
+      print("--------------------------------");
+      print("Error :  $error");
+      print("StackTrace :  $stackTrace");
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.unhandledAsynchronousException,

@@ -5,7 +5,8 @@ import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_model.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
-import 'package:dio/dio.dart' show Response, DioError;
+import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:dio/dio.dart' show DioError, Options, Response;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -17,10 +18,11 @@ abstract class CommercialDebtsDataSources {
   });
 }
 
-class ChatBotDataSourcesImplementation extends CommercialDebtsDataSources {
+class CommercialDebtsDataSourcesImplementation
+    implements CommercialDebtsDataSources {
   final WebService webService;
 
-  ChatBotDataSourcesImplementation({required this.webService});
+  CommercialDebtsDataSourcesImplementation({required this.webService});
 
   @override
   Future<CommercialDebt> getDebts({
@@ -30,18 +32,21 @@ class ChatBotDataSourcesImplementation extends CommercialDebtsDataSources {
   }) async {
     Response? response;
     try {
-      response = await webService.dio.post(
+      response = await webService.dio.get(
         CommercialModelEndPoints.getDebts(
           transactionId: transactionId,
           transactionType: transactionType.name,
         ),
-        queryParameters: {
-          "channelId": "mobile",
-          "platform": "baladyservices",
-          "stepId": stepId,
-        },
+        queryParameters: {"stepId": stepId},
+        options: Options(
+          headers: {
+            "x-platform-id": "baladyservices",
+            "x-channel-id": "mobile",
+          },
+        ),
       );
-      return CommercialDebt.fromJson(response.data);
+      var result = ResponseBodyModel.fromMap(response.data).data?.result;
+      return CommercialDebt.fromJson(result);
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -59,16 +64,16 @@ class ChatBotDataSourcesImplementation extends CommercialDebtsDataSources {
         dioError: error,
       );
     } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
       if (error is ServerException) {
         rethrow;
       } else {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(

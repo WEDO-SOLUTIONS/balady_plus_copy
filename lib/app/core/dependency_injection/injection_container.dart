@@ -85,9 +85,6 @@ final sl = GetIt.instance;
 
 void initialize() {
 
-  /////////////// get All Commercial Injection Container
-  CommercialInjectionContainer.init();
-  /////////////// End
 
 
 
@@ -245,4 +242,11 @@ void initialize() {
       () => NotificationRepositoryImplementation(remoteDataSource: sl()));
   sl.registerLazySingleton<NotificationManager>(
       () => NotificationManager(repository: sl()));
+
+
+
+
+  /////////////// get All Commercial Injection Container
+  CommercialInjectionContainer.init();
+  /////////////// End
 }

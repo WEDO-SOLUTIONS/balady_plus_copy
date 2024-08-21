@@ -1,3 +1,6 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/commercial_debts_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
@@ -27,14 +30,26 @@ class _RenewCommercialLicenseScreenState
   Widget build(BuildContext context) {
     int requestId = ModalRoute.of(context)!.settings.arguments as int;
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => RenewCommercialLicenseBloc(requestId: requestId)
-            ..add(const GetRenewYearsEvent()),
-        ),
+    return CommercialDebtsScreen(
+      transactionType: TransactionType.REQUEST,
+      transactionId: requestId,
+      steps: const [
+        RenewSteps.saveRequestInfoSteps,
+        RenewSteps.saveAttachments,
+        RenewSteps.calculateFeesSteps,
       ],
-      child: const CommercialLicenseBody(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => RenewCommercialLicenseBloc(
+              debtsCubit: context
+                  .read<CommercialDebtsCubit>(),
+              requestId: requestId,
+            )..add(const GetRenewYearsEvent()),
+          ),
+        ],
+        child: const CommercialLicenseBody(),
+      ),
     );
   }
 }

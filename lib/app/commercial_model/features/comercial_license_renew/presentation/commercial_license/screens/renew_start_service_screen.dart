@@ -34,10 +34,9 @@ class _RenewStartServiceState extends State<RenewStartService> {
 
   @override
   Widget build(BuildContext context) {
-
     int licenseId = ModalRoute.of(context)!.settings.arguments as int;
     return CommercialDebtsScreen(
-      transactionType: TransactionType.request,
+      transactionType: TransactionType.LICENSE,
       transactionId: licenseId,
       steps: const [RenewSteps.validateBeforeApplySteps],
       child: MultiBlocProvider(
