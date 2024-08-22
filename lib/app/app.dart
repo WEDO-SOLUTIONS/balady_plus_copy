@@ -110,8 +110,25 @@ class AppWidgetState extends State<AppWidget> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                )
-              )
+                ),
+              ),
+              outlinedButtonTheme: OutlinedButtonThemeData(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColor.primary900Light,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  minimumSize: const Size(double.infinity, 34),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  side: const BorderSide(
+                    width: .8,
+                    color: AppColor.primary900Light,
+                  )
+                ),
+              ),
             ),
             builder: EasyLoading.init(builder: BotToastInit()),
             navigatorObservers: [
