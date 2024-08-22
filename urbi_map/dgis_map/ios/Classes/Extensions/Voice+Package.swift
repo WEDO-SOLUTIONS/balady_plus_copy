@@ -1,10 +1,3 @@
-//
-//  Voice+Package.swift
-//  dgis_map
-//
-//  Created by Аят Алиев on 15/8/24.
-//
-
 import Foundation
 import DGis
 
