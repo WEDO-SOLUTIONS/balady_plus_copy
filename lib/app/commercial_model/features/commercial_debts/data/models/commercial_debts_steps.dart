@@ -44,6 +44,12 @@ class CancelSteps {
   static const String submitSteps = "commercial.cancel.mobile.submit";
 }
 
+class OwnershipTransferSteps {
+  static const String validateNewOwner = "commercial.transfer-ownership.mobile.validate-new-owner";
+  static const String acceptRequestByNewOwner = "commercial.transfer-ownership.mobile.accept-request-by-new-owner";
+  static const String submitSteps = "";
+}
+
 class IssueSteps {
   static const String saveActivity =
       "commercial.issue.mobile.save-activity"; // when call this events have screen but the screen in after the step one
