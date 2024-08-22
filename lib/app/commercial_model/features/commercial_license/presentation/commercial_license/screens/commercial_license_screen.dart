@@ -83,7 +83,7 @@ class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
         transactionId: requestId,
         /// have in  Issue Steps on mobile 11 but vildet on 7
         steps: const [
-          "", // add Fake Step
+          IssueSteps.applySteps,
           IssueSteps.saveActivity,
           IssueSteps.saveLocation,
           IssueSteps.saveShopInfo,

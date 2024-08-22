@@ -61,6 +61,9 @@ commercial.transfer-ownership.mobile.submit-request-by-new-owner
 }
 
 class IssueSteps {
+  // Use This in First Step
+  static const String applySteps = "commercial.issue.mobile.apply";
+
   static const String saveActivity =
       "commercial.issue.mobile.save-activity"; // when call this events have screen but the screen in after the step one
   static const String saveLocation =
