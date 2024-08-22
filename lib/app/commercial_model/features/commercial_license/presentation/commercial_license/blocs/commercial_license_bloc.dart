@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/check_debts/commercial_check_debts_cubit.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_response.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
