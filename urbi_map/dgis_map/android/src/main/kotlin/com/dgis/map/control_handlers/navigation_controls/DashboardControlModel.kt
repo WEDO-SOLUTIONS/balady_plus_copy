@@ -71,41 +71,65 @@ class DashboardControlModel(
     }
 
     fun toggleVoiceInstruction(toggleType: SoundToggleType) {
-        this.navigationManager.soundNotificationSettings.enabledSoundCategories = soundToggleMapper(toggleType)
+        val currentCategories = this.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+        val updatedCategories = when (toggleType) {
+            SoundToggleType.NONE -> {
+                EnumSet.noneOf(SoundCategory::class.java).apply {
+                    addAll(currentCategories)
+                    removeAll(EnumSet.allOf(SoundCategory::class.java))
+                }
+            }
+            SoundToggleType.ALL -> {
+                EnumSet.allOf(SoundCategory::class.java).apply {
+                    addAll(currentCategories)
+                }
+            }
+            SoundToggleType.IMPORTANT -> {
+                EnumSet.copyOf(currentCategories).apply {
+                    remove(SoundCategory.INSTRUCTIONS)
+                }
+            }
+        }
+
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories = updatedCategories
     }
 
     fun toggleOverSpeeding(overSpeeding: Boolean) {
-        this.navigationManager.soundNotificationSettings.enabledSoundCategories =
+        val currentCategories = this.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+        val updatedCategories = EnumSet.copyOf(currentCategories).apply {
             if (overSpeeding) {
-                EnumSet.allOf(SoundCategory::class.java)
+                add(SoundCategory.EXCEED_SPEED_LIMITS)
             } else {
-                EnumSet.complementOf(EnumSet.of(SoundCategory.EXCEED_SPEED_LIMITS))
+                remove(SoundCategory.EXCEED_SPEED_LIMITS)
             }
+        }
+
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories = updatedCategories
     }
 
     fun toggleRoadCameras(roadCameras: Boolean) {
-        this.navigationManager.soundNotificationSettings.enabledSoundCategories = if (roadCameras) {
-            EnumSet.complementOf(
-                EnumSet.of(
-                    SoundCategory.CROSSROAD_CAMERAS,
-                    SoundCategory.LANE_CAMERAS,
-                    SoundCategory.NO_STOPPING_CONTROL_CAMERAS,
-                    SoundCategory.ROAD_MARKING_CAMERAS,
-                    SoundCategory.AVERAGE_SPEED_CAMERAS,
-                    SoundCategory.MAX_SPEED_CAMERAS
-                )
-            )
-        } else {
-            EnumSet.allOf(SoundCategory::class.java)
-        }
-    }
+        val currentCategories = this.navigationManager.soundNotificationSettings.enabledSoundCategories
 
-    private fun soundToggleMapper(toggleType: SoundToggleType): EnumSet<SoundCategory> {
-     return when (toggleType) {
-         SoundToggleType.NONE -> EnumSet.noneOf(SoundCategory::class.java)
-         SoundToggleType.ALL -> EnumSet.allOf(SoundCategory::class.java)
-         SoundToggleType.IMPORTANT -> EnumSet.complementOf(EnumSet.of(SoundCategory.INSTRUCTIONS))
-     }
+        val roadCameraCategories = EnumSet.of(
+            SoundCategory.CROSSROAD_CAMERAS,
+            SoundCategory.LANE_CAMERAS,
+            SoundCategory.NO_STOPPING_CONTROL_CAMERAS,
+            SoundCategory.ROAD_MARKING_CAMERAS,
+            SoundCategory.AVERAGE_SPEED_CAMERAS,
+            SoundCategory.MAX_SPEED_CAMERAS
+        )
+
+        val updatedCategories = EnumSet.copyOf(currentCategories).apply {
+            if (roadCameras) {
+                removeAll(roadCameraCategories)
+            } else {
+                addAll(roadCameraCategories)
+            }
+        }
+
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories = updatedCategories
     }
 
     override fun close() {
