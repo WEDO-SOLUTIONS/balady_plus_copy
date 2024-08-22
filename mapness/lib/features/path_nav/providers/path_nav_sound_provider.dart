@@ -31,9 +31,10 @@ class _PathNavSoundProvider extends _$PathNavSoundProvider {
 
   Future<void> updateNavigator({required bool newState}) async {
     final controller = await ref.read(dgisControllerProvider.future);
-    await controller.toggleVoiceInstruction(
-      toggleType: newState ? SoundToggleType.all : SoundToggleType.none,
-    );
+    /// TODO(Ayat) Check Roma if you need this part of the code because we control the event via toggle
+    // await controller.toggleVoiceInstruction(
+    //   toggleType: newState ? SoundToggleType.all : SoundToggleType.none,
+    // );
   }
 
   Future<void> muteOtherSounds({required bool mute}) async {
