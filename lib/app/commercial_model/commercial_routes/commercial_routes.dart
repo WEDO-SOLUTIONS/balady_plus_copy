@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/commercial_debts_list_screen.dart';
 import 'package:flutter/widgets.dart';
 import 'commercial_route_names.dart';
 import '../features/comercial_license_renew/presentation/commercial_license/screens/renew_commercial_license_screen.dart';
@@ -42,107 +43,109 @@ import '../features/tobacco_services/presentation/tobacco_list/pages/tobacco_lis
 
 class CommercialRoutes {
   static Map<String, Widget Function(BuildContext)> routes = {
-        CommercialRouteName.approvalSequenceMainScreen: (context) =>
-            const ApprovalSequenceMainScreen(),
+    CommercialRouteName.approvalSequenceMainScreen: (context) =>
+        const ApprovalSequenceMainScreen(),
 
-        CommercialRouteName.requestOwnershipTransferDetailsPage: (context) =>
-            const RequestOwnershipTransferDetailsPage(),
+    CommercialRouteName.requestOwnershipTransferDetailsPage: (context) =>
+        const RequestOwnershipTransferDetailsPage(),
 
-        CommercialRouteName.commercialLicenseTransferOverView: (context) =>
-            const CommercialLicenseTransferOverviewScreen(),
-        CommercialRouteName.SucessfullScreen: (context) => SucessfullScreen(),
-        CommercialRouteName.homeSequence: (context) =>
-            const RequestSequenceHomeScreen(),
+    CommercialRouteName.commercialLicenseTransferOverView: (context) =>
+        const CommercialLicenseTransferOverviewScreen(),
+    CommercialRouteName.SucessfullScreen: (context) => SucessfullScreen(),
+    CommercialRouteName.homeSequence: (context) =>
+        const RequestSequenceHomeScreen(),
 
-        CommercialRouteName.commercialLicenseOverView: (context) =>
-            const CommercialLicenseOverviewScreen(),
-        CommercialRouteName.commercialLicenseQuery: (context) =>
-            const CommercialLicenseQueryScreen(),
-        CommercialRouteName.commercialLicenseQueryDetails: (context) =>
-            const CommercialLicenseQueryDetails(),
+    CommercialRouteName.commercialLicenseOverView: (context) =>
+        const CommercialLicenseOverviewScreen(),
+    CommercialRouteName.commercialLicenseQuery: (context) =>
+        const CommercialLicenseQueryScreen(),
+    CommercialRouteName.commercialLicenseQueryDetails: (context) =>
+        const CommercialLicenseQueryDetails(),
 
-        CommercialRouteName.commercialLicensePage: (context) =>
-            const CommercialLicenseScreen(),
-        CommercialRouteName.commercialLicenseServicePage: (context) =>
-            const IssueStartService(),
+    CommercialRouteName.commercialLicensePage: (context) =>
+        const CommercialLicenseScreen(),
+    CommercialRouteName.commercialLicenseServicePage: (context) =>
+        const IssueStartService(),
 // -------  Commercial License Cancel ---------
-        CommercialRouteName.commercialLicenseApplyCancel: (context) =>
-            const ApplyCancelScreen(),
-        CommercialRouteName.commercialLicenseCancel: (context) =>
-            const CommercialLicenseCancelScreen(),
-        CommercialRouteName.submitApplicationSuccessfullyCancel: (context) =>
-            const SubmitApplicationSuccessfullyCancel(),
-        CommercialRouteName.submitRatingCancelScreen: (context) =>
-            const SubmitRatingCancelScreen(),
+    CommercialRouteName.commercialLicenseApplyCancel: (context) =>
+        const ApplyCancelScreen(),
+    CommercialRouteName.commercialLicenseCancel: (context) =>
+        const CommercialLicenseCancelScreen(),
+    CommercialRouteName.submitApplicationSuccessfullyCancel: (context) =>
+        const SubmitApplicationSuccessfullyCancel(),
+    CommercialRouteName.submitRatingCancelScreen: (context) =>
+        const SubmitRatingCancelScreen(),
 
-        CommercialRouteName.commercialLicenseDetails: (context) =>
-            const CommercialLicenseDetailsPage(),
+    CommercialRouteName.commercialLicenseDetails: (context) =>
+        const CommercialLicenseDetailsPage(),
 
 // ISSUE Commercial
-        CommercialRouteName.crMapScreen: (context) => CRMapScreen(),
-        CommercialRouteName.CommercialOtpScreen: (context) =>
-            CommercialOtpScreen(),
+    CommercialRouteName.crMapScreen: (context) => CRMapScreen(),
+    CommercialRouteName.CommercialOtpScreen: (context) => CommercialOtpScreen(),
 
-        CommercialRouteName.requestCommercialLicenseDetails: (context) =>
-            const RequestCommercialLicenseDetailsPage(),
+    CommercialRouteName.requestCommercialLicenseDetails: (context) =>
+        const RequestCommercialLicenseDetailsPage(),
 
 // Renew Commercial
-        CommercialRouteName.renewCommercialLicenseStartService: (context) =>
-            const RenewStartService(),
+    CommercialRouteName.renewCommercialLicenseStartService: (context) =>
+        const RenewStartService(),
 
-        CommercialRouteName.renewCommercialLicenseSubmitForm: (context) =>
-            const RenewCommercialLicenseScreen(),
+    CommercialRouteName.renewCommercialLicenseSubmitForm: (context) =>
+        const RenewCommercialLicenseScreen(),
 
-        CommercialRouteName.submitApplicationSuccessfullyRenew: (context) =>
-            const SubmitApplicationSuccessfullyRenew(),
-        CommercialRouteName.submitApplicationSuccessfullyNew: (context) =>
-            const SubmitApplicationSuccessfullyNew(),
+    CommercialRouteName.submitApplicationSuccessfullyRenew: (context) =>
+        const SubmitApplicationSuccessfullyRenew(),
+    CommercialRouteName.submitApplicationSuccessfullyNew: (context) =>
+        const SubmitApplicationSuccessfullyNew(),
 
 // Posters
-        CommercialRouteName.postersStartService: (context) =>
-            const PostersStartService(),
+    CommercialRouteName.postersStartService: (context) =>
+        const PostersStartService(),
 
-        CommercialRouteName.postersLicenseStartService: (context) =>
-            const PostersLicenseStartService(),
-        CommercialRouteName.postersDetailsPage: (context) =>
-            const PostersDetailsPage(),
-        CommercialRouteName.submitApplicationSuccessfullyPosters: (context) =>
-            const SubmitApplicationSuccessfullyPosters(),
+    CommercialRouteName.postersLicenseStartService: (context) =>
+        const PostersLicenseStartService(),
+    CommercialRouteName.postersDetailsPage: (context) =>
+        const PostersDetailsPage(),
+    CommercialRouteName.submitApplicationSuccessfullyPosters: (context) =>
+        const SubmitApplicationSuccessfullyPosters(),
 
-        CommercialRouteName.posterReqeuestDetailsPage: (context) =>
-            const PostersReqeuestDetailsPage(),
-        CommercialRouteName.tobaccoServicesList: (context) =>
-            const TobaccoListPage(),
-        CommercialRouteName.tobaccoDetails: (context) =>
-            const TobaccoDetailsPage(),
-        CommercialRouteName.tobaccoDisclosed: (context) =>
-            const TobaccoDisclosedScreen(),
-        CommercialRouteName.submitDisclosedSuccessfully: (context) =>
-            const SubmitDisclosedSuccessfullyScreen(),
+    CommercialRouteName.posterReqeuestDetailsPage: (context) =>
+        const PostersReqeuestDetailsPage(),
+    CommercialRouteName.tobaccoServicesList: (context) =>
+        const TobaccoListPage(),
+    CommercialRouteName.tobaccoDetails: (context) => const TobaccoDetailsPage(),
+    CommercialRouteName.tobaccoDisclosed: (context) =>
+        const TobaccoDisclosedScreen(),
+    CommercialRouteName.submitDisclosedSuccessfully: (context) =>
+        const SubmitDisclosedSuccessfullyScreen(),
 
 // Permits 24
-        CommercialRouteName.permitsLicenseStartService: (context) =>
-            const PermitsLicenseStartService(),
-        CommercialRouteName.permitsDetailsPage: (context) =>
-            const Permits24DetailsPage(),
+    CommercialRouteName.permitsLicenseStartService: (context) =>
+        const PermitsLicenseStartService(),
+    CommercialRouteName.permitsDetailsPage: (context) =>
+        const Permits24DetailsPage(),
 
-        CommercialRouteName.permitsRequestDetailsPage: (context) =>
-            const PermitsReqeuestDetailsPage(),
+    CommercialRouteName.permitsRequestDetailsPage: (context) =>
+        const PermitsReqeuestDetailsPage(),
 
-        CommercialRouteName.submitApplicationSuccessfullyPermits: (context) =>
-            const SubmitApplicationSuccessfullyPermits(),
+    CommercialRouteName.submitApplicationSuccessfullyPermits: (context) =>
+        const SubmitApplicationSuccessfullyPermits(),
 
 // Tobacco Permits
 
-        CommercialRouteName.permitsTobaccoLicenseStartService: (context) =>
-            const PermitsTobaccoLicenseStartService(),
-        CommercialRouteName.permitsTobaccoDetailsPage: (context) =>
-            const PermitsTobaccoDetailsPage(),
+    CommercialRouteName.permitsTobaccoLicenseStartService: (context) =>
+        const PermitsTobaccoLicenseStartService(),
+    CommercialRouteName.permitsTobaccoDetailsPage: (context) =>
+        const PermitsTobaccoDetailsPage(),
 
-        CommercialRouteName.permitsTobaccoRequestDetailsPage: (context) =>
-            const PermitsTobaccoReqeuestDetailsPage(),
+    CommercialRouteName.permitsTobaccoRequestDetailsPage: (context) =>
+        const PermitsTobaccoReqeuestDetailsPage(),
 
-        CommercialRouteName.submitApplicationSuccessfullyTobaccoPermits:
-            (context) => const SubmitApplicationSuccessfullyTobacco(),
-      };
+    CommercialRouteName.submitApplicationSuccessfullyTobaccoPermits:
+        (context) => const SubmitApplicationSuccessfullyTobacco(),
+
+  // Debts
+    CommercialRouteName.commercialDebtsListScreen: (context) =>
+        const CommercialDebtsListScreen(),
+  };
 }

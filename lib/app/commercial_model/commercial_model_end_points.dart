@@ -388,5 +388,5 @@ class CommercialModelEndPoints {
 ////////////////////////// Debts /////////////////////////////
   static checkDebts({required String transactionType, required int transactionId}) => 'v1/debt-collection-services/mobile/debts/$transactionType/$transactionId';
 
-  static getListDebts({required String referenceId, required int transactionId, required String transactionType}) => 'v1/debt-collection-services/mobile/debts/$transactionType/$transactionId/$referenceId';
+  static getListDebtsPaging({required String referenceId, required int transactionId, required String transactionType}) => 'v1/debt-collection-services/mobile/debts/paging/$transactionType/$transactionId/$referenceId';
 }

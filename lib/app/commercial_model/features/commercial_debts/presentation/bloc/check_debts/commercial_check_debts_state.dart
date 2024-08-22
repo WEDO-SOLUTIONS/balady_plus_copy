@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_model.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
 import 'package:equatable/equatable.dart';
 
 class CommercialDebtsState extends Equatable {
@@ -31,10 +32,14 @@ class FieldCommercialDebtState extends CommercialDebtsState {
 
 class SuccessCommercialDebtState extends CommercialDebtsState {
   final CommercialDebt commercialDebt;
+  final TransactionType transactionType;
+  final int transactionId;
   final bool isBlocked;
 
   const SuccessCommercialDebtState({
     required this.commercialDebt,
+    required this.transactionId,
+    required this.transactionType,
     required this.isBlocked,
   });
 

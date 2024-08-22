@@ -19,7 +19,7 @@ class CommercialListDebt extends Equatable {
       CommercialListDebt(
         // totalItemsCount: json['totalItemsCount'] ?? 0,
         // pageSize: json['pageSize'] as int?,
-        totalPageCount: json['pageSize'] ?? 0,
+        totalPageCount: json['pageSize'],
         listMessages: json['items'] != null
             ? (json['items'] as List<dynamic>)
                 .map((e) => Debt.fromJson(e as Map<String, dynamic>))

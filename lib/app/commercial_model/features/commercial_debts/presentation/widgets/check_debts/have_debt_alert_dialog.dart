@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/check_debts/commercial_check_debts_state.dart';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,21 @@ class HaveDebtAlertDialog extends StatelessWidget {
                   ? "go_to_home".tr()
                   : "compliance_cancel_request_confirm".tr(),
             ),
-          )
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                CommercialRouteName.commercialDebtsListScreen,
+                arguments:  {
+                  "referenceId": state.commercialDebt.referenceId,
+                  "transactionType": state.transactionType,
+                  "transactionId": state.transactionId,
+                }
+              );
+            },
+            child: Text("show_debts".tr()),
+          ),
         ],
         contentPadding: const EdgeInsets.all(22),
         titlePadding: EdgeInsets.zero,

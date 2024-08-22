@@ -48,6 +48,16 @@ class OwnershipTransferSteps {
   static const String validateNewOwner = "commercial.transfer-ownership.mobile.validate-new-owner";
   static const String acceptRequestByNewOwner = "commercial.transfer-ownership.mobile.accept-request-by-new-owner";
   static const String submitSteps = "";
+
+  /*
+commercial.transfer-ownership.mobile.validate-beofte-apply
+commercial.transfer-ownership.mobile.validate-new-owner
+commercial.transfer-ownership.mobile.send-request-to-new-owner
+commercial.transfer-ownership.mobile.accept-request-by-new-owner
+commercial.transfer-ownership.mobile.reject-request-by-new-owner
+commercial.transfer-ownership.mobile.save-shop-info
+commercial.transfer-ownership.mobile.submit-request-by-new-owner
+ */
 }
 
 class IssueSteps {

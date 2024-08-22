@@ -4305,7 +4305,12 @@
   "any_type": "any_type",
   "agreement_text_akram": "I {} acknowledge the validity of the registered data and bear all legal responsibility if proven otherwise",
   "cemeteries_displayed": "The cemeteries are displayed based on the daily capacity of the cemetery",
+  "total_debt": "Total Debts",
+  "debts_list": "Debts List",
+  "debt": "Debt",
+  "debts": "Debts",
+  "debt_origin": "Debt Origin",
+  "show_debts": "Show Debts",
+  "no_debts": "No Debts"
 
-
-  "total_debt": "Total Debts"
 }

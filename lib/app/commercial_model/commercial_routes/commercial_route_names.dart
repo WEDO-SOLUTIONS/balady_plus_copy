@@ -87,6 +87,7 @@ class CommercialRouteName {
       'Appointment_Booking_Previous_List_Page';
   static const appointmentDetailsRoute = 'Appointment_Booking_Details_Page';
   static const AppointmentsListScreen = 'Appointment_Booking_List_Page';
+
   // -------  DAEM ---------
 
   static const newDaemTicket = 'Daem_Create_Details_Page';
@@ -137,8 +138,10 @@ class CommercialRouteName {
   // ------- Wallet ------
   static const walletPage = 'Wallet_Page';
   static const businessLicensePage = 'Wallet_Details_Page';
+
   // -------  Weather ---------
   static const weatherMainPage = '/weather_main_page';
+
   // -------  Map ---------
   static const MapDetailsPage = '/mapDetailsPage';
   static const DiggingMapDetailsPage = '/DiggingMapDetailsPage';
@@ -172,6 +175,7 @@ class CommercialRouteName {
   static const investmentPage = '/investmentPage';
   static const tempRentalPage = '/tempRentalPage';
   static const DirectRentalPage = 'DirectRentalPage';
+
   // Visual distortion
   static const visualDistortionPage = '/visualDistortionPage';
   static const visualDistortionDetailsPage = '/visualDistortionDetailsPage';
@@ -349,7 +353,6 @@ class CommercialRouteName {
   static const surveyReportInquery = 'SurveyReportInquery_Screen';
   static const surveyReportInqueryDetails = 'SurveyReportInqueryDetails_Screen';
 
-
   static const notificationsListScreen = 'notifications_list_screen';
   static const notificationsDetailsScreen = 'notifications_details_screen';
 
@@ -358,7 +361,6 @@ class CommercialRouteName {
   static const constructionLicenseInquery = 'constructionLicenseInquery_Screen';
   static const constructionLicenseInqueryDetails =
       'constructionLicenseInqueryDetails_Screen';
-
 
   ///// RequestOwnershipTransferDetailsPage
   static const requestOwnershipTransferDetailsPage =
@@ -375,4 +377,5 @@ class CommercialRouteName {
   static const newOwner = 'newOwner_Screen';
   static const SucessfullScreen = 'Sucessfull_Screen';
 
+  static const commercialDebtsListScreen = 'commercialDebtsListScreen';
 }

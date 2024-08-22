@@ -65,9 +65,15 @@ class CommercialListDebtsCubit extends Cubit<ListDebtsState> {
         );
       }
     } on ServerException catch (error) {
-      emit(FieldListDebtState(errorMessage: error.errorMessage));
+      emit(FieldListDebtState(
+        errorMessage: error.errorMessage,
+        pageNumber: pageNumber,
+      ));
     } catch (error, stackTrace) {
-      emit(FieldListDebtState(errorMessage: error.toString()));
+      emit(FieldListDebtState(
+        errorMessage: error.toString(),
+        pageNumber: pageNumber,
+      ));
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,

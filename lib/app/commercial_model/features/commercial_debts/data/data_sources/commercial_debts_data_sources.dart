@@ -26,6 +26,7 @@ abstract class CommercialDebtsDataSources {
   });
 }
 
+
 class CommercialDebtsDataSourcesImplementation
     implements CommercialDebtsDataSources {
   final WebService webService;
@@ -103,13 +104,14 @@ class CommercialDebtsDataSourcesImplementation
     Response? response;
     try {
       response = await webService.dio.get(
-        CommercialModelEndPoints.getListDebts(
+        CommercialModelEndPoints.getListDebtsPaging(
           transactionId: transactionId,
           transactionType: transactionType.name,
           referenceId: referenceId,
         ),
         queryParameters: {
           "page-number": pageNumber,
+          "page-size=": 10
         },
         options: Options(
           headers: {

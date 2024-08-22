@@ -14,9 +14,10 @@ class LoadingListDebtState extends ListDebtsState {
 
 class FieldListDebtState extends ListDebtsState {
   final String errorMessage;
-
+  final int pageNumber;
   const FieldListDebtState({
     required this.errorMessage,
+    required this.pageNumber,
   });
 
   @override

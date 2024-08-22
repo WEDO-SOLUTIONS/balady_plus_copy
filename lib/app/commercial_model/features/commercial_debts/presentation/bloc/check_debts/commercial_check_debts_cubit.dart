@@ -44,6 +44,8 @@ class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
             emit(
               SuccessCommercialDebtState(
                 commercialDebt: debt,
+                transactionType: transactionType,
+                transactionId: transactionId,
                 isBlocked: CommercialDebtRenewStates.blocked == debt.status,
               ),
             );

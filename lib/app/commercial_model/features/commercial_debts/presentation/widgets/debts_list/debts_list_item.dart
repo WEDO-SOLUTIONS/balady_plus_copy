@@ -1,18 +1,17 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_model.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/widgets/debts_parameter.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ContextConversion, IconPath, RouteName;
+import '../../../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, IconPath;
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 
 class DebtsListItem extends StatelessWidget {
+  final Debt debt;
 
-  const DebtsListItem({
-    super.key,
-  });
+  const DebtsListItem({super.key, required this.debt});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,7 @@ class DebtsListItem extends StatelessWidget {
                   textStyle: AppStyle.requestNumberTextStle,
                 ),
               ),
-              HomeTag(
+              const HomeTag(
                 title: 'invoice.invoiceStatusName',
                 backgroundColor: AppColor.secondary100Light,
               ),
@@ -78,12 +77,8 @@ class DebtsListItem extends StatelessWidget {
                   title: 'debt_origin'.tr(),
                   value: '',
                 ),
-         
               ],
             ),
-          ),
-          ElevatedButtonWidget.details(
-            onPressed: (){},
           ),
         ],
       ),
