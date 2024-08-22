@@ -12,13 +12,13 @@ class CommercialDebtRepository {
 
   CommercialDebtRepository(this.remoteDataSource);
 
-  Future<CommercialDebt> getDebts({
+  Future<CommercialDebt> checkDebts({
     required TransactionType transactionType,
     required int transactionId,
     required String stepId,
   }) async {
     try {
-      final data = await remoteDataSource.getDebts(
+      final data = await remoteDataSource.checkDebts(
         transactionType: transactionType,
         transactionId: transactionId,
         stepId: stepId  ,

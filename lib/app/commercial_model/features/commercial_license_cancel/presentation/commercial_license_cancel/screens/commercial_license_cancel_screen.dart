@@ -118,7 +118,7 @@ class _CommercialLicenseCancelScreenState
                           currentPageValue++;
                         });
                         goToNewPage();
-                        context.read<CommercialDebtsCubit>().getDebts(
+                        context.read<CommercialDebtsCubit>().checkDebts(
                               currentPageValue,
                               data['requestId'],
                             );

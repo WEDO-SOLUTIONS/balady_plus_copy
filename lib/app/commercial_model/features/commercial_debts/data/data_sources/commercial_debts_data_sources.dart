@@ -11,7 +11,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class CommercialDebtsDataSources {
-  Future<CommercialDebt> getDebts({
+  Future<CommercialDebt> checkDebts({
     required TransactionType transactionType,
     required int transactionId,
     required String stepId,
@@ -25,7 +25,7 @@ class CommercialDebtsDataSourcesImplementation
   CommercialDebtsDataSourcesImplementation({required this.webService});
 
   @override
-  Future<CommercialDebt> getDebts({
+  Future<CommercialDebt> checkDebts({
     required TransactionType transactionType,
     required int transactionId,
     required String stepId,

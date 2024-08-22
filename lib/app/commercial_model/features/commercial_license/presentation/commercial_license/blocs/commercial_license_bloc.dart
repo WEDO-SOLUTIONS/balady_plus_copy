@@ -151,7 +151,7 @@ class CommercialLicenseBloc
   }
 
   void checkIfHaveDebts(int indexPage) {
-    debtsCubit.getDebts(indexPage, state.requestId!);
+    debtsCubit.checkDebts(indexPage, state.requestId!);
   }
 
   Future<void> _updateRequestIdHandler(

@@ -22,18 +22,18 @@ class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
   })  : repository = sl(),
         super(const CommercialDebtsState()) {
     if (transactionId != null) {
-      getDebts(0, transactionId);
+      checkDebts(0, transactionId);
     }
   }
 
-  void getDebts(int stepNumber, int transactionId) async {
+  void checkDebts(int stepNumber, int transactionId) async {
     try {
       // check if have Fake Step to agnore the action
       // and check on index of step
       if (steps[stepNumber].isNotEmpty &&
           (stepNumber >= 0 && stepNumber < steps.length)) {
         emit(const LoadingCommercialDebtState());
-        CommercialDebt debt = await repository.getDebts(
+        CommercialDebt debt = await repository.checkDebts(
           transactionType: transactionType,
           transactionId: transactionId,
           stepId: steps[stepNumber],

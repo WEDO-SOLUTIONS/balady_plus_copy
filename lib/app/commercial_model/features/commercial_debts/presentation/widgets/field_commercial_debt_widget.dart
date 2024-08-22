@@ -28,7 +28,7 @@ class FieldCommercialDebtWidget extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              cubit.getDebts(
+              cubit.checkDebts(
                 state.stepNumber,
                 state.transactionId,
               );

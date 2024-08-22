@@ -99,7 +99,7 @@ class RenewCommercialLicenseBloc
       sendStepEvent(nextPage);
 
       if (state.requestId != null) {
-        debtsCubit.getDebts(
+        debtsCubit.checkDebts(
           nextPage,
           state.requestId!,
         );
