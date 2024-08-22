@@ -2,12 +2,14 @@ class CommercialDebt {
   List<Debt>? debts;
   String? infoMessage;
   String status;
+  String referenceId;
   double totalAmount;
 
   CommercialDebt({
     required this.debts,
     required this.infoMessage,
     required this.status,
+    required this.referenceId,
     required this.totalAmount,
   });
 
@@ -17,9 +19,9 @@ class CommercialDebt {
             : null,
         infoMessage: json["infoMessage"],
         status: json["status"],
+        referenceId: json["referenceId"],
         totalAmount: (json["totalAmount"] ?? 0.0) + 0.0,
       );
-
 }
 
 class Debt {
@@ -29,7 +31,8 @@ class Debt {
   String id;
   String number;
   DueStatus service;
-  String source ;
+  String source;
+
   Debt({
     required this.amount,
     required this.creationDate,
@@ -49,9 +52,7 @@ class Debt {
         service: DueStatus.fromJson(json["service"]),
         source: json["source"],
       );
-
 }
-
 
 class DueStatus {
   String id;
@@ -72,4 +73,3 @@ class DueStatus {
         "name": name,
       };
 }
-

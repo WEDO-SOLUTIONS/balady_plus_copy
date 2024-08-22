@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/commercial_debts_cubit.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/check_debts/commercial_check_debts_cubit.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -99,7 +99,7 @@ class RenewCommercialLicenseBloc
       sendStepEvent(nextPage);
 
       if (state.requestId != null) {
-        debtsCubit.getDebts(
+        debtsCubit.checkDebts(
           nextPage,
           state.requestId!,
         );
