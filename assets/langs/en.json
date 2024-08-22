@@ -329,6 +329,7 @@
   "invoice_status": "Invoice status",
   "invoice_type": "Type of invoice",
   "invoice_date": "Date of invoice",
+  "invoice_service": "Service related to",
   "invoice_amount": "Invoice amount",
   "invoice": "Invoice",
   "invoice_due_date": "Last date of payment",
@@ -4312,5 +4313,4 @@
   "debt_origin": "Debt Origin",
   "show_debts": "Show Debts",
   "no_debts": "No Debts"
-
 }
