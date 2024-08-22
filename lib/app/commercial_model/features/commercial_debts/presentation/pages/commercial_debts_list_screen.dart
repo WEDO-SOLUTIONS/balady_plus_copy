@@ -33,7 +33,7 @@ class _CommercialDebtsListScreenState extends State<CommercialDebtsListScreen> {
         transactionId: data['transactionId'],
       ),
       child: Scaffold(
-        appBar: DefaultAppBarWidget(title: 'debts'.tr()),
+        appBar: DefaultAppBarWidget(title: 'debts_list'.tr()),
         body: const Padding(
           padding: EdgeInsets.all(16),
           child: DebtsList(),

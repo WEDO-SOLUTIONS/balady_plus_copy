@@ -2,6 +2,7 @@ import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/widgets/debts_parameter.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/utils_exports.dart'
@@ -24,58 +25,38 @@ class DebtsListItem extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Row(
-            children: [
-              const DrawIconBasedTypeWidget(icon: IconPath.invoices),
-              const SizedBox(width: 4),
-              CustomTextWidget(
-                'debt'.tr(),
-                textStyle: AppStyle.cardTitleTextStle,
-              ),
-              const SizedBox(width: 4),
-              Expanded(
-                child: CustomTextWidget(
-                  '#',
-                  textStyle: AppStyle.requestNumberTextStle,
-                ),
-              ),
-              const HomeTag(
-                title: 'invoice.invoiceStatusName',
-                backgroundColor: AppColor.secondary100Light,
-              ),
-            ],
-          ),
           Padding(
             padding: const EdgeInsets.only(top: 16),
             child: GridView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 3.5,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
+                  crossAxisCount: 1,
+                  childAspectRatio: 3.5,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  mainAxisExtent: 40),
               children: [
                 DebtsParameter(
                   title: "invoice_no".tr(),
-                  value: '',
+                  value: debt.number,
                 ),
                 DebtsParameter(
                   title: 'invoice_date'.tr(),
-                  value: '',
+                  value: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(debt.creationDate)),
                 ),
                 DebtsParameter(
                   title: 'invoice_amount'.tr(),
-                  value: '',
+                  value: '${debt.amount} ${'sar'.tr()}',
                 ),
                 DebtsParameter(
                   title: 'invoice_service'.tr(),
-                  value: '',
+                  value: debt.service.name,
                 ),
                 DebtsParameter(
                   title: 'debt_origin'.tr(),
-                  value: '',
+                  value: debt.source,
                 ),
               ],
             ),
