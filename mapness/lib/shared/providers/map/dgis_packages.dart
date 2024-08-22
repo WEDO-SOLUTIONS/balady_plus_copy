@@ -36,7 +36,7 @@ class VoicePackages extends _$VoicePackages {
 
   Future<void> install(PackageMessage package) async {
     final dgisController = ref.read(dgisControllerProvider);
-    await dgisController.value?.installVoice(package.id);
+    await dgisController.value?.installVoice(package.id).then((_) => ref.invalidateSelf());
   }
 }
 

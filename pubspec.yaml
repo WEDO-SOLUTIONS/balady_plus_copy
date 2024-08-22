@@ -93,7 +93,7 @@ dependencies:
   intl: ^0.19.0
   # A flutter package to select a country from a list of countries.
   country_picker: ^2.0.16
-  camera:
+  camera: any
   # lutter plugin to find available maps installed on a device and launch them with a marker or show directions.
   map_launcher: ^2.4.0
   # Hashing

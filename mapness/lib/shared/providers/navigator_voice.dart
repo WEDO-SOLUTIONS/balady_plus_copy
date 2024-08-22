@@ -12,9 +12,11 @@ class NavigatorVoice extends _$NavigatorVoice {
   @override
   String build() {
     final sharedPrefs = ref.read(sharedPrefsProvider);
+    final voice = sharedPrefs.getString(_prefsKey) ?? ref.read(appLanguageProvider).navigatorVoice;
 
-    return sharedPrefs.getString(_prefsKey) ??
-        ref.read(appLanguageProvider).navigatorVoice;
+    update(voice);
+
+    return voice;
   }
 
   void update(String value) {

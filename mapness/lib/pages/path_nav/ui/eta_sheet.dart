@@ -6,18 +6,22 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/navigator_settings.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
-import 'package:mapness/features/path_nav/providers/path_nav_sound_provider.dart';
+
 import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
+
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/dgis_packages.dart';
+import 'package:mapness/shared/providers/map/sound_settings.dart';
+import 'package:mapness/shared/providers/navigator_voice.dart';
 
 import 'layout_size_wrapper.dart';
 
@@ -63,9 +67,21 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
 
   @override
   Widget build(BuildContext context) {
+    String? voiceName;
     final eta = ref.watch(pathNavEtaProvider);
-    final sound = ref.watch(pathNavSoundProviderProvider);
-    final dark = ref.watch(darkModeProvider);
+    final soundSettingsModel = ref.watch(soundSettingsProvider);
+    final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
+    final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
+    final selectedVoice = ref.watch(navigatorVoiceProvider);
+
+    final voicePackages = ref.watch(voicePackagesProvider);
+
+    if (voicePackages.isNotEmpty) {
+      voiceName = voicePackages.map((e) => e.packageMessage).where((e) => e.id == selectedVoice).first.info.name;
+    }
+
+    final _subtitleVoiceInstruction =
+        voiceName != null ? '${context.l10n.announcedEvents} • $voiceName' : context.l10n.announcedEvents;
 
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
@@ -73,61 +89,84 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       betterRouteDurationProfit: widget.betterRouteDurationProfit,
       onBetterRouteAccept: widget.onBetterRouteAccept,
       onBetterRouteReject: widget.onBetterRouteReject,
+      backgroundColor: context.colorsV2.backgroundSurface4,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
+          contentColor: context.colorsV2.backgroundSurface4,
           enabledHeader: _isExpanded,
           distanceChild: NaviChildModel(
-              description: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
-              title: eta != null ? formatDistance(eta.distanceEta) : '--'),
-          arrivalChild: NaviChildModel(description: context.l10n.arrival, title: eta != null ? eta.arrivalTime : '--'),
+            description: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
+            title: eta != null ? formatDistance(eta.distanceEta) : '--',
+          ),
+          arrivalChild: NaviChildModel(
+            description: context.l10n.arrival,
+            title: eta != null ? eta.arrivalTime : '--',
+          ),
           drivingChild: NaviChildModel(
-              description: eta != null ? eta.timeEtaUnits.getDescription(context) : '--',
-              title: eta != null ? eta.timeEta : '--'),
+            description: eta != null ? eta.timeEtaUnits.getDescription(context) : '--',
+            title: eta != null ? eta.timeEta : '--',
+          ),
           contentRows: [
             ContentRow(
-              onToggle: (_) {
-                ref.read(darkModeProvider.notifier).toggle();
-                Metrics.logEventAdvanced(MetricsConstants.navigationKeys.darkMode,
-                    group: MetricsConstants.navigationTag,
-                    action: MetricAction.tap.toString(),
-                    props: {
-                      'dark': !dark,
-                    });
-              },
+              onTap: () => const SoundSettingsRoute().push(context),
               options: ContentRowOptions(
-                padding: const EdgeInsets.symmetric(
-                  vertical: NumericBase.$3x,
-                  horizontal: Spacing.horizontalSpacingTabsRow,
+                subtitleStyle: context.textStyleV3.bodySmallRegular.copyWith(
+                  color: context.color.textAndIconsBaseSecondary,
                 ),
-                title: context.l10n.darkMap,
-                titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                titleStyle: context.textStyleV3.bodyLargeMedium.copyWith(
+                  color: context.colorsV2.foregroundDefault,
+                ),
+                wrapperColor: context.color.surfaceBaseTertiary,
+                wrapperEnabled: true,
+                title: context.l10n.voiceInstruction,
+                subtitle: _subtitleVoiceInstruction,
+                padding: const EdgeInsets.symmetric(
+                  vertical: Spacing.$4x,
+                  horizontal: Spacing.$4x,
+                ),
                 actionWidget: ContentRowActionOptions(
-                  enabledToggle: true,
-                  toggleInitialValue: dark,
+                  actionIcon: AppIcons(
+                    iconData: arrowIcon,
+                    color: context.color.textAndIconsBaseTertiary,
+                  ),
+                ),
+                bottomWidget: SegmentTabsButton(
+                  tabsContent: [
+                    TabsRowV2Content(title: context.l10n.segmentButtonOffTitle),
+                    TabsRowV2Content(title: context.l10n.segmentButtonImportantTitle),
+                    TabsRowV2Content(title: context.l10n.segmentButtonAllTitle),
+                  ],
+                  onIndexChanged: (value) {
+                    if (value != null) {
+                      soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
+                    }
+                  },
+                  initialIndex: soundSettingsModel.voiceInstructionIndex,
                 ),
               ),
             ),
             ContentRow(
-              onToggle: (_) {
-                ref.read(pathNavSoundProviderProvider.notifier).toggle();
-                Metrics.logEventAdvanced(MetricsConstants.navigationKeys.soundMode,
-                    group: MetricsConstants.navigationTag,
-                    action: MetricAction.tap.toString(),
-                    props: {
-                      'sound': !sound,
-                    });
-              },
+              onTap: () => const NavigatorSettingsRoute().push(context),
               options: ContentRowOptions(
-                padding: const EdgeInsets.symmetric(
-                  vertical: NumericBase.$3x,
-                  horizontal: Spacing.horizontalSpacingTabsRow,
+                titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
+                  color: context.colorsV2.foregroundDefault,
                 ),
-                title: context.l10n.soundSettings,
-                subtitle: context.l10n.maneuvers,
-                titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                wrapperColor: context.color.surfaceBaseTertiary,
+                wrapperEnabled: true,
+                title: context.l10n.navigatorSettings,
+                leadingIcon: Icon(
+                  SystemIcons.settings,
+                  color: context.color.textAndIconsBaseSecondary,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: Spacing.$3x,
+                  horizontal: Spacing.$4x,
+                ),
                 actionWidget: ContentRowActionOptions(
-                  enabledToggle: true,
-                  toggleInitialValue: sound,
+                  actionIcon: AppIcons(
+                    iconData: arrowIcon,
+                    color: context.color.textAndIconsBaseTertiary,
+                  ),
                 ),
               ),
             ),
@@ -135,9 +174,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
           buttons: [
             AppButton(
               padding: const EdgeInsets.only(
-                left: Spacing.horizontalPaddingInsideCell,
-                right: Spacing.horizontalPaddingInsideCell,
-                bottom: Spacing.verticalPaddingInsideCell,
+                left: Spacing.$4x,
+                right: Spacing.$4x,
+                bottom: Spacing.$3x,
               ),
               buttonColorScheme: ButtonColorScheme.warning,
               primaryLabel: context.l10n.endTrip,

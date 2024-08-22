@@ -168,6 +168,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       // ref.watch(iwishMarkersProvider.select((value) => null));
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
+    _setupVoice();
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
@@ -285,5 +287,11 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     );
 
     ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
+  }
+
+  Future<void> _setupVoice() async {
+    final _dgisController = await ref.read(dgisControllerProvider.future);
+    // await _dgisController.setMapAttributeBool('navigatorOn', true);
+    await _dgisController.toggleVoiceInstruction(toggleType: SoundToggleType.all);
   }
 }

@@ -7,7 +7,6 @@ import 'package:mapness/_features/common/providers/permissions.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -84,9 +83,7 @@ class DgisController extends _$DgisController {
     try {
       // Voice
       await controller.installVoice('voice-saud');
-      await controller.installVoice('voice-jennifer');
-
-      ref.read(navigatorVoiceProvider.notifier).update(ref.read(appLanguageProvider).navigatorVoice);
+      //await controller.installVoice('voice-jennifer');
     } on PlatformException catch (e) {
       debugPrint('Voice installation error: $e');
     }
