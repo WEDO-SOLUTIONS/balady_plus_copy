@@ -33,7 +33,9 @@ class FeedbackPageTemplate extends StatelessWidget {
             appBar: BaladyTopBar.iconAndText(
               title: title,
               leading: ActionModel(
-                icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                icon: context.isLTR
+                    ? SystemIcons.arrowCornerLeftLarge
+                    : SystemIcons.arrowCornerRightLarge,
                 onPressed: onBack ?? context.pop,
               ),
               trailing: isSendVisible
