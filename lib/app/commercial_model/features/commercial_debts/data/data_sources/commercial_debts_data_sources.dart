@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_list_debts_model.dart';
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_model.dart';
@@ -15,6 +16,13 @@ abstract class CommercialDebtsDataSources {
     required TransactionType transactionType,
     required int transactionId,
     required String stepId,
+  });
+
+  Future<CommercialListDebt> getListDebts({
+    required String referenceId,
+    required int transactionId,
+    required TransactionType transactionType,
+    required int pageNumber,
   });
 }
 
@@ -33,7 +41,7 @@ class CommercialDebtsDataSourcesImplementation
     Response? response;
     try {
       response = await webService.dio.get(
-        CommercialModelEndPoints.getDebts(
+        CommercialModelEndPoints.checkDebts(
           transactionId: transactionId,
           transactionType: transactionType.name,
         ),
@@ -79,6 +87,69 @@ class CommercialDebtsDataSourcesImplementation
           exception: APIException(
             errorMessage: error.toString(),
           ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<CommercialListDebt> getListDebts({
+    required String referenceId,
+    required int transactionId,
+    required TransactionType transactionType,
+    required int pageNumber,
+  }) async {
+    Response? response;
+    try {
+      response = await webService.dio.get(
+        CommercialModelEndPoints.getListDebts(
+          transactionId: transactionId,
+          transactionType: transactionType.name,
+          referenceId: referenceId,
+        ),
+        queryParameters: {
+          "page-number": pageNumber,
+        },
+        options: Options(
+          headers: {
+            "x-platform-id": "baladyservices",
+            "x-channel-id": "mobile",
+          },
+        ),
+      );
+      var result = ResponseBodyModel.fromMap(response.data).data?.result;
+      return CommercialListDebt.fromJson(result);
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
