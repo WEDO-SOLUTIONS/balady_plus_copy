@@ -45,8 +45,7 @@ class PackageProgress extends _$PackageProgress {
   @override
   int build(PackageMessage package) {
     final dgisController = ref.watch(dgisControllerProvider);
-    final packageSubscription =
-        dgisController.value?.packageProgressEvents.listen((event) {
+    final packageSubscription = dgisController.value?.packageProgressEvents.listen((event) {
       if (event.id == package.id) {
         state = event.progress;
       }
@@ -68,8 +67,7 @@ class PackageInfo extends _$PackageInfo {
   PackageInfoMessage build(PackageMessage package) {
     final dgisController = ref.watch(dgisControllerProvider);
 
-    final packagesInfoChangedSubscription =
-        dgisController.value?.packagesInfoChangedEvents.listen((event) {
+    final packagesInfoChangedSubscription = dgisController.value?.packagesInfoChangedEvents.listen((event) {
       if (event.id == package.id) {
         state = event.packageInfo;
       }
