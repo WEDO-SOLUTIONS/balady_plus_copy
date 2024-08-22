@@ -1,9 +1,6 @@
-
 class CommercialModelEndPoints {
-
   static const delegators =
       '/v1/delegation-services/delegated-commercial-records';
-
 
   static const validActivitiesAreasUrl =
       '/v1/balady-commercial-services/business-rules/valid-activities-areas';
@@ -142,10 +139,13 @@ class CommercialModelEndPoints {
 
   static String crCitizenInfo =
       '/v1/balady-commercial-services/moi/citizeninfo';
+
   static String requestDetailsCommercial(int requestId) =>
       "/v1/balady-commercial-services/request/$requestId";
+
   static String requestConclusionCommercial(int requestId) =>
       "/v1/balady-commercial-services/request-conclusion/$requestId";
+
 /////////////////////  Renew Commercial Service ///////////////////////////
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';
@@ -180,40 +180,55 @@ class CommercialModelEndPoints {
 /////////////////////  Commercial License Details ///////////////////////////
   static String getCommercialLicenseDetails(int licenseId) =>
       '/v1/balady-commercial-services/licenses/$licenseId';
+
   static String commercialLicensePermits(int licenseId) =>
       '/v1/balady-commercial-services/licenses/permits/$licenseId';
+
   static String getLicenseAttachments(int licenseId) =>
       '/v1/balady-commercial-services/license-attachments/$licenseId';
+
   static String getCommercialLicenseAllowedActions(int licenseId) =>
       '/v1/balady-commercial-services/licenses/$licenseId/allowed-actions';
+
 /////////////////////  Commercial License Cancel ///////////////////////////
   static const String commercialLicenseCancellationReasons =
       '/v1/balady-commercial-services/mobile/cancel-reasons';
+
   static String commercialLicenseApplyCancel(int licenseId) =>
       '/v1/balady-commercial-services/mobile/cancel-request/apply/$licenseId';
+
   static String commercialLicenseCancelAttachments(int licenseId) =>
       '/v1/balady-commercial-services/mobile/cancel-request/$licenseId/attachments';
+
   static String commercialLicenseCancelUploadAttachments(
           int requestId, int attachTypeId) =>
       '/v1/balady-commercial-services/mobile/cancel-request/request/$requestId/attachments/$attachTypeId';
+
   static String commercialLicenseCancelSaveCancellationReason(int requestId) =>
       '/v1/balady-commercial-services/mobile/save-cancellation-reason/$requestId';
+
   static String commercialLicenseCancelCalculateFees(int requestId) =>
       '/v1/balady-commercial-services/mobile-cancel-request/$requestId/calculateFees';
+
   static String commercialLicenseCancelSubmit(int requestId) =>
       '/v1/balady-commercial-services/mobile/cancel-request/$requestId/submit';
+
 /////////////////////////////////////////////////////////
   static String getAllowedActionsForRequests(int requestId) =>
       '/v1/balady-commercial-services/mobile/request/allowed-actions/$requestId';
+
   static String getRequestCommercialLicenseDetails(int requestId) =>
       '/v1/balady-commercial-services/mobile/request/details/$requestId';
+
 /////////////////////////////////////////////////////////
   static String commercialLicenseIsDirectToPay(int requestId) =>
       '/v1/balady-commercial-services/mobile-cancel-request/request/$requestId/is-direct-to-pay';
   static const String commercialLicenseCancelSubmitRating =
       '/v1/balady-commercial-services/rating/submit';
+
   static String commercialLicenseCancelGetDetailsRequest(int requestId) =>
       '/v1/balady-commercial-services/mobile-cancel-request/request-details/$requestId';
+
   /////////////////////// promotions //////////////////////////////////
   static String getLicensesForPermits(
           {required String crNumber, required String groupId}) =>
@@ -237,6 +252,7 @@ class CommercialModelEndPoints {
 
   static String permitUploadAttachment(int requestId, int fileTypeId) =>
       '/v1/commercial-promotions-services/stream/upload-attachments/$requestId/$fileTypeId';
+
   static String postersSubmit(int requestId) =>
       "v1/commercial-promotions-services/submits/$requestId";
 
@@ -260,57 +276,81 @@ class CommercialModelEndPoints {
 
   static String posterRequestAlllowedAction(int? requestId) =>
       "v1/commercial-promotions-services/allowed-actions/$requestId";
+
   /////////////////////// 24 Hour Permi //////////////////////////////////
   static String permit24AlllowedAction(int? requestId) =>
       "v1/supperapp-commercial-twentyfour-services/twenty-four-allowed-actions/$requestId";
+
   static String permits24Alerts(String type) =>
       "v1/supperapp-commercial-twentyfour-services/alerts/$type";
+
   static String permit24ValidateBeforeApply(int? requestId) =>
       "v1/supperapp-commercial-twentyfour-services/valid-before-apply/$requestId";
+
   static String permit24Submit(int requestId) =>
       "v1/supperapp-commercial-twentyfour-services/submits/$requestId";
+
   static String permit24RequestDetails(int requestId) =>
       "v1/supperapp-commercial-twentyfour-services/permit-details/$requestId";
+
   static String permit24Calclaute(int requestId) =>
       "v1/supperapp-commercial-twentyfour-services/licences-costs/$requestId";
+
   static String deletePermit24Request(int requestId) =>
       "v1/supperapp-commercial-twentyfour-services/requests/$requestId";
+
   /////////////////////// commercial license query /////////////////////////////
   static String getCommercialLicenseData(
           int licenseNumber, unifiedFacilityNumber) =>
       '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
+
   /////////////////////// Ownership /////////////////////////////
   static String comercialLicenseTransferShopInfo(int requestId) =>
       'v1/superapp-commercial-ownership-services/transfer/shop-ownership-info/$requestId';
+
   static String getOwnershipCommercialRequestDetails(int requestId) =>
       '/v1/superapp-commercial-ownership-services/request/$requestId';
+
   static String acceptCommercialRequestTransfer(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/accept/by-new-owner/$requestId';
+
   static String rejectCommercialRequestTransfer(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/reject/by-new-owner/$requestId';
+
   static String getRequestPermits(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/selected/permits/$requestId';
+
   static String saveSelectedRequestPermits(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/selected-permits/by-new-owner/$requestId';
+
   static String transferShopInfo(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/shop-info/$requestId';
+
   static String submitApprovel(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/submit/by-new-owner/$requestId';
+
   static String transferRequestAttachments(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/attachments/$requestId';
+
   static String transferUploadAttachments(int requestId) =>
       '}/v1/superapp-commercial-ownership-services/transfer/upload-attachment/2/attachments/$requestId';
+
   static String getLicensePermits(String licenseNumber) =>
       '/v1/superapp-commercial-ownership-services/license/permits/$licenseNumber';
+
   static String validateNewOwner(String licenseNumber, String crNumber) =>
       '/v1/superapp-commercial-ownership-services/transfer/validate-new-owner/$licenseNumber?crNumber=$crNumber';
+
   static String validateLicenseTrnasfer(String licenseNumber) =>
       "/v1/superapp-commercial-ownership-services/transfer/validate-license/$licenseNumber";
+
   static String sendToNewOwner(String licenseNumber) =>
       "/v1/superapp-commercial-ownership-services/transfer/send-to-new-owner/$licenseNumber";
+
   static String commercialLicenseOwnershipServicesUploadAttachments(
-      int requestId, int attachTypeId) =>
+          int requestId, int attachTypeId) =>
       'v1/superapp-commercial-ownership-services/transfer/upload-attachment/$attachTypeId/attachments/$requestId';
+
   //////////////////////////  Tobacco /////////////////////////////
   static const String getUserFacilities =
       '/v1/tobacco-services/user-facilities';
@@ -319,12 +359,14 @@ class CommercialModelEndPoints {
       '/v1/tobacco-services/stream/upload';
   static const String getTobaccoDisclosureUpload =
       '/v1/tobacco-services/disclosures/upload';
+
   //////////////////////////  Tobacco Permit /////////////////////////////
   static String permitTobaccoAlllowedAction(int? requestId) =>
       "v1/supperapp-commercial-tobbaco-permission-services/tobbaco-allowed-actions/$requestId";
 
   static String permitsTobaccoAlerts =
       "v1/supperapp-commercial-tobbaco-permission-services/alerts/ALERTS";
+
   static String permitTobaccoValidateBeforeApply(int? licenseId) =>
       "v1/supperapp-commercial-tobbaco-permission-services/valid-before-apply/$licenseId";
 
@@ -336,6 +378,7 @@ class CommercialModelEndPoints {
 
   static String permitTobaccoCalclaute(int licenseId) =>
       "v1/supperapp-commercial-tobbaco-permission-services/licences-costs/$licenseId";
+
   static String deletePermitTobaccoRequest(int requestId) =>
       "v1/supperapp-commercial-tobbaco-permission-services/requests/$requestId";
 
@@ -343,9 +386,7 @@ class CommercialModelEndPoints {
       "v1/supperapp-commercial-tobbaco-permission-services/validate-hotel-license/$license/$hotel";
 
 ////////////////////////// Debts /////////////////////////////
-  static  getDebts ({required String transactionType, required int transactionId}) => 'v1/debt-collection-services/mobile/debts/$transactionType/$transactionId';
+  static checkDebts({required String transactionType, required int transactionId}) => 'v1/debt-collection-services/mobile/debts/$transactionType/$transactionId';
 
-
-
-
+  static getListDebts({required String referenceId, required int transactionId, required String transactionType}) => 'v1/debt-collection-services/mobile/debts/$transactionType/$transactionId/$referenceId';
 }
