@@ -4304,5 +4304,8 @@
   "chat_bot": "Smart Assistant",
   "any_type": "any_type",
   "agreement_text_akram": "I {} acknowledge the validity of the registered data and bear all legal responsibility if proven otherwise",
-  "cemeteries_displayed": "The cemeteries are displayed based on the daily capacity of the cemetery"
+  "cemeteries_displayed": "The cemeteries are displayed based on the daily capacity of the cemetery",
+
+
+  "total_debt": "Total Debts"
 }

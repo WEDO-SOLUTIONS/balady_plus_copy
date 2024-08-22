@@ -25,14 +25,18 @@ class FieldCommercialDebtState extends CommercialDebtsState {
 
   @override
   List<Object?> get props {
-    return [errorMessage,transactionId,stepNumber];
+    return [errorMessage, transactionId, stepNumber];
   }
 }
 
 class SuccessCommercialDebtState extends CommercialDebtsState {
   final CommercialDebt commercialDebt;
+  final bool isBlocked;
 
-  const SuccessCommercialDebtState({required this.commercialDebt});
+  const SuccessCommercialDebtState({
+    required this.commercialDebt,
+    required this.isBlocked,
+  });
 
   @override
   List<Object?> get props {

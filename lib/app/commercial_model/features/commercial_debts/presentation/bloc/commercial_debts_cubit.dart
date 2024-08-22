@@ -12,7 +12,6 @@ class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
 
   final TransactionType transactionType;
 
-  // final int? transactionId;
   final List<String> steps;
 
   ////////////////////////////////////////////////////////////////////////////
@@ -42,7 +41,12 @@ class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
         switch (debt.status) {
           case CommercialDebtRenewStates.warning:
           case CommercialDebtRenewStates.blocked:
-            emit(SuccessCommercialDebtState(commercialDebt: debt));
+            emit(
+              SuccessCommercialDebtState(
+                commercialDebt: debt,
+                isBlocked: CommercialDebtRenewStates.blocked == debt.status,
+              ),
+            );
             break;
           case CommercialDebtRenewStates.noDebts:
             emit(const NoDebtsCommercialDebtState());
