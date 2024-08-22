@@ -870,7 +870,6 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.setNavigatorVoice(id);
   }
 
-
   Future<bool> toggleHeatmap(WeatherMapMessage message) => _api.toggleHeatmap(message);
 
   Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _api.betterRouteResponse(response);
