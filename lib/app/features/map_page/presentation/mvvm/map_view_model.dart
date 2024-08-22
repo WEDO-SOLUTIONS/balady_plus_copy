@@ -1333,19 +1333,19 @@ class MapViewModel extends BaseViewModel {
         queryText.contains("مدينه") &&
         queryText.contains("حى") &&
         queryText.contains("حي")) {
-      allowedResultTypes = [SuggestedTypeMessage.admDiv];
+      allowedResultTypes = [SuggestedTypeMessage.admDivCity];
     } else {
       allowedResultTypes = [
-        SuggestedTypeMessage.admDiv,
+        SuggestedTypeMessage.admDivCity,
         SuggestedTypeMessage.attraction,
         SuggestedTypeMessage.attribute,
         SuggestedTypeMessage.branch,
         SuggestedTypeMessage.building,
         SuggestedTypeMessage.coordinates,
         SuggestedTypeMessage.crossroad,
-        SuggestedTypeMessage.districtArea,
+        SuggestedTypeMessage.admDivDistrict,
         SuggestedTypeMessage.parking,
-        SuggestedTypeMessage.region,
+        SuggestedTypeMessage.admDivRegion,
         SuggestedTypeMessage.road,
         SuggestedTypeMessage.route,
         SuggestedTypeMessage.station,

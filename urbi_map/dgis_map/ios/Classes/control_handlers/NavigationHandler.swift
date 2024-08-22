@@ -35,8 +35,9 @@ class NavigationHandler {
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
         let context = try! sdk.context
-        
+        map.graphicsPreset = GraphicsPreset.immersive
         self.map = map
+        
         self.eventChannel = eventChannel
         
         self.navigationManager = try! NavigationManager(platformContext: context)
@@ -48,7 +49,7 @@ class NavigationHandler {
         
         self.locationSource = MyLocationMapObjectSource(
             context: context,
-            controller: navigationManager.mapLocationController.myLocationIndicatorController
+            controllerSettings: MyLocationControllerSettings()
         )
 
         self.speedControlModel = SpeedControlModel(

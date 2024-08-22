@@ -6,14 +6,13 @@ class RouteHandler {
         static let onActiveRouteChanged = "onActiveRouteChanged"
         static let onRoutesInfoChanged = "onRoutesInfoChanged"
     }
-    
-    private let positioningService: PlatformPositioningServicesFactory
     private let routeEditor: RouteEditor
     private let routeEditorSource: RouteEditorSource
     private var publicTransportHandler: PublicTransportHandler?
     private let trafficRouter: TrafficRouter
     private let navigationHandler: NavigationHandler
     
+    private let locationService: LocationService
     private let map: Map
     private let eventChannel: DgisStreamHandler
     
@@ -37,19 +36,21 @@ class RouteHandler {
         map: Map,
         sdk: Container,
         eventChannel: DgisStreamHandler,
-        navigationHandler: NavigationHandler,
-        positioningService: PlatformPositioningServicesFactory
+        navigationHandler: NavigationHandler
     ) {
         let context = try! sdk.context
         
+        self.locationService = try! sdk.locationService
         self.map = map
         self.eventChannel = eventChannel
         self.navigationHandler = navigationHandler
         self.routeEditor = RouteEditor(context: context)
         self.routeEditorSource = RouteEditorSource(
-            context: context, routeEditor: self.routeEditor, calloutLabelDisplayMode: .relativeToActiveRouteValues
+            context: context, routeEditor: self.routeEditor,  
+            activeDisplayFlags: [.immersiveRouteParts],
+            inactiveDisplayFlags: [.immersiveRouteParts],
+            calloutLabelDisplayMode: .relativeToActiveRouteValues
         )
-        self.positioningService = positioningService
         self.trafficRouter = TrafficRouter.init(context: context)
 
         self.publicTransportHandler = PublicTransportHandler(eventChannel: eventChannel, routeHandler: self)
@@ -109,10 +110,10 @@ class RouteHandler {
                         LevelId(value: $0.uint64Value)
                     }
                 )
-            } else if let lastLocation = positioningService.locationProvider?.lastLocation?.coordinate {
+            } else if let lastLocation = self.locationService.lastLocation?.coordinates {
                 return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: lastLocation.latitude,
-                    longitude: lastLocation.longitude
+                    latitude: lastLocation.value.latitude,
+                    longitude: lastLocation.value.longitude
                 ))
             }
             
@@ -134,10 +135,10 @@ class RouteHandler {
                         LevelId(value: $0.uint64Value)
                     }
                 )
-            } else if let lastLocation = positioningService.locationProvider?.lastLocation?.coordinate {
+            } else if let lastLocation = self.locationService.lastLocation?.coordinates {
                 return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: lastLocation.latitude,
-                    longitude: lastLocation.longitude
+                    latitude: lastLocation.value.latitude,
+                    longitude: lastLocation.value.longitude
                 ))
             }
             
@@ -275,10 +276,10 @@ class RouteHandler {
 
         if let startPoint {
             startSearchPoint = startPoint
-        } else if let lastLocation = positioningService.locationProvider?.lastLocation?.coordinate {
+        } else if let lastLocation = self.locationService.lastLocation?.coordinates {
             startSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
-                latitude: lastLocation.latitude,
-                longitude: lastLocation.longitude
+                latitude: lastLocation.value.latitude,
+                longitude: lastLocation.value.longitude
             ))
         } else {
             completion(
@@ -294,10 +295,10 @@ class RouteHandler {
         
         if let finishPoint {
             finishSearchPoint = finishPoint
-        } else if let lastLocation = positioningService.locationProvider?.lastLocation?.coordinate {
+        } else if let lastLocation = self.locationService.lastLocation?.coordinates {
             finishSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
-                latitude: lastLocation.latitude,
-                longitude: lastLocation.longitude
+                latitude: lastLocation.value.latitude,
+                longitude: lastLocation.value.longitude
             ))
         } else {
             completion(

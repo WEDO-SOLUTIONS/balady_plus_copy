@@ -18,7 +18,9 @@ import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CalloutVisualizationMode
 import ru.dgis.sdk.map.CameraBehaviour
+import ru.dgis.sdk.map.GraphicsPreset
 import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.map.MyLocationControllerSettings
 import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteMapObject
@@ -89,7 +91,7 @@ class NavigationHandler(
 
         locationSource = MyLocationMapObjectSource(
             context = sdkContext,
-            controller = navigationManager.mapLocationController.myLocationIndicatorController
+            controllerSettings = MyLocationControllerSettings()
         )
     }
 
@@ -99,11 +101,11 @@ class NavigationHandler(
             map.removeSource(this.prevLocationSource!!)
         }
         map.addSource(locationSource)
-
         prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
         )
+        map.graphicsPreset = GraphicsPreset.IMMERSIVE
 
         navigationManager.mapFollowController.setFollow(true)
         navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = listOf(

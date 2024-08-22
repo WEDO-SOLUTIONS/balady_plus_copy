@@ -58,6 +58,19 @@ fun ObjectType.toMessage(): ObjectTypeMessage = when (this) {
     ObjectType.STATION_ENTRANCE -> ObjectTypeMessage.STATION_ENTRANCE
     ObjectType.STREET -> ObjectTypeMessage.STREET
     ObjectType.UNKNOWN -> ObjectTypeMessage.UNKNOWN
+    ObjectType.ADM_DIV_CITY -> ObjectTypeMessage.ADM_DIV_CITY
+    ObjectType.ADM_DIV_COUNTRY -> ObjectTypeMessage.ADM_DIV_COUNTRY
+    ObjectType.ADM_DIV_DISTRICT -> ObjectTypeMessage.ADM_DIV_DISTRICT
+    ObjectType.ADM_DIV_DISTRICT_AREA -> ObjectTypeMessage.ADM_DIV_DISTRICT_AREA
+    ObjectType.ADM_DIV_DIVISION -> ObjectTypeMessage.ADM_DIV_DIVISION
+    ObjectType.ADM_DIV_LIVING_AREA -> ObjectTypeMessage.ADM_DIV_LIVING_AREA
+    ObjectType.ADM_DIV_PLACE -> ObjectTypeMessage.ADM_DIV_PLACE
+    ObjectType.ADM_DIV_REGION -> ObjectTypeMessage.ADM_DIV_REGION
+    ObjectType.ADM_DIV_SETTLEMENT -> ObjectTypeMessage.ADM_DIV_SETTLEMENT
+    ObjectType.GATE -> ObjectTypeMessage.GATE
+    ObjectType.KILOMETER_ROAD_SIGN -> ObjectTypeMessage.KILOMETER_ROAD_SIGN
+    ObjectType.STATION_METRO -> ObjectTypeMessage.STATION_METRO
+    ObjectType.STATION_PLATFORM -> ObjectTypeMessage.STATION_PLATFORM
 }
 
 fun DgisObjectId.toMessage(): DgisObjectIdMessage {

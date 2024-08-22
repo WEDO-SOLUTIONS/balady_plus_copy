@@ -40,9 +40,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     private var compassControlHandler: CompassControlHandler?
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler?
-    
-    private lazy var positioningService = PlatformPositioningServicesFactory()
-    
+        
     private var moveCameraCancellable: DGis.Cancellable?
 
     init(
@@ -120,8 +118,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             map: map,
             sdk: self.sdk,
             eventChannel: eventChannel,
-            navigationHandler: navigationHandler!,
-            positioningService: self.positioningService
+            navigationHandler: navigationHandler!
         )
         
         self.searchHandler = SearchHandler(
@@ -200,7 +197,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
         
-        let styleFuture = try! self.sdk.makeStyleFactory().loadFile(path: assetPath)
+        let styleFuture = try! self.sdk.styleFactory.loadFile(path: assetPath)
         cancelable.append(
             styleFuture.sink (
                 receiveValue: { [map = self.map] style in
@@ -217,6 +214,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+    func showImmersiveRoutes(){
+        map?.graphicsPreset = GraphicsPreset.immersive
+    }
+        
     func overrideLocalesLocales(_ locales: [String], completion: @escaping (FlutterError?) -> Void) {
         let manager = getLocaleManager(context: try! sdk.context)
         manager.overrideLocales(locales: locales.map {
@@ -503,9 +504,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             ))
             return
         }
+        let location = try! self.sdk.locationService.lastLocation?.coordinates.value
+
         searchHandler.getDistanceTo(
             points: points,
-            location: positioningService.locationProvider?.lastLocation?.coordinate,
+            location: location,
             completion: completion
         )
     }
@@ -830,15 +833,15 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
     ) {
-        guard let locationProvider = self.positioningService.locationProvider else {
-            completion(FlutterError(
-                code: "LocationError",
-                message: "PlatformPositioningServicesFactory cannot be created",
-                details: nil
-            ))
-            return
-        }
-        locationProvider.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
+//        guard let locationProvider = self.sdk.locationService else {
+//            completion(FlutterError(
+//                code: "LocationError",
+//                message: "PlatformPositioningServicesFactory cannot be created",
+//                details: nil
+//            ))
+//            return
+//        }
+//        locationProvider.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
         completion(nil)
     }
     
@@ -853,8 +856,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         let map = mapFactory.map
         map.addSource(source: MyLocationMapObjectSource(
             context: context,
-            controller: MyLocationController(bearingSource: .auto)
+            controllerSettings:  MyLocationControllerSettings(bearingSource: .auto)
         ))
+        map.graphicsPreset = GraphicsPreset.immersive
+        
         self.map = map
         
         let mapView = mapFactory.mapView
@@ -904,7 +909,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                     logicalPixel: LogicalPixel(value: 50),
                     maxZoom: Zoom(value: 18)
                 ),
-            imageFactory: try! self.sdk.makeImageFactory(),
+            imageFactory: try! self.sdk.imageFactory,
             routeHandler: self.routeHandler,
             eventChannel: eventChannel,
             registrar: self.registrar

@@ -4,8 +4,8 @@ import DGis
 extension LogOptionsMessage {
     var logOptions: LogOptions {
         LogOptions(
-            osLogLevel: self.systemLevel.logLevel,
-            customLogLevel: self.customLevel.logLevel,
+            systemLevel: self.systemLevel.logLevel,
+            customLevel: self.customLevel.logLevel,
             customSink: self.customSink?.customSink
         )
     }
@@ -23,9 +23,9 @@ fileprivate extension LogLevelMessage {
         case .error:
             return .error
         case .fatal:
-            return .fault
+            return .fatal
         case .off:
-            return .disabled
+            return .off
         }
     }
 }

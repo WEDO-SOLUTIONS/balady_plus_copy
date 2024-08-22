@@ -34,10 +34,11 @@ class WeatherHandler {
                    }
 
                    if temperatureTileSource == nil {
-                       temperatureTileSource = createRasterTileDataSource(
+                       temperatureTileSource =  RasterTileSource(
                         context: try! self.sdk.context,
                           sublayerName: message.layerName ?? "",
-                          urlTemplate: message.rasterTileUri ?? ""
+                        sourceTemplate: RasterUrlTemplate.defaultSource(DGis.DefaultRasterUrlTemplate(
+                            urlTemplate: message.rasterTileUri ?? ""))
                        )
                    }
 
@@ -53,10 +54,12 @@ class WeatherHandler {
                    }
 
                    if precipitationTileSource == nil {
-                       precipitationTileSource = createRasterTileDataSource(
+                      
+                       precipitationTileSource =  RasterTileSource(
                         context: try! self.sdk.context,
-                          sublayerName: message.layerName ?? "",
-                          urlTemplate: message.rasterTileUri ?? ""
+                        sublayerName: message.layerName ?? "",
+                        sourceTemplate: RasterUrlTemplate.defaultSource(DGis.DefaultRasterUrlTemplate(
+                            urlTemplate:  message.rasterTileUri ?? ""))
                        )
                    }
 

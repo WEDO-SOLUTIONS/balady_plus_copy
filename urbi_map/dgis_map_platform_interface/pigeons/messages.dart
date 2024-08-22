@@ -327,18 +327,31 @@ class EntranceInfoMessage {
 
 enum ObjectTypeMessage {
   admDiv,
+  admDivCity,
+  admDivCountry,
+  admDivDistrict,
+  admDivDistrictArea,
+  admDivDivision,
+  admDivLivingArea,
+  admDivPlace,
+  admDivRegion,
+  admDivSettlement,
   attraction,
   branch,
   building,
   coordinates,
   crossroad,
+  gate,
+  kilometerRoadSign,
   parking,
   road,
   route,
   station,
   stationEntrance,
+  stationMetro,
+  stationPlatform,
   street,
-  unknown
+  unknown;
 }
 
 class ObjectTypeItemMessage {
@@ -808,25 +821,39 @@ class SuggestHandlerMessage {
 }
 
 enum SuggestedTypeMessage {
-  admDiv,
+  admDivCity,
+  admDivCountry,
+  admDivDistrict,
+  admDivDistrictArea,
+  admDivDivision,
+  admDivLivingArea,
+  admDivPlace,
+  admDivRegion,
+  admDivSettlement,
   attraction,
   attribute,
   branch,
   building,
   coordinates,
   crossroad,
-  districtArea,
+  kilometerRoadSign,
+  marketAttribute,
+  marketBrand,
+  marketCategory,
+  marketSuggestorCategory,
+  metaRubric,
   org,
-  orgCategory,
   parking,
-  region,
   road,
   route,
+  routeType,
+  rubric,
   station,
   stationEntrance,
+  stationMetro,
   street,
   text,
-  unknown
+  unknown,
 }
 
 class MarkedUpTextSpanMessage {
