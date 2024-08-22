@@ -7,7 +7,9 @@ extension FeedbackTypeExt on String {
       case 'nameChange':
         return GeneralIcons.nameChange;
       case 'messageText':
-        return isLTR ? GeneralIcons.messageTextLTR : GeneralIcons.messageTextRTL;
+        return isLTR
+            ? GeneralIcons.messageTextLTR
+            : GeneralIcons.messageTextRTL;
       case 'pin':
         return GeneralIcons.pin;
       case 'timeQuarter':
