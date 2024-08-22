@@ -294,7 +294,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
-  Future<void> openAppLink(Uri url) async {
+  Future<void> openAppLink(Uri uri) async {
+    final decodeFull = Uri.decodeFull(uri.toString());
+    final parse = Uri.parse(decodeFull);
+    final url = Uri.parse(parse.fragment);
+
     final momrahId = url.queryParameters[BaldayDeeplink.momrahIdKey];
     final latString = url.queryParameters[BaldayDeeplink.latitudeKey];
     final latitude = double.tryParse(latString ?? '');
