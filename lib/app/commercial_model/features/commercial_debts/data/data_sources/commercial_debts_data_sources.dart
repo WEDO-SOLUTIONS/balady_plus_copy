@@ -111,7 +111,7 @@ class CommercialDebtsDataSourcesImplementation
         ),
         queryParameters: {
           "page-number": pageNumber,
-          "page-size=": 10
+          "page-size": 10
         },
         options: Options(
           headers: {
@@ -120,6 +120,7 @@ class CommercialDebtsDataSourcesImplementation
           },
         ),
       );
+
       var result = ResponseBodyModel.fromMap(response.data).data?.result;
       return CommercialListDebt.fromJson(result);
     } on DioError catch (error, stackTrace) {

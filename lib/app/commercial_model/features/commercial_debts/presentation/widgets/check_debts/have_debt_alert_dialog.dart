@@ -15,6 +15,9 @@ class HaveDebtAlertDialog extends StatelessWidget {
       canPop: !state.isBlocked,
       child: AlertDialog(
         // title: const Text("title"),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,11 +64,11 @@ class HaveDebtAlertDialog extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pushNamed(
                 CommercialRouteName.commercialDebtsListScreen,
-                arguments:  {
+                arguments: {
                   "referenceId": state.commercialDebt.referenceId,
                   "transactionType": state.transactionType,
                   "transactionId": state.transactionId,
-                }
+                },
               );
             },
             child: Text("show_debts".tr()),

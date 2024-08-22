@@ -26,7 +26,7 @@ class CommercialListDebtsCubit extends Cubit<ListDebtsState> {
       // referenceId: referenceId,
       // transactionType: transactionType,
       // transactionId: transactionId,
-      pageNumber: 0,
+      pageNumber: 1,
     );
   }
 
@@ -38,7 +38,9 @@ class CommercialListDebtsCubit extends Cubit<ListDebtsState> {
   }) async {
     try {
       ListDebtsState stateType = state;
-      emit(const LoadingListDebtState());
+      if (stateType is! SucceedWithPaginationListDebtState) {
+        emit(const LoadingListDebtState());
+      }
       CommercialListDebt listDebts = await repository.getListDebts(
         transactionType: TransactionType.REQUEST,
         transactionId: transactionId,
