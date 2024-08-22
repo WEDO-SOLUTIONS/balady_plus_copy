@@ -602,8 +602,16 @@ class DgisMapController {
   Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
 }
 
+/// Extension methods for `WeekTimeSearchMessage`.
 extension WeekTimeFactory on WeekTimeSearchMessage {
-  ///get time is open now
+  /// Creates a `WeekTimeSearchMessage` instance with `isOpenNow` set to `true`.
+  ///
+  /// This method provides a convenient way to create a `WeekTimeSearchMessage`
+  /// that indicates the time is currently open. It sets the `isOpenNow` property
+  /// to `true`, which can be useful for filtering or searching purposes.
+  ///
+  /// Returns:
+  /// - [WeekTimeSearchMessage]: An instance of `WeekTimeSearchMessage` with `isOpenNow` set to `true`.
   static WeekTimeSearchMessage openNow() => WeekTimeSearchMessage(isOpenNow: true);
 }
 

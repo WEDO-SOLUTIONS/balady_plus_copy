@@ -808,29 +808,68 @@ class DgisMapPlugin extends FlutterMapApi {
     );
   }
 
+  /// Retrieves a list of available packages.
+  ///
+  /// Returns:
+  /// - [Future<List<PackageMessage?>>]: A future that completes with a list of [PackageMessage] objects,
+  /// representing the available packages.
   Future<List<PackageMessage?>> listPackages() {
     return _api.listPackages();
   }
 
+  /// Retrieves a list of available voices.
+  ///
+  /// Returns:
+  /// - [Future<List<VoiceMessage?>>]: A future that completes with a list of [VoiceMessage] objects,
+  /// representing the available voices.
   Future<List<VoiceMessage?>> listVoices() {
     return _api.listVoices();
   }
 
+  /// Plays a welcome message associated with a specific voice.
+  ///
+  /// Parameters:
+  /// - [id]: The identifier of the welcome message to be played.
+  ///
+  /// Returns:
+  /// - [Future<void>]: A future that completes when the action is done.
   Future<void> voicePlayWelcome(String id) {
     return _api.voicePlayWelcome(id);
   }
 
+  /// Installs a package based on its identifier.
+  ///
+  /// Parameters:
+  /// - [id]: The identifier of the package to be installed.
+  ///
+  /// Returns:
+  /// - [Future<void>]: A future that completes when the installation is done.
   Future<void> installPackage(String id) {
     return _api.installPackage(id);
   }
 
+  /// Installs a voice based on its identifier.
+  ///
+  /// Parameters:
+  /// - [id]: The identifier of the voice to be installed.
+  ///
+  /// Returns:
+  /// - [Future<void>]: A future that completes when the installation is done.
   Future<void> installVoice(String id) {
     return _api.installVoice(id);
   }
 
+  /// Sets the navigator's voice based on its identifier.
+  ///
+  /// Parameters:
+  /// - [id]: The identifier of the voice to be set as the navigator's voice.
+  ///
+  /// Returns:
+  /// - [Future<void>]: A future that completes when the voice is set.
   Future<void> setNavigatorVoice(String id) {
     return _api.setNavigatorVoice(id);
   }
+
 
   Future<bool> toggleHeatmap(WeatherMapMessage message) => _api.toggleHeatmap(message);
 
