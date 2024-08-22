@@ -2,7 +2,7 @@ class CommercialDebt {
   List<Debt>? debts;
   String? infoMessage;
   String status;
-  String referenceId;
+  String? referenceId;
   double totalAmount;
 
   CommercialDebt({
