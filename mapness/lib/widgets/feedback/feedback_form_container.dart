@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// Basic wrapper for feedback pages
-class FeedbackPageTemplate extends StatelessWidget {
+class FeedbackFormContainer extends StatelessWidget {
   final Widget child;
   final String title;
   final VoidCallback? onBack;
@@ -14,7 +14,7 @@ class FeedbackPageTemplate extends StatelessWidget {
   final bool isSendEnabled;
   final bool isSendVisible;
 
-  const FeedbackPageTemplate({
+  const FeedbackFormContainer({
     required this.child,
     required this.title,
     this.isSendEnabled = false,
