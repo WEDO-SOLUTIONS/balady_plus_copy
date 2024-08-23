@@ -34,7 +34,7 @@ class ParkingState extends _$ParkingState {
     await _dgisController?.setMapAttributeBool(attributeParkingOn, value: false);
 
     ref.onDispose(
-      () {
+          () {
         _dgisController?.setMapAttributeBool(attributeParkingOn, value: false);
       },
     );
