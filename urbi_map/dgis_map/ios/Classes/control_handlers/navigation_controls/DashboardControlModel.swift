@@ -118,7 +118,6 @@ class DashboardControlModel {
         }
     }
 
-
     func cancel() {
         self.cancelable.forEach { $0.cancel() }
         self.cancelable.removeAll()
