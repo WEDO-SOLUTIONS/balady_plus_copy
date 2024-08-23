@@ -768,10 +768,20 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.muteOtherSounds(mute);
   }
 
+  /// Notifies the system when traffic and parking data have been attached.
+  ///
+  /// This method is called to signal that the traffic and parking information
+  /// has been successfully linked to the map. It returns a [Future] that
+  /// completes when the operation is finished.
   Future<void> onTrafficAndParkingAttached() {
     return _api.onTrafficAndParkingAttached();
   }
 
+  /// Notifies the system when traffic and parking data have been detached.
+  ///
+  /// This method is called to signal that the traffic and parking information
+  /// has been successfully removed or unlinked from the map. It returns a [Future]
+  /// that completes when the operation is finished.
   Future<void> onTrafficAndParkingDetached() {
     return _api.onTrafficAndParkingDetached();
   }

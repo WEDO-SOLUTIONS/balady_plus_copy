@@ -9,9 +9,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'parking_state.g.dart';
 
 const parkingTypeKey = 'parking_type_key';
+const String attributeParkingOn = 'parkingOn';
+const String attributeParkingFilteredPaidOn = 'parking_filter_paid_on';
+const String attributeParkingFilteredFreeOn = 'parking_filter_free_on';
 
 @Riverpod(keepAlive: true)
 class ParkingState extends _$ParkingState {
+
   DgisMapController? _dgisController;
 
   @override
@@ -27,11 +31,11 @@ class ParkingState extends _$ParkingState {
   Future<void> _initListeners() async {
     _dgisController = await ref.read(dgisControllerProvider.future);
 
-    await _dgisController?.setMapAttributeBool('parkingOn', false);
+    await _dgisController?.setMapAttributeBool(attributeParkingOn, value: false);
 
     ref.onDispose(
       () {
-        _dgisController?.setMapAttributeBool('parkingOn', false);
+        _dgisController?.setMapAttributeBool(attributeParkingOn, value: false);
       },
     );
   }
@@ -46,9 +50,9 @@ class ParkingState extends _$ParkingState {
       visible: true,
     );
 
-    await _dgisController?.setMapAttributeBool('parkingOn', true);
-    await _dgisController?.setMapAttributeBool('parking_filter_paid_on', parkingFilter.paidOn());
-    await _dgisController?.setMapAttributeBool('parking_filter_free_on', parkingFilter.freeOn());
+    await _dgisController?.setMapAttributeBool(attributeParkingOn, value: true);
+    await _dgisController?.setMapAttributeBool(attributeParkingFilteredPaidOn, value: parkingFilter.paidOn());
+    await _dgisController?.setMapAttributeBool(attributeParkingFilteredFreeOn, value: parkingFilter.freeOn());
   }
 
   Future<void> hideParking() async {
@@ -61,6 +65,6 @@ class ParkingState extends _$ParkingState {
       visible: false,
     );
 
-    await _dgisController?.setMapAttributeBool('parkingOn', false);
+    await _dgisController?.setMapAttributeBool(attributeParkingOn, value: false);
   }
 }

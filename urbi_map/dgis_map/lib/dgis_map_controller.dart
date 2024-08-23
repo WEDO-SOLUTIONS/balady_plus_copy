@@ -599,7 +599,7 @@ class DgisMapController {
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
 
   ///Set map attribute bool
-  Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
+  Future<void> setMapAttributeBool(String name, {required bool value}) => _instance.setMapAttributeBool(name, value);
 }
 
 /// Extension methods for `WeekTimeSearchMessage`.
@@ -615,11 +615,23 @@ extension WeekTimeFactory on WeekTimeSearchMessage {
   static WeekTimeSearchMessage openNow() => WeekTimeSearchMessage(isOpenNow: true);
 }
 
+/// An enumeration representing different working hours filters.
 enum WorkingHoursFilter {
+  /// Filter to show only places that are currently open.
   isOpen,
+
+  /// No specific filter applied.
   none,
+
+  /// Filter to show only places that are open 24/7.
   isOpen24x7;
 
+  /// Converts the [WorkingHoursFilter] enum to its corresponding [WorkingFilterMessage].
+  ///
+  /// Returns:
+  /// - [WorkingFilterMessage.isOpen] if the filter is [WorkingHoursFilter.isOpen].
+  /// - [WorkingFilterMessage.none] if the filter is [WorkingHoursFilter.none].
+  /// - [WorkingFilterMessage.isOpen24x7] if the filter is [WorkingHoursFilter.isOpen24x7].
   WorkingFilterMessage toMessage() {
     switch (this) {
       case WorkingHoursFilter.isOpen:
