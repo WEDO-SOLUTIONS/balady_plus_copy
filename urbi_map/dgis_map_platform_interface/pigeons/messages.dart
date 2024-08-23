@@ -962,7 +962,7 @@ class BriefRouteInfoMessage {
 }
 
 class VoiceMessage {
-  VoiceMessage(this.language, this.packageMessage);
+  const VoiceMessage(this.language, this.packageMessage);
 
   final String language;
   final PackageMessage packageMessage;
