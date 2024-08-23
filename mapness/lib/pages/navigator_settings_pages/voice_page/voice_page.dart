@@ -40,6 +40,8 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
         .map((e) => e.packageMessage)
         .toList();
 
+    final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
@@ -90,7 +92,7 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                                 color: context.colorsV2.foregroundSoft,
                               ),
                               actionIcon: AppIcons(
-                                iconData: SystemIcons.arrowCornerRightLarge,
+                                iconData: arrowIcon,
                                 color: context.colorsV2.foregroundSoft,
                               ),
                             ),

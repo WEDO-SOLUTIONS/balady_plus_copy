@@ -57,7 +57,7 @@ class SoundSettingsModel {
 @Riverpod(keepAlive: true)
 class SoundSettings extends _$SoundSettings {
   static const _soundToggleTypesList = SoundToggleType.values;
-  static const _promptsVolumeList = AudioVolumeMessage.values;
+  static final _promptsVolumeList = AudioVolumeMessage.values.reversed.toList();
 
   @override
   SoundSettingsModel build() {
@@ -83,7 +83,11 @@ class SoundSettings extends _$SoundSettings {
       overSpeeding: prefsOverSpeeding,
     );
 
-    //toggleVoiceInstruction(currentVoiceInstruction: _defaultSoundSettings.voiceInstructionIndex);
+    toggleVoiceInstruction(currentVoiceInstruction: _defaultSoundSettings.voiceInstructionIndex);
+    toggleOverSpeeding(overSpeeding: _defaultSoundSettings.overSpeeding);
+    toggleRoadCameras(roadCameras: _defaultSoundSettings.roadCameras);
+    toggleNavigatorVolume(currentPromptVolumeIndex: _defaultSoundSettings.promptsVolumeIndex);
+    toggleBackgroundNavigation(backgroundNavigation: _defaultSoundSettings.backgroundNavigation);
 
     return _defaultSoundSettings;
   }
@@ -142,5 +146,23 @@ class SoundSettings extends _$SoundSettings {
     await ref.read(sharedPrefsProvider).setString(_voicesLanguagePrefsKey, currentVoiceLanguage);
 
     state = state.copyWith(voicesLanguage: currentVoiceLanguage);
+  }
+
+  Future<void> toggleBackgroundNavigation({required bool backgroundNavigation}) async {
+    await ref.read(sharedPrefsProvider).setBool(_backgroundNavigationPrefsKey, backgroundNavigation);
+
+    state = state.copyWith(backgroundNavigation: backgroundNavigation);
+  }
+
+  Future<void> muteNavigationSound() async {
+    final dGisController = await ref.watch(dgisControllerProvider.future);
+
+    await dGisController.toggleVoiceInstruction(toggleType: SoundToggleType.none);
+  }
+
+  Future<void> restoreNavigationSound() async {
+    final dGisController = await ref.watch(dgisControllerProvider.future);
+
+    await dGisController.toggleVoiceInstruction(toggleType: _soundToggleTypesList[state.voiceInstructionIndex]);
   }
 }

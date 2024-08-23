@@ -83,7 +83,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                             ],
                             onIndexChanged: (value) {
                               if (value != null) {
-                                //soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
+                                soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
                               }
                             },
                             initialIndex: soundSettingsModel.voiceInstructionIndex,
@@ -124,21 +124,6 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                       ],
                     ),
                     ContentRow(
-                      onToggle: (value) {
-                        soundSettingsNotifier.toggleMuteOtherSounds(mute: value);
-                      },
-                      options: ContentRowOptions(
-                        wrapperColor: context.color.surfaceBaseTertiary,
-                        wrapperEnabled: true,
-                        title: context.l10n.muffleOtherSounds,
-                        titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
-                        actionWidget: ContentRowActionOptions(
-                          enabledToggle: true,
-                          toggleInitialValue: soundSettingsModel.muffleOtherSounds,
-                        ),
-                      ),
-                    ),
-                    ContentRow(
                       options: ContentRowOptions(
                         titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
                           color: context.colorsV2.foregroundDefault,
@@ -169,8 +154,8 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                       headerTitle: context.l10n.backgroundNavigation.toUpperCase(),
                       content: [
                         ContentRow(
-                          onToggle: (_) {
-                            // soundSettingsNotifier.toggle
+                          onToggle: (value) {
+                            soundSettingsNotifier.toggleBackgroundNavigation(backgroundNavigation: value);
                           },
                           options: ContentRowOptions(
                             wrapperColor: context.color.surfaceBaseTertiary,

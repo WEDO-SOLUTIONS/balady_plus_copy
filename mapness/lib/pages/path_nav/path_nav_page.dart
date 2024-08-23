@@ -33,6 +33,7 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
@@ -66,11 +67,22 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    final isBackgroundNavigationOn = ref.watch(soundSettingsProvider).backgroundNavigation;
+    final soundSettingsNotifier = ref.watch(soundSettingsProvider.notifier);
+
     if (state == AppLifecycleState.paused) {
       saveNavigationState();
+
+      if (!isBackgroundNavigationOn) {
+        soundSettingsNotifier.muteNavigationSound();
+      }
     }
     if (state == AppLifecycleState.resumed) {
       ref.read(locationProvider.notifier).checkLocationPermission();
+
+      if (!isBackgroundNavigationOn) {
+        soundSettingsNotifier.restoreNavigationSound();
+      }
     }
   }
 
