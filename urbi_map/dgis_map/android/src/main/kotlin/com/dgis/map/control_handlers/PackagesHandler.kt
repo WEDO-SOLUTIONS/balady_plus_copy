@@ -1,6 +1,7 @@
 package com.dgis.map.control_handlers
 
 import com.dgis.map.extensions.toMessage
+import com.dgis.map.extensions.toVoiceMessage
 import com.dgis.map.map_api.Messages
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
@@ -80,8 +81,13 @@ class PackagesHandler(
         result?.success(packageManager.packages.map { it.toMessage() }.toList())
     }
 
-    fun listVoices(result: Messages.Result<List<Messages.PackageMessage>>?) {
-        result?.success(voiceManager.voices.map { it.toMessage() }.toList())
+    fun listVoices(result: Messages.Result<List<Messages.VoiceMessage>>?) {
+        result?.success(voiceManager.voices.map { it.toVoiceMessage() }.toList())
+    }
+
+    fun voicePlayWelcome(id: String, result: Messages.Result<Void>?) {
+        voiceManager.voices.find { it.id == id }?.playWelcome()
+        result?.success(null)
     }
 
     fun installPackage(id: String, result: Messages.Result<Void>?) {

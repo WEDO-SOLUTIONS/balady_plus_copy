@@ -111,8 +111,12 @@ class PackagesHandler {
         completion(nil)
     }
     
-    func listVoices(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
-        completion(voiceManager.voices.map { $0.toMessage() }, nil)
+    func listVoices(completion: @escaping ([VoiceMessage]?, FlutterError?) -> Void) {
+        completion(voiceManager.voices.map { $0.toVoiceMessage() }, nil)
+    }
+    
+    func voicePlayWelcome(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        completion(nil)
     }
     
     func installVoice(_ id: String, completion: @escaping (FlutterError?) -> Void) {

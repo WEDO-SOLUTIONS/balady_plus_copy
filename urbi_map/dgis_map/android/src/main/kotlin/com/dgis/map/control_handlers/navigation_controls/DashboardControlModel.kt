@@ -1,11 +1,16 @@
 package com.dgis.map.control_handlers.navigation_controls;
 
+import android.util.Log
+import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.Messages.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.navigation.Model
 import ru.dgis.sdk.navigation.NavigationManager
 import ru.dgis.sdk.navigation.SoundCategory
 import ru.dgis.sdk.navigation.duration
+import ru.dgis.sdk.navigation.mute
+import ru.dgis.sdk.navigation.notificationVolume
 import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.meters
 import ru.dgis.sdk.routing.minus
@@ -22,7 +27,6 @@ class DashboardControlModel(
     private var routeLength: RouteDistance = RouteDistance(0)
 
     companion object {
-        private val allSounds = SoundCategory.values()
         private val dateFormat = SimpleDateFormat("HH:mm")
     }
     
@@ -57,13 +61,75 @@ class DashboardControlModel(
             )
         )
     }
-    
-    fun toggleSounds(enabled: Boolean) {
-        if (enabled) {
-            this.navigationManager.soundNotificationSettings.enabledSoundCategories = EnumSet.allOf(SoundCategory::class.java)
-        } else {
-            this.navigationManager.soundNotificationSettings.enabledSoundCategories = EnumSet.noneOf(SoundCategory::class.java);
+
+    fun setNavigatorVolume(volume: Messages.AudioVolumeMessage) {
+        this.navigationManager.soundNotificationSettings.notificationVolume = ru.dgis.sdk.navigation.AudioVolume.valueOf(volume.name)
+    }
+
+    fun muteOtherSounds(mute: Boolean) {
+        //TODO(Ayat) Waited in Sdk for add muteOtherSounds in Android
+    }
+
+    fun toggleVoiceInstruction(toggleType: SoundToggleType) {
+        val currentCategories = this.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+        val updatedCategories = when (toggleType) {
+            SoundToggleType.NONE -> {
+                EnumSet.noneOf(SoundCategory::class.java).apply {
+                    addAll(currentCategories)
+                    removeAll(EnumSet.allOf(SoundCategory::class.java))
+                }
+            }
+            SoundToggleType.ALL -> {
+                EnumSet.allOf(SoundCategory::class.java).apply {
+                    addAll(currentCategories)
+                }
+            }
+            SoundToggleType.IMPORTANT -> {
+                EnumSet.copyOf(currentCategories).apply {
+                    remove(SoundCategory.INSTRUCTIONS)
+                }
+            }
         }
+
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories = updatedCategories
+    }
+
+    fun toggleOverSpeeding(overSpeeding: Boolean) {
+        val currentCategories = this.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+        val updatedCategories = EnumSet.copyOf(currentCategories).apply {
+            if (overSpeeding) {
+                add(SoundCategory.EXCEED_SPEED_LIMITS)
+            } else {
+                remove(SoundCategory.EXCEED_SPEED_LIMITS)
+            }
+        }
+
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories = updatedCategories
+    }
+
+    fun toggleRoadCameras(roadCameras: Boolean) {
+        val currentCategories = this.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+        val roadCameraCategories = EnumSet.of(
+            SoundCategory.CROSSROAD_CAMERAS,
+            SoundCategory.LANE_CAMERAS,
+            SoundCategory.NO_STOPPING_CONTROL_CAMERAS,
+            SoundCategory.ROAD_MARKING_CAMERAS,
+            SoundCategory.AVERAGE_SPEED_CAMERAS,
+            SoundCategory.MAX_SPEED_CAMERAS
+        )
+
+        val updatedCategories = EnumSet.copyOf(currentCategories).apply {
+            if (roadCameras) {
+                removeAll(roadCameraCategories)
+            } else {
+                addAll(roadCameraCategories)
+            }
+        }
+
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories = updatedCategories
     }
 
     override fun close() {

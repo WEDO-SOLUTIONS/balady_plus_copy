@@ -961,6 +961,13 @@ class BriefRouteInfoMessage {
   final BriefExtraRouteInfoMessage extraInfo;
 }
 
+class VoiceMessage {
+  const VoiceMessage(this.language, this.packageMessage);
+
+  final String language;
+  final PackageMessage packageMessage;
+}
+
 class PackageMessage {
   PackageMessage(this.id, this.info);
 
@@ -1051,6 +1058,29 @@ class SpeedRangeZoom {
   final double styleZoomValue;
 }
 
+/// Represents the types of sound toggles.
+///
+/// The [SoundToggleType] enum defines three types of sound toggles:
+/// - [none]: Represents no sound toggle.
+/// - [important]: Represents an important sound toggle.
+/// - [all]: Represents all sound toggle.
+enum SoundToggleType {
+  /// Represents no sound toggle.
+  none,
+
+  /// Represents an important sound toggle.
+  important,
+
+  /// Represents all sound toggle.
+  all,
+}
+
+enum AudioVolumeMessage {
+  standard,
+  low,
+  minimal,
+}
+
 /// Settings for better route searching
 /// [routeSearchDelay] - delay (in seconds) before searching for alternative routes when starting a trip on a route or after switching
 /// to another route. Must be not less than 5 seconds
@@ -1059,15 +1089,14 @@ class SpeedRangeZoom {
 /// [betterRouteLengthThreshold] - minimum total length (in millimeters) of route edges that differ between the original route
 /// and the alternative route at which the alternative route is considered a better route
 class BetterRouteSettingsMessage {
-  final int betterRouteTimeCostThreshold;
-  final int betterRouteLengthThreshold;
-  final int routeSearchDelay;
-
   const BetterRouteSettingsMessage({
     required this.betterRouteTimeCostThreshold,
     required this.betterRouteLengthThreshold,
     required this.routeSearchDelay,
   });
+  final int betterRouteTimeCostThreshold;
+  final int betterRouteLengthThreshold;
+  final int routeSearchDelay;
 }
 
 @ConfigurePigeon(
@@ -1368,7 +1397,19 @@ abstract class MapApi {
   void setPublicTransportActiveRoute(int routeIndex);
 
   @async
-  void toggleSound(bool enabled);
+  void toggleVoiceInstruction(SoundToggleType toggleType);
+
+  @async
+  void toggleRoadCameras(bool toggleType);
+
+  @async
+  void toggleOverSpeeding(bool toggleType);
+
+  @async
+  void muteOtherSounds(bool mute);
+
+  @async
+  void setNavigatorVolume(AudioVolumeMessage volume);
 
   @async
   void onTrafficAndParkingAttached();
@@ -1414,7 +1455,10 @@ abstract class MapApi {
   List<PackageMessage?> listPackages();
 
   @async
-  List<PackageMessage?> listVoices();
+  List<VoiceMessage?> listVoices();
+
+  @async
+  void voicePlayWelcome(String id);
 
   @async
   void installPackage(String id);
