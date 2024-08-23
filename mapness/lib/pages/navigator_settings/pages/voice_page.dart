@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/pages/navigator_settings_pages/voice_page/widgets/language_pick_sheet.dart';
-import 'package:mapness/pages/navigator_settings_pages/voice_page/widgets/voice_row_widget.dart';
+import 'package:mapness/app/routes/navigator_settings.dart';
+import 'package:mapness/pages/navigator_settings/components/voice_row_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_packages.dart';
@@ -42,20 +42,23 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
 
     final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
 
+    final colorsV2 = context.colorsV2;
+    final l10n = context.l10n;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: Material(
-          color: context.colorsV2.backgroundSurface4,
+          color: colorsV2.backgroundSurface4,
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
               appBar: BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-                title: context.l10n.voice,
+                title: l10n.voice,
                 textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                  color: colorsV2.foregroundDefault,
                 ),
                 leading: ActionModel(
                   onPressed: () => context.pop(),
@@ -68,32 +71,22 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ContentColumn(
-                      headerTitle: context.l10n.languageSelection,
+                      headerTitle: l10n.languageSelection,
                       content: [
                         ContentRow(
-                          onTap: () {
-                            showModalBottomSheet(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(RadiusBorder.xl),
-                                ),
-                              ),
-                              context: context,
-                              builder: (_) => const LanguagePickSheet(),
-                            );
-                          },
+                          onTap: () => LanguagePickSheetRoute.open(context),
                           options: ContentRowOptions(
-                            wrapperColor: context.colorsV2.backgroundSurface1,
+                            wrapperColor: colorsV2.backgroundSurface1,
                             wrapperEnabled: true,
-                            title: context.l10n.language,
+                            title: l10n.language,
                             actionWidget: ContentRowActionOptions(
                               actionText: _getCurrentLanguageTitle(context, language),
                               actionTextStyle: context.textStyle.footNote.copyWith(
-                                color: context.colorsV2.foregroundSoft,
+                                color: colorsV2.foregroundSoft,
                               ),
                               actionIcon: AppIcons(
                                 iconData: arrowIcon,
-                                color: context.colorsV2.foregroundSoft,
+                                color: colorsV2.foregroundSoft,
                               ),
                             ),
                           ),
@@ -102,10 +95,10 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                     ),
                     if (installedVoices.isNotEmpty)
                       ContentColumn(
-                        headerTitle: context.l10n.downloadedTitle,
+                        headerTitle: l10n.downloadedTitle,
                         content: [
                           ContentWrapper(
-                            color: context.colorsV2.backgroundSurface1,
+                            color: colorsV2.backgroundSurface1,
                             children: installedVoices
                                 .map((e) => VoiceRowWidget(package: e))
                                 .cast<Widget>()
@@ -116,7 +109,7 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                                     ),
                                     child: Divider(
                                       height: 0.5,
-                                      color: context.colorsV2.borderSoft,
+                                      color: colorsV2.borderSoft,
                                       thickness: 1,
                                       indent: 0,
                                       endIndent: 0,
@@ -129,10 +122,10 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                       ),
                     if (unInstalledVoices.isNotEmpty)
                       ContentColumn(
-                        headerTitle: context.l10n.availableForDownloadingTitle,
+                        headerTitle: l10n.availableForDownloadingTitle,
                         content: [
                           ContentWrapper(
-                            color: context.colorsV2.backgroundSurface1,
+                            color: colorsV2.backgroundSurface1,
                             children: unInstalledVoices
                                 .map(
                                   (e) => VoiceRowWidget(package: e),
@@ -145,7 +138,7 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                                     ),
                                     child: Divider(
                                       height: 0.5,
-                                      color: context.colorsV2.borderSoft,
+                                      color: colorsV2.borderSoft,
                                       thickness: 1,
                                       indent: 0,
                                       endIndent: 0,

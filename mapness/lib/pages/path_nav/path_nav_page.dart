@@ -76,8 +76,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       if (!isBackgroundNavigationOn) {
         soundSettingsNotifier.muteNavigationSound();
       }
-    }
-    if (state == AppLifecycleState.resumed) {
+    } else if (state == AppLifecycleState.resumed) {
       ref.read(locationProvider.notifier).checkLocationPermission();
 
       if (!isBackgroundNavigationOn) {

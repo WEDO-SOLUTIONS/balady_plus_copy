@@ -22,7 +22,7 @@ class DgisPackages extends _$DgisPackages {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class VoicePackages extends _$VoicePackages {
   @override
   List<VoiceMessage> build() {

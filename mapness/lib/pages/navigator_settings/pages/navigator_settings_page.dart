@@ -27,21 +27,26 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
   Widget build(BuildContext context) {
     final dark = ref.watch(darkModeProvider);
     final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
+    final colorsV2 = context.colorsV2;
+    final l10n = context.l10n;
+    final color = context.color;
+    final textStyleV3 = context.textStyleV3;
+    final textStyle = context.textStyle;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: Material(
-          color: context.colorsV2.backgroundSurface4,
+          color: colorsV2.backgroundSurface4,
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
               appBar: BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-                title: context.l10n.navigatorSettings,
-                textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                title: l10n.navigatorSettings,
+                textStyle: textStyleV3.bodyLargeSemiBold.copyWith(
+                  color: colorsV2.foregroundDefault,
                 ),
                 leading: ActionModel(
                   onPressed: () => context.pop(),
@@ -54,7 +59,7 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ContentColumn(
-                      headerTitle: context.l10n.mapStyle,
+                      headerTitle: l10n.mapStyle,
                       content: [
                         ContentRow(
                           onToggle: (_) {
@@ -67,10 +72,10 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                                 });
                           },
                           options: ContentRowOptions(
-                            wrapperColor: context.color.surfaceBaseTertiary,
+                            wrapperColor: color.surfaceBaseTertiary,
                             wrapperEnabled: true,
-                            title: context.l10n.darkMap,
-                            titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                            title: l10n.darkMap,
+                            titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
                             actionWidget: ContentRowActionOptions(
                               enabledToggle: true,
                               toggleInitialValue: dark,
@@ -80,21 +85,21 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                       ],
                     ),
                     ContentColumn(
-                      headerTitle: context.l10n.soundAndAlerts,
+                      headerTitle: l10n.soundAndAlerts,
                       content: [
                         ContentRow(
                           onTap: () => const SoundSettingsRoute().push(context),
                           options: ContentRowOptions(
-                            titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                              color: context.colorsV2.foregroundDefault,
+                            titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                              color: colorsV2.foregroundDefault,
                             ),
-                            wrapperColor: context.color.surfaceBaseTertiary,
+                            wrapperColor: color.surfaceBaseTertiary,
                             wrapperEnabled: true,
-                            title: context.l10n.soundSettings,
+                            title: l10n.soundSettings,
                             actionWidget: ContentRowActionOptions(
                               actionIcon: AppIcons(
                                 iconData: arrowIcon,
-                                color: context.colorsV2.foregroundSoft,
+                                color: colorsV2.foregroundSoft,
                               ),
                             ),
                           ),
@@ -102,19 +107,19 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                       ],
                     ),
                     ContentColumn(
-                      headerTitle: context.l10n.roadEvents,
+                      headerTitle: l10n.roadEvents,
                       content: [
                         ContentRow(
                           onToggle: (_) {},
                           options: ContentRowOptions(
-                            wrapperColor: context.color.surfaceBaseTertiary,
+                            wrapperColor: color.surfaceBaseTertiary,
                             wrapperEnabled: true,
                             leadingIcon: Assets.icons.maneuver.roadEventCam.svg(
                               package: packageName,
                               fit: BoxFit.fill,
                             ),
-                            title: context.l10n.speedCameras,
-                            titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                            title: l10n.speedCameras,
+                            titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
                             actionWidget: ContentRowActionOptions(
                               enabledToggle: true,
                               toggleInitialValue: dark,

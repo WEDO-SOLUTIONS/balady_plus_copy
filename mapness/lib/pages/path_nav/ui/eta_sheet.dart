@@ -10,18 +10,14 @@ import 'package:mapness/app/routes/navigator_settings.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
-
 import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/dgis_packages.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
-import 'package:mapness/shared/providers/navigator_voice.dart';
 
 import 'layout_size_wrapper.dart';
 
@@ -67,21 +63,17 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
 
   @override
   Widget build(BuildContext context) {
-    String? voiceName;
     final eta = ref.watch(pathNavEtaProvider);
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
     final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
-    final selectedVoice = ref.watch(navigatorVoiceProvider);
+    final voiceName = soundSettingsModel.voiceName;
+    final l10n = context.l10n;
+    final colorsV2 = context.colorsV2;
+    final color = context.color;
+    final textStyleV3 = context.textStyleV3;
 
-    final voicePackages = ref.watch(voicePackagesProvider);
-
-    if (voicePackages.isNotEmpty) {
-      voiceName = voicePackages.map((e) => e.packageMessage).where((e) => e.id == selectedVoice).first.info.name;
-    }
-
-    final _subtitleVoiceInstruction =
-        voiceName != null ? '${context.l10n.announcedEvents} • $voiceName' : context.l10n.announcedEvents;
+    final _subtitleVoiceInstruction = voiceName != null ? '${l10n.announcedEvents} • $voiceName' : l10n.announcedEvents;
 
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
@@ -89,17 +81,17 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       betterRouteDurationProfit: widget.betterRouteDurationProfit,
       onBetterRouteAccept: widget.onBetterRouteAccept,
       onBetterRouteReject: widget.onBetterRouteReject,
-      backgroundColor: context.colorsV2.backgroundSurface4,
+      backgroundColor: colorsV2.backgroundSurface4,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
-          contentColor: context.colorsV2.backgroundSurface4,
+          contentColor: colorsV2.backgroundSurface4,
           enabledHeader: _isExpanded,
           distanceChild: NaviChildModel(
             description: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
             title: eta != null ? formatDistance(eta.distanceEta) : '--',
           ),
           arrivalChild: NaviChildModel(
-            description: context.l10n.arrival,
+            description: l10n.arrival,
             title: eta != null ? eta.arrivalTime : '--',
           ),
           drivingChild: NaviChildModel(
@@ -110,15 +102,15 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ContentRow(
               onTap: () => const SoundSettingsRoute().push(context),
               options: ContentRowOptions(
-                subtitleStyle: context.textStyleV3.bodySmallRegular.copyWith(
-                  color: context.color.textAndIconsBaseSecondary,
+                subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
+                  color: color.textAndIconsBaseSecondary,
                 ),
-                titleStyle: context.textStyleV3.bodyLargeMedium.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                titleStyle: textStyleV3.bodyLargeMedium.copyWith(
+                  color: colorsV2.foregroundDefault,
                 ),
-                wrapperColor: context.color.surfaceBaseTertiary,
+                wrapperColor: color.surfaceBaseTertiary,
                 wrapperEnabled: true,
-                title: context.l10n.voiceInstruction,
+                title: l10n.voiceInstruction,
                 subtitle: _subtitleVoiceInstruction,
                 padding: const EdgeInsets.symmetric(
                   vertical: Spacing.$4x,
@@ -127,14 +119,14 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: arrowIcon,
-                    color: context.color.textAndIconsBaseTertiary,
+                    color: color.textAndIconsBaseTertiary,
                   ),
                 ),
                 bottomWidget: SegmentTabsButton(
                   tabsContent: [
-                    TabsRowV2Content(title: context.l10n.segmentButtonOffTitle),
-                    TabsRowV2Content(title: context.l10n.segmentButtonImportantTitle),
-                    TabsRowV2Content(title: context.l10n.segmentButtonAllTitle),
+                    TabsRowV2Content(title: l10n.segmentButtonOffTitle),
+                    TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
+                    TabsRowV2Content(title: l10n.segmentButtonAllTitle),
                   ],
                   onIndexChanged: (value) {
                     if (value != null) {
@@ -148,15 +140,15 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ContentRow(
               onTap: () => const NavigatorSettingsRoute().push(context),
               options: ContentRowOptions(
-                titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                  color: colorsV2.foregroundDefault,
                 ),
-                wrapperColor: context.color.surfaceBaseTertiary,
+                wrapperColor: color.surfaceBaseTertiary,
                 wrapperEnabled: true,
-                title: context.l10n.navigatorSettings,
+                title: l10n.navigatorSettings,
                 leadingIcon: Icon(
                   SystemIcons.settings,
-                  color: context.color.textAndIconsBaseSecondary,
+                  color: color.textAndIconsBaseSecondary,
                 ),
                 padding: const EdgeInsets.symmetric(
                   vertical: Spacing.$3x,
@@ -165,7 +157,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: arrowIcon,
-                    color: context.color.textAndIconsBaseTertiary,
+                    color: color.textAndIconsBaseTertiary,
                   ),
                 ),
               ),
@@ -179,7 +171,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 bottom: Spacing.$3x,
               ),
               buttonColorScheme: ButtonColorScheme.warning,
-              primaryLabel: context.l10n.endTrip,
+              primaryLabel: l10n.endTrip,
               onTap: widget.onEndTripPressed,
             )
           ],

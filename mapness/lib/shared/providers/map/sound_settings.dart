@@ -2,7 +2,10 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import 'dgis_packages.dart';
 
 part 'sound_settings.g.dart';
 
@@ -22,6 +25,7 @@ class SoundSettingsModel {
   final bool roadCameras;
   final bool overSpeeding;
   final String voicesLanguage;
+  final String? voiceName;
 
   const SoundSettingsModel({
     required this.voicesLanguage,
@@ -31,6 +35,7 @@ class SoundSettingsModel {
     this.backgroundNavigation = true,
     this.roadCameras = true,
     this.overSpeeding = true,
+    this.voiceName,
   });
 
   SoundSettingsModel copyWith({
@@ -51,6 +56,7 @@ class SoundSettingsModel {
         roadCameras: roadCameras ?? this.roadCameras,
         overSpeeding: overSpeeding ?? this.overSpeeding,
         voicesLanguage: voicesLanguage ?? this.voicesLanguage,
+        voiceName: voiceName ?? this.voiceName,
       );
 }
 
@@ -63,6 +69,15 @@ class SoundSettings extends _$SoundSettings {
   SoundSettingsModel build() {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     final language = ref.watch(appLanguageProvider);
+    String? voiceName;
+
+    final selectedVoice = ref.read(navigatorVoiceProvider);
+
+    final voicePackages = ref.watch(voicePackagesProvider);
+
+    if (voicePackages.isNotEmpty) {
+      voiceName = voicePackages.map((e) => e.packageMessage).where((e) => e.id == selectedVoice).first.info.name;
+    }
 
     final voicesLanguage = sharedPrefs.getString(_voicesLanguagePrefsKey) ?? language.locale.languageCode;
     final prefsVoiceInstructionIndex = sharedPrefs.getInt(_voiceInstructionIndexPrefsKey);
@@ -81,6 +96,7 @@ class SoundSettings extends _$SoundSettings {
       backgroundNavigation: prefsBackgroundNavigation,
       roadCameras: prefsRoadCameras,
       overSpeeding: prefsOverSpeeding,
+      voiceName: voiceName,
     );
 
     toggleVoiceInstruction(currentVoiceInstruction: _defaultSoundSettings.voiceInstructionIndex);

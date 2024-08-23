@@ -26,21 +26,25 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
     final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
+    final colorsV2 = context.colorsV2;
+    final l10n = context.l10n;
+    final textStyleV3 = context.textStyleV3;
+    final color = context.color;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: Material(
-          color: context.colorsV2.backgroundSurface4,
+          color: colorsV2.backgroundSurface4,
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
               appBar: BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-                title: context.l10n.soundSettings,
-                textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                title: l10n.soundSettings,
+                textStyle: textStyleV3.bodyLargeSemiBold.copyWith(
+                  color: colorsV2.foregroundDefault,
                 ),
                 leading: ActionModel(
                   onPressed: () => context.pop(),
@@ -53,15 +57,15 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ContentWrapper(
-                      color: context.color.surfaceBaseTertiary,
+                      color: color.surfaceBaseTertiary,
                       children: [
                         ContentRow(
                           options: ContentRowOptions(
-                            subtitleStyle: context.textStyleV3.bodySmallRegular.copyWith(
-                              color: context.color.textAndIconsBaseSecondary,
+                            subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
+                              color: color.textAndIconsBaseSecondary,
                             ),
-                            titleStyle: context.textStyleV3.bodyLargeMedium.copyWith(
-                              color: context.colorsV2.foregroundDefault,
+                            titleStyle: textStyleV3.bodyLargeMedium.copyWith(
+                              color: colorsV2.foregroundDefault,
                             ),
                             padding: const EdgeInsets.only(
                               top: Spacing.$4x,
@@ -69,17 +73,17 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                               right: Spacing.$4x,
                               left: Spacing.$4x,
                             ),
-                            title: context.l10n.voiceInstruction,
-                            subtitle: context.l10n.announcedEvents,
+                            title: l10n.voiceInstruction,
+                            subtitle: l10n.announcedEvents,
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                           child: SegmentTabsButton(
                             tabsContent: [
-                              TabsRowV2Content(title: context.l10n.segmentButtonOffTitle),
-                              TabsRowV2Content(title: context.l10n.segmentButtonImportantTitle),
-                              TabsRowV2Content(title: context.l10n.segmentButtonAllTitle),
+                              TabsRowV2Content(title: l10n.segmentButtonOffTitle),
+                              TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
+                              TabsRowV2Content(title: l10n.segmentButtonAllTitle),
                             ],
                             onIndexChanged: (value) {
                               if (value != null) {
@@ -96,7 +100,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                           ),
                           child: Divider(
                             height: 0.5,
-                            color: context.colorsV2.borderSoft,
+                            color: colorsV2.borderSoft,
                             thickness: 1,
                             indent: 0,
                             endIndent: 0,
@@ -105,41 +109,44 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                         ContentRow(
                           onTap: () => const VoiceSettingsRoute().push(context),
                           options: ContentRowOptions(
-                            wrapperColor: context.color.surfaceBaseTertiary,
+                            wrapperColor: color.surfaceBaseTertiary,
                             wrapperEnabled: true,
                             padding: const EdgeInsets.symmetric(
                               vertical: Spacing.$3x,
                               horizontal: Spacing.$4x,
                             ),
-                            title: context.l10n.voice,
-                            titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                            title: l10n.voice,
+                            titleStyle: context.textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
                             actionWidget: ContentRowActionOptions(
-                              actionIcon: AppIcons(
-                                iconData: arrowIcon,
-                                color: context.colorsV2.foregroundSoft,
-                              ),
-                            ),
+                                actionIcon: AppIcons(
+                                  iconData: arrowIcon,
+                                  color: colorsV2.foregroundSoft,
+                                ),
+                                actionText: soundSettingsModel.voiceName,
+                                actionTextStyle: textStyleV3.bodySmallMedium.copyWith(
+                                  color: colorsV2.foregroundSoft,
+                                )),
                           ),
                         ),
                       ],
                     ),
                     ContentRow(
                       options: ContentRowOptions(
-                        titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                          color: context.colorsV2.foregroundDefault,
+                        titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                          color: colorsV2.foregroundDefault,
                         ),
-                        wrapperColor: context.color.surfaceBaseTertiary,
+                        wrapperColor: color.surfaceBaseTertiary,
                         wrapperEnabled: true,
-                        title: context.l10n.promptsVolume,
+                        title: l10n.promptsVolume,
                         padding: const EdgeInsets.symmetric(
                           vertical: Spacing.$3x,
                           horizontal: Spacing.$4x,
                         ),
                         bottomWidget: SegmentTabsButton(
                           tabsContent: [
-                            TabsRowV2Content(title: context.l10n.segmentButtonMinimumTitle),
-                            TabsRowV2Content(title: context.l10n.segmentButtonQuietTitle),
-                            TabsRowV2Content(title: context.l10n.segmentButtonStandardTitle),
+                            TabsRowV2Content(title: l10n.segmentButtonMinimumTitle),
+                            TabsRowV2Content(title: l10n.segmentButtonQuietTitle),
+                            TabsRowV2Content(title: l10n.segmentButtonStandardTitle),
                           ],
                           onIndexChanged: (value) {
                             if (value != null) {
@@ -151,18 +158,18 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                       ),
                     ),
                     ContentColumn(
-                      headerTitle: context.l10n.backgroundNavigation.toUpperCase(),
+                      headerTitle: l10n.backgroundNavigation.toUpperCase(),
                       content: [
                         ContentRow(
                           onToggle: (value) {
                             soundSettingsNotifier.toggleBackgroundNavigation(backgroundNavigation: value);
                           },
                           options: ContentRowOptions(
-                            wrapperColor: context.color.surfaceBaseTertiary,
+                            wrapperColor: color.surfaceBaseTertiary,
                             wrapperEnabled: true,
-                            title: context.l10n.backgroundNavigation,
-                            titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                              color: context.color.textAndIconsBasePrimary,
+                            title: l10n.backgroundNavigation,
+                            titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                              color: color.textAndIconsBasePrimary,
                             ),
                             actionWidget: ContentRowActionOptions(
                               enabledToggle: true,
@@ -173,10 +180,10 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                       ],
                     ),
                     ContentColumn(
-                      headerTitle: context.l10n.eventAlert,
+                      headerTitle: l10n.eventAlert,
                       content: [
                         ContentWrapper(
-                          color: context.color.surfaceBaseTertiary,
+                          color: color.surfaceBaseTertiary,
                           children: [
                             ContentRow(
                               onToggle: (value) {
@@ -187,8 +194,8 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                                   enabledToggle: true,
                                   toggleInitialValue: soundSettingsModel.roadCameras,
                                 ),
-                                titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                                  color: context.colorsV2.foregroundDefault,
+                                titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                                  color: colorsV2.foregroundDefault,
                                 ),
                                 padding: const EdgeInsets.only(
                                   top: Spacing.$4x,
@@ -196,7 +203,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                                   right: Spacing.$4x,
                                   left: Spacing.$4x,
                                 ),
-                                title: context.l10n.roadCameras,
+                                title: l10n.roadCameras,
                               ),
                             ),
                             Padding(
@@ -205,7 +212,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                               ),
                               child: Divider(
                                 height: 0.5,
-                                color: context.colorsV2.borderSoft,
+                                color: colorsV2.borderSoft,
                                 thickness: 1,
                                 indent: 0,
                                 endIndent: 0,
@@ -220,21 +227,21 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                                   enabledToggle: true,
                                   toggleInitialValue: soundSettingsModel.overSpeeding,
                                 ),
-                                titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                                  color: context.colorsV2.foregroundDefault,
+                                titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                                  color: colorsV2.foregroundDefault,
                                 ),
-                                subtitleStyle: context.textStyleV3.bodySmallRegular.copyWith(
-                                  color: context.colorsV2.foregroundSoft,
+                                subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
+                                  color: colorsV2.foregroundSoft,
                                 ),
                                 subtitleMaxlines: 2,
-                                subtitle: context.l10n.overSpeedingSubtitle,
+                                subtitle: l10n.overSpeedingSubtitle,
                                 padding: const EdgeInsets.only(
                                   top: Spacing.$3x,
                                   bottom: Spacing.$3x,
                                   right: Spacing.$4x,
                                   left: Spacing.$4x,
                                 ),
-                                title: context.l10n.overSpeeding,
+                                title: l10n.overSpeeding,
                               ),
                             ),
                           ],
