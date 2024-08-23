@@ -15,7 +15,6 @@ const String attributeParkingFilteredFreeOn = 'parking_filter_free_on';
 
 @Riverpod(keepAlive: true)
 class ParkingState extends _$ParkingState {
-
   DgisMapController? _dgisController;
 
   @override
@@ -34,7 +33,7 @@ class ParkingState extends _$ParkingState {
     await _dgisController?.setMapAttributeBool(attributeParkingOn, value: false);
 
     ref.onDispose(
-          () {
+      () {
         _dgisController?.setMapAttributeBool(attributeParkingOn, value: false);
       },
     );
