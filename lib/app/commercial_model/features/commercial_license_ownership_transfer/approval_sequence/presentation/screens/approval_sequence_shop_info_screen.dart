@@ -43,27 +43,18 @@ class _ApprovalSequenceShopInfoScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    Future.microtask(() {
-      bloc = context.read<RequestApprovalSequenceCubit>();
-      context.read()<CommercialDebtsCubit>().checkDebts(
-        1,
-        bloc!.requestNumber!,
-      );
-
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     bloc = context.read<RequestApprovalSequenceCubit>();
-    return BlocBuilder<RequestApprovalSequenceCubit,
-        RequestApprovalSequenceState>(builder: (blocContext, state) {
-      return CommercialDebtsScreen(
-        transactionType: TransactionType.REQUEST,
-        transactionId: bloc!.requestNumber!,
-        steps: const [OwnershipTransferSteps.saveShopInfo],
-        child: Column(
+    return CommercialDebtsScreen(
+      transactionType: TransactionType.REQUEST,
+      transactionId: bloc!.requestNumber!,
+      steps: const [OwnershipTransferSteps.saveShopInfo],
+      child: BlocBuilder<RequestApprovalSequenceCubit,
+          RequestApprovalSequenceState>(builder: (blocContext, state) {
+        return Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
@@ -145,8 +136,8 @@ class _ApprovalSequenceShopInfoScreenState
                     ),
             )
           ],
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 }

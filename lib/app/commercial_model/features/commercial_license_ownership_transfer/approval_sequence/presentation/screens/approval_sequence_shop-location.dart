@@ -38,16 +38,9 @@ class _ApprovalSequenceShopLocationScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-
     Future.microtask(() {
       context.read<RequestApprovalSequenceCubit>().InitForm();
       context.read<RequestApprovalSequenceCubit>().getDeedOwnerShipsTypes();
-      RequestApprovalSequenceCubit bloc =
-          context.read<RequestApprovalSequenceCubit>();
-      context.read<CommercialDebtsCubit>().checkDebts(
-            2,
-            bloc.requestNumber!,
-          );
     });
   }
 

@@ -39,12 +39,9 @@ class _ApprovalSequencePermitsScreenState
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() {
-
       bloc = context.read<RequestApprovalSequenceCubit>();
       bloc!.getRequestPermits(bloc!.requestNumber!);
-
     });
   }
 

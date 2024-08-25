@@ -35,14 +35,6 @@ class _ApprovalSequenceAttachmentsScreenState
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      RequestApprovalSequenceCubit bloc =
-      context.read<RequestApprovalSequenceCubit>();
-      context.read<CommercialDebtsCubit>().checkDebts(
-        3,
-        bloc.requestNumber!,
-      );
-    });
   }
 
   @override
@@ -207,7 +199,8 @@ class _ApprovalSequenceAttachmentsScreenState
                                             {
                                               Navigator.of(context).pop(true),
                                               Navigator.of(context).pushNamed(
-                                                CommercialRouteName.SucessfullScreen,
+                                                CommercialRouteName
+                                                    .SucessfullScreen,
                                                 arguments: {
                                                   "requestId": "$requestId",
                                                   "isFromRequest": false

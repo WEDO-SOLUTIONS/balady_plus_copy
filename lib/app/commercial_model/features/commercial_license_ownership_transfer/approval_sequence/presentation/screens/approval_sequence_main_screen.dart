@@ -50,12 +50,13 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask(() {
-    });
   }
+
   @override
   Widget build(BuildContext context) {
-    RequestOwnershipTransferDetailsCubit requestOwnershipTransferDetailsCubit = ModalRoute.of(context)!.settings.arguments as RequestOwnershipTransferDetailsCubit;
+    RequestOwnershipTransferDetailsCubit requestOwnershipTransferDetailsCubit =
+        ModalRoute.of(context)!.settings.arguments
+            as RequestOwnershipTransferDetailsCubit;
     String requestNumber = requestOwnershipTransferDetailsCubit.requestID!;
     return WillPopScope(
       onWillPop: () async {
