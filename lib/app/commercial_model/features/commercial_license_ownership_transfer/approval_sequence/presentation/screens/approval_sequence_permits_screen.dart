@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/check_debts/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
@@ -46,18 +48,26 @@ class _ApprovalSequencePermitsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return getBody();
+    return CommercialDebtsScreen(
+      transactionType: TransactionType.REQUEST,
+      transactionId: bloc!.requestNumber!,
+      steps: const [
+        OwnershipTransferSteps.permitsNewOwner,
+      ],
+      child: getBody(),
+    );
   }
 
   Widget getBody() {
     return BlocConsumer<RequestApprovalSequenceCubit,
         RequestApprovalSequenceState>(
-      listener: (bC,states) {
+      listener: (bC, states) {
         if (states is GetPermitsSucceedState) {
           final permitsList = states.permitsList;
           for (var index = 0; index < permitsList.permits!.length; index++) {
             permitsList.permits![index].selected = true;
-            if (lstPermits.contains(permitsList.permits![index].requestId!) == false) {
+            if (lstPermits.contains(permitsList.permits![index].requestId!) ==
+                false) {
               lstPermits.add(permitsList.permits![index].requestId!);
             }
           }
@@ -198,8 +208,10 @@ class _ApprovalSequencePermitsScreenState
                                               ? "tranfer_permit".tr()
                                               : "dont_tranfer_permit".tr(),
                                           onPressed: () {
-                                            if (lstPermits.contains(permit.requestId!)) {
-                                              lstPermits.remove(permit.requestId!);
+                                            if (lstPermits
+                                                .contains(permit.requestId!)) {
+                                              lstPermits
+                                                  .remove(permit.requestId!);
                                               setState(() {
                                                 permit.selected = false;
                                               });

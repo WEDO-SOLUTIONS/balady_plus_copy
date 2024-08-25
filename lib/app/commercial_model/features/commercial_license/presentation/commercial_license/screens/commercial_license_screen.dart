@@ -78,26 +78,8 @@ class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
           create: (context) => CrStep13ReviewDataCubit(),
         ),
       ],
-      child: CommercialDebtsScreen(
-        transactionType: TransactionType.REQUEST,
-        transactionId: requestId,
-        /// have in  Issue Steps on mobile 11 but vildet on 7
-        steps: const [
-          IssueSteps.applySteps,
-          IssueSteps.saveActivity,
-          IssueSteps.saveLocation,
-          IssueSteps.saveShopInfo,
-          IssueSteps.saveAttachments,
-          "", // add Fake Step
-          "", // add Fake Step
-          "", // add Fake Step
-          "", // add Fake Step
-          IssueSteps.calculateFees,
-          IssueSteps.submitSteps,
-        ],
-        child: CommercialLicenseBody(
-          requestId: requestId,
-        ),
+      child: CommercialLicenseBody(
+        requestId: requestId,
       ),
     );
   }

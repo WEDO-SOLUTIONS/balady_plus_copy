@@ -1,3 +1,6 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/check_debts/commercial_check_debts_cubit.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/check_debts/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
@@ -16,11 +19,29 @@ import 'package:provider/provider.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import '../../../old_owner_transfer/persentation/interface/step_interface.dart';
 
-class ApprovalSequenceAttachmentsScreen extends StatelessWidget {
+class ApprovalSequenceAttachmentsScreen extends StatefulWidget {
   StepInterface stepInterface;
 
   ApprovalSequenceAttachmentsScreen({Key? key, required this.stepInterface})
       : super(key: key);
+
+  @override
+  State<ApprovalSequenceAttachmentsScreen> createState() =>
+      _ApprovalSequenceAttachmentsScreenState();
+}
+
+class _ApprovalSequenceAttachmentsScreenState
+    extends State<ApprovalSequenceAttachmentsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    RequestApprovalSequenceCubit bloc =
+        context.read<RequestApprovalSequenceCubit>();
+    context.watch<CommercialDebtsCubit>().checkDebts(
+          3,
+          bloc.requestNumber!,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,174 +50,184 @@ class ApprovalSequenceAttachmentsScreen extends StatelessWidget {
     RequestApprovalSequenceCubit bloc =
         context.read<RequestApprovalSequenceCubit>();
 
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 12),
-                  Consumer<RequestOwnerShipTransferAttachmentsViewModel>(
-                    builder: (context, provider, child) {
-                      return !provider.isLoading
-                          ? Column(
-                              children: provider.attachments
-                                  .map(
-                                    (attachment) => Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(height: 16),
-                                        CustomTextWidget(
-                                          attachment.name ?? '',
-                                          fontColor:
-                                              AppColor.blackModern700Light,
-                                          fontSize: 16,
-                                          fontWeight: AppFontWeight.bold,
-                                        ),
-                                        InkWell(
-                                          onTap: () async {
-                                            FileDataItem? file =
-                                                await CommonFunctions.pickFile(
-                                                    context);
-                                            if (file != null) {
-                                              if ((file.sizeInMB * 1000) <=
-                                                  (attachment.maxSize ?? 0)) {
-                                                provider
-                                                    .uploadCommercialLicenseTransferAttachments(
-                                                  file,
-                                                  attachment.id!,
-                                                );
-                                              } else {
-                                                CommonFunctions.showError(
-                                                    "file_max_size".tr());
+    return CommercialDebtsScreen(
+      transactionType: TransactionType.REQUEST,
+      transactionId: bloc.requestNumber!,
+      steps: const [OwnershipTransferSteps.submitSteps],
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 12),
+                    Consumer<RequestOwnerShipTransferAttachmentsViewModel>(
+                      builder: (context, provider, child) {
+                        return !provider.isLoading
+                            ? Column(
+                                children: provider.attachments
+                                    .map(
+                                      (attachment) => Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 16),
+                                          CustomTextWidget(
+                                            attachment.name ?? '',
+                                            fontColor:
+                                                AppColor.blackModern700Light,
+                                            fontSize: 16,
+                                            fontWeight: AppFontWeight.bold,
+                                          ),
+                                          InkWell(
+                                            onTap: () async {
+                                              FileDataItem? file =
+                                                  await CommonFunctions
+                                                      .pickFile(context);
+                                              if (file != null) {
+                                                if ((file.sizeInMB * 1000) <=
+                                                    (attachment.maxSize ?? 0)) {
+                                                  provider
+                                                      .uploadCommercialLicenseTransferAttachments(
+                                                    file,
+                                                    attachment.id!,
+                                                  );
+                                                } else {
+                                                  CommonFunctions.showError(
+                                                      "file_max_size".tr());
+                                                }
                                               }
-                                            }
-                                          },
-                                          child: Container(
-                                            margin:
-                                                const EdgeInsets.only(top: 6),
-                                            padding: const EdgeInsets.all(16),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                Radius.circular(16),
-                                              ),
-                                              border: Border.all(
-                                                color: AppColor.primary800Light,
-                                              ),
-                                              color: Colors.transparent,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                const CustomSvgIconWidget(
-                                                  IconPath.add,
-                                                  iconSize: 20,
+                                            },
+                                            child: Container(
+                                              margin:
+                                                  const EdgeInsets.only(top: 6),
+                                              padding: const EdgeInsets.all(16),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                  Radius.circular(16),
                                                 ),
-                                                const SizedBox(width: 4),
-                                                CustomTextWidget(
-                                                  'attachment'.tr(),
-                                                  fontColor:
+                                                border: Border.all(
+                                                  color:
                                                       AppColor.primary800Light,
-                                                  fontSize: 16,
-                                                  fontWeight:
-                                                      AppFontWeight.bold,
                                                 ),
-                                              ],
+                                                color: Colors.transparent,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const CustomSvgIconWidget(
+                                                    IconPath.add,
+                                                    iconSize: 20,
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  CustomTextWidget(
+                                                    'attachment'.tr(),
+                                                    fontColor: AppColor
+                                                        .primary800Light,
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        AppFontWeight.bold,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        attachment.fileName != null
-                                            ? ObjectionReasonAttachment(
-                                          fileName:
-                                          attachment.fileName ?? "",
-                                          filePath: attachment.attachUrl ?? "",
-                                          showDelete: false,
-                                          onDelete: () {},
-                                        )
-                                            : const SizedBox(),
-                                        const SizedBox(height: 6),
-                                        CustomTextWidget(
-                                          '${'attachment_message_typ'.tr()} ${attachment.allowedFilesExtension ?? ''} ${'attachment_message_size'.tr()} ${(attachment.maxSize ?? 0) ~/ 1000} MB',
-                                          fontColor:
-                                              AppColor.blackModern700Light,
-                                          fontSize: 16,
-                                          fontWeight: AppFontWeight.bold,
-                                          maxLines: 3,
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                  .toList(),
-                            )
-                          : const ShimmerEffectWidget(
-                              height: 65,
-                              borderRadius: 8,
-                            );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                                          const SizedBox(height: 6),
+                                          attachment.fileName != null
+                                              ? ObjectionReasonAttachment(
+                                                  fileName:
+                                                      attachment.fileName ?? "",
+                                                  filePath:
+                                                      attachment.attachUrl ??
+                                                          "",
+                                                  showDelete: false,
+                                                  onDelete: () {},
+                                                )
+                                              : const SizedBox(),
+                                          const SizedBox(height: 6),
+                                          CustomTextWidget(
+                                            '${'attachment_message_typ'.tr()} ${attachment.allowedFilesExtension ?? ''} ${'attachment_message_size'.tr()} ${(attachment.maxSize ?? 0) ~/ 1000} MB',
+                                            fontColor:
+                                                AppColor.blackModern700Light,
+                                            fontSize: 16,
+                                            fontWeight: AppFontWeight.bold,
+                                            maxLines: 3,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                    .toList(),
+                              )
+                            : const ShimmerEffectWidget(
+                                height: 65,
+                                borderRadius: 8,
+                              );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: BlocBuilder<RequestApprovalSequenceCubit, RequestApprovalSequenceState>(
-              builder: (context, state) {
-            return state is LoadingState ||
-                ((state is DTOState) &&
-                    (state as DTOState).status == BlocStatus.loading)
-                ? const CustomCircularLoadingWidget()
-                : Selector<RequestOwnerShipTransferAttachmentsViewModel, bool>(
-              selector: (_, provider) => provider.isLoading,
-              builder: (_, isLoading, child) {
-                return EnhancedCustomElevatedButtonWidget(
-                  btnColor: !viewModel.fileDone
-                      ? AppColor.black200
-                      : AppColor.primary900Light,
-                  btnTextColor:
-                  !viewModel.fileDone ? AppColor.black400 : AppColor.white,
-                  btnPressed: !viewModel.fileDone
-                      ? null
-                      : () {
-                    bloc.submitApprove().then(
-                          (requestId) => {
-                        if (requestId > 0)
-                          {
-                            Navigator.of(context).pop(true),
-                            Navigator.of(context).pushNamed(
-                              RouteName.SucessfullScreen,
-                              arguments: {
-                                "requestId": "$requestId",
-                                "isFromRequest": false
-                              },
-                            )
-                          }
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: BlocBuilder<RequestApprovalSequenceCubit,
+                RequestApprovalSequenceState>(builder: (context, state) {
+              return state is LoadingState ||
+                      ((state is DTOState) &&
+                          (state as DTOState).status == BlocStatus.loading)
+                  ? const CustomCircularLoadingWidget()
+                  : Selector<RequestOwnerShipTransferAttachmentsViewModel,
+                      bool>(
+                      selector: (_, provider) => provider.isLoading,
+                      builder: (_, isLoading, child) {
+                        return EnhancedCustomElevatedButtonWidget(
+                          btnColor: !viewModel.fileDone
+                              ? AppColor.black200
+                              : AppColor.primary900Light,
+                          btnTextColor: !viewModel.fileDone
+                              ? AppColor.black400
+                              : AppColor.white,
+                          btnPressed: !viewModel.fileDone
+                              ? null
+                              : () {
+                                  bloc.submitApprove().then(
+                                        (requestId) => {
+                                          if (requestId > 0)
+                                            {
+                                              Navigator.of(context).pop(true),
+                                              Navigator.of(context).pushNamed(
+                                                RouteName.SucessfullScreen,
+                                                arguments: {
+                                                  "requestId": "$requestId",
+                                                  "isFromRequest": false
+                                                },
+                                              )
+                                            }
+                                        },
+                                      );
+                                },
+                          btnRadius: 8,
+                          btnText: ("submit_order").tr(),
+                          btnTextSize: 16,
+                          btnTextWeight: AppFontWeight.bold,
+                          btnHeight: 56,
+                        );
                       },
                     );
-                  },
-                  btnRadius: 8,
-                  btnText: ("submit_order").tr(),
-                  btnTextSize: 16,
-                  btnTextWeight: AppFontWeight.bold,
-                  btnHeight: 56,
-                );
-              },
-            );
-          }),
-        ),
-        const SizedBox(height: 20)
-      ],
+            }),
+          ),
+          const SizedBox(height: 20)
+        ],
+      ),
     );
   }
 }

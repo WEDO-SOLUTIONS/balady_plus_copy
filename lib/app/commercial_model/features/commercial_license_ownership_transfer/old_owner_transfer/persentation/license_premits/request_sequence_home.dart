@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:provider/provider.dart';
 
 import '../../domain/use_cases/get_license_permits_data.dart';
 import '../../domain/use_cases/get_validate_license.dart';
@@ -48,7 +47,6 @@ class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-
     Future.microtask(() {
       setState(() {
         licenseNumber = ModalRoute.of(context)!.settings.arguments as String;
@@ -57,8 +55,10 @@ class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen>
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
+    licenseNumber = ModalRoute.of(context)!.settings.arguments as String;
     return WillPopScope(
       onWillPop: () async {
         if (currentPageValue < 0) {
@@ -74,11 +74,13 @@ class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen>
       child: BlocProvider(
         create: (_) {
           bloc = LicenseTransferCubit(
-              GetLicensePermitsData(repository: sl()),
-              GetValidateNewOwner(repository: sl()),
-              GetValidateLicense(repository: sl()),
-              PostToNewOwner(repository: sl()));
+            GetLicensePermitsData(repository: sl()),
+            GetValidateNewOwner(repository: sl()),
+            GetValidateLicense(repository: sl()),
+            PostToNewOwner(repository: sl()),
+          );
 
+          bloc!.licenseNumber = licenseNumber;
           // bloc =
           // ModalRoute.of(context)!.settings.arguments as LicensePermitsCubit;
           return bloc!;

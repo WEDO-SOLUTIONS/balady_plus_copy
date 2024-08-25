@@ -64,6 +64,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

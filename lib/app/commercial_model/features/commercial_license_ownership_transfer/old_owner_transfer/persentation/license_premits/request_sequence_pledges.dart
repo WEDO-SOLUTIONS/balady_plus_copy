@@ -1,3 +1,6 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/check_debts/commercial_check_debts_cubit.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/check_debts/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,156 +44,161 @@ class _RequestSequencePledgesScreenState
 
   @override
   Widget build(BuildContext context) {
-    return getBody();
-  }
-
-  Widget getBody() {
-    return BlocConsumer<LicenseTransferCubit, LicenseTransferState>(
-      listenWhen: (previous, current) => previous.status != current.status,
-      listener: (_, state) async {
-        if (state.status.isSubmissionGetFailure) {
-          CommonFunctions.showError(state.error);
-        } else if (state.status.isSubmissionGetSuccess &&
-            state.applyRequestDataModel != null) {
-          Navigator.of(context).pop(true);
-          Navigator.of(context).pushNamed(RouteName.SucessfullScreen,
-              arguments: {
-                "requestId": "${state.applyRequestDataModel?.result}",
-                "isFromRequest": true
-              });
-        }
-      },
-      builder: (context, state) {
-        return Stack(children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15),
-                child: getCardView(
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            const DrawIconBasedTypeWidget(
-                              icon: IconPath.saveIcon,
-                              iconSize: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "Pledges".tr(),
-                              style: AppStyle
-                                  .personalInfoParameterValueTextStyle
-                                  .copyWith(fontSize: 15, height: 1.5),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "pledges_condtions".tr(),
-                          style: AppStyle.personalInfoParameterValueTextStyle
-                              .copyWith(fontSize: 12, height: 1.5),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        getCardView(
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              //  crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Checkbox(
-                                    value: isAgree,
-                                    checkColor: AppColor.blueSkyLight800,
-                                    activeColor: AppColor.white,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isAgree = !isAgree;
-                                      });
-                                    }),
-                                Expanded(
-                                  child: Center(
-                                    child: Text(
-                                      "cr_consent_conditions_check".tr(),
-                                      style: AppStyle
-                                          .personalInfoParameterValueTextStyle
-                                          .copyWith(fontSize: 12),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            AppColor.grayLight,
-                            const EdgeInsets.only(
-                                left: 10, right: 10, bottom: 5, top: 5)),
-                      ],
-                    ),
-                    AppColor.white,
-                    null),
-              ),
-              const Spacer(),
-              Container(
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(36),
-                      topRight: Radius.circular(36),
-                    ),
-                    color: Colors.white),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
-                child: Column(
-                  children: [
-                    getCardView(
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            const DrawIconBasedTypeWidget(
-                              icon: IconPath.infoCircle,
-                              iconSize: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "exclude".tr(),
+    bloc = context.read<LicenseTransferCubit>();
+    return CommercialDebtsScreen(
+      transactionType: TransactionType.LICENSE,
+      transactionId: int.parse(bloc!.licenseNumber ?? "0"),
+      steps: const [
+        OwnershipTransferSteps.sendRequestToNewOwner,
+      ],
+      child: BlocConsumer<LicenseTransferCubit, LicenseTransferState>(
+        listenWhen: (previous, current) => previous.status != current.status,
+        listener: (_, state) async {
+          if (state.status.isSubmissionGetFailure) {
+            CommonFunctions.showError(state.error);
+          } else if (state.status.isSubmissionGetSuccess &&
+              state.applyRequestDataModel != null) {
+            Navigator.of(context).pop(true);
+            Navigator.of(context).pushNamed(RouteName.SucessfullScreen,
+                arguments: {
+                  "requestId": "${state.applyRequestDataModel?.result}",
+                  "isFromRequest": true
+                });
+          }
+        },
+        builder: (context, state) {
+          return Stack(children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child: getCardView(
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              const DrawIconBasedTypeWidget(
+                                icon: IconPath.saveIcon,
+                                iconSize: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Pledges".tr(),
                                 style: AppStyle
                                     .personalInfoParameterValueTextStyle
-                                    .copyWith(fontSize: 12, height: 1.5),
+                                    .copyWith(fontSize: 15, height: 1.5),
                               ),
-                            ),
-                          ],
-                        ),
-                        AppColor.grayLight,
-                        null),
-                    const SizedBox(height: 20),
-                    state.status == BlocRequestStatus.submissionGetLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : ElevatedButtonWidget.applyRequest(
-                            onPressed: () {
-                              if (isAgree) {
-                                bloc?.sendToNewOwner(
-                                    bloc!.licenseNumber!, bloc!.request);
-                              } else {
-                                CommonFunctions.showError("terms_error".tr());
-                              }
-                            },
+                            ],
                           ),
-                  ],
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "pledges_condtions".tr(),
+                            style: AppStyle.personalInfoParameterValueTextStyle
+                                .copyWith(fontSize: 12, height: 1.5),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          getCardView(
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                //  crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Checkbox(
+                                      value: isAgree,
+                                      checkColor: AppColor.blueSkyLight800,
+                                      activeColor: AppColor.white,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          isAgree = !isAgree;
+                                        });
+                                      }),
+                                  Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        "cr_consent_conditions_check".tr(),
+                                        style: AppStyle
+                                            .personalInfoParameterValueTextStyle
+                                            .copyWith(fontSize: 12),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              AppColor.grayLight,
+                              const EdgeInsets.only(
+                                  left: 10, right: 10, bottom: 5, top: 5)),
+                        ],
+                      ),
+                      AppColor.white,
+                      null),
                 ),
-              ),
-            ],
-          ),
-          state.status == BlocRequestStatus.submissionGetLoading
-              ? const Center(child: CircularProgressIndicator())
-              : const SizedBox(),
-        ]);
-      },
+                const Spacer(),
+                Container(
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(36),
+                        topRight: Radius.circular(36),
+                      ),
+                      color: Colors.white),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                  child: Column(
+                    children: [
+                      getCardView(
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              const DrawIconBasedTypeWidget(
+                                icon: IconPath.infoCircle,
+                                iconSize: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  "exclude".tr(),
+                                  style: AppStyle
+                                      .personalInfoParameterValueTextStyle
+                                      .copyWith(fontSize: 12, height: 1.5),
+                                ),
+                              ),
+                            ],
+                          ),
+                          AppColor.grayLight,
+                          null),
+                      const SizedBox(height: 20),
+                      state.status == BlocRequestStatus.submissionGetLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : ElevatedButtonWidget.applyRequest(
+                        onPressed: () {
+                          if (isAgree) {
+                            bloc?.sendToNewOwner(
+                                bloc!.licenseNumber!, bloc!.request);
+                          } else {
+                            CommonFunctions.showError("terms_error".tr());
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            state.status == BlocRequestStatus.submissionGetLoading
+                ? const Center(child: CircularProgressIndicator())
+                : const SizedBox(),
+          ]);
+        },
+      ),
     );
   }
+
 
   Widget getCardView(Widget child, Color bgcolor, EdgeInsetsGeometry? padding) {
     return Container(

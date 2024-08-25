@@ -1,4 +1,6 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/check_debts/commercial_check_debts_cubit.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/check_debts/commercial_debts_screen.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,10 +20,8 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
   @override
   void initState() {
     super.initState();
-
     context.read<CommercialLicenseBloc>().initState(
           requestId: widget.requestId,
-          debtsCubit: context.read<CommercialDebtsCubit>(),
         );
   }
 
@@ -42,13 +42,14 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
               appBar: DetailsAppBarTwo(
                 pageLength: state.pagesList.length,
                 currentStep: state.currentPageValue + 1,
-                backOnPress: () => context
-                    .read<CommercialLicenseBloc>()
-                    .add(const GoToPreviousPageEvent()),
+                backOnPress: () =>
+                    context
+                        .read<CommercialLicenseBloc>()
+                        .add(const GoToPreviousPageEvent()),
                 onTapCloseAction: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                   bool Function(Route<dynamic>) predicate =
-                      ModalRoute.withName(RouteName.bottomNavigation);
+                  ModalRoute.withName(RouteName.bottomNavigation);
                   Navigator.of(context).popUntil((predicate));
                 },
                 requestNum: state.requestId,
@@ -57,12 +58,19 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
                 itemCount: state.pagesList.length,
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
-                controller: context.read<CommercialLicenseBloc>().controller,
+                controller: context
+                    .read<CommercialLicenseBloc>()
+                    .controller,
                 itemBuilder: (context, position) {
-                  return AnimatedContainer(
-                    curve: Curves.easeIn,
-                    duration: const Duration(milliseconds: 300),
-                    child: state.pagesList[position],
+                  return CommercialDebtsScreen(
+                    transactionType: TransactionType.REQUEST,
+                    transactionId: context.read<CommercialLicenseBloc>().state.requestId,
+                    steps:[listIssueSteps[position]],
+                    child: AnimatedContainer(
+                      curve: Curves.easeIn,
+                      duration: const Duration(milliseconds: 300),
+                      child: state.pagesList[position],
+                    ),
                   );
                 },
               ),

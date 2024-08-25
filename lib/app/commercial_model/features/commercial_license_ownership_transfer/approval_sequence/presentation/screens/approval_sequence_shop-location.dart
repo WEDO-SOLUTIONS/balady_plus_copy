@@ -1,3 +1,6 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/check_debts/commercial_check_debts_cubit.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/check_debts/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
 import 'package:flutter/material.dart';
@@ -39,12 +42,24 @@ class _ApprovalSequenceShopLocationScreenState
     Future.microtask(() {
       context.read<RequestApprovalSequenceCubit>().InitForm();
       context.read<RequestApprovalSequenceCubit>().getDeedOwnerShipsTypes();
+      RequestApprovalSequenceCubit bloc =
+          context.read<RequestApprovalSequenceCubit>();
+      context.watch<CommercialDebtsCubit>().checkDebts(
+            2,
+            bloc.requestNumber!,
+          );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return getBody();
+    return CommercialDebtsScreen(
+      transactionType: TransactionType.REQUEST,
+      transactionId:
+          context.read<RequestApprovalSequenceCubit>().requestNumber!,
+      steps: const [OwnershipTransferSteps.saveOwnershipInfo],
+      child: getBody(),
+    );
   }
 
   Widget getBody() {

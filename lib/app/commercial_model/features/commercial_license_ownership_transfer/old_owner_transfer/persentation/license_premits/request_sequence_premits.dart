@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/check_debts/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +48,15 @@ class _ReuestSequencePremitsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return getBody();
+    bloc = context.read<LicenseTransferCubit>();
+    return CommercialDebtsScreen(
+      transactionType: TransactionType.LICENSE,
+      transactionId: int.parse(bloc!.licenseNumber ?? "0"),
+      steps: const [
+        OwnershipTransferSteps.permits,
+      ],
+      child: getBody(),
+    );
   }
 
   Widget getBody() {
@@ -328,15 +338,15 @@ class _ReuestSequencePremitsScreenState
                   child: state.status == BlocRequestStatus.submissionGetLoading
                       ? const Center(child: CircularProgressIndicator())
                       : ElevatedButtonWidget.next(
-                    onPressed: () {
-                      if (isAgree || permitResponse.term == null) {
-                        bloc?.request.selectedPermits = lstPermits;
-                        widget.stepInterface.nextPage();
-                      } else {
-                        CommonFunctions.showError("terms_error".tr());
-                      }
-                    },
-                  ),
+                          onPressed: () {
+                            if (isAgree || permitResponse.term == null) {
+                              bloc?.request.selectedPermits = lstPermits;
+                              widget.stepInterface.nextPage();
+                            } else {
+                              CommonFunctions.showError("terms_error".tr());
+                            }
+                          },
+                        ),
                 ),
               ],
             ),

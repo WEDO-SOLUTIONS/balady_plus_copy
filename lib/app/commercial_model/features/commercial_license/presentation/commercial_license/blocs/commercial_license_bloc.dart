@@ -52,8 +52,6 @@ class CommercialLicenseBloc
       ),
     );
     sendEventBasedOnPage(nextPage);
-    checkIfHaveDebts(nextPage);
-
     hideKeyboard();
   }
 
@@ -79,7 +77,6 @@ class CommercialLicenseBloc
         ),
       );
       sendEventBasedOnPage(nextPage);
-      checkIfHaveDebts(nextPage);
     }
 
     hideKeyboard();
@@ -104,7 +101,6 @@ class CommercialLicenseBloc
       ));
 
       sendEventBasedOnPage(prvoiusPage);
-      checkIfHaveDebts(prvoiusPage);
     }
 
     hideKeyboard();
@@ -150,9 +146,6 @@ class CommercialLicenseBloc
     CommonFunctions.sendUXCamEvent(eventName);
   }
 
-  void checkIfHaveDebts(int indexPage) {
-    debtsCubit.checkDebts(indexPage, state.requestId!);
-  }
 
   Future<void> _updateRequestIdHandler(
       UpdateRequestFieldEvent e, Emitter emitter) async {
@@ -212,13 +205,9 @@ class CommercialLicenseBloc
     });
   }
 
-  late CommercialDebtsCubit debtsCubit;
-
   void initState({
     int? requestId,
-    required CommercialDebtsCubit debtsCubit,
   }) {
-    this.debtsCubit = debtsCubit;
     emit(
       state.copyWith(
         status: BlocStatus.initial,

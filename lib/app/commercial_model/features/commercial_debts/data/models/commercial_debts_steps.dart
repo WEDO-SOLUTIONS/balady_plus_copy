@@ -31,7 +31,6 @@ class RenewSteps {
 class CancelSteps {
   // Step Two
   // static const String applySteps = "commercial.cancel.mobile.apply";
-
   // Step Three
   static const String saveRequestInfoSteps =
       "commercial.cancel.mobile.save-cancellation-info";
@@ -45,25 +44,28 @@ class CancelSteps {
 }
 
 class OwnershipTransferSteps {
-  static const String validateNewOwner = "commercial.transfer-ownership.mobile.validate-new-owner";
-  static const String acceptRequestByNewOwner = "commercial.transfer-ownership.mobile.accept-request-by-new-owner";
-  static const String submitSteps = "";
+  // Old Owner
+  static const String permits =
+      "commercial.transfer-ownership.mobile.save-old-owner-permits";
+  static const String validateNewOwner =
+      "commercial.transfer-ownership.mobile.validate-new-owner";
+  static const String sendRequestToNewOwner =
+      "commercial.transfer-ownership.mobile.send-request-to-new-owner";
 
-  /*
-commercial.transfer-ownership.mobile.validate-beofte-apply
-commercial.transfer-ownership.mobile.validate-new-owner
-commercial.transfer-ownership.mobile.send-request-to-new-owner
-commercial.transfer-ownership.mobile.accept-request-by-new-owner
-commercial.transfer-ownership.mobile.reject-request-by-new-owner
-commercial.transfer-ownership.mobile.save-shop-info
-commercial.transfer-ownership.mobile.submit-request-by-new-owner
- */
+  // New Owner
+  static const String acceptOrRejectRequestByNewOwner =
+      "commercial.transfer-ownership.mobile.new-owner-accept-or-reject";
+  static const String permitsNewOwner =
+      "commercial.transfer-ownership.mobile.save-new-owner-permits";
+  static const String saveShopInfo =
+      "commercial.transfer-ownership.mobile.save-shop-info";
+  static const String saveOwnershipInfo =
+      "commercial.transfer-ownership.mobile.save-ownership-info";
+  static const String submitSteps =
+      "commercial.transfer-ownership.mobile.submit-request-by-new-owner";
 }
 
 class IssueSteps {
-  // Use This in First Step
-  static const String applySteps = "commercial.issue.mobile.apply";
-
   static const String saveActivity =
       "commercial.issue.mobile.save-activity"; // when call this events have screen but the screen in after the step one
   static const String saveLocation =
@@ -80,6 +82,24 @@ class IssueSteps {
       "commercial.issue.mobile.calculate-fees"; //   CalculatorReview
   static const String submitSteps = "commercial.issue.mobile.submit"; //  Review
 }
+
+
+/// have in  Issue Steps on mobile 11 but vildet on 7
+var listIssueSteps = const [
+  "", // add Fake Step
+  IssueSteps.saveActivity,
+  IssueSteps.saveLocation,
+  IssueSteps.saveShopInfo,
+  IssueSteps.saveAttachments,
+  "", // add Fake Step
+  "", // add Fake Step
+  "", // add Fake Step
+  "", // add Fake Step
+  IssueSteps.calculateFees,
+  IssueSteps.submitSteps,
+];
+
+
 
 
 
@@ -101,13 +121,6 @@ class IssueSteps {
 //   IssueStepsEnum.calculateFees : "commercial.issue.mobile.calculate-fees",
 //   IssueStepsEnum.submitSteps : "commercial.issue.mobile.submit",
 // };
-
-
-
-
-
-
-
 
 // class CommercialDebtsSteps {
 //   final String transactionType;
