@@ -43,11 +43,15 @@ class _ApprovalSequenceShopInfoScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-    bloc = context.read<RequestApprovalSequenceCubit>();
-    context.watch<CommercialDebtsCubit>().checkDebts(
-          1,
-          bloc!.requestNumber!,
-        );
+
+    Future.microtask(() {
+      bloc = context.read<RequestApprovalSequenceCubit>();
+      context.read()<CommercialDebtsCubit>().checkDebts(
+        1,
+        bloc!.requestNumber!,
+      );
+
+    });
   }
 
   @override

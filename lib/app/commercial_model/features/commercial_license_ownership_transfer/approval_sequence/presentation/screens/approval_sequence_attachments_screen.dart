@@ -35,12 +35,14 @@ class _ApprovalSequenceAttachmentsScreenState
   @override
   void initState() {
     super.initState();
-    RequestApprovalSequenceCubit bloc =
-        context.read<RequestApprovalSequenceCubit>();
-    context.watch<CommercialDebtsCubit>().checkDebts(
-          3,
-          bloc.requestNumber!,
-        );
+    Future.microtask(() {
+      RequestApprovalSequenceCubit bloc =
+      context.read<RequestApprovalSequenceCubit>();
+      context.read<CommercialDebtsCubit>().checkDebts(
+        3,
+        bloc.requestNumber!,
+      );
+    });
   }
 
   @override

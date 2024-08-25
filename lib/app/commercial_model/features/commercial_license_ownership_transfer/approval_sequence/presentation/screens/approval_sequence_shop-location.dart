@@ -44,7 +44,7 @@ class _ApprovalSequenceShopLocationScreenState
       context.read<RequestApprovalSequenceCubit>().getDeedOwnerShipsTypes();
       RequestApprovalSequenceCubit bloc =
           context.read<RequestApprovalSequenceCubit>();
-      context.watch<CommercialDebtsCubit>().checkDebts(
+      context.read<CommercialDebtsCubit>().checkDebts(
             2,
             bloc.requestNumber!,
           );

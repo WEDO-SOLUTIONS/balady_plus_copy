@@ -34,8 +34,9 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   int currentPageValue = 0;
 
   RequestApprovalSequenceCubit? bloc;
-  String? requestNumber;
-  RequestOwnershipTransferDetailsCubit? requestDetailsBloc;
+
+  // String? requestNumber;
+  // RequestOwnershipTransferDetailsCubit? requestDetailsBloc;
   RequestOwnerShipTransferAttachmentsViewModel? attachmentsViewModel;
 
   late List<Widget>? pagesList = [
@@ -49,24 +50,13 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-
     Future.microtask(() {
-      requestDetailsBloc = ModalRoute.of(context)!.settings.arguments
-          as RequestOwnershipTransferDetailsCubit;
-
-      setState(() {
-        requestNumber = requestDetailsBloc?.requestID;
-      });
-
-      bloc?.requestNumber = int.parse(requestNumber!);
-      bloc?.requestDetailsBloc = requestDetailsBloc;
-
     });
   }
-
-
   @override
   Widget build(BuildContext context) {
+    RequestOwnershipTransferDetailsCubit requestOwnershipTransferDetailsCubit = ModalRoute.of(context)!.settings.arguments as RequestOwnershipTransferDetailsCubit;
+    String requestNumber = requestOwnershipTransferDetailsCubit.requestID!;
     return WillPopScope(
       onWillPop: () async {
         if (currentPageValue < 0) {
@@ -82,17 +72,20 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
       child:
           ChangeNotifierProvider<RequestOwnerShipTransferAttachmentsViewModel>(
         create: (_) {
-          attachmentsViewModel =  RequestOwnerShipTransferAttachmentsViewModel(
+          attachmentsViewModel = RequestOwnerShipTransferAttachmentsViewModel(
             webService: sl(),
-            requestId: bloc!.requestNumber!,
+            requestId: int.parse(requestNumber),
           );
           return attachmentsViewModel!;
         },
         child: BlocProvider(
           create: (_) {
             bloc = RequestApprovalSequenceCubit(
-                requestApprovalSequenceRepository: sl(), isChecked: false);
-
+              requestApprovalSequenceRepository: sl(),
+              isChecked: false,
+            );
+            bloc!.requestNumber = int.parse(requestNumber);
+            bloc!.requestDetailsBloc = requestOwnershipTransferDetailsCubit;
             return bloc!;
           },
           child: GestureDetector(
@@ -144,7 +137,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeIn,
     );
-    if(currentPageValue == 3){
+    if (currentPageValue == 3) {
       attachmentsViewModel?.getCommercialLicenseTransferAttachments();
     }
   }

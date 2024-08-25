@@ -41,13 +41,16 @@ class _ApprovalSequencePermitsScreenState
     super.initState();
 
     Future.microtask(() {
+
       bloc = context.read<RequestApprovalSequenceCubit>();
       bloc!.getRequestPermits(bloc!.requestNumber!);
+
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    bloc = context.read<RequestApprovalSequenceCubit>();
     return CommercialDebtsScreen(
       transactionType: TransactionType.REQUEST,
       transactionId: bloc!.requestNumber!,
