@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/services/presentation/mvvm/service_data_view_model.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
@@ -57,7 +57,7 @@ class _CommercialLicenseOverviewScreenState
                   NavigatorState navigator = Navigator.of(context);
 
                   //CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
-                  navigator.pushNamed(RouteName.commercialLicenseQuery);
+                  navigator.pushNamed(CommercialRouteName.commercialLicenseQuery);
                   // CommonFunctions.sendUXCamEvent(
                   //     UXCamEvents.startServiceQueryLicenseService);
                 },

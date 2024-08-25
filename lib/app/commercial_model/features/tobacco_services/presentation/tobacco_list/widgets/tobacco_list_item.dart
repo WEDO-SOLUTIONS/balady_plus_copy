@@ -2,7 +2,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -96,7 +96,7 @@ class TobaccoListItem extends StatelessWidget {
                       CommonProperties.userInfo!.idNo != null)) {
                 Navigator.pushNamed(
                   context,
-                  RouteName.tobaccoDetails,
+                  CommercialRouteName.tobaccoDetails,
                   arguments: TobaccoDetailsViewModel(
                     provider.repository,
                     CommonProperties.selectedDelegator?.crNumber ??

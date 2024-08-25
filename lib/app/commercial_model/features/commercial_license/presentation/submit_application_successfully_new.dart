@@ -108,7 +108,7 @@ class _SubmitApplicationSuccessfullyNewState
                       text: 'service_evaluation'.tr(),
                       onPressed: () {
                         Navigator.of(context).popAndPushNamed(
-                          RouteName.submitRatingCancelScreen,
+                          CommercialRouteName.submitRatingCancelScreen,
                           arguments: SubmitRatingViewModel(
                             webService: sl(),
                             submitResponse: SubmitResponse(

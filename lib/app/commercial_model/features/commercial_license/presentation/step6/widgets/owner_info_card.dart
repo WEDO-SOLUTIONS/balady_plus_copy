@@ -63,7 +63,7 @@ class OwnerInfoCard extends StatelessWidget {
                       await BottomSheetDialog.showDraggableSheet(context,
                           isFullHeight: true,
                           //   dialogKeyName: DialogName.calculatorEditBoardDialog,
-                          //  currentRouteName: RouteName.calculatorRoute,
+                          //  currentRouteName: CommercialRouteName.calculatorRoute,
                           child: BottomSheetWithActions(
                             title: "edit_owner_data".tr(),
                             body: EditCrOwnerDataDialog(

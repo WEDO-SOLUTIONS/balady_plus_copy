@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
@@ -66,7 +67,7 @@ class _IssueStartServiceState extends State<IssueStartService> {
                         if (CommonProperties.isLoggedIn) {
                           if (CommonProperties.selectedDelegator != null) {
                             Navigator.of(context).pushNamed(
-                              RouteName.commercialLicensePage,
+                              CommercialRouteName.commercialLicensePage,
                               arguments: requestId,
                             );
                           } else {
@@ -76,7 +77,7 @@ class _IssueStartServiceState extends State<IssueStartService> {
                               dialogKeyName:
                                   DialogName.notAuthorizedIndivisualDialog,
                               currentRouteName:
-                                  RouteName.commercialLicenseServicePage,
+                                  CommercialRouteName.commercialLicenseServicePage,
                               child: NotAuthorizedIndivisualDialog(),
                             );
                           }
@@ -89,7 +90,7 @@ class _IssueStartServiceState extends State<IssueStartService> {
                                   if (CommonProperties.selectedDelegator !=
                                       null) {
                                     Navigator.of(context).pushNamed(
-                                      RouteName.commercialLicensePage,
+                                      CommercialRouteName.commercialLicensePage,
                                       arguments: requestId,
                                     );
                                   } else {

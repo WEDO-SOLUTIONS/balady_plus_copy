@@ -8,7 +8,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import '../../../../../../features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
@@ -59,7 +59,7 @@ class _RequestSequencePledgesScreenState
           } else if (state.status.isSubmissionGetSuccess &&
               state.applyRequestDataModel != null) {
             Navigator.of(context).pop(true);
-            Navigator.of(context).pushNamed(RouteName.SucessfullScreen,
+            Navigator.of(context).pushNamed(CommercialRouteName.SucessfullScreen,
                 arguments: {
                   "requestId": "${state.applyRequestDataModel?.result}",
                   "isFromRequest": true

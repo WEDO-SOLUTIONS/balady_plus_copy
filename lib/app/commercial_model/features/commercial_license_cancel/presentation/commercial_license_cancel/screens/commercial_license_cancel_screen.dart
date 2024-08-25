@@ -5,7 +5,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
@@ -125,7 +125,7 @@ class _CommercialLicenseCancelScreenState
                       }
                       if (state is SubmitCancelRequestSucceededState) {
                         Navigator.of(context).popAndPushNamed(
-                          RouteName.submitApplicationSuccessfullyCancel,
+                          CommercialRouteName.submitApplicationSuccessfullyCancel,
                           arguments: (
                             data['from'],
                             state.submitResponse,

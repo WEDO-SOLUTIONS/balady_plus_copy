@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -141,7 +141,7 @@ class _CommercialLicenseQueryScreenState
                 NavigatorState navigator = Navigator.of(context);
 
                 navigator.pushNamed(
-                  RouteName.commercialLicenseQueryDetails,
+                  CommercialRouteName.commercialLicenseQueryDetails,
                   arguments: CommercialLicenseQueryDetailsCubit(
                       GetCommercialLicenseQueryData(
                         repository: CommercialLicenseQueryRepositoryImplementation(

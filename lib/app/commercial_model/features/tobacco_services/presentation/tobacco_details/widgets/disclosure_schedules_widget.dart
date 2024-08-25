@@ -3,7 +3,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/commercial_model/features/tobacco_services/presentation/tobacco_details/mvvm/tobacco_details_view_model.dart';
@@ -95,7 +95,7 @@ class DisclosureSchedulesWidget extends StatelessWidget {
                                                 context,
                                                 dialogKeyName: DialogName
                                                     .disclosedMonthsSheetDialog,
-                                                currentRouteName: RouteName
+                                                currentRouteName: CommercialRouteName
                                                     .commercialLicenseDetails,
                                                 child: DisclosedMonthsSheet(
                                                   provider:
@@ -113,7 +113,7 @@ class DisclosureSchedulesWidget extends StatelessWidget {
                                               if (viewModel != null) {
                                                 await Navigator.of(context)
                                                     .pushNamed(
-                                                  RouteName.tobaccoDisclosed,
+                                                  CommercialRouteName.tobaccoDisclosed,
                                                   arguments: viewModel,
                                                 );
                                                 provider

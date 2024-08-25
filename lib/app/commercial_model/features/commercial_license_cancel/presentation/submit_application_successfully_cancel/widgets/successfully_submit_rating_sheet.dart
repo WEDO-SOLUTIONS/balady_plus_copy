@@ -3,7 +3,7 @@ import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/mvvm/submit_rating_view_model.dart';
@@ -71,13 +71,13 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
               onPressed: () {
                 // go to home Page
                 // bool Function(Route<dynamic>) predicate =
-                // ModalRoute.withName(RouteName.bottomNavigation);
+                // ModalRoute.withName(CommercialRouteName.bottomNavigation);
                 // NavigationService.navigatorKey.currentState!.popUntil((predicate));
                 // Helpers.backNavigationToHomeScreen();
                 Navigator.of(context).pop();
                 Navigator.pushReplacementNamed(
                   context,
-                  RouteName.requestCommercialLicenseDetails,
+                  CommercialRouteName.requestCommercialLicenseDetails,
                   arguments: {
                     "requestNumber": provider.submitResponse.requestId.toString()
                   },

@@ -14,6 +14,9 @@ import '../../../../../features/_shared_feature_/presentation/dialogs/need_login
 import '../../../../../features/_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
 import '../blocs/posters_license_bloc.dart';
 
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
+
+
 class PostersStartService extends StatefulWidget {
   const PostersStartService({Key? key}) : super(key: key);
 
@@ -75,7 +78,7 @@ class _PostersStartServiceState extends State<PostersStartService> {
                         if (CommonProperties.isLoggedIn) {
                           if (CommonProperties.selectedDelegator != null) {
                             Navigator.of(context).pushNamed(
-                                RouteName.postersDetailsPage,
+                                CommercialRouteName.postersDetailsPage,
                                 arguments: bloc);
                           } else {
                             await BottomSheetDialog.showDraggableSheet(
@@ -83,7 +86,7 @@ class _PostersStartServiceState extends State<PostersStartService> {
                               isFullHeight: false,
                               dialogKeyName:
                                   DialogName.notAuthorizedIndivisualDialog,
-                              currentRouteName: RouteName.postersStartService,
+                              currentRouteName: CommercialRouteName.postersStartService,
                               child: NotAuthorizedIndivisualDialog(),
                             );
                           }
@@ -96,7 +99,7 @@ class _PostersStartServiceState extends State<PostersStartService> {
                                       if (CommonProperties.selectedDelegator !=
                                           null) {
                                         Navigator.of(context).pushNamed(
-                                            RouteName.postersDetailsPage,
+                                            CommercialRouteName.postersDetailsPage,
                                             arguments: bloc);
                                       } else {
                                         await BottomSheetDialog
@@ -106,7 +109,7 @@ class _PostersStartServiceState extends State<PostersStartService> {
                                           dialogKeyName: DialogName
                                               .notAuthorizedIndivisualDialog,
                                           currentRouteName:
-                                              RouteName.postersStartService,
+                                              CommercialRouteName.postersStartService,
                                           child:
                                               NotAuthorizedIndivisualDialog(),
                                         );

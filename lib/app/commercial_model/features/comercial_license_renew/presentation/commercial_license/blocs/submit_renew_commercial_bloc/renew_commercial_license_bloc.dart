@@ -28,6 +28,7 @@ import '../../../../domain/use_cases/save_request_info.dart';
 import '../../../../domain/use_cases/submit_renew.dart';
 import '../../../../domain/use_cases/submit_renew_Attacments.dart';
 import '../../../../renew_commercial_license_exports.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 
 part 'renew_commercial_license_event.dart';
 
@@ -604,7 +605,7 @@ class RenewCommercialLicenseBloc
       emit(state.copyWith(status: BlocStatus.success));
 
       NavigationService.navigatorKey.currentState!.popAndPushNamed(
-        RouteName.submitApplicationSuccessfullyRenew,
+        CommercialRouteName.submitApplicationSuccessfullyRenew,
         arguments: (
           "",
           success.data?.result,

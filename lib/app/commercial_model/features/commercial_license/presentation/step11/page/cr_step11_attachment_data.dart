@@ -19,7 +19,7 @@ import 'package:sentry_dio/sentry_dio.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/customer_voice_exports.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
@@ -186,7 +186,7 @@ class AttachmentListWidget extends StatelessWidget {
         //MM
         print("HEETT");
         NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+            .pushNamed(CommercialRouteName.apigeeImageFullScreen, arguments: fileUrl);
       } else {
         try {
           EasyLoading.show();

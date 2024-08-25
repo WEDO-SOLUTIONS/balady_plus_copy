@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/commercial_model/features/tobacco_services/presentation/tobacco_disclosed/mvvm/tobacco_disclosed_view_model.dart';
@@ -161,7 +161,7 @@ class TobaccoDisclosedInfoScreen extends StatelessWidget {
                                   if (data != null) {
                                     Navigator.popAndPushNamed(
                                       context,
-                                      RouteName.submitDisclosedSuccessfully,
+                                      CommercialRouteName.submitDisclosedSuccessfully,
                                       // arguments: data,
                                     );
                                   }

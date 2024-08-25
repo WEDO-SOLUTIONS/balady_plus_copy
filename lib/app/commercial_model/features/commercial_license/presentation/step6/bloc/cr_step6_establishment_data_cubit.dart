@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license/domain/entities/citizen_info_params.dart';
 import 'package:equatable/equatable.dart';
@@ -370,7 +371,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
           status: BlocStatus.success, sendOtpResponse: Nullable(r)));
       if (showOTPPage == true)
         NavigationService.navigatorKey.currentState
-            ?.pushNamed(RouteName.CommercialOtpScreen, arguments: this);
+            ?.pushNamed(CommercialRouteName.CommercialOtpScreen, arguments: this);
     });
   }
 

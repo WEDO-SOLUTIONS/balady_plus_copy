@@ -6,7 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import '../../../../../../features/_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
@@ -112,7 +112,7 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                     text: "show_request".tr(),
                     onPressed: () {
                       Navigator.of(context).pushNamed(
-                        RouteName.requestOwnershipTransferDetailsPage,
+                        CommercialRouteName.requestOwnershipTransferDetailsPage,
                         arguments: {
                           "requestNumber": requestId,
                           "isReadonly": true
@@ -138,12 +138,12 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                       if (isfromRequest == true) {
                         Navigator.popUntil(
                           context,
-                          ModalRoute.withName(RouteName.licenses),
+                          ModalRoute.withName(CommercialRouteName.licenses),
                         );
                       } else {
                         Navigator.popUntil(
                           context,
-                          ModalRoute.withName(RouteName.requests),
+                          ModalRoute.withName(CommercialRouteName.requests),
                         );
                       }
                     },
@@ -166,12 +166,12 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                 if (isfromRequest == true) {
                   Navigator.popUntil(
                     context,
-                    ModalRoute.withName(RouteName.licenses),
+                    ModalRoute.withName(CommercialRouteName.licenses),
                   );
                 } else {
                   Navigator.popUntil(
                     context,
-                    ModalRoute.withName(RouteName.requests),
+                    ModalRoute.withName(CommercialRouteName.requests),
                   );
                 }
               },

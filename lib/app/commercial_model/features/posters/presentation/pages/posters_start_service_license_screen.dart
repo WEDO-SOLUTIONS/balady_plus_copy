@@ -117,7 +117,7 @@ class _PostersLicenseStartServiceState
                                 isFullHeight: false,
                                 dialogKeyName:
                                     DialogName.notAuthorizedIndivisualDialog,
-                                currentRouteName: RouteName.postersStartService,
+                                currentRouteName: CommercialRouteName.postersStartService,
                                 child: NotAuthorizedIndivisualDialog(),
                               );
                             }*/
@@ -141,7 +141,7 @@ class _PostersLicenseStartServiceState
                                             dialogKeyName: DialogName
                                                 .notAuthorizedIndivisualDialog,
                                             currentRouteName:
-                                                RouteName.postersStartService,
+                                                CommercialRouteName.postersStartService,
                                             child:
                                                 NotAuthorizedIndivisualDialog(),
                                           );

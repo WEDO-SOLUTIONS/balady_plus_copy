@@ -16,7 +16,7 @@ import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import '../../../../../../../features/_shared_feature_/presentation/pages/pdf_view.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import '../../blocs/submit_renew_commercial_bloc/renew_commercial_license_bloc.dart';
@@ -163,7 +163,7 @@ class AttachmentListWidget extends StatelessWidget {
           fileName.toLowerCase().contains(".jpg")) {
         //MM
         NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+            .pushNamed(CommercialRouteName.apigeeImageFullScreen, arguments: fileUrl);
       } else {
         try {
           EasyLoading.show();

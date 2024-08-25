@@ -1,18 +1,13 @@
-import 'package:balady_plus/app/core/services/local/use_case.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
-import 'package:balady_plus/app/core/utils/enums/enums.dart';
-import 'package:balady_plus/app/core/utils/etmam_route_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import '../../../../../../features/_shared_feature_/data/entities/success_screen_args.dart';
-import '../../../../../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../data/models/conclusion_response_model.dart';
 import '../../../domain/entities/cr_submit_request.dart';
@@ -64,9 +59,9 @@ class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
         emit(state.copyWith(status: BlocStatus.success));
 
         /*    bool Function(Route<dynamic>) predicate =
-            ModalRoute.withName(RouteName.bottomNavigation);
+            ModalRoute.withName(CommercialRouteName.bottomNavigation);
         NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-            RouteName.successRoute, predicate,
+            CommercialRouteName.successRoute, predicate,
             arguments: SuccessScreenArgs(
                 type: PAGE_TYPE.renewCommercial,
                 fromHomePage: false,
@@ -75,7 +70,7 @@ class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
                 */
 
         NavigationService.navigatorKey.currentState!.popAndPushNamed(
-          RouteName.submitApplicationSuccessfullyNew,
+          CommercialRouteName.submitApplicationSuccessfullyNew,
           arguments: (
             "",
             success.data?.result,

@@ -3,7 +3,7 @@ import 'package:balady_plus/app/commercial_model/features/commercial_debts/prese
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/check_debts/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
@@ -205,7 +205,7 @@ class _ApprovalSequenceAttachmentsScreenState
                                             {
                                               Navigator.of(context).pop(true),
                                               Navigator.of(context).pushNamed(
-                                                RouteName.SucessfullScreen,
+                                                CommercialRouteName.SucessfullScreen,
                                                 arguments: {
                                                   "requestId": "$requestId",
                                                   "isFromRequest": false
@@ -296,7 +296,7 @@ class _ApprovalSequenceAttachmentsScreenState
 //         //MM
 //         print("HEETT");
 //         NavigationService.navigatorKey.currentState!
-//             .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+//             .pushNamed(CommercialRouteName.apigeeImageFullScreen, arguments: fileUrl);
 //       } else {
 //         try {
 //           EasyLoading.show();

@@ -28,7 +28,7 @@ class AccomodationDropDownTypes extends StatelessWidget {
           BottomSheetDialog.showDraggableSheet(
             context,
             //  dialogKeyName: DialogName.reasonCancelDialog,
-            // currentRouteName: RouteName.commercialLicenseApplyCancel,
+            // currentRouteName: CommercialRouteName.commercialLicenseApplyCancel,
             child: GenericBottomSheetList<CrLookupsEntity>(
               title: "accomodation".tr(),
               items: state.accommodationTypes ?? [],

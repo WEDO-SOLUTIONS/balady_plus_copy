@@ -1,10 +1,11 @@
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
@@ -60,8 +61,7 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                           context,
                                           dialogKeyName: DialogName
                                               .commercialLicenseReasonCancelSheet,
-                                          currentRouteName: RouteName
-                                              .commercialLicenseDetails,
+                                          currentRouteName: CommercialRouteName.commercialLicenseDetails,
                                           child: ChangeNotifierProvider(
                                             create: (BuildContext context) =>
                                                 CommercialLicenseReasonCancelViewModel(
@@ -83,14 +83,14 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                         break;
                                       case 1005:
                                         Navigator.of(context).pushNamed(
-                                            RouteName
+                                            CommercialRouteName
                                                 .renewCommercialLicenseStartService,
                                             arguments: provider.licenseId);
                                         break;
 
                                       case 1042:
                                         Navigator.of(context).pushNamed(
-                                          RouteName.postersLicenseStartService,
+                                          CommercialRouteName.postersLicenseStartService,
                                           arguments:
                                               provider.commercialLicenceDetails,
                                         );
@@ -98,7 +98,7 @@ class CommercialLicenseActionSheet extends StatelessWidget {
 
                                       case 1028:
                                         Navigator.of(context).pushNamed(
-                                          RouteName.permitsLicenseStartService,
+                                          CommercialRouteName.permitsLicenseStartService,
                                           arguments:
                                               provider.commercialLicenceDetails,
                                         );
@@ -106,7 +106,7 @@ class CommercialLicenseActionSheet extends StatelessWidget {
 
                                       case 1026:
                                         Navigator.of(context).pushNamed(
-                                          RouteName
+                                          CommercialRouteName
                                               .permitsTobaccoLicenseStartService,
                                           arguments:
                                               provider.commercialLicenceDetails,

@@ -35,6 +35,8 @@ import '../../domain/use_case/validate_hotel.dart';
 import '../pages/steps/step1_page.dart';
 import '../pages/steps/step2_page.dart';
 
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
+
 part 'permit_tobacco_event.dart';
 part 'permit_tobacco_state.dart';
 
@@ -209,7 +211,7 @@ class PermitTobaccoLicenseBloc
   Future<void> _validatePermitHandler(
       ValidatePermitEvent e, Emitter emitter) async {
     //  NavigationService.navigatorKey.currentState!
-    //   .pushNamed(RouteName.permitsTobaccoDetailsPage, arguments: this);
+    //   .pushNamed(CommercialRouteName.permitsTobaccoDetailsPage, arguments: this);
 
     // return;
     emitter(state.copyWith(status: BlocStatus.loading));
@@ -224,7 +226,7 @@ class PermitTobaccoLicenseBloc
       emitter(state.copyWith(status: BlocStatus.success));
 
       NavigationService.navigatorKey.currentState!
-          .pushNamed(RouteName.permitsTobaccoDetailsPage, arguments: this);
+          .pushNamed(CommercialRouteName.permitsTobaccoDetailsPage, arguments: this);
     });
   }
 
@@ -251,7 +253,7 @@ class PermitTobaccoLicenseBloc
       emitter(state.copyWith(status: BlocStatus.success));
 
       NavigationService.navigatorKey.currentState!.popAndPushNamed(
-        RouteName.submitApplicationSuccessfullyTobaccoPermits,
+        CommercialRouteName.submitApplicationSuccessfullyTobaccoPermits,
         arguments: r,
       );
       CommonFunctions.sendUXCamEvent(

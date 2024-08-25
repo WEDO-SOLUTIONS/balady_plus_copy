@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../renew_commercial_license_exports.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 
 class CommercialLicenseBody extends StatelessWidget {
   const CommercialLicenseBody({
@@ -44,7 +45,7 @@ class CommercialLicenseBody extends StatelessWidget {
                       onTapCloseAction: () {
                         FocusManager.instance.primaryFocus?.unfocus();
                         bool Function(Route<dynamic>) predicate =
-                            ModalRoute.withName(RouteName.bottomNavigation);
+                            ModalRoute.withName(CommercialRouteName.bottomNavigation);
                         Navigator.of(context).popUntil((predicate),);
                       },
                       requestNum: state.requestId),

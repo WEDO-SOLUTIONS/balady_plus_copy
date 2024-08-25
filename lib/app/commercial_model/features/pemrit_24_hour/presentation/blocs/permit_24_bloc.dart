@@ -27,6 +27,7 @@ import '../../domain/use_case/get_permit_request_details.dart';
 import '../../domain/use_case/submit_permit_24.dart';
 import '../../domain/use_case/validate_before_apply.dart';
 import '../pages/steps/step1_page.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 
 part 'permit_24_event.dart';
 part 'permit_24_state.dart';
@@ -179,7 +180,7 @@ class Permit24LicenseBloc
       emitter(state.copyWith(status: BlocStatus.success));
 
       NavigationService.navigatorKey.currentState!
-          .pushNamed(RouteName.permitsDetailsPage, arguments: this);
+          .pushNamed(CommercialRouteName.permitsDetailsPage, arguments: this);
     });
   }
 
@@ -197,7 +198,7 @@ class Permit24LicenseBloc
       emitter(state.copyWith(status: BlocStatus.success));
 
       NavigationService.navigatorKey.currentState!.popAndPushNamed(
-        RouteName.submitApplicationSuccessfullyPermits,
+        CommercialRouteName.submitApplicationSuccessfullyPermits,
         arguments: r,
       );
 

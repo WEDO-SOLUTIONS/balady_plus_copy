@@ -14,6 +14,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_dio/sentry_dio.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 
 class AttachmentShowWidget extends StatelessWidget {
   final String fileName;
@@ -95,7 +96,7 @@ class AttachmentShowWidget extends StatelessWidget {
           fileName.toLowerCase().contains(".jpeg") ||
           fileName.toLowerCase().contains(".jpg")) {
         NavigationService.navigatorKey.currentState!.pushNamed(
-          RouteName.apigeeImageFullScreen,
+          CommercialRouteName.apigeeImageFullScreen,
           arguments: fileUrl,
         );
       } else {

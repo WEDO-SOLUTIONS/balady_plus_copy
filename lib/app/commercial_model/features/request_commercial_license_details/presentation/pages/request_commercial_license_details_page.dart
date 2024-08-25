@@ -2,7 +2,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
@@ -67,7 +67,7 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
                         dialogKeyName: DialogName
                             .requestCommercialLicenseActionSheetDialog,
                         currentRouteName:
-                            RouteName.requestCommercialLicenseDetails,
+                            CommercialRouteName.requestCommercialLicenseDetails,
                         child: ChangeNotifierProvider(
                           create: (BuildContext context) =>
                               RequestCommercialLicenseActionViewModel(

@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,7 +63,7 @@ class _PermitsTobaccoDetailsPageState extends State<PermitsTobaccoDetailsPage> {
                     onTapCloseAction: () {
                       FocusManager.instance.primaryFocus?.unfocus();
                       bool Function(Route<dynamic>) predicate =
-                          ModalRoute.withName(RouteName.bottomNavigation);
+                          ModalRoute.withName(CommercialRouteName.bottomNavigation);
                       Navigator.of(context).popUntil((predicate));
                     },
                     requestNum: state.requestId,

@@ -46,6 +46,8 @@ import '../pages/steps/step2_page.dart';
 import '../pages/steps/step3_page.dart';
 import '../widgets/steps/step2/poster_item_widget.dart';
 
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
+
 part 'posters_license_event.dart';
 part 'posters_license_state.dart';
 
@@ -178,7 +180,7 @@ class PostersLicenseBloc
           status: BlocStatus.success, requestId: Nullable(r.requestId)));
 
       NavigationService.navigatorKey.currentState!
-          .pushNamed(RouteName.postersDetailsPage, arguments: this);
+          .pushNamed(CommercialRouteName.postersDetailsPage, arguments: this);
 
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.startServiceIndivisualPostersPermit);
@@ -344,7 +346,7 @@ class PostersLicenseBloc
       } else {
         r.isGrouped = state.licenseId == null;
         NavigationService.navigatorKey.currentState!.popAndPushNamed(
-          RouteName.submitApplicationSuccessfullyPosters,
+          CommercialRouteName.submitApplicationSuccessfullyPosters,
           arguments: r,
         );
 
@@ -430,7 +432,7 @@ class PostersLicenseBloc
       emitter(state.copyWith(
           status: BlocStatus.success, requestId: Nullable(r.requestId)));
       NavigationService.navigatorKey.currentState!
-          .pushNamed(RouteName.postersStartService, arguments: this);
+          .pushNamed(CommercialRouteName.postersStartService, arguments: this);
 
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.startServiceMultiplePostersPermit);

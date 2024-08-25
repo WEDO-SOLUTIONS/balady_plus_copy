@@ -81,7 +81,7 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
                       isFullHeight: false,
                       height: 250, //MM
                       //   dialogKeyName: DialogName.complianceRequestActionsDialog,
-                      //  currentRouteName: RouteName.complianceDetailsPage,
+                      //  currentRouteName: CommercialRouteName.complianceDetailsPage,
                       child: BottomSheetWithActions(
                         title: "actions".tr(),
                         body: Column(

@@ -399,7 +399,7 @@ class AttachmentListWidget extends StatelessWidget {
           fileName.toLowerCase().contains(".jpg")) {
      
         NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+            .pushNamed(CommercialRouteName.apigeeImageFullScreen, arguments: fileUrl);
       } else {
         try {
           EasyLoading.show();

@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +67,7 @@ class RenewStartServiceBloc
       (r) {
         emitter(state.copyWith(status: BlocStatus.success));
         NavigationService.navigatorKey.currentState?.pushNamed(
-          RouteName.renewCommercialLicenseSubmitForm,
+          CommercialRouteName.renewCommercialLicenseSubmitForm,
           arguments: r.data!.result,
         );
 

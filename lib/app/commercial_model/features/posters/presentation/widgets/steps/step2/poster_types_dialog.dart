@@ -29,7 +29,7 @@ class PosterDropDown extends StatelessWidget {
           BottomSheetDialog.showDraggableSheet(
             context,
             //  dialogKeyName: DialogName.reasonCancelDialog,
-            // currentRouteName: RouteName.commercialLicenseApplyCancel,
+            // currentRouteName: CommercialRouteName.commercialLicenseApplyCancel,
             child: GenericBottomSheetList<PermitPosterTypeItem>(
               title: "poster_type".tr(),
               items: state.posterTypes ?? [],

@@ -2,7 +2,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -137,7 +137,7 @@ class _CommercialLicenseDetailsPageState
                           context,
                           dialogKeyName:
                               DialogName.commercialLicenseActionSheetDialog,
-                          currentRouteName: RouteName.commercialLicenseDetails,
+                          currentRouteName: CommercialRouteName.commercialLicenseDetails,
                           child: ChangeNotifierProvider(
                             create: (BuildContext context) =>
                                 CommercialLicenseActionViewModel(
@@ -176,7 +176,7 @@ class _CommercialLicenseDetailsPageState
                 CommonFunctions.showError(state.error);
               } else if (state.status.isSubmissionGetSuccess) {
                 Navigator.of(context).pushNamed(
-                  RouteName.commercialLicenseTransferOverView,
+                  CommercialRouteName.commercialLicenseTransferOverView,
                   arguments: "$commercialLicenseId",
                 );
               }

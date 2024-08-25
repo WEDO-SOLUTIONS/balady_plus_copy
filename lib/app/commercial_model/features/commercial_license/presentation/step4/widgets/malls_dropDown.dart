@@ -27,7 +27,7 @@ class MallsDropDown extends StatelessWidget {
           BottomSheetDialog.showDraggableSheet(
             context,
             //  dialogKeyName: DialogName.reasonCancelDialog,
-            // currentRouteName: RouteName.commercialLicenseApplyCancel,
+            // currentRouteName: CommercialRouteName.commercialLicenseApplyCancel,
             child: GenericBottomSheetList<QrLookUpItem>(
               title: "step4label7".tr(),
               items: state.mallsList ?? [],
