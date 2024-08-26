@@ -107,8 +107,6 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
       );
     }
 
-    if (searchState is AsyncError) {}
-
     return searchState.map(
       empty: () => const SliverFillRemaining(
         hasScrollBody: false,
