@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
@@ -9,22 +10,29 @@ import 'dgis_packages.dart';
 
 part 'sound_settings.g.dart';
 
-const _voiceInstructionIndexPrefsKey = 'voice_instruction_index';
-const _muffleOtherSoundsPrefsKey = 'muffle_other_sounds';
-const _promptsVolumeIndexPrefsKey = 'prompts_volume_index';
-const _backgroundNavigationPrefsKey = 'background_navigation';
-const _roadCamerasPrefsKey = 'road_cameras';
-const _overSpeedingPrefsKey = 'over_speeding';
-const _voicesLanguagePrefsKey = 'voices_language';
-
 class SoundSettingsModel {
+  /// Index of list from enum SoundToggleType, default value is SoundToggleType.all
   final int voiceInstructionIndex;
+
+  /// Value of toggle Muffle others sound, this function now unavailable
   final bool muffleOtherSounds;
+
+  /// Index of list from enum AudioVolumeMessage, default value is AudioVolumeMessage.standard
   final int promptsVolumeIndex;
+
+  /// Value of toggle Background navigation, if true - in AppState.paused, maneuvers will be voiced, if false - maneuvers will be muted
   final bool backgroundNavigation;
+
+  /// Value of toggle Road cameras, if true - camera alerts will be voiced, if false - camera alerts will be muted
   final bool roadCameras;
+
+  /// Value of toggle Over speeding, if true - over speeding alerts will be voiced, if false - over speeding alerts will be muted
   final bool overSpeeding;
+
+  /// Current voice language code, if value wasn't picked before, it takes value from app language
   final String voicesLanguage;
+
+  /// Current voice of assistant
   final String? voiceName;
 
   const SoundSettingsModel({
@@ -79,13 +87,14 @@ class SoundSettings extends _$SoundSettings {
       voiceName = voicePackages.map((e) => e.packageMessage).where((e) => e.id == selectedVoice).first.info.name;
     }
 
-    final voicesLanguage = sharedPrefs.getString(_voicesLanguagePrefsKey) ?? language.locale.languageCode;
-    final prefsVoiceInstructionIndex = sharedPrefs.getInt(_voiceInstructionIndexPrefsKey);
-    final prefsMuffleOtherSounds = sharedPrefs.getBool(_muffleOtherSoundsPrefsKey);
-    final prefsPromptsVolumeIndex = sharedPrefs.getInt(_promptsVolumeIndexPrefsKey);
-    final prefsBackgroundNavigation = sharedPrefs.getBool(_backgroundNavigationPrefsKey);
-    final prefsRoadCameras = sharedPrefs.getBool(_roadCamerasPrefsKey);
-    final prefsOverSpeeding = sharedPrefs.getBool(_overSpeedingPrefsKey);
+    final voicesLanguage =
+        sharedPrefs.getString(MapnessConstants.voicesLanguagePrefsKey) ?? language.locale.languageCode;
+    final prefsVoiceInstructionIndex = sharedPrefs.getInt(MapnessConstants.voiceInstructionIndexPrefsKey);
+    final prefsMuffleOtherSounds = sharedPrefs.getBool(MapnessConstants.muffleOtherSoundsPrefsKey);
+    final prefsPromptsVolumeIndex = sharedPrefs.getInt(MapnessConstants.promptsVolumeIndexPrefsKey);
+    final prefsBackgroundNavigation = sharedPrefs.getBool(MapnessConstants.backgroundNavigationPrefsKey);
+    final prefsRoadCameras = sharedPrefs.getBool(MapnessConstants.roadCamerasPrefsKey);
+    final prefsOverSpeeding = sharedPrefs.getBool(MapnessConstants.overSpeedingPrefsKey);
 
     final _defaultSoundSettings = SoundSettingsModel(
       voicesLanguage: voicesLanguage,
@@ -113,7 +122,7 @@ class SoundSettings extends _$SoundSettings {
 
     await dGisController.toggleRoadCameras(roadCameras: roadCameras);
 
-    await ref.read(sharedPrefsProvider).setBool(_roadCamerasPrefsKey, roadCameras);
+    await ref.read(sharedPrefsProvider).setBool(MapnessConstants.roadCamerasPrefsKey, roadCameras);
 
     state = state.copyWith(roadCameras: roadCameras);
   }
@@ -123,7 +132,7 @@ class SoundSettings extends _$SoundSettings {
 
     await dGisController.toggleOverSpeeding(overSpeeding: overSpeeding);
 
-    await ref.read(sharedPrefsProvider).setBool(_overSpeedingPrefsKey, overSpeeding);
+    await ref.read(sharedPrefsProvider).setBool(MapnessConstants.overSpeedingPrefsKey, overSpeeding);
 
     state = state.copyWith(overSpeeding: overSpeeding);
   }
@@ -133,7 +142,7 @@ class SoundSettings extends _$SoundSettings {
 
     await dGisController.toggleOverSpeeding(overSpeeding: mute);
 
-    await ref.read(sharedPrefsProvider).setBool(_muffleOtherSoundsPrefsKey, mute);
+    await ref.read(sharedPrefsProvider).setBool(MapnessConstants.muffleOtherSoundsPrefsKey, mute);
 
     state = state.copyWith(muffleOtherSounds: mute);
   }
@@ -143,7 +152,7 @@ class SoundSettings extends _$SoundSettings {
 
     await dGisController.toggleVoiceInstruction(toggleType: _soundToggleTypesList[currentVoiceInstruction]);
 
-    await ref.read(sharedPrefsProvider).setInt(_voiceInstructionIndexPrefsKey, currentVoiceInstruction);
+    await ref.read(sharedPrefsProvider).setInt(MapnessConstants.voiceInstructionIndexPrefsKey, currentVoiceInstruction);
 
     state = state.copyWith(voiceInstructionIndex: currentVoiceInstruction);
   }
@@ -153,19 +162,19 @@ class SoundSettings extends _$SoundSettings {
 
     await dGisController.setNavigatorVolume(volume: _promptsVolumeList[currentPromptVolumeIndex]);
 
-    await ref.read(sharedPrefsProvider).setInt(_promptsVolumeIndexPrefsKey, currentPromptVolumeIndex);
+    await ref.read(sharedPrefsProvider).setInt(MapnessConstants.promptsVolumeIndexPrefsKey, currentPromptVolumeIndex);
 
     state = state.copyWith(promptsVolumeIndex: currentPromptVolumeIndex);
   }
 
   Future<void> switchLanguage({required String currentVoiceLanguage}) async {
-    await ref.read(sharedPrefsProvider).setString(_voicesLanguagePrefsKey, currentVoiceLanguage);
+    await ref.read(sharedPrefsProvider).setString(MapnessConstants.voicesLanguagePrefsKey, currentVoiceLanguage);
 
     state = state.copyWith(voicesLanguage: currentVoiceLanguage);
   }
 
   Future<void> toggleBackgroundNavigation({required bool backgroundNavigation}) async {
-    await ref.read(sharedPrefsProvider).setBool(_backgroundNavigationPrefsKey, backgroundNavigation);
+    await ref.read(sharedPrefsProvider).setBool(MapnessConstants.backgroundNavigationPrefsKey, backgroundNavigation);
 
     state = state.copyWith(backgroundNavigation: backgroundNavigation);
   }

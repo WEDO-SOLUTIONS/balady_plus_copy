@@ -47,8 +47,10 @@ class VoiceRowWidget extends ConsumerWidget {
         titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
           color: context.colorsV2.foregroundDefault,
         ),
-        customActionWidget: packageInfo.updateStatus == PackageUpdateStatusMessage.inProgress
-            ? Column(
+        customActionWidget: Builder(
+          builder: (context) {
+            if (packageInfo.updateStatus == PackageUpdateStatusMessage.inProgress) {
+              return Column(
                 children: [
                   Loading(
                     value: progress.toDouble(),
@@ -57,18 +59,22 @@ class VoiceRowWidget extends ConsumerWidget {
                     backgroundColor: context.colorsV2.accentDefault.withOpacity(0.1),
                   ),
                 ],
-              )
-            : selectedVoice == package.id
-                ? Icon(
-                    SystemIcons.checkmark,
-                    color: context.colorsV2.successDefault,
-                  )
-                : packageInfo.installed
-                    ? Spacing.$6x.heightBox
-                    : Icon(
-                        SystemIcons.download,
-                        color: context.colorsV2.accentDefault,
-                      ),
+              );
+            } else if (selectedVoice == package.id) {
+              return Icon(
+                SystemIcons.checkmark,
+                color: context.colorsV2.successDefault,
+              );
+            } else if (packageInfo.installed) {
+              return Spacing.$6x.heightBox;
+            } else {
+              return Icon(
+                SystemIcons.download,
+                color: context.colorsV2.accentDefault,
+              );
+            }
+          },
+        ),
       ),
     );
   }

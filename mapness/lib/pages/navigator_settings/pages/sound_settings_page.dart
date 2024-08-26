@@ -19,8 +19,6 @@ class SoundSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
-  bool muffleOtherSounds = false;
-
   @override
   Widget build(BuildContext context) {
     final soundSettingsModel = ref.watch(soundSettingsProvider);

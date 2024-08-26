@@ -58,13 +58,12 @@ class LanguagePickSheet extends StatelessWidget {
               Spacing.$3x.heightBox,
               ContentWrapper(
                 color: context.color.surfaceBaseTertiary,
-                children: <Widget>[
-                  ...Language.values.map(
-                    (e) => LanguageRowWidget(
-                      currentLanguage: e,
-                    ),
-                  ),
-                ]
+                children: Language.values
+                    .map<Widget>(
+                      (e) => LanguageRowWidget(
+                        currentLanguage: e,
+                      ),
+                    )
                     .insertBetween(
                       Padding(
                         padding: const EdgeInsets.only(left: Spacing.$4x),

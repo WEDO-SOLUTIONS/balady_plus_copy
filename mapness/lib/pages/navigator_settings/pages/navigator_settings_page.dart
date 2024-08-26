@@ -110,7 +110,6 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                       headerTitle: l10n.roadEvents,
                       content: [
                         ContentRow(
-                          onToggle: (_) {},
                           options: ContentRowOptions(
                             wrapperColor: color.surfaceBaseTertiary,
                             wrapperEnabled: true,
@@ -120,9 +119,11 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                             ),
                             title: l10n.speedCameras,
                             titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                            actionWidget: ContentRowActionOptions(
+
+                            /// Road cameras aren't available, support this function later
+                            actionWidget: const ContentRowActionOptions(
                               enabledToggle: true,
-                              toggleInitialValue: dark,
+                              toggleInitialValue: true,
                             ),
                           ),
                         ),

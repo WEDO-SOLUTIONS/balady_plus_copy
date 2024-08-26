@@ -81,7 +81,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                     bearing: 0,
                   ),
                 );
-            // dgisController
             // ignore: avoid_catches_without_on_clauses
           } catch (e) {
             // todo: make it better
@@ -167,8 +166,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       // ref.watch(iwishMarkersProvider.select((value) => null));
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
-
-    _setupVoice();
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -287,11 +284,5 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     );
 
     ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
-  }
-
-  Future<void> _setupVoice() async {
-    final _dgisController = await ref.read(dgisControllerProvider.future);
-    // await _dgisController.setMapAttributeBool('navigatorOn', true);
-    await _dgisController.toggleVoiceInstruction(toggleType: SoundToggleType.all);
   }
 }

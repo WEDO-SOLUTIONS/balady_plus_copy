@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,18 +28,20 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
     final voiceLanguage = ref.watch(soundSettingsProvider).voicesLanguage;
 
     final voicePackages = ref.watch(voicePackagesProvider);
+    final language = Language.values.firstWhere((e) => e.locale.languageCode == voiceLanguage);
 
-    final language = Language.values.where((e) => e.locale.languageCode == voiceLanguage).first;
+    final installedVoices = <PackageMessage>[];
+    final unInstalledVoices = <PackageMessage>[];
 
-    final installedVoices = voicePackages
-        .where((e) => e.language == voiceLanguage && e.packageMessage.info.installed)
-        .map((e) => e.packageMessage)
-        .toList();
-
-    final unInstalledVoices = voicePackages
-        .where((e) => e.language == voiceLanguage && !e.packageMessage.info.installed)
-        .map((e) => e.packageMessage)
-        .toList();
+    for (final package in voicePackages) {
+      if (package.language == voiceLanguage) {
+        if (package.packageMessage.info.installed) {
+          installedVoices.add(package.packageMessage);
+        } else {
+          unInstalledVoices.add(package.packageMessage);
+        }
+      }
+    }
 
     final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
 
@@ -100,8 +103,9 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                           ContentWrapper(
                             color: colorsV2.backgroundSurface1,
                             children: installedVoices
-                                .map((e) => VoiceRowWidget(package: e))
-                                .cast<Widget>()
+                                .map<Widget>(
+                                  (e) => VoiceRowWidget(package: e),
+                                )
                                 .insertBetween(
                                   Padding(
                                     padding: const EdgeInsets.only(
@@ -127,10 +131,9 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                           ContentWrapper(
                             color: colorsV2.backgroundSurface1,
                             children: unInstalledVoices
-                                .map(
+                                .map<Widget>(
                                   (e) => VoiceRowWidget(package: e),
                                 )
-                                .cast<Widget>()
                                 .insertBetween(
                                   Padding(
                                     padding: const EdgeInsets.only(

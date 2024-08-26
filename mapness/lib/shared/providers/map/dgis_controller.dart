@@ -83,7 +83,6 @@ class DgisController extends _$DgisController {
     try {
       // Voice
       await controller.installVoice('voice-saud');
-      //await controller.installVoice('voice-jennifer');
     } on PlatformException catch (e) {
       debugPrint('Voice installation error: $e');
     }
