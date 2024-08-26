@@ -102,6 +102,7 @@ class Search extends _$Search {
       mixpanel?.track('Search: fetchSuggest');
     } on Exception catch (_) {
       state = SearchStateError(searchText: query);
+      rethrow;
     }
   }
 
@@ -149,6 +150,7 @@ class Search extends _$Search {
       mixpanel?.track('Search: quickSearch');
     } on Exception catch (_) {
       state = SearchStateError(searchText: searchQuery);
+      rethrow;
     }
   }
 
@@ -189,6 +191,7 @@ class Search extends _$Search {
       mixpanel?.track('Search: searchByText');
     } on Exception catch (_) {
       state = SearchStateError(searchText: query);
+      rethrow;
     }
   }
 
@@ -230,6 +233,7 @@ class Search extends _$Search {
       mixpanel?.track('Search: searchByQuery');
     } on Exception catch (_) {
       state = SearchStateError(searchText: text);
+      rethrow;
     }
   }
 
