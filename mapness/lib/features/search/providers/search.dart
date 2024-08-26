@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/services.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -99,7 +100,7 @@ class Search extends _$Search {
               searchText: query,
             );
       mixpanel?.track('Search: fetchSuggest');
-    } catch (e) {
+    } on PlatformException catch (_) {
       state = SearchStateError(searchText: query);
     }
   }
@@ -146,7 +147,7 @@ class Search extends _$Search {
               markerType: quickSearch.markerType,
             );
       mixpanel?.track('Search: quickSearch');
-    } on Exception catch (_) {
+    } on PlatformException catch (_) {
       state = SearchStateError(searchText: searchQuery);
     }
   }
@@ -186,7 +187,7 @@ class Search extends _$Search {
               searchText: query,
             );
       mixpanel?.track('Search: searchByText');
-    } catch (e) {
+    } on PlatformException catch (_) {
       state = SearchStateError(searchText: query);
     }
   }
@@ -227,7 +228,7 @@ class Search extends _$Search {
               searchText: text,
             );
       mixpanel?.track('Search: searchByQuery');
-    } catch (e) {
+    } on PlatformException catch (_) {
       state = SearchStateError(searchText: text);
     }
   }
