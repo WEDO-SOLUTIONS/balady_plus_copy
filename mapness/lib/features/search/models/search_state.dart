@@ -16,10 +16,10 @@ class SearchStateHistory extends SearchState {
 }
 
 class SearchStateError extends SearchState {
-  final String? error;
+  final String? errorMessage;
 
   const SearchStateError({
-    this.error,
+    this.errorMessage,
     super.searchText = '',
   });
 
@@ -102,6 +102,6 @@ extension SearchStateMap on SearchState {
         SearchStateLoading() => loading(),
         SearchStateSuggest(suggest: final value) => suggest(value),
         SearchStateResults(results: final value) => results(value),
-        SearchStateError(searchText: final query, error: final error) => failure(query, error),
+        SearchStateError(searchText: final query, errorMessage: final errorMessage) => failure(query, errorMessage),
       };
 }
