@@ -1,12 +1,10 @@
 class CommercialDebt {
-  List<Debt>? debts;
   String? infoMessage;
   String status;
   String? referenceId;
   double totalAmount;
 
   CommercialDebt({
-    required this.debts,
     required this.infoMessage,
     required this.status,
     required this.referenceId,
@@ -14,9 +12,6 @@ class CommercialDebt {
   });
 
   factory CommercialDebt.fromJson(Map<String, dynamic> json) => CommercialDebt(
-        debts: json["debts"] != null
-            ? List<Debt>.from(json["debts"].map((x) => Debt.fromJson(x)))
-            : null,
         infoMessage: json["infoMessage"],
         status: json["status"],
         referenceId: json["referenceId"],
@@ -30,7 +25,7 @@ class Debt {
   String dueDate;
   String id;
   String number;
-  DueStatus service;
+  DueStatus? service;
   String source;
 
   Debt({
@@ -45,12 +40,12 @@ class Debt {
 
   factory Debt.fromJson(Map<String, dynamic> json) => Debt(
         amount: (json["amount"] + 0.0),
-        creationDate: json["creationDate"],
-        dueDate: json["dueDate"],
-        id: json["id"],
-        number: json["number"],
-        service: DueStatus.fromJson(json["service"]),
-        source: json["source"],
+        creationDate: json["creationDate"]  ?? "",
+        dueDate: json["dueDate"]  ?? "",
+        id: json["id"]  ?? "",
+        number: json["number"] ?? "",
+        service:  json["service"] != null ? DueStatus.fromJson(json["service"]) : null,
+        source: json["source"]  ?? "",
       );
 }
 
@@ -64,8 +59,8 @@ class DueStatus {
   });
 
   factory DueStatus.fromJson(Map<String, dynamic> json) => DueStatus(
-        id: json["id"],
-        name: json["name"],
+        id: json["id"] ?? "",
+        name: json["name"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

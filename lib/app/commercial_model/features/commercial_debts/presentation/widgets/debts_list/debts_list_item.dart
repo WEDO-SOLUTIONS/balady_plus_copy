@@ -52,7 +52,7 @@ class DebtsListItem extends StatelessWidget {
                 ),
                 DebtsParameter(
                   title: 'invoice_service'.tr(),
-                  value: debt.service.name,
+                  value: debt.service?.name ?? "",
                 ),
                 DebtsParameter(
                   title: 'debt_origin'.tr(),
