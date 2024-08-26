@@ -10,10 +10,10 @@ import 'package:mapness/features/feedback/poi_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
-class FeedbackTypesPage extends ConsumerWidget {
+class FeedbackSelectTypePage extends ConsumerWidget {
   final String? objectId;
 
-  const FeedbackTypesPage({
+  const FeedbackSelectTypePage({
     required this.objectId,
     super.key,
   });

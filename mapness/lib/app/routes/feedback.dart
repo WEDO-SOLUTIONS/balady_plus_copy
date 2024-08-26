@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/pages/feedback/feedback_page.dart';
+import 'package:mapness/pages/feedback/feedback_select_type_page.dart';
 import 'package:mapness/pages/feedback/feedback_success_page.dart';
-import 'package:mapness/pages/feedback/feedback_types_page.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 
 part 'feedback.g.dart';
@@ -11,10 +11,11 @@ part 'feedback.g.dart';
 @TypedGoRoute<FeedbackBaseRoute>(
   path: FeedbackBaseRoute.path,
   routes: <TypedGoRoute<GoRouteData>>[
-    TypedGoRoute<FeedbackRoute>(path: ':schemeId', routes: <TypedGoRoute<GoRouteData>>[
-      TypedGoRoute<FeedbackSuccessRoute>(path: 'success'),
-    ]),
-    
+    TypedGoRoute<FeedbackRoute>(
+        path: ':schemeId',
+        routes: <TypedGoRoute<GoRouteData>>[
+          TypedGoRoute<FeedbackSuccessRoute>(path: 'success'),
+        ]),
   ],
 )
 
@@ -36,8 +37,9 @@ class FeedbackBaseRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
-        child: FeedbackTypesPage(objectId: objectId),
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(
+        child: FeedbackSelectTypePage(objectId: objectId),
       );
 }
 
@@ -55,7 +57,8 @@ class FeedbackRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(
         child: FeedbackPage(
           poiId: objectId,
           schemeId: schemeId,
@@ -79,7 +82,8 @@ class FeedbackSuccessRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      const TransculentPage(
         child: FeedbackSuccessPage(
           username: '-',
         ),
