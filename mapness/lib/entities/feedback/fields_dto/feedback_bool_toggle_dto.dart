@@ -1,7 +1,7 @@
 part of '../dto/feedback_base_dto.dart';
 
 /// owner type
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class FeedbackBoolToggleDto extends FeedbackBaseDto {
   final String label;
 

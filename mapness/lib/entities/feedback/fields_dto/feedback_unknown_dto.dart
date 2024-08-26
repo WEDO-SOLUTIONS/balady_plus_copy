@@ -1,6 +1,6 @@
 part of '../dto/feedback_base_dto.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class FeedbackUnknownDto extends FeedbackBaseDto {
   FeedbackUnknownDto({
     required super.id,
