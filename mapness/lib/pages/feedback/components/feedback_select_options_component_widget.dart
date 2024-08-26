@@ -26,8 +26,8 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
           categoriesValue: categories,
           onTap: (category, objectId) => _onTap(context, category, objectId),
         ),
-      (AsyncValue.loading, _) ||
-      (_, AsyncValue.loading) =>
+      (AsyncLoading(), _) ||
+      (_, AsyncLoading()) =>
         Center(child: Loading.large()),
       _ => Center(child: Text(context.l10n.failedToLoadData)),
     };
