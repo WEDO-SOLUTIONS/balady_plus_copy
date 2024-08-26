@@ -63,40 +63,45 @@ class Search extends _$Search {
   }
 
   Future<void> fetchSuggest(String query) async {
-    await _searchOperation?.cancel();
-    if (query.isEmpty) {
-      state = const SearchStateHistory();
-      return;
+    try {
+      await _searchOperation?.cancel();
+      if (query.isEmpty) {
+        state = const SearchStateHistory();
+        return;
+      }
+
+      _updateSearchText(query);
+      _previousType = SearchType.fetchSuggest;
+      _previousQuery = query;
+      Metrics.logEvent(
+        'fetchSuggest',
+        object: runtimeType,
+      );
+
+      mixpanel?.timeEvent('Search: fetchSuggest');
+      final dgisController = await ref.read(dgisControllerProvider.future);
+      final searchRect =
+          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+
+      final searchOperation = CancelableOperation.fromFuture(
+        dgisController.fetchSuggest(
+          query,
+          searchRect: searchRect,
+        ),
+      );
+      _searchOperation = searchOperation;
+      final result = await searchOperation.value;
+
+      state = result.suggests.isEmpty
+          ? SearchStateEmpty(searchText: query)
+          : SearchStateSuggest(
+              suggest: result,
+              searchText: query,
+            );
+      mixpanel?.track('Search: fetchSuggest');
+    } catch (e) {
+      state = SearchStateError(searchText: query);
     }
-
-    _updateSearchText(query);
-    _previousType = SearchType.fetchSuggest;
-    _previousQuery = query;
-    Metrics.logEvent(
-      'fetchSuggest',
-      object: runtimeType,
-    );
-
-    mixpanel?.timeEvent('Search: fetchSuggest');
-    final dgisController = await ref.read(dgisControllerProvider.future);
-    final searchRect =
-        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
-
-    final searchOperation = CancelableOperation.fromFuture(
-      dgisController.fetchSuggest(
-        query,
-        searchRect: searchRect,
-      ),
-    );
-    _searchOperation = searchOperation;
-    final result = await searchOperation.value;
-    state = result.suggests.isEmpty
-        ? SearchStateEmpty(searchText: query)
-        : SearchStateSuggest(
-            suggest: result,
-            searchText: query,
-          );
-    mixpanel?.track('Search: fetchSuggest');
   }
 
   Future<void> quickSearch(QuickFilter quickSearch, {List<GeoPointMessage>? spatialRestriction}) async {
@@ -107,112 +112,124 @@ class Search extends _$Search {
       state = const SearchStateHistory();
       return;
     }
-    state = SearchStateLoading(searchText: searchQuery);
-    _previousType = SearchType.quickSearch;
-    _previousQuickSearch = quickSearch;
-    final searchRect =
-        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
-    Metrics.logEvent(
-      'quickSearch',
-      object: runtimeType,
-      extras: {'query': searchQuery},
-    );
+    try {
+      state = SearchStateLoading(searchText: searchQuery);
+      _previousType = SearchType.quickSearch;
+      _previousQuickSearch = quickSearch;
+      final searchRect =
+          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      Metrics.logEvent(
+        'quickSearch',
+        object: runtimeType,
+        extras: {'query': searchQuery},
+      );
 
-    mixpanel?.timeEvent('Search: quickSearch');
-    final dgisController = await ref.read(dgisControllerProvider.future);
+      mixpanel?.timeEvent('Search: quickSearch');
+      final dgisController = await ref.read(dgisControllerProvider.future);
 
-    final searchOperation = CancelableOperation.fromFuture(
-      dgisController.search(
-        searchQuery,
-        sortingType: SortingTypeMessage.byDistance,
-        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
-        spatialRestriction: spatialRestriction ?? _saRestrictions,
-        searchRect: searchRect,
-      ),
-    );
-    _searchOperation = searchOperation;
-    final results = await searchOperation.value;
-    state = (results.firstPage?.items.isEmpty ?? true)
-        ? SearchStateEmpty(searchText: searchQuery)
-        : SearchStateResults(
-            results: results,
-            searchText: searchQuery,
-            markerType: quickSearch.markerType,
-          );
-    mixpanel?.track('Search: quickSearch');
+      final searchOperation = CancelableOperation.fromFuture(
+        dgisController.search(
+          searchQuery,
+          sortingType: SortingTypeMessage.byDistance,
+          // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+          spatialRestriction: spatialRestriction ?? _saRestrictions,
+          searchRect: searchRect,
+        ),
+      );
+      _searchOperation = searchOperation;
+      final results = await searchOperation.value;
+      state = (results.firstPage?.items.isEmpty ?? true)
+          ? SearchStateEmpty(searchText: searchQuery)
+          : SearchStateResults(
+              results: results,
+              searchText: searchQuery,
+              markerType: quickSearch.markerType,
+            );
+      mixpanel?.track('Search: quickSearch');
+    } on Exception catch (_) {
+      state = SearchStateError(searchText: searchQuery);
+    }
   }
 
   Future<void> searchByText(String query) async {
-    await _searchOperation?.cancel();
-    state = SearchStateLoading(searchText: query);
-    _previousType = SearchType.searchByText;
-    _previousQuery = query;
-    final searchRect =
-        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
-    Metrics.logEvent(
-      'searchByText',
-      object: runtimeType,
-      extras: {'query': query},
-    );
+    try {
+      await _searchOperation?.cancel();
+      state = SearchStateLoading(searchText: query);
+      _previousType = SearchType.searchByText;
+      _previousQuery = query;
+      final searchRect =
+          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      Metrics.logEvent(
+        'searchByText',
+        object: runtimeType,
+        extras: {'query': query},
+      );
 
-    mixpanel?.timeEvent('Search: searchByText');
-    final dgisController = await ref.read(dgisControllerProvider.future);
+      mixpanel?.timeEvent('Search: searchByText');
+      final dgisController = await ref.read(dgisControllerProvider.future);
 
-    final searchOperation = CancelableOperation.fromFuture(
-      dgisController.search(
-        query,
-        sortingType: SortingTypeMessage.byDistance,
-        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
-        spatialRestriction: _getRestrictionFromRect(),
-        searchRect: searchRect,
-      ),
-    );
-    _searchOperation = searchOperation;
-    final results = await searchOperation.value;
-    state = (results.firstPage?.items.isEmpty ?? true)
-        ? SearchStateEmpty(searchText: query)
-        : SearchStateResults(
-            results: results,
-            searchText: query,
-          );
-    mixpanel?.track('Search: searchByText');
+      final searchOperation = CancelableOperation.fromFuture(
+        dgisController.search(
+          query,
+          sortingType: SortingTypeMessage.byDistance,
+          // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+          spatialRestriction: _getRestrictionFromRect(),
+          searchRect: searchRect,
+        ),
+      );
+      _searchOperation = searchOperation;
+      final results = await searchOperation.value;
+      state = (results.firstPage?.items.isEmpty ?? true)
+          ? SearchStateEmpty(searchText: query)
+          : SearchStateResults(
+              results: results,
+              searchText: query,
+            );
+      mixpanel?.track('Search: searchByText');
+    } catch (e) {
+      state = SearchStateError(searchText: query);
+    }
   }
 
   Future<void> searchByQuery(SearchQueryMessage query, String text, {List<GeoPointMessage>? spatialRestriction}) async {
-    await _searchOperation?.cancel();
-    state = SearchStateLoading(searchText: text);
-    _previousType = SearchType.searchByQuery;
-    _previousQuery = text;
-    _previousSearchQueryMessage = query;
-    final searchRect =
-        ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+    try {
+      await _searchOperation?.cancel();
+      state = SearchStateLoading(searchText: text);
+      _previousType = SearchType.searchByQuery;
+      _previousQuery = text;
+      _previousSearchQueryMessage = query;
+      final searchRect =
+          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
 
-    Metrics.logEvent(
-      'Search/searchByQuery',
-      object: runtimeType,
-      extras: {'query_id': query.id},
-    );
-    mixpanel?.timeEvent('Search: searchByQuery');
-    final dgisController = await ref.read(dgisControllerProvider.future);
+      Metrics.logEvent(
+        'Search/searchByQuery',
+        object: runtimeType,
+        extras: {'query_id': query.id},
+      );
+      mixpanel?.timeEvent('Search: searchByQuery');
+      final dgisController = await ref.read(dgisControllerProvider.future);
 
-    final searchOperation = CancelableOperation.fromFuture(
-      dgisController.searchByQuery(
-        query,
-        sortingType: SortingTypeMessage.byDistance,
-        // TODO(Sergei): revert value to _saRestrictions when search performance is improved
-        spatialRestriction: spatialRestriction ?? _saRestrictions,
-        searchRect: searchRect,
-      ),
-    );
-    _searchOperation = searchOperation;
-    final results = await searchOperation.value;
-    state = (results.firstPage?.items.isEmpty ?? true)
-        ? SearchStateEmpty(searchText: text)
-        : SearchStateResults(
-            results: results,
-            searchText: text,
-          );
-    mixpanel?.track('Search: searchByQuery');
+      final searchOperation = CancelableOperation.fromFuture(
+        dgisController.searchByQuery(
+          query,
+          sortingType: SortingTypeMessage.byDistance,
+          // TODO(Sergei): revert value to _saRestrictions when search performance is improved
+          spatialRestriction: spatialRestriction ?? _saRestrictions,
+          searchRect: searchRect,
+        ),
+      );
+      _searchOperation = searchOperation;
+      final results = await searchOperation.value;
+      state = (results.firstPage?.items.isEmpty ?? true)
+          ? SearchStateEmpty(searchText: text)
+          : SearchStateResults(
+              results: results,
+              searchText: text,
+            );
+      mixpanel?.track('Search: searchByQuery');
+    } catch (e) {
+      state = SearchStateError(searchText: text);
+    }
   }
 
   void searchInThisArea() {
@@ -244,6 +261,7 @@ class Search extends _$Search {
       SearchStateSuggest() => oldState.copyWith(searchText: searchText),
       SearchStateResults() => oldState.copyWith(searchText: searchText),
       SearchStateLoading() => oldState.copyWith(searchText: searchText),
+      SearchStateError() => oldState.copyWith(searchText: searchText),
     };
   }
 

@@ -10,6 +10,7 @@ import 'package:mapness/pages/routing/ui/routing_search_results.dart';
 import 'package:mapness/pages/routing/ui/routing_suggest_list.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 import 'package:provider/provider.dart';
 
 class RoutingSearchContent extends ConsumerWidget {
@@ -91,6 +92,12 @@ class RoutingSearchContent extends ConsumerWidget {
           ),
         ),
       ),
+      failure: (query, errorMessage) => SliverToBoxAdapter(
+          child: BaseErrorWidget(
+              errorLabel: errorMessage ?? context.l10n.somethingWentWrong,
+              onRetry: () {
+                ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
+              })),
     );
   }
 }

@@ -15,6 +15,19 @@ class SearchStateHistory extends SearchState {
       );
 }
 
+class SearchStateError extends SearchState {
+  final String? error;
+
+  const SearchStateError({
+    this.error,
+    super.searchText = '',
+  });
+
+  SearchStateHistory copyWith({String? searchText}) => SearchStateHistory(
+        searchText: searchText ?? this.searchText,
+      );
+}
+
 class SearchStateEmpty extends SearchState {
   const SearchStateEmpty({required super.searchText});
 
@@ -78,6 +91,10 @@ extension SearchStateMap on SearchState {
     required T Function() loading,
     required T Function(SuggestResultMessage suggest) suggest,
     required T Function(SearchResultMessage results) results,
+    required T Function(
+      String query,
+      String? errorMessage,
+    ) failure,
   }) =>
       switch (this) {
         SearchStateEmpty() => empty(),
@@ -85,5 +102,6 @@ extension SearchStateMap on SearchState {
         SearchStateLoading() => loading(),
         SearchStateSuggest(suggest: final value) => suggest(value),
         SearchStateResults(results: final value) => results(value),
+        SearchStateError(searchText: final query, error: final error) => failure(query, error),
       };
 }
