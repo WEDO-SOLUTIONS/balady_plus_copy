@@ -1,8 +1,4 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:mapness/entities/feedback/dto/feedback_base_dto.dart';
-import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-
-part 'feedback_text_dto.g.dart';
+part of '../dto/feedback_base_dto.dart';
 
 @JsonSerializable()
 class FeedbackTextDto extends FeedbackBaseDto {
@@ -19,11 +15,7 @@ class FeedbackTextDto extends FeedbackBaseDto {
     required this.hint,
   });
 
-  factory FeedbackTextDto.fromJson(Map<String, dynamic> json) =>
-      _$FeedbackTextDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$FeedbackTextDtoToJson(this);
-
+  @override
   FeedbackTextEntity toDomain() => FeedbackTextEntity(
         id: id,
         isRequired: isRequired,

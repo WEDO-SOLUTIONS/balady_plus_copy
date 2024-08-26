@@ -1,4 +1,4 @@
-part of 'feedback_base_entity.dart';
+part of '../feedback_base_entity.dart';
 
 enum FeedbackTextType {
   text,
@@ -14,7 +14,7 @@ class FeedbackTextEntity extends FeedbackBaseEntity {
   final String hint;
   final FeedbackTextType type;
 
-  FeedbackTextEntity({
+  const FeedbackTextEntity({
     required this.type,
     required super.id,
     required super.isRequired,

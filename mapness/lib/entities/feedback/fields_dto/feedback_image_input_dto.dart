@@ -1,8 +1,4 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:mapness/entities/feedback/dto/feedback_base_dto.dart';
-import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-
-part 'feedback_image_input_dto.g.dart';
+part of '../dto/feedback_base_dto.dart';
 
 @JsonSerializable()
 class FeedbackImageInputDto extends FeedbackBaseDto {
@@ -19,11 +15,7 @@ class FeedbackImageInputDto extends FeedbackBaseDto {
     required this.format,
   });
 
-  factory FeedbackImageInputDto.fromJson(Map<String, dynamic> json) =>
-      _$FeedbackImageInputDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$FeedbackImageInputDtoToJson(this);
-
+  @override
   FeedbackImageInputEntity toDomain() => FeedbackImageInputEntity(
         id: id,
         isRequired: isRequired,
