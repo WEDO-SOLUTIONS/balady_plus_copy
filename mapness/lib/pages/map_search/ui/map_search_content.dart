@@ -160,6 +160,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
       ),
       failure: (query, errorMessage) => SliverToBoxAdapter(
         child: BaseErrorWidget(
+          errorLabel: errorMessage,
           onRetry: () {
             ref.read(searchProvider(scope.value).notifier).searchByText(query);
           },

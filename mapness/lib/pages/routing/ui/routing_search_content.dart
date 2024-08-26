@@ -94,7 +94,7 @@ class RoutingSearchContent extends ConsumerWidget {
       ),
       failure: (query, errorMessage) => SliverToBoxAdapter(
           child: BaseErrorWidget(
-              errorLabel: errorMessage ?? context.l10n.somethingWentWrong,
+              errorLabel: errorMessage,
               onRetry: () {
                 ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
               })),
