@@ -1,17 +1,14 @@
-import 'package:balady_plus/app/features/map_page/extensions/directory_object_ext.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/feedback.dart';
-import 'package:mapness/entities/feedback/feedback_scheme_data.dart';
-import 'package:mapness/entities/feedback/feedback_type.dart';
-import 'package:mapness/features/feedback/feedback_scheme.dart';
+import 'package:mapness/entities/feedback/fields_entity/feedback_icon.dart';
+import 'package:mapness/features/feedback/feedback_categories.dart';
 import 'package:mapness/features/feedback/poi_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/feedback/feedback_page_template.dart';
+import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
 class FeedbackTypesPage extends ConsumerWidget {
   final String? objectId;
@@ -22,69 +19,83 @@ class FeedbackTypesPage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => FeedbackPageTemplate(
-        title: context.l10n.feedbackWhatsWrong,
-        isSendVisible: false,
-        child: Builder(
-          builder: (context) {
-            if (objectId == null) {
-              return const SizedBox();
-            }
-            final id = int.tryParse(objectId!);
-            if (id == null) {
-              return Center(child: Loading.large());
-            }
-            final poiData = ref.watch(poiFeedbackProvider(id));
-            final schemes = ref.watch(feedbackSchemeProvider);
-            if (poiData.isLoading || schemes.isLoading) {
-              return Center(child: Loading.large());
-            } else if (poiData.hasError || schemes.hasError) {
-              return Center(child: Text(context.l10n.failedToLoadData));
-            }
-            final poiDataValue = poiData.value;
-            final schemeValue = schemes.value;
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(poiDataValue?.title ?? '', style: context.textStyle.callout),
-                      const SizedBox(height: 5),
-                      Text(poiDataValue?.makeAddress() ?? '', style: context.textStyleV3.bodySmallRegular),
-                    ],
-                  ),
+  // ignore: prefer_expression_function_bodies
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FeedbackFormContainer(
+      title: context.l10n.feedbackWhatsWrong,
+      isSendVisible: false,
+      child: Consumer(
+        builder: (context, ref, child) {
+          if (objectId == null) {
+            return const SizedBox();
+          }
+          final id = int.tryParse(objectId!);
+          if (id == null) {
+            return Center(child: Loading.large());
+          }
+          final poiData = ref.watch(poiFeedbackProvider(id));
+          final categories = ref.watch(feedbackCategoriesProvider);
+
+          if (poiData.isLoading || categories.isLoading) {
+            return Center(child: Loading.large());
+          } else if (poiData.hasError || categories.hasError) {
+            return Center(
+                child: Text(
+                    '${context.l10n.failedToLoadData}\n\n${poiData.error}\n\n${categories.error}\n${categories.stackTrace}'));
+          }
+          final poiDataValue = poiData.value;
+          final categoriesValue = categories.value;
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(poiDataValue?.title ?? '',
+                        style: context.textStyle.callout),
+                    const SizedBox(height: 5),
+                    // Text(poiDataValue?.makeAddress() ?? '',
+                    Text(poiDataValue?.toString() ?? '',
+                        style: context.textStyleV3.bodySmallRegular),
+                  ],
                 ),
-                const SizedBox(height: Spacing.$4x),
-                Material(
-                  shape: smoothBorder(RadiusBorder.l),
-                  color: context.colorsV2.backgroundSurface1,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => _FeedbackTypeItem(
-                      title: schemeValue.feedbacks[index].title,
-                      icon: schemeValue.feedbacks[index].icon,
+              ),
+              const SizedBox(height: Spacing.$4x),
+              Material(
+                shape: smoothBorder(RadiusBorder.l),
+                color: context.colorsV2.backgroundSurface1,
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final item = categoriesValue[index];
+                    return _FeedbackTypeItem(
+                      title: item.name,
+                      icon: item.icon,
                       onTap: () => _onTap(
                         context,
-                        schemeValue.feedbacks[index],
+                        item,
                         poiDataValue?.id?.objectId,
                       ),
-                    ),
-                    separatorBuilder: (context, index) => const _Divider(),
-                    itemCount: schemeValue!.feedbacks.length,
-                  ),
+                    );
+                  },
+                  separatorBuilder: (context, index) => const _Divider(),
+                  itemCount: categoriesValue!.length,
                 ),
-              ],
-            );
-          },
-        ),
-      );
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 
-  void _onTap(BuildContext context, FeedbackSchemeData scheme, int? objectId) {
+  // TODO: refactor
+  void _onTap(BuildContext context, scheme, int? objectId) {
     if (objectId == null) {
       return;
     }
@@ -95,13 +106,13 @@ class FeedbackTypesPage extends ConsumerWidget {
 
 class _FeedbackTypeItem extends ConsumerWidget {
   final String title;
-  final String icon;
+  final FeedbackIcon icon;
   final VoidCallback onTap;
+
   const _FeedbackTypeItem({
     required this.title,
     required this.icon,
     required this.onTap,
-    super.key,
   });
 
   @override
@@ -109,14 +120,16 @@ class _FeedbackTypeItem extends ConsumerWidget {
         onTap: onTap,
         options: ContentRowOptions(
           leadingIcon: Icon(
-            icon.feedbackIcon(isLTR: context.isLTR),
+            icon.iconData(isLTR: context.isLTR),
             color: context.colorsV2.accentDefault,
           ),
           title: title,
           titleStyle: context.textStyleV3.bodyLargeRegular,
           actionWidget: ContentRowActionOptions(
             actionIcon: AppIcons(
-              iconData: context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge,
+              iconData: context.isLTR
+                  ? SystemIcons.arrowCornerRightLarge
+                  : SystemIcons.arrowCornerLeftLarge,
               color: context.colorsV2.neutralDefault,
             ),
           ),
@@ -125,7 +138,7 @@ class _FeedbackTypeItem extends ConsumerWidget {
 }
 
 class _Divider extends StatelessWidget {
-  const _Divider({super.key});
+  const _Divider();
 
   @override
   Widget build(BuildContext context) => Divider(
