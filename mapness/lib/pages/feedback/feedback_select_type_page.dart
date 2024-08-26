@@ -1,7 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/pages/feedback/components/feedback_select_options_widget.dart';
+import 'package:mapness/pages/feedback/components/feedback_select_options_component_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
@@ -26,7 +26,7 @@ class FeedbackSelectTypePage extends ConsumerWidget {
       isSendVisible: false,
       child: id == null
           ? Center(child: Loading.large())
-          : FeedbackSelectOptionsWidget(objectId: id),
+          : FeedbackSelectOptionsComponentWidget(objectId: id),
     );
   }
 }
