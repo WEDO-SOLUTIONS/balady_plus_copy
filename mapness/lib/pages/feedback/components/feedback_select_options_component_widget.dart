@@ -18,20 +18,19 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
     final poiData = ref.watch(poiFeedbackProvider(objectId));
     final categories = ref.watch(feedbackCategoriesProvider);
 
-    if (poiData.isLoading || categories.isLoading) {
-      return Center(child: Loading.large());
-    } else if (poiData.hasError || categories.hasError) {
-      return Center(child: Text(context.l10n.failedToLoadData));
-    }
-
-    final poiDataValue = poiData.value;
-    final categoriesValue = categories.value;
-
-    return FeedbackSelectOptionsWidget(
-      poiDataValue: poiDataValue!,
-      categoriesValue: categoriesValue!,
-      onTap: (category, objectId) => _onTap(context, category, objectId),
-    );
+    return switch ((poiData, categories)) {
+      (AsyncValue(value: final poiData), AsyncValue(value: final categories))
+          when poiData != null && categories != null && categories.isNotEmpty =>
+        FeedbackSelectOptionsWidget(
+          poiDataValue: poiData,
+          categoriesValue: categories,
+          onTap: (category, objectId) => _onTap(context, category, objectId),
+        ),
+      (AsyncValue.loading, _) ||
+      (_, AsyncValue.loading) =>
+        Center(child: Loading.large()),
+      _ => Center(child: Text(context.l10n.failedToLoadData)),
+    };
   }
 
   void _onTap(
