@@ -253,13 +253,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                   ),
                 ),
                 const Spacer(),
-                const Padding(
+                Padding(
                   padding: padding,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IndoorControl(),
-                      ZoomControl(),
+                      if (widget.navType == RouteSearchOptionsMessage.pedestrian)
+                        const IndoorControl()
+                      else
+                        const SizedBox.shrink(),
+                      const ZoomControl(),
                     ],
                   ),
                 ),
