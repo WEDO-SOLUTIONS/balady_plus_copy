@@ -8,7 +8,7 @@ enum FeedbackTextType {
   url,
 }
 
-class FeedbackTextEntity extends FeedbackBaseEntity {
+class FeedbackTextEntity extends FeedbackBaseEntity<String> {
   final String label;
   final int maxLenght;
   final String hint;
@@ -21,5 +21,17 @@ class FeedbackTextEntity extends FeedbackBaseEntity {
     required this.label,
     required this.maxLenght,
     required this.hint,
-  });
+    String? value,
+  }) : super(value: value);
+
+  @override
+  FeedbackTextEntity updateValue(String value) => FeedbackTextEntity(
+        id: id,
+        isRequired: isRequired,
+        label: label,
+        maxLenght: maxLenght,
+        hint: hint,
+        type: type,
+        value: value,
+      );
 }
