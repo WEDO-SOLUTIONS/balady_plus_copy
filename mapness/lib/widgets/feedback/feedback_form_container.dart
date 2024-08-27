@@ -33,9 +33,7 @@ class FeedbackFormContainer extends StatelessWidget {
             appBar: BaladyTopBar.iconAndText(
               title: title,
               leading: ActionModel(
-                icon: context.isLTR
-                    ? SystemIcons.arrowCornerLeftLarge
-                    : SystemIcons.arrowCornerRightLarge,
+                icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                 onPressed: onBack ?? context.pop,
               ),
               trailing: isSendVisible
@@ -47,6 +45,9 @@ class FeedbackFormContainer extends StatelessWidget {
                   : null,
               colorEnabled: context.colorsV2.accentDefault,
               colorDisabled: context.colorsV2.foregroundMuted,
+
+              /// changes in model ignored for some reason even with == and hashCode overriden
+              key: ValueKey(isSendEnabled),
             ),
             body: Padding(
               padding: const EdgeInsets.all(Spacing.$4x),

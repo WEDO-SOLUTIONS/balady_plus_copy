@@ -16,7 +16,7 @@ class FeedbackBoolToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final border = BorderSide(color: context.colorsV2.borderMuted, width: 1);
+    final border = BorderSide(color: context.colorsV2.borderMuted);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),

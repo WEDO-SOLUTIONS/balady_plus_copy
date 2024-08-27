@@ -64,7 +64,6 @@ class _Button extends StatelessWidget {
   final void Function() onTap;
   const _Button({
     required this.onTap,
-    super.key,
   });
 
   @override
