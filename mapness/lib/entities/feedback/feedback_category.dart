@@ -1,5 +1,5 @@
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/entities/feedback/fields_entity/feedback_icon.dart';
+import 'package:mapness/entities/feedback/feedback_icon.dart';
 
 class FeedbackCategoryEntity {
   final String id;

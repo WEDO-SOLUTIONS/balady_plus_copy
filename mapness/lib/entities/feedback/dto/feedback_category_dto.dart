@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/feedback/dto/feedback_base_dto.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
-import 'package:mapness/entities/feedback/fields_entity/feedback_icon.dart';
+import 'package:mapness/entities/feedback/feedback_icon.dart';
 part 'feedback_category_dto.g.dart';
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
