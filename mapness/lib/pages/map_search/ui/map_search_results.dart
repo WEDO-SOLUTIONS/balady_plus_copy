@@ -14,13 +14,11 @@ class MapSearchResults extends ConsumerWidget {
   const MapSearchResults({
     required this.results,
     required this.scrollController,
-    required this.onResultItemTap,
     super.key,
   });
 
   final SearchResultMessage results;
   final ScrollController scrollController;
-  final VoidCallback onResultItemTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,7 +40,6 @@ class MapSearchResults extends ConsumerWidget {
         language: language,
         myLocation: myLocation,
         onTap: () {
-          onResultItemTap();
           Metrics.logEventAdvanced(
             MetricsConstants.searchKeys.searchResult,
             group: MetricsConstants.searchTag,
