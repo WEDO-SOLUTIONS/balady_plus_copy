@@ -39,7 +39,6 @@ class NavigationHandler {
         self.map = map
         
         self.eventChannel = eventChannel
-        
         self.navigationManager = try! NavigationManager(platformContext: context)
         self.navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
         self.navigationManager.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
@@ -49,7 +48,10 @@ class NavigationHandler {
         
         self.locationSource = MyLocationMapObjectSource(
             context: context,
-            controllerSettings: MyLocationControllerSettings()
+            controllerSettings: MyLocationControllerSettings(
+               
+            ),
+            markerType: MyLocationMapObjectMarkerType.model
         )
 
         self.speedControlModel = SpeedControlModel(

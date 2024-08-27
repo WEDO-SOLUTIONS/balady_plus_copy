@@ -46,11 +46,12 @@ class RouteHandler {
         self.navigationHandler = navigationHandler
         self.routeEditor = RouteEditor(context: context)
         self.routeEditorSource = RouteEditorSource(
-            context: context, routeEditor: self.routeEditor,  
+            context: context, routeEditor: self.routeEditor,
             activeDisplayFlags: [.immersiveRouteParts],
             inactiveDisplayFlags: [.immersiveRouteParts],
             calloutLabelDisplayMode: .relativeToActiveRouteValues
         )
+        
         self.trafficRouter = TrafficRouter.init(context: context)
 
         self.publicTransportHandler = PublicTransportHandler(eventChannel: eventChannel, routeHandler: self)
@@ -69,7 +70,7 @@ class RouteHandler {
         })
 
         self.map.addSource(source: routeEditorSource)
-        
+
     }
     
     func cancel() {
