@@ -100,65 +100,65 @@ class _CommercialLicenseCancelScreenState
               ),
             ),
           ],
-          child: Column(
-            children: [
-              Expanded(
-                child: BlocListener<CommercialLicenseCancelBloc,
-                    CommercialLicenseCancelState>(
-                  listener: (BuildContext context, state) {
-                    if (state is CommercialLicenseCancelSucceededState) {
-                      setState(() {
-                        currentPageValue++;
-                      });
-                      goToNewPage();
-                      context.read<CommercialDebtsCubit>().checkDebts(
-                            currentPageValue,
-                            data['requestId'],
-                          );
-                    }
-                    if (state is SubmitCancelRequestSucceededState) {
-                      Navigator.of(context).popAndPushNamed(
-                        CommercialRouteName.submitApplicationSuccessfullyCancel,
-                        arguments: (
-                          data['from'],
-                          state.submitResponse,
-                          state.totalCost,
+          child: CommercialDebtsScreen(
+            transactionType: TransactionType.REQUEST,
+            transactionId: data['requestId'],
+            steps: const [
+              CancelSteps.saveRequestInfoSteps,
+              CancelSteps.calculateFeesSteps,
+            ],
+            serviceId: CommercialLicenseServiceId.cancelCommercialLicense,
+            child: Column(
+              children: [
+                Expanded(
+                  child: BlocListener<CommercialLicenseCancelBloc,
+                      CommercialLicenseCancelState>(
+                    listener: (BuildContext contextCubit, state) {
+                      if (state is CommercialLicenseCancelSucceededState) {
+                        setState(() {
+                          currentPageValue++;
+                        });
+                        goToNewPage();
+                        contextCubit.read<CommercialDebtsCubit>().checkDebts(
+                              currentPageValue,
+                              data['requestId'],
+                            );
+                      }
+                      if (state is SubmitCancelRequestSucceededState) {
+                        Navigator.of(context).popAndPushNamed(
+                          CommercialRouteName.submitApplicationSuccessfullyCancel,
+                          arguments: (
+                            data['from'],
+                            state.submitResponse,
+                            state.totalCost,
+                          ),
+                        );
+                      }
+                      if (state is CommercialLicenseCancelFailureState) {
+                        // show
+                        CommonFunctions.showError(state.errorMessage);
+                      }
+                    },
+                    child: GestureDetector(
+                      onTap: () => hideKeyboard(),
+                      child: Scaffold(
+                        appBar: DetailsAppBarTwo(
+                          pageLength: pagesList.length,
+                          currentStep: currentPageValue + 1,
+                          backOnPress: () {
+                            if (currentPageValue > 0) {
+                              setState(() {
+                                currentPageValue--;
+                              });
+                              goToNewPage();
+                            } else {
+                              showBackDialog();
+                            }
+                          },
+                          onTapCloseAction: () => showBackDialog(),
+                          requestNum: data['requestId'],
                         ),
-                      );
-                    }
-                    if (state is CommercialLicenseCancelFailureState) {
-                      // show
-                      CommonFunctions.showError(state.errorMessage);
-                    }
-                  },
-                  child: GestureDetector(
-                    onTap: () => hideKeyboard(),
-                    child: Scaffold(
-                      appBar: DetailsAppBarTwo(
-                        pageLength: pagesList.length,
-                        currentStep: currentPageValue + 1,
-                        backOnPress: () {
-                          if (currentPageValue > 0) {
-                            setState(() {
-                              currentPageValue--;
-                            });
-                            goToNewPage();
-                          } else {
-                            showBackDialog();
-                          }
-                        },
-                        onTapCloseAction: () => showBackDialog(),
-                        requestNum: data['requestId'],
-                      ),
-                      body: CommercialDebtsScreen(
-                        transactionType: TransactionType.REQUEST,
-                        transactionId: data['requestId'],
-                        steps: const [
-                          CancelSteps.saveRequestInfoSteps,
-                          CancelSteps.calculateFeesSteps,
-                        ],
-                        serviceId: CommercialLicenseServiceId.cancelCommercialLicense,
-                        child: PageView.builder(
+                        body: PageView.builder(
                           itemCount: pagesList.length,
                           scrollDirection: Axis.vertical,
                           physics: const NeverScrollableScrollPhysics(),
@@ -175,9 +175,9 @@ class _CommercialLicenseCancelScreenState
                     ),
                   ),
                 ),
-              ),
-              // const PreviousCancelButtons(isBtnDisabled: false),
-            ],
+                // const PreviousCancelButtons(isBtnDisabled: false),
+              ],
+            ),
           ),
         ),
       ),
