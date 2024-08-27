@@ -25,9 +25,27 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   late final DraggableScrollableController _layersController;
   late final DraggableScrollableController _parkingLotsController;
 
+  late final AnimationController _bgColorController;
+  late final ColorTween _bgOpacity;
+  late final Animation<Color?> _bgColorAnimation;
+
   @override
   void initState() {
     super.initState();
+
+    _bgColorController = AnimationController(
+      duration: _showHideDuration,
+      vsync: this,
+    );
+    _bgOpacity = ColorTween(
+      begin: Colors.transparent,
+      end: const Color.fromRGBO(0, 0, 0, 0.7),
+    );
+    _bgColorAnimation = _bgOpacity.animate(_bgColorController)
+      ..addListener(() {
+        setState(() {});
+      });
+
     _layersController = DraggableScrollableController();
     _parkingLotsController = DraggableScrollableController();
     WidgetsBinding.instance.addPostFrameCallback((_) => _showBottomSheet());
@@ -35,9 +53,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
 
   @override
   void dispose() {
-    super.dispose();
+    _bgColorController.dispose();
     _layersController.dispose();
     _parkingLotsController.dispose();
+    super.dispose();
   }
 
   @override
@@ -50,7 +69,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
         alignment: Alignment.bottomCenter,
         children: [
           ColoredBox(
-            color: context.staticColor.surfaceOverlayModal,
+            color: _bgColorAnimation.value ?? Colors.transparent,
             child: GestureDetector(onTap: () {
               if (state.layersPanelType == LayersPanelType.layers) {
                 _hideLayersPanel();
@@ -149,6 +168,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   }
 
   void _hideLayersPanel() {
+    _bgColorController.reverse();
     _layersController.animateTo(
       .0,
       duration: _showHideDuration,
@@ -160,13 +180,11 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
     ref.watch(layersControlsProvider.notifier).update(
           layersWidgetType: LayersPanelType.layers,
         );
-    _layersController
-        .animateTo(
-          _layersPanelMaxHeight,
-          duration: duration,
-          curve: curve,
-        )
-        .then((_) {});
+    _layersController.animateTo(
+      _layersPanelMaxHeight,
+      duration: duration,
+      curve: curve,
+    );
     _parkingLotsController
       ..removeListener(_parkingControllerListener)
       ..animateTo(
@@ -198,7 +216,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
 
   void _showBottomSheet() {
     ref.read(layersControlsProvider.notifier).initialize();
-
+    _bgColorController.forward();
     _layersController
         .animateTo(
       _layersPanelMaxHeight,
