@@ -1,21 +1,70 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FeedbackInput extends StatelessWidget {
-  final String? initialValue;
-  final String label;
-  final String? hintText;
-  final void Function(String)? onChanged;
-  const FeedbackInput({required this.label, super.key, this.initialValue, this.hintText, this.onChanged});
+  final void Function(String) onValueChange;
+  final FeedbackTextEntity field;
+
+  const FeedbackInput({
+    required this.onValueChange,
+    required this.field,
+    super.key,
+  });
 
   @override
-  Widget build(BuildContext context) => BaladyInput(
-        labelText: label,
-        hintText: hintText,
-        labelStyle: context.textStyleV3.captionMediumRegular,
-        initialValue: initialValue,
-        fillColor: context.colorsV2.backgroundSurface1,
-        onChanged: onChanged,
-      );
+  // ignore: prefer_expression_function_bodies
+  Widget build(BuildContext context) {
+    final keyboardType = switch (field.type) {
+      FeedbackTextType.multilineText => TextInputType.multiline,
+      FeedbackTextType.phone => TextInputType.phone,
+      FeedbackTextType.url => TextInputType.url,
+      FeedbackTextType.text => TextInputType.text,
+      FeedbackTextType.email => TextInputType.emailAddress,
+    };
+
+    final allowedInputPattern = switch (field.type) {
+      FeedbackTextType.email => RegExp(r'[a-zA-Z0-9._%+-@]'),
+      FeedbackTextType.phone => RegExp(r'[0-9]'),
+      FeedbackTextType.url => RegExp(r'[a-zA-Z0-9./:?_-]'),
+      _ => null,
+    };
+
+    return BaladyInput(
+      labelText: field.label,
+      hintText: field.hint,
+      labelStyle: context.textStyleV3.captionMediumRegular,
+      initialValue: field.value,
+      fillColor: context.colorsV2.backgroundSurface1,
+      onValidate: (value) => _maybeValidationError(context.l10n, value),
+      allowedInputPattern: allowedInputPattern,
+      isRequired: field.isRequired,
+      maxLength: field.maxLenght,
+      keyboardType: keyboardType,
+      maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
+      onChanged: (value) {
+        onValueChange(value);
+      },
+    );
+  }
+
+  String? _maybeValidationError(AppLocalizations l10n, String? value) {
+    final regex = switch (field.type) {
+      FeedbackTextType.email =>
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
+      FeedbackTextType.phone => RegExp(r'^\+?[0-9]{10,14}$'),
+      FeedbackTextType.url => RegExp(
+          r'^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'),
+      _ => null,
+    };
+    if (regex != null &&
+        (value?.isNotEmpty ?? false) &&
+        !regex.hasMatch(value!)) {
+      return l10n.feedbackTextFieldWrongFormat;
+    }
+    return null;
+  }
 }
