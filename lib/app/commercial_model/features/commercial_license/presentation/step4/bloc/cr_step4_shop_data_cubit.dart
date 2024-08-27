@@ -696,7 +696,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       bool? isCitizenPledgedToClean =
           requestData?.shopInfo?.isCitizenPledgedToClean;
       int? floorCount = requestData?.shopInfo?.floorCount;
-      String? blockNumber = requestData?.shopInfo?.blockNumber;
+      String? blockNumber = requestData?.shopInfo?.blockNumber?.toString();
       int? floorNumber = requestData?.shopInfo?.floorNumber;
       String? salamaBillNumber = requestData?.shopInfo?.salamaBillNumber;
       String? salamaPermitNumber = requestData?.shopInfo?.salamaPermitNumber;

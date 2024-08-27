@@ -14,11 +14,14 @@ class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
 
   final List<String> steps;
 
+  final CommercialLicenseServiceId serviceId;
+
   ////////////////////////////////////////////////////////////////////////////
   CommercialDebtsCubit({
     required this.transactionType,
     int? transactionId,
     required this.steps,
+    required this.serviceId,
   })  : repository = sl(),
         super(const CommercialDebtsState()) {
     if (transactionId != null) {
@@ -37,6 +40,7 @@ class CommercialDebtsCubit extends Cubit<CommercialDebtsState> {
           transactionType: transactionType,
           transactionId: transactionId,
           stepId: steps[stepNumber],
+          serviceId: serviceId,
         );
         switch (debt.status) {
           case CommercialDebtRenewStates.warning:

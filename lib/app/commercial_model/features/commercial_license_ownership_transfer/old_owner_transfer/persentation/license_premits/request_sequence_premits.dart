@@ -53,8 +53,9 @@ class _ReuestSequencePremitsScreenState
       transactionType: TransactionType.LICENSE,
       transactionId: int.parse(bloc!.licenseNumber ?? "0"),
       steps: const [
-        OwnershipTransferSteps.permits,
+        OwnershipTransferSteps.permits
       ],
+      serviceId: CommercialLicenseServiceId.ownershipTransferCommercialLicense,
       child: getBody(),
     );
   }

@@ -54,6 +54,7 @@ class _ApprovalSequencePermitsScreenState
       steps: const [
         OwnershipTransferSteps.permitsNewOwner,
       ],
+      serviceId: CommercialLicenseServiceId.ownershipTransferCommercialLicense,
       child: getBody(),
     );
   }

@@ -16,12 +16,14 @@ class CommercialDebtRepository {
     required TransactionType transactionType,
     required int transactionId,
     required String stepId,
+    required CommercialLicenseServiceId serviceId,
   }) async {
     try {
       final data = await remoteDataSource.checkDebts(
         transactionType: transactionType,
         transactionId: transactionId,
-        stepId: stepId  ,
+        stepId: stepId,
+        serviceId: serviceId
       );
       return data;
     } on ServerException catch (error, stackTrace) {

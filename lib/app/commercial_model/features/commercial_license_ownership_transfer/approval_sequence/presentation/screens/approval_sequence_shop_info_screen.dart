@@ -52,6 +52,7 @@ class _ApprovalSequenceShopInfoScreenState
       transactionType: TransactionType.REQUEST,
       transactionId: bloc!.requestNumber!,
       steps: const [OwnershipTransferSteps.saveShopInfo],
+      serviceId: CommercialLicenseServiceId.ownershipTransferCommercialLicense,
       child: BlocBuilder<RequestApprovalSequenceCubit,
           RequestApprovalSequenceState>(builder: (blocContext, state) {
         return Column(

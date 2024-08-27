@@ -48,6 +48,7 @@ class _ApprovalSequenceAttachmentsScreenState
       transactionType: TransactionType.REQUEST,
       transactionId: bloc.requestNumber!,
       steps: const [OwnershipTransferSteps.submitSteps],
+      serviceId: CommercialLicenseServiceId.ownershipTransferCommercialLicense,
       child: Column(
         children: [
           Expanded(

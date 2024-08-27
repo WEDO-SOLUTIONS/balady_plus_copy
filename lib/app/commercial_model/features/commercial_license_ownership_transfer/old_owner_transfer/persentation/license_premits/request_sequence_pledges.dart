@@ -49,8 +49,9 @@ class _RequestSequencePledgesScreenState
       transactionType: TransactionType.LICENSE,
       transactionId: int.parse(bloc!.licenseNumber ?? "0"),
       steps: const [
-        OwnershipTransferSteps.sendRequestToNewOwner,
+        OwnershipTransferSteps.sendRequestToNewOwner
       ],
+      serviceId: CommercialLicenseServiceId.ownershipTransferCommercialLicense,
       child: BlocConsumer<LicenseTransferCubit, LicenseTransferState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (_, state) async {

@@ -52,112 +52,113 @@ class _CommercialLicenseCancelScreenState
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
-    return CommercialDebtsScreen(
-      transactionType: TransactionType.REQUEST,
-      transactionId: data['requestId'],
-      steps: const [
-        CancelSteps.saveRequestInfoSteps,
-        CancelSteps.calculateFeesSteps,
-      ],
-      child: WillPopScope(
-        onWillPop: () async {
-          if (currentPageValue < 0) {
-            setState(() {
-              currentPageValue == 0;
-            });
-            goToNewPage();
-            return Future<bool>.value(false);
-          } else {
-            return (await showBackDialog());
-          }
-        },
-        child: MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              create: (BuildContext context) {
-                return RequestAttachmentsViewModel(
-                  webService: sl(),
-                  requestId: data['requestId'],
-                );
-              },
-            ),
-            ChangeNotifierProvider(
-              create: (BuildContext context) =>
-                  CommercialLicenseReasonCancelViewModel(
+    return WillPopScope(
+      onWillPop: () async {
+        if (currentPageValue < 0) {
+          setState(() {
+            currentPageValue == 0;
+          });
+          goToNewPage();
+          return Future<bool>.value(false);
+        } else {
+          return (await showBackDialog());
+        }
+      },
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (BuildContext context) {
+              return RequestAttachmentsViewModel(
                 webService: sl(),
-                licenseId: 0000,
-                submitterInfo: null,
+                requestId: data['requestId'],
+              );
+            },
+          ),
+          ChangeNotifierProvider(
+            create: (BuildContext context) =>
+                CommercialLicenseReasonCancelViewModel(
+              webService: sl(),
+              licenseId: 0000,
+              submitterInfo: null,
+            ),
+          ),
+        ],
+        child: MultiBlocProvider(
+          providers: [
+            // BlocProvider(
+            //   create: (context) => CommercialLicenseCancelPagesBloc(),
+            // ),
+            BlocProvider(
+              create: (context) => CommercialLicenseCancelBloc(
+                webService: sl(),
+                from: data['from'],
+                crNumber: data['crNumber'],
+                crType: data['crType'],
+                reasonCancel: data['reasonCancel'],
+                requestId: data['requestId'],
+                availableCloseDate: data['availableCloseDate'],
               ),
             ),
           ],
-          child: MultiBlocProvider(
-            providers: [
-              // BlocProvider(
-              //   create: (context) => CommercialLicenseCancelPagesBloc(),
-              // ),
-              BlocProvider(
-                create: (context) => CommercialLicenseCancelBloc(
-                  webService: sl(),
-                  from: data['from'],
-                  crNumber: data['crNumber'],
-                  crType: data['crType'],
-                  reasonCancel: data['reasonCancel'],
-                  requestId: data['requestId'],
-                  availableCloseDate: data['availableCloseDate'],
-                ),
-              ),
-            ],
-            child: Column(
-              children: [
-                Expanded(
-                  child: BlocListener<CommercialLicenseCancelBloc,
-                      CommercialLicenseCancelState>(
-                    listener: (BuildContext context, state) {
-                      if (state is CommercialLicenseCancelSucceededState) {
-                        setState(() {
-                          currentPageValue++;
-                        });
-                        goToNewPage();
-                        context.read<CommercialDebtsCubit>().checkDebts(
-                              currentPageValue,
-                              data['requestId'],
-                            );
-                      }
-                      if (state is SubmitCancelRequestSucceededState) {
-                        Navigator.of(context).popAndPushNamed(
-                          CommercialRouteName.submitApplicationSuccessfullyCancel,
-                          arguments: (
-                            data['from'],
-                            state.submitResponse,
-                            state.totalCost,
-                          ),
-                        );
-                      }
-                      if (state is CommercialLicenseCancelFailureState) {
-                        // show
-                        CommonFunctions.showError(state.errorMessage);
-                      }
-                    },
-                    child: GestureDetector(
-                      onTap: () => hideKeyboard(),
-                      child: Scaffold(
-                        appBar: DetailsAppBarTwo(
-                          pageLength: pagesList.length,
-                          currentStep: currentPageValue + 1,
-                          backOnPress: () {
-                            if (currentPageValue > 0) {
-                              setState(() {
-                                currentPageValue--;
-                              });
-                              goToNewPage();
-                            } else {
-                              showBackDialog();
-                            }
-                          },
-                          onTapCloseAction: () => showBackDialog(),
-                          requestNum: data['requestId'],
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocListener<CommercialLicenseCancelBloc,
+                    CommercialLicenseCancelState>(
+                  listener: (BuildContext context, state) {
+                    if (state is CommercialLicenseCancelSucceededState) {
+                      setState(() {
+                        currentPageValue++;
+                      });
+                      goToNewPage();
+                      context.read<CommercialDebtsCubit>().checkDebts(
+                            currentPageValue,
+                            data['requestId'],
+                          );
+                    }
+                    if (state is SubmitCancelRequestSucceededState) {
+                      Navigator.of(context).popAndPushNamed(
+                        CommercialRouteName.submitApplicationSuccessfullyCancel,
+                        arguments: (
+                          data['from'],
+                          state.submitResponse,
+                          state.totalCost,
                         ),
-                        body: PageView.builder(
+                      );
+                    }
+                    if (state is CommercialLicenseCancelFailureState) {
+                      // show
+                      CommonFunctions.showError(state.errorMessage);
+                    }
+                  },
+                  child: GestureDetector(
+                    onTap: () => hideKeyboard(),
+                    child: Scaffold(
+                      appBar: DetailsAppBarTwo(
+                        pageLength: pagesList.length,
+                        currentStep: currentPageValue + 1,
+                        backOnPress: () {
+                          if (currentPageValue > 0) {
+                            setState(() {
+                              currentPageValue--;
+                            });
+                            goToNewPage();
+                          } else {
+                            showBackDialog();
+                          }
+                        },
+                        onTapCloseAction: () => showBackDialog(),
+                        requestNum: data['requestId'],
+                      ),
+                      body: CommercialDebtsScreen(
+                        transactionType: TransactionType.REQUEST,
+                        transactionId: data['requestId'],
+                        steps: const [
+                          CancelSteps.saveRequestInfoSteps,
+                          CancelSteps.calculateFeesSteps,
+                        ],
+                        serviceId: CommercialLicenseServiceId.cancelCommercialLicense,
+                        child: PageView.builder(
                           itemCount: pagesList.length,
                           scrollDirection: Axis.vertical,
                           physics: const NeverScrollableScrollPhysics(),
@@ -174,9 +175,9 @@ class _CommercialLicenseCancelScreenState
                     ),
                   ),
                 ),
-                // const PreviousCancelButtons(isBtnDisabled: false),
-              ],
-            ),
+              ),
+              // const PreviousCancelButtons(isBtnDisabled: false),
+            ],
           ),
         ),
       ),

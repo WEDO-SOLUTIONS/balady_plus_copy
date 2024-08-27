@@ -50,9 +50,8 @@ class RenewCommercialLicenseBloc
   final SubmitRenew _submitRenew;
   final GetDeedInfo _getDeedInfo;
 
-  final CommercialDebtsCubit debtsCubit;
 
-  RenewCommercialLicenseBloc({required this.debtsCubit, required int requestId})
+  RenewCommercialLicenseBloc({required int requestId})
       : _getRenewYears = GetRenewYears(repository: sl()),
         _calculateRequestInfo = CalculateRequestInfo(repository: sl()),
         _getEjarInfo = GetEjarInfo(repository: sl()),
@@ -90,7 +89,6 @@ class RenewCommercialLicenseBloc
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeIn,
       );
-
       emitter(
         state.copyWith(
           status: BlocStatus.success,
@@ -98,13 +96,6 @@ class RenewCommercialLicenseBloc
         ),
       );
       sendStepEvent(nextPage);
-
-      if (state.requestId != null) {
-        debtsCubit.checkDebts(
-          nextPage,
-          state.requestId!,
-        );
-      }
     }
 
     hideKeyboard();

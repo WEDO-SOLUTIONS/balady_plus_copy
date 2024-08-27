@@ -65,7 +65,9 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
                   return CommercialDebtsScreen(
                     transactionType: TransactionType.REQUEST,
                     transactionId: context.read<CommercialLicenseBloc>().state.requestId,
-                    steps:[listIssueSteps[position]],
+
+                    steps:[""],
+                    serviceId: CommercialLicenseServiceId.issueCommercialLicense,
                     child: AnimatedContainer(
                       curve: Curves.easeIn,
                       duration: const Duration(milliseconds: 300),

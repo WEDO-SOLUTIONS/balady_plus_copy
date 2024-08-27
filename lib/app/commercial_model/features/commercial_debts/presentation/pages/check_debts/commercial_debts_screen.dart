@@ -17,6 +17,7 @@ class CommercialDebtsScreen extends StatelessWidget {
   final int? transactionId;
 
   final Widget child;
+  final CommercialLicenseServiceId serviceId;
 
   const CommercialDebtsScreen({
     super.key,
@@ -24,6 +25,7 @@ class CommercialDebtsScreen extends StatelessWidget {
     required this.transactionType,
     required this.transactionId,
     required this.steps,
+    required this.serviceId,
   });
 
   @override
@@ -33,6 +35,7 @@ class CommercialDebtsScreen extends StatelessWidget {
         transactionType: transactionType,
         transactionId: transactionId,
         steps: steps,
+        serviceId: serviceId,
       ),
       child: BlocConsumer<CommercialDebtsCubit, CommercialDebtsState>(
         listener: (BuildContext contextCuit, state) {

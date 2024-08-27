@@ -51,6 +51,7 @@ class _ApprovalSequenceShopLocationScreenState
       transactionId:
           context.read<RequestApprovalSequenceCubit>().requestNumber!,
       steps: const [OwnershipTransferSteps.saveOwnershipInfo],
+      serviceId: CommercialLicenseServiceId.ownershipTransferCommercialLicense,
       child: getBody(),
     );
   }

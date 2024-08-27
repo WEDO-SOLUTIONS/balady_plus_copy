@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/data/models/commercial_debts_steps.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/check_debts/commercial_debts_screen.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ class CommercialLicenseBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int requestId = ModalRoute.of(context)!.settings.arguments as int;
     return BlocConsumer<RenewCommercialLicenseBloc,
         RenewCommercialLicenseState>(
       listener: (context, state) {
@@ -45,8 +48,11 @@ class CommercialLicenseBody extends StatelessWidget {
                       onTapCloseAction: () {
                         FocusManager.instance.primaryFocus?.unfocus();
                         bool Function(Route<dynamic>) predicate =
-                            ModalRoute.withName(CommercialRouteName.bottomNavigation);
-                        Navigator.of(context).popUntil((predicate),);
+                            ModalRoute.withName(
+                                CommercialRouteName.bottomNavigation);
+                        Navigator.of(context).popUntil(
+                          (predicate),
+                        );
                       },
                       requestNum: state.requestId),
                   body: PageView.builder(
@@ -59,7 +65,14 @@ class CommercialLicenseBody extends StatelessWidget {
                       return AnimatedContainer(
                         curve: Curves.easeIn,
                         duration: const Duration(milliseconds: 300),
-                        child: state.pagesList[position],
+                        child: CommercialDebtsScreen(
+                          transactionType: TransactionType.REQUEST,
+                          transactionId: requestId,
+                          steps: [listReneWEvents[position]],
+                          serviceId:
+                              CommercialLicenseServiceId.renewCommercialLicense,
+                          child: state.pagesList[position],
+                        ),
                       );
                     },
                   ),

@@ -16,6 +16,7 @@ abstract class CommercialDebtsDataSources {
     required TransactionType transactionType,
     required int transactionId,
     required String stepId,
+    required CommercialLicenseServiceId serviceId,
   });
 
   Future<CommercialListDebt> getListDebts({
@@ -33,11 +34,15 @@ class CommercialDebtsDataSourcesImplementation
 
   CommercialDebtsDataSourcesImplementation({required this.webService});
 
+
+
+
   @override
   Future<CommercialDebt> checkDebts({
     required TransactionType transactionType,
     required int transactionId,
     required String stepId,
+    required CommercialLicenseServiceId serviceId,
   }) async {
     Response? response;
     try {
@@ -51,6 +56,7 @@ class CommercialDebtsDataSourcesImplementation
           headers: {
             "x-platform-id": "baladyservices",
             "x-channel-id": "mobile",
+            "x-intg-service-id": serviceId.id,
           },
         ),
       );

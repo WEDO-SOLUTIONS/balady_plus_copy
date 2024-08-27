@@ -13,7 +13,7 @@ class CommercialDebt {
 
   factory CommercialDebt.fromJson(Map<String, dynamic> json) => CommercialDebt(
         infoMessage: json["infoMessage"],
-        status: json["status"],
+        status: json["status"] ?? "",
         referenceId: json["referenceId"],
         totalAmount: (json["totalAmount"] ?? 0.0) + 0.0,
       );

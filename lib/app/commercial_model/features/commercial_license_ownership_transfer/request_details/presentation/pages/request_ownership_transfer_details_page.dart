@@ -118,6 +118,7 @@ class _RequestOwnershipTransferDetailsPageState
                   steps: const [
                     OwnershipTransferSteps.acceptOrRejectRequestByNewOwner
                   ],
+                  serviceId: CommercialLicenseServiceId.ownershipTransferCommercialLicense,
                   child: RequestOwnershipTransferDetailsBody(
                     isReadonly: isReadonly ?? false,
                     commercialRequestDetails: state.commercialLicenceDetails!,

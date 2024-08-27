@@ -30,26 +30,15 @@ class _RenewCommercialLicenseScreenState
   Widget build(BuildContext context) {
     int requestId = ModalRoute.of(context)!.settings.arguments as int;
 
-    return CommercialDebtsScreen(
-      transactionType: TransactionType.REQUEST,
-      transactionId: requestId,
-      steps: const [
-        RenewSteps.saveRequestInfoSteps,
-        RenewSteps.saveAttachments,
-        RenewSteps.calculateFeesSteps,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => RenewCommercialLicenseBloc(
+            requestId: requestId,
+          )..add(const GetRenewYearsEvent()),
+        ),
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => RenewCommercialLicenseBloc(
-              debtsCubit: context
-                  .read<CommercialDebtsCubit>(),
-              requestId: requestId,
-            )..add(const GetRenewYearsEvent()),
-          ),
-        ],
-        child: const CommercialLicenseBody(),
-      ),
+      child: const CommercialLicenseBody(),
     );
   }
 }

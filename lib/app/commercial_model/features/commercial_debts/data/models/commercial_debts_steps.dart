@@ -6,6 +6,15 @@ class CommercialDebtRenewStates {
 
 enum TransactionType { REQUEST, LICENSE }
 
+enum CommercialLicenseServiceId {
+  issueCommercialLicense(1004),
+  renewCommercialLicense(1005),
+  ownershipTransferCommercialLicense(1006),
+  cancelCommercialLicense(1008);
+  const CommercialLicenseServiceId(this.id);
+  final int id;
+}
+
 class RenewSteps {
   // Step 1
   // static const String validateBeforeApplySteps =
@@ -83,7 +92,6 @@ class IssueSteps {
   static const String submitSteps = "commercial.issue.mobile.submit"; //  Review
 }
 
-
 /// have in  Issue Steps on mobile 11 but vildet on 7
 var listIssueSteps = const [
   "", // add Fake Step
@@ -99,10 +107,11 @@ var listIssueSteps = const [
   IssueSteps.submitSteps,
 ];
 
-
-
-
-
+List<String> listReneWEvents = [
+  RenewSteps.saveRequestInfoSteps,
+  RenewSteps.saveAttachments,
+  RenewSteps.calculateFeesSteps,
+];
 // New Dsgin for Step
 // enum IssueStepsEnum {
 //   saveActivity,

@@ -32,13 +32,14 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    context.read<CrStep4ShopDataCubit>().initForm();
-    context.read<CrStep4ShopDataCubit>().salamaBillFawery();
-    context.read<CrStep4ShopDataCubit>().salamaReportFawery();
-    context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();
-    context.read<CrStep4ShopDataCubit>().getCleanOptions();
-    context.read<CrStep4ShopDataCubit>().getMalls();
+    Future.microtask(() {
+      context.read<CrStep4ShopDataCubit>().initForm();
+      context.read<CrStep4ShopDataCubit>().salamaBillFawery();
+      context.read<CrStep4ShopDataCubit>().salamaReportFawery();
+      context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();
+      context.read<CrStep4ShopDataCubit>().getCleanOptions();
+      context.read<CrStep4ShopDataCubit>().getMalls();
+    });
   }
 
   @override
@@ -53,8 +54,10 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
         CommonFunctions.showError(state.errorMessage ?? "");
       }
     }, builder: (context, state) {
+
       return Stack(
         children: [
+
           if (state.draftStatus == BlocStatus.success)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
