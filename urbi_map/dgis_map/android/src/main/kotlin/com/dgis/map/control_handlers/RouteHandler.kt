@@ -25,6 +25,7 @@ import ru.dgis.sdk.map.RouteMapObjectDisplayFlag
 import ru.dgis.sdk.map.RouteMapObjectPermanentDisplayFlag
 import ru.dgis.sdk.map.Source
 import ru.dgis.sdk.map.calcPosition
+import ru.dgis.sdk.navigation.RouteMapSettings
 import ru.dgis.sdk.routing.*
 import java.util.EnumSet
 import ru.dgis.sdk.map.Map as DgisMap
@@ -61,7 +62,9 @@ class RouteHandler(
             sdkContext,
             routesEditor,
             calloutLabelDisplayMode = RouteMapObjectCalloutLabelDisplayMode.RELATIVE_TO_ACTIVE_ROUTE_VALUES,
+            activeDisplayFlags = EnumSet.of(RouteMapObjectDisplayFlag.IMMERSIVE_ROUTE_PARTS),
         )
+
         this.trafficRouter = TrafficRouter(sdkContext)
         publicTransportHandler = PublicTransportHandler(eventSink, this)
 
@@ -79,7 +82,6 @@ class RouteHandler(
         })
 
         this.routesEditor = routesEditor
-        map.graphicsPreset = GraphicsPreset.IMMERSIVE
         map.addSource(routeEditorSource)
     }
 

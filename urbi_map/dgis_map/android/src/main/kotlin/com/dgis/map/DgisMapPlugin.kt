@@ -14,6 +14,7 @@ import ru.dgis.sdk.*
 import ru.dgis.sdk.map.GlobalMapOptions
 import ru.dgis.sdk.map.MapOptions
 import ru.dgis.sdk.platform.HttpOptions
+import ru.dgis.sdk.platform.KeyFromString
 import ru.dgis.sdk.platform.LogOptions
 import ru.dgis.sdk.platform.VendorConfigFromAsset
 import java.io.BufferedReader
@@ -63,9 +64,9 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
             httpOptions = HttpOptions(useCache = true),
             vendorConfig = ru.dgis.sdk.platform.VendorConfig(
                 fromAsset = VendorConfigFromAsset(vendorAsset)
+
             ),
         )
-
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {

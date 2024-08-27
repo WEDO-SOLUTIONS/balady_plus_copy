@@ -939,8 +939,8 @@ class DgisMapView(
 
     private fun onMapReady(map: DgisMap, result: ApiResult<InitializeMessage>) {
         map.graphicsPreset = GraphicsPreset.IMMERSIVE
-
         this.map = map
+
         val mapSource = MyLocationMapObjectSource(
             sdkContext,
             MyLocationControllerSettings(
