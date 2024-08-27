@@ -112,6 +112,11 @@ List<String> listReneWEvents = [
   RenewSteps.saveAttachments,
   RenewSteps.calculateFeesSteps,
 ];
+
+List<String> listCancelSteps = [
+  CancelSteps.saveRequestInfoSteps ,
+  CancelSteps.calculateFeesSteps,
+];
 // New Dsgin for Step
 // enum IssueStepsEnum {
 //   saveActivity,
