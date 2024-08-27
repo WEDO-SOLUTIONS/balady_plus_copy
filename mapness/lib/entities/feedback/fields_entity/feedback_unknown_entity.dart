@@ -7,5 +7,5 @@ class FeedbackUnknownEntity extends FeedbackBaseEntity<void> {
   }) : super(value: null);
 
   @override
-  FeedbackUnknownEntity updateValue(void value) => this;
+  FeedbackUnknownEntity updatedValue(void value) => this;
 }

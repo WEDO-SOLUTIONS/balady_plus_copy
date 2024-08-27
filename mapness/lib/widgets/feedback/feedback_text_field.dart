@@ -52,7 +52,7 @@ class FeedbackInput extends StatelessWidget {
   }
 
   String? _maybeValidationError(AppLocalizations l10n, String? value) {
-    if (field.isStringValid()) {
+    if (field.updatedValue(value).isValid) {
       return null;
     }
     return l10n.feedbackTextFieldWrongFormat;

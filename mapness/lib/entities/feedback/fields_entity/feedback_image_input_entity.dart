@@ -15,8 +15,7 @@ class FeedbackImageInputEntity extends FeedbackBaseEntity<List<XFile>> {
   }) : super(value: value);
 
   @override
-  FeedbackImageInputEntity updateValue(List<XFile> value) =>
-      FeedbackImageInputEntity(
+  FeedbackImageInputEntity updatedValue(List<XFile> value) => FeedbackImageInputEntity(
         id: id,
         isRequired: isRequired,
         label: label,

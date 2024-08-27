@@ -11,7 +11,7 @@ class FeedbackBoolToggleEntity extends FeedbackBaseEntity<bool> {
   }) : super(value: value);
 
   @override
-  FeedbackBoolToggleEntity updateValue(bool value) => FeedbackBoolToggleEntity(
+  FeedbackBoolToggleEntity updatedValue(bool value) => FeedbackBoolToggleEntity(
         id: id,
         isRequired: isRequired,
         label: label,

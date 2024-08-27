@@ -26,8 +26,7 @@ class _FeedbackFormWidgetState extends State<FeedbackFormWidget> {
   @override
   void initState() {
     super.initState();
-    fieldNotifiers =
-        widget.fields.map((field) => ValueNotifier(field)).toList();
+    fieldNotifiers = widget.fields.map((field) => ValueNotifier(field)).toList();
 
     for (final notifier in fieldNotifiers) {
       /// seems to be disgusting but actually user is limited to modify single field at a time, so
@@ -46,8 +45,7 @@ class _FeedbackFormWidgetState extends State<FeedbackFormWidget> {
     super.dispose();
   }
 
-  bool isFormValid() =>
-      fieldNotifiers.every((notifier) => notifier.value.isValid);
+  bool isFormValid() => fieldNotifiers.every((notifier) => notifier.value.isValid);
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -64,10 +62,7 @@ class _FeedbackFormWidgetState extends State<FeedbackFormWidget> {
           valueListenable: notifier,
           builder: (context, field, child) => FeedbackFieldWidget(
             field: field,
-            onValueChange: (value) {
-              print('${notifier.value.id} ${value.toString()}');
-              notifier.value = notifier.value.updateValue(value);
-            },
+            onValueChange: (value) => notifier.value = notifier.value.updatedValue(value),
             key: ValueKey(field.id),
           ),
         );

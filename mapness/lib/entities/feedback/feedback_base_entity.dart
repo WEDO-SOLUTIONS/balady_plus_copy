@@ -18,5 +18,5 @@ sealed class FeedbackBaseEntity<T> {
     required this.value,
   });
 
-  FeedbackBaseEntity<T> updateValue(T value);
+  FeedbackBaseEntity<T> updatedValue(T value);
 }
