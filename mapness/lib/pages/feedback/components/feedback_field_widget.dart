@@ -32,10 +32,21 @@ class FeedbackFieldWidget<V> extends StatelessWidget {
           field: field as FeedbackImageInputEntity,
           onValueChange: (value) => onValueChange(value as V),
         ),
-      _ => Container(
+      FeedbackBaseEntity(isRequired: final isRequired) when isRequired => Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(Spacing.$4x),
+            color: Colors.red,
+          ),
           padding: const EdgeInsets.all(Spacing.$4x),
-          color: Colors.red,
-          child: const Text('Unknown field'),
+          child: const Text('Unknown required field'),
+        ),
+      _ => Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(Spacing.$4x),
+            color: Colors.grey,
+          ),
+          padding: const EdgeInsets.all(Spacing.$4x),
+          child: const Text('Unknown field but not required'),
         ),
     };
   }
