@@ -52,19 +52,9 @@ class FeedbackInput extends StatelessWidget {
   }
 
   String? _maybeValidationError(AppLocalizations l10n, String? value) {
-    final regex = switch (field.type) {
-      FeedbackTextType.email =>
-        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
-      FeedbackTextType.phone => RegExp(r'^\+?[0-9]{10,14}$'),
-      FeedbackTextType.url => RegExp(
-          r'^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'),
-      _ => null,
-    };
-    if (regex != null &&
-        (value?.isNotEmpty ?? false) &&
-        !regex.hasMatch(value!)) {
-      return l10n.feedbackTextFieldWrongFormat;
+    if (field.isStringValid()) {
+      return null;
     }
-    return null;
+    return l10n.feedbackTextFieldWrongFormat;
   }
 }

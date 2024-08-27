@@ -24,6 +24,25 @@ class FeedbackTextEntity extends FeedbackBaseEntity<String> {
     String? value,
   }) : super(value: value);
 
+  bool isStringValid() {
+    final regex = switch (type) {
+      FeedbackTextType.email =>
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
+      FeedbackTextType.phone => RegExp(r'^\+?[0-9]{10,14}$'),
+      FeedbackTextType.url => RegExp(
+          r'^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'),
+      _ => null,
+    };
+    if (regex == null) {
+      return true;
+    }
+
+    return regex.hasMatch(value ?? '');
+  }
+
+  @override
+  bool get isValid => !isRequired || (value != null && isStringValid());
+
   @override
   FeedbackTextEntity updateValue(String value) => FeedbackTextEntity(
         id: id,
