@@ -27,9 +27,9 @@ class FeedbackInput extends StatelessWidget {
     };
 
     final allowedInputPattern = switch (field.type) {
-      FeedbackTextType.email => RegExp(r'[a-zA-Z0-9._%+-@]'),
+      FeedbackTextType.email => RegExp(r'[a-zA-Z0-9\._+\-@]'),
       FeedbackTextType.phone => RegExp(r'[0-9]'),
-      FeedbackTextType.url => RegExp(r'[a-zA-Z0-9./:?_-]'),
+      FeedbackTextType.url => RegExp(r'[a-zA-Z0-9./:?_\-]'),
       _ => null,
     };
 
