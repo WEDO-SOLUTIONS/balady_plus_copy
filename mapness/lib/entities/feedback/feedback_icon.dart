@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 enum FeedbackIcon {
@@ -10,7 +11,11 @@ enum FeedbackIcon {
   web,
   clearCircle,
   questionCircle,
-  unknown,
+  unknown;
+
+  /// return icon with corresponding name or unknown icon
+  static FeedbackIcon fromName(String name) =>
+      FeedbackIcon.values.firstWhereOrNull((e) => e.name.toLowerCase() == name.toLowerCase()) ?? FeedbackIcon.unknown;
 }
 
 typedef _FI = FeedbackIcon;

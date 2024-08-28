@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/feedback/dto/feedback_base_dto.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
@@ -20,8 +19,7 @@ class FeedbackCategoryDto {
     this.iconName,
   });
 
-  factory FeedbackCategoryDto.fromJson(Map<String, dynamic> json) =>
-      _$FeedbackCategoryDtoFromJson(json);
+  factory FeedbackCategoryDto.fromJson(Map<String, dynamic> json) => _$FeedbackCategoryDtoFromJson(json);
 
   /// because no field name
   static List<FeedbackCategoryDto> parseList(List<dynamic> jsonList) =>
@@ -33,8 +31,6 @@ class FeedbackCategoryDto {
         id: id ?? name,
         name: name,
         fields: fields.map((e) => e.toDomain()).toList(),
-        icon: FeedbackIcon.values.firstWhereOrNull(
-                (e) => e.name.toLowerCase() == iconName?.toLowerCase()) ??
-            FeedbackIcon.unknown,
+        icon: FeedbackIcon.fromName(iconName ?? ''),
       );
 }
