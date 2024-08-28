@@ -19,7 +19,7 @@ class FeedbackFormWidget extends StatefulWidget {
 }
 
 class _FeedbackFormWidgetState extends State<FeedbackFormWidget> {
-  late List<ValueNotifier<FeedbackBaseEntity>> fieldNotifiers;
+  late final List<ValueNotifier<FeedbackBaseEntity>> fieldNotifiers;
 
   ValueNotifier<bool> isFormValidNotifier = ValueNotifier(false);
 
