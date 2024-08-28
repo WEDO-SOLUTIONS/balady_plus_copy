@@ -136,7 +136,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
             onTap: () => widget.onRouteTap?.call(),
             child: PopupMenuWidget(
               title: context.l10n.route,
-              icon: GeneralIcons.routeStroke.icon(
+              icon: GeneralIcons.route.icon(
                 color: color.textAndIconsBasePrimary,
               ),
               showDivider: false,
