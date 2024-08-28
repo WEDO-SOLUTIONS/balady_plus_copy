@@ -36,6 +36,12 @@ class _PathNavEta extends _$PathNavEta {
     });
     ref.onDispose(subspcription.cancel);
   }
+
+  void toggleIsExpanded({required bool isExpanded}) {
+    state = state?.copyWith(
+      isExpanded: isExpanded,
+    );
+  }
 }
 
 final pathNavEtaProvider = _pathNavEtaProvider;

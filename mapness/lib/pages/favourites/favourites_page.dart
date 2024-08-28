@@ -160,7 +160,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     ),
                   if (!isEditing)
                     Icon(
-                      ctx.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                      SystemIcons.arrowCornerLeftLarge,
                       color: ctx.color.textAndIconsStatusAccent,
                     ),
                   if (!isEditing)

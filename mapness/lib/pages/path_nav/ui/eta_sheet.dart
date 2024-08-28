@@ -64,9 +64,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
   @override
   Widget build(BuildContext context) {
     final eta = ref.watch(pathNavEtaProvider);
+    _isExpanded = eta?.isExpanded ?? false;
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
-    final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
     final voiceName = soundSettingsModel.voiceName;
     final l10n = context.l10n;
     final colorsV2 = context.colorsV2;
@@ -118,7 +118,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 ),
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
-                    iconData: arrowIcon,
+                    iconData: SystemIcons.arrowCornerRightLarge,
                     color: color.textAndIconsBaseTertiary,
                   ),
                 ),
@@ -156,7 +156,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 ),
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
-                    iconData: arrowIcon,
+                    iconData: SystemIcons.arrowCornerRightLarge,
                     color: color.textAndIconsBaseTertiary,
                   ),
                 ),
@@ -183,9 +183,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
   }
 
   void toggle() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-    });
+    ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: !_isExpanded);
     Metrics.logEventAdvanced(MetricsConstants.navigationKeys.burgerToggle,
         group: MetricsConstants.navigationTag,
         action: MetricAction.tap.toString(),
@@ -200,11 +198,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       final goRouter = ref.read(goRouterProvider);
 
       if (goRouter.isCurrentRoute(PathNavRoute.path)) {
-        setState(() {
-          if (_isExpanded) {
-            _isExpanded = false;
-          }
-        });
+        if (_isExpanded) {
+          ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+        }
       }
     });
   }

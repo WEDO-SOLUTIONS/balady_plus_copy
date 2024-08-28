@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +10,6 @@ import 'package:mapness/app/routes/navigator_settings.dart';
 import 'package:mapness/pages/navigator_settings/components/voice_row_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/map/dgis_packages.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -25,26 +23,13 @@ class VoiceSettingsPage extends ConsumerStatefulWidget {
 class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
   @override
   Widget build(BuildContext context) {
-    final voiceLanguage = ref.watch(soundSettingsProvider).voicesLanguage;
+    final soundSettingsModel = ref.watch(soundSettingsProvider);
 
-    final voicePackages = ref.watch(voicePackagesProvider);
+    final voiceLanguage = soundSettingsModel.voicesLanguage;
+    final installedVoices = soundSettingsModel.installedVoices;
+    final unInstalledVoices = soundSettingsModel.unInstalledVoices;
+
     final language = Language.values.firstWhere((e) => e.locale.languageCode == voiceLanguage);
-
-    final installedVoices = <PackageMessage>[];
-    final unInstalledVoices = <PackageMessage>[];
-
-    for (final package in voicePackages) {
-      if (package.language == voiceLanguage) {
-        if (package.packageMessage.info.installed) {
-          installedVoices.add(package.packageMessage);
-        } else {
-          unInstalledVoices.add(package.packageMessage);
-        }
-      }
-    }
-
-    final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
-
     final colorsV2 = context.colorsV2;
     final l10n = context.l10n;
 
@@ -65,7 +50,7 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                 ),
                 leading: ActionModel(
                   onPressed: () => context.pop(),
-                  icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                  icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
               body: Padding(
@@ -88,7 +73,7 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                                 color: colorsV2.foregroundSoft,
                               ),
                               actionIcon: AppIcons(
-                                iconData: arrowIcon,
+                                iconData: SystemIcons.arrowCornerRightLarge,
                                 color: colorsV2.foregroundSoft,
                               ),
                             ),

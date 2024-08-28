@@ -32,13 +32,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final textDirection = Directionality.of(context);
-    final actionIcon = context.isLTR
-        ? SystemIcons.arrowCornerRightLarge.icon(
-            color: context.color.textAndIconsBaseSecondary,
-          )
-        : SystemIcons.arrowCornerLeftLarge.icon(
-            color: context.color.textAndIconsBaseSecondary,
-          );
+    final actionIcon = SystemIcons.arrowCornerRightLarge.icon(
+      color: context.color.textAndIconsBaseSecondary,
+    );
     final userData = ref.watch(authProvider);
     return PopScope(
       canPop: false,

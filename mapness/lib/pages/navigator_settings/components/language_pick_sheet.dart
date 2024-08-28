@@ -19,60 +19,62 @@ class LanguagePickSheet extends StatelessWidget {
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.3,
-      builder: (context, controller) => DecoratedBox(
-        decoration: BoxDecoration(
-          color: colorsV2.backgroundSurface4,
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(RadiusBorder.xl),
+      builder: (context, controller) => Scaffold(
+        body: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colorsV2.backgroundSurface4,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(RadiusBorder.xl),
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: Column(
-            children: [
-              Spacing.$2x.heightBox,
-              DrawLineWidget(
-                lineHeight: Spacing.$1x,
-                lineWidth: Spacing.$10x,
-                lineColor: colorsV2.neutralMuted,
-              ),
-              Spacing.$3x.heightBox,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    context.l10n.voiceLanguageTitle,
-                    style: context.textStyle.heading2.copyWith(
-                      color: colorsV2.foregroundDefault,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: Column(
+              children: [
+                Spacing.$2x.heightBox,
+                DrawLineWidget(
+                  lineHeight: Spacing.$1x,
+                  lineWidth: Spacing.$10x,
+                  lineColor: colorsV2.neutralMuted,
+                ),
+                Spacing.$3x.heightBox,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.l10n.voiceLanguageTitle,
+                      style: context.textStyle.heading2.copyWith(
+                        color: colorsV2.foregroundDefault,
+                      ),
                     ),
-                  ),
-                  AppButton.close(
-                    padding: EdgeInsets.zero,
-                    onTap: () => context.pop(),
-                    color: colorsV2.neutralDefault.withOpacity(0.12),
-                    iconColor: colorsV2.foregroundSoft,
-                    innerPadding: const EdgeInsets.all(Spacing.$2x),
-                  ),
-                ],
-              ),
-              Spacing.$3x.heightBox,
-              ContentWrapper(
-                color: context.color.surfaceBaseTertiary,
-                children: Language.values
-                    .map<Widget>(
-                      (e) => LanguageRowWidget(
-                        currentLanguage: e,
-                      ),
-                    )
-                    .insertBetween(
-                      Padding(
-                        padding: const EdgeInsets.only(left: Spacing.$4x),
-                        child: Divider(color: colorsV2.borderSoft),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
+                    AppButton.close(
+                      padding: EdgeInsets.zero,
+                      onTap: () => context.pop(),
+                      color: colorsV2.neutralDefault.withOpacity(0.12),
+                      iconColor: colorsV2.foregroundSoft,
+                      innerPadding: const EdgeInsets.all(Spacing.$2x),
+                    ),
+                  ],
+                ),
+                Spacing.$3x.heightBox,
+                ContentWrapper(
+                  color: context.color.surfaceBaseTertiary,
+                  children: Language.values
+                      .map<Widget>(
+                        (e) => LanguageRowWidget(
+                          currentLanguage: e,
+                        ),
+                      )
+                      .insertBetween(
+                        Padding(
+                          padding: const EdgeInsets.only(left: Spacing.$4x),
+                          child: Divider(color: colorsV2.borderSoft),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

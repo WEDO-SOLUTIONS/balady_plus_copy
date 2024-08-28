@@ -26,7 +26,6 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final dark = ref.watch(darkModeProvider);
-    final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
     final colorsV2 = context.colorsV2;
     final l10n = context.l10n;
     final color = context.color;
@@ -50,7 +49,7 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                 ),
                 leading: ActionModel(
                   onPressed: () => context.pop(),
-                  icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                  icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
               body: Padding(
@@ -98,7 +97,7 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                             title: l10n.soundSettings,
                             actionWidget: ContentRowActionOptions(
                               actionIcon: AppIcons(
-                                iconData: arrowIcon,
+                                iconData: SystemIcons.arrowCornerRightLarge,
                                 color: colorsV2.foregroundSoft,
                               ),
                             ),

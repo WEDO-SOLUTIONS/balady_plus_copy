@@ -53,7 +53,7 @@ class VoiceRowWidget extends ConsumerWidget {
               return Column(
                 children: [
                   Loading(
-                    value: progress.toDouble(),
+                    value: (progress / 100).toDouble(),
                     title: '$progress%',
                     color: context.colorsV2.accentDefault,
                     backgroundColor: context.colorsV2.accentDefault.withOpacity(0.1),

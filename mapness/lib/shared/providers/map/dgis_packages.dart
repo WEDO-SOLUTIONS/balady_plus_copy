@@ -41,7 +41,7 @@ class VoicePackages extends _$VoicePackages {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PackageProgress extends _$PackageProgress {
   @override
   int build(PackageMessage package) {
@@ -62,7 +62,7 @@ class PackageProgress extends _$PackageProgress {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PackageInfo extends _$PackageInfo {
   @override
   PackageInfoMessage build(PackageMessage package) {

@@ -32,11 +32,17 @@ class SoundSettingsModel {
   /// Current voice language code, if value wasn't picked before, it takes value from app language
   final String voicesLanguage;
 
+  final List<PackageMessage> installedVoices;
+
+  final List<PackageMessage> unInstalledVoices;
+
   /// Current voice of assistant
   final String? voiceName;
 
   const SoundSettingsModel({
     required this.voicesLanguage,
+    required this.installedVoices,
+    required this.unInstalledVoices,
     this.voiceInstructionIndex = 2,
     this.muffleOtherSounds = false,
     this.promptsVolumeIndex = 2,
@@ -55,6 +61,8 @@ class SoundSettingsModel {
     bool? roadCameras,
     bool? overSpeeding,
     String? voiceName,
+    List<PackageMessage>? installedVoices,
+    List<PackageMessage>? unInstalledVoices,
   }) =>
       SoundSettingsModel(
         voiceInstructionIndex: voiceInstructionIndex ?? this.voiceInstructionIndex,
@@ -65,6 +73,8 @@ class SoundSettingsModel {
         overSpeeding: overSpeeding ?? this.overSpeeding,
         voicesLanguage: voicesLanguage ?? this.voicesLanguage,
         voiceName: voiceName ?? this.voiceName,
+        installedVoices: installedVoices ?? this.installedVoices,
+        unInstalledVoices: unInstalledVoices ?? this.unInstalledVoices,
       );
 }
 
@@ -79,13 +89,16 @@ class SoundSettings extends _$SoundSettings {
     final language = ref.watch(appLanguageProvider);
     String? voiceName;
 
-    final selectedVoice = ref.read(navigatorVoiceProvider);
+    final selectedVoice = ref.watch(navigatorVoiceProvider);
 
     final voicePackages = ref.watch(voicePackagesProvider);
 
     if (voicePackages.isNotEmpty) {
-      voiceName = voicePackages.map((e) => e.packageMessage).where((e) => e.id == selectedVoice).first.info.name;
+      voiceName = voicePackages.map((e) => e.packageMessage).firstWhere((e) => e.id == selectedVoice).info.name;
     }
+
+    final installedVoices = <PackageMessage>[];
+    final unInstalledVoices = <PackageMessage>[];
 
     final voicesLanguage =
         sharedPrefs.getString(MapnessConstants.voicesLanguagePrefsKey) ?? language.locale.languageCode;
@@ -96,8 +109,20 @@ class SoundSettings extends _$SoundSettings {
     final prefsRoadCameras = sharedPrefs.getBool(MapnessConstants.roadCamerasPrefsKey);
     final prefsOverSpeeding = sharedPrefs.getBool(MapnessConstants.overSpeedingPrefsKey);
 
+    for (final package in voicePackages) {
+      if (package.language == voicesLanguage) {
+        if (package.packageMessage.info.installed) {
+          installedVoices.add(package.packageMessage);
+        } else {
+          unInstalledVoices.add(package.packageMessage);
+        }
+      }
+    }
+
     final _defaultSoundSettings = SoundSettingsModel(
       voicesLanguage: voicesLanguage,
+      installedVoices: installedVoices,
+      unInstalledVoices: unInstalledVoices,
     ).copyWith(
       voiceInstructionIndex: prefsVoiceInstructionIndex,
       muffleOtherSounds: prefsMuffleOtherSounds,
@@ -171,6 +196,7 @@ class SoundSettings extends _$SoundSettings {
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.voicesLanguagePrefsKey, currentVoiceLanguage);
 
     state = state.copyWith(voicesLanguage: currentVoiceLanguage);
+    ref.invalidateSelf();
   }
 
   Future<void> toggleBackgroundNavigation({required bool backgroundNavigation}) async {

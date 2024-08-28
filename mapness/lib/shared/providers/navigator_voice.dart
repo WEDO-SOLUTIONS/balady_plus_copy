@@ -7,7 +7,7 @@ part 'navigator_voice.g.dart';
 
 const String _prefsKey = 'navigator.voice';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class NavigatorVoice extends _$NavigatorVoice {
   @override
   String build() {

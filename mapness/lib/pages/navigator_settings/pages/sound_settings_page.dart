@@ -23,7 +23,6 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
   Widget build(BuildContext context) {
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
-    final arrowIcon = context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge;
     final colorsV2 = context.colorsV2;
     final l10n = context.l10n;
     final textStyleV3 = context.textStyleV3;
@@ -46,7 +45,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                 ),
                 leading: ActionModel(
                   onPressed: () => context.pop(),
-                  icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                  icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
               body: Padding(
@@ -117,7 +116,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                             titleStyle: context.textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
                             actionWidget: ContentRowActionOptions(
                                 actionIcon: AppIcons(
-                                  iconData: arrowIcon,
+                                  iconData: SystemIcons.arrowCornerRightLarge,
                                   color: colorsV2.foregroundSoft,
                                 ),
                                 actionText: soundSettingsModel.voiceName,
