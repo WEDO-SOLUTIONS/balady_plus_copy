@@ -29,6 +29,7 @@ class LoadingShimmerImage extends StatelessWidget {
           highlightColor: Colors.grey[100]!,
           child: Container(color: Colors.grey),
         ),
+        filterQuality: FilterQuality.high,
         onImageReady: onImageReady,
       );
 }

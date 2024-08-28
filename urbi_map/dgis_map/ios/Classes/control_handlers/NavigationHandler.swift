@@ -361,8 +361,16 @@ class NavigationHandler {
         self.navigationManager.stop()
     }
 
-    func toggleSounds(enabled: Bool) {
-        self.dashboardControlModel.toggleSounds(enabled: enabled)
+    func toggleSounds(toggleType: SoundToggleType) {
+        self.dashboardControlModel.toggleSounds(toggleType: toggleType)
+    }
+
+    func toggleRoadCameras(roadCameras: Bool) {
+        self.dashboardControlModel.toggleRoadCameras(roadCameras: roadCameras)
+    }
+
+    func toggleOverSpeeding(overSpeeding: Bool) {
+        self.dashboardControlModel.toggleOverSpeeding(overSpeeding: overSpeeding)
     }
     
     func calcPositionForRoute(options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
