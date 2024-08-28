@@ -189,27 +189,29 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                             ),
                           ),
                         ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildTopbar(context),
-                          const SizedBox(
-                            height: Spacing.$6x,
-                          ),
-                          SizedBox(
-                            width: contraints.maxWidth,
-                            child: StoryFrameContent(
-                              frame: widget.frame,
-                              storyTheme: storyTheme,
+                      Positioned.fill(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildTopbar(context),
+                            const SizedBox(
+                              height: Spacing.$6x,
                             ),
-                          ),
-                          if (widget.frame.imageUrl != null && !widget.frame.fullscreenImage)
-                            Expanded(
-                              child: _buildImage(
-                                title: context.l10n.loading,
+                            SizedBox(
+                              width: contraints.maxWidth,
+                              child: StoryFrameContent(
+                                frame: widget.frame,
+                                storyTheme: storyTheme,
                               ),
                             ),
-                        ],
+                            if (widget.frame.imageUrl != null && !widget.frame.fullscreenImage)
+                              Expanded(
+                                child: _buildImage(
+                                  title: context.l10n.loading,
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                       if (!_isLoading)
                         Padding(
@@ -273,12 +275,11 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
           right: Spacing.$4x,
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (storyArgs.type != StoryTypes.onboarding)
-              Padding(
-                padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-                child: Expanded(
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
                   child: FrameProgressIndicator(
                     frameIndex: widget.frameIndex,
                     framesLength: widget.frameLength,
