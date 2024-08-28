@@ -13,6 +13,3 @@ pluginManagement {
         }
     }
 }
-rootProject.name = 'dgis_map'
-
-include ':_delete_me_'
