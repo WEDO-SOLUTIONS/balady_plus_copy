@@ -128,8 +128,6 @@ class NavigationHandler(
     }
 
     fun followNavigation() {
-        map.graphicsPreset = GraphicsPreset.IMMERSIVE
-
         map.camera.setBehaviour(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
         )
@@ -137,7 +135,6 @@ class NavigationHandler(
     }
 
     fun resetCamera() {
-
         map.removeSource(this.locationSource)
         if (this.prevLocationSource != null) {
             map.addSource(this.prevLocationSource!!)
@@ -200,7 +197,6 @@ class NavigationHandler(
         speedRangeZoom: Messages.SpeedRangeZoom,
         result: Result<Void>?,
     ) {
-        map.graphicsPreset = GraphicsPreset.IMMERSIVE
         if (finishPoint == null || options == null || route == null) {
             result?.error(Exception("Not enough data to start navigation. Check RouteHandler documentation"))
             return
@@ -226,7 +222,6 @@ class NavigationHandler(
         speedRangeZoom: Messages.SpeedRangeZoom,
         result: Result<Void>?,
     ) {
-        map.graphicsPreset = GraphicsPreset.IMMERSIVE
         if (finishPoint == null || options == null || route == null) {
             result?.error(Exception("Not enough data to start navigation. Check RouteHandler documentation"))
             return

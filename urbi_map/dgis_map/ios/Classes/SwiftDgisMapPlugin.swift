@@ -39,7 +39,7 @@ class DgisPluginApi: NSObject, PluginApi {
                 customSink: nil
             ),
             httpOptions: HttpOptions(useCache: true),
-            vendorConfig: DGis.VendorConfig.fromFile(VendorConfigFromFile(path: vendorConfigPath!))
+            vendorConfig: DGis.VendorConfig.fromFile(VendorConfigFromFile(path: vendorConfigPath ?? ""))
         )
         SwiftDgisMapPlugin.vendorConfig = vendorConfig
     }

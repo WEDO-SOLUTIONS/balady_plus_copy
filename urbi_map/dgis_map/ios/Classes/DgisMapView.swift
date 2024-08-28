@@ -857,10 +857,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             context: context,
             controllerSettings:  MyLocationControllerSettings()
         ))
-        map.graphicsPreset = GraphicsPreset.immersive
         
         self.map = map
-        
         let mapView = mapFactory.mapView
         
         // This gesture is temporarily disabled as it conflicts with MapObjectTappedCallback
