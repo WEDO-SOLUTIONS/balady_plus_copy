@@ -830,15 +830,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
     ) {
-//        guard let locationProvider = self.sdk.locationService else {
-//            completion(FlutterError(
-//                code: "LocationError",
-//                message: "PlatformPositioningServicesFactory cannot be created",
-//                details: nil
-//            ))
-//            return
-//        }
-//        locationProvider.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
         completion(nil)
     }
     

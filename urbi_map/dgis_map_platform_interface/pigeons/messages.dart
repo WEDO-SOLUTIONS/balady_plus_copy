@@ -1320,9 +1320,6 @@ abstract class MapApi {
   void setHighlighted(List<DgisObjectIdMessage> objectIds);
 
   @async
-  void onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy);
-
-  @async
   void addPanoramasMarkers(AddMarkersWithPhotoMessage message);
 
   @async

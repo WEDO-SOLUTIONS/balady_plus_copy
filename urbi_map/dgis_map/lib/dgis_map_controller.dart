@@ -503,14 +503,6 @@ class DgisMapController {
   /// Controls sounds in navigation.
   Future<void> toggleSound({required bool enabled}) => _instance.toggleSound(enabled: enabled);
 
-  /// Used to setup platform. Should be called when permision was granted.
-  /// Does not request permission by itself.
-  Future<void> onLocationPermissionGranted({
-    DesiredAccuracyMessage desiredAccuracy = DesiredAccuracyMessage.low,
-  }) {
-    return _instance.onLocationPermissionGranted(desiredAccuracy);
-  }
-
   /// Add panorama markers to map.
   Future<void> addPanoramasMarkers(List<MarkerWithPhotoMessage> markers) {
     return _instance.addPanoramasMarkers(AddMarkersWithPhotoMessage(markers: markers));
