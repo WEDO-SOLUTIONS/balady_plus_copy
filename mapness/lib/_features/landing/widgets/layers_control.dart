@@ -14,14 +14,15 @@ class LayersControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => MapButton(
-      onTap: () {
-        Metrics.logEventAdvanced(
-          MetricsConstants.exploreKeys.layersIcon,
-          action: MetricAction.tap.name,
-          group: MetricsConstants.exploreTag,
-        );
+        onTap: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.layersIcon,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
 
-        EsriLayersRoute.open(context);
-      },
-      child: const AppIcons(iconData: SystemIcons.layers));
+          EsriLayersRoute.open(context);
+        },
+        child: const AppIcons(iconData: SystemIcons.layers),
+      );
 }

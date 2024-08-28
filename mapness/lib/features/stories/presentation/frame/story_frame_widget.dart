@@ -211,6 +211,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
                           ),
                         ),
                       ),
+                      filterQuality: FilterQuality.high,
                     ),
                   ),
                   Positioned(

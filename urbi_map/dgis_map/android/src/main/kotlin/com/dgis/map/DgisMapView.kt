@@ -923,8 +923,28 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun toggleSound(enabled: Boolean, result: Messages.Result<Void>?) {
-        navigationHandler.toggleSounds(enabled)
+    override fun toggleVoiceInstruction(toggleType: SoundToggleType, result: Messages.Result<Void>?) {
+        navigationHandler.toggleVoiceInstruction(toggleType)
+        result?.success(null)
+    }
+
+    override fun toggleRoadCameras(roadCameras: Boolean, result: Messages.Result<Void>?) {
+        navigationHandler.toggleRoadCameras(roadCameras)
+        result?.success(null)
+    }
+
+    override fun toggleOverSpeeding(overSpeeding: Boolean, result: Messages.Result<Void>?) {
+        navigationHandler.toggleOverSpeeding(overSpeeding)
+        result?.success(null)
+    }
+
+    override fun muteOtherSounds(mute: Boolean, result: Messages.Result<Void>?) {
+        navigationHandler.muteOtherSounds(mute)
+        result?.success(null)
+    }
+
+    override fun setNavigatorVolume(volume: AudioVolumeMessage, result: Messages.Result<Void>?) {
+        navigationHandler.setNavigatorVolume(volume)
         result?.success(null)
     }
 
@@ -1047,8 +1067,12 @@ class DgisMapView(
         packagesHandler.installPackage(id, result)
     }
 
-    override fun listVoices(result: Messages.Result<List<PackageMessage>>?) {
+    override fun listVoices(result: Messages.Result<List<VoiceMessage>>?) {
         packagesHandler.listVoices(result)
+    }
+
+    override fun voicePlayWelcome(id: String, result: Messages.Result<Void>?) {
+        packagesHandler.voicePlayWelcome(id, result)
     }
 
     override fun installVoice(id: String, result: Messages.Result<Void>?) {

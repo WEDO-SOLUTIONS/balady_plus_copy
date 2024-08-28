@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:http_certificate_pinning/http_certificate_pinning.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
-    show translator;
+    show Translation, translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     as EtmamCommonProperties hide Log;
@@ -62,12 +65,100 @@ class WebService {
         responseBody: false,
       ),
     );
+
     dio.interceptors.add(AppInterceptors());
+    dio.interceptors.add(
+        AppCertificatePinningInterceptor(allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,callFollowingErrorInterceptor: true)
+    );
+
   }
 
   WebService.newDio({
     required this.dio,
   });
+}
+
+class AppCertificatePinningInterceptor extends Interceptor {
+  final List<String> _allowedSHAFingerprints;
+  final int _timeout;
+  final bool callFollowingErrorInterceptor;
+  Future<String>? secure = Future.value('');
+
+  AppCertificatePinningInterceptor({
+    List<String>? allowedSHAFingerprints,
+    int timeout = 0,
+    this.callFollowingErrorInterceptor = false,
+  })  : _allowedSHAFingerprints = allowedSHAFingerprints != null
+      ? allowedSHAFingerprints
+      : <String>[],
+        _timeout = timeout;
+
+
+  @override
+  Future onRequest(
+      RequestOptions options,
+      RequestInterceptorHandler handler,
+      ) async {
+    try {
+      // iOS bug: Alamofire is failing to return parallel requests for certificate validation
+      if (Platform.isIOS && secure != null) {
+        await secure;
+      }
+
+      if(options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) == true) {
+        var baseUrl = options.baseUrl;
+
+        if (options.path.contains('http') || options.baseUrl.isEmpty) {
+          baseUrl = options.path;
+        }
+
+        secure = HttpCertificatePinning.check(
+          serverURL: baseUrl,
+          headerHttp: {},
+          sha: SHA.SHA256,
+          allowedSHAFingerprints: _allowedSHAFingerprints,
+          timeout: _timeout,
+        );
+
+        secure?.whenComplete(() => secure = null);
+        final secureString = await secure ?? '';
+
+        if (secureString.contains('CONNECTION_SECURE')) {
+          return super.onRequest(options, handler);
+        } else {
+          handler.reject(
+            DioException(
+                requestOptions: options,
+                error: CertificateNotVerifiedException(),
+                type: DioExceptionType.badCertificate
+            ),
+            callFollowingErrorInterceptor,
+          );
+        }
+      }
+      else
+        {
+          return super.onRequest(options, handler);
+        }
+    } on Exception catch (e) {
+      dynamic error;
+
+      if (e is PlatformException && e.code == 'CONNECTION_NOT_SECURE') {
+        error = const CertificateNotVerifiedException();
+      } else {
+        error = CertificateCouldNotBeVerifiedException(e);
+      }
+
+      handler.reject(
+        DioException(
+          requestOptions: options,
+          error: error,
+          type: DioExceptionType.badCertificate
+        ),
+        callFollowingErrorInterceptor,
+      );
+    }
+  }
 }
 
 class AppInterceptors extends Interceptor {
@@ -236,11 +327,15 @@ class AppInterceptors extends Interceptor {
       case DioErrorType.cancel:
         break;
       case DioErrorType.badCertificate:
+        CommonFunctions.showError("badCerifcation".tr());
+
+        throw BadRequestException(err.requestOptions, err.response);
         break;
       case DioErrorType.connectionError:
         throw NoInternetConnectionException(err.requestOptions);
         break;
       case DioErrorType.unknown:
+
         throw BadRequestException(err.requestOptions, err.response);
 
       default:

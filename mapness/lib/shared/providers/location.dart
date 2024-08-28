@@ -90,7 +90,7 @@ class _Location extends _$Location {
     return false;
   }
 
-  Future<bool> checkPermissionLocation() async {
+  Future<bool> checkOnLocationPermissionGranted() async {
     final status = await perm.Permission.location.status;
 
     if (status.isGranted) {
@@ -98,6 +98,7 @@ class _Location extends _$Location {
       return true;
     }
 
+    state = null;
     return false;
   }
 }

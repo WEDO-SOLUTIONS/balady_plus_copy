@@ -501,7 +501,21 @@ class DgisMapController {
   Future<void> stopNavigation() => _instance.stopNavigation();
 
   /// Controls sounds in navigation.
-  Future<void> toggleSound({required bool enabled}) => _instance.toggleSound(enabled: enabled);
+  Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) =>
+      _instance.toggleVoiceInstruction(toggleType: toggleType);
+
+  /// Controls sounds in navigation.
+  Future<void> toggleOverSpeeding({required bool overSpeeding}) =>
+      _instance.toggleOverSpeeding(overSpeeding: overSpeeding);
+
+  /// Controls sounds Cameras in navigation.
+  Future<void> toggleRoadCameras({required bool roadCameras}) => _instance.toggleRoadCameras(roadCameras: roadCameras);
+
+  /// Mute other apps sounds when navigation notification recieved.
+  Future<void> muteOtherSounds({required bool mute}) => _instance.muteOtherSounds(mute: mute);
+
+  /// Set navigator volume.
+  Future<void> setNavigatorVolume({required AudioVolumeMessage volume}) => _instance.setNavigatorVolume(volume: volume);
 
   /// Add panorama markers to map.
   Future<void> addPanoramasMarkers(List<MarkerWithPhotoMessage> markers) {
@@ -553,7 +567,10 @@ class DgisMapController {
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
 
   ///List voices
-  Future<List<PackageMessage?>> listVoices() => _instance.listVoices();
+  Future<List<VoiceMessage?>> listVoices() => _instance.listVoices();
+
+  /// Play Welcome Voice
+  Future<void> voicePlayWelcome(String id) => _instance.voicePlayWelcome(id);
 
   ///Install package
   Future<void> installPackage(String id) => _instance.installPackage(id);
@@ -574,20 +591,39 @@ class DgisMapController {
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
 
   ///Set map attribute bool
-  Future<void> setMapAttributeBool(String name, bool value) => _instance.setMapAttributeBool(name, value);
-  rVoice(String id) => _instance.setNavigatorVoice(id);
+  Future<void> setMapAttributeBool(String name, {required bool value}) => _instance.setMapAttributeBool(name, value);
 }
 
+/// Extension methods for `WeekTimeSearchMessage`.
 extension WeekTimeFactory on WeekTimeSearchMessage {
-  ///get time is open now
+  /// Creates a `WeekTimeSearchMessage` instance with `isOpenNow` set to `true`.
+  ///
+  /// This method provides a convenient way to create a `WeekTimeSearchMessage`
+  /// that indicates the time is currently open. It sets the `isOpenNow` property
+  /// to `true`, which can be useful for filtering or searching purposes.
+  ///
+  /// Returns:
+  /// - [WeekTimeSearchMessage]: An instance of `WeekTimeSearchMessage` with `isOpenNow` set to `true`.
   static WeekTimeSearchMessage openNow() => WeekTimeSearchMessage(isOpenNow: true);
 }
 
+/// An enumeration representing different working hours filters.
 enum WorkingHoursFilter {
+  /// Filter to show only places that are currently open.
   isOpen,
+
+  /// No specific filter applied.
   none,
+
+  /// Filter to show only places that are open 24/7.
   isOpen24x7;
 
+  /// Converts the [WorkingHoursFilter] enum to its corresponding [WorkingFilterMessage].
+  ///
+  /// Returns:
+  /// - [WorkingFilterMessage.isOpen] if the filter is [WorkingHoursFilter.isOpen].
+  /// - [WorkingFilterMessage.none] if the filter is [WorkingHoursFilter.none].
+  /// - [WorkingFilterMessage.isOpen24x7] if the filter is [WorkingHoursFilter.isOpen24x7].
   WorkingFilterMessage toMessage() {
     switch (this) {
       case WorkingHoursFilter.isOpen:

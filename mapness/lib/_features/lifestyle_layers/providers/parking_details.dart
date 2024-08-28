@@ -23,7 +23,7 @@ extension ParkingFilterExt on ParkingFilter {
         ParkingFilter.all => TransportIcons.parkingEnable,
         ParkingFilter.free => GeneralIcons.checkmarkCircle,
         ParkingFilter.paid => GeneralIcons.money,
-        _ => GeneralIcons.placeHolder,
+        _ => GeneralIcons.placeholder,
       };
 
   bool paidOn() => switch (this) {
@@ -75,8 +75,8 @@ class ParkingDetails extends _$ParkingDetails {
 
   Future<void> _applyAttribute(ParkingFilter parkingFilter) async {
     final _dgisController = await ref.read(dgisControllerProvider.future);
-    await _dgisController.setMapAttributeBool('parkingOn', true);
-    await _dgisController.setMapAttributeBool('parking_filter_paid_on', parkingFilter.paidOn());
-    await _dgisController.setMapAttributeBool('parking_filter_free_on', parkingFilter.freeOn());
+    await _dgisController.setMapAttributeBool(attributeParkingOn, value: true);
+    await _dgisController.setMapAttributeBool(attributeParkingFilteredPaidOn, value: parkingFilter.paidOn());
+    await _dgisController.setMapAttributeBool(attributeParkingFilteredFreeOn, value: parkingFilter.freeOn());
   }
 }
