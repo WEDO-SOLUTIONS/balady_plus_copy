@@ -60,9 +60,7 @@ class RouteHandler(
         val routesEditor = RouteEditor(sdkContext)
         this.routeEditorSource = RouteEditorSource(
             sdkContext,
-            routesEditor,
-            calloutLabelDisplayMode = RouteMapObjectCalloutLabelDisplayMode.RELATIVE_TO_ACTIVE_ROUTE_VALUES,
-            activeDisplayFlags = EnumSet.of(RouteMapObjectDisplayFlag.IMMERSIVE_ROUTE_PARTS),
+            routesEditor
         )
 
         this.trafficRouter = TrafficRouter(sdkContext)

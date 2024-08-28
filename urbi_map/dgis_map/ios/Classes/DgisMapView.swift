@@ -214,9 +214,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func showImmersiveRoutes(){
-        map?.graphicsPreset = GraphicsPreset.immersive
-    }
         
     func overrideLocalesLocales(_ locales: [String], completion: @escaping (FlutterError?) -> Void) {
         let manager = getLocaleManager(context: try! sdk.context)
@@ -853,10 +850,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
         
+        
         let map = mapFactory.map
+        
         map.addSource(source: MyLocationMapObjectSource(
             context: context,
-            controllerSettings:  MyLocationControllerSettings(bearingSource: .auto)
+            controllerSettings:  MyLocationControllerSettings()
         ))
         map.graphicsPreset = GraphicsPreset.immersive
         

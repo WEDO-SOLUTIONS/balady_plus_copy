@@ -35,7 +35,6 @@ class NavigationHandler {
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
         let context = try! sdk.context
-        map.graphicsPreset = GraphicsPreset.immersive
         self.map = map
         
         self.eventChannel = eventChannel
@@ -43,6 +42,7 @@ class NavigationHandler {
         self.navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
         self.navigationManager.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
         self.navigationManager.mapManager.addMap(map: self.map)
+        self.navigationManager.routeMapSettings.onRouteDisplayFlags.insert(.immersiveRouteParts)
         
         self.voiceManager = getVoiceManager(context: context)
         

@@ -47,8 +47,6 @@ class RouteHandler {
         self.routeEditor = RouteEditor(context: context)
         self.routeEditorSource = RouteEditorSource(
             context: context, routeEditor: self.routeEditor,
-            activeDisplayFlags: [.immersiveRouteParts],
-            inactiveDisplayFlags: [.immersiveRouteParts],
             calloutLabelDisplayMode: .relativeToActiveRouteValues
         )
         

@@ -24,6 +24,7 @@ import ru.dgis.sdk.map.MyLocationControllerSettings
 import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteMapObject
+import ru.dgis.sdk.map.RouteMapObjectDisplayFlag
 import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.Tilt
 import ru.dgis.sdk.map.calcPosition
@@ -32,6 +33,7 @@ import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.routing.TrafficRoute
+import java.util.EnumSet
 import ru.dgis.sdk.Context as SdkContext
 
 class NavigationHandler(
@@ -79,7 +81,9 @@ class NavigationHandler(
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
         navigationManager.routeSourceSettings.calloutVisualizationMode =
             CalloutVisualizationMode.MULTIPLE_ROUTES
-        
+        navigationManager.routeMapSettings.onRouteDisplayFlags.add(RouteMapObjectDisplayFlag.IMMERSIVE_ROUTE_PARTS)
+
+
         dashboardControlModel = DashboardControlModel(
             navigationManager.uiModel,
             eventSink,

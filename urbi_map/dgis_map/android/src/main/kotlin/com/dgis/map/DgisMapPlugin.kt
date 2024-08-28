@@ -64,7 +64,6 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
             httpOptions = HttpOptions(useCache = true),
             vendorConfig = ru.dgis.sdk.platform.VendorConfig(
                 fromAsset = VendorConfigFromAsset(vendorAsset)
-
             ),
         )
     }
