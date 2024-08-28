@@ -1,49 +1,45 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/entities/feedback/feedback_icon.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/feedback_label.dart';
 
-class FeedbackChipsData {
-  final String title;
-  final IconData? leadingIcon;
-
-  const FeedbackChipsData({
-    required this.title,
-    required this.leadingIcon,
-  });
-}
-
 class FeedbackChips extends StatelessWidget {
-  final String label;
-  final List<FeedbackChipsData> data;
-  final void Function(int?) onIndexChanged;
-  final int? selectedIndex;
+  final FeedbackChipsEntity field;
+  final void Function(Set<String>) onValueChange;
+
   const FeedbackChips({
-    required this.label,
-    required this.onIndexChanged,
-    required this.data,
+    required this.field,
+    required this.onValueChange,
     super.key,
-    this.selectedIndex,
   });
 
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FeedbackLabel(text: label),
+          FeedbackLabel(text: field.label),
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: data.indexed
-                .map((e) => Chips(
-                      title: e.$2.title,
-                      isSelected: selectedIndex == e.$1,
-                      leadingIcon: e.$2.leadingIcon != null
+            children: field.variants
+                .map((variant) => Chips(
+                      title: variant.label,
+                      isSelected: field.value?.contains(variant.id) ?? false,
+                      leadingIcon: variant.icon != null
                           ? ChipIconData(
-                              e.$2.leadingIcon!,
+                              variant.icon!.iconData(isLTR: context.isLTR),
                             )
                           : null,
                       onTap: () {
-                        onIndexChanged(e.$1);
+                        final Set<String> selected;
+                        if (field.value?.contains(variant.id) ?? false) {
+                          selected = {...?field.value}..remove(variant.id);
+                        } else {
+                          selected = {variant.id};
+                        }
+                        onValueChange(selected);
                       },
                       style: ChipsStyle.whiteBackground,
                     ))

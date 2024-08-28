@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/widgets/feedback/feedback_bool_toggle.dart';
+import 'package:mapness/widgets/feedback/feedback_chips.dart';
 import 'package:mapness/widgets/feedback/feedback_images.dart';
 import 'package:mapness/widgets/feedback/feedback_text_field.dart';
 
@@ -39,6 +40,10 @@ class FeedbackFieldWidget<V> extends StatelessWidget {
           ),
           padding: const EdgeInsets.all(Spacing.$4x),
           child: const Text('Unknown required field'),
+        ),
+      FeedbackChipsEntity() => FeedbackChips(
+          field: field as FeedbackChipsEntity,
+          onValueChange: (value) => onValueChange(value as V),
         ),
       _ => Container(
           decoration: BoxDecoration(
