@@ -1,19 +1,19 @@
 part of '../feedback_base_entity.dart';
 
-class FeedbackWeekDaysEntity extends FeedbackBaseEntity<List<String>> {
+class FeedbackWorkingHoursEntity extends FeedbackBaseEntity<List<FeedbackWeekDayWorkingHoursEntity>> {
   final String label;
   final List<String> variants;
 
-  const FeedbackWeekDaysEntity({
+  const FeedbackWorkingHoursEntity({
     required super.id,
     required super.isRequired,
     required this.label,
     required this.variants,
-    List<String>? value,
+    List<FeedbackWeekDayWorkingHoursEntity>? value,
   }) : super(value: value);
 
   @override
-  FeedbackWeekDaysEntity updatedValue(List<String> value) => FeedbackWeekDaysEntity(
+  FeedbackWorkingHoursEntity updatedValue(List<FeedbackWeekDayWorkingHoursEntity> value) => FeedbackWorkingHoursEntity(
         id: id,
         isRequired: isRequired,
         label: label,
@@ -21,3 +21,33 @@ class FeedbackWeekDaysEntity extends FeedbackBaseEntity<List<String>> {
         value: value,
       );
 }
+
+/// represents single day of the week
+class FeedbackWeekDayWorkingHoursEntity {
+  final TimeRange workingTime;
+  final List<TimeRange> breaks;
+
+  const FeedbackWeekDayWorkingHoursEntity({
+    required this.workingTime,
+    this.breaks = const [],
+  });
+}
+
+/// represents time range interval
+sealed class TimeRange {
+  const TimeRange();
+}
+
+/// represents time range interval if it's not all day
+class TimeRangeStartEnd extends TimeRange {
+  final TimeOfDay start;
+  final TimeOfDay end;
+
+  const TimeRangeStartEnd({
+    required this.start,
+    required this.end,
+  });
+}
+
+/// represents all day time range
+class TimeRangeAllDay extends TimeRange {}

@@ -18,10 +18,9 @@ class FeedbackCategories extends _$FeedbackCategories {
   }
 
   Future<List<dynamic>> _loadMock() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 500));
     try {
-      final input =
-          await rootBundle.loadString('assets/feedback_scheme_mock.json');
+      final input = await rootBundle.loadString('assets/feedback_scheme_mock.json');
       return jsonDecode(input) as List<dynamic>;
     } catch (e) {
       log(e.toString());

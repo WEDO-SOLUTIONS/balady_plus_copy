@@ -11,11 +11,9 @@ part 'feedback.g.dart';
 @TypedGoRoute<FeedbackBaseRoute>(
   path: FeedbackBaseRoute.path,
   routes: <TypedGoRoute<GoRouteData>>[
-    TypedGoRoute<FeedbackRoute>(
-        path: ':schemeId',
-        routes: <TypedGoRoute<GoRouteData>>[
-          TypedGoRoute<FeedbackSuccessRoute>(path: 'success'),
-        ]),
+    TypedGoRoute<FeedbackRoute>(path: ':categoryId', routes: <TypedGoRoute<GoRouteData>>[
+      TypedGoRoute<FeedbackSuccessRoute>(path: 'success'),
+    ]),
   ],
 )
 
@@ -37,31 +35,29 @@ class FeedbackBaseRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: FeedbackSelectTypePage(objectId: objectId),
       );
 }
 
 class FeedbackRoute extends GoRouteData {
-  final String schemeId;
+  final String categoryId;
   final String objectId;
 
-  const FeedbackRoute({required this.objectId, required this.schemeId});
+  const FeedbackRoute({required this.objectId, required this.categoryId});
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
-  static void open(GoRouter router, String objectId, String schemeId) {
-    final route = FeedbackRoute(objectId: objectId, schemeId: schemeId);
+  static void open(GoRouter router, String objectId, String categoryId) {
+    final route = FeedbackRoute(objectId: objectId, categoryId: categoryId);
     router.push(route.location);
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: FeedbackPage(
           poiId: objectId,
-          schemeId: schemeId,
+          categoryId: categoryId,
         ),
       );
 }
@@ -70,20 +66,19 @@ class FeedbackSuccessRoute extends GoRouteData {
   /// Object id to report feedback for.
   final String objectId;
 
-  final String schemeId;
+  final String categoryId;
 
-  const FeedbackSuccessRoute({required this.objectId, required this.schemeId});
+  const FeedbackSuccessRoute({required this.objectId, required this.categoryId});
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
-  static void open(GoRouter router, String objectId, String schemeId) {
-    final route = FeedbackSuccessRoute(objectId: objectId, schemeId: schemeId);
+  static void open(GoRouter router, String objectId, String categoryId) {
+    final route = FeedbackSuccessRoute(objectId: objectId, categoryId: categoryId);
     router.push(route.location);
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
         child: FeedbackSuccessPage(
           username: '-',
         ),

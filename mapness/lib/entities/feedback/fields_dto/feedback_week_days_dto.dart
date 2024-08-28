@@ -14,7 +14,7 @@ class FeedbackWeekDaysDto extends FeedbackBaseDto {
   });
 
   @override
-  FeedbackWeekDaysEntity toDomain() => FeedbackWeekDaysEntity(
+  FeedbackWorkingHoursEntity toDomain() => FeedbackWorkingHoursEntity(
         id: id,
         isRequired: isRequired,
         label: label,

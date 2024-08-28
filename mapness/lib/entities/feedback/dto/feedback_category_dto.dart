@@ -26,11 +26,15 @@ class FeedbackCategoryDto {
       jsonList.map((json) => FeedbackCategoryDto.fromJson(json)).toList();
 
   /// convert to domain
-  FeedbackCategoryEntity toDomain() => FeedbackCategoryEntity(
-        // TODO: remove this when backend is ready
-        id: id ?? name,
-        name: name,
-        fields: fields.map((e) => e.toDomain()).toList(),
-        icon: FeedbackIcon.fromName(iconName ?? ''),
-      );
+  FeedbackCategoryEntity toDomain() {
+    print("flag_$iconName");
+
+    return FeedbackCategoryEntity(
+      // TODO: remove this when backend is ready
+      id: id ?? name,
+      name: name,
+      fields: fields.map((e) => e.toDomain()).toList(),
+      icon: FeedbackIcon.fromName(iconName ?? ''),
+    );
+  }
 }

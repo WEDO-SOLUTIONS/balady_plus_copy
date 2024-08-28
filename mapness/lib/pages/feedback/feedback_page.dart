@@ -10,9 +10,9 @@ import 'package:mapness/pages/feedback/feedback_loading.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
 class FeedbackPage extends ConsumerStatefulWidget {
-  final String schemeId;
+  final String categoryId;
   final String poiId;
-  const FeedbackPage({required this.poiId, required this.schemeId, super.key});
+  const FeedbackPage({required this.poiId, required this.categoryId, super.key});
 
   @override
   ConsumerState<FeedbackPage> createState() => _FeedbackPageState();
@@ -38,8 +38,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       // return const Center(child: Text('Error no data'));
     }
 
-    final category = categories.value
-        ?.firstWhereOrNull((element) => element.id == widget.schemeId);
+    final category = categories.value?.firstWhereOrNull((element) => element.id == widget.categoryId);
 
     if (category == null || category.fields.isEmpty) {
       return const FeedbackFailure();
@@ -53,7 +52,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
         child: child!,
         onSend: () => FeedbackSuccessRoute(
           objectId: widget.poiId,
-          schemeId: widget.schemeId,
+          categoryId: widget.categoryId,
         ).replace(context),
       ),
       child: FeedbackFormWidget(

@@ -10,8 +10,7 @@ import 'package:mapness/widgets/feedback/feedback_select_options_widget.dart';
 
 class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
   final int objectId;
-  const FeedbackSelectOptionsComponentWidget({required this.objectId, Key? key})
-      : super(key: key);
+  const FeedbackSelectOptionsComponentWidget({required this.objectId, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,16 +25,13 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
           categoriesValue: categories,
           onTap: (category, objectId) => _onTap(context, category, objectId),
         ),
-      (AsyncLoading(), _) ||
-      (_, AsyncLoading()) =>
-        Center(child: Loading.large()),
+      (AsyncLoading(), _) || (_, AsyncLoading()) => Center(child: Loading.large()),
       _ => Center(child: Text(context.l10n.failedToLoadData)),
     };
   }
 
-  void _onTap(
-      BuildContext context, FeedbackCategoryEntity category, int? objectId) {
+  void _onTap(BuildContext context, FeedbackCategoryEntity category, int? objectId) {
     final objectId_ = objectId.toString();
-    FeedbackRoute(objectId: objectId_, schemeId: category.id).push(context);
+    FeedbackRoute(objectId: objectId_, categoryId: category.id).push(context);
   }
 }

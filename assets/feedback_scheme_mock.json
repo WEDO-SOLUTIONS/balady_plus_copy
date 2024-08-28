@@ -1,6 +1,7 @@
 [
     {
         "name": "Company name",
+        "iconName": "nameChange",
         "fields": [
             {
                 "id": "email",
@@ -48,6 +49,7 @@
     },
     {
         "name": "Area of activity",
+        "iconName": "messageText",
         "fields": [
             {
                 "id": "email",
@@ -95,6 +97,7 @@
     },
     {
         "name": "Address",
+        "iconName": "pin",
         "fields": [
             {
                 "id": "email",
@@ -142,6 +145,7 @@
     },
     {
         "name": "Opening hours",
+        "iconName": "timeQuarter",
         "fields": [
             {
                 "id": "email",
@@ -208,6 +212,7 @@
     },
     {
         "name": "Phone",
+        "iconName": "phone",
         "fields": [
             {
                 "id": "email",
@@ -255,6 +260,7 @@
     },
     {
         "name": "Website or social network account",
+        "iconName": "web",
         "fields": [
             {
                 "id": "email",
@@ -302,6 +308,7 @@
     },
     {
         "name": "Сompany has been closed",
+        "iconName": "clearCircle",
         "fields": [
             {
                 "id": "email",
@@ -353,6 +360,7 @@
     },
     {
         "name": "Other",
+        "iconName": "questionCircle",
         "fields": [
             {
                 "id": "email",

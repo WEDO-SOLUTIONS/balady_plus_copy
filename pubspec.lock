@@ -116,11 +116,12 @@ packages:
   balady_uikit:
     dependency: "direct main"
     description:
-      name: balady_uikit
-      sha256: "2f2f66d68084aee4bde46f75c1aaa716848a70f277a801d725c83aed59acecd3"
-      url: "https://baladyapp-unpub.urbi.ae"
-    source: hosted
-    version: "2.0.8"
+      path: "."
+      ref: "feat/BSA-604/feedback-part-1"
+      resolved-ref: ef3d004bf665eefc048807a2bcba8b633c9fcbde
+      url: "git@github.com:urbi-ae/balady_uikit.git"
+    source: git
+    version: "2.0.7"
   bloc:
     dependency: "direct main"
     description:
