@@ -1135,7 +1135,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func setNavigatorVolume(_ volume: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+    func setNavigatorVolumeVolume(_ volume: NSNumber, completion: @escaping (FlutterError?) -> Void) {
         do {
             try sdk.audioSettings?.volume = UInt32(volume.int32Value)
             completion(nil)
