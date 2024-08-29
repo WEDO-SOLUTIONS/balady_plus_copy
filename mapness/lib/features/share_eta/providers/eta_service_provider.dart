@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
+import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,9 +24,15 @@ class EtaService extends _$EtaService {
   Future<void> _init() async {
     // Get share eta base url
     final env = await ref.read(dgisEnvironmentProvider.future);
+    final token = await ref.read(tokenProvider.future);
+
     _baseUrl = env.shareEtaApi;
 
     _dio = ref.read(baseDioProvider);
+
+    if (_dio != null && token.isNotEmpty) {
+      _dio!.options.headers['Authorization'] = 'Bearer $token';
+    }
   }
 
   Future<void> startEtaStream(EtaStreamPayload payload) async {
@@ -57,7 +64,7 @@ class EtaService extends _$EtaService {
     }
   }
 
-  Future<void> stopEtaStream(String streamId) async {
+  Future<void> stopEtaStream(String tokenId, String xStreamData) async {
     await _init();
 
     if (_dio == null) {
@@ -66,14 +73,28 @@ class EtaService extends _$EtaService {
     }
 
     state = const AsyncLoading();
+    final headers = _dio!.options.headers
+      ..addAll({
+        'X-Stream-Data': xStreamData,
+        'GeoStreamingToken': tokenId,
+      });
 
     try {
       final response = await _dio!.delete(
         '$_baseUrl/v1/geolocation/stream',
-        data: {'streamId': streamId},
+        options: Options(
+          headers: headers,
+        ),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == null) {
+        state = AsyncError(Exception('Failed to stop ETA stream'), StackTrace.current);
+        return;
+      }
+
+      final statusCode = response.statusCode!;
+
+      if (statusCode >= 200 && statusCode < 300) {
         state = const AsyncData(null);
       } else {
         state = AsyncError(Exception('Failed to stop ETA stream'), StackTrace.current);

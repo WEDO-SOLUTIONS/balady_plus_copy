@@ -25,8 +25,11 @@ import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.d
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
+import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
@@ -294,6 +297,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
+  void _showEtaExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => const EtaShareExpired(),
+    );
+  }
+
   Future<void> openAppLink(Uri uri) async {
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
@@ -306,6 +318,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final longitude = double.tryParse(lonString ?? '');
     final type = url.queryParameters[BaldayDeeplink.typeKey];
     final objectId = url.queryParameters[BaldayDeeplink.dgisObjectIdKey];
+    final streamId = url.queryParameters[BaldayDeeplink.streamId];
+    final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
+
+    if (tokenId != null && streamId != null) {
+      try {
+        await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+      } catch (e) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showEtaExpired(rootNavigatorKey.currentContext!);
+        });
+      }
+      return;
+    }
 
     if (objectId != null) {
       final id = int.tryParse(objectId);

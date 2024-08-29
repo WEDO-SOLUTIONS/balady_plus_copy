@@ -21,7 +21,7 @@ class EtaTimerIndicator extends _$EtaTimerIndicator {
         state = state - 1;
       }
     });
-    ref.onDispose(() => _timer?.cancel());
+    ref.onDispose(() => stopTimer());
   }
 
   void stopTimer() {

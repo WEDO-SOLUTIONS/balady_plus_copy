@@ -20,6 +20,31 @@ class EtaWebsocket {
   final List<ConnectionStatus> _connectionStatusListeners = [];
   final List<EtaInfoCallback> _etaInfoListeners = [];
 
+  static const _streamIdKey = 'stream_id';
+  static const _geoStreamingTokenKey = 'GeoStreamingToken';
+  static const _xStreamDataKey = 'X-Stream-Data';
+
+  WsConfig? _config;
+
+  final defaultConfig = const WsConfig(
+    host: '',
+    port: 443,
+    token: '',
+    streamId: '',
+    subscriptionType: SubscriptionType.get,
+  );
+
+  StreamSubscription? _subscription;
+  WebSocket? _ws;
+
+  void clearInfoListeners() {
+    _etaInfoListeners.clear();
+  }
+
+  void clearConnectionStatusListeners() {
+    _connectionStatusListeners.clear();
+  }
+
   void addConnectionStatusListener(ConnectionStatus listener) {
     _connectionStatusListeners.add(listener);
   }
@@ -47,23 +72,6 @@ class EtaWebsocket {
       listener(etaInfo);
     }
   }
-
-  static const _streamIdKey = 'streamId';
-  static const _geoStreamingTokenKey = 'GeoStreamingToken';
-  static const _xStreamDataKey = 'X-Stream-Data';
-
-  WsConfig? _config;
-
-  final defaultConfig = const WsConfig(
-    host: '',
-    port: 443,
-    token: '',
-    streamId: '',
-    subscriptionType: SubscriptionType.get,
-  );
-
-  StreamSubscription? _subscription;
-  WebSocket? _ws;
 
   Future<void> start({
     required String streamId,
@@ -131,10 +139,13 @@ class EtaWebsocket {
 
     try {
       final baseUrlString = baseUrl.toString();
-      _ws = await WebSocket.connect(baseUrlString, headers: {
+      final headers = {
         _geoStreamingTokenKey: config.token,
-        _xStreamDataKey: config.xStreamData,
-      });
+      };
+      if (config.xStreamData != null) {
+        headers[_xStreamDataKey] = config.xStreamData!;
+      }
+      _ws = await WebSocket.connect(baseUrlString, headers: headers);
       _subscription = _ws?.listen(
         (data) {
           try {
@@ -150,7 +161,7 @@ class EtaWebsocket {
                 ),
               );
               return;
-            } else if (dataJsonType != 'geolocation') {
+            } else if (dataJsonType == 'geolocation') {
               _notifyEtaInfoListeners(
                 EtaInfoModel.fromJson(
                   dataJson,
@@ -160,14 +171,12 @@ class EtaWebsocket {
               return;
             }
           } catch (e) {
+            print(e);
             // state = AsyncError(e, s);
+            //TODO: handle error
           }
         },
 
-        // onDone: () {
-        //   print('done');
-        //   _stop;
-        // },
         // First iteration we don't need to handle errors
         onError: (error) {
           debugPrint(error.toString());

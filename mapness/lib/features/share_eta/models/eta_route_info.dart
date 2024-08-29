@@ -14,10 +14,25 @@ class EtaRoutePayload with _$EtaRoutePayload {
   @JsonSerializable(explicitToJson: true)
   const factory EtaRoutePayload({
     final Route? route,
+    final User? user,
   }) = _EtaRoutePayload;
 
   /// Creates an [EtaRoutePayload] object from a JSON map.
   factory EtaRoutePayload.fromJson(Map<String, dynamic> json) => _$EtaRoutePayloadFromJson(json);
+}
+
+/// Represents a user.
+@freezed
+class User with _$User {
+  /// Default constructor for [User].
+  const factory User({
+    @JsonKey(name: 'first_name') final String? firstName,
+    @JsonKey(name: 'last_name') final String? lastName,
+    @JsonKey(name: 'photo_url') final String? photoUrl,
+  }) = _User;
+
+  /// Creates a [User] object from a JSON map.
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }
 
 /// Represents a route.

@@ -12,14 +12,13 @@ class EtaShareControlSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final streamProvider = ref.read(etaServiceProvider.notifier);
-
     Future<void> _stopShare() async {
       await EtaWebsocket().stop();
       context.pop();
     }
 
     Future<void> _shareMore() async {
+      final streamProvider = ref.read(etaServiceProvider.notifier);
       await streamProvider.shareStream();
       context.pop();
     }

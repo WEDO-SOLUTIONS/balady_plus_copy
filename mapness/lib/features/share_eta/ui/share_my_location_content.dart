@@ -15,7 +15,6 @@ import 'package:mapness/features/share_eta/entities/share_eta_time_type.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
-import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_inprogress_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
@@ -64,6 +63,9 @@ class ShareMyLocationContent extends HookConsumerWidget {
 
     ref.listen(etaServiceProvider, (_, next) {
       if (context.mounted == false) {
+        return;
+      }
+      if (next.isLoading) {
         return;
       }
       if (next.hasError) {
@@ -236,19 +238,6 @@ class ShareMyLocationContent extends HookConsumerWidget {
           LoadingOverlay.of(context).startLoading();
           ref.read(shareEtaProvider.notifier).startSharing(v.durationInMinutes);
         },
-      ),
-    );
-  }
-
-  void _continueShared(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => EtaInprogressSheet(
-        onShareMorePressed: () {},
-        onStopSharePressed: () {},
-        timeLeft: '13 min left',
       ),
     );
   }

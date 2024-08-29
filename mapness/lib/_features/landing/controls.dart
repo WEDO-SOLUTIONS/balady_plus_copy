@@ -5,6 +5,7 @@ import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
+import 'package:mapness/_features/landing/widgets/eta_sharing_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
@@ -75,7 +76,16 @@ class MapControls extends ConsumerWidget {
                     ),
                     child: Row(
                       children: [
-                        const IndoorControl(),
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Spacer(),
+                            IndoorControl(),
+                            Spacer(),
+                            EtaSharingControl(),
+                          ],
+                        ),
                         const Spacer(),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
