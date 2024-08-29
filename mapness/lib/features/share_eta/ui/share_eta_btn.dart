@@ -6,6 +6,7 @@ import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_provider.dart';
+import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn_action.dart';
 import 'package:share_plus/share_plus.dart';
@@ -18,10 +19,14 @@ class ShareEtaBtn extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final streamService = ref.watch(etaServiceProvider);
     final streamNotifier = ref.read(etaServiceProvider.notifier);
+    final wsProvider = ref.read(etaWebsocketProvider.notifier);
+    final webSocketStatus = ref.watch(websocketStatusProvider);
+
+    final bool isPulseactive = webSocketStatus;
 
     ref.listen(etaServiceProvider, (prev, current) {
-      if (current.hasValue) {
-        if (current.value == null || current.value?.streamToken == null || current.value?.streamId == null) {
+      if (current.hasValue && current.value != null && !isPulseactive) {
+        if (current.value?.streamToken == null || current.value?.streamId == null) {
           return;
         }
 
@@ -32,11 +37,11 @@ class ShareEtaBtn extends HookConsumerWidget {
         final shareText = 'I will arrive in ${streamData.durationMinutes} minutes to my destination';
         Share.share(shareText);
 
-        ref.read(etaWebsocketProvider.notifier).start(
-              token: streamToken,
-              streamId: streamId,
-              subscriptionType: SubscriptionType.share,
-            );
+        wsProvider.start(
+          token: streamToken,
+          streamId: streamId,
+          subscriptionType: SubscriptionType.share,
+        );
       } else if (current.hasError) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -47,11 +52,6 @@ class ShareEtaBtn extends HookConsumerWidget {
 
     final bool isEtaStreamLoading = streamService.maybeWhen(
       loading: () => true,
-      orElse: () => false,
-    );
-
-    final bool isPulseactive = streamService.maybeWhen(
-      data: (data) => true, // data != null,
       orElse: () => false,
     );
 
@@ -74,7 +74,12 @@ class ShareEtaBtn extends HookConsumerWidget {
         ),
         titleBuilder: (context) => Row(
           children: [
-            Text('Share ETA', style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary)),
+            Text(
+              'Share ETA',
+              style: context.textStyleV3.bodyLargeRegular.copyWith(
+                color: context.colorsV2.foregroundDefault,
+              ),
+            ),
             if (isPulseactive)
               const Padding(
                 padding: EdgeInsetsDirectional.only(end: Spacing.$1_5x),

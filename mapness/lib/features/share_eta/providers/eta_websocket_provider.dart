@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
+import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'eta_websocket_provider.g.dart';
@@ -27,7 +28,9 @@ class EtaWebsocket extends _$EtaWebsocket {
 
   @override
   Future<EtaInfoModel?> build() async {
-    ref.onDispose(_stop);
+    ref.onDispose(() {
+      stop();
+    });
     return null;
   }
 
@@ -121,10 +124,13 @@ class EtaWebsocket extends _$EtaWebsocket {
             state = AsyncError(e, s);
           }
         },
+
         onDone: _stop,
         // First iteration we don't need to handle errors
         onError: (error) => _stop(),
       );
+
+      ref.read(websocketStatusProvider.notifier).setConnected();
     } catch (e, s) {
       state = AsyncError(e, s);
       return;
@@ -140,6 +146,7 @@ class EtaWebsocket extends _$EtaWebsocket {
     } finally {
       _ws = null;
       _subscription = null;
+      ref.read(websocketStatusProvider.notifier).setDisconnected();
     }
   }
 

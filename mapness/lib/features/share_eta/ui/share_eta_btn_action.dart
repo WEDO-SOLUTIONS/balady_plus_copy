@@ -27,12 +27,12 @@ class ShareEtaBtnAction extends StatelessWidget {
             buttonColorScheme: ButtonColorScheme.onColor,
             color: Colors.transparent,
             onTap: () => _showEtaControlSheet(context),
-            innerPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            innerPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             padding: EdgeInsets.zero,
           ),
         ShareEtaBtnActionType.stoped => Icon(
             SystemIcons.share,
-            color: context.color.textAndIconsBaseSecondary,
+            color: context.colorsV2.foregroundSoft,
           ),
       };
 }

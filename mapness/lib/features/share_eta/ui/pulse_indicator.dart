@@ -1,15 +1,18 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class PulseIndicator extends HookWidget {
-  final Color color;
-  const PulseIndicator({super.key, this.color = Colors.greenAccent});
+  final Color? color;
+  const PulseIndicator({super.key, this.color});
 
   @override
   Widget build(BuildContext context) {
     final controller = useAnimationController(
       duration: const Duration(seconds: 1),
     )..repeat();
+
+    final indicatorColor = color ?? context.colorsV2.extra01Default;
 
     return SizedBox(
       width: 24,
@@ -24,7 +27,7 @@ class PulseIndicator extends HookWidget {
               height: 8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: color,
+                color: indicatorColor,
               ),
             ),
           ),
@@ -35,7 +38,7 @@ class PulseIndicator extends HookWidget {
               height: 8 + controller.value * 20,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.greenAccent.withOpacity(
+                color: indicatorColor.withOpacity(
                   1 - controller.value,
                 ),
               ),

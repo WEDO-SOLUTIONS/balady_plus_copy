@@ -9,7 +9,7 @@ class EtaShareControlSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: context.color.surfaceBaseSecondary,
+          color: context.colorsV2.backgroundSurface4,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(RadiusBorder.xl),
             topRight: Radius.circular(RadiusBorder.xl),
@@ -20,43 +20,59 @@ class EtaShareControlSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: context.colorsV2.neutralContainerDefault,
+                    borderRadius: BorderRadius.circular(RadiusBorder.xs),
+                  ),
+                ),
+              ),
               ContentRow(
                 options: ContentRowOptions(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 0,
+                  padding: const EdgeInsets.symmetric(
                     vertical: 10,
                   ),
                   title: 'Route is sharing',
-                  titleStyle: context.textStyle.heading2.copyWith(
-                    color: context.color.textAndIconsBasePrimary,
+                  titleStyle: context.textStyleV3.h3SemiBold.copyWith(
+                    color: context.colorsV2.foregroundDefault,
                   ),
                   customActionWidget: AppButton.close(
                     onTap: () => context.pop(),
                     padding: EdgeInsets.zero,
-                    color: Colors.white,
+                    textColor: context.colorsV2.neutralOnContainer,
+                    color: context.colorsV2.neutralContainerDefault,
                   ),
                 ),
               ),
-              const ContentWrapper(color: Colors.white, children: [
+              ContentWrapper(color: Colors.white, children: [
                 ContentRow(
                   options: ContentRowOptions(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: Spacing.$4x,
                       vertical: Spacing.$3x,
                     ),
                     dividerEnabled: true,
                     title: 'Share more',
-                    leadingIcon: Icon(SystemIcons.share),
+                    titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
+                      color: context.colorsV2.foregroundDefault,
+                    ),
+                    leadingIcon: Icon(SystemIcons.share, color: context.colorsV2.foregroundSoft),
                   ),
                 ),
                 ContentRow(
                   options: ContentRowOptions(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: Spacing.$4x,
                       vertical: Spacing.$3x,
                     ),
                     title: 'Stop sharing',
-                    leadingIcon: Icon(GeneralIcons.clearCircle),
+                    titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
+                      color: context.colorsV2.foregroundDefault,
+                    ),
+                    leadingIcon: Icon(GeneralIcons.clearCircle, color: context.colorsV2.foregroundSoft),
                   ),
                 )
               ]),
