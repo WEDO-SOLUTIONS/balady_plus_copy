@@ -1,16 +1,13 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
+import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
 import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/providers/map/selected_marker.dart';
 
 class EtaSharingControl extends ConsumerWidget {
   const EtaSharingControl({super.key});
@@ -62,63 +59,59 @@ class EtaSharingControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final webSocketStatus = ref.watch(websocketStatusProvider);
+    final timer = ref.watch(etaTimerIndicatorProvider);
 
-    final estimatedTime = webSocketStatus.estimatedTime;
+    final diffInHours = timer ~/ 60;
+    final diffInMinutes = timer % 60;
 
-    // substract estimated time from current time and status diff
-    final diffTime = estimatedTime != null ? estimatedTime.difference(DateTime.now()) : null;
-
-    // if diff have hours print hours then check minutes. If hours == 0 print only minutes
-    final diffHours = diffTime != null ? diffTime.inHours : 0;
-    final diffMinutes = diffTime != null ? diffTime.inMinutes.remainder(60) : 0;
-
-    final estimatedTimeString = diffHours > 0 ? '$diffHours hr $diffMinutes min' : '$diffMinutes min';
+    //TODO(scroollocker): localize this string
+    final estimatedTimeString = diffInHours > 0 ? '$diffInHours hr $diffInMinutes min' : '$diffInMinutes min';
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 250),
-      child: !webSocketStatus.status
+      child: !webSocketStatus
           ? MapButton(
               onTap: () async {
-                final closestPoint = GeoPointWithElevationMessage(
-                  latitude: 24.715817,
-                  longitude: 46.671102,
-                  elevation: 0,
-                );
-                final settings = MapObjectManagerSettings.myLocation();
-                final mapObjectManager = ref.watch(
-                  mapObjectManagerProvider(
-                    named: settings.name,
-                    layerId: settings.layerId,
-                  ).notifier,
-                );
-                await mapObjectManager.removeAllMarkers();
-                final marker = Marker(
-                  id: 'PIN-MARKER',
-                  options: MarkerOptionsMessage(
-                    position: closestPoint,
-                    icon: PngBytesMarkerIcon(
-                      pngData: img.encodePng(await processImage()),
-                      width: 48,
-                    ),
-                    anchor: MarkerAnchorMessage(x: 0.5, y: 1),
-                    animatedAppearance: true,
-                    zIndex: 50,
-                  ),
-                );
+                // final closestPoint = GeoPointWithElevationMessage(
+                //   latitude: 24.715817,
+                //   longitude: 46.671102,
+                //   elevation: 0,
+                // );
+                // final settings = MapObjectManagerSettings.myLocation();
+                // final mapObjectManager = ref.watch(
+                //   mapObjectManagerProvider(
+                //     named: settings.name,
+                //     layerId: settings.layerId,
+                //   ).notifier,
+                // );
+                // await mapObjectManager.removeAllMarkers();
+                // final marker = Marker(
+                //   id: 'PIN-MARKER',
+                //   options: MarkerOptionsMessage(
+                //     position: closestPoint,
+                //     icon: PngBytesMarkerIcon(
+                //       pngData: img.encodePng(await processImage()),
+                //       width: 48,
+                //     ),
+                //     anchor: MarkerAnchorMessage(x: 0.5, y: 1),
+                //     animatedAppearance: true,
+                //     zIndex: 50,
+                //   ),
+                // );
 
-                final read = ref.read(selectedMarkerProvider.notifier);
-                await read.removeAllMarkers();
+                // final read = ref.read(selectedMarkerProvider.notifier);
+                // await read.removeAllMarkers();
 
-                await mapObjectManager.addMarker(marker);
+                // await mapObjectManager.addMarker(marker);
 
-                await ref.read(cameraPositionProvider.notifier).animateTo(
-                      CameraPositionMessage(
-                        point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
-                        zoom: 16,
-                        tilt: 0,
-                        bearing: 0,
-                      ),
-                    );
+                // await ref.read(cameraPositionProvider.notifier).animateTo(
+                //       CameraPositionMessage(
+                //         point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
+                //         zoom: 16,
+                //         tilt: 0,
+                //         bearing: 0,
+                //       ),
+                //     );
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),

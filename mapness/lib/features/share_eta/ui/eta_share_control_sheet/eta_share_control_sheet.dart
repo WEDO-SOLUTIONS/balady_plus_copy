@@ -5,18 +5,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
-import 'package:mapness/features/share_eta/providers/eta_websocket_provider.dart';
+import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
 
 class EtaShareControlSheet extends ConsumerWidget {
   const EtaShareControlSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final wsProvider = ref.read(etaWebsocketProvider.notifier);
     final streamProvider = ref.read(etaServiceProvider.notifier);
 
     Future<void> _stopShare() async {
-      await wsProvider.stop();
+      await EtaWebsocket().stop();
       context.pop();
     }
 

@@ -20,6 +20,7 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -138,6 +139,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
+      ..watch(shareEtaProvider)
       ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
       ..watch(locationProvider.select((_) => null))

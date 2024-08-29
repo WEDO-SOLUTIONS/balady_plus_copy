@@ -5,10 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
-import 'package:mapness/features/share_eta/providers/eta_websocket_provider.dart';
+import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
 import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn_action.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 
 class ShareEtaBtn extends HookConsumerWidget {
   final int durationMinutes;
@@ -20,12 +21,12 @@ class ShareEtaBtn extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final streamService = ref.watch(etaServiceProvider);
     final streamNotifier = ref.read(etaServiceProvider.notifier);
-    final wsProvider = ref.read(etaWebsocketProvider.notifier);
+
     final webSocketStatus = ref.watch(websocketStatusProvider);
 
-    final bool isPulseactive = webSocketStatus.status;
+    final bool isPulseactive = webSocketStatus;
 
-    ref.listen(etaServiceProvider, (prev, current) {
+    ref.listen(etaServiceProvider, (prev, current) async {
       if (current.hasValue && current.value != null && !isPulseactive) {
         if (current.value?.streamToken == null || current.value?.streamId == null) {
           return;
@@ -35,12 +36,15 @@ class ShareEtaBtn extends HookConsumerWidget {
         final streamToken = streamData.streamToken!;
         final streamId = streamData.streamId!;
 
-        streamNotifier.shareStream();
+        await streamNotifier.shareStream();
 
-        wsProvider.start(
+        final env = await ref.read(dgisEnvironmentProvider.future);
+
+        await EtaWebsocket().start(
           token: streamToken,
           streamId: streamId,
           subscriptionType: SubscriptionType.share,
+          shareEtaApiUrl: env.shareEtaApi,
         );
       } else if (current.hasError) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();

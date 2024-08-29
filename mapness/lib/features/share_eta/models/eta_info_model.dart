@@ -37,7 +37,7 @@ class EtaInfoModel<T> {
 @freezed
 abstract class EtaInfoPayload with _$EtaInfoPayload {
   /// Constructs an instance of [EtaInfoPayload].
-  @JsonSerializable(explicitToJson: true)
+  @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory EtaInfoPayload({
     final double? lat,
     final double? lon,

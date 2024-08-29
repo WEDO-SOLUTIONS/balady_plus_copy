@@ -13,6 +13,7 @@ import 'package:mapness/_features/poi_card/provider/poi_my_location_provider.dar
 import 'package:mapness/_features/poi_card/ui_kit_tmp/poi_header.dart';
 import 'package:mapness/features/share_eta/entities/share_eta_time_type.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_inprogress_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_sheet.dart';
@@ -20,6 +21,7 @@ import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharin
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -61,8 +63,12 @@ class ShareMyLocationContent extends HookConsumerWidget {
     final sheetPadding = isAuthorized ? 0.27 : 0.25;
 
     ref.listen(etaServiceProvider, (_, next) {
+      if (context.mounted == false) {
+        return;
+      }
       if (next.hasError) {
         LoadingOverlay.of(context).endLoading();
+        // Temporary solution
         _showEtaExpired(context);
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
@@ -75,7 +81,17 @@ class ShareMyLocationContent extends HookConsumerWidget {
           return;
         }
 
-        ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData, finishAt);
+        EtaStreamStorage()
+          ..setStreamId(streamId)
+          ..setToken(streamToken)
+          ..setXStreamData(xStreamData);
+
+        final estimatedTime = finishAt.dateTime;
+        if (estimatedTime != null) {
+          EtaStreamStorage().setEstimatedTime(estimatedTime);
+        }
+
+        ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
         context.pop();
       }
     });

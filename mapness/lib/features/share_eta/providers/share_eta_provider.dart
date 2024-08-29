@@ -1,12 +1,16 @@
-import 'package:dgis_map/library.dart';
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
-import 'package:mapness/features/share_eta/models/eta_status_model.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
-import 'package:mapness/features/share_eta/providers/eta_websocket_provider.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
+import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
 import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,33 +18,48 @@ part 'share_eta_provider.g.dart';
 
 @riverpod
 class ShareEta extends _$ShareEta {
+  static const int sendLocationIntervalSeconds = 3;
+
   ProviderSubscription? _websocketStatusSubscription;
-  ProviderSubscription? _locationSubscription;
+  Timer? _locationSubscription;
 
   @override
   void build() {
-    _websocketStatusSubscription = ref.listen<EtaStatusModel>(websocketStatusProvider, (_, status) {
-      _locationSubscription?.close();
-      if (status.status) {
-        _locationSubscription = ref.listen<GeoPointMessage?>(locationProvider, (__, location) {
+    _websocketStatusSubscription = ref.listen<bool>(websocketStatusProvider, (_, status) {
+      _locationSubscription?.cancel();
+      if (status) {
+        final durationInMinutes = EtaStreamStorage().state.durationInMinutes;
+
+        if (durationInMinutes != null) {
+          ref.read(etaTimerIndicatorProvider.notifier).startTimer(durationInMinutes);
+        }
+
+        _locationSubscription = Timer.periodic(const Duration(seconds: sendLocationIntervalSeconds), (_) {
+          final location = ref.read(locationProvider);
           if (location != null) {
-            ref.read(etaWebsocketProvider.notifier).pushEtaInfo(
-                  EtaInfoModel<EtaInfoPayload>(
-                    type: EtaType.geolocation,
-                    payload: EtaInfoPayload(
-                      lat: location.latitude,
-                      lon: location.longitude,
-                    ),
-                  ),
-                );
+            EtaWebsocket().pushEtaInfo(
+              EtaInfoModel<EtaInfoPayload>(
+                type: EtaType.geolocation,
+                payload: EtaInfoPayload(
+                  period: 3000,
+                  direction: 90,
+                  speed: 59,
+                  lat: location.latitude,
+                  lon: location.longitude,
+                ),
+              ),
+            );
           }
         });
+      } else {
+        ref.read(etaTimerIndicatorProvider.notifier).stopTimer();
       }
     });
 
     ref.onDispose(() {
+      EtaStreamStorage().clear();
       _websocketStatusSubscription?.close();
-      _locationSubscription?.close();
+      _locationSubscription?.cancel();
     });
   }
 
@@ -48,10 +67,12 @@ class ShareEta extends _$ShareEta {
     final etaService = ref.read(etaServiceProvider.notifier);
 
     final payload = EtaStreamPayload(
-      type: EtaStreamType.eta.name,
+      type: EtaStreamType.geo.name,
       durationMinutes: durationInMinutes,
     );
 
+    //store the duration in the storage
+    EtaStreamStorage().setDurationInMinutes(durationInMinutes);
     await etaService.startEtaStream(payload);
   }
 
@@ -61,15 +82,19 @@ class ShareEta extends _$ShareEta {
     await etaService.stopEtaStream(streamId);
   }
 
-  Future<void> startWebsocketStream(String streamId, String token, String xStreamData, String finishAt) async {
-    final wsProvider = ref.read(etaWebsocketProvider.notifier);
+  Future<void> startWebsocketStream(String streamId, String token, String xStreamData) async {
+    final envProvider = await ref.read(dgisEnvironmentProvider.future);
 
-    await wsProvider.start(
-      streamId: streamId,
-      token: token,
-      estimatedTime: finishAt,
-      subscriptionType: SubscriptionType.share,
-      xStreamData: xStreamData,
-    );
+    try {
+      await EtaWebsocket().start(
+        streamId: streamId,
+        token: token,
+        shareEtaApiUrl: envProvider.shareEtaApi,
+        xStreamData: xStreamData,
+        subscriptionType: SubscriptionType.share,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }
