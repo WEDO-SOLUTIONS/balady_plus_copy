@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -9,13 +10,16 @@ part 'eta_service_provider.g.dart';
 
 @riverpod
 class EtaService extends _$EtaService {
-  //TODO: Replace with actual base URL
-  final baseUrl = 'url_here';
+  late final String _baseUrl;
 
   Dio? _dio;
 
   @override
   Future<EtaStreamInfo?> build() async {
+    // Get share eta base url
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    _baseUrl = env.shareEtaApi;
+
     _dio = ref.watch(baseDioProvider);
     return null;
   }
@@ -30,7 +34,7 @@ class EtaService extends _$EtaService {
 
     try {
       final response = await _dio!.post(
-        '$baseUrl/v1/geolocation/stream',
+        '$_baseUrl/v1/geolocation/stream',
         data: payload.toJson(),
       );
 
@@ -56,7 +60,7 @@ class EtaService extends _$EtaService {
 
     try {
       final response = await _dio!.delete(
-        '$baseUrl/v1/geolocation/stream',
+        '$_baseUrl/v1/geolocation/stream',
         data: {'streamId': streamId},
       );
 
@@ -78,7 +82,7 @@ class EtaService extends _$EtaService {
 
     try {
       final response = await _dio!.get(
-        '$baseUrl/v1/geolocation/stream',
+        '$_baseUrl/v1/geolocation/stream',
       );
 
       if (response.statusCode == 200) {
