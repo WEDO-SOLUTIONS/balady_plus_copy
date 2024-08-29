@@ -87,22 +87,17 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   List pagesListHimSelfWithAppointments = [
     FirstComplianceSubmissionWidget(),
     SecondSubmissonCompliance(),
-
     ThirdSubmissionCompliance(),
-
     UsageSubmissionCompliance(),
-
     FourthStepCompliance(),
     FifthComplianceSubmitStep(),
     SixthComplianceSubmitStep(),
-   SeventhSubmitComplianceSubmitStep(),
+    SeventhSubmitComplianceSubmitStep(),
     CreateComplianceSummurySection()
   ];
 
-
- List pageEditAppointments = [
-
-   SeventhSubmitComplianceSubmitStep(),
+  List pageEditAppointments = [
+    SeventhSubmitComplianceSubmitStep(),
   ];
 
   List pagesListEngOffice = [
@@ -226,10 +221,6 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
     on<ChangeSelectedAppointmentDay>(_changeSelectedAppointmentDayHandler);
     on<ChangeSelectedAppointmentSlot>(_changeSelectedAppointmentSlotHandler);
-
-
-
-
   }
 
   Future<void> _pageChangeHandler(ChangePageEvent e, Emitter emitter) async {
@@ -315,7 +306,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           UXCamEvents.Compliance_Certificate_Open_Select_EngOffice_Event);
     }
     if (e.selectedLicense != null && state.requestId != null) {
-      add(const GetRequestDetails(updateCurrentRequest: true)); 
+      add(const GetRequestDetails(updateCurrentRequest: true));
     }
   }
 
@@ -354,8 +345,12 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       appointmentsStatus: BlocStatus.loading,
     ));
     final failOrSuccess = await _getAppointments((
-      state.requestDetails?.locationResponseInfoDto?.x ?? state.gisParams?.x.toString() ?? "",
-      state.requestDetails?.locationResponseInfoDto?.y ?? state.gisParams?.y.toString() ?? ""
+      state.requestDetails?.locationResponseInfoDto?.x ??
+          state.gisParams?.x.toString() ??
+          "",
+      state.requestDetails?.locationResponseInfoDto?.y ??
+          state.gisParams?.y.toString() ??
+          ""
     ));
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
@@ -365,7 +360,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       ));
     }, (r) async {
       emitter(state.copyWith(
-          appointmentsStatus: BlocStatus.success, complainceAppointmentResponse: r));
+          appointmentsStatus: BlocStatus.success,
+          complainceAppointmentResponse: r));
     });
   }
 
@@ -454,7 +450,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
         sendEventPage(nextPage);
 
-           add(GetRequestDetails(updateCurrentRequest: true));
+        add(GetRequestDetails(updateCurrentRequest: true));
       }
     });
   }
@@ -520,6 +516,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       status: BlocStatus.loading,
     ));
     ApplyCreateComplianceRequest request = state.generateRequest();
+    request.requestId = state.requestId;
     final failOrSuccess = await _applyCompliance(request);
 
     failOrSuccess.fold((l) {
@@ -590,98 +587,93 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         ),
       );
     }, (r) async {
+      if (event.updateCurrentRequest == true) {
+        ComplianceRequestDetails? requestDetails = state.requestDetails;
 
-
-      if (event.updateCurrentRequest == true) { 
-
-ComplianceRequestDetails? requestDetails = state.requestDetails; 
-
-requestDetails?.showMomtathelVisitSection = r.showMomtathelVisitSection; 
-requestDetails?.isReadOnly = r.isReadOnly; 
-
-   emitter(
-          state.copyWith(
-              requestDetails: requestDetails,
-              errorMessage: "",
-            
-              detailsStatus: BlocRequestStatus.submissionGetSuccess,
-            ),
-        );
-
-return ; 
-
-      } 
-      // if (r.submitterThrough == "BENEFICARY"||r.submitterThrough == "MOMTATHEL") {
-        List<AttachmentData> attachmentData = [];
-        List<AttachmentData> viewAttachmentData = [];
-
-        attachmentData = (r.beneficaryAttachments ?? [])
-            .map(
-              (e) => AttachmentData(
-                id: e.id.toString(),
-                memo: e.name ?? "",
-                title: "${e.name} ${e.allowedFilesExtension}",
-                isRequired: e.isMandatory ?? false,
-                isUploaded: false,
-              ),
-            )
-            .toList();
-
-        viewAttachmentData = (r.requestAttachments ?? [])
-            .map(
-              (e) => AttachmentData(
-                id: e.id.toString(),
-                memo: e.name ?? "",
-                title: "${e.name} ${e.allowedFilesExtension}",
-                isRequired: true,
-                isUploaded: false,
-              ),
-            )
-            .toList();
-
-        ComplinaceLookUpItem? selectedMainUsage = state.selectedMainUsage;
-        ComplinaceLookUpItem? selectedSubUsage = state.selectedSubUsage;
-
-        if (r.mainUsageCode != null && r.mainUsageName != null) {
-          selectedMainUsage = ComplinaceLookUpItem(
-            id: r.mainUsageCode,
-            name: r.mainUsageName,
-          );
-        }
-        if (r.subUsageCode != null && r.subUsageName != null) {
-          selectedSubUsage = ComplinaceLookUpItem(
-            id: r.subUsageCode,
-            name: r.subUsageName,
-          );
-        }
+        requestDetails?.showMomtathelVisitSection = r.showMomtathelVisitSection;
+        requestDetails?.isReadOnly = r.isReadOnly;
 
         emitter(
           state.copyWith(
-              requestDetails: r,
-              errorMessage: "",
-              selectedMainUsage: selectedMainUsage,
-              selectedSubUsage: Nullable(selectedSubUsage),
-              detailsStatus: BlocRequestStatus.submissionGetSuccess,
-              attachments: attachmentData,
-              viewAttachments: viewAttachmentData),
+            requestDetails: requestDetails,
+            errorMessage: "",
+            detailsStatus: BlocRequestStatus.submissionGetSuccess,
+          ),
         );
 
-        if (event.requestId == null) {
-          int nextPage = state.currentStep + 1;
-          emitter(state.copyWith(status: BlocStatus.performing));
-          emitter(
-            state.copyWith(
-              status: BlocStatus.success,
-              currentStep: nextPage,
-              errorMessage: "",
-            ),
-          );
-          pageController.jumpToPage(nextPage);
+        return;
+      }
+      // if (r.submitterThrough == "BENEFICARY"||r.submitterThrough == "MOMTATHEL") {
+      List<AttachmentData> attachmentData = [];
+      List<AttachmentData> viewAttachmentData = [];
 
-          sendEventPage(nextPage);
-        } else {
-          setUpDraft(r);
-        }
+      attachmentData = (r.beneficaryAttachments ?? [])
+          .map(
+            (e) => AttachmentData(
+              id: e.id.toString(),
+              memo: e.name ?? "",
+              title: "${e.name} ${e.allowedFilesExtension}",
+              isRequired: e.isMandatory ?? false,
+              isUploaded: false,
+            ),
+          )
+          .toList();
+
+      viewAttachmentData = (r.requestAttachments ?? [])
+          .map(
+            (e) => AttachmentData(
+              id: e.id.toString(),
+              memo: e.name ?? "",
+              title: "${e.name} ${e.allowedFilesExtension}",
+              isRequired: true,
+              isUploaded: false,
+            ),
+          )
+          .toList();
+
+      ComplinaceLookUpItem? selectedMainUsage = state.selectedMainUsage;
+      ComplinaceLookUpItem? selectedSubUsage = state.selectedSubUsage;
+
+      if (r.mainUsageCode != null && r.mainUsageName != null) {
+        selectedMainUsage = ComplinaceLookUpItem(
+          id: r.mainUsageCode,
+          name: r.mainUsageName,
+        );
+      }
+      if (r.subUsageCode != null && r.subUsageName != null) {
+        selectedSubUsage = ComplinaceLookUpItem(
+          id: r.subUsageCode,
+          name: r.subUsageName,
+        );
+      }
+
+      emitter(
+        state.copyWith(
+            requestDetails: r,
+            errorMessage: "",
+            selectedMainUsage: selectedMainUsage,
+            selectedSubUsage: Nullable(selectedSubUsage),
+            detailsStatus: BlocRequestStatus.submissionGetSuccess,
+            attachments: attachmentData,
+            viewAttachments: viewAttachmentData),
+      );
+
+      if (event.requestId == null) {
+        int nextPage = state.currentStep + 1;
+        emitter(state.copyWith(status: BlocStatus.performing));
+        emitter(
+          state.copyWith(
+            status: BlocStatus.success,
+            currentStep: nextPage,
+            errorMessage: "",
+          ),
+        );
+        pageController.jumpToPage(nextPage);
+
+        sendEventPage(nextPage);
+      } else {
+        setUpDraft(r);
+      }
       // } else {
       //   CommonFunctions.openBaldyWithRefreshCookie(
       //     event.redirectUrl,
@@ -1094,6 +1086,8 @@ return ;
         sendEventPage(nextPage);
       }
     } else if (state.currentStep == 2 && state.benificiaryTypeSelection == 1) {
+      // hear need delete location data
+      emitter(state.copyWith(deleteGisData: true));
       if (state.generateRequest() == state.applyRequest ||
           state.isDraft == true) {
         add(GetRequestDetails());
@@ -1485,20 +1479,15 @@ return ;
     return state.currentStep == (pages().length - 1);
   }
 
-  List<dynamic> pages() { 
-if (state.showNewAppointments)  { 
-  return pagesListHimSelfWithAppointments; 
-} 
-    else if (state.editOnlyAppointment ) { 
-
-
-      return pageEditAppointments; 
-    }  else { 
-      return pagesListHimSelf; 
+  List<dynamic> pages() {
+    if (state.showNewAppointments) {
+      return pagesListHimSelfWithAppointments;
+    } else if (state.editOnlyAppointment) {
+      return pageEditAppointments;
+    } else {
+      return pagesListHimSelf;
     }
   }
-
-    
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
@@ -1511,7 +1500,6 @@ if (state.showNewAppointments)  {
     emitter(state.copyWith(agreement: e.isagree, errorMessage: ""));
   }
 
-
   Future<void> _changeSelectedAppointmentDayHandler(
       ChangeSelectedAppointmentDay e, Emitter emitter) async {
     hideKeyboard();
@@ -1523,12 +1511,9 @@ if (state.showNewAppointments)  {
       ChangeSelectedAppointmentSlot e, Emitter emitter) async {
     hideKeyboard();
 
-    emitter(state.copyWith(visitTimeFrom: e.visitFrom, visitTimeTo: e.visitTo, errorMessage: ""));
+    emitter(state.copyWith(
+        visitTimeFrom: e.visitFrom, visitTimeTo: e.visitTo, errorMessage: ""));
   }
-
-
-
-
 
   void sendEventPage(int page) {
     String eventName = "";
