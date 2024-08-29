@@ -151,6 +151,7 @@ sdk-update.patch
 
 # mapness related ignore
 mapness/**/*.g.dart
+mapness/**/*.freezed.dart
 mapness/lib/l10n/generated
 mapness/lib/l10n/*.arb
 .sdk-version
