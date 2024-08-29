@@ -750,7 +750,7 @@ class DgisMapPlugin extends FlutterMapApi {
   ///
   /// Parameters:
   /// - [volume]: The [AudioVolumeMessage] that specifies the desired volume level.
-  Future<void> setNavigatorVolume({required AudioVolumeMessage volume}) {
+  Future<void> setNavigatorVolume({required int volume}) {
     return _api.setNavigatorVolume(volume);
   }
 

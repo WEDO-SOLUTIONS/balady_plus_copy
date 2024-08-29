@@ -201,7 +201,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                         icon: _BottomNavigationBarItem(
                           selected: currentIndex == 2,
                           iconBuilder: (ctx, isSelected) => _DefaultIcon(
-                            icon: GeneralIcons.routeStroke,
+                            icon: GeneralIcons.route,
                             selected: isSelected,
                           ),
                           label: context.l10n.nav_route,

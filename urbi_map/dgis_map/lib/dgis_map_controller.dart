@@ -515,7 +515,7 @@ class DgisMapController {
   Future<void> muteOtherSounds({required bool mute}) => _instance.muteOtherSounds(mute: mute);
 
   /// Set navigator volume.
-  Future<void> setNavigatorVolume({required AudioVolumeMessage volume}) => _instance.setNavigatorVolume(volume: volume);
+  Future<void> setNavigatorVolume({required int volume}) => _instance.setNavigatorVolume(volume: volume);
 
   /// Add panorama markers to map.
   Future<void> addPanoramasMarkers(List<MarkerWithPhotoMessage> markers) {

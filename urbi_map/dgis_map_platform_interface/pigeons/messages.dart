@@ -1102,12 +1102,6 @@ enum SoundToggleType {
   all,
 }
 
-enum AudioVolumeMessage {
-  standard,
-  low,
-  minimal,
-}
-
 /// Settings for better route searching
 /// [routeSearchDelay] - delay (in seconds) before searching for alternative routes when starting a trip on a route or after switching
 /// to another route. Must be not less than 5 seconds
@@ -1433,7 +1427,7 @@ abstract class MapApi {
   void muteOtherSounds(bool mute);
 
   @async
-  void setNavigatorVolume(AudioVolumeMessage volume);
+  void setNavigatorVolume(int volume);
 
   @async
   void onTrafficAndParkingAttached();

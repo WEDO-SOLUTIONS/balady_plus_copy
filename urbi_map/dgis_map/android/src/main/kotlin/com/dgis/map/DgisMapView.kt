@@ -928,6 +928,11 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun setNavigatorVolume(volume: Long, result: Messages.Result<Void>?) {
+        navigationHandler.setNavigatorVolume(volume.toInt())
+        result?.success(null)
+    }
+
     override fun toggleRoadCameras(roadCameras: Boolean, result: Messages.Result<Void>?) {
         navigationHandler.toggleRoadCameras(roadCameras)
         result?.success(null)
@@ -940,11 +945,6 @@ class DgisMapView(
 
     override fun muteOtherSounds(mute: Boolean, result: Messages.Result<Void>?) {
         navigationHandler.muteOtherSounds(mute)
-        result?.success(null)
-    }
-
-    override fun setNavigatorVolume(volume: AudioVolumeMessage, result: Messages.Result<Void>?) {
-        navigationHandler.setNavigatorVolume(volume)
         result?.success(null)
     }
 

@@ -1134,28 +1134,27 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.toggleRoadCameras(roadCameras: roadCameras.boolValue)
         completion(nil)
     }
-  
-    func setNavigatorVolumeVolume(_ volume: AudioVolumeMessage, completion: @escaping (FlutterError?) -> Void) {
-        sdk.audioSettings.audioVolume = audioVolumeMapper(volume: volume)
-        completion(nil)
-    }
     
-    private func audioVolumeMapper(volume: AudioVolumeMessage)-> AudioVolume{
-        return switch volume{
-            case .standard:
-                AudioVolume.standard
-            case .low:
-                AudioVolume.low
-            case .minimal:
-                AudioVolume.minimal
-                
-            default: AudioVolume.standard
+    func setNavigatorVolume(_ volume: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        do {
+            try sdk.audioSettings?.volume = UInt32(volume.int32Value)
+            completion(nil)
+        } catch {
+            completion(FlutterError(code: "ERROR_SETTING_VOLUME", message: "Failed to set volume", details: error.localizedDescription))
         }
     }
-  
+
     func muteOtherSoundsMute(_ mute: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        sdk.audioSettings.muteOtherSounds = mute.boolValue
-        completion(nil)
+        do {
+            if mute.boolValue {
+                try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.duck
+               } else {
+                   try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.ignore
+               }
+               completion(nil)
+           } catch {
+               completion(FlutterError(code: "ERROR_SETTING_AUDIO_POLICY", message: "Failed to set audio focus policy", details: error.localizedDescription))
+           }
     }
     
     func voicePlayWelcomeId(_ id: String, completion: @escaping (FlutterError?) -> Void) {

@@ -174,7 +174,7 @@ class NavigationHandler(
         dashboardControlModel.toggleOverSpeeding(overSpeeding)
     }
 
-    fun setNavigatorVolume(volume: Messages.AudioVolumeMessage) {
+    fun setNavigatorVolume(volume: Int) {
         dashboardControlModel.setNavigatorVolume(volume)
     }
 
