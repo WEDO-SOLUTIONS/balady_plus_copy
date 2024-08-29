@@ -1,0 +1,219 @@
+import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/navigator_voice.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import 'dgis_packages.dart';
+
+part 'sound_settings.g.dart';
+
+class SoundSettingsModel {
+  /// Index of list from enum SoundToggleType, default value is SoundToggleType.all
+  final int voiceInstructionIndex;
+
+  /// Value of toggle Muffle others sound, this function now unavailable
+  final bool muffleOtherSounds;
+
+  /// Index of list from enum AudioVolumeMessage, default value is AudioVolumeMessage.standard
+  final int promptsVolumeIndex;
+
+  /// Value of toggle Background navigation, if true - in AppState.paused, maneuvers will be voiced, if false - maneuvers will be muted
+  final bool backgroundNavigation;
+
+  /// Value of toggle Road cameras, if true - camera alerts will be voiced, if false - camera alerts will be muted
+  final bool roadCameras;
+
+  /// Value of toggle Over speeding, if true - over speeding alerts will be voiced, if false - over speeding alerts will be muted
+  final bool overSpeeding;
+
+  /// Current voice language code, if value wasn't picked before, it takes value from app language
+  final String voicesLanguage;
+
+  final List<PackageMessage> installedVoices;
+
+  final List<PackageMessage> unInstalledVoices;
+
+  /// Current voice of assistant
+  final String? voiceName;
+
+  const SoundSettingsModel({
+    required this.voicesLanguage,
+    required this.installedVoices,
+    required this.unInstalledVoices,
+    this.voiceInstructionIndex = 2,
+    this.muffleOtherSounds = false,
+    this.promptsVolumeIndex = 2,
+    this.backgroundNavigation = true,
+    this.roadCameras = true,
+    this.overSpeeding = true,
+    this.voiceName,
+  });
+
+  SoundSettingsModel copyWith({
+    String? voicesLanguage,
+    int? voiceInstructionIndex,
+    bool? muffleOtherSounds,
+    int? promptsVolumeIndex,
+    bool? backgroundNavigation,
+    bool? roadCameras,
+    bool? overSpeeding,
+    String? voiceName,
+    List<PackageMessage>? installedVoices,
+    List<PackageMessage>? unInstalledVoices,
+  }) =>
+      SoundSettingsModel(
+        voiceInstructionIndex: voiceInstructionIndex ?? this.voiceInstructionIndex,
+        muffleOtherSounds: muffleOtherSounds ?? this.muffleOtherSounds,
+        promptsVolumeIndex: promptsVolumeIndex ?? this.promptsVolumeIndex,
+        backgroundNavigation: backgroundNavigation ?? this.backgroundNavigation,
+        roadCameras: roadCameras ?? this.roadCameras,
+        overSpeeding: overSpeeding ?? this.overSpeeding,
+        voicesLanguage: voicesLanguage ?? this.voicesLanguage,
+        voiceName: voiceName ?? this.voiceName,
+        installedVoices: installedVoices ?? this.installedVoices,
+        unInstalledVoices: unInstalledVoices ?? this.unInstalledVoices,
+      );
+}
+
+@Riverpod(keepAlive: true)
+class SoundSettings extends _$SoundSettings {
+  static const _soundToggleTypesList = SoundToggleType.values;
+  static final _promptsVolumeList = AudioVolumeMessage.values.reversed.toList();
+
+  @override
+  SoundSettingsModel build() {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+    final language = ref.watch(appLanguageProvider);
+    String? voiceName;
+
+    final selectedVoice = ref.watch(navigatorVoiceProvider);
+
+    final voicePackages = ref.watch(voicePackagesProvider);
+
+    if (voicePackages.isNotEmpty) {
+      voiceName = voicePackages.map((e) => e.packageMessage).firstWhere((e) => e.id == selectedVoice).info.name;
+    }
+
+    final installedVoices = <PackageMessage>[];
+    final unInstalledVoices = <PackageMessage>[];
+
+    final voicesLanguage =
+        sharedPrefs.getString(MapnessConstants.voicesLanguagePrefsKey) ?? language.locale.languageCode;
+    final prefsVoiceInstructionIndex = sharedPrefs.getInt(MapnessConstants.voiceInstructionIndexPrefsKey);
+    final prefsMuffleOtherSounds = sharedPrefs.getBool(MapnessConstants.muffleOtherSoundsPrefsKey);
+    final prefsPromptsVolumeIndex = sharedPrefs.getInt(MapnessConstants.promptsVolumeIndexPrefsKey);
+    final prefsBackgroundNavigation = sharedPrefs.getBool(MapnessConstants.backgroundNavigationPrefsKey);
+    final prefsRoadCameras = sharedPrefs.getBool(MapnessConstants.roadCamerasPrefsKey);
+    final prefsOverSpeeding = sharedPrefs.getBool(MapnessConstants.overSpeedingPrefsKey);
+
+    for (final package in voicePackages) {
+      if (package.language == voicesLanguage) {
+        if (package.packageMessage.info.installed) {
+          installedVoices.add(package.packageMessage);
+        } else {
+          unInstalledVoices.add(package.packageMessage);
+        }
+      }
+    }
+
+    final _defaultSoundSettings = SoundSettingsModel(
+      voicesLanguage: voicesLanguage,
+      installedVoices: installedVoices,
+      unInstalledVoices: unInstalledVoices,
+    ).copyWith(
+      voiceInstructionIndex: prefsVoiceInstructionIndex,
+      muffleOtherSounds: prefsMuffleOtherSounds,
+      promptsVolumeIndex: prefsPromptsVolumeIndex,
+      backgroundNavigation: prefsBackgroundNavigation,
+      roadCameras: prefsRoadCameras,
+      overSpeeding: prefsOverSpeeding,
+      voiceName: voiceName,
+    );
+
+    toggleVoiceInstruction(currentVoiceInstruction: _defaultSoundSettings.voiceInstructionIndex);
+    toggleOverSpeeding(overSpeeding: _defaultSoundSettings.overSpeeding);
+    toggleRoadCameras(roadCameras: _defaultSoundSettings.roadCameras);
+    toggleNavigatorVolume(currentPromptVolumeIndex: _defaultSoundSettings.promptsVolumeIndex);
+    toggleBackgroundNavigation(backgroundNavigation: _defaultSoundSettings.backgroundNavigation);
+
+    return _defaultSoundSettings;
+  }
+
+  Future<void> toggleRoadCameras({required bool roadCameras}) async {
+    final dGisController = await ref.watch(dgisControllerProvider.future);
+
+    await dGisController.toggleRoadCameras(roadCameras: roadCameras);
+
+    await ref.read(sharedPrefsProvider).setBool(MapnessConstants.roadCamerasPrefsKey, roadCameras);
+
+    state = state.copyWith(roadCameras: roadCameras);
+  }
+
+  Future<void> toggleOverSpeeding({required bool overSpeeding}) async {
+    final dGisController = await ref.watch(dgisControllerProvider.future);
+
+    await dGisController.toggleOverSpeeding(overSpeeding: overSpeeding);
+
+    await ref.read(sharedPrefsProvider).setBool(MapnessConstants.overSpeedingPrefsKey, overSpeeding);
+
+    state = state.copyWith(overSpeeding: overSpeeding);
+  }
+
+  Future<void> toggleMuteOtherSounds({required bool mute}) async {
+    final dGisController = await ref.watch(dgisControllerProvider.future);
+
+    await dGisController.toggleOverSpeeding(overSpeeding: mute);
+
+    await ref.read(sharedPrefsProvider).setBool(MapnessConstants.muffleOtherSoundsPrefsKey, mute);
+
+    state = state.copyWith(muffleOtherSounds: mute);
+  }
+
+  Future<void> toggleVoiceInstruction({required int currentVoiceInstruction}) async {
+    final dGisController = await ref.watch(dgisControllerProvider.future);
+
+    await dGisController.toggleVoiceInstruction(toggleType: _soundToggleTypesList[currentVoiceInstruction]);
+
+    await ref.read(sharedPrefsProvider).setInt(MapnessConstants.voiceInstructionIndexPrefsKey, currentVoiceInstruction);
+
+    state = state.copyWith(voiceInstructionIndex: currentVoiceInstruction);
+  }
+
+  Future<void> toggleNavigatorVolume({required int currentPromptVolumeIndex}) async {
+    final dGisController = await ref.watch(dgisControllerProvider.future);
+
+    await dGisController.setNavigatorVolume(volume: _promptsVolumeList[currentPromptVolumeIndex]);
+
+    await ref.read(sharedPrefsProvider).setInt(MapnessConstants.promptsVolumeIndexPrefsKey, currentPromptVolumeIndex);
+
+    state = state.copyWith(promptsVolumeIndex: currentPromptVolumeIndex);
+  }
+
+  Future<void> switchLanguage({required String currentVoiceLanguage}) async {
+    await ref.read(sharedPrefsProvider).setString(MapnessConstants.voicesLanguagePrefsKey, currentVoiceLanguage);
+
+    state = state.copyWith(voicesLanguage: currentVoiceLanguage);
+    ref.invalidateSelf();
+  }
+
+  Future<void> toggleBackgroundNavigation({required bool backgroundNavigation}) async {
+    await ref.read(sharedPrefsProvider).setBool(MapnessConstants.backgroundNavigationPrefsKey, backgroundNavigation);
+
+    state = state.copyWith(backgroundNavigation: backgroundNavigation);
+  }
+
+  Future<void> muteNavigationSound() async {
+    final dGisController = await ref.watch(dgisControllerProvider.future);
+
+    await dGisController.toggleVoiceInstruction(toggleType: SoundToggleType.none);
+  }
+
+  Future<void> restoreNavigationSound() async {
+    final dGisController = await ref.watch(dgisControllerProvider.future);
+
+    await dGisController.toggleVoiceInstruction(toggleType: _soundToggleTypesList[state.voiceInstructionIndex]);
+  }
+}

@@ -16,12 +16,15 @@ class EtaSheetWrapper extends StatelessWidget {
   final ValueNotifier<int?>? betterRouteDurationProfit;
   final VoidCallback? onBetterRouteAccept;
   final VoidCallback? onBetterRouteReject;
+  final Color? backgroundColor;
+
   static const curve = BaseRoadPanel.animationCurve;
   static const duration = BaseRoadPanel.animationDuration;
 
   const EtaSheetWrapper({
     required this.child,
     required this.isExpanded,
+    this.backgroundColor,
     this.onSizeChanged,
     this.betterRouteDurationProfit,
     this.onBetterRouteAccept,
@@ -34,7 +37,7 @@ class EtaSheetWrapper extends StatelessWidget {
     final media = MediaQuery.of(context);
     double bottomPadding = media.padding.bottom;
     if (Platform.isAndroid) {
-      bottomPadding += Spacing.verticalBaseToBottomSafezone;
+      bottomPadding += Spacing.$6x;
     }
     return MeasureSize(
       onChange: (size) {
@@ -49,9 +52,9 @@ class EtaSheetWrapper extends StatelessWidget {
               builder: (context, duration, child) => duration != null
                   ? Padding(
                       padding: const EdgeInsets.only(
-                        left: Spacing.horizontalPaddingInsideWrapper,
-                        right: Spacing.horizontalPaddingInsideWrapper,
-                        bottom: Spacing.verticalPaddingInsideCell,
+                        left: Spacing.$4x,
+                        right: Spacing.$4x,
+                        bottom: Spacing.$3x,
                       ),
                       child: _BetterRouteButton(
                         title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
@@ -62,15 +65,15 @@ class EtaSheetWrapper extends StatelessWidget {
                   : const SizedBox.shrink(),
             ),
           Material(
-            color: isExpanded ? Colors.white : Colors.transparent,
+            color: isExpanded ? backgroundColor ?? Colors.white : Colors.transparent,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
             ),
             child: AnimatedPadding(
               padding: EdgeInsets.only(
-                left: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
-                right: isExpanded ? 0 : Spacing.horizontalPaddingInsideWrapper,
+                left: isExpanded ? 0 : Spacing.$4x,
+                right: isExpanded ? 0 : Spacing.$4x,
                 bottom: bottomPadding,
               ),
               duration: duration,

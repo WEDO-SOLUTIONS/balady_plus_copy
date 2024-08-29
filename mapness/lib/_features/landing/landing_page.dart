@@ -81,7 +81,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                     bearing: 0,
                   ),
                 );
-            // dgisController
             // ignore: avoid_catches_without_on_clauses
           } catch (e) {
             // todo: make it better

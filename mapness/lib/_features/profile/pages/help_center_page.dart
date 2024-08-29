@@ -36,7 +36,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     onPressed: () => context.pop(),
-                    icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                    icon: SystemIcons.arrowCornerLeftLarge,
                   ),
                 ),
                 body: Padding(
@@ -59,24 +59,20 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                                 color: context.color.textAndIconsStatusAccent,
                               ),
                               actionWidget: ContentRowActionOptions(
-                                actionIcon: context.isLTR
-                                    ? SystemIcons.arrowCornerRightLarge.icon(
-                                        color: context.color.textAndIconsBaseSecondary,
-                                      )
-                                    : SystemIcons.arrowCornerLeftLarge.icon(
-                                        color: context.color.textAndIconsBaseSecondary,
-                                      ),
+                                actionIcon: SystemIcons.arrowCornerRightLarge.icon(
+                                  color: context.color.textAndIconsBaseSecondary,
+                                ),
                               ),
                             ),
                           )
                         ],
                       ),
-                      Spacing.verticalPaddingInsideWrapper.heightBox,
+                      Spacing.$4x.heightBox,
                       ContactInfo(
                         colorBegin: context.color.textAndIconsBaseSecondary,
                         colorEnd: context.color.textAndIconsStatusAccent,
                       ),
-                      Spacing.verticalGapBetweenChips.heightBox,
+                      Spacing.$2x.heightBox,
                       GestureDetector(
                         onTap: () {
                           ///TODO: UNCOMMENT AFTER TESTING WHEN ADD VARIABLE TO CI

@@ -158,8 +158,8 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
             leading: Container(
               padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
               alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
-              child: Icon(
-                context.isLTR ? SystemIcons.arrowCornerLeftSmall : SystemIcons.arrowCornerRightSmall,
+              child: const Icon(
+                SystemIcons.arrowCornerLeftSmall,
                 color: Colors.white,
                 size: 24,
               ),

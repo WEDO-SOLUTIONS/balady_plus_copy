@@ -43,7 +43,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     onPressed: () => context.pop(),
-                    icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                    icon: SystemIcons.arrowCornerLeftLarge,
                   ),
                 ),
                 body: Padding(
@@ -61,7 +61,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           NotificationsSettingCell(),
                         ],
                       ),
-                      const SizedBox(height: Spacing.verticalPaddingInsideWrapper),
+                      const SizedBox(height: Spacing.$4x),
                       Consumer(
                         builder: (context, ref, child) {
                           final language = ref.watch(appLanguageProvider);
@@ -82,7 +82,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         },
                       ),
                       const SizedBox(
-                        height: Spacing.verticalGapBetweenChips,
+                        height: Spacing.$2x,
                       ),
                       ContentWrapper(
                         color: context.color.surfaceBaseSecondary,
@@ -106,7 +106,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ],
                       ),
                       const SizedBox(
-                        height: Spacing.verticalGapBetweenChips,
+                        height: Spacing.$2x,
                       ),
                     ],
                   ),

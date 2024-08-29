@@ -23,6 +23,7 @@ class _PathNavEta extends _$PathNavEta {
     final subspcription = mapController.naviDashboardEvents.listen((event) {
       final distance = event.distance.formatDistance();
       final duration = Duration(seconds: event.duration);
+      final isExpanded = state?.isExpanded;
 
       state = PathNavEta(
         timeEta: event.duration.formatDuration(),
@@ -32,9 +33,15 @@ class _PathNavEta extends _$PathNavEta {
         arrivalTime: DateFormat.Hm().format(
           DateTime.now().add(duration),
         ),
-      );
+      ).copyWith(isExpanded: isExpanded);
     });
     ref.onDispose(subspcription.cancel);
+  }
+
+  void toggleIsExpanded({required bool isExpanded}) {
+    state = state?.copyWith(
+      isExpanded: isExpanded,
+    );
   }
 }
 
