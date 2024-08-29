@@ -102,7 +102,7 @@ class ShareEta extends _$ShareEta {
   Future<void> stopSharing(String tokenId, String xStreamData) async {
     final etaService = ref.read(etaServiceProvider.notifier);
 
-    unawaited(etaService.stopEtaStream(tokenId, xStreamData));
+    await etaService.stopEtaStream(tokenId, xStreamData);
     await EtaWebsocket().stop();
   }
 
