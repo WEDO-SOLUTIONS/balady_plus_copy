@@ -6,6 +6,8 @@ import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 part 'eta_stream_payload.freezed.dart';
 part 'eta_stream_payload.g.dart';
 
+enum EtaStreamType { geo, eta }
+
 @freezed
 abstract class EtaStreamPayload with _$EtaStreamPayload {
   /// Constructs an instance of [EtaStreamPayload].

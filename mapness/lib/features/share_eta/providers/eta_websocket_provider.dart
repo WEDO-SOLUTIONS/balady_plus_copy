@@ -10,20 +10,44 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'eta_websocket_provider.g.dart';
 
-@riverpod
-class EtaWebsocketProvider extends _$EtaWebsocketProvider {
-  final WsConfig _config;
+@Riverpod(keepAlive: true)
+class EtaWebsocket extends _$EtaWebsocket {
+  WsConfig? _config;
+
+  final defaultConfig = const WsConfig(
+    host: 'api.mapness.com',
+    port: 443,
+    token: '',
+    streamId: '',
+    subscriptionType: SubscriptionType.get,
+  );
 
   StreamSubscription? _subscription;
   WebSocket? _ws;
 
-  EtaWebsocketProvider(this._config);
-
   @override
   Future<EtaInfoModel?> build() async {
-    await _start();
     ref.onDispose(_stop);
     return null;
+  }
+
+  Future<void> start({
+    required String streamId,
+    required String token,
+    SubscriptionType subscriptionType = SubscriptionType.get,
+    WsConfig? config,
+  }) async {
+    _config = config ??
+        defaultConfig.copyWith(
+          subscriptionType: subscriptionType,
+          streamId: streamId,
+          token: token,
+        );
+    await _start();
+  }
+
+  Future<void> stop() async {
+    await _stop();
   }
 
   Future<void> pushEtaInfo<T>(EtaInfoModel<T> etaInfo) async {
@@ -45,14 +69,21 @@ class EtaWebsocketProvider extends _$EtaWebsocketProvider {
   }
 
   Future<void> _start() async {
+    if (_config == null) {
+      return;
+    }
+
     await _stop();
+
+    final config = _config!;
+
     final baseUrl = Uri(
       scheme: 'ws',
-      host: _config.host,
-      port: _config.port,
+      host: config.host,
+      port: config.port,
       path: _streamPath,
       queryParameters: {
-        'streamId': _config.streamId,
+        'streamId': config.streamId,
       },
     );
 
@@ -60,7 +91,7 @@ class EtaWebsocketProvider extends _$EtaWebsocketProvider {
       _ws = await WebSocket.connect(baseUrl.toString(), headers: {
         'Connection': 'upgrade',
         'Upgrade': 'websocket',
-        'GeoStreamingToken': _config.token,
+        'GeoStreamingToken': config.token,
       });
       _subscription = _ws?.listen(
         (data) {
@@ -113,13 +144,18 @@ class EtaWebsocketProvider extends _$EtaWebsocketProvider {
   }
 
   String get _streamPath {
-    switch (_config.subscriptionType) {
+    if (_config == null) {
+      return '';
+    }
+    final config = _config!;
+
+    switch (config.subscriptionType) {
       case SubscriptionType.share:
         return '/v1/geolocation/stream/start';
       case SubscriptionType.get:
         return '/v1/geolocation/stream/subscribe';
       case SubscriptionType.custom:
-        return _config.customPath!;
+        return config.customPath!;
     }
   }
 }

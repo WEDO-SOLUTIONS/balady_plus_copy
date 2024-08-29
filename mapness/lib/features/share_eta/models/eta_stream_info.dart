@@ -7,11 +7,11 @@ part 'eta_stream_info.g.dart';
 
 @freezed
 abstract class EtaStreamInfo with _$EtaStreamInfo {
-  factory EtaStreamInfo({
-    @JsonKey(name: 'stream_id') String? streamId,
-    @JsonKey(name: 'stream_token') String? streamToken,
-    @JsonKey(name: 'finishes_at') String? finishesAt,
-    @JsonKey(name: 'duration_minutes') int? durationMinutes,
+  const factory EtaStreamInfo({
+    @JsonKey(name: 'stream_id') final String? streamId,
+    @JsonKey(name: 'stream_token') final String? streamToken,
+    @JsonKey(name: 'finishes_at') final String? finishesAt,
+    @JsonKey(name: 'duration_minutes') final int? durationMinutes,
   }) = _EtaStreamInfo;
 
   factory EtaStreamInfo.fromJson(Map<String, dynamic> json) => _$EtaStreamInfoFromJson(json);

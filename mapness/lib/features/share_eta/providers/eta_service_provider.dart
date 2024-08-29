@@ -7,7 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'eta_service_provider.g.dart';
 
 @riverpod
-class EtaServiceProvider extends _$EtaServiceProvider {
+class EtaService extends _$EtaService {
   //TODO: Replace with actual base URL
   final baseUrl = 'url_here';
 
@@ -25,6 +25,8 @@ class EtaServiceProvider extends _$EtaServiceProvider {
       return;
     }
 
+    state = const AsyncLoading();
+
     try {
       final response = await _dio!.post(
         '$baseUrl/v1/geolocation/stream',
@@ -38,7 +40,7 @@ class EtaServiceProvider extends _$EtaServiceProvider {
       } else {
         state = AsyncError(Exception('Failed to start ETA stream'), StackTrace.current);
       }
-    } on Exception catch (e, st) {
+    } catch (e, st) {
       state = AsyncError(e, st);
     }
   }
@@ -48,6 +50,8 @@ class EtaServiceProvider extends _$EtaServiceProvider {
       state = AsyncError(Exception('Dio is not initialized'), StackTrace.current);
       return;
     }
+
+    state = const AsyncLoading();
 
     try {
       final response = await _dio!.delete(
@@ -60,7 +64,7 @@ class EtaServiceProvider extends _$EtaServiceProvider {
       } else {
         state = AsyncError(Exception('Failed to stop ETA stream'), StackTrace.current);
       }
-    } on Exception catch (e, st) {
+    } catch (e, st) {
       state = AsyncError(e, st);
     }
   }

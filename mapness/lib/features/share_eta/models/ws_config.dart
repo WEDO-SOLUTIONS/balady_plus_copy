@@ -9,12 +9,12 @@ abstract class WsConfig with _$WsConfig {
   @Assert('subscriptionType != SubscriptionType.custom || customPath != null',
       'customPath must not be null for custom subscription type')
   const factory WsConfig({
-    required String token,
-    required String streamId,
-    required String host,
-    required int port,
-    required SubscriptionType subscriptionType,
-    String? customPath,
+    required final String token,
+    required final String streamId,
+    required final String host,
+    required final int port,
+    required final SubscriptionType subscriptionType,
+    final String? customPath,
   }) = _WsConfig;
 
   const WsConfig._();
