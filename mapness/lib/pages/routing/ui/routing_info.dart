@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -46,7 +47,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       if (location != null) {
         unawaited(_calculateNavigationType(location));
       } else {
-        _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
+        _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
           if (next != null) {
             _locationListener?.close();
             unawaited(_calculateNavigationType(next));
@@ -63,7 +64,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     super.dispose();
   }
 
-  Future<void> _calculateNavigationType(GeoPointMessage? location) async {
+  Future<void> _calculateNavigationType(Position? location) async {
     final dgisController = ref.read(dgisControllerProvider).valueOrNull;
 
     if (widget.points.length < 2 && widget.points[1] != null) {

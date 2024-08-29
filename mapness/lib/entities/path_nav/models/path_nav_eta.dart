@@ -7,6 +7,8 @@ class PathNavEta {
   final DistanceUnits distanceEtaUnits;
   final String arrivalTime;
   final bool isExpanded;
+  final int durationInSeconds;
+  final double rawDistance;
 
   const PathNavEta({
     required this.timeEta,
@@ -14,7 +16,10 @@ class PathNavEta {
     required this.distanceEta,
     required this.distanceEtaUnits,
     required this.arrivalTime,
-    this.isExpanded = false,
+    required this.durationInSeconds,
+    required this.rawDistance,
+
+    this.isExpanded = false,    
   });
 
   PathNavEta copyWith({
@@ -24,6 +29,8 @@ class PathNavEta {
     DistanceUnits? distanceEtaUnits,
     String? arrivalTime,
     bool? isExpanded,
+    int? durationInSeconds,
+    double? rawDistance,
   }) =>
       PathNavEta(
         timeEta: timeEta ?? this.timeEta,
@@ -32,5 +39,7 @@ class PathNavEta {
         distanceEtaUnits: distanceEtaUnits ?? this.distanceEtaUnits,
         arrivalTime: arrivalTime ?? this.arrivalTime,
         isExpanded: isExpanded ?? this.isExpanded,
+        durationInSeconds: durationInSeconds ?? this.durationInSeconds,
+        rawDistance: rawDistance ?? this.rawDistance,
       );
 }

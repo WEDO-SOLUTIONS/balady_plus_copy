@@ -21,6 +21,39 @@ class Marker {
   final void Function()? onTap;
 }
 
+/// SVG marker icon
+class SvgMarkerIcon extends MarkerIconMessage {
+  /// SVG marker icon constructor
+  SvgMarkerIcon({
+    required super.svgPath,
+    required super.width,
+    super.iconOpacity,
+    super.iconMapDirection,
+  });
+}
+
+/// PNG marker icon
+class PngMarkerIcon extends MarkerIconMessage {
+  /// PNG marker icon constructor
+  PngMarkerIcon({
+    required super.pngPath,
+    required super.width,
+    super.iconOpacity,
+    super.iconMapDirection,
+  });
+}
+
+/// PNG marker icon from bytes
+class PngBytesMarkerIcon extends MarkerIconMessage {
+  /// PNG marker icon constructor
+  PngBytesMarkerIcon({
+    required super.pngData,
+    required super.width,
+    super.iconOpacity,
+    super.iconMapDirection,
+  });
+}
+
 /// Model corresponds render object on map
 class SimpleClusterObject {
   /// Base class constructor

@@ -26,10 +26,12 @@ class _PathNavEta extends _$PathNavEta {
       final isExpanded = state?.isExpanded;
 
       state = PathNavEta(
+        durationInSeconds: event.duration,
         timeEta: event.duration.formatDuration(),
         timeEtaUnits: duration >= const Duration(hours: 1) ? TimeUnits.hours : TimeUnits.min,
         distanceEta: distance.value,
         distanceEtaUnits: distance.unit,
+        rawDistance: event.distance,
         arrivalTime: DateFormat.Hm().format(
           DateTime.now().add(duration),
         ),

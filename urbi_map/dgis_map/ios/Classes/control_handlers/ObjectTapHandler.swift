@@ -218,31 +218,66 @@ class ObjectTapHandler {
     }
     
     // MARK: Marker
+    private func getImage(fromAsset assetPath: String, isSvg: Bool, size: CGSize, completion: @escaping (FlutterError?) -> Void) -> Image? {
+        if let cachedIcon = iconCache[assetPath] {
+            return cachedIcon
+        }
+
+        let assetKey = registrar.lookupKey(forAsset: assetPath)
+        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
+            let url = URL(string: "file://\(assetPath)"),
+            let data = try? Data(contentsOf: url) else {
+            completion(
+                FlutterError(
+                    code: "Error loading asset for marker",
+                    message: nil,
+                    details: nil
+                ))
+            return nil
+        }
+
+        let image: Image
+        if isSvg {
+            image = imageFactory.make(svgData: data, size: .zero)
+        } else {
+            image = imageFactory.make(pngData: data, size: size)
+        }
+        
+        iconCache[assetPath] = image
+        return image
+    }
     
-    func mapMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) -> Marker? {
+    func mapMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) -> Marker? {        
+
         var markerImage: Image? = nil
-        if let icon = marker.options.icon?.path {
-            if let cachedIcon = iconCache[icon] {
-                markerImage = cachedIcon
-            } else {
-                let assetKey = registrar.lookupKey(forAsset: icon)
-                
-                guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
-                      let url = URL(string: "file://\(assetPath)"),
-                      let data = try? Data(contentsOf: url) else {
-                    completion(
-                        FlutterError(
-                            code: "Error loading asset for marker",
-                            message: nil,
-                            details: nil
-                        ))
+
+        // Проверка и создание изображения из svgPath
+        if let svgPath = marker.options.icon?.svgPath {
+            markerImage = getImage(fromAsset: svgPath, isSvg: true, size: .zero, completion: completion)
+        }
+        // Проверка и создание изображения из pngPath
+        else if let pngPath = marker.options.icon?.pngPath {
+            markerImage = getImage(fromAsset: pngPath, isSvg: false, size: CGSize(
+                width: marker.options.icon!.width.doubleValue,
+                height: marker.options.icon!.width.doubleValue
+            ), completion: completion)
+        }
+        // Проверка и создание изображения из pngData
+        else if let pngData = marker.options.icon?.pngData {
+            let data = pngData.data
+            markerImage = imageFactory.make(pngData: data, size: CGSize(
+                width: marker.options.icon!.width.doubleValue,
+                height: marker.options.icon!.width.doubleValue
+            ))
+        }
+        else {
+            completion(
+                    FlutterError(
+                        code: "No icon provided for marker",
+                        message: nil,
+                        details: nil
+                    ))
                     return nil
-                }
-                
-                let image = imageFactory.make(svgData: data, size: .zero)
-                markerImage = image
-                iconCache[icon] = image
-            }
         }
 
         let options = MarkerOptions(

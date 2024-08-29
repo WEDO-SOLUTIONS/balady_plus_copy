@@ -306,8 +306,8 @@ class MapViewModel extends BaseViewModel {
             id: markerInfo?.objectId?.objectId.toString() ?? const Uuid().v4(),
             options: MarkerOptionsMessage(
               position: markerInfo!.geoPoint,
-              icon: MarkerIconMessage(
-                path: iconPath,
+              icon: SvgMarkerIcon(
+                svgPath: iconPath,
                 width: 24,
               ),
             ),
@@ -776,8 +776,8 @@ class MapViewModel extends BaseViewModel {
                           elevation: 1,
                           latitude: element.getLocation()!.latitude,
                           longitude: element.getLocation()!.longitude),
-                      icon: MarkerIconMessage(
-                        path: Constants.icMarker,
+                      icon: SvgMarkerIcon(
+                        svgPath: Constants.icMarker,
                         width: 30,
                       ),
                     ),
@@ -904,8 +904,8 @@ class MapViewModel extends BaseViewModel {
         id: id.toString(),
         options: MarkerOptionsMessage(
           position: markerPosition,
-          icon: MarkerIconMessage(
-            path: Constants.icMarker,
+          icon: SvgMarkerIcon(
+            svgPath: Constants.icMarker,
             width: 40,
           ),
         ),
@@ -945,8 +945,8 @@ class MapViewModel extends BaseViewModel {
         id: "ComplianceRoad",
         options: MarkerOptionsMessage(
           position: markerPosition,
-          icon: MarkerIconMessage(
-            path: Constants.icMarker,
+          icon: SvgMarkerIcon(
+            svgPath: Constants.icMarker,
             width: 40,
           ),
         ),
@@ -988,8 +988,8 @@ class MapViewModel extends BaseViewModel {
             id: element.id.toString(),
             options: MarkerOptionsMessage(
               position: element.latLng,
-              icon: MarkerIconMessage(
-                path: iconPath,
+              icon: SvgMarkerIcon(
+                svgPath: iconPath,
                 width: 30,
               ),
             ),
