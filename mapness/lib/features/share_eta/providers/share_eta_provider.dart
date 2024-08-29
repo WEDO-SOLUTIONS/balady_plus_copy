@@ -60,9 +60,9 @@ class ShareEta extends _$ShareEta {
               EtaInfoModel<EtaInfoPayload>(
                 type: EtaType.geolocation,
                 payload: EtaInfoPayload(
-                  period: 3000,
-                  direction: 90,
-                  speed: 59,
+                  period: sendLocationIntervalSeconds * 1000, // in ms
+                  direction: location.heading.toInt(),
+                  speed: location.speed,
                   lat: location.latitude,
                   lon: location.longitude,
                 ),

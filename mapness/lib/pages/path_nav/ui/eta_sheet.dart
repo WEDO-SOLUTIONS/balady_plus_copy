@@ -11,7 +11,6 @@ import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_sound_provider.dart';
-import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
 import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -101,9 +100,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             title: eta != null ? eta.timeEta : '--',
           ),
           contentRows: [
-            ShareEtaBtn(
-              durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
-            ),
+            // ShareEtaBtn(
+            //   durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
+            // ),
             ContentRow(
               onTap: () => const SoundSettingsRoute().push(context),
               options: ContentRowOptions(

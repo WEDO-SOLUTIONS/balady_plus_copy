@@ -430,7 +430,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (position != null) {
       await cameraProvider.animateTo(
         CameraPositionMessage(
-          point: position,
+          point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
           zoom: 17.5,
           tilt: 0,
           bearing: 0,

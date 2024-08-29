@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -152,7 +153,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         if (location != null) {
           ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
         } else {
-          _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
               ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);

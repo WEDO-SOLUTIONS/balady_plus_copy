@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -169,7 +170,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       context: context,
       builder: (context) => ChangePathSheet(
         onConfirm: _onConfirm,
-        myLocation: myLocation,
+        myLocation:
+            myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
         onTap: () {
           // Don't want to pass ref to the sheet, so we have to clear the search results here
           ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
