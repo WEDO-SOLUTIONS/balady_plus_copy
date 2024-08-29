@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/events_logs/controller/logs_controller.dart';
@@ -125,14 +126,10 @@ class AppInterceptors extends Interceptor {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
 
-    String? curl = cURLRepresentation(err.requestOptions);
-    String? responseData = err.response?.data?.toString();
-    LogsViewModel().sendEventFromModel(
-      event: RequestApiModel(
-        nameEvent: EventsName.requestAPIError,
-        message: responseData ?? err.toString(),
-        cUrl: curl,
-      ),
+    sendAPIEvents(
+      nameEvent: EventsName.requestAPISuccessful,
+      responseData:  err.response?.data?.toString() ?? "",
+      requestOptions: err.requestOptions,
     );
 
     switch (err.type) {
@@ -188,15 +185,11 @@ class AppInterceptors extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    String curl = cURLRepresentation(response.requestOptions);
-    String responseData = response.data.toString();
-    if(response.statusCode == 200 || response.statusCode == 201) {
-      LogsViewModel().sendEventFromModel(
-        event: RequestApiModel(
-          nameEvent: EventsName.requestAPISuccessful,
-          message: responseData,
-          cUrl: curl,
-        ),
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      sendAPIEvents(
+        nameEvent: EventsName.requestAPISuccessful,
+        requestOptions: response.requestOptions,
+        responseData:  response.data?.toString() ?? "",
       );
     }
     return handler.next(response);

@@ -32,13 +32,7 @@ import '../../errors/errors_exports.dart'
         NoInternetConnectionException,
         RequestNotFoundException;
 import '../../utils/utils_exports.dart'
-    show
-        ApiHeader,
-        ApiPOST,
-        CommonFunctions,
-        CommonProperties,
-        EnvType,
-        Log;
+    show ApiHeader, ApiPOST, CommonFunctions, CommonProperties, EnvType, Log;
 import '../services_exports.dart' show NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
@@ -66,10 +60,9 @@ class WebService {
     );
 
     dio.interceptors.add(AppInterceptors());
-    dio.interceptors.add(
-        AppCertificatePinningInterceptor(allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,callFollowingErrorInterceptor: true)
-    );
-
+    dio.interceptors.add(AppCertificatePinningInterceptor(
+        allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,
+        callFollowingErrorInterceptor: true));
   }
 
   WebService.newDio({
@@ -88,23 +81,23 @@ class AppCertificatePinningInterceptor extends Interceptor {
     int timeout = 0,
     this.callFollowingErrorInterceptor = false,
   })  : _allowedSHAFingerprints = allowedSHAFingerprints != null
-      ? allowedSHAFingerprints
-      : <String>[],
+            ? allowedSHAFingerprints
+            : <String>[],
         _timeout = timeout;
-
 
   @override
   Future onRequest(
-      RequestOptions options,
-      RequestInterceptorHandler handler,
-      ) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     try {
       // iOS bug: Alamofire is failing to return parallel requests for certificate validation
       if (Platform.isIOS && secure != null) {
         await secure;
       }
 
-      if(options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) == true) {
+      if (options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) ==
+          true) {
         var baseUrl = options.baseUrl;
 
         if (options.path.contains('http') || options.baseUrl.isEmpty) {
@@ -129,16 +122,13 @@ class AppCertificatePinningInterceptor extends Interceptor {
             DioException(
                 requestOptions: options,
                 error: CertificateNotVerifiedException(),
-                type: DioExceptionType.badCertificate
-            ),
+                type: DioExceptionType.badCertificate),
             callFollowingErrorInterceptor,
           );
         }
+      } else {
+        return super.onRequest(options, handler);
       }
-      else
-        {
-          return super.onRequest(options, handler);
-        }
     } on Exception catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -157,10 +147,9 @@ class AppCertificatePinningInterceptor extends Interceptor {
 
       handler.reject(
         DioException(
-          requestOptions: options,
-          error: error2,
-          type: DioExceptionType.badCertificate
-        ),
+            requestOptions: options,
+            error: error2,
+            type: DioExceptionType.badCertificate),
         callFollowingErrorInterceptor,
       );
     }
@@ -224,18 +213,23 @@ class AppInterceptors extends Interceptor {
         options.uri.toString().toLowerCase().contains("license/permits") ||
         options.uri.toString().toLowerCase().contains("send-to-new-owner") ||
         options.uri.toString().toLowerCase().contains("selected/permits") ||
-        options.uri.toString().toLowerCase().contains("selected-permits/by-new-owner") ||
+        options.uri
+            .toString()
+            .toLowerCase()
+            .contains("selected-permits/by-new-owner") ||
         options.uri.toString().toLowerCase().contains("transfer/shop-info") ||
-        options.uri.toString().toLowerCase().contains("transfer/shop-ownership-info")||
-       options.uri.toString().toLowerCase().contains("transfer/attachments")||
-        options.uri.toString().toLowerCase().contains("submit/by-new-owner")||
-        options.uri.toString().toLowerCase().contains("accept/by-new-owner")||
-        options.uri.toString().toLowerCase().contains("reject/by-new-owner")||
-        options.uri.toString().toLowerCase().contains("transfer/upload-attachment")
-
-
-
-    ) {
+        options.uri
+            .toString()
+            .toLowerCase()
+            .contains("transfer/shop-ownership-info") ||
+        options.uri.toString().toLowerCase().contains("transfer/attachments") ||
+        options.uri.toString().toLowerCase().contains("submit/by-new-owner") ||
+        options.uri.toString().toLowerCase().contains("accept/by-new-owner") ||
+        options.uri.toString().toLowerCase().contains("reject/by-new-owner") ||
+        options.uri
+            .toString()
+            .toLowerCase()
+            .contains("transfer/upload-attachment")) {
       options.headers.putIfAbsent(ApiHeaders.xSubmitterRelation,
           () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
     }
@@ -276,7 +270,6 @@ class AppInterceptors extends Interceptor {
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
 
-
     options.headers.removeWhere((key, value) => key == "requiresToken");
     //if (options.headers['Authorization'] == null) {
 
@@ -287,14 +280,10 @@ class AppInterceptors extends Interceptor {
   void onError(DioError err, ErrorInterceptorHandler handler) {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
-    String? curl = cURLRepresentation(err.requestOptions);
-    String? responseData = err.response?.data?.toString();
-    LogsViewModel().sendEventFromModel(
-      event: RequestApiModel(
-        nameEvent: EventsName.requestAPIError,
-        message: responseData ?? err.toString(),
-        cUrl: curl,
-      ),
+    sendAPIEvents(
+      nameEvent: EventsName.requestAPISuccessful,
+      responseData:  err.response?.data?.toString() ?? "",
+      requestOptions: err.requestOptions,
     );
 
     switch (err.type) {
@@ -348,7 +337,6 @@ class AppInterceptors extends Interceptor {
         throw NoInternetConnectionException(err.requestOptions);
         break;
       case DioErrorType.unknown:
-
         throw BadRequestException(err.requestOptions, err.response);
 
       default:
@@ -361,15 +349,11 @@ class AppInterceptors extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    String curl = cURLRepresentation(response.requestOptions);
-    String responseData = response.data.toString();
-    if(response.statusCode == 200 || response.statusCode == 201) {
-      LogsViewModel().sendEventFromModel(
-        event: RequestApiModel(
-          nameEvent: EventsName.requestAPISuccessful,
-          message: responseData,
-          cUrl: curl,
-        ),
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      sendAPIEvents(
+        nameEvent: EventsName.requestAPISuccessful,
+        requestOptions: response.requestOptions,
+        responseData:  response.data?.toString() ?? "",
       );
     }
     return handler.next(response);
@@ -379,7 +363,6 @@ class AppInterceptors extends Interceptor {
 
   bool get mounted => true;
 }
-
 
 // need Add next Headers
 /*
@@ -401,3 +384,33 @@ class ApiHeaders {
   static const xSubmitterRelation = "x-submitter-relation";
 }
 
+void sendAPIEvents({
+  required String nameEvent,
+  required String responseData,
+  required RequestOptions requestOptions,
+}) {
+  try {
+    String requestData = requestOptions.data?.toString() ?? "";
+    LogsViewModel().sendEventFromModel(
+      event: RequestApiModel(
+        nameEvent: EventsName.requestAPISuccessful,
+        message: responseData.length > 1024
+            ? responseData.substring(0, 1024)
+            : responseData,
+        url: requestOptions.baseUrl + requestOptions.path,
+        body: requestData.length > 1024
+            ? requestData.substring(0, 1024)
+            : requestData,
+        verifyingKEY: requestOptions.headers["verifyingKEY"] ?? "",
+      ),
+    );
+  } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+}

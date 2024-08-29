@@ -70,7 +70,7 @@ class _RemoteConfig {
 
   static final uxCamKey = _initValues<String>(
     devVal: "",
-    stgVal: "",
+    stgVal: "2w1otnta9bvvhzo",
     preVal: "3i45abbyrbljp32",
     prodVal: "2w1otnta9bvvhzo",
     urbiPreVal: "",

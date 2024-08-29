@@ -46,6 +46,7 @@ class LogsViewModel {
     }
   }
 
+
   void timeEventFromModel({required EventModel event}) async {
     mixpanel.timeEvent(event.nameEvent);
   }
