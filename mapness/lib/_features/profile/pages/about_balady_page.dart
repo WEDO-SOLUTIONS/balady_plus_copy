@@ -64,7 +64,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                 colorEnabled: context.color.textAndIconsStatusAccent,
                 leading: ActionModel(
                   onPressed: () => context.pop(),
-                  icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                  icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
               body: ListView(

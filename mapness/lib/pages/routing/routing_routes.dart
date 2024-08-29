@@ -115,10 +115,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                   child: Row(
                     children: <Widget>[
                       AppButton(
-                        primaryIcon: switch (Directionality.of(context)) {
-                          TextDirection.ltr => SystemIcons.arrowLeft,
-                          TextDirection.rtl => SystemIcons.arrowRight
-                        },
+                        primaryIcon: SystemIcons.arrowLeft,
                         buttonColorScheme: ButtonColorScheme.tertiary,
                         onTap: _onClose,
                       ),
