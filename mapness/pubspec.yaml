@@ -45,7 +45,7 @@ dependencies:
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.0.4
+    version: ^0.0.4    
 
   urbi_utils:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -96,7 +96,7 @@ dependencies:
   flutter_uxcam: ^2.4.7
   dio_http_cache: ^0.3.0
   sliver_tools: ^0.2.12
-  json_annotation: ^4.8.1
+  json_annotation: ^4.9.0
   photo_view: ^0.14.0
   flutter_staggered_grid_view: ^0.7.0
   app_links: ^3.5.0
@@ -112,6 +112,12 @@ dependencies:
   add_2_calendar: ^2.2.5
   flutter_bloc: ^8.1.6
   mocktail: ^1.0.0
+  freezed_annotation: ^2.4.3
+  freezed: ^2.5.2
+  flutter_hooks: ^0.20.5
+  hooks_riverpod: ^2.4.1
+  http: ^1.1.2
+  image: ^4.2.0
 
 dependency_overrides:
   geolocator_android: ^4.2.2

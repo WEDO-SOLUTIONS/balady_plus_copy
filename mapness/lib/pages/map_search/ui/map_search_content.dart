@@ -14,6 +14,7 @@ import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
@@ -153,6 +154,14 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
             results: results,
             scrollController: widget.scrollController,
           ),
+        ),
+      ),
+      failure: (query, errorMessage) => SliverToBoxAdapter(
+        child: BaseErrorWidget(
+          errorLabel: errorMessage,
+          onRetry: () {
+            ref.read(searchProvider(scope.value).notifier).searchByText(query);
+          },
         ),
       ),
     );

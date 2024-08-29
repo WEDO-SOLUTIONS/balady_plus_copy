@@ -327,18 +327,31 @@ class EntranceInfoMessage {
 
 enum ObjectTypeMessage {
   admDiv,
+  admDivCity,
+  admDivCountry,
+  admDivDistrict,
+  admDivDistrictArea,
+  admDivDivision,
+  admDivLivingArea,
+  admDivPlace,
+  admDivRegion,
+  admDivSettlement,
   attraction,
   branch,
   building,
   coordinates,
   crossroad,
+  gate,
+  kilometerRoadSign,
   parking,
   road,
   route,
   station,
   stationEntrance,
+  stationMetro,
+  stationPlatform,
   street,
-  unknown
+  unknown;
 }
 
 class ObjectTypeItemMessage {
@@ -596,10 +609,13 @@ class MarkerTextStyleMessage {
   final String? fontName;
 }
 
+/// Don't use this class directly. Use [SvgMarkerIcon], [PngMarkerIcon], [PngBytesMarkerIcon] instead.
 class MarkerIconMessage {
-  MarkerIconMessage(this.path, this.width, this.iconMapDirection, this.iconOpacity);
+  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection, this.iconOpacity, this.pngData, this.pngPath);
 
-  final String path;
+  final String? svgPath;
+  final Uint8List? pngData;
+  final String? pngPath;
   final double width;
   final double? iconOpacity;
   final MarkerAzimuthMessage? iconMapDirection;
@@ -808,25 +824,39 @@ class SuggestHandlerMessage {
 }
 
 enum SuggestedTypeMessage {
-  admDiv,
+  admDivCity,
+  admDivCountry,
+  admDivDistrict,
+  admDivDistrictArea,
+  admDivDivision,
+  admDivLivingArea,
+  admDivPlace,
+  admDivRegion,
+  admDivSettlement,
   attraction,
   attribute,
   branch,
   building,
   coordinates,
   crossroad,
-  districtArea,
+  kilometerRoadSign,
+  marketAttribute,
+  marketBrand,
+  marketCategory,
+  marketSuggestorCategory,
+  metaRubric,
   org,
-  orgCategory,
   parking,
-  region,
   road,
   route,
+  routeType,
+  rubric,
   station,
   stationEntrance,
+  stationMetro,
   street,
   text,
-  unknown
+  unknown,
 }
 
 class MarkedUpTextSpanMessage {
@@ -1075,12 +1105,6 @@ enum SoundToggleType {
   all,
 }
 
-enum AudioVolumeMessage {
-  standard,
-  low,
-  minimal,
-}
-
 /// Settings for better route searching
 /// [routeSearchDelay] - delay (in seconds) before searching for alternative routes when starting a trip on a route or after switching
 /// to another route. Must be not less than 5 seconds
@@ -1298,6 +1322,9 @@ abstract class MapApi {
   void removePolygon(String id, MapObjectManagerMessage? manager);
 
   @async
+  void onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy);
+
+  @async
   void removeAllPolygons(MapObjectManagerMessage? manager);
 
   @async
@@ -1320,9 +1347,6 @@ abstract class MapApi {
 
   @async
   void setHighlighted(List<DgisObjectIdMessage> objectIds);
-
-  @async
-  void onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy);
 
   @async
   void addPanoramasMarkers(AddMarkersWithPhotoMessage message);
@@ -1409,7 +1433,7 @@ abstract class MapApi {
   void muteOtherSounds(bool mute);
 
   @async
-  void setNavigatorVolume(AudioVolumeMessage volume);
+  void setNavigatorVolume(int volume);
 
   @async
   void onTrafficAndParkingAttached();

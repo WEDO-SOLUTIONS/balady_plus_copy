@@ -62,8 +62,8 @@ class DashboardControlModel(
         )
     }
 
-    fun setNavigatorVolume(volume: Messages.AudioVolumeMessage) {
-        this.navigationManager.soundNotificationSettings.notificationVolume = ru.dgis.sdk.navigation.AudioVolume.valueOf(volume.name)
+    fun setNavigatorVolume(volume: Int) {
+        this.navigationManager.soundNotificationSettings.notificationVolume = volume
     }
 
     fun muteOtherSounds(mute: Boolean) {

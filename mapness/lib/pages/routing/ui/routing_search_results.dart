@@ -44,7 +44,8 @@ class RoutingSearchResults extends ConsumerWidget {
       itemBuilder: (context, item) => SearchItem(
         result: item,
         language: language,
-        myLocation: myLocation,
+        myLocation:
+            myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
         onTap: () {
           Metrics.logEventAdvanced(MetricsConstants.routesKeys.searchElement,
               group: MetricsConstants.routesTag,

@@ -19,10 +19,13 @@ import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CalloutVisualizationMode
 import ru.dgis.sdk.map.CameraBehaviour
+import ru.dgis.sdk.map.GraphicsPreset
 import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.map.MyLocationControllerSettings
 import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteMapObject
+import ru.dgis.sdk.map.RouteMapObjectDisplayFlag
 import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.Tilt
 import ru.dgis.sdk.map.calcPosition
@@ -31,6 +34,7 @@ import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.routing.TrafficRoute
+import java.util.EnumSet
 import ru.dgis.sdk.Context as SdkContext
 
 class NavigationHandler(
@@ -76,7 +80,10 @@ class NavigationHandler(
         navigationView.navigationManager = navigationManager
 
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        navigationManager.routeSourceSettings.calloutVisualizationMode = CalloutVisualizationMode.MULTIPLE_ROUTES
+        navigationManager.routeSourceSettings.calloutVisualizationMode =
+            CalloutVisualizationMode.MULTIPLE_ROUTES
+        navigationManager.routeMapSettings.onRouteDisplayFlags.add(RouteMapObjectDisplayFlag.IMMERSIVE_ROUTE_PARTS)
+
 
         dashboardControlModel = DashboardControlModel(
             navigationManager.uiModel,
@@ -86,21 +93,22 @@ class NavigationHandler(
 
         stateClosable = navigationManager.uiModel.stateChannel.connect(::stateChannelListener)
         routeInfoCloseable = navigationManager.uiModel.routeChannel.connect(::routeInfoListener)
-        betterRouteCloseable = navigationManager.uiModel.betterRouteChannel.connect(::betterRouteListener)
+        betterRouteCloseable =
+            navigationManager.uiModel.betterRouteChannel.connect(::betterRouteListener)
 
         locationSource = MyLocationMapObjectSource(
             context = sdkContext,
-            controller = navigationManager.mapLocationController.myLocationIndicatorController
+            controllerSettings = MyLocationControllerSettings()
         )
     }
 
     fun setupCamera(speedRangeZoom: Messages.SpeedRangeZoom) {
-        this.prevLocationSource = this.map.sources.first { it is MyLocationMapObjectSource } as? MyLocationMapObjectSource
+        this.prevLocationSource =
+            this.map.sources.first { it is MyLocationMapObjectSource } as? MyLocationMapObjectSource
         if (this.prevLocationSource != null) {
             map.removeSource(this.prevLocationSource!!)
         }
         map.addSource(locationSource)
-
         prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
@@ -109,7 +117,10 @@ class NavigationHandler(
         navigationManager.mapFollowController.setFollow(true)
         navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = listOf(
             SpeedRangeToStyleZoom(
-                range = SpeedRange(minSpeed = speedRangeZoom.minSpeedRange, maxSpeed = speedRangeZoom.maxSpeedRange), 
+                range = SpeedRange(
+                    minSpeed = speedRangeZoom.minSpeedRange,
+                    maxSpeed = speedRangeZoom.maxSpeedRange
+                ),
                 minDistanceToManeuver = RouteDistance(millimeters = speedRangeZoom.routeDistanceMillimeters.toLong()),
                 maxDistanceToManeuver = RouteDistance(millimeters = speedRangeZoom.routeDistanceMillimeters.toLong()),
                 styleZoom = StyleZoom(value = speedRangeZoom.styleZoomValue.toFloat())
@@ -149,6 +160,12 @@ class NavigationHandler(
         dashboardControlModel.toggleVoiceInstruction(toggleType)
     }
 
+    fun setNavigatorVoice(id: String, result: Messages.Result<Void>?) {
+        navigationManager.voiceSelector.voice =
+            voicesManager.voices.firstOrNull { it.id == id }?.navigationVoice
+        result?.success(null)
+    }
+
     fun toggleRoadCameras(roadCameras: Boolean) {
         dashboardControlModel.toggleRoadCameras(roadCameras)
     }
@@ -157,7 +174,7 @@ class NavigationHandler(
         dashboardControlModel.toggleOverSpeeding(overSpeeding)
     }
 
-    fun setNavigatorVolume(volume: Messages.AudioVolumeMessage) {
+    fun setNavigatorVolume(volume: Int) {
         dashboardControlModel.setNavigatorVolume(volume)
     }
 
@@ -165,17 +182,16 @@ class NavigationHandler(
         dashboardControlModel.muteOtherSounds(mute)
     }
 
-    fun setNavigatorVoice(id: String, result: Result<Void>?) {
-        navigationManager.voiceSelector.voice = voicesManager.voices.firstOrNull { it.id == id }?.navigationVoice
-        result?.success(null)
-    }
-
     fun saveNavigationState(result: Result<ByteArray>?)  {
         val state = PackedNavigationState.fromModel(model = this.navigationManager.uiModel)
         result?.success(state.toBytes())
     }
 
-    fun restoreNavigationState(state: ByteArray, speedRangeZoom: Messages.SpeedRangeZoom, result: Result<Void>?) {
+    fun restoreNavigationState(
+        state: ByteArray,
+        speedRangeZoom: Messages.SpeedRangeZoom,
+        result: Messages.Result<Void>?
+    ) {
         try {
             val state = PackedNavigationState.fromBytes(state)
             this.startNavigation(
@@ -259,26 +275,29 @@ class NavigationHandler(
         when (state) {
             State.DISABLED -> {
                 eventSink.success(
-                        mapOf(
-                                "event" to Event.navigationEvent.name,
-                                "state" to Event.stateDisabled
-                        )
+                    mapOf(
+                        "event" to Event.navigationEvent.name,
+                        "state" to Event.stateDisabled
+                    )
                 )
                 isNavigating = false
             }
+
             State.FINISHED -> {
                 eventSink.success(
-                        mapOf(
-                                "event" to Event.navigationEvent.name,
-                                "state" to Event.stateFinished
-                        )
+                    mapOf(
+                        "event" to Event.navigationEvent.name,
+                        "state" to Event.stateFinished
+                    )
                 )
                 stopNavigation()
                 isNavigating = false
             }
+
             State.NAVIGATION -> {
                 isNavigating = true
             }
+
             State.ROUTE_SEARCH -> {
                 isNavigating = true
             }
@@ -309,7 +328,8 @@ class NavigationHandler(
                 it
             ).inSeconds
         }
-        val durationProfit = if (activeRouteDuration != null && betterRouteDuration != null) (activeRouteDuration - betterRouteDuration).toInt() else 0;
+        val durationProfit =
+            if (activeRouteDuration != null && betterRouteDuration != null) (activeRouteDuration - betterRouteDuration).toInt() else 0;
         eventSink.success(
             mapOf(
                 "event" to Event.betterRouteEvent.name,
@@ -321,9 +341,17 @@ class NavigationHandler(
 
     fun betterRouteResponse(response: BetterRouteResponseMessage) {
         when (response) {
-            BetterRouteResponseMessage.ACCEPT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.ACCEPT)
-            BetterRouteResponseMessage.REJECT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.REJECT)
-            BetterRouteResponseMessage.TIMEOUT -> this.navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.TIMEOUT)
+            BetterRouteResponseMessage.ACCEPT -> this.navigationManager.uiModel.betterRouteResponse(
+                BetterRouteResponse.ACCEPT
+            )
+
+            BetterRouteResponseMessage.REJECT -> this.navigationManager.uiModel.betterRouteResponse(
+                BetterRouteResponse.REJECT
+            )
+
+            BetterRouteResponseMessage.TIMEOUT -> this.navigationManager.uiModel.betterRouteResponse(
+                BetterRouteResponse.TIMEOUT
+            )
         }
     }
 
@@ -339,54 +367,57 @@ class NavigationHandler(
     }
 
     fun setBetterRouteSettings(settings: BetterRouteSettingsMessage) {
-        navigationManager.alternativeRoutesProviderSettings.routeSearchDelay = Duration.ofSeconds(settings.routeSearchDelay)
-        navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = Duration.ofSeconds(settings.betterRouteTimeCostThreshold)
-        navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(settings.betterRouteLengthThreshold)
+        navigationManager.alternativeRoutesProviderSettings.routeSearchDelay =
+            Duration.ofSeconds(settings.routeSearchDelay)
+        navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold =
+            Duration.ofSeconds(settings.betterRouteTimeCostThreshold)
+        navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold =
+            RouteDistance(settings.betterRouteLengthThreshold)
     }
 
     fun calcPositionForRoute(
-            options: Messages.CalcPositionOptionsMessage,
-            result: Result<Messages.CameraPositionMessage>?
+        options: Messages.CalcPositionOptionsMessage,
+        result: Result<Messages.CameraPositionMessage>?
     ) {
         val geometries = navigationManager.uiModel.route.route.geometry.entries
-                .map { entry ->
-                    PointGeometry(entry.value)
-                }
+            .map { entry ->
+                PointGeometry(entry.value)
+            }
         val geometry = ComplexGeometry(geometries)
 
         val cameraPosition = calcPosition(
-                camera = map.camera,
-                geometry = geometry,
-                screenArea = options.screenArea?.let {
-                    Padding(
-                            left = it.leftPadding.toInt(),
-                            top = it.topPadding.toInt(),
-                            right = it.rightPadding.toInt(),
-                            bottom = it.bottomPadding.toInt()
-                    )
-                },
-                tilt = options.tilt?.let {
-                    Tilt(it.toFloat())
-                },
-                bearing = options.bearing?.let {
-                    Bearing(it)
-                },
-                size = options.size?.let {
-                    ScreenSize(
-                            width = it.width.toInt(),
-                            height = it.height.toInt()
-                    )
-                }
+            camera = map.camera,
+            geometry = geometry,
+            screenArea = options.screenArea?.let {
+                Padding(
+                    left = it.leftPadding.toInt(),
+                    top = it.topPadding.toInt(),
+                    right = it.rightPadding.toInt(),
+                    bottom = it.bottomPadding.toInt()
+                )
+            },
+            tilt = options.tilt?.let {
+                Tilt(it.toFloat())
+            },
+            bearing = options.bearing?.let {
+                Bearing(it)
+            },
+            size = options.size?.let {
+                ScreenSize(
+                    width = it.width.toInt(),
+                    height = it.height.toInt()
+                )
+            }
         )
 
         result?.success(
-                Messages.CameraPositionMessage
-                        .Builder()
-                        .setPoint(cameraPosition.point.toMessage())
-                        .setZoom(cameraPosition.zoom.value.toDouble())
-                        .setTilt(cameraPosition.tilt.value.toDouble())
-                        .setBearing(cameraPosition.bearing.value)
-                        .build()
+            Messages.CameraPositionMessage
+                .Builder()
+                .setPoint(cameraPosition.point.toMessage())
+                .setZoom(cameraPosition.zoom.value.toDouble())
+                .setTilt(cameraPosition.tilt.value.toDouble())
+                .setBearing(cameraPosition.bearing.value)
+                .build()
         )
     }
 }

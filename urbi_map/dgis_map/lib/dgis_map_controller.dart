@@ -504,6 +504,14 @@ class DgisMapController {
   Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) =>
       _instance.toggleVoiceInstruction(toggleType: toggleType);
 
+  /// Used to setup platform. Should be called when permision was granted.
+  /// Does not request permission by itself.
+  Future<void> onLocationPermissionGranted({
+    DesiredAccuracyMessage desiredAccuracy = DesiredAccuracyMessage.low,
+  }) {
+    return _instance.onLocationPermissionGranted(desiredAccuracy);
+  }
+
   /// Controls sounds in navigation.
   Future<void> toggleOverSpeeding({required bool overSpeeding}) =>
       _instance.toggleOverSpeeding(overSpeeding: overSpeeding);
@@ -515,15 +523,7 @@ class DgisMapController {
   Future<void> muteOtherSounds({required bool mute}) => _instance.muteOtherSounds(mute: mute);
 
   /// Set navigator volume.
-  Future<void> setNavigatorVolume({required AudioVolumeMessage volume}) => _instance.setNavigatorVolume(volume: volume);
-
-  /// Used to setup platform. Should be called when permision was granted.
-  /// Does not request permission by itself.
-  Future<void> onLocationPermissionGranted({
-    DesiredAccuracyMessage desiredAccuracy = DesiredAccuracyMessage.low,
-  }) {
-    return _instance.onLocationPermissionGranted(desiredAccuracy);
-  }
+  Future<void> setNavigatorVolume({required int volume}) => _instance.setNavigatorVolume(volume: volume);
 
   /// Add panorama markers to map.
   Future<void> addPanoramasMarkers(List<MarkerWithPhotoMessage> markers) {

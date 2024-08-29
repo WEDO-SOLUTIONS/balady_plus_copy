@@ -71,9 +71,7 @@ class PinnedPlaceCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: NumericBase.$1x,
-                ),
+                const SizedBox(height: NumericBase.$1x),
                 Text(
                   title,
                   textAlign: TextAlign.right,
