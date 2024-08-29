@@ -81,7 +81,7 @@ class SoundSettingsModel {
 @Riverpod(keepAlive: true)
 class SoundSettings extends _$SoundSettings {
   static const _soundToggleTypesList = SoundToggleType.values;
-  static final _promptsVolumeList = AudioVolumeMessage.values.reversed.toList();
+  static final _promptsVolumeList = [10, 30, 60];
 
   @override
   SoundSettingsModel build() {

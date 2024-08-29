@@ -32,13 +32,15 @@ class DgisPluginApi: NSObject, PluginApi {
         let vendorConfigFile = vendorConfigPath.map { File(path: $0) }
         let vendorConfig = vendorConfigPath.flatMap(VendorConfig.from)
         
+        
         SwiftDgisMapPlugin.sdkContext = Container(
             logOptions: logOptions ?? LogOptions(
-                osLogLevel: .warning,
-                customLogLevel: .warning,
+                systemLevel: .warning,
+                customLevel: .warning,
                 customSink: nil
             ),
-            vendorConfigFile: vendorConfigFile
+            httpOptions: HttpOptions(useCache: true),
+            vendorConfig: DGis.VendorConfig.fromFile(VendorConfigFromFile(path: vendorConfigPath ?? ""))
         )
         SwiftDgisMapPlugin.vendorConfig = vendorConfig
     }

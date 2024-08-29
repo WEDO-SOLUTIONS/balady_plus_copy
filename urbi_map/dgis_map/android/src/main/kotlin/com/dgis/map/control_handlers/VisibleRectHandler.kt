@@ -32,7 +32,6 @@ class VisibleRectHandler(
                 "state" to when (state) {
                     CameraState.BUSY -> "busy"
                     CameraState.FLY -> "fly"
-                    CameraState.FOLLOW_POSITION -> "follow"
                     CameraState.FREE -> "free"
                 }
             )
