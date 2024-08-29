@@ -97,7 +97,7 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
             if (!mounted) {
               return;
             }
-            StoriesRoute.openOnboarding(context, onClose: () {
+            StoriesRoute.openRoute(context, onClose: () {
               ref.read(routeOnboardingProvider.notifier).setShown(true);
               _goToPage(selected);
             });
