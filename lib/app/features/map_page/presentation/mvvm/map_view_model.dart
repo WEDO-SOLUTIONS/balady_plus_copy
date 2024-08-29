@@ -437,6 +437,7 @@ class MapViewModel extends BaseViewModel {
         );
       }
     } catch (ex) {
+      await controller.onLocationPermissionGranted();
       await controller.toggleFollowState();
       await controller.setCameraPosition(
         CameraPositionMessage(
@@ -1374,6 +1375,9 @@ class MapViewModel extends BaseViewModel {
   void moveCamera() async {
     try {
       final permission = await Permission.location.request();
+      if (permission.isGranted) {
+        await controller.onLocationPermissionGranted();
+      }
     } catch (ex) {}
     await controller.toggleFollowState();
 
