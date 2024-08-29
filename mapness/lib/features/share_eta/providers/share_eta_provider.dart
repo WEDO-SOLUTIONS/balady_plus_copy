@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
@@ -11,6 +12,7 @@ import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
 import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/deeplink_functionds.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -41,14 +43,14 @@ class ShareEta extends _$ShareEta {
 
         final state = EtaStreamStorage().state;
 
-        if (state.streamId == null || state.streamToken == null) {
+        if (state.streamId == null || state.streamToken == null || durationInMinutes == null) {
           return;
         }
 
         _shareDialog(
           state.streamToken!,
           state.streamId!,
-          durationInMinutes.toString(),
+          durationInMinutes,
         );
 
         _locationSubscription = Timer.periodic(const Duration(seconds: sendLocationIntervalSeconds), (_) {
@@ -124,8 +126,12 @@ class ShareEta extends _$ShareEta {
     }
   }
 
-  void _shareDialog(String tokenId, String streamId, String durationInMinutes) {
+  void _shareDialog(String tokenId, String streamId, int durationInMinutes) {
     final query = <String, String>{};
+    final context = rootNavigatorKey.currentContext;
+    if (context == null) {
+      return;
+    }
 
     final baseUri = BaldayDeeplink.basePoiUri;
     query[BaldayDeeplink.tokenId] = tokenId;
@@ -134,6 +140,13 @@ class ShareEta extends _$ShareEta {
 
     final shareUrl = BaldayDeeplink.urlWithQuery(baseUri, query);
 
-    Share.share('You can see my live location on Map within $durationInMinutes minutes\n$shareUrl');
+    final inHour = durationInMinutes ~/ 60;
+    final inMinutes = durationInMinutes % 60;
+
+    final duration = inHour > 0
+        ? context.l10n.seeLiveLocationHrMin(inHour.toString(), inMinutes.toString())
+        : context.l10n.seeLiveLocationMin(inMinutes.toString());
+
+    Share.share('$duration\n$shareUrl');
   }
 }

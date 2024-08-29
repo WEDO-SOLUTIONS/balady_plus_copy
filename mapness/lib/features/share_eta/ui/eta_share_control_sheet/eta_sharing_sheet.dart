@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaSharingSheet extends StatelessWidget {
   final VoidCallback onLiveLocationPressed;
@@ -14,14 +15,14 @@ class EtaSharingSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => EtaShareSheet(
-        title: 'Sharing',
+        title: context.l10n.sharing,
         contentBuilder: (context) => [
           ContentRow(
             onTap: onLiveLocationPressed,
             options: ContentRowOptions(
                 dividerEnabled: true,
                 leadingIcon: const PulseIndicator(),
-                title: 'Live location',
+                title: context.l10n.liveLocation,
                 titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
                   color: context.colorsV2.foregroundDefault,
                 )),
@@ -37,7 +38,7 @@ class EtaSharingSheet extends StatelessWidget {
                     BlendMode.srcIn,
                   ),
                 ),
-                title: 'Current location',
+                title: context.l10n.currentLocation,
                 titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
                   color: context.colorsV2.foregroundDefault,
                 )),

@@ -10,6 +10,7 @@ import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_inprogress_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaTimerControl extends ConsumerWidget {
   const EtaTimerControl({super.key});
@@ -21,51 +22,12 @@ class EtaTimerControl extends ConsumerWidget {
     final diffInHours = timer ~/ 60;
     final diffInMinutes = timer % 60;
 
-    //TODO(scroollocker): localize this string
-    final estimatedTimeString = diffInHours > 0 ? '$diffInHours hr $diffInMinutes min' : '$diffInMinutes min';
+    final estimatedTimeString = diffInHours > 0
+        ? context.l10n.timerHrMin(diffInHours.toString(), diffInMinutes.toString())
+        : context.l10n.timerMin(diffInMinutes.toString());
 
     return MapButton(
       onTap: () async {
-        // final closestPoint = GeoPointWithElevationMessage(
-        //   latitude: 24.715817,
-        //   longitude: 46.671102,
-        //   elevation: 0,
-        // );
-        // final settings = MapObjectManagerSettings.myLocation();
-        // final mapObjectManager = ref.watch(
-        //   mapObjectManagerProvider(
-        //     named: settings.name,
-        //     layerId: settings.layerId,
-        //   ).notifier,
-        // );
-        // await mapObjectManager.removeAllMarkers();
-        // final marker = Marker(
-        //   id: 'PIN-MARKER',
-        //   options: MarkerOptionsMessage(
-        //     position: closestPoint,
-        //     icon: PngBytesMarkerIcon(
-        //       pngData: img.encodePng(await processImage()),
-        //       width: 48,
-        //     ),
-        //     anchor: MarkerAnchorMessage(x: 0.5, y: 1),
-        //     animatedAppearance: true,
-        //     zIndex: 50,
-        //   ),
-        // );
-
-        // final read = ref.read(selectedMarkerProvider.notifier);
-        // await read.removeAllMarkers();
-
-        // await mapObjectManager.addMarker(marker);
-
-        // await ref.read(cameraPositionProvider.notifier).animateTo(
-        //       CameraPositionMessage(
-        //         point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
-        //         zoom: 16,
-        //         tilt: 0,
-        //         bearing: 0,
-        //       ),
-        //     );
         _continueShared(context, ref);
       },
       child: Padding(
@@ -91,7 +53,9 @@ class EtaTimerControl extends ConsumerWidget {
     final hourLeft = timerTime ~/ 60;
     final leftMinutes = timerTime % 60;
 
-    final left = hourLeft > 0 ? '$hourLeft hr $leftMinutes min left' : '$leftMinutes min left';
+    final left = hourLeft > 0
+        ? context.l10n.hrMinLeft(hourLeft.toString(), leftMinutes.toString())
+        : context.l10n.minLeft(leftMinutes.toString());
 
     showModalBottomSheet(
       backgroundColor: Colors.transparent,

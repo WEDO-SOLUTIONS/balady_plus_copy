@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 
 class EtaShareExpired extends StatelessWidget {
   const EtaShareExpired({super.key});
@@ -52,14 +54,14 @@ class EtaShareExpired extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.$2x),
             Text(
-              'Location unavailable',
+              context.l10n.locationUnavailable,
               style: context.textStyleV3.h3SemiBold.copyWith(
                 color: context.colorsV2.foregroundDefault,
               ),
             ),
             const SizedBox(height: Spacing.$3x),
             Text(
-              'The time for which the location was\nbroadcast has expired',
+              context.l10n.locationBroadcastExpired.multilines,
               textAlign: TextAlign.center,
               style: context.textStyleV3.bodyLargeRegular.copyWith(
                 color: context.colorsV2.foregroundSoft,

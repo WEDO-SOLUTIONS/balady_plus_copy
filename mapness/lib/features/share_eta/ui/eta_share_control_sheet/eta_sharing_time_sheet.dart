@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/features/share_eta/entities/share_eta_time_type.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaSharingTimeSheet extends HookWidget {
   final ValueChanged<ShareEtaTimeType> onConfirmTap;
@@ -22,8 +23,8 @@ class EtaSharingTimeSheet extends HookWidget {
     );
 
     return EtaShareSheet(
-      title: 'Share live location',
-      confirmBtnTitle: 'Share',
+      title: context.l10n.shareLiveLocation,
+      confirmBtnTitle: context.l10n.share,
       onConfirmTap: () => onConfirmTap(selectedTimeType.value),
       contentBuilder: (context) => [
         ContentRow(
@@ -36,7 +37,7 @@ class EtaSharingTimeSheet extends HookWidget {
                   ? AppIcons(size: 24, iconData: SystemIcons.checkmark, color: context.colorsV2.accentDefault)
                   : empty,
             ),
-            title: 'For 15 minutes',
+            title: context.l10n.for15Minutes,
             titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
               color: context.colorsV2.foregroundDefault,
             ),
@@ -52,7 +53,7 @@ class EtaSharingTimeSheet extends HookWidget {
                   ? AppIcons(size: 24, iconData: SystemIcons.checkmark, color: context.colorsV2.accentDefault)
                   : empty,
             ),
-            title: 'For 1 hour',
+            title: context.l10n.for1Hour,
             titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
               color: context.colorsV2.foregroundDefault,
             ),
@@ -67,7 +68,7 @@ class EtaSharingTimeSheet extends HookWidget {
                   ? AppIcons(size: 24, iconData: SystemIcons.checkmark, color: context.colorsV2.accentDefault)
                   : empty,
             ),
-            title: 'For 8 hours',
+            title: context.l10n.for8Hours,
             titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
               color: context.colorsV2.foregroundDefault,
             ),

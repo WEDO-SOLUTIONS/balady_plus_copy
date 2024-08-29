@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
-import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
@@ -28,7 +27,7 @@ class EtaService extends _$EtaService {
 
     _baseUrl = env.shareEtaApi;
 
-    _dio = ref.read(baseDioProvider);
+    _dio = Dio();
 
     if (_dio != null && token.isNotEmpty) {
       _dio!.options.headers['Authorization'] = 'Bearer $token';
@@ -49,6 +48,9 @@ class EtaService extends _$EtaService {
       final response = await _dio!.post(
         '$_baseUrl/v1/geolocation/stream',
         data: payload.toJson(),
+        options: Options(
+          headers: {},
+        ),
       );
 
       if (response.statusCode == 200) {

@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaInprogressSheet extends StatelessWidget {
   final VoidCallback onShareMorePressed;
@@ -15,7 +16,7 @@ class EtaInprogressSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => EtaShareSheet(
-        title: 'Live location is sharing',
+        title: context.l10n.liveLocationIsSharing,
         timeLeft: timeLeft,
         subtitleBuilder: (context, timeLeft) => Row(
           children: [
@@ -38,7 +39,7 @@ class EtaInprogressSheet extends StatelessWidget {
                 vertical: Spacing.$3x,
               ),
               dividerEnabled: true,
-              title: 'Share more',
+              title: context.l10n.shareMore,
               titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
                 color: context.colorsV2.foregroundDefault,
               ),
@@ -52,7 +53,7 @@ class EtaInprogressSheet extends StatelessWidget {
                 horizontal: Spacing.$4x,
                 vertical: Spacing.$3x,
               ),
-              title: 'Stop sharing',
+              title: context.l10n.stopSharing,
               titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
                 color: context.colorsV2.foregroundDefault,
               ),
