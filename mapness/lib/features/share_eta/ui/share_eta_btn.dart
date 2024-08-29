@@ -23,7 +23,7 @@ class ShareEtaBtn extends HookConsumerWidget {
     final wsProvider = ref.read(etaWebsocketProvider.notifier);
     final webSocketStatus = ref.watch(websocketStatusProvider);
 
-    final bool isPulseactive = webSocketStatus;
+    final bool isPulseactive = webSocketStatus.status;
 
     ref.listen(etaServiceProvider, (prev, current) {
       if (current.hasValue && current.value != null && !isPulseactive) {

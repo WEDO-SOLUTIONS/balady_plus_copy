@@ -15,6 +15,8 @@ abstract class WsConfig with _$WsConfig {
     required final int port,
     required final SubscriptionType subscriptionType,
     final String? customPath,
+    final String? estimatedTime,
+    final String? xStreamData,
   }) = _WsConfig;
 
   const WsConfig._();
@@ -22,4 +24,11 @@ abstract class WsConfig with _$WsConfig {
   bool get isCustomSubscription => subscriptionType == SubscriptionType.custom;
 
   bool get hasValidCustomPath => isCustomSubscription && customPath != null;
+
+  DateTime? get dateTimeEstimatedTime {
+    if (estimatedTime == null) {
+      return null;
+    }
+    return DateTime.tryParse(estimatedTime!);
+  }
 }

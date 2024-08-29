@@ -10,21 +10,27 @@ part 'eta_service_provider.g.dart';
 
 @riverpod
 class EtaService extends _$EtaService {
-  late final String _baseUrl;
+  String? _baseUrl;
 
   Dio? _dio;
 
   @override
   Future<EtaStreamInfo?> build() async {
+    await _init();
+    return null;
+  }
+
+  Future<void> _init() async {
     // Get share eta base url
     final env = await ref.read(dgisEnvironmentProvider.future);
     _baseUrl = env.shareEtaApi;
 
-    _dio = ref.watch(baseDioProvider);
-    return null;
+    _dio = ref.read(baseDioProvider);
   }
 
   Future<void> startEtaStream(EtaStreamPayload payload) async {
+    await _init();
+
     if (_dio == null) {
       state = AsyncError(Exception('Dio is not initialized'), StackTrace.current);
       return;
@@ -40,7 +46,8 @@ class EtaService extends _$EtaService {
 
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
-        final etaStreamInfo = EtaStreamInfo.fromJson(data);
+        final etaStreamInfo =
+            EtaStreamInfo.fromJson(data).copyWith(xStreamData: response.headers.map['x-stream-data']?.firstOrNull);
         state = AsyncData(etaStreamInfo);
       } else {
         state = AsyncError(Exception('Failed to start ETA stream'), StackTrace.current);
@@ -51,6 +58,8 @@ class EtaService extends _$EtaService {
   }
 
   Future<void> stopEtaStream(String streamId) async {
+    await _init();
+
     if (_dio == null) {
       state = AsyncError(Exception('Dio is not initialized'), StackTrace.current);
       return;
@@ -75,6 +84,8 @@ class EtaService extends _$EtaService {
   }
 
   Future<void> updateEtaStream() async {
+    await _init();
+
     if (_dio == null) {
       state = AsyncError(Exception('Dio is not initialized'), StackTrace.current);
       return;

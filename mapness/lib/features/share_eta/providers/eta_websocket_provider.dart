@@ -7,6 +7,7 @@ import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
 import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'eta_websocket_provider.g.dart';
@@ -16,7 +17,7 @@ class EtaWebsocket extends _$EtaWebsocket {
   WsConfig? _config;
 
   final defaultConfig = const WsConfig(
-    host: 'api.mapness.com',
+    host: '',
     port: 443,
     token: '',
     streamId: '',
@@ -38,18 +39,25 @@ class EtaWebsocket extends _$EtaWebsocket {
     required String streamId,
     required String token,
     SubscriptionType subscriptionType = SubscriptionType.get,
+    String? estimatedTime,
+    String? xStreamData,
     WsConfig? config,
   }) async {
+    final envProvider = await ref.read(dgisEnvironmentProvider.future);
     _config = config ??
         defaultConfig.copyWith(
           subscriptionType: subscriptionType,
           streamId: streamId,
           token: token,
+          xStreamData: xStreamData,
+          estimatedTime: estimatedTime,
+          host: envProvider.shareEtaApi.replaceAll(RegExp(r'https?://'), ''),
         );
     await _start();
   }
 
   Future<void> stop() async {
+    state = const AsyncValue.data(null);
     await _stop();
   }
 
@@ -81,20 +89,23 @@ class EtaWebsocket extends _$EtaWebsocket {
     final config = _config!;
 
     final baseUrl = Uri(
-      scheme: 'ws',
+      scheme: 'wss',
       host: config.host,
       port: config.port,
       path: _streamPath,
-      queryParameters: {
-        'streamId': config.streamId,
-      },
+      // We provide the streamId only for the subscription type
+      queryParameters: config.subscriptionType == SubscriptionType.get
+          ? {
+              'streamId': config.streamId,
+            }
+          : null,
     );
 
     try {
-      _ws = await WebSocket.connect(baseUrl.toString(), headers: {
-        'Connection': 'upgrade',
-        'Upgrade': 'websocket',
+      final baseUrlString = baseUrl.toString();
+      _ws = await WebSocket.connect(baseUrlString, headers: {
         'GeoStreamingToken': config.token,
+        'X-Stream-Data': config.xStreamData,
       });
       _subscription = _ws?.listen(
         (data) {
@@ -130,7 +141,14 @@ class EtaWebsocket extends _$EtaWebsocket {
         onError: (error) => _stop(),
       );
 
-      ref.read(websocketStatusProvider.notifier).setConnected();
+      ref.read(websocketStatusProvider.notifier).setConnected(
+            streamId: config.streamId,
+            streamToken: config.token,
+          );
+      final estimateTime = config.dateTimeEstimatedTime;
+      if (estimateTime != null) {
+        ref.read(websocketStatusProvider.notifier).setEstimatedTime(estimateTime);
+      }
     } catch (e, s) {
       state = AsyncError(e, s);
       return;

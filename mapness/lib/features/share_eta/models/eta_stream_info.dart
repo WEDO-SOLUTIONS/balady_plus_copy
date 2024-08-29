@@ -12,6 +12,7 @@ abstract class EtaStreamInfo with _$EtaStreamInfo {
     @JsonKey(name: 'stream_token') final String? streamToken,
     @JsonKey(name: 'finishes_at') final String? finishesAt,
     @JsonKey(name: 'duration_minutes') final int? durationMinutes,
+    @JsonKey(includeToJson: false, includeFromJson: false) final String? xStreamData,
   }) = _EtaStreamInfo;
 
   factory EtaStreamInfo.fromJson(Map<String, dynamic> json) => _$EtaStreamInfoFromJson(json);

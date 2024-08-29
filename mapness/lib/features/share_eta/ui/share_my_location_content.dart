@@ -11,6 +11,9 @@ import 'package:mapness/_features/poi_card/my_location_poi/my_location_image.dar
 import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/_features/poi_card/provider/poi_my_location_provider.dart';
 import 'package:mapness/_features/poi_card/ui_kit_tmp/poi_header.dart';
+import 'package:mapness/features/share_eta/entities/share_eta_time_type.dart';
+import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_inprogress_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
@@ -20,6 +23,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
 
@@ -55,6 +59,26 @@ class ShareMyLocationContent extends HookConsumerWidget {
     final text = value?.address ?? '${closestPoint?.latitude}, ${closestPoint?.longitude}';
 
     final sheetPadding = isAuthorized ? 0.27 : 0.25;
+
+    ref.listen(etaServiceProvider, (_, next) {
+      if (next.hasError) {
+        LoadingOverlay.of(context).endLoading();
+        _showEtaExpired(context);
+      } else if (next.hasValue && next.value != null) {
+        LoadingOverlay.of(context).endLoading();
+        final streamId = next.value!.streamId;
+        final streamToken = next.value!.streamToken;
+        final finishAt = next.value!.finishesAt;
+        final xStreamData = next.value!.xStreamData;
+
+        if (streamId == null || streamToken == null || finishAt == null || xStreamData == null) {
+          return;
+        }
+
+        ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData, finishAt);
+        context.pop();
+      }
+    });
 
     _cameraAnimation(ref);
 
@@ -117,8 +141,7 @@ class ShareMyLocationContent extends HookConsumerWidget {
                   ),
                 ),
                 MyLocationPoiActions(
-                  onShare: () => _showEtaControlSheet(
-                      context), //() => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
+                  onShare: () => _showEtaControlSheet(context, ref),
                   onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
                 ),
               ],
@@ -169,33 +192,33 @@ class ShareMyLocationContent extends HookConsumerWidget {
     }
   }
 
-  void _showEtaControlSheet(BuildContext context) {
+  void _showEtaControlSheet(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (context) => EtaSharingSheet(
         onCurrentLocationPressed: () {
-          // Show share dialog
-          // ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
+          context.pop();
+          ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint);
         },
         onLiveLocationPressed: () {
           context.pop();
-          _showEtaExpired(context);
-          // _showEtaTimeSheet(context);
+          _showEtaTimeSheet(context, ref);
         },
       ),
     );
   }
 
-  void _showEtaTimeSheet(BuildContext context) {
+  void _showEtaTimeSheet(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (context) => EtaSharingTimeSheet(
         onConfirmTap: (v) {
-          // show share dialog
+          LoadingOverlay.of(context).startLoading();
+          ref.read(shareEtaProvider.notifier).startSharing(v.durationInMinutes);
         },
       ),
     );
