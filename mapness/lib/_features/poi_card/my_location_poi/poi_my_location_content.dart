@@ -1,4 +1,4 @@
-part of 'content_my_location.dart';
+part of 'content_deeplink.dart';
 
 class PoiMyLocationContent extends StatelessWidget {
   final Function()? onTapClose;

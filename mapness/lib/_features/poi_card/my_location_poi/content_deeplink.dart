@@ -26,19 +26,15 @@ import '../ui_kit_tmp/poi_header.dart';
 
 part 'poi_deeplink_location_action.dart';
 part 'poi_deeplink_location_content.dart';
-part 'poi_my_location_action.dart';
 part 'poi_my_location_content.dart';
 
-enum LocationType { myLocation, deeplinkLocation }
-
-class ContentMyLocation extends ConsumerWidget {
+class ContentDeeplink extends ConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
-  final LocationType locationType;
 
-  const ContentMyLocation({
+  const ContentDeeplink({
     required this.closestPoint,
-    required this.locationType,
+    // required this.locationType,
     this.cameraConfig,
     super.key,
   });
@@ -80,38 +76,24 @@ class ContentMyLocation extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
-                switch (locationType) {
-                  LocationType.myLocation => PoiMyLocationContent(
-                      location: closestPoint!,
-                      onTapClose: () => onClose(context, ref),
-                      data: data,
-                      height: sheetSizes.middleHeight,
-                    ),
-                  LocationType.deeplinkLocation => PoiDeeplinkContent(
-                      location: closestPoint!,
-                      onTapClose: () => onClose(context, ref),
-                      data: data,
-                    )
-                },
-                switch (locationType) {
-                  LocationType.myLocation => MyLocationPoiActions(
-                      onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
-                      onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
-                    ),
-                  LocationType.deeplinkLocation => PoiDeeplinkPersonActions(
-                      onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
-                      onGo: () {
-                        ref
-                            .read(poiCardActionsProvider.notifier)
-                            .goRoute(
-                              startLabel: context.l10n.myLocation,
-                              finishLabel: context.l10n.pointToMap,
-                              finishLocation: closestPoint!,
-                            )
-                            .pushReplacement(context);
-                      },
-                    )
-                }
+                PoiDeeplinkContent(
+                  location: closestPoint!,
+                  onTapClose: () => onClose(context, ref),
+                  data: data,
+                ),
+                PoiDeeplinkPersonActions(
+                  onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
+                  onGo: () {
+                    ref
+                        .read(poiCardActionsProvider.notifier)
+                        .goRoute(
+                          startLabel: context.l10n.myLocation,
+                          finishLabel: context.l10n.pointToMap,
+                          finishLocation: closestPoint!,
+                        )
+                        .pushReplacement(context);
+                  },
+                )
               ],
             ),
           ),
@@ -193,7 +175,7 @@ class ContentMyLocation extends ConsumerWidget {
 
     return PoiSheetSizes.myLocation(
       bottomPadding: MediaQuery.of(context).viewPadding.bottom,
-      isAuthorized: locationType != LocationType.deeplinkLocation && isAuthorized,
+      isAuthorized: false,
       isAddressInTwoLines: twoLineAddress,
       isTitleInTwoLine: twoLineTitle,
     );

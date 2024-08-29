@@ -1,0 +1,225 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/_features/poi_card/my_location_poi/my_location_image.dart';
+import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
+import 'package:mapness/_features/poi_card/provider/poi_my_location_provider.dart';
+import 'package:mapness/_features/poi_card/ui_kit_tmp/poi_header.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_inprogress_sheet.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_sheet.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
+import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
+
+class ShareMyLocationContent extends HookConsumerWidget {
+  final LatLng? closestPoint;
+  final PoiCameraConfig? cameraConfig;
+
+  const ShareMyLocationContent({
+    super.key,
+    this.closestPoint,
+    this.cameraConfig,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _animationController = useAnimationController(
+      duration: const Duration(milliseconds: 300),
+    );
+
+    final data = ref.watch(
+      poiMyLocationProvider(
+        latitude: closestPoint!.latitude,
+        longitude: closestPoint!.longitude,
+      ),
+    );
+
+    final value = data.valueOrNull;
+
+    final isAuthorized = value?.isAuthorized ?? false;
+
+    final title = value?.title ?? context.l10n.myLocation;
+    final subTitle = isAuthorized ? context.l10n.myLocationSubtitle : null;
+    final text = value?.address ?? '${closestPoint?.latitude}, ${closestPoint?.longitude}';
+
+    final sheetPadding = isAuthorized ? 0.27 : 0.25;
+
+    _cameraAnimation(ref);
+
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        RoutingMapControls(
+          bottomExtent: MediaQuery.of(context).size.height * sheetPadding,
+        ),
+        BottomSheet(
+          shape: ShapeBorder.lerp(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            const RoundedRectangleBorder(),
+            0,
+          ),
+          animationController: _animationController,
+          onClosing: () => onClose(context, ref),
+          showDragHandle: false,
+          builder: (context) => Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            width: double.infinity,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+                    child: SheetDragger(),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  child: PoiHeader(
+                      onTapClose: () => onClose(context, ref),
+                      text: title,
+                      subTitle: subTitle,
+                      profileImage: isAuthorized
+                          ? const Padding(
+                              padding: EdgeInsets.only(top: Spacing.$1x),
+                              child: MyLocationImageWidget(),
+                            )
+                          : null),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : Spacing.$2x),
+                  child: Text(
+                    text,
+                    style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV2.foregroundSoft),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                MyLocationPoiActions(
+                  onShare: () => _showEtaControlSheet(
+                      context), //() => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
+                  onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> onClose(BuildContext context, WidgetRef ref) async {
+    context.pop();
+    final read = ref.read(selectedMarkerProvider.notifier);
+    await read.removeAllMarkers();
+  }
+
+  Future<void> _cameraAnimation(WidgetRef ref) async {
+    if (closestPoint != null) {
+      final settings = MapObjectManagerSettings.myLocation();
+      final mapObjectManager = ref.watch(
+        mapObjectManagerProvider(
+          named: settings.name,
+          layerId: settings.layerId,
+        ).notifier,
+      );
+      await mapObjectManager.removeAllMarkers();
+      final marker = Markers.pinMarker(
+        GeoPointWithElevationMessage(
+          latitude: closestPoint!.latitude,
+          longitude: closestPoint!.longitude,
+          elevation: 1,
+        ),
+      );
+
+      final read = ref.read(selectedMarkerProvider.notifier);
+      await read.removeAllMarkers();
+
+      await mapObjectManager.addMarker(marker);
+
+      await ref.read(cameraPositionProvider.notifier).animateTo(
+            CameraPositionMessage(
+              point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
+              zoom: cameraConfig?.zoom ?? 16,
+              tilt: cameraConfig?.tilt ?? 0,
+              bearing: cameraConfig?.bearing ?? 0,
+            ),
+          );
+    }
+  }
+
+  void _showEtaControlSheet(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => EtaSharingSheet(
+        onCurrentLocationPressed: () {
+          // Show share dialog
+          // ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
+        },
+        onLiveLocationPressed: () {
+          context.pop();
+          _showEtaExpired(context);
+          // _showEtaTimeSheet(context);
+        },
+      ),
+    );
+  }
+
+  void _showEtaTimeSheet(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => EtaSharingTimeSheet(
+        onConfirmTap: (v) {
+          // show share dialog
+        },
+      ),
+    );
+  }
+
+  void _continueShared(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => EtaInprogressSheet(
+        onShareMorePressed: () {},
+        onStopSharePressed: () {},
+        timeLeft: '13 min left',
+      ),
+    );
+  }
+
+  void _showEtaExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => const EtaShareExpired(),
+    );
+  }
+}

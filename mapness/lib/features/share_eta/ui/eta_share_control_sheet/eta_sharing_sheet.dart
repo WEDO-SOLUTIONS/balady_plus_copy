@@ -1,0 +1,47 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
+import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
+import 'package:mapness/shared/config/package_config.dart';
+
+class EtaSharingSheet extends StatelessWidget {
+  final VoidCallback onLiveLocationPressed;
+  final VoidCallback onCurrentLocationPressed;
+
+  const EtaSharingSheet({required this.onLiveLocationPressed, required this.onCurrentLocationPressed, super.key});
+
+  @override
+  Widget build(BuildContext context) => EtaShareSheet(
+        title: 'Sharing',
+        contentBuilder: (context) => [
+          ContentRow(
+            onTap: onLiveLocationPressed,
+            options: ContentRowOptions(
+                dividerEnabled: true,
+                leadingIcon: const PulseIndicator(),
+                title: 'Live location',
+                titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
+                  color: context.colorsV2.foregroundDefault,
+                )),
+          ),
+          ContentRow(
+            onTap: onCurrentLocationPressed,
+            options: ContentRowOptions(
+                leadingIcon: SvgPicture.asset(
+                  'assets/icons/svg/current_location_icon.svg',
+                  package: PackageConfig.packageName,
+                  colorFilter: ColorFilter.mode(
+                    context.colorsV2.foregroundSoft,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                title: 'Current location',
+                titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
+                  color: context.colorsV2.foregroundDefault,
+                )),
+          )
+        ],
+      );
+}
