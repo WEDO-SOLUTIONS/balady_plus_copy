@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
-import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn_action.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -21,7 +21,7 @@ class ShareEtaBtn extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final streamService = ref.watch(etaServiceProvider);
 
-    final webSocketStatus = ref.watch(websocketStatusProvider);
+    final webSocketStatus = ref.watch(etaWebsocketStatusProvider);
     final (connectionCode, _) = ref.watch(websocketErrorHandlerProvider);
 
     final bool isPulseactive = webSocketStatus;

@@ -22,6 +22,10 @@ class EtaSharingTimeSheet extends HookWidget {
       width: 24.0,
     );
 
+    Widget _customCheckMarkBuilder(bool? init) => init ?? false
+        ? AppIcons(size: 24, iconData: SystemIcons.checkmark, color: context.colorsV2.accentDefault)
+        : empty;
+
     return EtaShareSheet(
       title: context.l10n.shareLiveLocation,
       confirmBtnTitle: context.l10n.share,
@@ -33,9 +37,7 @@ class EtaSharingTimeSheet extends HookWidget {
             dividerEnabled: true,
             actionWidget: ContentRowActionOptions(
               toggleInitialValue: selectedTimeType.value == ShareEtaTimeType.fiveteenMinutes,
-              customToggleBuilder: ({required onToggle, initial}) => initial == true
-                  ? AppIcons(size: 24, iconData: SystemIcons.checkmark, color: context.colorsV2.accentDefault)
-                  : empty,
+              customToggleBuilder: ({required onToggle, initial}) => _customCheckMarkBuilder(initial),
             ),
             title: context.l10n.for15Minutes,
             titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
@@ -49,9 +51,7 @@ class EtaSharingTimeSheet extends HookWidget {
             dividerEnabled: true,
             actionWidget: ContentRowActionOptions(
               toggleInitialValue: selectedTimeType.value == ShareEtaTimeType.oneHour,
-              customToggleBuilder: ({required onToggle, initial}) => initial == true
-                  ? AppIcons(size: 24, iconData: SystemIcons.checkmark, color: context.colorsV2.accentDefault)
-                  : empty,
+              customToggleBuilder: ({required onToggle, initial}) => _customCheckMarkBuilder(initial),
             ),
             title: context.l10n.for1Hour,
             titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
@@ -64,9 +64,7 @@ class EtaSharingTimeSheet extends HookWidget {
           options: ContentRowOptions(
             actionWidget: ContentRowActionOptions(
               toggleInitialValue: selectedTimeType.value == ShareEtaTimeType.eightHours,
-              customToggleBuilder: ({required onToggle, initial}) => initial == true
-                  ? AppIcons(size: 24, iconData: SystemIcons.checkmark, color: context.colorsV2.accentDefault)
-                  : empty,
+              customToggleBuilder: ({required onToggle, initial}) => _customCheckMarkBuilder(initial),
             ),
             title: context.l10n.for8Hours,
             titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(

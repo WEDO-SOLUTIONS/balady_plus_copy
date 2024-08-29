@@ -34,7 +34,6 @@ class ContentDeeplink extends ConsumerWidget {
 
   const ContentDeeplink({
     required this.closestPoint,
-    // required this.locationType,
     this.cameraConfig,
     super.key,
   });
@@ -175,7 +174,6 @@ class ContentDeeplink extends ConsumerWidget {
 
     return PoiSheetSizes.myLocation(
       bottomPadding: MediaQuery.of(context).viewPadding.bottom,
-      isAuthorized: false,
       isAddressInTwoLines: twoLineAddress,
       isTitleInTwoLine: twoLineTitle,
     );

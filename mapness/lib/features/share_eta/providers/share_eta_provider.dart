@@ -14,8 +14,8 @@ import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
+import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
-import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
@@ -41,7 +41,7 @@ class ShareEta extends _$ShareEta {
   @override
   void build() {
     _websocketStatusSubscription?.close();
-    _websocketStatusSubscription = ref.listen<bool>(websocketStatusProvider, (_, status) {
+    _websocketStatusSubscription = ref.listen<bool>(etaWebsocketStatusProvider, (_, status) {
       _locationSubscription?.cancel();
 
       final isSharingType = ref.read(websocketTypeProvider) == SubscriptionType.share;

@@ -110,7 +110,7 @@ class _SuggestHomeBottomSheetState extends State<SuggestHomeBottomSheet> {
                             id: "${objectHandler.item.id?.objectId}",
                             options: MarkerOptionsMessage(
                               position: position,
-                              icon: MarkerIconMessage(
+                              icon: SvgMarkerIcon(
                                 svgPath: Constants.icMarker,
                                 width: 40,
                               ),

@@ -30,9 +30,7 @@ class EtaTimerControl extends ConsumerWidget {
         : context.l10n.timerMin(diffInMinutes.toString());
 
     return MapButton(
-      onTap: () async {
-        _continueShared(context, ref);
-      },
+      onTap: () => _continueShared(context, ref),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
         child: Row(

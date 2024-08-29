@@ -59,7 +59,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     } else if (etaInfo.type == EtaType.streamMetadata) {
       _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
-      // TODO: Implement route drawing on the map
+      // TODO(Scroollocker): Implement route drawing on the map
     }
 
     state = (etaInfo, _metaInfo);
@@ -119,7 +119,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     await mapObjectManager.addMarker(marker);
   }
 
-  //TODO: Move code to utils
+  //TODO(scroollocker): Move code to utils
   Future<img.Image> processImage(String imgUrl) async {
     // Load the mask image from assets
     final maskData = await rootBundle.load('packages/mapness/assets/images/marker_eta_mask.png');

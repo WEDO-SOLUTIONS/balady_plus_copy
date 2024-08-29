@@ -11,8 +11,8 @@ import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_sound_provider.dart';
+import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
-import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
 import 'package:mapness/pages/path_nav/lib/utils.dart';
@@ -78,7 +78,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     final color = context.color;
     final textStyleV3 = context.textStyleV3;
     ref
-      ..watch(websocketStatusProvider.select((_) => null))
+      ..watch(etaWebsocketStatusProvider.select((_) => null))
       ..watch(websocketTypeProvider.select((_) => null))
       ..watch(shareEtaProvider.select((_) => null));
 

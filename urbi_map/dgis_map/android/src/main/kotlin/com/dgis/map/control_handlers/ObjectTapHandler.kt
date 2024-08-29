@@ -239,23 +239,7 @@ class ObjectTapHandler(
     private fun mapMarker(marker: MarkerMessage, result: Result<Void>?): Marker? {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
-            // if (marker.options.icon!!.svgPath in iconCache) {
-            //     markerImage = iconCache[marker.options.icon!!.svgPath]
-            // } else {
-            //     try {
-            //         val asset =
-            //             FlutterInjector
-            //                 .instance()
-            //                 .flutterLoader()
-            //                 .getLookupKeyForAsset(marker.options.icon!!.svgPath)
-
-            //         markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
-            //         iconCache[marker.options.icon!!.svgPath] = markerImage
-            //     } catch (e: FileNotFoundException) {
-            //         result?.error(e)
-            //         return null
-            //     }
-            // }
+            
             val iconOptions = marker.options.icon!!
 
             val svgPath = iconOptions.svgPath

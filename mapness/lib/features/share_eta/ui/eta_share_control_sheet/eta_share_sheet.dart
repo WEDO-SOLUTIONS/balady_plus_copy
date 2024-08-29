@@ -61,15 +61,12 @@ class EtaShareSheet extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   textColor: context.colorsV2.neutralOnContainer,
                   color: context.colorsV2.neutralContainerDefault,
-                  innerPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
                 ),
               ),
             ),
-            if (timeLeft != null && subtitleBuilder != null) ...[
-              subtitleBuilder!.call(context, timeLeft!),
-              Spacing.$4x.heightBox,
-            ] else
-              Spacing.$4x.heightBox,
+            if (timeLeft != null && subtitleBuilder != null) subtitleBuilder!.call(context, timeLeft!),
+            Spacing.$4x.heightBox,
             ContentWrapper(
               color: Colors.white,
               children: contentBuilder?.call(context) ?? [],
@@ -87,7 +84,7 @@ class EtaShareSheet extends StatelessWidget {
                 ),
               ),
             const SizedBox(
-              height: 30,
+              height: Spacing.$8x,
             )
           ],
         ),

@@ -6,6 +6,9 @@ class PulseIndicator extends HookWidget {
   final Color? color;
   const PulseIndicator({super.key, this.color});
 
+  static const _dotSize = 8.0;
+  static const _spreadSize = 24.0;
+
   @override
   Widget build(BuildContext context) {
     final controller = useAnimationController(
@@ -15,16 +18,16 @@ class PulseIndicator extends HookWidget {
     final indicatorColor = color ?? context.colorsV2.extra01Default;
 
     return SizedBox(
-      width: 24,
-      height: 24,
+      width: _spreadSize,
+      height: _spreadSize,
       child: Stack(
         alignment: Alignment.center,
         children: [
           AnimatedBuilder(
             animation: controller,
             builder: (context, child) => Container(
-              width: 8,
-              height: 8,
+              width: _dotSize,
+              height: _dotSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: indicatorColor,
@@ -34,8 +37,8 @@ class PulseIndicator extends HookWidget {
           AnimatedBuilder(
             animation: controller,
             builder: (context, child) => Container(
-              width: 8 + controller.value * 20,
-              height: 8 + controller.value * 20,
+              width: _dotSize + controller.value * (_spreadSize - _dotSize / 2),
+              height: _dotSize + controller.value * (_spreadSize - _dotSize / 2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: indicatorColor.withOpacity(

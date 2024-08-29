@@ -240,7 +240,7 @@ class EtaWebsocket {
           } catch (e) {
             debugPrint(e.toString());
             // state = AsyncError(e, s);
-            //TODO: handle error
+            //TODO(scroollocker): handle error
           }
         },
 

@@ -81,7 +81,7 @@ class EtaShareExpired extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: Spacing.$8x,
             )
           ],
         ),

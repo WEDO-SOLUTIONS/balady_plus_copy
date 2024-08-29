@@ -1,10 +1,10 @@
 import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'websocket_status_provider.g.dart';
+part 'eta_websocket_status_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-class WebsocketStatus extends _$WebsocketStatus {
+class EtaWebsocketStatus extends _$EtaWebsocketStatus {
   @override
   bool build() {
     EtaWebsocket().addConnectionStatusListener(setStatus);
