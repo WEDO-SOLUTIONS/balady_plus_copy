@@ -10,7 +10,6 @@ import 'package:mapness/app/routes/navigator_settings.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
-import 'package:mapness/features/path_nav/providers/path_nav_sound_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
