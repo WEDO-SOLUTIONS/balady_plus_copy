@@ -230,6 +230,9 @@ class ShareEta extends _$ShareEta {
     query[BaldayDeeplink.tokenId] = tokenId;
 
     query[BaldayDeeplink.streamId] = streamId;
+    query[BaldayDeeplink.latitudeKey] = EtaStreamStorage().state.latitude.toString();
+    query[BaldayDeeplink.longitudeKey] = EtaStreamStorage().state.longitude.toString();
+    query[BaldayDeeplink.typeKey] = 'live';
 
     final shareUrl = BaldayDeeplink.urlWithQuery(baseUri, query);
 
@@ -243,7 +246,7 @@ class ShareEta extends _$ShareEta {
     Share.share('$duration\n$shareUrl');
   }
 
-  void _shareEtaDialog(String tokenId, String streamId, String arrivalAt) {
+  Future<void> _shareEtaDialog(String tokenId, String streamId, String arrivalAt) async {
     final query = <String, String>{};
     final context = rootNavigatorKey.currentContext;
     if (context == null) {
@@ -254,10 +257,19 @@ class ShareEta extends _$ShareEta {
     query[BaldayDeeplink.tokenId] = tokenId;
 
     query[BaldayDeeplink.streamId] = streamId;
+    query[BaldayDeeplink.latitudeKey] = EtaStreamStorage().state.latitude.toString();
+    query[BaldayDeeplink.longitudeKey] = EtaStreamStorage().state.longitude.toString();
+    query[BaldayDeeplink.typeKey] = 'eta';
 
     final shareUrl = BaldayDeeplink.urlWithQuery(baseUri, query);
 
-    Share.share(context.l10n.iWillArriveAtTimeToDestinationLink('', shareUrl, arrivalAt).multilines);
+    if (EtaStreamStorage().state.latitude == null || EtaStreamStorage().state.longitude == null) {
+      return;
+    }
+
+    final address = await _makeAddress(EtaStreamStorage().state.latitude!, EtaStreamStorage().state.longitude!);
+
+    await Share.share(context.l10n.iWillArriveAtTimeToDestinationLink(address ?? '', shareUrl, arrivalAt).multilines);
   }
 
   // TODO(scroollocker): Implement address sharing
@@ -274,5 +286,6 @@ class ShareEta extends _$ShareEta {
         address ??= '$latitude, $longitude';
       }
     } catch (_) {}
+    return address;
   }
 }

@@ -79,14 +79,20 @@ class ShareMyLocationContent extends HookConsumerWidget {
         final finishAt = next.value!.finishesAt;
         final xStreamData = next.value!.xStreamData;
 
-        if (streamId == null || streamToken == null || finishAt == null || xStreamData == null) {
+        if (streamId == null ||
+            streamToken == null ||
+            finishAt == null ||
+            xStreamData == null ||
+            closestPoint == null) {
           return;
         }
 
         EtaStreamStorage()
           ..setStreamId(streamId)
           ..setToken(streamToken)
-          ..setXStreamData(xStreamData);
+          ..setXStreamData(xStreamData)
+          ..setLatitude(closestPoint!.latitude)
+          ..setLongitude(closestPoint!.longitude);
 
         final estimatedTime = finishAt.dateTime;
         if (estimatedTime != null) {

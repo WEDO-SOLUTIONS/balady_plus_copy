@@ -10,5 +10,7 @@ class EtaStreamStore with _$EtaStreamStore {
     final DateTime? estimatedTime,
     final String? xStreamData,
     final int? durationInMinutes,
+    final double? latitude,
+    final double? longitude,
   }) = _EtaStreamStore;
 }

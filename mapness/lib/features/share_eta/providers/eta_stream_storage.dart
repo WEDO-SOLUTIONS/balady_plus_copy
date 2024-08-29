@@ -31,6 +31,14 @@ class EtaStreamStorage {
     _state = _state.copyWith(durationInMinutes: durationInMinutes);
   }
 
+  void setLatitude(double latitude) {
+    _state = _state.copyWith(latitude: latitude);
+  }
+
+  void setLongitude(double longitude) {
+    _state = _state.copyWith(longitude: longitude);
+  }
+
   void clear() {
     _state = const EtaStreamStore();
   }

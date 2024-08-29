@@ -30,6 +30,8 @@ import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
@@ -334,37 +336,40 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
 
     if (tokenId != null && streamId != null) {
-      try {
-        final uriPath = Uri(path: EtaRoute.path, queryParameters: {
-          EtaRoute.tokenKey: tokenId,
-          EtaRoute.streamKey: streamId,
-          if (latitude != null) EtaRoute.latKey: latitude.toString(),
-          if (longitude != null) EtaRoute.lonKey: longitude.toString(),
-        });
-        await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
-        await ref.read(goRouterProvider).push(uriPath.toString());
+      if (type == 'eta') {
+        try {
+          final uriPath = Uri(path: EtaRoute.path, queryParameters: {
+            EtaRoute.tokenKey: tokenId,
+            EtaRoute.streamKey: streamId,
+            if (latitude != null) EtaRoute.latKey: latitude.toString(),
+            if (longitude != null) EtaRoute.lonKey: longitude.toString(),
+          });
+          await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+          await ref.read(goRouterProvider).push(uriPath.toString());
+          return;
+        } catch (e) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showEtaExpired(rootNavigatorKey.currentContext!);
+          });
+        }
+      } else if (type == 'live') {
+        try {
+          // Get old stream token and stream id
+          final oldToken = EtaStreamStorage().state.streamToken;
+          final oldXStreamData = EtaStreamStorage().state.xStreamData;
+
+          if (oldToken != null && oldXStreamData != null) {
+            await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
+          }
+
+          await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+        } catch (e) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showLiveLocationExpired(rootNavigatorKey.currentContext!);
+          });
+        }
         return;
-      } catch (e) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _showEtaExpired(rootNavigatorKey.currentContext!);
-        });
       }
-      // try {
-      //   // Get old stream token and stream id
-      //   final oldToken = EtaStreamStorage().state.streamToken;
-      //   final oldXStreamData = EtaStreamStorage().state.xStreamData;
-
-      //   if (oldToken != null && oldXStreamData != null) {
-      //     await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
-      //   }
-
-      //   await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
-      // } catch (e) {
-      //   WidgetsBinding.instance.addPostFrameCallback((_) {
-      //     _showEtaExpired(rootNavigatorKey.currentContext!);
-      //   });
-      // }
-      // return;
     }
 
     if (objectId != null) {
