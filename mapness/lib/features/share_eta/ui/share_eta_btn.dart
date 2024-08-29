@@ -2,14 +2,14 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
-import 'package:mapness/features/share_eta/models/ws_config.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
-import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn_action.dart';
-import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ShareEtaBtn extends HookConsumerWidget {
   final int durationMinutes;
@@ -20,32 +20,29 @@ class ShareEtaBtn extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final streamService = ref.watch(etaServiceProvider);
-    final streamNotifier = ref.read(etaServiceProvider.notifier);
 
     final webSocketStatus = ref.watch(websocketStatusProvider);
+    final (connectionCode, _) = ref.watch(websocketErrorHandlerProvider);
 
     final bool isPulseactive = webSocketStatus;
 
     ref.listen(etaServiceProvider, (prev, current) async {
-      if (current.hasValue && current.value != null && !isPulseactive) {
-        if (current.value?.streamToken == null || current.value?.streamId == null) {
+      if (current.hasValue && current.value != null && !isPulseactive && !current.isLoading) {
+        final streamId = current.value!.streamId;
+        final streamToken = current.value!.streamToken;
+        final finishAt = current.value!.finishesAt;
+        final xStreamData = current.value!.xStreamData;
+
+        if (streamId == null || streamToken == null || finishAt == null || xStreamData == null) {
           return;
         }
 
-        final streamData = current.value!;
-        final streamToken = streamData.streamToken!;
-        final streamId = streamData.streamId!;
+        EtaStreamStorage()
+          ..setStreamId(streamId)
+          ..setToken(streamToken)
+          ..setXStreamData(xStreamData);
 
-        await streamNotifier.shareStream();
-
-        final env = await ref.read(dgisEnvironmentProvider.future);
-
-        await EtaWebsocket().start(
-          token: streamToken,
-          streamId: streamId,
-          subscriptionType: SubscriptionType.share,
-          shareEtaApiUrl: env.shareEtaApi,
-        );
+        await ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
       } else if (current.hasError) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -61,15 +58,10 @@ class ShareEtaBtn extends HookConsumerWidget {
 
     return ContentRow(
       onTap: () {
-        if (isPulseactive && isEtaStreamLoading) {
+        if (isPulseactive || isEtaStreamLoading) {
           return;
         }
-        streamNotifier.startEtaStream(
-          EtaStreamPayload(
-            durationMinutes: durationMinutes,
-            type: EtaStreamType.eta.name,
-          ),
-        );
+        ref.read(shareEtaProvider.notifier).startSharingEta();
       },
       options: ContentRowOptions(
         padding: const EdgeInsets.symmetric(
@@ -79,15 +71,17 @@ class ShareEtaBtn extends HookConsumerWidget {
         titleBuilder: (context) => Row(
           children: [
             Text(
-              'Share ETA',
+              isPulseactive || isEtaStreamLoading ? context.l10n.routeIsSharing : context.l10n.shareTripProgress,
               style: context.textStyleV3.bodyLargeRegular.copyWith(
                 color: context.colorsV2.foregroundDefault,
               ),
             ),
             if (isPulseactive)
-              const Padding(
-                padding: EdgeInsetsDirectional.only(end: Spacing.$1_5x),
-                child: PulseIndicator(),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: Spacing.$1_5x),
+                child: PulseIndicator(
+                  color: connectionCode != null ? context.colorsV2.errorDefault : null,
+                ),
               )
           ],
         ),

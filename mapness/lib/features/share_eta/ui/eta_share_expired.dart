@@ -9,7 +9,20 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 
 class EtaShareExpired extends StatelessWidget {
-  const EtaShareExpired({super.key});
+  final String title;
+  final String subtitle;
+
+  const EtaShareExpired({required this.title, required this.subtitle, super.key});
+
+  factory EtaShareExpired.liveLocation(BuildContext context) => EtaShareExpired(
+        title: context.l10n.locationUnavailable,
+        subtitle: context.l10n.locationBroadcastExpired.multilines,
+      );
+
+  factory EtaShareExpired.eta(BuildContext context) => EtaShareExpired(
+        title: context.l10n.driveEnded,
+        subtitle: context.l10n.driverReachedDestination.multilines,
+      );
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -54,14 +67,14 @@ class EtaShareExpired extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.$2x),
             Text(
-              context.l10n.locationUnavailable,
+              title,
               style: context.textStyleV3.h3SemiBold.copyWith(
                 color: context.colorsV2.foregroundDefault,
               ),
             ),
             const SizedBox(height: Spacing.$3x),
             Text(
-              context.l10n.locationBroadcastExpired.multilines,
+              subtitle,
               textAlign: TextAlign.center,
               style: context.textStyleV3.bodyLargeRegular.copyWith(
                 color: context.colorsV2.foregroundSoft,

@@ -58,7 +58,7 @@ abstract class Eta with _$Eta {
   /// Constructs an instance of [Eta].
   const factory Eta({
     @JsonKey(name: 'arrival_at') final String? arrivalAt,
-    final double? distance,
+    final int? distance,
   }) = _Eta;
 
   /// Constructs an instance of [Eta] from a JSON map.

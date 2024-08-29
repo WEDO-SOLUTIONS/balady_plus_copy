@@ -53,6 +53,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
 
+import 'app/routes/eta.dart';
+
 Mixpanel? mixpanel;
 
 class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
@@ -298,12 +300,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
+  void _showLiveLocationExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.liveLocation(context),
+    );
+  }
+
   void _showEtaExpired(BuildContext context) {
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
-      builder: (_) => const EtaShareExpired(),
+      builder: (_) => EtaShareExpired.eta(context),
     );
   }
 
@@ -324,13 +335,36 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     if (tokenId != null && streamId != null) {
       try {
+        final uriPath = Uri(path: EtaRoute.path, queryParameters: {
+          EtaRoute.tokenKey: tokenId,
+          EtaRoute.streamKey: streamId,
+          if (latitude != null) EtaRoute.latKey: latitude.toString(),
+          if (longitude != null) EtaRoute.lonKey: longitude.toString(),
+        });
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+        await ref.read(goRouterProvider).push(uriPath.toString());
+        return;
       } catch (e) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _showEtaExpired(rootNavigatorKey.currentContext!);
         });
       }
-      return;
+      // try {
+      //   // Get old stream token and stream id
+      //   final oldToken = EtaStreamStorage().state.streamToken;
+      //   final oldXStreamData = EtaStreamStorage().state.xStreamData;
+
+      //   if (oldToken != null && oldXStreamData != null) {
+      //     await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
+      //   }
+
+      //   await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+      // } catch (e) {
+      //   WidgetsBinding.instance.addPostFrameCallback((_) {
+      //     _showEtaExpired(rootNavigatorKey.currentContext!);
+      //   });
+      // }
+      // return;
     }
 
     if (objectId != null) {

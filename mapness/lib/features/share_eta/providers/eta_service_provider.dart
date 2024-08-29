@@ -48,9 +48,6 @@ class EtaService extends _$EtaService {
       final response = await _dio!.post(
         '$_baseUrl/v1/geolocation/stream',
         data: payload.toJson(),
-        options: Options(
-          headers: {},
-        ),
       );
 
       if (response.statusCode == 200) {
@@ -99,6 +96,7 @@ class EtaService extends _$EtaService {
       if (statusCode < 200 && statusCode >= 300) {
         state = AsyncError(Exception('Failed to stop ETA stream'), StackTrace.current);
       }
+      state = const AsyncData(null);
     } catch (e, st) {
       state = AsyncError(e, st);
     }

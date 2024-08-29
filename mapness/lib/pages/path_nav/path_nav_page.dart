@@ -21,6 +21,8 @@ import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
 import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
@@ -355,6 +357,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       _navigationState.value = PathNavState.finished;
     }
     await clearNavigationState();
+    await _stopActiveSharing();
     action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
@@ -472,5 +475,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _betterRouteDurationProfit.value = null;
     final dgisController = await ref.read(dgisControllerProvider.future);
     await dgisController.betterRouteResponse(BetterRouteResponseMessage.reject);
+  }
+
+  Future<void> _stopActiveSharing() async {
+    final tokenId = EtaStreamStorage().state.streamToken;
+    final xStreamData = EtaStreamStorage().state.xStreamData;
+    if (tokenId != null && xStreamData != null) {
+      await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, xStreamData);
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
@@ -9,6 +10,7 @@ import 'package:mapness/features/share_eta/models/ws_config.dart';
 
 typedef ConnectionStatus = void Function({bool status});
 typedef EtaInfoCallback<T> = void Function(EtaInfoModel<T> etaInfo);
+typedef ConnectionLostCallback = void Function(int code, String reason);
 
 class EtaWebsocket {
   static final EtaWebsocket _instance = EtaWebsocket._internal();
@@ -19,10 +21,13 @@ class EtaWebsocket {
 
   final List<ConnectionStatus> _connectionStatusListeners = [];
   final List<EtaInfoCallback> _etaInfoListeners = [];
+  final List<ConnectionLostCallback> _connectionLostListeners = [];
 
   static const _streamIdKey = 'stream_id';
   static const _geoStreamingTokenKey = 'GeoStreamingToken';
   static const _xStreamDataKey = 'X-Stream-Data';
+  static const _reconnectingAttempts = 2;
+  static const _connectionLostMonitorIntervalSec = 3;
 
   WsConfig? _config;
 
@@ -36,6 +41,9 @@ class EtaWebsocket {
 
   StreamSubscription? _subscription;
   WebSocket? _ws;
+  Timer? _connectionLostMonitor;
+
+  int? _lastErrorCode;
 
   void clearInfoListeners() {
     _etaInfoListeners.clear();
@@ -59,6 +67,23 @@ class EtaWebsocket {
 
   void removeEtaInfoListener(EtaInfoCallback listener) {
     _etaInfoListeners.remove(listener);
+  }
+
+  void addConnectionLostListener(ConnectionLostCallback listener) {
+    _connectionLostListeners.add(listener);
+  }
+
+  void removeConnectionLostListener(ConnectionLostCallback listener) {
+    _connectionLostListeners.remove(listener);
+  }
+
+  void _notifyConnectionLostListeners(int code, String reason) {
+    if (_lastErrorCode == code) {
+      return;
+    }
+    for (final listener in _connectionLostListeners) {
+      listener(code, reason);
+    }
   }
 
   void _notifyConnectionStatusListeners(bool status) {
@@ -93,12 +118,42 @@ class EtaWebsocket {
     await _start();
   }
 
+  Future<void> reconnect() async {
+    /*
+    Перед пере-подключением к серверу клиент **должен** подождать случайно
+    выбранный промежуток времени. При последовательном повторном пере-подключении
+    клиент **должен** использовать exponential backoff.
+
+    Например, случайно выбрать число секунд между 0 и 5, и выполнить
+    переподключение по истечение времени. При неудачном подключении
+    выбрать число секунд между 5 и 10, и повторить действия повторно.
+    */
+    final random = Random();
+    for (int i = 0; i < _reconnectingAttempts; i++) {
+      try {
+        final intervalStep = i == 0 ? 0 : 5 * i;
+
+        final randomInterval = random.nextInt(5) + intervalStep;
+
+        await Future.delayed(Duration(seconds: randomInterval));
+
+        await _reconnect();
+        return;
+      } catch (e) {
+        debugPrint('Reconnecting attempt $i failed. Error: $e');
+      }
+      if (i == _reconnectingAttempts - 1) {
+        throw Exception('Failed to reconnect');
+      }
+    }
+  }
+
   Future<void> stop() async {
     await _stop();
   }
 
   Future<void> pushEtaInfo<T>(EtaInfoModel<T> etaInfo) async {
-    if (_ws != null) {
+    if (_ws != null && _ws?.closeCode == null) {
       final toJsonFunc = switch (T) {
         EtaInfoPayload => (object) => object == null ? null : (object as EtaInfoPayload).toJson(),
         EtaRoutePayload => (object) => object == null ? null : (object as EtaRoutePayload).toJson(),
@@ -115,12 +170,23 @@ class EtaWebsocket {
     }
   }
 
+  Future<void> _reconnect() async {
+    await _start();
+  }
+
   Future<void> _start() async {
     if (_config == null) {
       return;
     }
 
-    await _stop();
+    await _stop(notify: false);
+
+    _connectionLostMonitor = Timer.periodic(const Duration(seconds: _connectionLostMonitorIntervalSec), (timer) {
+      if (_ws?.closeCode != null) {
+        _notifyConnectionLostListeners(_ws!.closeCode!, _ws!.closeReason ?? '');
+        timer.cancel();
+      }
+    });
 
     final config = _config!;
 
@@ -146,6 +212,7 @@ class EtaWebsocket {
         headers[_xStreamDataKey] = config.xStreamData!;
       }
       _ws = await WebSocket.connect(baseUrlString, headers: headers);
+      _ws?.pingInterval = const Duration(seconds: _connectionLostMonitorIntervalSec);
       _subscription = _ws?.listen(
         (data) {
           try {
@@ -171,7 +238,7 @@ class EtaWebsocket {
               return;
             }
           } catch (e) {
-            print(e);
+            debugPrint(e.toString());
             // state = AsyncError(e, s);
             //TODO: handle error
           }
@@ -190,7 +257,7 @@ class EtaWebsocket {
     }
   }
 
-  Future<void> _stop() async {
+  Future<void> _stop({bool notify = true}) async {
     try {
       await _subscription?.cancel();
       await _ws?.close();
@@ -199,7 +266,11 @@ class EtaWebsocket {
     } finally {
       _ws = null;
       _subscription = null;
-      _notifyConnectionStatusListeners(false);
+      _connectionLostMonitor?.cancel();
+      _connectionLostMonitor = null;
+      if (notify) {
+        _notifyConnectionStatusListeners(false);
+      }
     }
   }
 

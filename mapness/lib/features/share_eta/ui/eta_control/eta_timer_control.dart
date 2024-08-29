@@ -8,6 +8,7 @@ import 'package:mapness/features/share_eta/entities/share_eta_time_type.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_inprogress_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
@@ -19,6 +20,7 @@ class EtaTimerControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final timer = ref.watch(etaTimerIndicatorProvider);
+    final (code, _) = ref.watch(websocketErrorHandlerProvider);
 
     final diffInHours = timer ~/ 60;
     final diffInMinutes = timer % 60;
@@ -36,7 +38,9 @@ class EtaTimerControl extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const PulseIndicator(),
+            PulseIndicator(
+              color: code == null ? null : context.colorsV2.errorDefault,
+            ),
             const SizedBox(width: 8),
             Text(
               estimatedTimeString,
@@ -84,7 +88,7 @@ class EtaTimerControl extends ConsumerWidget {
       builder: (context) => EtaSharingTimeSheet(
         onConfirmTap: (v) async {
           await _stopShare(ref);
-          await ref.read(shareEtaProvider.notifier).startSharing(v.durationInMinutes);
+          await ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);
         },
       ),
     );

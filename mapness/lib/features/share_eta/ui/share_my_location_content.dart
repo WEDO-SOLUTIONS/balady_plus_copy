@@ -236,7 +236,7 @@ class ShareMyLocationContent extends HookConsumerWidget {
       builder: (context) => EtaSharingTimeSheet(
         onConfirmTap: (v) {
           LoadingOverlay.of(context).startLoading();
-          ref.read(shareEtaProvider.notifier).startSharing(v.durationInMinutes);
+          ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);
         },
       ),
     );
@@ -247,7 +247,7 @@ class ShareMyLocationContent extends HookConsumerWidget {
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
-      builder: (context) => const EtaShareExpired(),
+      builder: (context) => EtaShareExpired.liveLocation(context),
     );
   }
 }
