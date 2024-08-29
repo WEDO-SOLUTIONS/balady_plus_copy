@@ -307,7 +307,7 @@ class MapViewModel extends BaseViewModel {
             options: MarkerOptionsMessage(
               position: markerInfo!.geoPoint,
               icon: MarkerIconMessage(
-                path: iconPath,
+                svgPath: iconPath,
                 width: 24,
               ),
             ),
@@ -777,7 +777,7 @@ class MapViewModel extends BaseViewModel {
                           latitude: element.getLocation()!.latitude,
                           longitude: element.getLocation()!.longitude),
                       icon: MarkerIconMessage(
-                        path: Constants.icMarker,
+                        svgPath: Constants.icMarker,
                         width: 30,
                       ),
                     ),
@@ -905,7 +905,7 @@ class MapViewModel extends BaseViewModel {
         options: MarkerOptionsMessage(
           position: markerPosition,
           icon: MarkerIconMessage(
-            path: Constants.icMarker,
+            svgPath: Constants.icMarker,
             width: 40,
           ),
         ),
@@ -946,7 +946,7 @@ class MapViewModel extends BaseViewModel {
         options: MarkerOptionsMessage(
           position: markerPosition,
           icon: MarkerIconMessage(
-            path: Constants.icMarker,
+            svgPath: Constants.icMarker,
             width: 40,
           ),
         ),
@@ -989,7 +989,7 @@ class MapViewModel extends BaseViewModel {
             options: MarkerOptionsMessage(
               position: element.latLng,
               icon: MarkerIconMessage(
-                path: iconPath,
+                svgPath: iconPath,
                 width: 30,
               ),
             ),

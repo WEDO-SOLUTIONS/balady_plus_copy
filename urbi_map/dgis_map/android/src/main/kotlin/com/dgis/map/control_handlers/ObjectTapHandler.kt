@@ -26,6 +26,8 @@ import java.io.FileNotFoundException
 import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.Executors
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 
 class ObjectTapHandler(
     private val map: ru.dgis.sdk.map.Map,
@@ -199,26 +201,81 @@ class ObjectTapHandler(
 
     // --- MARKER ---
 
+    fun getImageFromBytes(imageBytes: ByteArray, size: Int): Image? {
+        // Шаг 1: Преобразование байтов в Bitmap
+        val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+
+        val scaledBitmap = if (bitmap != null) {
+            Bitmap.createScaledBitmap(bitmap, size, size, true)
+        } else {
+            null
+        }
+        
+        // Шаг 2: Использование метода imageFromBitmap для получения объекта Image
+        return if (scaledBitmap != null) {
+            imageFromBitmap(sdkContext, scaledBitmap)
+        } else {
+            null
+        }
+    }
+
+    private fun getImageFromAsset(assetPath: String, size: Size, result: Result<Void>?): Image? {
+        if (iconCache.containsKey(assetPath)) {
+            return iconCache[assetPath]
+        }
+    
+        return try {
+            val assetKey = FlutterInjector.instance().flutterLoader().getLookupKeyForAsset(assetPath)
+            val markerImage = imageFromAsset(sdkContext, assetKey, size)
+    
+            iconCache[assetPath] = markerImage
+            markerImage
+        } catch (e: FileNotFoundException) {
+            result?.error(e)
+            null
+        }
+    }
+
     private fun mapMarker(marker: MarkerMessage, result: Result<Void>?): Marker? {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
-            if (marker.options.icon!!.path in iconCache) {
-                markerImage = iconCache[marker.options.icon!!.path]
-            } else {
-                try {
-                    val asset =
-                        FlutterInjector
-                            .instance()
-                            .flutterLoader()
-                            .getLookupKeyForAsset(marker.options.icon!!.path)
+            // if (marker.options.icon!!.svgPath in iconCache) {
+            //     markerImage = iconCache[marker.options.icon!!.svgPath]
+            // } else {
+            //     try {
+            //         val asset =
+            //             FlutterInjector
+            //                 .instance()
+            //                 .flutterLoader()
+            //                 .getLookupKeyForAsset(marker.options.icon!!.svgPath)
 
-                    markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
-                    iconCache[marker.options.icon!!.path] = markerImage
-                } catch (e: FileNotFoundException) {
-                    result?.error(e)
-                    return null
-                }
+            //         markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
+            //         iconCache[marker.options.icon!!.svgPath] = markerImage
+            //     } catch (e: FileNotFoundException) {
+            //         result?.error(e)
+            //         return null
+            //     }
+            // }
+            val iconOptions = marker.options.icon!!
+
+            val svgPath = iconOptions.svgPath
+            val pngPath = iconOptions.pngPath
+            val pngData = iconOptions.pngData
+
+            if (svgPath != null) {
+                markerImage = getImageFromAsset(svgPath, Size(0, 0), result)
             }
+            // Проверка и создание изображения из pngPath
+            else if (pngPath != null) {
+                markerImage = getImageFromAsset(pngPath, Size(iconOptions.width.toInt(),iconOptions.width.toInt()), result)
+            }
+            // Проверка и создание изображения из pngData
+            else if (pngData != null) {
+
+                val data = pngData
+                markerImage = getImageFromBytes(data, iconOptions.width.toInt())
+            }
+
         }
 
         val options = MarkerOptions(

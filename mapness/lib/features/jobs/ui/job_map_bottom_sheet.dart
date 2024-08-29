@@ -153,8 +153,8 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
               latitude: lat,
               elevation: 1,
             ),
-            icon: MarkerIconMessage(
-              path: 'packages/mapness/assets/icons/svg/job_pin.svg',
+            icon: SvgMarkerIcon(
+              svgPath: 'packages/mapness/assets/icons/svg/job_pin.svg',
               width: 24,
             ),
           ),

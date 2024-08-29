@@ -116,6 +116,8 @@ dependencies:
   freezed: ^2.5.2
   flutter_hooks: ^0.20.5
   hooks_riverpod: ^2.4.1
+  http: ^1.1.2
+  image: ^4.2.0
 
 dependency_overrides:
   geolocator_android: ^4.2.2

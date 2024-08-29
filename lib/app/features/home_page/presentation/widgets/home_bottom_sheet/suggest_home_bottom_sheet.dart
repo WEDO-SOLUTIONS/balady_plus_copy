@@ -54,8 +54,7 @@ class _SuggestHomeBottomSheetState extends State<SuggestHomeBottomSheet> {
               });
 
               final address =
-                  suggests[index].handler.objectHandler?.item.makeAddress() ??
-                      suggests[index].subtitle.text;
+                  suggests[index].handler.objectHandler?.item.makeAddress() ?? suggests[index].subtitle.text;
 
               return InkWell(
                 onTap: () async {
@@ -73,8 +72,7 @@ class _SuggestHomeBottomSheetState extends State<SuggestHomeBottomSheet> {
 
                     final position = objectHandler.item.markerPosition;
                     double zoom = 17;
-                    if (objectHandler.item.types[0]?.type ==
-                        ObjectTypeMessage.admDiv) {
+                    if (objectHandler.item.types[0]?.type == ObjectTypeMessage.admDiv) {
                       zoom = 14;
                     } else if ([
                       ObjectTypeMessage.road,
@@ -83,8 +81,7 @@ class _SuggestHomeBottomSheetState extends State<SuggestHomeBottomSheet> {
                       zoom = 16;
                     }
                     if (mapViewModel.currentSearchSelectionId != null) {
-                      mapViewModel.controller.removeMarker(
-                          mapViewModel.currentSearchSelectionId!.toString());
+                      mapViewModel.controller.removeMarker(mapViewModel.currentSearchSelectionId!.toString());
                       mapViewModel.currentSearchSelectionId = null;
                     }
                     if (position != null) {
@@ -107,22 +104,20 @@ class _SuggestHomeBottomSheetState extends State<SuggestHomeBottomSheet> {
                             ObjectTypeMessage.station,
                           ].contains(objectHandler.item.types[0]?.type) &&
                           objectHandler.item.id?.objectId != null) {
-                        mapViewModel.currentSearchSelectionId =
-                            "${objectHandler.item.id?.objectId}";
+                        mapViewModel.currentSearchSelectionId = "${objectHandler.item.id?.objectId}";
                         await mapViewModel.controller.addMarkers([
                           Marker(
                             id: "${objectHandler.item.id?.objectId}",
                             options: MarkerOptionsMessage(
                               position: position,
                               icon: MarkerIconMessage(
-                                path: Constants.icMarker,
+                                svgPath: Constants.icMarker,
                                 width: 40,
                               ),
                             ),
                             onTap: () async {
                               mapViewModel.refreshView();
-                              mapViewModel.selectedPointId.value =
-                                  objectHandler.item.id;
+                              mapViewModel.selectedPointId.value = objectHandler.item.id;
                               mapViewModel.selectedPointId.notifyListeners();
                             },
                           )
@@ -132,8 +127,7 @@ class _SuggestHomeBottomSheetState extends State<SuggestHomeBottomSheet> {
                     }
                   }
 
-                  final incompleteTextHandler =
-                      suggests[index].handler.incompleteTextHandler;
+                  final incompleteTextHandler = suggests[index].handler.incompleteTextHandler;
                   if (incompleteTextHandler != null) {
                     searchController.text = incompleteTextHandler.queryText;
                     mapViewModel.updateSuggest(
@@ -141,8 +135,7 @@ class _SuggestHomeBottomSheetState extends State<SuggestHomeBottomSheet> {
                     );
                   }
 
-                  final performSearchHandler =
-                      suggests[index].handler.performSearchHandler;
+                  final performSearchHandler = suggests[index].handler.performSearchHandler;
                   if (performSearchHandler != null) {
                     // mapViewModel.viewHomeBottomSheet.value = false;
                     mapViewModel.performSearch(

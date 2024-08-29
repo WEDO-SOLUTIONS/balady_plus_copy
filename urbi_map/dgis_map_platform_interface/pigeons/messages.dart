@@ -609,10 +609,13 @@ class MarkerTextStyleMessage {
   final String? fontName;
 }
 
+/// Don't use this class directly. Use [SvgMarkerIcon], [PngMarkerIcon], [PngBytesMarkerIcon] instead.
 class MarkerIconMessage {
-  MarkerIconMessage(this.path, this.width, this.iconMapDirection, this.iconOpacity);
+  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection, this.iconOpacity, this.pngData, this.pngPath);
 
-  final String path;
+  final String? svgPath;
+  final Uint8List? pngData;
+  final String? pngPath;
   final double width;
   final double? iconOpacity;
   final MarkerAzimuthMessage? iconMapDirection;

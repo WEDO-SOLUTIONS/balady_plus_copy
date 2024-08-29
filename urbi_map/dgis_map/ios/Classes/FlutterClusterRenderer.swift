@@ -32,7 +32,7 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
         semaphore.wait()
         
         var markerImage: Image? = nil
-        if let icon = message!.icon?.path {
+        if let icon = message!.icon?.svgPath {
             if let cachedIcon = iconCache[icon] {
                 markerImage = cachedIcon
             } else {

@@ -108,7 +108,7 @@ class MapObjectManager extends _$MapObjectManager {
         );
 
     _markers.add(marker);
-    currentMarkerIcon = marker.options.icon?.path;
+    currentMarkerIcon = marker.options.icon?.svgPath;
   }
 
   Future<void> addMarkers(List<Marker> markers) async {
@@ -118,7 +118,7 @@ class MapObjectManager extends _$MapObjectManager {
         );
 
     _markers.addAll(markers);
-    currentMarkerIcon = markers.firstOrNull?.options.icon?.path;
+    currentMarkerIcon = markers.firstOrNull?.options.icon?.svgPath;
   }
 
   Future<void> setMapObjectManagerIsVisible({required bool isVisible}) async {
