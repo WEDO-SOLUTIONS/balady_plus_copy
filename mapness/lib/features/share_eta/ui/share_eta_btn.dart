@@ -9,11 +9,12 @@ import 'package:mapness/features/share_eta/providers/eta_websocket_provider.dart
 import 'package:mapness/features/share_eta/providers/websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn_action.dart';
-import 'package:share_plus/share_plus.dart';
 
 class ShareEtaBtn extends HookConsumerWidget {
   final int durationMinutes;
-  const ShareEtaBtn({required this.durationMinutes, Key? key}) : super(key: key);
+  final String? destination;
+
+  const ShareEtaBtn({required this.durationMinutes, this.destination, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,8 +35,7 @@ class ShareEtaBtn extends HookConsumerWidget {
         final streamToken = streamData.streamToken!;
         final streamId = streamData.streamId!;
 
-        final shareText = 'I will arrive in ${streamData.durationMinutes} minutes to my destination';
-        Share.share(shareText);
+        streamNotifier.shareStream();
 
         wsProvider.start(
           token: streamToken,

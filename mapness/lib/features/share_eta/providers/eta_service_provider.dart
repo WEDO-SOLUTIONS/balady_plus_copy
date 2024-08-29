@@ -3,6 +3,7 @@ import 'package:mapness/features/share_eta/models/eta_stream_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:share_plus/share_plus.dart';
 
 part 'eta_service_provider.g.dart';
 
@@ -89,6 +90,19 @@ class EtaService extends _$EtaService {
       }
     } on Exception catch (e, st) {
       state = AsyncError(e, st);
+    }
+  }
+
+  Future<void> shareStream() async {
+    if (state.hasValue) {
+      final durationInMinutes = state.value!.durationMinutes;
+      if (durationInMinutes == null) {
+        return;
+      }
+
+      final shareText = 'I will arrive in $durationInMinutes minutes to my destination';
+
+      await Share.share(shareText);
     }
   }
 }
