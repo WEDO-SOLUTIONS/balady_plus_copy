@@ -404,6 +404,7 @@ class MapViewModel extends BaseViewModel {
     try {
       final permission = await Permission.location.request();
       if (permission.isGranted) {
+        await controller.onLocationPermissionGranted();
         await controller.toggleFollowState();
 
         await controller.setCameraPosition(

@@ -781,6 +781,15 @@ class DgisMapView(
         )
     }
 
+    override fun onLocationPermissionGranted(
+        desiredAccuracy: DesiredAccuracyMessage,
+        result: Messages.Result<Void>?
+    ) {
+        locationSource.onPermissionGranted()
+        locationSource.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
+        result?.success(null)
+    }
+    
     override fun overlappedBy(
         outerRect: GeoRectMessage,
         innerRect: GeoRectMessage,

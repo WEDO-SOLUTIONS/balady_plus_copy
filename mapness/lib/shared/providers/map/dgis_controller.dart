@@ -101,11 +101,15 @@ class DgisController extends _$DgisController {
       if (!locationPermission.isGranted) {
         locationPermission = await locationNotifier.request();
       }
+      if (locationPermission.isGranted) {
+        await controller.onLocationPermissionGranted(
+          desiredAccuracy: DesiredAccuracyMessage.high,
+        );
+      }
     } on Exception catch (e) {
       // TODO: store it to analytics
       debugPrint('Location permission error: $e');
     }
-
     await Future.delayed(
       const Duration(milliseconds: 100),
       () => controller.toggleFollowState(),

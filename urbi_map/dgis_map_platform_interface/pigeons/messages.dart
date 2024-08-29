@@ -1319,6 +1319,9 @@ abstract class MapApi {
   void removePolygon(String id, MapObjectManagerMessage? manager);
 
   @async
+  void onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy);
+
+  @async
   void removeAllPolygons(MapObjectManagerMessage? manager);
 
   @async
