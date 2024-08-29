@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/share_eta/entities/share_eta_time_type.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
@@ -59,16 +60,16 @@ class EtaTimerControl extends ConsumerWidget {
 
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
-      context: context,
+      context: rootNavigatorKey.currentContext!,
       isScrollControlled: true,
       builder: (context) => EtaInprogressSheet(
         onShareMorePressed: () async {
           context.pop();
-          _showEtaTimeSheet(context, ref);
+          _showEtaTimeSheet(rootNavigatorKey.currentContext!, ref);
         },
         onStopSharePressed: () {
           context.pop();
-          _stopShare(context, ref);
+          _stopShare(ref);
         },
         timeLeft: left,
       ),
@@ -82,14 +83,14 @@ class EtaTimerControl extends ConsumerWidget {
       isScrollControlled: true,
       builder: (context) => EtaSharingTimeSheet(
         onConfirmTap: (v) async {
-          await _stopShare(context, ref);
+          await _stopShare(ref);
           await ref.read(shareEtaProvider.notifier).startSharing(v.durationInMinutes);
         },
       ),
     );
   }
 
-  Future<void> _stopShare(BuildContext context, WidgetRef ref) async {
+  Future<void> _stopShare(WidgetRef ref) async {
     final etaStore = EtaStreamStorage();
     if (etaStore.state.streamToken == null || etaStore.state.xStreamData == null) {
       return;

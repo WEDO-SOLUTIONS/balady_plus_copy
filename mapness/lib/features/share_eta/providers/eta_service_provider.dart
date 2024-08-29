@@ -96,9 +96,7 @@ class EtaService extends _$EtaService {
 
       final statusCode = response.statusCode!;
 
-      if (statusCode >= 200 && statusCode < 300) {
-        state = const AsyncData(null);
-      } else {
+      if (statusCode < 200 && statusCode >= 300) {
         state = AsyncError(Exception('Failed to stop ETA stream'), StackTrace.current);
       }
     } catch (e, st) {
