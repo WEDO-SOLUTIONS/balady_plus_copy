@@ -277,20 +277,17 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (storyArgs.type != StoryTypes.onboarding)
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-                  child: FrameProgressIndicator(
-                    frameIndex: widget.frameIndex,
-                    framesLength: widget.frameLength,
-                    animation: _progress,
-                    trackTheme: storyTheme.trackTheme,
-                  ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+                child: FrameProgressIndicator(
+                  frameIndex: widget.frameIndex,
+                  framesLength: widget.frameLength,
+                  animation: storyArgs.type == StoryTypes.onboarding ? const AlwaysStoppedAnimation(1) : _progress,
+                  trackTheme: storyTheme.trackTheme,
                 ),
-              )
-            else
-              const Spacer(),
+              ),
+            ),
             AppButton.close(
               onTap: StoryArgsProvider.of(context).onClose,
               innerPadding: const EdgeInsets.all(Spacing.$2x),
