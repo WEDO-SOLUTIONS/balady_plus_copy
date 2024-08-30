@@ -42,13 +42,8 @@ class QuickFilters extends ConsumerWidget {
     final naviFeature = ref.watch(appFeaturesProvider);
 
     final favourites = <FilterItem>[
-      FilterItem(
-        filterType: FilterType.favourites,
-        icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
-        onTap: onFavouritesBookmarkTap,
-      ),
       if (favouritesState.valueOrNull?.home != null && naviFeature.naviEnabled)
-        FilterItem(
+        FilterItemConfig(
           filterType: FilterType.home,
           title: context.l10n.home,
           icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
@@ -66,7 +61,7 @@ class QuickFilters extends ConsumerWidget {
           },
         ),
       if (favouritesState.valueOrNull?.work != null && naviFeature.naviEnabled)
-        FilterItem(
+        FilterItemConfig(
           filterType: FilterType.work,
           title: context.l10n.work,
           icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
@@ -88,10 +83,15 @@ class QuickFilters extends ConsumerWidget {
     final customItems = customFilters ?? [];
 
     final items = [
-      ...favourites,
+      FilterItemConfig(
+        filterType: FilterType.favourites,
+        icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
+        onTap: onFavouritesBookmarkTap,
+      ),
       ...customItems,
+      ...favourites,
       ...models.QuickFilter.values.map(
-        (filter) => FilterItem(
+        (filter) => FilterItemConfig(
           filterType: FilterType.quick,
           title: filter.title(context.l10n),
           selected: filter == selectedQuickFilter,

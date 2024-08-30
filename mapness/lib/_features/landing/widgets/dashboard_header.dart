@@ -5,7 +5,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
@@ -20,15 +19,15 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
-class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final DraggableScrollableController draggableScrollableController;
+class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
+  final BottomSheetScrollController scrollController;
   final TickerProvider _vsync;
 
-  static const headerHeight = 140.0;
+  static const headerHeight = 72.0;
 
-  DashboardHeaderDelegate({
+  DashboardHeaderDelegateV2({
     required TickerProvider vsync,
-    required this.draggableScrollableController,
+    required this.scrollController,
   }) : _vsync = vsync;
 
   @override
@@ -43,8 +42,8 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
       minExtent: minExtent,
       maxExtent: maxExtent,
       currentExtent: currentHeaderExtent,
-      child: DashboardHeader(
-        draggableScrollableController: draggableScrollableController,
+      child: _DashboardMenu(
+        scrollController: scrollController,
         shrinkOffset: shrinkOffset,
       ),
     );
@@ -54,7 +53,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => headerHeight;
 
   @override
-  double get minExtent => headerHeight - Spacing.$4x - QuickFilters.height;
+  double get minExtent => headerHeight - Spacing.$4x - QuickFilters.height - Spacing.$2x;
 
   @override
   FloatingHeaderSnapConfiguration? get snapConfiguration => FloatingHeaderSnapConfiguration();
@@ -63,14 +62,13 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
 }
 
-class DashboardHeader extends ConsumerWidget {
+class _DashboardMenu extends ConsumerWidget {
   final double shrinkOffset;
-  final DraggableScrollableController draggableScrollableController;
+  final BottomSheetScrollController scrollController;
 
-  const DashboardHeader({
-    required this.draggableScrollableController,
+  const _DashboardMenu({
+    required this.scrollController,
     required this.shrinkOffset,
-    super.key,
   });
 
   @override
@@ -79,87 +77,90 @@ class DashboardHeader extends ConsumerWidget {
     final remainingSpaceForQuickFilters = max(0.0, heightOfQuickFilters - shrinkOffset);
     final quickFilterSizeProportion = remainingSpaceForQuickFilters / heightOfQuickFilters;
 
-    return Container(
+    return DecoratedBox(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16),
-          topLeft: Radius.circular(16),
-        ),
         boxShadow: [Elevation.s],
       ),
-      child: Column(
-        children: [
-          const SizedBox(height: Spacing.$2x),
-          const Center(child: SheetDragger()),
-          const SizedBox(height: Spacing.$2x),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: GestureDetector(
-              onTap: () {
-                Metrics.logEventAdvanced(
-                  MetricsConstants.exploreKeys.searchField,
-                  action: MetricAction.tap.name,
-                  group: MetricsConstants.exploreTag,
-                );
-                ref.read(searchByRubricsQueryProvider.notifier).update(null);
-                // Here we clean the search query on tap on the search field
-                // So the user can see the search history, not previous search results
-                ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
-                const SearchRoute().push(context);
-                draggableScrollableController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                );
-              },
-              child: AbsorbPointer(
-                child: BaladyInput.searchV2(
-                  hintText: context.l10n.searchPlaceOrAddress,
-                  readOnly: true,
-                  fillColor: context.colorsV2.neutralContainerDefault,
-                  hintColor: context.colorsV2.foregroundSoft,
-                  textFieldHeight: 40,
-                  textStyle: context.textStyleV3.bodySmallRegular,
-                ),
-              ),
+      child: ClipRect(
+        clipBehavior: Clip.antiAlias,
+        child: Opacity(
+          opacity: quickFilterSizeProportion,
+          child: SizedOverflowBox(
+            size: Size(
+              double.infinity,
+              remainingSpaceForQuickFilters,
             ),
-          ),
-          ClipRect(
-            clipBehavior: Clip.antiAlias,
-            child: Opacity(
-              opacity: quickFilterSizeProportion,
-              child: SizedOverflowBox(
-                size: Size(
-                  double.infinity,
-                  remainingSpaceForQuickFilters,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: Spacing.$4x),
-                    MapQuickFilters(
-                      id: QuickFilterScreen.dashboard,
-                      isDashboard: true,
-                      customFilters: [
-                        FilterItem(
-                          filterType: FilterType.custom,
-                          title: 'Go',
-                          icon: 'assets/icons/svg/quick_filters/free_roam.svg',
-                          onTap: () {
-                            FreeRoamRoute.open(ref.watch(goRouterProvider));
-                          },
-                        ),
-                      ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: Spacing.$4x),
+                MapQuickFilters(
+                  id: QuickFilterScreen.dashboard,
+                  isDashboard: true,
+                  customFilters: [
+                    FilterItemConfig(
+                      filterType: FilterType.custom,
+                      title: context.l10n.go,
+                      icon: 'assets/icons/svg/quick_filters/free_roam.svg',
+                      onTap: () {
+                        FreeRoamRoute.open(ref.watch(goRouterProvider));
+                      },
                     ),
-                    const SizedBox(height: Spacing.$4x),
                   ],
                 ),
-              ),
+                const SizedBox(height: Spacing.$4x),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
+}
+
+class DashboardHeader extends ConsumerWidget {
+  final BottomSheetScrollController scrollController;
+
+  const DashboardHeader({
+    required this.scrollController,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Container(
+        height: 56,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          child: GestureDetector(
+            onTap: () {
+              Metrics.logEventAdvanced(
+                MetricsConstants.exploreKeys.searchField,
+                action: MetricAction.tap.name,
+                group: MetricsConstants.exploreTag,
+              );
+              ref.read(searchByRubricsQueryProvider.notifier).update(null);
+              // Here we clean the search query on tap on the search field
+              // So the user can see the search history, not previous search results
+              ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
+              const SearchRoute().push(context);
+              scrollController.setState(ThreeStateBottomSheet.hidden);
+            },
+            child: AbsorbPointer(
+              child: BaladyInput.searchV2(
+                hintText: context.l10n.searchPlaceOrAddress,
+                readOnly: true,
+                fillColor: context.colorsV2.neutralContainerDefault,
+                hintColor: context.colorsV2.foregroundSoft,
+                textFieldHeight: 40,
+                textStyle: context.textStyleV3.bodySmallRegular,
+              ),
+            ),
+          ),
+        ),
+      );
 }

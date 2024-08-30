@@ -6,6 +6,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -121,16 +122,17 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                                   ),
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.only(bottom: Spacing.$3x, left: Spacing.$4x, right: Spacing.$4x),
-                                  child: TabsRow.v2(
+                                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                                  child: SegmentTabsButton(
                                     tabsContent: [
                                       TabsRowV2Content(title: context.l10n.segmentButtonOffTitle),
-                                      TabsRowV2Content(title: context.l10n.importantOnly),
+                                      TabsRowV2Content(title: context.l10n.segmentButtonImportantTitle),
                                       TabsRowV2Content(title: context.l10n.segmentButtonAllTitle),
                                     ],
-                                    onIndexChanged: (index) {
-                                      // TODO: (roman) Use alert provider here, to change alert state.
+                                    onIndexChanged: (value) {
+                                      if (value != null) {
+                                        // soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
+                                      }
                                     },
                                   ),
                                 ),
@@ -190,7 +192,8 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
       group: MetricsConstants.navigationTag,
       action: MetricAction.tap.toString(),
     );
-    await ref.read(urbiAnalyticsProvider).track('tripStopped');
+
+    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _endTrip(() {
       if (context.mounted) {

@@ -350,7 +350,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       group: MetricsConstants.navigationTag,
       action: MetricAction.tap.toString(),
     );
-    await ref.read(urbiAnalyticsProvider).track('tripStopped');
+    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _endTrip(() {
       if (context.mounted) {

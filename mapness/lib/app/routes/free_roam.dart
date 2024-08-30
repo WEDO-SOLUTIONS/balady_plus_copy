@@ -34,12 +34,9 @@ TransculentPage<void> _freeRoamTransition({
   required Widget child,
 }) =>
     TransculentPage(
-      child: MediaQuery(
-        data: MediaQuery.of(context),
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: Align(alignment: Alignment.bottomCenter, child: child),
-        ),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Align(alignment: Alignment.bottomCenter, child: child),
       ),
     );
 

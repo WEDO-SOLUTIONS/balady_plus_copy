@@ -6,4 +6,5 @@ class MapnessConstants {
   static const poiDataBoxName = 'poiDataBoxName';
   static const navigatorStateKey = 'navigatorState';
   static const navigatorStateTypeKey = 'navigatorStateType';
+  static const analyticsTripStopped = 'tripStopped';
 }

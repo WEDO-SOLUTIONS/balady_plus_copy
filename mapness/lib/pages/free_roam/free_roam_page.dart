@@ -29,13 +29,8 @@ import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
-/// We don't show black background under the opened sheet. The meaning of this is that the user have to control the map even if he opened the sheet.
-/// You don't need to add black background to make the app similar to the other app
 class FreeRoamPage extends ConsumerStatefulWidget {
-  // final bool restoreFromState;
-
   const FreeRoamPage({
-    // required this.restoreFromState,
     super.key,
   });
 
@@ -43,27 +38,27 @@ class FreeRoamPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => FreeRoamPageState();
 }
 
-class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingObserver {
+class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   static const padding = EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x);
 
   bool isLoading = true;
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      // saveNavigationState();
-    }
-  }
+  bool isControlsActive = true;
+  bool wasSetActive = true;
+
+  Timer? timer;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+
     _initFreeRoam().then((_) {
       setState(() {
         isLoading = false;
       });
     });
+    startControlsDisapearTimer();
+
     WakelockPlus.enable();
   }
 
@@ -75,10 +70,17 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-
     WakelockPlus.disable();
     super.dispose();
+  }
+
+  void startControlsDisapearTimer() {
+    timer = Timer(const Duration(seconds: 15), () {
+      setState(() {
+        isControlsActive = false;
+        wasSetActive = false;
+      });
+    });
   }
 
   Future<void> restoreNavigationState() async {
@@ -108,71 +110,102 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     await dgisController.setNavigatorVoice(ref.read(navigatorVoiceProvider));
 
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
+    await dgisController.followNavigation();
 
-    await dgisController.stopNavigation();
     await dgisController.freeRoamController.start();
+    await dgisController.setMapAttributeBool('navigatorOn', true);
   }
 
   @override
-  Widget build(BuildContext context) => Directionality(
-        textDirection: TextDirection.ltr,
-        child: SafeArea(
-          bottom: false,
-          child: Stack(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const SizedBox(height: 6, width: double.maxFinite),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        final message = ref.watch(pathNavMessageProvider);
-                        final maneuver = ref.watch(pathNavManeuverProvider);
-                        final info = ref.watch(pathNavSpeedInfoProvider);
+  Widget build(BuildContext context) => SafeArea(
+        bottom: false,
+        child: Stack(
+          children: [
+            Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (event) {
+                timer?.cancel();
+                timer = null;
+                setState(() {
+                  if (!isControlsActive) {
+                    wasSetActive = true;
+                    isControlsActive = true;
+                  }
+                });
+              },
+              onPointerUp: (event) {
+                startControlsDisapearTimer();
+              },
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                setState(() {
+                  if (wasSetActive) {
+                    wasSetActive = false;
+                    return;
+                  }
 
-                        return Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: Material(
-                            type: MaterialType.transparency,
-                            color: Colors.transparent,
-                            child: uikit.BaladyManeuverAndLimit(
-                              isPedestrian: false,
-                              speedInfo: uikit.LimitsModel(
-                                speed: info.speed,
-                                speedExceed: info.speedExceed,
-                                speedLimit: info.speedLimit,
-                              ),
-                              maneuver: maneuver != null
-                                  ? uikit.BaladyManeuverModel(
-                                      distance: maneuver.distance,
-                                      instruction: maneuver.instruction?.toUIKit(),
-                                      roadName: maneuver.roadName,
-                                      unit: maneuver.unit,
-                                    )
-                                  : null,
-                              message: message != null && message.state != PathNavMessageState.reroute
-                                  ? uikit.ManeuverMessageModel(
-                                      comment: message.state.toMessage(context.l10n),
-                                      state: message.state.toUIKit(),
-                                    )
-                                  : null,
-                            ),
+                  isControlsActive = !isControlsActive;
+                });
+              },
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const SizedBox(height: 6, width: double.maxFinite),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final message = ref.watch(pathNavMessageProvider);
+                      final maneuver = ref.watch(pathNavManeuverProvider);
+                      final info = ref.watch(pathNavSpeedInfoProvider);
+
+                      return Material(
+                        type: MaterialType.transparency,
+                        color: Colors.transparent,
+                        child: uikit.BaladyManeuverAndLimit(
+                          isPedestrian: false,
+                          speedInfo: uikit.LimitsModel(
+                            speed: info.speed,
+                            speedExceed: info.speedExceed,
+                            speedLimit: info.speedLimit,
                           ),
-                        );
-                      },
-                    ),
+                          maneuver: maneuver != null
+                              ? uikit.BaladyManeuverModel(
+                                  distance: maneuver.distance,
+                                  instruction: maneuver.instruction?.toUIKit(),
+                                  roadName: maneuver.roadName,
+                                  unit: maneuver.unit,
+                                )
+                              : null,
+                          message: message != null && message.state != PathNavMessageState.reroute
+                              ? uikit.ManeuverMessageModel(
+                                  comment: message.state.toMessage(context.l10n),
+                                  state: message.state.toUIKit(),
+                                )
+                              : null,
+                        ),
+                      );
+                    },
                   ),
-                  const SizedBox(height: 12),
-                  const Padding(
-                    padding: padding,
-                    child: TrafficParkingControl(),
-                  ),
-                  const Spacer(),
-                  const Padding(
-                    padding: padding,
-                    child: Row(
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: padding,
+                  child: AnimatedOpacity(
+                      opacity: isControlsActive ? 1 : 0,
+                      duration: const Duration(milliseconds: 250),
+                      child: const TrafficParkingControl()),
+                ),
+                const Spacer(),
+                Padding(
+                  padding: padding,
+                  child: AnimatedOpacity(
+                    opacity: isControlsActive ? 1 : 0,
+                    duration: const Duration(milliseconds: 150),
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IndoorControl(),
@@ -180,29 +213,36 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                       ],
                     ),
                   ),
-                  const Spacer(),
-                  const Padding(
-                    padding: padding,
-                    child: CompassControl(),
+                ),
+                const Spacer(),
+                Padding(
+                  padding: padding,
+                  child: AnimatedOpacity(
+                      opacity: isControlsActive ? 1 : 0,
+                      duration: const Duration(milliseconds: 150),
+                      child: const CompassControl()),
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: padding,
+                  child: AnimatedOpacity(
+                    opacity: isControlsActive ? 1 : 0,
+                    duration: const Duration(milliseconds: 150),
+                    child: const FollowControl(),
                   ),
-                  const SizedBox(height: 8),
-                  const Padding(
-                    padding: padding,
-                    child: FollowControl(),
+                ),
+                const SizedBox(height: 12),
+                Center(
+                  child: RoadPanel(
+                    isLoading: isLoading,
+                    onEndTrip: _endTripAndShowHome,
+                    onOpenSheet: () => RoadPanelRoute.open(context),
                   ),
-                  const SizedBox(height: 12),
-                  Center(
-                    child: RoadPanel(
-                      isLoading: isLoading,
-                      onEndTrip: _endTripAndShowHome,
-                      onOpenSheet: () => RoadPanelRoute.open(context),
-                    ),
-                  ),
-                  const SizedBox(height: 21),
-                ],
-              ),
-            ],
-          ),
+                ),
+                const SizedBox(height: 21),
+              ],
+            ),
+          ],
         ),
       );
 
@@ -212,8 +252,9 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     if (!mounted) {
       return;
     }
-
-    await ref.read(dgisControllerProvider).value?.freeRoamController.stop();
+    final dgisController = ref.read(dgisControllerProvider);
+    await dgisController.value?.freeRoamController.stop();
+    await dgisController.value?.setMapAttributeBool('navigatorOn', false);
 
     action();
   }
@@ -229,7 +270,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
       group: MetricsConstants.navigationTag,
       action: MetricAction.tap.toString(),
     );
-    await ref.read(urbiAnalyticsProvider).track('tripStopped');
+    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _endTrip(() {
       if (context.mounted) {
