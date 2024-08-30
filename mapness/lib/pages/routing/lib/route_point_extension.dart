@@ -7,7 +7,7 @@ extension ToRouteSearchPointMessage on RouteParamsPoint {
         coordinates: geoPoint,
         objectId: DgisObjectIdMessage(
           objectId: objectId ?? 0,
-          entranceId: entraceId ?? 0,
+          entranceId: entranceId ?? 0,
         ),
       );
 }

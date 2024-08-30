@@ -37,19 +37,19 @@ class FlutterClusterRenderer(
         val options = runBlocking { apiRenderCluster(manager, cluster.objectCount) }
 
         var markerImage: Image? = null
-        if (options.icon != null) {
-            if (options.icon!!.path in iconCache) {
-                markerImage = iconCache[options.icon!!.path]
+        if (options.icon != null && options.icon!!.svgPath != null) {
+            if (options.icon!!.svgPath in iconCache) {
+                markerImage = iconCache[options.icon!!.svgPath!!]
             } else {
                 try {
                     val asset =
                         FlutterInjector
                             .instance()
                             .flutterLoader()
-                            .getLookupKeyForAsset(options.icon!!.path)
+                            .getLookupKeyForAsset(options.icon!!.svgPath!!)
 
                     markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
-                    iconCache[options.icon!!.path] = markerImage
+                    iconCache[options.icon!!.svgPath!!] = markerImage
                 } catch (e: FileNotFoundException) {
                     print(e)
                 }

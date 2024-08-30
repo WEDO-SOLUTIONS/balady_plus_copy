@@ -27,14 +27,12 @@ class VisibleRectHandler {
             "event": Events.cameraStateChanged,
             "state": {
                 switch state {
-                case .busy:
-                    return "busy"
-                case .fly:
-                    return "fly"
-                case .followPosition:
-                    return "follow"
-                case .free:
-                    return "free"
+                    case .busy:
+                        return "busy"
+                    case .fly:
+                        return "fly"
+                    case .free:
+                        return "free"
                 }
             }()
         ])

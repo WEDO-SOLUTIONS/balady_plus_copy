@@ -52,8 +52,8 @@ extension SuggestHandler {
 extension SuggestedType {
     fileprivate func toMessage() -> SuggestedTypeMessage {
         switch self {
-        case .admDiv:
-            return .admDiv
+        case .admDivCity:
+            return .admDivCity
         case .attraction:
             return .attraction
         case .attribute:
@@ -66,16 +66,14 @@ extension SuggestedType {
             return .coordinates
         case .crossroad:
             return .crossroad
-        case .districtArea:
-            return .districtArea
+        case .admDivDistrictArea:
+            return .admDivDistrictArea
         case .org:
             return .org
-        case .orgCategory:
-            return .orgCategory
         case .parking:
             return .parking
-        case .region:
-            return .region
+        case .admDivRegion:
+            return .admDivRegion
         case .road:
             return .road
         case .route:
@@ -90,6 +88,37 @@ extension SuggestedType {
             return .text
         case .unknown:
             return .unknown
+        case .admDivCountry:
+            return .admDivCountry
+        case .admDivDistrict:
+            return .admDivDistrict
+        case .admDivDivision:
+            return .admDivDivision
+        case .admDivLivingArea:
+            return .admDivLivingArea
+        case .admDivPlace:
+            return .admDivPlace
+        case .admDivSettlement:
+            return .admDivSettlement
+        case .kilometerRoadSign:
+            return .kilometerRoadSign
+        case .marketAttribute:
+            return .marketAttribute
+        case .marketBrand:
+            return .marketBrand
+        case .marketCategory:
+            return .marketCategory
+        case .marketSuggestorCategory:
+            return .marketSuggestorCategory
+        case .metaRubric:
+            return .metaRubric
+        case .routeType:
+            return .routeType
+        case .rubric:
+            return .rubric
+        case .stationMetro:
+            return .stationMetro
+
         }
     }
 }
@@ -97,8 +126,8 @@ extension SuggestedType {
 extension SuggestedTypeMessage {
     var suggestedType: SuggestedType {
         switch self {
-        case .admDiv:
-            return .admDiv
+        case .admDivCity:
+            return .admDivCity
         case .attraction:
             return .attraction
         case .attribute:
@@ -111,16 +140,14 @@ extension SuggestedTypeMessage {
             return .coordinates
         case .crossroad:
             return .crossroad
-        case .districtArea:
-            return .districtArea
+        case .admDivDistrictArea:
+            return .admDivDistrictArea
         case .org:
             return .org
-        case .orgCategory:
-            return .orgCategory
         case .parking:
             return .parking
-        case .region:
-            return .region
+        case .admDivRegion:
+            return .admDivRegion
         case .road:
             return .road
         case .route:
@@ -135,10 +162,39 @@ extension SuggestedTypeMessage {
             return .text
         case .unknown:
             return .unknown
+        case .admDivCountry:
+            return .admDivCountry
+        case .admDivDistrict:
+            return .admDivDistrict
+        case .admDivDivision:
+            return .admDivDivision
+        case .admDivLivingArea:
+            return .admDivLivingArea
+        case .admDivPlace:
+            return .admDivPlace
+        case .admDivSettlement:
+            return .admDivSettlement
+        case .kilometerRoadSign:
+            return .kilometerRoadSign
+        case .marketAttribute:
+            return .marketAttribute
+        case .marketBrand:
+            return .marketBrand
+        case .marketCategory:
+            return .marketCategory
+        case .marketSuggestorCategory:
+            return .marketSuggestorCategory
+        case .metaRubric:
+            return .metaRubric
+        case .routeType:
+            return .routeType
+        case .rubric:
+            return .rubric
+        case .stationMetro:
+            return .stationMetro
         }
     }
 }
-
 
 extension MarkedUpText {
     fileprivate func toMessage() -> MarkedUpTextMessage {

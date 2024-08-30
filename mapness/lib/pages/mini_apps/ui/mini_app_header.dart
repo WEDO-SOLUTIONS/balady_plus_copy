@@ -6,7 +6,6 @@ import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class MiniAppHeader extends ConsumerWidget {
   const MiniAppHeader({
@@ -41,7 +40,7 @@ class MiniAppHeader extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Icon(
-                      context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                      SystemIcons.arrowCornerLeftLarge,
                       size: 24,
                       color: context.color.textAndIconsBasePrimary,
                     ),

@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,8 +26,13 @@ import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.d
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
+import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
@@ -48,6 +54,8 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
+
+import 'app/routes/eta.dart';
 
 Mixpanel? mixpanel;
 
@@ -149,7 +157,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         if (location != null) {
           ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
         } else {
-          _locationListener = ref.listenManual<GeoPointMessage?>(locationProvider, (_, next) {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
               ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
@@ -294,8 +302,29 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
+  void _showLiveLocationExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.liveLocation(context),
+    );
+  }
+
+  void _showEtaExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.eta(context),
+    );
+  }
+
   Future<void> openAppLink(Uri uri) async {
-    final url = Uri.parse(uri.fragment);
+    final decodeFull = Uri.decodeFull(uri.toString());
+    final parse = Uri.parse(decodeFull);
+    final url = Uri.parse(parse.fragment);
+
     final momrahId = url.queryParameters[BaldayDeeplink.momrahIdKey];
     final latString = url.queryParameters[BaldayDeeplink.latitudeKey];
     final latitude = double.tryParse(latString ?? '');
@@ -303,6 +332,45 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final longitude = double.tryParse(lonString ?? '');
     final type = url.queryParameters[BaldayDeeplink.typeKey];
     final objectId = url.queryParameters[BaldayDeeplink.dgisObjectIdKey];
+    final streamId = url.queryParameters[BaldayDeeplink.streamId];
+    final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
+
+    if (tokenId != null && streamId != null) {
+      if (type == 'eta') {
+        try {
+          final uriPath = Uri(path: EtaRoute.path, queryParameters: {
+            EtaRoute.tokenKey: tokenId,
+            EtaRoute.streamKey: streamId,
+            if (latitude != null) EtaRoute.latKey: latitude.toString(),
+            if (longitude != null) EtaRoute.lonKey: longitude.toString(),
+          });
+          await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+          await ref.read(goRouterProvider).push(uriPath.toString());
+          return;
+        } catch (e) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showEtaExpired(rootNavigatorKey.currentContext!);
+          });
+        }
+      } else if (type == 'live') {
+        try {
+          // Get old stream token and stream id
+          final oldToken = EtaStreamStorage().state.streamToken;
+          final oldXStreamData = EtaStreamStorage().state.xStreamData;
+
+          if (oldToken != null && oldXStreamData != null) {
+            await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
+          }
+
+          await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+        } catch (e) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showLiveLocationExpired(rootNavigatorKey.currentContext!);
+          });
+        }
+        return;
+      }
+    }
 
     if (objectId != null) {
       final id = int.tryParse(objectId);

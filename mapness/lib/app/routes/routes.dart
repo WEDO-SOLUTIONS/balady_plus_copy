@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:mapness/app/routes/esri_layers.dart';
+import 'package:mapness/app/routes/eta.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/free_roam.dart';
@@ -9,6 +10,7 @@ import 'package:mapness/app/routes/jobs_map.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/app/routes/mini_apps.dart';
+import 'package:mapness/app/routes/navigator_settings.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/app/routes/poi_map.dart';
@@ -43,4 +45,6 @@ final $appRoutes = [
   ...$eventRoutes,
   ...$miniAppsRoutes,
   ...$photoViewerRoutes,
+  ...$navigatorSettingsRoutes,
+  ...$etaRoutes,
 ];

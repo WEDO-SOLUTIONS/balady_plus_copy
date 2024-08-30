@@ -7,7 +7,6 @@ import 'package:mapness/_features/common/providers/permissions.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -84,9 +83,6 @@ class DgisController extends _$DgisController {
     try {
       // Voice
       await controller.installVoice('voice-saud');
-      await controller.installVoice('voice-jennifer');
-
-      ref.read(navigatorVoiceProvider.notifier).update(ref.read(appLanguageProvider).navigatorVoice);
     } on PlatformException catch (e) {
       debugPrint('Voice installation error: $e');
     }
@@ -105,7 +101,6 @@ class DgisController extends _$DgisController {
       if (!locationPermission.isGranted) {
         locationPermission = await locationNotifier.request();
       }
-
       if (locationPermission.isGranted) {
         await controller.onLocationPermissionGranted(
           desiredAccuracy: DesiredAccuracyMessage.high,
@@ -115,7 +110,6 @@ class DgisController extends _$DgisController {
       // TODO: store it to analytics
       debugPrint('Location permission error: $e');
     }
-
     await Future.delayed(
       const Duration(milliseconds: 100),
       () => controller.toggleFollowState(),

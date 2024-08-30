@@ -6,11 +6,13 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/app/routes/navigator_settings.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoadPanelSheet extends ConsumerStatefulWidget {
@@ -47,6 +49,8 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
   @override
   Widget build(BuildContext context) {
     final direction = ref.watch(uiDirectionProvider);
+    final soundSettingsModel = ref.watch(soundSettingsProvider);
+    final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
 
     return Scaffold(
       body: DraggableScrollableSheet(
@@ -56,127 +60,146 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
         maxChildSize: sheetPanelMaxHeight,
         snapSizes: const [.0, sheetPanelMaxHeight],
         snap: true,
-        builder: (context, scrollController) => Directionality(
-          textDirection: direction,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(RadiusBorder.xl),
-            ),
-            child: ColoredBox(
-              color: context.colorsV2.backgroundSurface4,
-              child: CustomScrollView(
-                controller: scrollController,
-                physics: const ClampingScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: ColoredBox(
-                      color: context.colorsV2.backgroundSurface1,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(width: ButtonSize.small.height),
-                            const SheetDragger(),
-                            AppButton.close(
-                              primaryIcon: SystemIcons.arrowCornerDownLarge,
-                              onTap: () {
-                                Metrics.logEventAdvanced(
-                                  MetricsConstants.layersKeys.exitIcon,
-                                  group: MetricsConstants.layersTag,
-                                  action: MetricAction.tap.toString(),
-                                );
-                                _hideLayersPanel();
-                              },
-                              padding: EdgeInsets.zero,
-                              innerPadding: const EdgeInsets.all(Spacing.$2x),
-                            ),
-                          ],
+        builder: (context, scrollController) {
+          final l10n = context.l10n;
+          final colorsV2 = context.colorsV2;
+          final textStyleV3 = context.textStyleV3;
+          final color = context.color;
+
+          return Directionality(
+            textDirection: direction,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(RadiusBorder.xl),
+              ),
+              child: ColoredBox(
+                color: colorsV2.backgroundSurface4,
+                child: CustomScrollView(
+                  controller: scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: ColoredBox(
+                        color: colorsV2.backgroundSurface1,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(width: ButtonSize.small.height),
+                              const SheetDragger(),
+                              AppButton.close(
+                                primaryIcon: SystemIcons.arrowCornerDownLarge,
+                                onTap: () {
+                                  Metrics.logEventAdvanced(
+                                    MetricsConstants.layersKeys.exitIcon,
+                                    group: MetricsConstants.layersTag,
+                                    action: MetricAction.tap.toString(),
+                                  );
+                                  _hideLayersPanel();
+                                },
+                                padding: EdgeInsets.zero,
+                                innerPadding: const EdgeInsets.all(Spacing.$2x),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          const SizedBox(height: Spacing.$4x),
-                          ContentContainer(
-                            child: Column(
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            const SizedBox(height: Spacing.$4x),
+                            ContentWrapper(
+                              color: color.surfaceBaseTertiary,
                               children: [
                                 ContentRow(
                                   options: ContentRowOptions(
-                                    title: context.l10n.voiceInstruction,
-                                    subtitle: context.l10n.announcedEvents,
+                                    subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
+                                      color: color.textAndIconsBaseSecondary,
+                                    ),
+                                    titleStyle: textStyleV3.bodyLargeMedium.copyWith(
+                                      color: colorsV2.foregroundDefault,
+                                    ),
                                     actionWidget: ContentRowActionOptions(
                                       actionPressed: () {
-                                        // TODO: (roman) Open sound settings here.
+                                        const SoundSettingsRoute().push(context);
                                       },
                                       actionIcon: AppIcons(
                                         iconData: SystemIcons.arrowCornerRightLarge,
                                         color: context.staticColor.textAndIconsBaseTertiary,
                                       ),
                                     ),
+                                    padding: const EdgeInsets.only(
+                                      top: Spacing.$4x,
+                                      bottom: Spacing.$3x,
+                                      right: Spacing.$4x,
+                                      left: Spacing.$4x,
+                                    ),
+                                    title: l10n.voiceInstruction,
+                                    subtitle: l10n.announcedEvents,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                                   child: SegmentTabsButton(
                                     tabsContent: [
-                                      TabsRowV2Content(title: context.l10n.segmentButtonOffTitle),
-                                      TabsRowV2Content(title: context.l10n.segmentButtonImportantTitle),
-                                      TabsRowV2Content(title: context.l10n.segmentButtonAllTitle),
+                                      TabsRowV2Content(title: l10n.segmentButtonOffTitle),
+                                      TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
+                                      TabsRowV2Content(title: l10n.segmentButtonAllTitle),
                                     ],
                                     onIndexChanged: (value) {
                                       if (value != null) {
-                                        // soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
+                                        soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
                                       }
                                     },
+                                    initialIndex: soundSettingsModel.voiceInstructionIndex,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(height: Spacing.$3x),
-                          ContentContainer(
-                            child: ContentRow(
-                              options: ContentRowOptions(
-                                leadingIcon: Icon(
-                                  SystemIcons.settings,
-                                  size: Spacing.$6x,
-                                  color: context.colorsV2.foregroundMuted,
-                                ),
-                                title: context.l10n.navigatorSettings,
-                                actionWidget: ContentRowActionOptions(
-                                  actionPressed: () {
-                                    // TODO: (roman) Open navigator settings here.
-                                  },
-                                  actionIcon: AppIcons(
-                                    iconData: SystemIcons.arrowCornerRightLarge,
-                                    color: context.staticColor.textAndIconsBaseTertiary,
+                            const SizedBox(height: Spacing.$3x),
+                            ContentContainer(
+                              child: ContentRow(
+                                options: ContentRowOptions(
+                                  leadingIcon: Icon(
+                                    SystemIcons.settings,
+                                    size: Spacing.$6x,
+                                    color: colorsV2.foregroundMuted,
+                                  ),
+                                  title: l10n.navigatorSettings,
+                                  actionWidget: ContentRowActionOptions(
+                                    actionPressed: () {
+                                      const NavigatorSettingsRoute().push(context);
+                                    },
+                                    actionIcon: AppIcons(
+                                      iconData: SystemIcons.arrowCornerRightLarge,
+                                      color: context.staticColor.textAndIconsBaseTertiary,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: Spacing.$5x),
-                          AppButton(
-                            buttonColorScheme: ButtonColorScheme.warning,
-                            color: context.colorsV2.errorDefault,
-                            primaryLabel: context.l10n.endTrip,
-                            onTap: _endTripAndShowHome,
-                          )
-                        ],
+                            const SizedBox(height: Spacing.$5x),
+                            AppButton(
+                              buttonColorScheme: ButtonColorScheme.warning,
+                              color: colorsV2.errorDefault,
+                              primaryLabel: l10n.endTrip,
+                              onTap: _endTripAndShowHome,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

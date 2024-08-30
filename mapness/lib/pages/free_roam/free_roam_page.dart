@@ -113,7 +113,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
     await dgisController.followNavigation();
 
     await dgisController.freeRoamController.start();
-    await dgisController.setMapAttributeBool('navigatorOn', true);
+    await dgisController.setMapAttributeBool('navigatorOn', value: true);
   }
 
   @override
@@ -254,7 +254,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
     }
     final dgisController = ref.read(dgisControllerProvider);
     await dgisController.value?.freeRoamController.stop();
-    await dgisController.value?.setMapAttributeBool('navigatorOn', false);
+    await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
 
     action();
   }

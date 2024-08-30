@@ -16,7 +16,7 @@ class VoicePicker extends ConsumerWidget {
     final voicePackages = ref.watch(voicePackagesProvider);
 
     return Column(
-      children: voicePackages.map((e) => VoiceRow(package: e)).toList(),
+      children: voicePackages.map((e) => VoiceRow(package: e.packageMessage)).toList(),
     );
   }
 }

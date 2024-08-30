@@ -115,7 +115,7 @@ class _RowButton extends StatelessWidget {
                     ],
                   ),
                   Icon(
-                    context.isLTR ? SystemIcons.arrowCornerRightSmall : SystemIcons.arrowCornerLeftSmall,
+                    SystemIcons.arrowCornerRightSmall,
                     color: context.colorsV2.foregroundMuted,
                   ),
                 ],
