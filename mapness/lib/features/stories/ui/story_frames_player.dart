@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/frame/story_frame_widget.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
@@ -59,6 +60,9 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
 
   void _previousPage(String storyId, int pageIndex) {
     if (pageIndex == 0) {
+      if (StoryArgsProvider.of(context).type == StoryTypes.onboarding) {
+        return;
+      }
       widget.onPreviousStory();
       return;
     }

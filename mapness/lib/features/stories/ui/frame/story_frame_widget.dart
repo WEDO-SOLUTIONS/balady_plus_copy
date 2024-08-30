@@ -275,6 +275,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
           right: Spacing.$4x,
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (storyArgs.type != StoryTypes.onboarding)
               Expanded(
