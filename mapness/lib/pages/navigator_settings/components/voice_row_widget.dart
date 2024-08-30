@@ -30,10 +30,12 @@ class VoiceRowWidget extends ConsumerWidget {
 
     return ContentRow(
       onTap: () {
-        if (packageInfo.installed) {
-          ref.read(navigatorVoiceProvider.notifier).update(package.id);
-        } else {
-          ref.read(voicePackagesProvider.notifier).install(package);
+        if (packageInfo.updateStatus != PackageUpdateStatusMessage.inProgress) {
+          if (packageInfo.installed) {
+            ref.read(navigatorVoiceProvider.notifier).update(package.id);
+          } else {
+            ref.read(voicePackagesProvider.notifier).install(package);
+          }
         }
       },
       options: ContentRowOptions(

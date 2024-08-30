@@ -32,8 +32,10 @@ class SoundSettingsModel {
   /// Current voice language code, if value wasn't picked before, it takes value from app language
   final String voicesLanguage;
 
+  ///List of installed voices on device
   final List<PackageMessage> installedVoices;
 
+  ///List of available for download voices
   final List<PackageMessage> unInstalledVoices;
 
   /// Current voice of assistant
@@ -81,7 +83,7 @@ class SoundSettingsModel {
 @Riverpod(keepAlive: true)
 class SoundSettings extends _$SoundSettings {
   static const _soundToggleTypesList = SoundToggleType.values;
-  static final _promptsVolumeList = [10, 30, 60];
+  static const _promptsVolumeList = [10, 30, 60];
 
   @override
   SoundSettingsModel build() {
