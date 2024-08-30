@@ -40,12 +40,16 @@ dependencies:
     path: ..
 
   balady_uikit:
-    hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^2.0.8
+    # hosted: https://baladyapp-unpub.urbi.ae/
+    # version: ^2.0.7
+    # path: ../../balady_uikit
+    git:
+      url: git@github.com:urbi-ae/balady_uikit.git
+      ref: feat/BSA-604/feedback-part-1
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.0.4    
+    version: ^0.0.4
 
   urbi_utils:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -158,3 +162,4 @@ flutter:
     - assets/icons/svg/poi_card/
     - assets/images/
     - assets/images_svg/
+    - assets/feedback_scheme_mock.json

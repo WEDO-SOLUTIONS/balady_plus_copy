@@ -26,10 +26,12 @@ class ScaffoldWithNestedNavigation extends ConsumerStatefulWidget {
   }) : super(key: key ?? const ValueKey('ScaffoldWithNestedNavigation'));
 
   @override
-  ConsumerState<ScaffoldWithNestedNavigation> createState() => _ScaffoldWithNestedNavigationState();
+  ConsumerState<ScaffoldWithNestedNavigation> createState() =>
+      _ScaffoldWithNestedNavigationState();
 }
 
-class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNestedNavigation> {
+class _ScaffoldWithNestedNavigationState
+    extends ConsumerState<ScaffoldWithNestedNavigation> {
   static const _tag = MetricsConstants.exploreTag;
 
   int currentTab = 0;
@@ -45,7 +47,8 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
 
   @override
   void didUpdateWidget(ScaffoldWithNestedNavigation oldWidget) {
-    if (oldWidget.navigationShell.currentIndex != widget.navigationShell.currentIndex) {
+    if (oldWidget.navigationShell.currentIndex !=
+        widget.navigationShell.currentIndex) {
       currentTab = widget.navigationShell.currentIndex;
     }
 
@@ -72,7 +75,9 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
           onActionShowNextHistory: true,
           navigationShell: widget.navigationShell,
         );
-        ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
+        ref
+            .read(onboardingProvider.notifier)
+            .setIsOnboardingShown(isOnboardingShown: true);
       }
     });
   }
@@ -90,7 +95,8 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
           };
 
           Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.navbarClick(pageTitle[selected] ?? 'Unknown'),
+            MetricsConstants.exploreKeys
+                .navbarClick(pageTitle[selected] ?? 'Unknown'),
             group: _tag,
             action: MetricAction.tap.name,
           );
@@ -107,7 +113,9 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
                 StoryTypes.route,
                 'route',
                 onClose: () async {
-                  await ref.read(routeOnboardingProvider.notifier).setShown(true);
+                  await ref
+                      .read(routeOnboardingProvider.notifier)
+                      .setShown(true);
                   _goToPage(selected);
                 },
               );
@@ -137,7 +145,8 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
     final direction = ref.watch(uiDirectionProvider);
 
     final landingIndex = appFeatures.naviEnabled ? 3 : 2;
-    final bottomNavigationDirection = direction == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr;
+    final bottomNavigationDirection =
+        direction == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr;
 
     return Directionality(
       textDirection: direction,
@@ -179,7 +188,9 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                         selected: currentIndex == 0,
                         iconBuilder: (context, selected) => ProfileImageWidget(
                           dimension: 24,
-                          color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
+                          color: selected
+                              ? context.colorsV2.accentDefault
+                              : context.colorsV2.foregroundSoft,
                         ),
                         label: context.l10n.nav_profile,
                       ),
@@ -272,7 +283,9 @@ class _DefaultIcon extends StatelessWidget {
   Widget build(BuildContext context) => Icon(
         icon,
         size: 24,
-        color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
+        color: selected
+            ? context.colorsV2.accentDefault
+            : context.colorsV2.foregroundSoft,
       );
 }
 
@@ -289,7 +302,9 @@ class _DefaultLabel extends StatelessWidget {
   Widget build(BuildContext context) => Text(
         label,
         style: context.textStyleV3.captionSmallMedium.copyWith(
-          color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
+          color: selected
+              ? context.colorsV2.accentDefault
+              : context.colorsV2.foregroundSoft,
         ),
       );
 }
