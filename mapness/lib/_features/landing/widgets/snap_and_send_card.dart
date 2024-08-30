@@ -94,7 +94,7 @@ class SnapAndSendCard extends ConsumerWidget {
                               CommonFunctions.openSnapAndSend();
                             },
                             trailing: Icon(
-                              context.isLTR ? SystemIcons.arrowRight : SystemIcons.arrowLeft,
+                              SystemIcons.arrowRight,
                               color: context.colorsV2.accentOnContainer,
                             ),
                           )

@@ -1,8 +1,12 @@
-part of 'content_my_location.dart';
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
+import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class MyLocationPoiActions extends StatelessWidget {
-  final Function()? onShare;
-  final Function()? onCopy;
+  final VoidCallback? onShare;
+  final VoidCallback? onCopy;
 
   const MyLocationPoiActions({
     super.key,
@@ -24,7 +28,7 @@ class MyLocationPoiActions extends StatelessWidget {
         color: context.color.surfaceBasePrimary,
         boxShadow: Shadows.s,
       ),
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
       child: SafeArea(
         top: false,
         child: SizedBox(

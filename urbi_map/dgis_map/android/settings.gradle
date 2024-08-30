@@ -1,7 +1,3 @@
-rootProject.name = 'dgis_map'
-
-include ':_delete_me_'
-
 pluginManagement {
     buildscript {
         repositories {

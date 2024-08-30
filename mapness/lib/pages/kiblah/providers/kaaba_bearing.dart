@@ -7,8 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'kaaba_bearing.g.dart';
 
-final GeoPointMessage kaabaLocation =
-    GeoPointMessage(latitude: 21.422512, longitude: 39.82618);
+final GeoPointMessage kaabaLocation = GeoPointMessage(latitude: 21.422512, longitude: 39.82618);
 
 @riverpod
 class KaabaBearing extends _$KaabaBearing {
@@ -35,8 +34,8 @@ class KaabaBearing extends _$KaabaBearing {
         locationProvider,
         (_, next) async {
           if (next != null) {
-            state =
-                await dgisController.value!.pointBearing(next, kaabaLocation);
+            state = await dgisController.value!
+                .pointBearing(GeoPointMessage(latitude: next.latitude, longitude: next.longitude), kaabaLocation);
           } else {
             _updateKaabState();
           }

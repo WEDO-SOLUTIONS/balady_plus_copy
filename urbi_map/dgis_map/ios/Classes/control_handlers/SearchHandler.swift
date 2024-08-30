@@ -502,7 +502,7 @@ class SearchHandler: NSObject {
 
     func getDistanceTo(
         points: [DistanceRequestMessage],
-        location: CLLocationCoordinate2D?,
+        location: GeoPoint?,
         completion: @escaping ([DistanceResponseMessage], FlutterError?) -> Void
     ) {
         guard let location = location else {
@@ -513,7 +513,7 @@ class SearchHandler: NSObject {
             return
         }
 
-        let current = GeoPoint(latitude: location.latitude, longitude: location.longitude)
+        let current = location
         let response: [DistanceResponseMessage] = points.map {
             let distance =  current.distance(
                 point: GeoPoint(
