@@ -44,6 +44,7 @@ import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
@@ -344,14 +345,24 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             if (latitude != null) EtaRoute.latKey: latitude.toString(),
             if (longitude != null) EtaRoute.lonKey: longitude.toString(),
           });
+          if (latitude != null && longitude != null) {
+            await ref.read(cameraPositionProvider.notifier).animateTo(
+                  CameraPositionMessage(
+                    point: GeoPointMessage(latitude: latitude, longitude: longitude),
+                    zoom: 17,
+                    tilt: 0,
+                    bearing: 0,
+                  ),
+                );
+          }
           await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
           await ref.read(goRouterProvider).push(uriPath.toString());
-          return;
         } catch (e) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showEtaExpired(rootNavigatorKey.currentContext!);
           });
         }
+        return;
       } else if (type == 'live') {
         try {
           // Get old stream token and stream id
@@ -362,6 +373,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
           }
 
+          if (latitude != null && longitude != null) {
+            await ref.read(cameraPositionProvider.notifier).animateTo(
+                  CameraPositionMessage(
+                    point: GeoPointMessage(latitude: latitude, longitude: longitude),
+                    zoom: 17,
+                    tilt: 0,
+                    bearing: 0,
+                  ),
+                );
+          }
           await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
         } catch (e) {
           WidgetsBinding.instance.addPostFrameCallback((_) {

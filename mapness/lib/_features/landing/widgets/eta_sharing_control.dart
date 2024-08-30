@@ -15,6 +15,7 @@ class EtaSharingControl extends ConsumerWidget {
     final webSocketType = ref.watch(websocketTypeProvider);
 
     return AnimatedSwitcher(
+      key: const Key('eta_sharing_control'),
       duration: const Duration(milliseconds: 250),
       child: webSocketStatus
           ? webSocketType == SubscriptionType.share

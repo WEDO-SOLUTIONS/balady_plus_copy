@@ -9,6 +9,7 @@ import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
+import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -22,6 +23,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   static const imgSize = 48;
 
   EtaInfoModel<EtaRoutePayload?>? _metaInfo;
+
+  bool _reconnectingInProgress = false;
 
   @override
   (EtaInfoModel<dynamic>?, EtaInfoModel<EtaRoutePayload?>?) build() {
@@ -62,7 +65,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       // TODO(Scroollocker): Implement route drawing on the map
     }
 
-    state = (etaInfo, _metaInfo);
+    final _etaInfo = etaInfo.type == EtaType.geolocation ? etaInfo : null;
+    state = (_etaInfo, _metaInfo);
   }
 
   Future<void> stopStreaming() async {
@@ -95,7 +99,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         token: tokenId,
         shareEtaApiUrl: envProvider.shareEtaApi,
       );
-
+      ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
+      EtaWebsocket().addConnectionLostListener(_onErrorStatus);
       EtaWebsocket().addEtaInfoListener(_updateEtaInfo);
     } catch (e) {
       rethrow;
@@ -195,6 +200,25 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           zIndex: 50,
         ),
       );
+    }
+  }
+
+  Future<void> _onErrorStatus(int statusCode, String reason) async {
+    if (statusCode != 1000 && statusCode != 1013) {
+      try {
+        if (_reconnectingInProgress) {
+          return;
+        }
+        _reconnectingInProgress = true;
+        await EtaWebsocket().reconnect();
+        ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
+      } catch (e) {
+        await stopStreaming();
+      } finally {
+        _reconnectingInProgress = false;
+      }
+    } else if (statusCode == 1000 && reason == 'expired') {
+      await stopStreaming();
     }
   }
 }
