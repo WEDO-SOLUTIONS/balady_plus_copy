@@ -9,6 +9,7 @@ import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
+import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -18,10 +19,15 @@ part 'eta_geo_subscriber.g.dart';
 
 @riverpod
 class EtaGeoSubscriber extends _$EtaGeoSubscriber {
-  static const String _unauthorizedUser = 'assets/images_svg/eta_unknown_user.svg';
+  static const String _unauthorizedUser = 'assets/images_svg/eta_unknown_user_marker.svg';
+  static const String _autharizedUser = 'assets/images_svg/eta_auth_blank_user_marker.svg';
+  static const String _lostConnection = 'assets/images_svg/eta_lost_connection_marker.svg';
+
   static const imgSize = 48;
 
   EtaInfoModel<EtaRoutePayload?>? _metaInfo;
+
+  bool _reconnectingInProgress = false;
 
   @override
   (EtaInfoModel<dynamic>?, EtaInfoModel<EtaRoutePayload?>?) build() {
@@ -41,28 +47,15 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   }
 
   Future<void> _updateEtaInfo(EtaInfoModel etaInfo) async {
+    final _etaInfo = etaInfo.type == EtaType.geolocation ? etaInfo : null;
+    state = (_etaInfo, _metaInfo);
     if (etaInfo.type == EtaType.geolocation) {
-      final payload = etaInfo.payload as EtaInfoPayload;
-      if (payload.lat == null || payload.lon == null) {
-        return;
-      }
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await _processDrawMarker(
-          GeoPointWithElevationMessage(
-            latitude: payload.lat!,
-            longitude: payload.lon!,
-            elevation: 0,
-          ),
-          _metaInfo?.payload?.user,
-        );
-      });
+      await _processDrawUserMarker();
     } else if (etaInfo.type == EtaType.streamMetadata) {
       _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
       // TODO(Scroollocker): Implement route drawing on the map
     }
-
-    state = (etaInfo, _metaInfo);
   }
 
   Future<void> stopStreaming() async {
@@ -95,12 +88,47 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         token: tokenId,
         shareEtaApiUrl: envProvider.shareEtaApi,
       );
-
+      ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
+      EtaWebsocket().addConnectionLostListener(_onErrorStatus);
       EtaWebsocket().addEtaInfoListener(_updateEtaInfo);
     } catch (e) {
       rethrow;
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.get);
+    }
+  }
+
+  Future<void> _processDrawUserMarker({bool isAvailable = true}) async {
+    final (etaInfo, _) = state;
+    if (etaInfo == null) {
+      return;
+    }
+    final payload = etaInfo.payload as EtaInfoPayload;
+    if (payload.lat == null || payload.lon == null) {
+      return;
+    }
+    if (isAvailable) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _processDrawMarker(
+          GeoPointWithElevationMessage(
+            latitude: payload.lat!,
+            longitude: payload.lon!,
+            elevation: 0,
+          ),
+          _metaInfo?.payload?.user,
+        );
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _processDrawUnavailableMarker(
+          GeoPointWithElevationMessage(
+            latitude: payload.lat!,
+            longitude: payload.lon!,
+            elevation: 0,
+          ),
+          _metaInfo?.payload?.user,
+        );
+      });
     }
   }
 
@@ -119,8 +147,23 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     await mapObjectManager.addMarker(marker);
   }
 
+  Future<void> _processDrawUnavailableMarker(GeoPointWithElevationMessage point, User? user) async {
+    final settings = MapObjectManagerSettings.eta();
+    final mapObjectManager = ref.read(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
+    );
+
+    final marker = await _getUnavailableMarker(point, user);
+
+    await mapObjectManager.removeAllMarkers();
+    await mapObjectManager.addMarker(marker);
+  }
+
   //TODO(scroollocker): Move code to utils
-  Future<img.Image> processImage(String imgUrl) async {
+  Future<img.Image> processImage(String imgUrl, bool isUnavailable) async {
     // Load the mask image from assets
     final maskData = await rootBundle.load('packages/mapness/assets/images/marker_eta_mask.png');
     final maskBytes = maskData.buffer.asUint8List();
@@ -138,6 +181,10 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     var networkImage = img.decodeImage(response.bodyBytes)!;
     if (networkImage.hasAlpha == false) {
       networkImage = networkImage.convert(format: networkImage.format, numChannels: 4);
+    }
+
+    if (isUnavailable) {
+      networkImage = img.grayscale(networkImage);
     }
 
     networkImage = img.copyCropCircle(
@@ -174,7 +221,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         ),
       );
     } else if (user.photoUrl != null) {
-      final pic = await processImage(user.photoUrl!);
+      final pic = await processImage(user.photoUrl!, false);
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
         options: MarkerOptionsMessage(
@@ -190,11 +237,71 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
         options: MarkerOptionsMessage(
           position: point,
-          icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_unauthorizedUser', width: 48),
+          icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_autharizedUser', width: 48),
           animatedAppearance: true,
           zIndex: 50,
         ),
       );
+    }
+  }
+
+  Future<Marker> _getUnavailableMarker(GeoPointWithElevationMessage point, User? user) async {
+    if (user == null) {
+      return Marker(
+        id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
+        options: MarkerOptionsMessage(
+          position: point,
+          icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_lostConnection', width: 48),
+          animatedAppearance: true,
+          zIndex: 50,
+        ),
+      );
+    } else if (user.photoUrl != null) {
+      final pic = await processImage(user.photoUrl!, true);
+      return Marker(
+        id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
+        options: MarkerOptionsMessage(
+          position: point,
+          icon: PngBytesMarkerIcon(pngData: img.encodePng(pic), width: 48),
+          animatedAppearance: true,
+          zIndex: 50,
+        ),
+      );
+      // TODO: Here Add marker with text
+    } else {
+      return Marker(
+        id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
+        options: MarkerOptionsMessage(
+          position: point,
+          icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_lostConnection', width: 48),
+          animatedAppearance: true,
+          zIndex: 50,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onErrorStatus(int? statusCode, String? reason) async {
+    if (statusCode != null) {
+      await _processDrawUserMarker(isAvailable: false);
+    } else {
+      await _processDrawUserMarker();
+    }
+    if (statusCode != 1000 && statusCode != 1013) {
+      try {
+        if (_reconnectingInProgress) {
+          return;
+        }
+        _reconnectingInProgress = true;
+        await EtaWebsocket().reconnect();
+        ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
+      } catch (e) {
+        await stopStreaming();
+      } finally {
+        _reconnectingInProgress = false;
+      }
+    } else if (statusCode == 1000 && reason == 'expired') {
+      await stopStreaming();
     }
   }
 }

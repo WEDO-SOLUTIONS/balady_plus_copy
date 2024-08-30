@@ -145,6 +145,12 @@ class ShareEta extends _$ShareEta {
       } finally {
         _reconnectingInProgress = false;
       }
+    } else if (statusCode == 1000 && reason == 'expired') {
+      final tokenId = EtaStreamStorage().state.streamToken;
+      final xStreamData = EtaStreamStorage().state.xStreamData;
+      if (tokenId != null && xStreamData != null) {
+        await stopSharing(tokenId, xStreamData);
+      }
     }
   }
 
@@ -190,11 +196,11 @@ class ShareEta extends _$ShareEta {
     final etaService = ref.read(etaServiceProvider.notifier);
 
     try {
+      await EtaWebsocket().stop();
       await etaService.stopEtaStream(tokenId, xStreamData);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
-      await EtaWebsocket().stop();
       EtaWebsocket().removeConnectionLostListener(_onErrorStatus);
     }
   }
