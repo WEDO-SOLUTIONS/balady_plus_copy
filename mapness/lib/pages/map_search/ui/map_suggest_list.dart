@@ -25,7 +25,8 @@ class MapSuggestList extends ConsumerWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => SuggestItem(
         suggest: suggests[index],
-        myLocation: myLocation,
+        myLocation:
+            myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
         isLast: index == suggests.length - 1,
         onObjectTap: (object) {
           Metrics.logEventAdvanced(

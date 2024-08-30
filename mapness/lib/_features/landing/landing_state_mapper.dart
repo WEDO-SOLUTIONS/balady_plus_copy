@@ -1,0 +1,31 @@
+import 'package:balady_uikit/balady_uikit.dart';
+
+final class LandingStateMapper implements BottomSheetStateMapper<ThreeStateBottomSheet> {
+  const LandingStateMapper();
+
+  @override
+  ThreeStateBottomSheet state(int state) => switch (state) {
+        0 => ThreeStateBottomSheet.hidden,
+        1 => ThreeStateBottomSheet.open,
+        _ => ThreeStateBottomSheet.expanded,
+      };
+
+  @override
+  int index(ThreeStateBottomSheet state) => state.index.clamp(0, 2);
+
+  @override
+  bool shouldPopOn(BottomSheetScrollController<ThreeStateBottomSheet> controller) {
+    switch (controller.closestState) {
+      case ThreeStateBottomSheet.hidden:
+        return true;
+
+      case ThreeStateBottomSheet.open:
+        controller.setState(ThreeStateBottomSheet.hidden);
+        return false;
+
+      case ThreeStateBottomSheet.expanded:
+        controller.setState(ThreeStateBottomSheet.open);
+        return false;
+    }
+  }
+}

@@ -72,7 +72,7 @@ class FavouritesPicker extends ConsumerWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(8),
                           child: Icon(
-                            context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
+                            SystemIcons.arrowCornerLeftLarge,
                             color: context.color.textAndIconsBasePrimary,
                           ),
                         ),

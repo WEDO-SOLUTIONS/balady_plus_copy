@@ -6,6 +6,7 @@ import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
+import 'package:mapness/_features/landing/widgets/eta_sharing_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/happines_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
@@ -57,6 +58,7 @@ class MapControls extends ConsumerWidget {
                         const Spacer(),
                         const IndoorControl(),
                         const Spacer(),
+                        const EtaSharingControl(),
                         MapButton(
                           child: SvgPicture.asset(
                             'assets/icons/svg/ic_controls_qibla.svg',

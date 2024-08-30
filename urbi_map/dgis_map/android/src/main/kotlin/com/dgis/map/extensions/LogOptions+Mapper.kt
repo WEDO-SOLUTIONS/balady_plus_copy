@@ -4,8 +4,8 @@ import android.content.Context
 import com.dgis.map.Logger
 import com.dgis.map.map_api.Messages.LogLevelMessage
 import com.dgis.map.map_api.Messages.LogOptionsMessage
-import ru.dgis.sdk.LogLevel
-import ru.dgis.sdk.LogOptions
+import ru.dgis.sdk.platform.LogLevel
+import ru.dgis.sdk.platform.LogOptions
 
 fun LogOptionsMessage.toLogOptions(context: Context): LogOptions = LogOptions(
     systemLevel = this.systemLevel.toLogLevel(),

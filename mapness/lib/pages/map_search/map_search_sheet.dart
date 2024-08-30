@@ -157,12 +157,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
                         ),
                         MapSearchContent(
                           scrollController: scrollController,
-                          onResultItemTap: () {
-                            setState(() {
-                              _initialExpansion = Expansion.collapsed;
-                              _dgisSheetController.animateTo(Expansion.collapsed);
-                            });
-                          },
                         ),
                       ],
                     ),

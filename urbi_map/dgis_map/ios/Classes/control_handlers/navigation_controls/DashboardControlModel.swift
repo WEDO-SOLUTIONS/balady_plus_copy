@@ -30,6 +30,16 @@ class DashboardControlModel {
         .routeEnd
     ]
     
+    private let roadCameraCategories: SoundCategoryOptionSet = [
+        .crossroadCameras,
+        .laneCameras,
+        .noStoppingControlCameras,
+        .roadMarkingCameras,
+        .averageSpeedCameras,
+        .maxSpeedCameras
+    ]
+
+    
     private static let dateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
@@ -62,14 +72,52 @@ class DashboardControlModel {
         ])
     }
     
-    func toggleSounds(enabled: Bool) {
-        if enabled {
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories
-        } else {
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories = []
+    func toggleSounds(toggleType: SoundToggleType) {
+        let currentCategories = self.navigationManager.soundNotificationSettings.enabledSoundCategories
+        
+        switch toggleType {
+        case SoundToggleType.none:
+            // Remove all categories related to sound notifications
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting(Self.allCategories)
+
+        case SoundToggleType.all:
+            // Add all categories
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(Self.allCategories)
+
+        case SoundToggleType.important:
+            // Remove only the instructions category, keeping the rest
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting([.instructions])
+
+        @unknown default:
+            // Add all categories as a fallback option
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(Self.allCategories)
         }
     }
-    
+
+    func toggleRoadCameras(roadCameras: Bool) {
+        let currentCategories = self.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+        if roadCameras {
+            // When road cameras are enabled: exclude them from the current categories
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting(roadCameraCategories)
+        } else {
+            // When road cameras are disabled: add them back to the current categories
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(roadCameraCategories)
+        }
+    }
+
+    func toggleOverSpeeding(overSpeeding: Bool) {
+        let currentCategories = self.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+        if overSpeeding {
+            // When overspeeding is enabled: add the overspeeding category
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(.exceedSpeedLimits)
+        } else {
+            // When overspeeding is disabled: remove the overspeeding category
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting(.exceedSpeedLimits)
+        }
+    }
+
     func cancel() {
         self.cancelable.forEach { $0.cancel() }
         self.cancelable.removeAll()

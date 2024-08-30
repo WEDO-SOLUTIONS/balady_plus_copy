@@ -23,18 +23,27 @@ class _PathNavEta extends _$PathNavEta {
     final subspcription = mapController.naviDashboardEvents.listen((event) {
       final distance = event.distance.formatDistance();
       final duration = Duration(seconds: event.duration);
+      final isExpanded = state?.isExpanded;
 
       state = PathNavEta(
+        durationInSeconds: event.duration,
         timeEta: event.duration.formatDuration(),
         timeEtaUnits: duration >= const Duration(hours: 1) ? TimeUnits.hours : TimeUnits.min,
         distanceEta: distance.value,
         distanceEtaUnits: distance.unit,
+        rawDistance: event.distance,
         arrivalTime: DateFormat.Hm().format(
           DateTime.now().add(duration),
         ),
-      );
+      ).copyWith(isExpanded: isExpanded);
     });
     ref.onDispose(subspcription.cancel);
+  }
+
+  void toggleIsExpanded({required bool isExpanded}) {
+    state = state?.copyWith(
+      isExpanded: isExpanded,
+    );
   }
 }
 

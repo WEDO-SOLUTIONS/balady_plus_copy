@@ -21,7 +21,6 @@ class KiblahPage extends ConsumerWidget {
     final kaabaBearing = ref.watch(kaabaBearingProvider);
     final userBearing = ref.watch(compassProvider)?.floor().abs();
     final isReady = userBearing != null && kaabaBearing != null;
-    final isArabic = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(
       backgroundColor: context.staticColor.surfaceOverlayModal.withOpacity(0.7),
@@ -37,7 +36,7 @@ class KiblahPage extends ConsumerWidget {
           child: Row(
             children: [
               Icon(
-                isArabic ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge,
+                SystemIcons.arrowCornerLeftLarge,
                 color: context.color.textAndIconsBaseInversePrimary,
               ),
               const SizedBox(width: Spacing.$0_5x),
@@ -60,10 +59,10 @@ class KiblahPage extends ConsumerWidget {
             child: Container(
               width: double.infinity,
               margin: EdgeInsets.only(
-                left: Spacing.horizontalPaddingInsideWrapper,
-                right: Spacing.horizontalPaddingInsideWrapper,
-                top: Spacing.horizontalPaddingInsideWrapper,
-                bottom: MediaQuery.of(context).padding.bottom + NumericBase.$0_5x,
+                left: Spacing.$4x,
+                right: Spacing.$4x,
+                top: Spacing.$4x,
+                bottom: MediaQuery.of(context).padding.bottom + Spacing.$0_5x,
               ),
               child: AppButton(
                 primaryIcon: GeneralIcons.mosq,
