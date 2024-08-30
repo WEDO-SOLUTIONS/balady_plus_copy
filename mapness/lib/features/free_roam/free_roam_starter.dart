@@ -18,8 +18,6 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
   FreeRoamStartState build() {
     final autostart = ref.read(freeRoamAutostartSettingsProvider);
 
-    print('Speed: autostart=$autostart');
-
     if (autostart == AutostartState.declined) {
       return const FreeRoamStartState(
         isAutorun: false,
@@ -29,7 +27,6 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
     final isAutorun = autostart == AutostartState.always;
 
     void updateState(Position event) {
-      print('Speed: ${event.speed} ${event.speedAccuracy} $isAutorun');
       if (!(_controller?.isAnimating ?? false) && event.speed - event.speedAccuracy >= 0.53333) {
         state = state.copyWith(
           canStart: true,
@@ -52,7 +49,6 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
   }
 
   void startAnimation(TickerProvider vsync, {Duration? duration}) {
-    print('Speed: Start animation');
     _controller ??= AnimationController(vsync: vsync, duration: duration ?? const Duration(seconds: 10));
     _controller?.animateTo(1, curve: Curves.decelerate);
     _controller?.addStatusListener(_onComplete);
@@ -68,7 +64,6 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
   void unpauseAnimation() => _controller?.forward();
 
   void setShown() {
-    print('Speed: set shown');
     _controller?.stop();
     _controller?.removeStatusListener(_onComplete);
     _controller?.dispose();
@@ -82,7 +77,6 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
 
   void _onComplete(status) {
     if (status == AnimationStatus.completed) {
-      print('Speed: End animation ${_controller?.isCompleted}');
       if (_controller?.isCompleted ?? false) {
         setShown();
       }

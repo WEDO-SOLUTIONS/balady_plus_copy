@@ -3,13 +3,16 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/app/routes/favourites.dart';
+import 'package:mapness/app/routes/feedback.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -80,6 +83,19 @@ class InfoWidget extends ConsumerWidget {
       }
     };
 
+    final feedback = PoiContentFeedback(
+      onFeedbackTap: () {
+        FeedbackBaseRoute(objectId: data.id!.objectId.toString()).push(context);
+      },
+      title: context.l10n.reportError,
+      buttonText: context.l10n.send,
+      image: SvgPicture.asset(
+        'assets/images_svg/illustration_notifications.svg',
+        matchTextDirection: true,
+        package: PackageConfig.packageName,
+      ),
+    );
+
     final poiContentData = PoiContentData(
       favourite: data.getFavourites(favouritesState, context.l10n, onFavouritePressed),
       fullAddress: data.getFullAddress(briefInfo, context.l10n, onEntrancesTap),
@@ -89,6 +105,7 @@ class InfoWidget extends ConsumerWidget {
       license: data.getLicense(context.l10n),
       accessibilityInfo: data.getAccessibility(context.l10n, qrTradeLicense),
       parking: data.getParking(context.l10n),
+      feedback: feedback,
     );
 
     return SafeArea(

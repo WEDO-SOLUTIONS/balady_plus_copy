@@ -3,6 +3,7 @@ import 'package:mapness/app/routes/esri_layers.dart';
 import 'package:mapness/app/routes/eta.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/favourites.dart';
+import 'package:mapness/app/routes/feedback.dart';
 import 'package:mapness/app/routes/free_roam.dart';
 import 'package:mapness/app/routes/happines_map.dart';
 import 'package:mapness/app/routes/iwish.dart';
@@ -47,4 +48,5 @@ final $appRoutes = [
   ...$photoViewerRoutes,
   ...$navigatorSettingsRoutes,
   ...$etaRoutes,
+  ...$feedbackRoutes,
 ];

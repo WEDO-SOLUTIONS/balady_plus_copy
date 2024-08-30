@@ -189,7 +189,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^2.0.9
+    version: ^2.0.10
 
   mapness:
     path: mapness
@@ -211,8 +211,7 @@ dependencies:
   # To scroll list to specific index and do not calculate width and height by ourselves
   scrollable_positioned_list: ^0.3.8
 
-
-#  Show App Popup Menu form button in poiation
+  #  Show App Popup Menu form button in poiation
   app_popup_menu: ^1.0.0
 
   jiffy:
@@ -286,6 +285,7 @@ flutter:
     - assets/athkar/
     - assets/athkar_en/
     - assets/icons/services/
+    - assets/feedback_scheme_mock.json
 
   fonts:
     - family: Cairo
