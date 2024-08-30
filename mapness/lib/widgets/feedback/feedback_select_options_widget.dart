@@ -30,8 +30,7 @@ class FeedbackSelectOptionsWidget extends StatelessWidget {
               children: [
                 Text(poiDataValue.title, style: context.textStyle.callout),
                 const SizedBox(height: 5),
-                Text(poiDataValue.makeAddress(),
-                    style: context.textStyleV3.bodySmallRegular),
+                Text(poiDataValue.makeAddress(), style: context.textStyleV3.bodySmallRegular),
               ],
             ),
           ),

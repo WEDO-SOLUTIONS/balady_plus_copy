@@ -29,9 +29,7 @@ class FeedbackTypeItemWidget extends ConsumerWidget {
           titleStyle: context.textStyleV3.bodyLargeRegular,
           actionWidget: ContentRowActionOptions(
             actionIcon: AppIcons(
-              iconData: context.isLTR
-                  ? SystemIcons.arrowCornerRightLarge
-                  : SystemIcons.arrowCornerLeftLarge,
+              iconData: context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge,
               color: context.colorsV2.neutralDefault,
             ),
           ),

@@ -82,6 +82,3 @@ class EtaRouteLine extends StatelessWidget {
 
 // I will arrive at {time} to\n\n{destination}\n\n{link}
 // static iWillArriveAtTimeToDestinationLink = 'I will arrive at {time} to\n\n{destination}\n\n{link}';
-
-
-

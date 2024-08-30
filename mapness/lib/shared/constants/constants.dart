@@ -13,4 +13,5 @@ class MapnessConstants {
   static const roadCamerasPrefsKey = 'road_cameras';
   static const overSpeedingPrefsKey = 'over_speeding';
   static const voicesLanguagePrefsKey = 'voices_language';
+  static const analyticsTripStopped = 'tripStopped';
 }
