@@ -30,13 +30,11 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
 
   static const curve = Curves.easeIn;
 
-  late final DraggableScrollableController sheetController;
+  late final DraggableScrollableController sheetController = DraggableScrollableController();
 
   @override
   void initState() {
     super.initState();
-    sheetController = DraggableScrollableController();
-
     WidgetsBinding.instance.addPostFrameCallback((_) => _showBottomSheet());
   }
 
