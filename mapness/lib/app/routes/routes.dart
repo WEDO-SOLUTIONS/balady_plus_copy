@@ -4,6 +4,7 @@ import 'package:mapness/app/routes/eta.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/feedback.dart';
+import 'package:mapness/app/routes/free_roam.dart';
 import 'package:mapness/app/routes/happines_map.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
@@ -15,6 +16,7 @@ import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/profile.dart';
+import 'package:mapness/app/routes/road_panel.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/app/routes/signin.dart';
@@ -32,6 +34,8 @@ final $appRoutes = [
   ...$iwishRoutes,
   ...$happinesMapRoutes,
   ...$pathNavRoutes,
+  ...$freeRoamRoutes,
+  ...$roadPanelRoutes,
   ...$routingRoutes,
   ...$weatherRoutes,
   ...$jobsMapRoutes,

@@ -134,7 +134,7 @@ class ProfilesRoute extends GoRouteData {
   const ProfilesRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => ProfilePage();
+  Widget build(BuildContext context, GoRouterState state) => const ProfilePage();
 }
 
 RouteBase homeShellRoute({required bool naviEnabled}) => StatefulShellRouteData.$route(

@@ -137,13 +137,16 @@ class EtaArrivalCard extends ConsumerWidget {
     final remainingTime = arrivalTime.difference(currentTime);
     final remainingHours = remainingTime.inSeconds / 3600.0;
 
+    final lastSpeed = speed > 0 ? speed : 1;
+    final lastRemainingHours = remainingHours >= 0 ? remainingHours : 0;
+
     // Calculate the traveled distance
-    final traveledDistance = distance - (speed * remainingHours);
+    final traveledDistance = distance - (lastSpeed * lastRemainingHours);
 
     // Get process in percentage
     final percentCompleted = traveledDistance / distance;
 
-    return percentCompleted.clamp(0.0, 1.0);
+    return 1 - percentCompleted.clamp(0.0, 1.0);
   }
 
   String _getArrivalTime(BuildContext context, EtaInfoModel<dynamic>? streamData) {
@@ -178,7 +181,7 @@ class EtaArrivalCard extends ConsumerWidget {
     if (updatedAt == null) {
       return '--';
     }
-    final updatedAtTime = DateTime.tryParse(updatedAt);
+    final updatedAtTime = DateTime.tryParse(updatedAt)?.toLocal();
     if (updatedAtTime == null) {
       return '--';
     }

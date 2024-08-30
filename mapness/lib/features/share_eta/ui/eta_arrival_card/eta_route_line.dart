@@ -12,7 +12,8 @@ class EtaRouteLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imgPosition = progress > 0.8 ? imgSize : imgSize / 2;
+    final prog = progress.clamp(0.06, 1.0);
+    final imgPosition = prog > 0.8 ? imgSize : (imgSize / 2);
     return LayoutBuilder(
       builder: (context, constraints) => SizedBox(
         height: imgSize,
@@ -30,7 +31,7 @@ class EtaRouteLine extends StatelessWidget {
                 alignment: AlignmentDirectional.centerStart,
                 child: Container(
                   height: 8,
-                  width: constraints.maxWidth * progress,
+                  width: constraints.maxWidth * prog,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
@@ -45,7 +46,7 @@ class EtaRouteLine extends StatelessWidget {
             ),
             Positioned.directional(
               textDirection: Directionality.of(context),
-              start: constraints.maxWidth * progress - imgPosition,
+              start: constraints.maxWidth * prog - imgPosition,
               child: SizedBox(
                 height: imgSize,
                 width: imgSize,
@@ -58,30 +59,3 @@ class EtaRouteLine extends StatelessWidget {
     );
   }
 }
-
-// Share trip progress
-// static shareTripProgress = 'Share trip progress';
-
-// Route is sharing
-// static routeIsSharing = 'Route is sharing';
-
-// Drive ended
-// static driveEnded = 'Drive ended';
-
-// The driver reached the destination or is no longer sharing this drive
-// static driverReachedDestination = 'The driver reached the destination or is\nno longer sharing this drive';
-
-// Arriving in {time}
-// static arrivingInTime = 'Arriving in {time}';
-
-// {km} km away
-// static kmAway = '{km} km away';
-
-// Last updated at {time}
-// static lastUpdatedAtTime = 'Last updated at {time}';
-
-// I will arrive at {time} to\n\n{destination}\n\n{link}
-// static iWillArriveAtTimeToDestinationLink = 'I will arrive at {time} to\n\n{destination}\n\n{link}';
-
-
-

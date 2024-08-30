@@ -357,10 +357,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       _navigationState.value = PathNavState.finished;
     }
     await clearNavigationState();
-    await _stopActiveSharing();
+
     action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
+
+    try {
+      await _stopActiveSharing();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   // Show the route page after the trip is finished
@@ -385,7 +391,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       group: MetricsConstants.navigationTag,
       action: MetricAction.tap.toString(),
     );
-    await ref.read(urbiAnalyticsProvider).track('tripStopped');
+    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _endTrip(() {
       if (context.mounted) {

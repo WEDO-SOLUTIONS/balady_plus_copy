@@ -18,8 +18,7 @@ class PathNavEta {
     required this.arrivalTime,
     required this.durationInSeconds,
     required this.rawDistance,
-
-    this.isExpanded = false,    
+    this.isExpanded = false,
   });
 
   PathNavEta copyWith({

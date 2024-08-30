@@ -24,9 +24,7 @@ class FeedbackSelectTypePage extends ConsumerWidget {
     return FeedbackFormContainer(
       title: context.l10n.feedbackWhatsWrong,
       isSendVisible: false,
-      child: id == null
-          ? Center(child: Loading.large())
-          : FeedbackSelectOptionsComponentWidget(objectId: id),
+      child: id == null ? Center(child: Loading.large()) : FeedbackSelectOptionsComponentWidget(objectId: id),
     );
   }
 }

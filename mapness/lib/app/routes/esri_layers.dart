@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_sheet.dart';
@@ -15,7 +16,7 @@ class EsriLayersRoute extends GoRouteData {
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
-  static open(BuildContext context) {
+  static void open(BuildContext context) {
     const route = EsriLayersRoute();
     final router = GoRouter.of(context);
     final matches = router.routerDelegate.currentConfiguration.matches;
@@ -31,6 +32,8 @@ class EsriLayersRoute extends GoRouteData {
         fullscreenDialog: true,
         opaque: false,
         transitionsBuilder: (_, __, ___, child) => child,
+        barrierColor: context.staticColor.surfaceOverlayModal,
+        barrierDismissible: true,
         child: const LayersSheet(key: Key('ESRI CARD WIDGET')),
       );
 }

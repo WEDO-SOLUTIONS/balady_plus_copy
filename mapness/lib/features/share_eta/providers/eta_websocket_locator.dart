@@ -26,7 +26,7 @@ class EtaWebsocket {
   static const _streamIdKey = 'stream_id';
   static const _geoStreamingTokenKey = 'GeoStreamingToken';
   static const _xStreamDataKey = 'X-Stream-Data';
-  static const _reconnectingAttempts = 2;
+  static const _reconnectingAttempts = 3;
   static const _connectionLostMonitorIntervalSec = 3;
 
   WsConfig? _config;
