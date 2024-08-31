@@ -20,8 +20,8 @@ class MapHiddenStateControls extends BottomSheetComponentWidget<ThreeStateBottom
   Widget build(BuildContext context, ThreeStateBottomSheet state, double interpolation) => Consumer(
         builder: (context, ref, child) {
           final delta = clampDouble(1 - interpolation * 3, 0, 1);
-          return Opacity(
-            opacity: state == ThreeStateBottomSheet.hidden ? delta : 0,
+          return Visibility(
+            visible: state == ThreeStateBottomSheet.hidden,
             child: SizedOverflowBox(
               size: Size(double.infinity, 56 * delta),
               child: Directionality(
