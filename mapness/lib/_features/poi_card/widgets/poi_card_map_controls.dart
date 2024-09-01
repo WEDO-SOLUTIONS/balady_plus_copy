@@ -121,9 +121,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                               const ZoomControl(),
                               const Spacer(),
                               const CompassControl(),
-                              const SizedBox(
-                                height: 8,
-                              ),
+                              const SizedBox(height: 8),
                               const FollowControl(),
                             ],
                           ),
@@ -131,9 +129,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: bottomExtent,
-                  ),
+                  SizedBox(height: bottomExtent),
                 ],
               ),
             ),
