@@ -56,9 +56,8 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
         ignoring: hideControls,
         child: SafeArea(
           bottom: false,
-          child: AnimatedOpacity(
-            opacity: hideControls ? 0 : 1,
-            duration: const Duration(milliseconds: 250),
+          child: Visibility(
+            visible: !hideControls,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

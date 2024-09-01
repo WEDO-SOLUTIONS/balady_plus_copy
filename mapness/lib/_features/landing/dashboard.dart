@@ -196,7 +196,6 @@ class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProvid
         ref.read(mapControlsProvider.notifier).update(
               MapControlsStateIdle(),
             );
-        FocusManager.instance.primaryFocus?.unfocus();
       }
     });
   }
