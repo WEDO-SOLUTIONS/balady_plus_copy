@@ -183,7 +183,6 @@ class _GoogleMapSectionState extends State<GoogleMapSection> {
       zoomControlsEnabled: false,
       // myLocationEnabled: true,
       circles: circles ?? {},
-      onMapCreated: widget.onMapController,
       myLocationButtonEnabled: false,
       scrollGesturesEnabled: widget.readOnly != true,
       //circles: circles != null ? circles : {},
@@ -192,6 +191,12 @@ class _GoogleMapSectionState extends State<GoogleMapSection> {
       },
       onCameraIdle: () {
         widget.onCameraIdle(true);
+      },
+      onMapCreated: (GoogleMapController controller) {
+        controller.setMapStyle(
+        """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+        );
+        widget.onMapController(controller);
       },
       markers: {
         if (widget.currentUserLocation != null &&

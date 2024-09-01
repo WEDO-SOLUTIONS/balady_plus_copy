@@ -188,6 +188,12 @@ class _SurveyReportInqueryDetailsState
                                                 licenceQueryDetails.x!),
                                           ),
                                           zoom: 16),
+                                      onMapCreated:
+                                          (GoogleMapController controller) {
+                                        controller.setMapStyle(
+                                          """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                                        );
+                                      },
                                       markers: {
                                         Marker(
                                           markerId: const MarkerId('position'),

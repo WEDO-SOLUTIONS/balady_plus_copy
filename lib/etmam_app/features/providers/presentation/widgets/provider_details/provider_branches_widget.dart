@@ -37,6 +37,12 @@ class ProviderBranchesWidget extends StatelessWidget {
                         zoomControlsEnabled: false,
                         markers:
                             context.read<ProviderDetailsBloc>().getMarkers(),
+                        onMapCreated:
+                            (GoogleMapController controller) {
+                          controller.setMapStyle(
+                            """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                          );
+                        },
                         initialCameraPosition: CameraPosition(
                             target:
                                 state.args.branches?.firstOrNull?.getLatLng() ??

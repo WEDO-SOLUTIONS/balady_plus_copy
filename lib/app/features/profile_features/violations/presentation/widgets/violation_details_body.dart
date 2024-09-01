@@ -257,6 +257,12 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                                   position: LatLng(
                                       state.details!.lat!, state.details!.lon!))
                             },
+                            onMapCreated:
+                                (GoogleMapController controller) {
+                              controller.setMapStyle(
+                                """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                              );
+                            },
                             myLocationEnabled: false,
                             myLocationButtonEnabled: false,
                             zoomControlsEnabled: false,
@@ -287,7 +293,7 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                 ),
               ]),
             );
-          } else if (state.status.isSubmissionFailure ) {
+          } else if (state.status.isSubmissionFailure) {
             return const Center(child: NoDataWidget());
           }
           return Container();

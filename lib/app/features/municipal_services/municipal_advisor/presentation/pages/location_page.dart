@@ -87,6 +87,9 @@ class LocationPageState extends State<LocationPage> {
                 onMapCreated: (GoogleMapController controller) {
                   _controller.complete(controller);
                   mapController = controller;
+                  mapController.setMapStyle(
+                    """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                  );
                 },
                 onCameraIdle: () async {
                   if (coordinates == null || !context.mounted) return;

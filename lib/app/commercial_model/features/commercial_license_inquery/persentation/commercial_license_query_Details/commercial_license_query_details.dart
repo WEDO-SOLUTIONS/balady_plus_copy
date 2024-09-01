@@ -210,6 +210,11 @@ class _CommercialLicenseQueryDetailsState
                                     ),
                                   )
                                 },
+                                onMapCreated: (GoogleMapController controller) {
+                                  controller.setMapStyle(
+                                    """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                                  );
+                                },
                                 zoomControlsEnabled: false,
                                 zoomGesturesEnabled: false,
                                 scrollGesturesEnabled: false,
