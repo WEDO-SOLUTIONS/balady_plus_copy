@@ -38,7 +38,7 @@ class MyLocationPoiActions extends StatelessWidget {
             children: [
               FooterIconButton(
                 desc: Text(
-                  context.l10n.share,
+                  context.l10n.share_location_btn,
                   style: textStyle.copyWith(color: primary),
                 ),
                 assetName: 'assets/icons/svg/ic_share.svg',

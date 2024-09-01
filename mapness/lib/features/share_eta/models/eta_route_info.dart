@@ -21,6 +21,19 @@ class EtaRoutePayload with _$EtaRoutePayload {
   factory EtaRoutePayload.fromJson(Map<String, dynamic> json) => _$EtaRoutePayloadFromJson(json);
 }
 
+/// Represents the ETA route update metadata.
+@freezed
+class EtaRouteMetadataPayload with _$EtaRouteMetadataPayload {
+  /// Default constructor for [EtaRoutePayload].
+  @JsonSerializable(explicitToJson: true)
+  const factory EtaRouteMetadataPayload({
+    final Route? route,
+  }) = _EtaRouteMetadataPayload;
+
+  /// Creates an [EtaRoutePayload] object from a JSON map.
+  factory EtaRouteMetadataPayload.fromJson(Map<String, dynamic> json) => _$EtaRouteMetadataPayloadFromJson(json);
+}
+
 /// Represents a user.
 @freezed
 class User with _$User {

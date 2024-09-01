@@ -39,7 +39,7 @@ class ShareEta extends _$ShareEta {
   EtaStreamType _streamType = EtaStreamType.geo;
 
   @override
-  void build() {
+  EtaStreamType build() {
     _websocketStatusSubscription?.close();
     _websocketStatusSubscription = ref.listen<bool>(etaWebsocketStatusProvider, (_, status) {
       _locationSubscription?.cancel();
@@ -125,6 +125,8 @@ class ShareEta extends _$ShareEta {
       _websocketStatusSubscription?.close();
       _locationSubscription?.cancel();
     });
+
+    return _streamType;
   }
 
   Future<void> _onErrorStatus(int statusCode, String reason) async {
@@ -145,7 +147,7 @@ class ShareEta extends _$ShareEta {
       } finally {
         _reconnectingInProgress = false;
       }
-    } else if (statusCode == 1000 && reason == 'expired') {
+    } else if (statusCode == 1000 && (reason == 'expired' || reason == 'manual')) {
       final tokenId = EtaStreamStorage().state.streamToken;
       final xStreamData = EtaStreamStorage().state.xStreamData;
       if (tokenId != null && xStreamData != null) {
@@ -157,7 +159,7 @@ class ShareEta extends _$ShareEta {
   Future<void> startSharingLiveLocation(int durationInMinutes) async {
     try {
       final etaService = ref.read(etaServiceProvider.notifier);
-      _streamType = EtaStreamType.geo;
+      state = _streamType = EtaStreamType.geo;
 
       final payload = EtaStreamPayload(
         type: EtaStreamType.geo.name,
@@ -178,7 +180,7 @@ class ShareEta extends _$ShareEta {
     try {
       final etaService = ref.read(etaServiceProvider.notifier);
 
-      _streamType = EtaStreamType.eta;
+      state = _streamType = EtaStreamType.eta;
 
       final payload = EtaStreamPayload(
         type: EtaStreamType.eta.name,

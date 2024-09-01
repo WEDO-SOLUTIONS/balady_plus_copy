@@ -10,7 +10,13 @@ import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_arrival_card.
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 
 class EtaRoutePage extends ConsumerWidget {
-  const EtaRoutePage({super.key});
+  final double? latitude;
+  final double? longitude;
+  const EtaRoutePage({
+    super.key,
+    this.latitude,
+    this.longitude,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +25,7 @@ class EtaRoutePage extends ConsumerWidget {
       ..listen(websocketErrorHandlerProvider, (_, current) {
         final (code, reason) = current;
 
-        if (code == 1000 && reason == 'expired') {
+        if (code == 1000 && (reason == 'expired' || reason == 'manual')) {
           context.pop();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showEtaExpired(rootNavigatorKey.currentContext!);
@@ -27,28 +33,33 @@ class EtaRoutePage extends ConsumerWidget {
         }
       });
 
-    return const Material(
+    final direction = Directionality.of(context);
+
+    return Material(
       color: Colors.transparent,
       type: MaterialType.transparency,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Spacer(),
-          Padding(
-            padding: EdgeInsets.all(Spacing.$4x),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ZoomControl(),
-              ],
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const Spacer(),
+            const Padding(
+              padding: EdgeInsets.all(Spacing.$4x),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ZoomControl(),
+                ],
+              ),
             ),
-          ),
-          Spacer(),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: EtaArrivalCard(),
-          ),
-        ],
+            const Spacer(),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Directionality(textDirection: direction, child: const EtaArrivalCard()),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_route_line.dart';
@@ -74,16 +74,19 @@ class EtaArrivalCard extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: Spacing.$3x),
-          EtaRouteLine(
-            progress: _getProgress(streamData),
-            image: ClipOval(
-              child: ColoredBox(
-                color: context.colorsV2.staticWhite,
-                child: Center(
-                  child: SizedBox(
-                    width: imgSize,
-                    height: imgSize,
-                    child: UserPinControl(user: metaInfo?.payload?.user),
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: EtaRouteLine(
+              progress: _getProgress(streamData),
+              image: ClipOval(
+                child: ColoredBox(
+                  color: context.colorsV2.staticWhite,
+                  child: Center(
+                    child: SizedBox(
+                      width: imgSize,
+                      height: imgSize,
+                      child: UserPinControl(user: metaInfo?.payload?.user),
+                    ),
                   ),
                 ),
               ),
@@ -145,6 +148,9 @@ class EtaArrivalCard extends ConsumerWidget {
 
     // Get process in percentage
     final percentCompleted = traveledDistance / distance;
+    if (percentCompleted == 1) {
+      return 1;
+    }
 
     return 1 - percentCompleted.clamp(0.0, 1.0);
   }
@@ -164,6 +170,9 @@ class EtaArrivalCard extends ConsumerWidget {
     }
     final currentTime = DateTime.now().toUtc();
     final remainingTime = arrivalTime.difference(currentTime);
+    if (remainingTime.isNegative) {
+      return context.l10n.timerMin('0');
+    }
     final remainingHours = remainingTime.inHours;
     final remainingMinutes = remainingTime.inMinutes.remainder(60);
 
@@ -185,7 +194,7 @@ class EtaArrivalCard extends ConsumerWidget {
     if (updatedAtTime == null) {
       return '--';
     }
-    final dateFormatter = DateFormat('HH:mm');
+    final dateFormatter = intl.DateFormat('HH:mm');
 
     return dateFormatter.format(updatedAtTime);
   }

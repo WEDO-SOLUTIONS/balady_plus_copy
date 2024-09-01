@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,6 +17,16 @@ class WebsocketErrorHandler extends _$WebsocketErrorHandler {
   }
 
   void setStatus(int? code, String? reason) {
-    state = (code, reason);
+    String? reasonJson;
+    if (reason != null && reason.isNotEmpty) {
+      try {
+        final json = jsonDecode(reason) as Map<String, dynamic>;
+        reasonJson = json['reason'];
+      } catch (e) {
+        reasonJson = null;
+      }
+    }
+
+    state = (code, reasonJson);
   }
 }

@@ -12,6 +12,7 @@ import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart'
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -28,6 +29,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   EtaInfoModel<EtaRoutePayload?>? _metaInfo;
 
   bool _reconnectingInProgress = false;
+  bool _isFirstLocationFetch = true;
 
   @override
   (EtaInfoModel<dynamic>?, EtaInfoModel<EtaRoutePayload?>?) build() {
@@ -49,20 +51,43 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   Future<void> _updateEtaInfo(EtaInfoModel etaInfo) async {
     final _etaInfo = etaInfo.type == EtaType.geolocation ? etaInfo : null;
     state = (_etaInfo, _metaInfo);
+
     if (etaInfo.type == EtaType.geolocation) {
       await _processDrawUserMarker();
+
+      await _processMoveCameraToUser();
+
+      _isFirstLocationFetch = false;
     } else if (etaInfo.type == EtaType.streamMetadata) {
       _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
       // TODO(Scroollocker): Implement route drawing on the map
+      // Get route from model
+      // ref.listen(routesProvider(
+      //       startPoint: RouteParamsPoint(latitude: latitude!, longitude: longitude!),
+      //       finishPoint: RouteParamsPoint(
+      //         latitude: 24.711564057132794,
+      //         longitude: 46.67427162103001,
+      //       ),
+      //       navType: RouteSearchOptionsMessage.car,
+      //     ), (_, current) async {
+      //   if (current.valueOrNull?.isEmpty == true) {
+      //     WidgetsBinding.instance.addPostFrameCallback((_) {
+      //       _showEtaExpired(rootNavigatorKey.currentContext!);
+      //     });
+      //   } else {
+      //     await ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(0);
+      //   }
     }
   }
 
   Future<void> stopStreaming() async {
     try {
-      await EtaWebsocket().stop();
       EtaWebsocket().clearInfoListeners();
-
+      await EtaWebsocket().stop();
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
       final settings = MapObjectManagerSettings.eta();
       final mapObjectManager = ref.read(
         mapObjectManagerProvider(
@@ -70,9 +95,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           layerId: settings.layerId,
         ).notifier,
       );
-      await mapObjectManager.removeAllMarkers();
-    } catch (e) {
-      debugPrint(e.toString());
+      unawaited(mapObjectManager.removeAllMarkers());
     }
   }
 
@@ -80,6 +103,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     // Stop previous stream
     await stopStreaming();
 
+    _isFirstLocationFetch = true;
     final envProvider = await ref.read(dgisEnvironmentProvider.future);
 
     try {
@@ -132,6 +156,29 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     }
   }
 
+  Future<void> _processMoveCameraToUser() async {
+    if (_isFirstLocationFetch) {
+      final (etaInfo, _) = state;
+      if (etaInfo == null) {
+        return;
+      }
+
+      /// Move camera to user position
+      final payload = etaInfo.payload as EtaInfoPayload;
+      if (payload.lat == null || payload.lon == null) {
+        return;
+      }
+      await ref.read(cameraPositionProvider.notifier).animateTo(
+            CameraPositionMessage(
+              point: GeoPointMessage(latitude: payload.lat!, longitude: payload.lon!),
+              zoom: 17,
+              tilt: 0,
+              bearing: 0,
+            ),
+          );
+    }
+  }
+
   Future<void> _processDrawMarker(GeoPointWithElevationMessage point, User? user) async {
     final settings = MapObjectManagerSettings.eta();
     final mapObjectManager = ref.read(
@@ -163,7 +210,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   }
 
   //TODO(scroollocker): Move code to utils
-  Future<img.Image> processImage(String imgUrl, bool isUnavailable) async {
+  Future<img.Image> processImage(String imgUrl, {bool isUnavailable = false}) async {
     // Load the mask image from assets
     final maskData = await rootBundle.load('packages/mapness/assets/images/marker_eta_mask.png');
     final maskBytes = maskData.buffer.asUint8List();
@@ -221,7 +268,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         ),
       );
     } else if (user.photoUrl != null) {
-      final pic = await processImage(user.photoUrl!, false);
+      final pic = await processImage(user.photoUrl!);
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
         options: MarkerOptionsMessage(
@@ -257,7 +304,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         ),
       );
     } else if (user.photoUrl != null) {
-      final pic = await processImage(user.photoUrl!, true);
+      final pic = await processImage(user.photoUrl!, isUnavailable: true);
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
         options: MarkerOptionsMessage(
@@ -282,12 +329,12 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   }
 
   Future<void> _onErrorStatus(int? statusCode, String? reason) async {
-    if (statusCode != null) {
-      await _processDrawUserMarker(isAvailable: false);
-    } else {
-      await _processDrawUserMarker();
-    }
     if (statusCode != 1000 && statusCode != 1013) {
+      if (statusCode != null) {
+        await _processDrawUserMarker(isAvailable: false);
+      } else {
+        await _processDrawUserMarker();
+      }
       try {
         if (_reconnectingInProgress) {
           return;
@@ -300,7 +347,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       } finally {
         _reconnectingInProgress = false;
       }
-    } else if (statusCode == 1000 && reason == 'expired') {
+    } else if (statusCode == 1000 && (reason == 'expired' || reason == 'manual')) {
       await stopStreaming();
     }
   }

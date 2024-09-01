@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
@@ -101,7 +102,8 @@ class EtaService extends _$EtaService {
     }
   }
 
-  Future<void> updateEtaStream() async {
+  Future<void> updateEtaStream(EtaRouteMetadataPayload payload,
+      {required String xStreamData, required String tokenId}) async {
     await _init();
 
     if (_dio == null) {
@@ -109,9 +111,19 @@ class EtaService extends _$EtaService {
       return;
     }
 
+    final headers = _dio!.options.headers
+      ..addAll({
+        'X-Stream-Data': xStreamData,
+        'GeoStreamingToken': tokenId,
+      });
+
     try {
-      final response = await _dio!.get(
+      final response = await _dio!.put(
         '$_baseUrl/v1/geolocation/stream',
+        data: payload.toJson(),
+        options: Options(
+          headers: headers,
+        ),
       );
 
       if (response.statusCode == 200) {

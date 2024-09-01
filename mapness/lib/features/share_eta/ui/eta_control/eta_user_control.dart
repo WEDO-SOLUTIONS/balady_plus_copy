@@ -2,9 +2,12 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/ui/eta_control/user_pin_control.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_watching_sheet.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 
 class EtaUserControl extends ConsumerWidget {
   const EtaUserControl({super.key});
@@ -12,6 +15,16 @@ class EtaUserControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final (_, metaInfo) = ref.read(etaGeoSubscriberProvider);
+
+    ref.listen(websocketErrorHandlerProvider, (_, current) {
+      final (code, reason) = current;
+
+      if (code == 1000 && (reason == 'expired' || reason == 'manual')) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showLiveLocationExpired(rootNavigatorKey.currentContext!);
+        });
+      }
+    });
 
     return MapButton(
       onTap: () async {
@@ -37,6 +50,15 @@ class EtaUserControl extends ConsumerWidget {
           },
         ),
       ),
+    );
+  }
+
+  void _showLiveLocationExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.liveLocation(context),
     );
   }
 }
