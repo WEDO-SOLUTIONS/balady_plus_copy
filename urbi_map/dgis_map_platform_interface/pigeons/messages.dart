@@ -327,18 +327,31 @@ class EntranceInfoMessage {
 
 enum ObjectTypeMessage {
   admDiv,
+  admDivCity,
+  admDivCountry,
+  admDivDistrict,
+  admDivDistrictArea,
+  admDivDivision,
+  admDivLivingArea,
+  admDivPlace,
+  admDivRegion,
+  admDivSettlement,
   attraction,
   branch,
   building,
   coordinates,
   crossroad,
+  gate,
+  kilometerRoadSign,
   parking,
   road,
   route,
   station,
   stationEntrance,
+  stationMetro,
+  stationPlatform,
   street,
-  unknown
+  unknown;
 }
 
 class ObjectTypeItemMessage {
@@ -596,10 +609,13 @@ class MarkerTextStyleMessage {
   final String? fontName;
 }
 
+/// Don't use this class directly. Use [SvgMarkerIcon], [PngMarkerIcon], [PngBytesMarkerIcon] instead.
 class MarkerIconMessage {
-  MarkerIconMessage(this.path, this.width, this.iconMapDirection, this.iconOpacity);
+  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection, this.iconOpacity, this.pngData, this.pngPath);
 
-  final String path;
+  final String? svgPath;
+  final Uint8List? pngData;
+  final String? pngPath;
   final double width;
   final double? iconOpacity;
   final MarkerAzimuthMessage? iconMapDirection;
@@ -808,25 +824,39 @@ class SuggestHandlerMessage {
 }
 
 enum SuggestedTypeMessage {
-  admDiv,
+  admDivCity,
+  admDivCountry,
+  admDivDistrict,
+  admDivDistrictArea,
+  admDivDivision,
+  admDivLivingArea,
+  admDivPlace,
+  admDivRegion,
+  admDivSettlement,
   attraction,
   attribute,
   branch,
   building,
   coordinates,
   crossroad,
-  districtArea,
+  kilometerRoadSign,
+  marketAttribute,
+  marketBrand,
+  marketCategory,
+  marketSuggestorCategory,
+  metaRubric,
   org,
-  orgCategory,
   parking,
-  region,
   road,
   route,
+  routeType,
+  rubric,
   station,
   stationEntrance,
+  stationMetro,
   street,
   text,
-  unknown
+  unknown,
 }
 
 class MarkedUpTextSpanMessage {
@@ -961,6 +991,13 @@ class BriefRouteInfoMessage {
   final BriefExtraRouteInfoMessage extraInfo;
 }
 
+class VoiceMessage {
+  const VoiceMessage(this.language, this.packageMessage);
+
+  final String language;
+  final PackageMessage packageMessage;
+}
+
 class PackageMessage {
   PackageMessage(this.id, this.info);
 
@@ -1051,6 +1088,23 @@ class SpeedRangeZoom {
   final double styleZoomValue;
 }
 
+/// Represents the types of sound toggles.
+///
+/// The [SoundToggleType] enum defines three types of sound toggles:
+/// - [none]: Represents no sound toggle.
+/// - [important]: Represents an important sound toggle.
+/// - [all]: Represents all sound toggle.
+enum SoundToggleType {
+  /// Represents no sound toggle.
+  none,
+
+  /// Represents an important sound toggle.
+  important,
+
+  /// Represents all sound toggle.
+  all,
+}
+
 /// Settings for better route searching
 /// [routeSearchDelay] - delay (in seconds) before searching for alternative routes when starting a trip on a route or after switching
 /// to another route. Must be not less than 5 seconds
@@ -1059,15 +1113,14 @@ class SpeedRangeZoom {
 /// [betterRouteLengthThreshold] - minimum total length (in millimeters) of route edges that differ between the original route
 /// and the alternative route at which the alternative route is considered a better route
 class BetterRouteSettingsMessage {
-  final int betterRouteTimeCostThreshold;
-  final int betterRouteLengthThreshold;
-  final int routeSearchDelay;
-
   const BetterRouteSettingsMessage({
     required this.betterRouteTimeCostThreshold,
     required this.betterRouteLengthThreshold,
     required this.routeSearchDelay,
   });
+  final int betterRouteTimeCostThreshold;
+  final int betterRouteLengthThreshold;
+  final int routeSearchDelay;
 }
 
 @ConfigurePigeon(
@@ -1269,6 +1322,9 @@ abstract class MapApi {
   void removePolygon(String id, MapObjectManagerMessage? manager);
 
   @async
+  void onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy);
+
+  @async
   void removeAllPolygons(MapObjectManagerMessage? manager);
 
   @async
@@ -1291,9 +1347,6 @@ abstract class MapApi {
 
   @async
   void setHighlighted(List<DgisObjectIdMessage> objectIds);
-
-  @async
-  void onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy);
 
   @async
   void addPanoramasMarkers(AddMarkersWithPhotoMessage message);
@@ -1368,7 +1421,19 @@ abstract class MapApi {
   void setPublicTransportActiveRoute(int routeIndex);
 
   @async
-  void toggleSound(bool enabled);
+  void toggleVoiceInstruction(SoundToggleType toggleType);
+
+  @async
+  void toggleRoadCameras(bool toggleType);
+
+  @async
+  void toggleOverSpeeding(bool toggleType);
+
+  @async
+  void muteOtherSounds(bool mute);
+
+  @async
+  void setNavigatorVolume(int volume);
 
   @async
   void onTrafficAndParkingAttached();
@@ -1414,7 +1479,10 @@ abstract class MapApi {
   List<PackageMessage?> listPackages();
 
   @async
-  List<PackageMessage?> listVoices();
+  List<VoiceMessage?> listVoices();
+
+  @async
+  void voicePlayWelcome(String id);
 
   @async
   void installPackage(String id);

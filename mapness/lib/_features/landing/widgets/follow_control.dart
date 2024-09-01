@@ -16,7 +16,7 @@ class FollowControl extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final followState = ref.watch(followStateProvider);
     final followNotifier = ref.watch(followStateProvider.notifier);
-    final iconColor = followState.type != LocationFollowType.off ? NonThemeColor.color30 : AppColor.black;
+    final iconColor = followState.type == LocationFollowType.off ? NonThemeColor.color30 : AppColor.black;
 
     return AnimatedOpacity(
       opacity: followState.enabled ? 1 : 1, // fix
@@ -31,7 +31,9 @@ class FollowControl extends ConsumerWidget {
           followNotifier.toggleFollowState();
         },
         child: Icon(
-          TransportIcons.locationLTR,
+          followState.type == LocationFollowType.followDirection
+              ? TransportIcons.locationDirectionNavigator
+              : TransportIcons.locationLTR,
           color: iconColor,
           size: 24,
         ),

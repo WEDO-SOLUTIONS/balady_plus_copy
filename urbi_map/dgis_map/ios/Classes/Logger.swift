@@ -43,9 +43,9 @@ final class Logger: LogSink {
             return "WARNING"
         case .error:
             return "ERROR"
-        case .fault:
+        case .fatal:
             return "FATAL"
-        case .disabled:
+        case .off:
             return ""
         }
     }

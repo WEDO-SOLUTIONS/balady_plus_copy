@@ -1,0 +1,84 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/features/share_eta/models/eta_route_info.dart';
+import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
+import 'package:mapness/shared/config/package_config.dart';
+
+class UserPinControl extends ConsumerWidget {
+  final User? user;
+
+  static const String _unauthorizedUser = 'assets/images_svg/eta_unknown_user.svg';
+  static const String _authorizedUser = 'assets/images_svg/eta_named_user.svg';
+  static const String _userWithPhoto = 'assets/images_svg/eta_photo_user.svg';
+
+  static const String _userLostConnection = 'assets/images_svg/eta_lost_connection_control.svg';
+
+  const UserPinControl({super.key, this.user});
+
+  @override
+  // ignore: prefer_expression_function_bodies
+  Widget build(BuildContext context, WidgetRef ref) {
+    final (code, _) = ref.watch(websocketErrorHandlerProvider);
+
+    return ClipOval(
+      child: ColorFiltered(
+        colorFilter: ColorFilter.mode(
+          // Added black and white filter for unactive connection
+          code != null && user?.photoUrl != null ? Colors.grey : Colors.transparent,
+          BlendMode.saturation,
+        ),
+        child: Stack(
+          children: [
+            SvgPicture.asset(
+              _getUserIcon(isConnectionLost: code != null),
+              width: 32,
+              height: 32,
+              package: PackageConfig.packageName,
+            ),
+            // draw user photo if user has one
+            if (user?.photoUrl != null)
+              Positioned(
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0,
+                child: Center(
+                  child: SizedBox(
+                    width: 24.0,
+                    height: 24.0,
+                    child: ClipOval(
+                      child: Image.network(
+                        user!.photoUrl!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getUserIcon({bool isConnectionLost = false}) {
+    if (isConnectionLost && user?.photoUrl == null) {
+      return _userLostConnection;
+    }
+
+    if (user == null) {
+      return _unauthorizedUser;
+    }
+
+    if (user!.firstName != null && user!.lastName != null) {
+      return _authorizedUser;
+    }
+
+    if (user!.photoUrl != null) {
+      return _userWithPhoto;
+    }
+
+    return _unauthorizedUser;
+  }
+}

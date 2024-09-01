@@ -22,13 +22,13 @@ class DgisPackages extends _$DgisPackages {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class VoicePackages extends _$VoicePackages {
   @override
-  List<PackageMessage> build() {
+  List<VoiceMessage> build() {
     final dgisController = ref.watch(dgisControllerProvider);
     dgisController.value?.listVoices().then(
-          (value) => state = value.whereType<PackageMessage>().toList(),
+          (value) => state = value.whereType<VoiceMessage>().toList(),
         );
 
     return [];
@@ -37,16 +37,16 @@ class VoicePackages extends _$VoicePackages {
   Future<void> install(PackageMessage package) async {
     final dgisController = ref.read(dgisControllerProvider);
     await dgisController.value?.installVoice(package.id);
+    ref.invalidateSelf();
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PackageProgress extends _$PackageProgress {
   @override
   int build(PackageMessage package) {
     final dgisController = ref.watch(dgisControllerProvider);
-    final packageSubscription =
-        dgisController.value?.packageProgressEvents.listen((event) {
+    final packageSubscription = dgisController.value?.packageProgressEvents.listen((event) {
       if (event.id == package.id) {
         state = event.progress;
       }
@@ -62,14 +62,13 @@ class PackageProgress extends _$PackageProgress {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PackageInfo extends _$PackageInfo {
   @override
   PackageInfoMessage build(PackageMessage package) {
     final dgisController = ref.watch(dgisControllerProvider);
 
-    final packagesInfoChangedSubscription =
-        dgisController.value?.packagesInfoChangedEvents.listen((event) {
+    final packagesInfoChangedSubscription = dgisController.value?.packagesInfoChangedEvents.listen((event) {
       if (event.id == package.id) {
         state = event.packageInfo;
       }

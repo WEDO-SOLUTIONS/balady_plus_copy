@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
-import 'package:mapness/_features/landing/controls.dart' as controls;
 import 'package:mapness/_features/landing/dashboard.dart';
+import 'package:mapness/_features/landing/landing_state_mapper.dart';
+import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -20,6 +23,10 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -28,6 +35,7 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
 enum LangingFocusMaker { iwish, mosques }
@@ -44,23 +52,28 @@ class LandingPage extends ConsumerStatefulWidget {
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
   StreamSubscription<TapEvent>? _streamSubscription;
   bool needToShow = true;
-  final ValueNotifier<bool> _onScroll = ValueNotifier(false);
-  late final DraggableScrollableController _draggableScrollableController;
+  ThreeStateBottomSheet? lastState;
   final dashBoardMinimumSize = 0.13;
+
+  late final BottomSheetScrollController<ThreeStateBottomSheet> scrollController;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    _draggableScrollableController = DraggableScrollableController();
+    scrollController = BottomSheetScrollController(
+      initialState: ThreeStateBottomSheet.open,
+      behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
+      stateMapper: const LandingStateMapper(),
+    );
+
+    scrollController.addListener(_calculatePadding);
+
     setupTapListener();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _calculatePadding();
-      _onScroll
-        ..value = true
-        ..value = false;
     });
 
     switch (widget.focusMaker) {
@@ -81,7 +94,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                     bearing: 0,
                   ),
                 );
-            // dgisController
             // ignore: avoid_catches_without_on_clauses
           } catch (e) {
             // todo: make it better
@@ -108,14 +120,25 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _calculatePadding() {
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
+    final mediaQuery = ref.read(mediaQueryInfoProvider);
+    ref.read(cameraPaddingProvider.notifier).resetPadding(
+          defaultPadding: CameraSetPaddingMessage(
+            leftPadding: mediaQuery?.padding.left.toInt() ?? 0,
+            rightPadding: mediaQuery?.padding.right.toInt() ?? 0,
+            topPadding: mediaQuery?.padding.top.toInt() ?? 0,
+            bottomPadding: (mediaQuery?.padding.bottom.toInt() ?? 0) + scrollController.sheetHeight.toInt() * 2,
+          ),
+        );
   }
 
   @override
   void dispose() {
+    scrollController
+      ..removeListener(_calculatePadding)
+      ..dispose();
+
     WidgetsBinding.instance.removeObserver(this);
-    _draggableScrollableController.dispose();
-    _onScroll.dispose();
+
     super.dispose();
   }
 
@@ -139,6 +162,10 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
+      ..watch(websocketTypeProvider)
+      ..watch(etaTimerIndicatorProvider)
+      ..watch(shareEtaProvider)
+      ..watch(etaGeoSubscriberProvider)
       ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
       ..watch(locationProvider.select((_) => null))
@@ -151,15 +178,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
         });
 
         if (next?.currentPath == landingPage) {
-          _onScroll
-            ..value = true
-            ..value = false;
         } else if (next?.currentPath == KiblahRoute.path) {
-          _draggableScrollableController.animateTo(
-            0,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.linear,
-          );
+          scrollController.setState(ThreeStateBottomSheet.hidden);
         }
       })
 
@@ -176,35 +196,16 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           type: MaterialType.transparency,
           child: Stack(
             children: [
-              ListenableBuilder(
-                listenable: _draggableScrollableController,
-                builder: (context, child) => (_draggableScrollableController.isAttached &&
-                        _draggableScrollableController.size > dashBoardMinimumSize)
-                    ? GestureDetector(
-                        onTap: () => _hideDashboard(),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              ValueListenableBuilder(
-                valueListenable: _onScroll,
-                builder: (context, _, __) => controls.MapControls(
-                  draggableScrollableController: _draggableScrollableController,
-                ),
-              ),
-              LayoutBuilder(
-                builder: (context, constraints) => Dashboard(
-                  scrollableController: _draggableScrollableController,
-                  biggestHeight: constraints.biggest.height,
-                  biggestWidth: constraints.biggest.width,
-                  onScroll: (value) {
-                    _onScroll.value = value;
-                  },
+              if (scrollController.state != ThreeStateBottomSheet.hidden)
+                GestureDetector(
+                  onTap: () {
+                    scrollController.setState(ThreeStateBottomSheet.hidden);
 
-                  ///TODO: change while Dashboard refactoring
-                  initWithMinSize:
-                      widget.focusMaker == LangingFocusMaker.iwish || widget.focusMaker == LangingFocusMaker.mosques,
+                    ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
+                  },
                 ),
-              ),
+              MapDashboardControls(scrollController, key: const ValueKey('MapDashboardControls')),
+              DashboardV2(scrollableController: scrollController),
             ],
           ),
         ),
@@ -275,15 +276,5 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
         );
       }
     }
-  }
-
-  void _hideDashboard() {
-    _draggableScrollableController.animateTo(
-      0.09,
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.linear,
-    );
-
-    ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
   }
 }

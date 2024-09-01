@@ -2,10 +2,11 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/_features/poi_card/my_location_poi/content_my_location.dart';
+import 'package:mapness/_features/poi_card/my_location_poi/content_deeplink.dart';
 import 'package:mapness/_features/poi_card/poi_card_widget.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/features/share_eta/ui/share_my_location_content.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 
 part 'poi_map.g.dart';
@@ -86,20 +87,18 @@ class PoiMapRoute extends GoRouteData {
         : null;
     if (dgisObjectId == -1) {
       return TransculentPage(
-        child: ContentMyLocation(
+        child: ShareMyLocationContent(
           key: const Key('POI MY LOCATION CARD WIDGET'),
           cameraConfig: cameraConfig,
           closestPoint: closestPoint,
-          locationType: LocationType.myLocation,
         ),
       );
     } else if (dgisObjectId == -2) {
       return TransculentPage(
-        child: ContentMyLocation(
+        child: ContentDeeplink(
           key: const Key('POI OTHER LOCATION CARD WIDGET'),
           cameraConfig: cameraConfig,
           closestPoint: closestPoint,
-          locationType: LocationType.deeplinkLocation,
         ),
       );
     }

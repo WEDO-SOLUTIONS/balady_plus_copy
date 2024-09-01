@@ -8,17 +8,17 @@ class BaldayDeeplink {
   static const String typeKey = 'type';
   static const String dgisObjectIdKey = 'dgis-object-id';
   static const String baseAuthority = 'apps.balady.gov.sa';
+  static const String streamId = 'streamId';
+  static const String tokenId = 'tokenId';
   static String get baseAuthorityWithScheme => 'https://$baseAuthority';
 
   // My location
   static const String typeValueMyLocation = 'my-location';
 
   // By coordinates
-  static const vendorConfigKey =
-      'dgis/native-sdk/keys/user_web_api_key_for_on_premise';
+  static const vendorConfigKey = 'dgis/native-sdk/keys/user_web_api_key_for_on_premise';
   static const catalogKey = 'Modules/directory/webapi_url';
-  static String geocodeUrl(String catalogApi) =>
-      '$catalogApi/3.0/items/geocode';
+  static String geocodeUrl(String catalogApi) => '$catalogApi/3.0/items/geocode';
 
   static const String fieldsValuePoints = 'items.point';
 

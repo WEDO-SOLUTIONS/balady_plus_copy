@@ -6,16 +6,16 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 class QuickFilter extends StatelessWidget {
+  final FilterItemConfig item;
+  final bool selected;
+  final Color background;
+
   const QuickFilter({
     required this.item,
     required this.selected,
     super.key,
     this.background = NonThemeColor.color11,
   });
-
-  final FilterItem item;
-  final bool selected;
-  final Color background;
 
   @override
   Widget build(BuildContext context) => Material(

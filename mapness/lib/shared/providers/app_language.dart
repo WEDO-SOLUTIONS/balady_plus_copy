@@ -43,7 +43,7 @@ extension LanguageData on Language {
       };
 
   String get navigatorVoice => switch (this) {
-        Language.english => 'voice-jennifer',
+        Language.english => 'voice-daniel',
         Language.arabic => 'voice-saud',
       };
 

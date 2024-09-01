@@ -17,7 +17,7 @@ final locationProvider = _locationProvider;
 @Riverpod(keepAlive: true)
 class _Location extends _$Location {
   @override
-  GeoPointMessage? build() {
+  Position? build() {
     checkLocationPermission().then((permitted) {
       if (!permitted) {
         return;
@@ -29,10 +29,7 @@ class _Location extends _$Location {
         locationSettings: locationSettings,
       ).listen(
         (event) {
-          state = GeoPointMessage(
-            latitude: event.latitude,
-            longitude: event.longitude,
-          );
+          state = event;
         },
       );
       ref.onDispose(locationSubscription.cancel);

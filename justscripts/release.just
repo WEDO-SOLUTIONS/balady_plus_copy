@@ -25,7 +25,7 @@ ios-release: apply-patches prebuild ios_setup && unapply-patches
 
 ios-ad-hoc version: apply-patches prebuild ios_setup && unapply-patches
     #!/usr/bin/env bash
-    # One day fuckin' flutter will not ignore export options....
+    # One day fuckin flutter will not ignore export options....
     momrahBundle='momra.balady.ios'
     urbiBundle='ae.urbi.balady'
 

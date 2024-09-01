@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
@@ -102,20 +103,25 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     );
 
     return widgets.RoutesCarousel(
-      navType: widget.navType,
-      pageController: _pageController,
-      routes: routes,
-      onActiveChanged: (index) {
-        if (_animating) {
-          return;
-        }
+        navType: widget.navType,
+        pageController: _pageController,
+        routes: routes,
+        onActiveChanged: (index) {
+          if (_animating) {
+            return;
+          }
 
-        ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
-      },
-      refresh: () {
-        ref.invalidate(routesProvider);
-      },
-      startNavigation: widget.startNavigation,
-    );
+          ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
+        },
+        refresh: () {
+          ref.invalidate(routesProvider);
+        },
+        startNavigation: (info) {
+          // Set finish point for ETA stream
+          EtaStreamStorage()
+            ..setLatitude(widget.points[1]!.latitude)
+            ..setLongitude(widget.points[1]!.longitude);
+          widget.startNavigation(info);
+        });
   }
 }

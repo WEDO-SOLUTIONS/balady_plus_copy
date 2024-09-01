@@ -2,9 +2,9 @@ package com.dgis.map
 
 import android.content.Context
 import android.util.Log
-import ru.dgis.sdk.LogLevel
-import ru.dgis.sdk.LogMessage
-import ru.dgis.sdk.LogSink
+import ru.dgis.sdk.platform.LogLevel
+import ru.dgis.sdk.platform.LogMessage
+import ru.dgis.sdk.platform.LogSink
 import java.io.File
 import java.io.PrintWriter
 import java.text.SimpleDateFormat
