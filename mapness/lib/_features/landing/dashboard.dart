@@ -141,10 +141,6 @@ class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProvid
                       ),
                     ],
                   ),
-<<<<<<< HEAD
-                ],
-              ),
-=======
                 ),
                 const SizedBox(height: uikit.Spacing.$8x),
                 const PlacePreview(),
@@ -163,7 +159,6 @@ class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProvid
                   ),
                 ),
               ],
->>>>>>> origin/urbi-release-4.3.2-rc1
             ),
           ],
         ));
