@@ -148,11 +148,8 @@ class EtaArrivalCard extends ConsumerWidget {
 
     // Get process in percentage
     final percentCompleted = traveledDistance / distance;
-    if (percentCompleted == 1) {
-      return 1;
-    }
 
-    return 1 - percentCompleted.clamp(0.0, 1.0);
+    return percentCompleted.clamp(0.0, 1.0);
   }
 
   String _getArrivalTime(BuildContext context, EtaInfoModel<dynamic>? streamData) {

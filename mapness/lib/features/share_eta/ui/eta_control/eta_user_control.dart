@@ -19,7 +19,9 @@ class EtaUserControl extends ConsumerWidget {
     ref.listen(websocketErrorHandlerProvider, (_, current) {
       final (code, reason) = current;
 
-      if (code == 1000 && (reason == 'expired' || reason == 'manual')) {
+      final reasonData = reason?.toWebsocketReason();
+
+      if (code == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _showLiveLocationExpired(rootNavigatorKey.currentContext!);
         });

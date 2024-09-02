@@ -25,7 +25,9 @@ class EtaRoutePage extends ConsumerWidget {
       ..listen(websocketErrorHandlerProvider, (_, current) {
         final (code, reason) = current;
 
-        if (code == 1000 && (reason == 'expired' || reason == 'manual')) {
+        final reasonData = reason?.toWebsocketReason();
+
+        if (code == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
           context.pop();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showEtaExpired(rootNavigatorKey.currentContext!);

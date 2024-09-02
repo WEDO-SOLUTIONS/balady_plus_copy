@@ -130,6 +130,7 @@ class ShareEta extends _$ShareEta {
   }
 
   Future<void> _onErrorStatus(int statusCode, String reason) async {
+    final reasonData = reason.toWebsocketReason();
     if (statusCode != 1000 && statusCode != 1013) {
       try {
         if (_reconnectingInProgress) {
@@ -147,7 +148,7 @@ class ShareEta extends _$ShareEta {
       } finally {
         _reconnectingInProgress = false;
       }
-    } else if (statusCode == 1000 && (reason == 'expired' || reason == 'manual')) {
+    } else if (statusCode == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
       final tokenId = EtaStreamStorage().state.streamToken;
       final xStreamData = EtaStreamStorage().state.xStreamData;
       if (tokenId != null && xStreamData != null) {

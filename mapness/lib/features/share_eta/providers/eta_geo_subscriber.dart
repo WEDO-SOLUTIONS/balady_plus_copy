@@ -329,6 +329,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   }
 
   Future<void> _onErrorStatus(int? statusCode, String? reason) async {
+    final reasonData = reason?.toWebsocketReason();
     if (statusCode != 1000 && statusCode != 1013) {
       if (statusCode != null) {
         await _processDrawUserMarker(isAvailable: false);
@@ -347,7 +348,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       } finally {
         _reconnectingInProgress = false;
       }
-    } else if (statusCode == 1000 && (reason == 'expired' || reason == 'manual')) {
+    } else if (statusCode == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
       await stopStreaming();
     }
   }

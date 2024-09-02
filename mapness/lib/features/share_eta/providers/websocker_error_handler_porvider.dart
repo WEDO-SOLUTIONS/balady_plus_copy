@@ -5,6 +5,24 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'websocker_error_handler_porvider.g.dart';
 
+enum WebsocketReason {
+  expired,
+  manual,
+}
+
+extension WebSocketReasonX on String {
+  WebsocketReason? toWebsocketReason() {
+    switch (this) {
+      case 'expired':
+        return WebsocketReason.expired;
+      case 'manual':
+        return WebsocketReason.manual;
+      default:
+        return null;
+    }
+  }
+}
+
 @Riverpod(keepAlive: true)
 class WebsocketErrorHandler extends _$WebsocketErrorHandler {
   @override
