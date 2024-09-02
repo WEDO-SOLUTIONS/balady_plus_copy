@@ -54,7 +54,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   ClusteringMapObjectManager? _clustering;
 
   MapObjectManager? searchObjectManager;
-  var _initialExpansion = Expansion.middle;
+  final _initialExpansion = Expansion.middle;
 
   @override
   void initState() {

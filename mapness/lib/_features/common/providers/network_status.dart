@@ -18,6 +18,7 @@ class NetworkStatus extends _$NetworkStatus {
 
   Future<void> update() async {
     state = await InternetConnectionChecker().hasConnection;
+    ref.invalidateSelf();
   }
 
   void _connectivityListener(InternetConnectionStatus event) {

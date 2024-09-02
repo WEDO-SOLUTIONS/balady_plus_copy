@@ -34,12 +34,6 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
   Timer? _debounceTimer;
 
   @override
-  void initState() {
-    _hasConnection = ref.read(networkStatusProvider);
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _debounceTimer?.cancel();
     super.dispose();
@@ -67,6 +61,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
 
   @override
   Widget build(BuildContext context) {
+    _hasConnection = ref.watch(networkStatusProvider);
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
     ref
