@@ -392,6 +392,28 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+    func getCameraVisibleArea(completion: @escaping (CameraVisibleAreaMessage?, FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        
+        completion(
+            CameraVisibleAreaMessage.make(
+                withKind: map.camera.visibleArea.kind.toMessage(),
+                bounds: map.camera.visibleArea.bounds.toMessage(),
+                minPoint: map.camera.visibleArea.minPoint.toMessage(),
+                maxPoint: map.camera.visibleArea.maxPoint.toMessage()
+            ),
+            nil
+        )
+    }
+    
+    
     func search(
         byObjectIdObjectId objectId: DgisObjectIdMessage,
         completion: @escaping (DirectoryObjectMessage?, FlutterError?) -> Void

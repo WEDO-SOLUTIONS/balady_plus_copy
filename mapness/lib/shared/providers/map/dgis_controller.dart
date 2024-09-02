@@ -128,6 +128,10 @@ class DgisController extends _$DgisController {
     );
   }
 
+  Future<CameraVisibleAreaMessage> getVisibleArea(DgisMapController controller) async {
+    return await controller.getVisibleArea();
+  }
+
   Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
     final visibleRectSubscription =
         controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen(_listenVisibleRectangle);

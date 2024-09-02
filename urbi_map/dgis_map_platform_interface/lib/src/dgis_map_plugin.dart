@@ -264,6 +264,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.setCameraPosition(cameraPosition);
   }
 
+  Future<CameraVisibleAreaMessage> getCameraVisibleArea() {
+    return _api.getCameraVisibleArea();
+  }
+
   Future<void> setCameraPositionPoint(CameraPositionPointMessage cameraPosition) {
     return _api.setCameraPositionPoint(cameraPosition);
   }

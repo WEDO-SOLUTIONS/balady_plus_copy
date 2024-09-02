@@ -54,6 +54,15 @@ class CameraPositionMessage {
   final double bearing;
 }
 
+class CameraVisibleAreaMessage {
+  const CameraVisibleAreaMessage(this.kind, this.bounds, this.minPoint, this.maxPoint);
+
+  final GeometryKindMessage kind;
+  final GeoRectMessage bounds;
+  final GeoPointMessage minPoint;
+  final GeoPointMessage maxPoint;
+}
+
 class CameraPositionPointMessage {
   CameraPositionPointMessage(this.x, this.y);
 
@@ -1162,6 +1171,9 @@ abstract class MapApi {
 
   @async
   void setCameraPosition(CameraPositionMessage cameraPosition);
+
+  @async
+  CameraVisibleAreaMessage getCameraVisibleArea();
 
   @async
   void setCameraPositionPoint(CameraPositionPointMessage cameraPosition);
