@@ -1,8 +1,9 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
@@ -11,7 +12,7 @@ import 'package:mapness/features/share_eta/ui/eta_control/user_pin_control.dart'
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class EtaArrivalCard extends ConsumerWidget {
+class EtaArrivalCard extends HookConsumerWidget {
   const EtaArrivalCard({super.key});
 
   static const minSheetHeight = 176.0;
@@ -20,6 +21,8 @@ class EtaArrivalCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final (streamData, metaInfo) = ref.watch(etaGeoSubscriberProvider);
+
+    final startedDate = useState(DateTime.now().toUtc());
 
     return Container(
       constraints: const BoxConstraints(
@@ -77,7 +80,7 @@ class EtaArrivalCard extends ConsumerWidget {
           Directionality(
             textDirection: TextDirection.ltr,
             child: EtaRouteLine(
-              progress: _getProgress(streamData),
+              progress: _getProgress(streamData, startedDate.value),
               image: ClipOval(
                 child: ColoredBox(
                   color: context.colorsV2.staticWhite,
@@ -112,7 +115,7 @@ class EtaArrivalCard extends ConsumerWidget {
     context.pop();
   }
 
-  double _getProgress(EtaInfoModel<dynamic>? streamData) {
+  double _getProgress(EtaInfoModel<dynamic>? streamData, DateTime startedDate) {
     if (streamData == null) {
       // we don't have enough data to calculate the progress
       return 0.5;
@@ -120,7 +123,7 @@ class EtaArrivalCard extends ConsumerWidget {
     final data = streamData as EtaInfoModel<EtaInfoPayload?>;
     final distance = data.payload?.eta?.distance;
     final arrivalAt = data.payload?.eta?.arrivalAt;
-    final speed = data.payload?.speed ?? 60.0; // default speed is 60 km/h
+    // final speed = data.payload?.speed ?? 60.0; // default speed is 60 km/h
 
     if (distance == null || arrivalAt == null) {
       // we don't have enough data to calculate the progress
@@ -136,20 +139,16 @@ class EtaArrivalCard extends ConsumerWidget {
 
     final currentTime = DateTime.now().toUtc();
 
-    // Calculate the remaining time in hours
-    final remainingTime = arrivalTime.difference(currentTime);
-    final remainingHours = remainingTime.inSeconds / 3600.0;
+    final time1 = arrivalTime.difference(startedDate).inSeconds;
+    final time2 = currentTime.difference(startedDate).inSeconds;
 
-    final lastSpeed = speed > 0 ? speed : 1;
-    final lastRemainingHours = remainingHours >= 0 ? remainingHours : 0;
+    final progress = time2 / time1;
 
-    // Calculate the traveled distance
-    final traveledDistance = distance - (lastSpeed * lastRemainingHours);
+    if (progress < 0) {
+      return 1.0;
+    }
 
-    // Get process in percentage
-    final percentCompleted = traveledDistance / distance;
-
-    return percentCompleted.clamp(0.0, 1.0);
+    return progress.clamp(0.0, 1.0);
   }
 
   String _getArrivalTime(BuildContext context, EtaInfoModel<dynamic>? streamData) {
