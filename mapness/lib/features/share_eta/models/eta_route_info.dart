@@ -7,6 +7,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'eta_route_info.freezed.dart';
 part 'eta_route_info.g.dart';
 
+enum StreamType {
+  @JsonValue('eta')
+  eta,
+  @JsonValue('geo')
+  geo,
+}
+
 /// Represents the ETA payload.
 @freezed
 class EtaRoutePayload with _$EtaRoutePayload {
@@ -15,6 +22,7 @@ class EtaRoutePayload with _$EtaRoutePayload {
   const factory EtaRoutePayload({
     final Route? route,
     final User? user,
+    final StreamType? type,
   }) = _EtaRoutePayload;
 
   /// Creates an [EtaRoutePayload] object from a JSON map.

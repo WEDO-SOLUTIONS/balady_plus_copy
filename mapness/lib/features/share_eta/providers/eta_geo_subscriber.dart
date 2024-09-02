@@ -41,6 +41,10 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           layerId: settings.layerId,
         ),
       )
+      ..listen(websocketErrorHandlerProvider, (_, current) async {
+        final (code, reason) = current;
+        await _onErrorStatus(code, reason);
+      })
       ..onDispose(() {
         EtaWebsocket().clearInfoListeners();
       });
@@ -113,7 +117,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         shareEtaApiUrl: envProvider.shareEtaApi,
       );
       ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
-      EtaWebsocket().addConnectionLostListener(_onErrorStatus);
+      // EtaWebsocket().addConnectionLostListener(_onErrorStatus);
       EtaWebsocket().addEtaInfoListener(_updateEtaInfo);
     } catch (e) {
       rethrow;
@@ -168,14 +172,16 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       if (payload.lat == null || payload.lon == null) {
         return;
       }
-      await ref.read(cameraPositionProvider.notifier).animateTo(
-            CameraPositionMessage(
-              point: GeoPointMessage(latitude: payload.lat!, longitude: payload.lon!),
-              zoom: 17,
-              tilt: 0,
-              bearing: 0,
-            ),
-          );
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await ref.read(cameraPositionProvider.notifier).animateTo(
+              CameraPositionMessage(
+                point: GeoPointMessage(latitude: payload.lat!, longitude: payload.lon!),
+                zoom: 17,
+                tilt: 0,
+                bearing: 0,
+              ),
+            );
+      });
     }
   }
 
@@ -330,12 +336,12 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
   Future<void> _onErrorStatus(int? statusCode, String? reason) async {
     final reasonData = reason?.toWebsocketReason();
-    if (statusCode != 1000 && statusCode != 1013) {
-      if (statusCode != null) {
-        await _processDrawUserMarker(isAvailable: false);
-      } else {
-        await _processDrawUserMarker();
-      }
+    if (statusCode != null && statusCode != 1000) {
+      await _processDrawUserMarker(isAvailable: false);
+    } else if (statusCode == null) {
+      await _processDrawUserMarker();
+    }
+    if (statusCode != 1000 && statusCode != 1013 && statusCode != null) {
       try {
         if (_reconnectingInProgress) {
           return;

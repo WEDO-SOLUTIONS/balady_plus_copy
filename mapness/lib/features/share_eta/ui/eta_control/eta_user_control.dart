@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/ui/eta_control/user_pin_control.dart';
@@ -20,6 +21,13 @@ class EtaUserControl extends ConsumerWidget {
       final (code, reason) = current;
 
       final reasonData = reason?.toWebsocketReason();
+      final (_, meta) = ref.read(etaGeoSubscriberProvider);
+
+      final payload = meta?.payload;
+
+      if (payload?.type != StreamType.geo) {
+        return;
+      }
 
       if (code == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
         WidgetsBinding.instance.addPostFrameCallback((_) {

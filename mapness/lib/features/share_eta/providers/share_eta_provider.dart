@@ -120,11 +120,18 @@ class ShareEta extends _$ShareEta {
       }
     });
 
-    ref.onDispose(() {
-      EtaStreamStorage().clear();
-      _websocketStatusSubscription?.close();
-      _locationSubscription?.cancel();
-    });
+    ref
+      ..listen(websocketErrorHandlerProvider, (_, current) async {
+        final (code, reason) = current;
+        if (code != null && reason != null) {
+          await _onErrorStatus(code, reason);
+        }
+      })
+      ..onDispose(() {
+        EtaStreamStorage().clear();
+        _websocketStatusSubscription?.close();
+        _locationSubscription?.cancel();
+      });
 
     return _streamType;
   }
@@ -151,7 +158,8 @@ class ShareEta extends _$ShareEta {
     } else if (statusCode == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
       final tokenId = EtaStreamStorage().state.streamToken;
       final xStreamData = EtaStreamStorage().state.xStreamData;
-      if (tokenId != null && xStreamData != null) {
+      final isSharing = ref.read(websocketTypeProvider) == SubscriptionType.share;
+      if (tokenId != null && xStreamData != null && isSharing) {
         await stopSharing(tokenId, xStreamData);
       }
     }
@@ -220,7 +228,6 @@ class ShareEta extends _$ShareEta {
         subscriptionType: SubscriptionType.share,
       );
       ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
-      EtaWebsocket().addConnectionLostListener(_onErrorStatus);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
