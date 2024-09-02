@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/route_onboarding.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/features/stories/domain/story_types.dart';
-import 'package:mapness/features/stories/stories.dart';
+import 'package:mapness/app/routes/stories.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -65,13 +64,7 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!isOnboardingShown) {
-        Stories.showOnboarding(
-          context,
-          StoryTypes.onboarding,
-          'onboarding',
-          onActionShowNextHistory: true,
-          navigationShell: widget.navigationShell,
-        );
+        StoriesRoute.openOnboarding(context);
         ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
       }
     });
@@ -83,10 +76,10 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
         currentIndex: currentTab,
         onDestinationSelected: (selected) async {
           const pageTitle = {
-            0: 'profile',
-            1: 'services',
-            2: 'route',
-            3: 'explore',
+            0: 'explore',
+            1: 'routing',
+            2: 'services',
+            3: 'profile',
           };
 
           Metrics.logEventAdvanced(
@@ -94,24 +87,30 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
             group: _tag,
             action: MetricAction.tap.name,
           );
-          if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
+          final naviEnabled = ref.read(appFeaturesProvider).naviEnabled;
+          if (selected == 2 && naviEnabled) {
             final isShowRoute = await ref.read(routeOnboardingProvider.future);
             if (isShowRoute) {
               _goToPage(selected);
-            } else {
-              if (!mounted) {
-                return;
-              }
-              Stories.showOnboarding(
-                context,
-                StoryTypes.route,
-                'route',
-                onClose: () async {
-                  await ref.read(routeOnboardingProvider.notifier).setShown(true);
-                  _goToPage(selected);
-                },
-              );
+              return;
             }
+            if (!mounted) {
+              return;
+            }
+            StoriesRoute.openRoute(context, onClose: () {
+              ref.read(routeOnboardingProvider.notifier).setShown(true);
+              _goToPage(selected);
+            });
+
+            // Stories.showOnboarding(
+            //   context,
+            //   StoryTypes.route,
+            //   'route',
+            //   onClose: () async {
+            //     await ref.read(routeOnboardingProvider.notifier).setShown(true);
+            //     _goToPage(selected);
+            //   },
+            // );
             return;
           }
           _goToPage(selected);
