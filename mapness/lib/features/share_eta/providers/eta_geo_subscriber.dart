@@ -1,16 +1,20 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
+import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart';
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_watching_sheet.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -266,6 +270,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     if (user == null) {
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
+        onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
         options: MarkerOptionsMessage(
           position: point,
           icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_unauthorizedUser', width: 48),
@@ -277,6 +282,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       final pic = await processImage(user.photoUrl!);
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
+        onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
         options: MarkerOptionsMessage(
           position: point,
           icon: PngBytesMarkerIcon(pngData: img.encodePng(pic), width: 48),
@@ -288,6 +294,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     } else {
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
+        onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
         options: MarkerOptionsMessage(
           position: point,
           icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_autharizedUser', width: 48),
@@ -302,6 +309,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     if (user == null) {
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
+        onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
         options: MarkerOptionsMessage(
           position: point,
           icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_lostConnection', width: 48),
@@ -313,6 +321,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       final pic = await processImage(user.photoUrl!, isUnavailable: true);
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
+        onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
         options: MarkerOptionsMessage(
           position: point,
           icon: PngBytesMarkerIcon(pngData: img.encodePng(pic), width: 48),
@@ -324,6 +333,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     } else {
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
+        onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
         options: MarkerOptionsMessage(
           position: point,
           icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_lostConnection', width: 48),
@@ -332,6 +342,26 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         ),
       );
     }
+  }
+
+  void _showStopWatchingSheet(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Consumer(
+        builder: (context, ref, _) => EtaWatchingSheet(
+          onStopWatchingPressed: () {
+            stopStreaming();
+            context.pop();
+            // Extra close call for close the bottom sheet
+            if (_metaInfo?.payload?.type == StreamType.eta) {
+              context.pop();
+            }
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> _onErrorStatus(int? statusCode, String? reason) async {
