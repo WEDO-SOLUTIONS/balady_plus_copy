@@ -128,7 +128,8 @@ class ShareEta extends _$ShareEta {
         }
       })
       ..onDispose(() {
-        EtaStreamStorage().clear();
+        _stopSharingCurrent();
+
         _websocketStatusSubscription?.close();
         _locationSubscription?.cancel();
       });
@@ -200,6 +201,16 @@ class ShareEta extends _$ShareEta {
       debugPrint(e.toString());
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.share);
+    }
+  }
+
+  Future<void> _stopSharingCurrent() async {
+    final tokenId = EtaStreamStorage().state.streamToken;
+    final xStreamData = EtaStreamStorage().state.xStreamData;
+
+    if (tokenId != null && xStreamData != null) {
+      await stopSharing(tokenId, xStreamData);
+      EtaStreamStorage().clear();
     }
   }
 

@@ -35,10 +35,9 @@ class ShareEtaBtn extends HookConsumerWidget {
       if (current.hasValue && current.value != null && !current.isLoading) {
         final streamId = current.value!.streamId;
         final streamToken = current.value!.streamToken;
-        final finishAt = current.value!.finishesAt;
         final xStreamData = current.value!.xStreamData;
 
-        if (streamId == null || streamToken == null || finishAt == null || xStreamData == null) {
+        if (streamId == null || streamToken == null || xStreamData == null) {
           return;
         }
 
