@@ -29,8 +29,14 @@ class EtaTimerControl extends ConsumerWidget {
         ? context.l10n.timerHrMin(diffInHours.toString(), diffInMinutes.toString())
         : context.l10n.timerMin(diffInMinutes.toString());
 
+    ref.listen(etaTimerIndicatorProvider, (prev, current) {
+      if (current == 0) {
+        _stopShare(ref);
+      }
+    });
+
     return MapButton(
-      onTap: () => _continueShared(context, ref),
+      onTap: () => _continueShared(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
         child: Row(
@@ -50,47 +56,48 @@ class EtaTimerControl extends ConsumerWidget {
     );
   }
 
-  void _continueShared(BuildContext context, WidgetRef ref) {
-    final timerTime = ref.read(etaTimerIndicatorProvider);
-
-    final hourLeft = timerTime ~/ 60;
-    final leftMinutes = timerTime % 60;
-
-    final left = hourLeft > 0
-        ? context.l10n.hrMinLeft(hourLeft.toString(), leftMinutes.toString())
-        : context.l10n.minLeft(leftMinutes.toString());
-
+  void _continueShared(BuildContext context) {
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: rootNavigatorKey.currentContext!,
       isScrollControlled: true,
-      builder: (context) => EtaInprogressSheet(
-        onShareMorePressed: () async {
-          context.pop();
-          _showEtaTimeSheet(rootNavigatorKey.currentContext!, ref);
-        },
-        onStopSharePressed: () {
-          context.pop();
-          _stopShare(ref);
-        },
-        timeLeft: left,
-      ),
+      builder: (context) => Consumer(builder: (_, ref, __) {
+        final timerTime = ref.read(etaTimerIndicatorProvider);
+
+        final hourLeft = timerTime ~/ 60;
+        final leftMinutes = timerTime % 60;
+
+        final left = hourLeft > 0
+            ? context.l10n.hrMinLeft(hourLeft.toString(), leftMinutes.toString())
+            : context.l10n.minLeft(leftMinutes.toString());
+        return EtaInprogressSheet(
+          onShareMorePressed: () async {
+            await _showEtaTimeSheet(rootNavigatorKey.currentContext!);
+            context.pop();
+          },
+          onStopSharePressed: () async {
+            await _stopShare(ref);
+            context.pop();
+          },
+          timeLeft: left,
+        );
+      }),
     );
   }
 
-  void _showEtaTimeSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => EtaSharingTimeSheet(
-        onConfirmTap: (v) async {
-          await _stopShare(ref);
-          await ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);
-        },
-      ),
-    );
-  }
+  Future<void> _showEtaTimeSheet(BuildContext context) => showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => Consumer(
+          builder: (context, ref, _) => EtaSharingTimeSheet(
+            onConfirmTap: (v) async {
+              await _stopShare(ref);
+              await ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);
+            },
+          ),
+        ),
+      );
 
   Future<void> _stopShare(WidgetRef ref) async {
     final etaStore = EtaStreamStorage();
@@ -100,7 +107,12 @@ class EtaTimerControl extends ConsumerWidget {
     final tokenId = etaStore.state.streamToken!;
     final streamData = etaStore.state.xStreamData!;
 
-    await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, streamData);
-    etaStore.clear();
+    try {
+      await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, streamData);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      etaStore.clear();
+    }
   }
 }

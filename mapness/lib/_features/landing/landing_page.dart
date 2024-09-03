@@ -35,7 +35,6 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
 enum LangingFocusMaker { iwish, mosques }
@@ -52,7 +51,6 @@ class LandingPage extends ConsumerStatefulWidget {
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
   StreamSubscription<TapEvent>? _streamSubscription;
   bool needToShow = true;
-  ThreeStateBottomSheet? lastState;
   final dashBoardMinimumSize = 0.13;
 
   late final BottomSheetScrollController<ThreeStateBottomSheet> scrollController;
@@ -94,7 +92,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                     bearing: 0,
                   ),
                 );
-            // ignore: avoid_catches_without_on_clauses
           } catch (e) {
             // todo: make it better
             if (kDebugMode) {
@@ -120,15 +117,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _calculatePadding() {
-    final mediaQuery = ref.read(mediaQueryInfoProvider);
-    ref.read(cameraPaddingProvider.notifier).resetPadding(
-          defaultPadding: CameraSetPaddingMessage(
-            leftPadding: mediaQuery?.padding.left.toInt() ?? 0,
-            rightPadding: mediaQuery?.padding.right.toInt() ?? 0,
-            topPadding: mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: (mediaQuery?.padding.bottom.toInt() ?? 0) + scrollController.sheetHeight.toInt() * 2,
-          ),
-        );
+    ref.read(cameraPaddingProvider.notifier).resetPadding();
   }
 
   @override

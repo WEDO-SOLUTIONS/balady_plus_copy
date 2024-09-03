@@ -1,4 +1,3 @@
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,6 +12,8 @@ class UserPinControl extends ConsumerWidget {
   static const String _authorizedUser = 'assets/images_svg/eta_named_user.svg';
   static const String _userWithPhoto = 'assets/images_svg/eta_photo_user.svg';
 
+  static const String _userLostConnection = 'assets/images_svg/eta_lost_connection_control.svg';
+
   const UserPinControl({super.key, this.user});
 
   @override
@@ -24,13 +25,13 @@ class UserPinControl extends ConsumerWidget {
       child: ColorFiltered(
         colorFilter: ColorFilter.mode(
           // Added black and white filter for unactive connection
-          code == null ? Colors.transparent : Colors.grey,
+          code != null && user?.photoUrl != null ? Colors.grey : Colors.transparent,
           BlendMode.saturation,
         ),
         child: Stack(
           children: [
             SvgPicture.asset(
-              _getUserIcon(),
+              _getUserIcon(isConnectionLost: code != null),
               width: 32,
               height: 32,
               package: PackageConfig.packageName,
@@ -54,25 +55,6 @@ class UserPinControl extends ConsumerWidget {
                     ),
                   ),
                 ),
-              )
-            // draw user initials if user has no photo
-            else if (user?.firstName != null && user?.lastName != null)
-              Positioned(
-                top: 0,
-                right: 0,
-                left: 0,
-                bottom: 0,
-                child: Center(
-                  child: SizedBox(
-                    height: 18.0,
-                    child: Text('${user!.firstName!.characters.first}${user!.lastName!.characters.first}',
-                        textAlign: TextAlign.center,
-                        style: context.textStyleV3.bodySmallSemiBold.copyWith(
-                          color: Colors.white,
-                          fontSize: 10,
-                        )),
-                  ),
-                ),
               ),
           ],
         ),
@@ -80,7 +62,11 @@ class UserPinControl extends ConsumerWidget {
     );
   }
 
-  String _getUserIcon() {
+  String _getUserIcon({bool isConnectionLost = false}) {
+    if (isConnectionLost && user?.photoUrl == null) {
+      return _userLostConnection;
+    }
+
     if (user == null) {
       return _unauthorizedUser;
     }

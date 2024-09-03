@@ -15,7 +15,7 @@ class EtaUserControl extends ConsumerWidget {
 
     return MapButton(
       onTap: () async {
-        _showStopWatchingSheet(context, ref);
+        _showStopWatchingSheet(context);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
@@ -24,16 +24,18 @@ class EtaUserControl extends ConsumerWidget {
     );
   }
 
-  void _showStopWatchingSheet(BuildContext context, WidgetRef ref) {
+  void _showStopWatchingSheet(BuildContext context) {
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
-      builder: (context) => EtaWatchingSheet(
-        onStopWatchingPressed: () {
-          ref.read(etaGeoSubscriberProvider.notifier).stopStreaming();
-          context.pop();
-        },
+      builder: (context) => Consumer(
+        builder: (context, ref, _) => EtaWatchingSheet(
+          onStopWatchingPressed: () {
+            ref.read(etaGeoSubscriberProvider.notifier).stopStreaming();
+            context.pop();
+          },
+        ),
       ),
     );
   }

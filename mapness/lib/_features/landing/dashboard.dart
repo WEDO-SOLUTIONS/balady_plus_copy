@@ -26,13 +26,11 @@ import 'package:mapness/entities/quick_filters/quick_filter.dart';
 
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/features/stories/data/story_service.dart';
-import 'package:mapness/features/stories/stories.dart';
-import 'package:mapness/features/stories/stories_widget.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
+import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
@@ -75,19 +73,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
     return WillPopScope(
         onWillPop: () async {
-          if (Stories.isShowing) {
-            Metrics.logEventAdvanced(
-              MetricsConstants.exploreKeys.storiesClose,
-              action: MetricAction.tap.name,
-              group: MetricsConstants.exploreTag,
-            );
-
-            //Resume the story update when viewport changed
-            ref.read(storyServiceProvider.notifier).resumeUpdate();
-            Stories.hide();
-            return false;
-          }
-
           // TODO(Ayat): goroute has problems with WillPopScope and push method, this is as a temporary solution.
           //  We are waiting for an update, now the latest version is 14.2.1
           final currentRoute = ref.read(currentRouteProvider);
@@ -196,7 +181,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         ref.read(mapControlsProvider.notifier).update(
               MapControlsStateIdle(),
             );
-        FocusManager.instance.primaryFocus?.unfocus();
       }
     });
   }
