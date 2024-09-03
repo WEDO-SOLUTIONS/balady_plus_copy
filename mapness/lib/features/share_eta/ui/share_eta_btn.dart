@@ -11,6 +11,7 @@ import 'package:mapness/features/share_eta/providers/websocker_error_handler_por
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn_action.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 class ShareEtaBtn extends HookConsumerWidget {
   final int durationMinutes;
@@ -48,9 +49,10 @@ class ShareEtaBtn extends HookConsumerWidget {
 
         await ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
       } else if (current.hasError) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          ToastMessageFactory.toastWithoutAction(text: 'Error', context: context),
+        ToastOverlay.of(context).showNoInternet(
+          onRetry: () {
+            ref.read(shareEtaProvider.notifier).startSharingEta();
+          },
         );
       }
     });
