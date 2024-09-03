@@ -48,7 +48,8 @@ class StoryFrameWidget extends StatefulWidget {
   State<StoryFrameWidget> createState() => _StoryFrameWidgetState();
 }
 
-class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerProviderStateMixin {
+class _StoryFrameWidgetState extends State<StoryFrameWidget>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late final AnimationController _controller;
   late final Animation<double> _progress;
   late final StoryFrameData _frame;
@@ -91,10 +92,22 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget> with SingleTickerPr
     if (_frame.isAssetImage == true) {
       _imageLoaded();
     }
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _controller.forward();
+      return;
+    }
+    _controller.stop();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
     _controller.dispose();
     _progress.removeListener(_onProgressListener);
     super.dispose();

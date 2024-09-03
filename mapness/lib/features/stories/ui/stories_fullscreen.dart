@@ -23,7 +23,7 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
   ConsumerState<StoriesFullscreen> createState() => _StoriesFullscreenState();
 }
 
-class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with WidgetsBindingObserver {
+class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   late int _currentPage;
   late int _maxPages;
 
@@ -31,15 +31,6 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
   late final IndexController _indexController;
 
   final ValueNotifier<int> _currentPageNotifier = ValueNotifier<int>(0);
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _storyFrameController.play?.call();
-      return;
-    }
-    _storyFrameController.pause?.call();
-  }
 
   @override
   void initState() {
@@ -61,12 +52,10 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
         _setCurrentPage(_currentPage - 1);
       }
     });
-    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _storyFrameController.dispose();
     _indexController.dispose();
     super.dispose();
