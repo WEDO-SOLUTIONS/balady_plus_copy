@@ -9,7 +9,7 @@ import 'package:mapness/features/share_eta/providers/websocker_error_handler_por
 import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_arrival_card.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 
-class EtaRoutePage extends ConsumerWidget {
+class EtaRoutePage extends ConsumerStatefulWidget {
   final double? latitude;
   final double? longitude;
   const EtaRoutePage({
@@ -19,7 +19,12 @@ class EtaRoutePage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EtaRoutePage> createState() => _EtaRoutePageState();
+}
+
+class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
+  @override
+  Widget build(BuildContext context) {
     ref
       ..watch(etaGeoSubscriberProvider)
       ..listen(websocketErrorHandlerProvider, (_, current) {

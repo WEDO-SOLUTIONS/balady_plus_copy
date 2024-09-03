@@ -482,12 +482,14 @@ class RouteEditorRouteParamsMessage {
     this.startPoint,
     this.finishPoint,
     this.options,
+    this.showOnlyActiveRoute,
   );
 
   final RouteEditorRoutePointMessage? startPoint;
   final RouteEditorRoutePointMessage? finishPoint;
 
   final RouteSearchOptionsMessage options;
+  final bool? showOnlyActiveRoute;
 }
 
 enum DesiredAccuracyMessage { low, medium, high }

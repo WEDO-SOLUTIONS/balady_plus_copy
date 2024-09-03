@@ -160,7 +160,16 @@ class RouteHandler {
             intermediatePoints: []
         )
         routeEditor.setRouteParams(routeParams: routeEditorParams)
-        routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: params.options == .publicTransport)
+
+        let showOnlyActiveRoute: Bool
+
+        if let showOnlyActive = params.showOnlyActiveRoute?.boolValue {
+            showOnlyActiveRoute = showOnlyActive
+        } else {
+            showOnlyActiveRoute = params.options == .publicTransport
+        }
+
+        routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: showOnlyActiveRoute)
     }
     
     private func getRouteSearchOptions(opts: RouteSearchOptionsMessage) -> RouteSearchOptions {

@@ -8,8 +8,10 @@ import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart'
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
+import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
+import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
@@ -127,6 +129,13 @@ class ShareEta extends _$ShareEta {
           await _onErrorStatus(code, reason);
         }
       })
+      ..listen(etaRouteInfoProvider, (_, current) {
+        final etaStatus = ref.read(etaWebsocketStatusProvider);
+        final isSharingType = ref.read(websocketTypeProvider) == SubscriptionType.share;
+        if (etaStatus && isSharingType && _streamType == EtaStreamType.eta) {
+          // TODO: Update route info
+        }
+      })
       ..onDispose(() {
         _stopSharingCurrent();
 
@@ -191,9 +200,11 @@ class ShareEta extends _$ShareEta {
       final etaService = ref.read(etaServiceProvider.notifier);
 
       state = _streamType = EtaStreamType.eta;
+      final etaRoute = ref.read(etaRouteInfoProvider);
 
       final payload = EtaStreamPayload(
         type: EtaStreamType.eta.name,
+        metadata: etaRoute.isEmpty ? null : EtaRoutePayload(route: etaRoute),
       );
 
       await etaService.startEtaStream(payload);
@@ -223,6 +234,7 @@ class ShareEta extends _$ShareEta {
     } catch (e) {
       debugPrint(e.toString());
     } finally {
+      ref.read(etaRouteInfoProvider.notifier).clear();
       EtaWebsocket().removeConnectionLostListener(_onErrorStatus);
     }
   }
@@ -299,7 +311,6 @@ class ShareEta extends _$ShareEta {
     await Share.share(context.l10n.iWillArriveAtTimeToDestinationLink(address ?? '', shareUrl, arrivalAt).multilines);
   }
 
-  // TODO(scroollocker): Implement address sharing
   Future<String?> _makeAddress(double latitude, double longitude) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     String? address;

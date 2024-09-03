@@ -8,6 +8,10 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
+import 'package:mapness/features/share_eta/entities/route_type_mapper.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
@@ -17,7 +21,9 @@ import 'package:mapness/features/share_eta/providers/websocket_type_provider.dar
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_watching_sheet.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'eta_geo_subscriber.g.dart';
@@ -34,6 +40,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
   bool _reconnectingInProgress = false;
   bool _isFirstLocationFetch = true;
+  EtaRoute? _lastActiveRoute;
 
   @override
   (EtaInfoModel<dynamic>?, EtaInfoModel<EtaRoutePayload?>?) build() {
@@ -69,23 +76,42 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     } else if (etaInfo.type == EtaType.streamMetadata) {
       _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
-      // TODO(Scroollocker): Implement route drawing on the map
-      // Get route from model
-      // ref.listen(routesProvider(
-      //       startPoint: RouteParamsPoint(latitude: latitude!, longitude: longitude!),
-      //       finishPoint: RouteParamsPoint(
-      //         latitude: 24.711564057132794,
-      //         longitude: 46.67427162103001,
-      //       ),
-      //       navType: RouteSearchOptionsMessage.car,
-      //     ), (_, current) async {
-      //   if (current.valueOrNull?.isEmpty == true) {
-      //     WidgetsBinding.instance.addPostFrameCallback((_) {
-      //       _showEtaExpired(rootNavigatorKey.currentContext!);
-      //     });
-      //   } else {
-      //     await ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(0);
-      //   }
+      final route = _metaInfo?.payload?.route;
+
+      if (route == null || route.isEmpty) {
+        return;
+      }
+
+      final startPoint = route.startPoint?.routePoint;
+      final finishPoint = route.endPoint?.routePoint;
+      final type = route.type?.toRouteSearchOptions;
+      final activeIndex = route.routeIndex;
+
+      if (startPoint == null || finishPoint == null || type == null || activeIndex == null) {
+        return;
+      }
+
+      _addFinishPin(finishPoint);
+
+      if (_lastActiveRoute == route) {
+        return;
+      }
+
+      _lastActiveRoute = route;
+
+      ref.listen(
+          routesProvider(
+            startPoint: startPoint,
+            finishPoint: finishPoint,
+            navType: type,
+            showOnlyActiveRoute: true,
+          ), (_, current) async {
+        if (current.valueOrNull?.isEmpty ?? false) {
+          return;
+        } else {
+          await ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(activeIndex);
+        }
+      });
     }
   }
 
@@ -96,6 +122,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     } catch (e) {
       debugPrint(e.toString());
     } finally {
+      _lastActiveRoute = null;
+
       final settings = MapObjectManagerSettings.eta();
       final mapObjectManager = ref.read(
         mapObjectManagerProvider(
@@ -104,6 +132,11 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         ).notifier,
       );
       unawaited(mapObjectManager.removeAllMarkers());
+      // hide routes
+      final dgisController = ref.read(dgisControllerProvider);
+      unawaited(dgisController.valueOrNull?.hideRoutes());
+
+      _removeFinishPin();
     }
   }
 
@@ -390,5 +423,36 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     } else if (statusCode == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
       await stopStreaming();
     }
+  }
+
+  void _removeFinishPin() {
+    final settings = MapObjectManagerSettings.selectedMarker();
+    ref
+        .read(
+          mapObjectManagerProvider(
+            named: settings.name,
+            layerId: settings.layerId,
+          ).notifier,
+        )
+        .removeAllMarkers();
+  }
+
+  void _addFinishPin(RouteParamsPoint finishPoint) {
+    final settings = MapObjectManagerSettings.selectedMarker();
+    final marker = Markers.pinMarker(
+      GeoPointWithElevationMessage(
+        latitude: finishPoint.latitude,
+        longitude: finishPoint.longitude,
+        elevation: 1,
+      ),
+    );
+    ref
+        .read(
+          mapObjectManagerProvider(
+            named: settings.name,
+            layerId: settings.layerId,
+          ).notifier,
+        )
+        .addMarker(marker);
   }
 }

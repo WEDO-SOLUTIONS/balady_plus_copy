@@ -14,13 +14,20 @@ enum StreamType {
   geo,
 }
 
+enum RouteType {
+  @JsonValue('car')
+  car,
+  @JsonValue('pedestrian')
+  pedestrian,
+}
+
 /// Represents the ETA payload.
 @freezed
 class EtaRoutePayload with _$EtaRoutePayload {
   /// Default constructor for [EtaRoutePayload].
   @JsonSerializable(explicitToJson: true)
   const factory EtaRoutePayload({
-    final Route? route,
+    final EtaRoute? route,
     final User? user,
     final StreamType? type,
   }) = _EtaRoutePayload;
@@ -35,7 +42,7 @@ class EtaRouteMetadataPayload with _$EtaRouteMetadataPayload {
   /// Default constructor for [EtaRoutePayload].
   @JsonSerializable(explicitToJson: true)
   const factory EtaRouteMetadataPayload({
-    final Route? route,
+    final EtaRoute? route,
   }) = _EtaRouteMetadataPayload;
 
   /// Creates an [EtaRoutePayload] object from a JSON map.
@@ -58,159 +65,35 @@ class User with _$User {
 
 /// Represents a route.
 @freezed
-class Route with _$Route {
-  /// Default constructor for [Route].
+class EtaRoute with _$EtaRoute {
+  /// Default constructor for [EtaRoute].
   @JsonSerializable(explicitToJson: true)
-  const factory Route({
-    final String? algorithm,
-    @JsonKey(name: 'begin_pedestrian_path') final PedestrianPath? beginPedestrianPath,
-    @JsonKey(name: 'end_pedestrian_path') final PedestrianPath? endPedestrianPath,
-    @JsonKey(name: 'filter_road_types') final List<String>? filterRoadTypes,
-    final String? id,
-    final List<Maneuver>? maneuvers,
-    final double? reliability,
-    @JsonKey(name: 'route_id') final String? routeId,
-    @JsonKey(name: 'total_distance') final int? totalDistance,
-    @JsonKey(name: 'total_duration') final int? totalDuration,
-    final String? type,
-    @JsonKey(name: 'ui_total_distance') final UiTotalDistance? uiTotalDistance,
-    @JsonKey(name: 'ui_total_duration') final String? uiTotalDuration,
-    final List<Waypoint>? waypoints,
-  }) = _Route;
+  const factory EtaRoute({
+    @JsonKey(name: 'start_point') final EtaRoutePoint? startPoint,
+    @JsonKey(name: 'end_point') final EtaRoutePoint? endPoint,
+    final RouteType? type,
+    @JsonKey(name: 'route_index') final int? routeIndex,
+  }) = _EtaRoute;
 
-  /// Creates a [Route] object from a JSON map.
-  factory Route.fromJson(Map<String, dynamic> json) => _$RouteFromJson(json);
+  /// Creates a [EtaRoute] object from a JSON map.
+  factory EtaRoute.fromJson(Map<String, dynamic> json) => _$EtaRouteFromJson(json);
 }
 
-/// Represents a pedestrian path.
+// Check if the route is not set
+extension RouteX on EtaRoute {
+  bool get isEmpty => startPoint == null || endPoint == null || type == null || routeIndex == null;
+}
+
+/// Represents the ETA route point information.
 @freezed
-class PedestrianPath with _$PedestrianPath {
-  /// Default constructor for [PedestrianPath].
+class EtaRoutePoint with _$EtaRoutePoint {
+  /// Default constructor for [EtaRoutePoint].
   @JsonSerializable(explicitToJson: true)
-  const factory PedestrianPath({
-    final Geometry? geometry,
-  }) = _PedestrianPath;
-
-  /// Creates a [PedestrianPath] object from a JSON map.
-  factory PedestrianPath.fromJson(Map<String, dynamic> json) => _$PedestrianPathFromJson(json);
-}
-
-/// Represents a geometry.
-@freezed
-class Geometry with _$Geometry {
-  /// Default constructor for [Geometry].
-  const factory Geometry({
-    final String? selection,
-  }) = _Geometry;
-
-  /// Creates a [Geometry] object from a JSON map.
-  factory Geometry.fromJson(Map<String, dynamic> json) => _$GeometryFromJson(json);
-}
-
-/// Represents a maneuver.
-@freezed
-class Maneuver with _$Maneuver {
-  /// Default constructor for [Maneuver].
-  @JsonSerializable(explicitToJson: true)
-  const factory Maneuver({
-    final String? comment,
-    final String? icon,
-    final String? id,
-    @JsonKey(name: 'outcoming_path') final OutcomingPath? outcomingPath,
-    @JsonKey(name: 'outcoming_path_comment') final String? outcomingPathComment,
-    final ManeuverType? type,
-  }) = _Maneuver;
-
-  /// Creates a [Maneuver] object from a JSON map.
-  factory Maneuver.fromJson(Map<String, dynamic> json) => _$ManeuverFromJson(json);
-}
-
-/// Enum representing the maneuver type.
-enum ManeuverType {
-  @JsonValue('begin')
-  begin,
-  @JsonValue('end')
-  end,
-}
-
-/// Represents an outcoming path.
-@freezed
-class OutcomingPath with _$OutcomingPath {
-  /// Default constructor for [OutcomingPath].
-  const factory OutcomingPath({
-    final int? distance,
-    final int? duration,
-    final List<OutcomingPathGeometry>? geometry,
-    final List<String>? names,
-  }) = _OutcomingPath;
-
-  /// Creates an [OutcomingPath] object from a JSON map.
-  factory OutcomingPath.fromJson(Map<String, dynamic> json) => _$OutcomingPathFromJson(json);
-}
-
-/// Represents a geometry of an outcoming path.
-@freezed
-class OutcomingPathGeometry with _$OutcomingPathGeometry {
-  /// Default constructor for [OutcomingPathGeometry].
-  const factory OutcomingPathGeometry({
-    final String? color,
-    final int? length,
-    final String? style,
-  }) = _OutcomingPathGeometry;
-
-  /// Creates an [OutcomingPathGeometry] object from a JSON map.
-  factory OutcomingPathGeometry.fromJson(Map<String, dynamic> json) => _$OutcomingPathGeometryFromJson(json);
-}
-
-/// Represents the UI total distance.
-@freezed
-class UiTotalDistance with _$UiTotalDistance {
-  /// Default constructor for [UiTotalDistance].
-  const factory UiTotalDistance({
-    final String? unit,
-    final String? value,
-  }) = _UiTotalDistance;
-
-  /// Creates a [UiTotalDistance] object from a JSON map.
-  factory UiTotalDistance.fromJson(Map<String, dynamic> json) => _$UiTotalDistanceFromJson(json);
-}
-
-/// Represents a waypoint.
-@freezed
-class Waypoint with _$Waypoint {
-  /// Default constructor for [Waypoint].
-  const factory Waypoint({
-    @JsonKey(name: 'original_point') final OriginalPoint? originalPoint,
-    @JsonKey(name: 'projected_point') final ProjectedPoint? projectedPoint,
-    final bool? transit,
-  }) = _Waypoint;
-
-  /// Creates a [Waypoint] object from a JSON map.
-  factory Waypoint.fromJson(Map<String, dynamic> json) => _$WaypointFromJson(json);
-}
-
-/// Represents an original point.
-@freezed
-class OriginalPoint with _$OriginalPoint {
-  /// Default constructor for [OriginalPoint].
-  const factory OriginalPoint({
+  const factory EtaRoutePoint({
     final double? lat,
     final double? lon,
-  }) = _OriginalPoint;
+  }) = _EtaRoutePoint;
 
-  /// Creates an [OriginalPoint] object from a JSON map.
-  factory OriginalPoint.fromJson(Map<String, dynamic> json) => _$OriginalPointFromJson(json);
-}
-
-/// Represents a projected point.
-@freezed
-class ProjectedPoint with _$ProjectedPoint {
-  /// Default constructor for [ProjectedPoint].
-  const factory ProjectedPoint({
-    final double? lat,
-    final double? lon,
-  }) = _ProjectedPoint;
-
-  /// Creates a [ProjectedPoint] object from a JSON map.
-  factory ProjectedPoint.fromJson(Map<String, dynamic> json) => _$ProjectedPointFromJson(json);
+  /// Creates an [EtaRoutePoint] object from a JSON map.
+  factory EtaRoutePoint.fromJson(Map<String, dynamic> json) => _$EtaRoutePointFromJson(json);
 }

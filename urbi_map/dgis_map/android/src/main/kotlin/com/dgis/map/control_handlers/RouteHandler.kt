@@ -147,7 +147,7 @@ class RouteHandler(
             mutableListOf()
         )
         routesEditor.setRouteParams(routeEditorParams)
-        routeEditorSource.setShowOnlyActiveRoute(routeEditorParams.routeSearchOptions.isPublicTransport)
+        routeEditorSource.setShowOnlyActiveRoute(params.getShowOnlyActiveRoute() ?: routeEditorParams.routeSearchOptions.isPublicTransport)
     }
 
     fun setRoutesVisible(visible: Boolean) {
