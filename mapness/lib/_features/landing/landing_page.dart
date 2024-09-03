@@ -133,9 +133,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   void dispose() {
-    scrollController
-      ..removeListener(_calculatePadding)
-      ..dispose();
+    scrollController.removeListener(_calculatePadding);
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -205,7 +203,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   },
                 ),
               MapDashboardControls(scrollController, key: const ValueKey('MapDashboardControls')),
-              DashboardV2(scrollableController: scrollController),
+              Dashboard(scrollableController: scrollController),
             ],
           ),
         ),

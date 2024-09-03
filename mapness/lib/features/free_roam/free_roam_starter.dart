@@ -1,86 +1,88 @@
-import 'package:flutter/animation.dart';
 import 'package:geolocator/geolocator.dart';
+
 import 'package:mapness/entities/free_roam/autostart_state.dart';
 import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'free_roam_starter.g.dart';
 
 @riverpod
 class _FreeRoamStarter extends _$FreeRoamStarter {
-  AnimationController? _controller;
-
   bool _isShown = false;
   bool get isShown => _isShown;
 
   @override
   FreeRoamStartState build() {
-    final autostart = ref.read(freeRoamAutostartSettingsProvider);
+    final autostartState = ref.watch(freeRoamAutostartSettingsProvider);
 
-    if (autostart == AutostartState.declined) {
+    if (autostartState == AutostartState.declined) {
       return const FreeRoamStartState(
         isAutorun: false,
         canStart: false,
+        status: UnknownStatus(),
       );
     }
-    final isAutorun = autostart == AutostartState.always;
+    final isAutorun = autostartState == AutostartState.always;
 
-    void updateState(Position event) {
-      if (!(_controller?.isAnimating ?? false) && event.speed - event.speedAccuracy >= 0.53333) {
+    void update(Position? _, Position? event) {
+      final autostartState = ref.read(freeRoamAutostartSettingsProvider);
+      if (autostartState == AutostartState.declined || _isShown) {
+        return;
+      }
+
+      if (!state.canStart &&
+          state.status is! AnimatingStatus &&
+          event != null &&
+          event.speed - event.speedAccuracy >= 8.33333) {
         state = state.copyWith(
           canStart: true,
           isAutorun: isAutorun,
+          status: const UnknownStatus(),
         );
       }
     }
 
-    const locationSettings = LocationSettings();
-    final locationSubscription = Geolocator.getPositionStream(
-      locationSettings: locationSettings,
-    ).listen(updateState);
+    final subscription = ref.listen<Position?>(locationProvider, update);
 
-    ref.onDispose(locationSubscription.cancel);
+    ref.onDispose(() {
+      subscription.close();
+    });
 
     return FreeRoamStartState(
       isAutorun: isAutorun,
       canStart: false,
+      status: const UnknownStatus(),
     );
   }
 
-  void startAnimation(TickerProvider vsync, {Duration? duration}) {
-    _controller ??= AnimationController(vsync: vsync, duration: duration ?? const Duration(seconds: 10));
-    _controller?.animateTo(1, curve: Curves.decelerate);
-    _controller?.addStatusListener(_onComplete);
-    state = state.copyWith(controller: _controller);
+  void startAnimation() {
+    state = state.copyWith(status: const AnimatingStatus());
   }
 
   void pauseAnimation() {
-    if (_controller?.isAnimating ?? false) {
-      _controller?.stop(canceled: false);
+    if (state.status is! PausedStatus) {
+      state = state.copyWith(status: const PausedStatus());
     }
   }
 
-  void unpauseAnimation() => _controller?.forward();
+  void unpauseAnimation() {
+    if (state.status is! AnimatingStatus) {
+      state = state.copyWith(status: const AnimatingStatus());
+    }
+  }
 
-  void setShown() {
-    _controller?.stop();
-    _controller?.removeStatusListener(_onComplete);
-    _controller?.dispose();
-    _controller = null;
+  void setShown({bool setAutoStart = false}) {
+    if (setAutoStart) {
+      ref.read(freeRoamAutostartSettingsProvider.notifier).setState(isAutostart: true);
+    }
     state = FreeRoamStartState(
-      isAutorun: state.isAutorun,
+      isAutorun: ref.read(freeRoamAutostartSettingsProvider) == AutostartState.always,
       canStart: false,
+      status: const CompletedStatus(),
     );
     _isShown = true;
-  }
-
-  void _onComplete(status) {
-    if (status == AnimationStatus.completed) {
-      if (_controller?.isCompleted ?? false) {
-        setShown();
-      }
-    }
   }
 }
 

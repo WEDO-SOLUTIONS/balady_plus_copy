@@ -1,8 +1,10 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
-import 'package:mapness/features/free_roam/free_roam_starter.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class GoToNavigatorButton extends ConsumerStatefulWidget {
@@ -12,49 +14,93 @@ class GoToNavigatorButton extends ConsumerStatefulWidget {
   ConsumerState<GoToNavigatorButton> createState() => _GoToNavigatorButtonState();
 }
 
-class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton> with TickerProviderStateMixin {
-  double progress = 0.0;
-
-  void startAnimation(FreeRoamStartState? prev, FreeRoamStartState next) {
-    print('Speed: ${next.controller}');
-    if (next.canStart && next.controller == null) {
-      ref.read(freeRoamStarterProvider.notifier).startAnimation(this);
-      final controller = ref.read(freeRoamStarterProvider).controller;
-
-      controller?.addListener(update);
-    }
+class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
+    with TickerProviderStateMixin, FreeRoamAnimationMixin {
+  @override
+  void initState() {
+    super.initState();
+    initializeFreeRoam(this);
   }
 
   @override
   void dispose() {
-    ref.read(freeRoamStarterProvider).controller?.removeListener(update);
+    disposeAnimationController();
     super.dispose();
-  }
-
-  void update() {
-    setState(() {
-      progress = ref.read(freeRoamStarterProvider).controller?.value ?? 0.0;
-    });
-    print('Speed: progress $progress');
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<FreeRoamStartState>(freeRoamStarterProvider, startAnimation);
-    return LayoutBuilder(
-        builder: (context, constrains) => Stack(
-              children: [
-                AppButton(
-                  onTap: () {},
-                  primaryLabel: context.l10n.goToNavigator,
-                  buttonColorScheme: ButtonColorScheme.primary,
+    listerForStart();
+    return LayoutBuilder(builder: (context, constrains) {
+      const height = 52.0;
+      const squareSize = 40.0;
+      const iconSize = 24.0;
+
+      final colorsV2 = context.colorsV2;
+      final alignment = context.isLTR ? Alignment.centerLeft : Alignment.centerRight;
+
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(RadiusBorder.l),
+        child: SizedBox(
+          height: height,
+          child: Stack(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: height,
+                child: ColoredBox(color: colorsV2.accentDefault),
+              ),
+              Align(
+                alignment: alignment,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
+                  child: SizedBox(
+                    width: squareSize,
+                    height: squareSize,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(RadiusBorder.s),
+                      child: ColoredBox(
+                        color: Colors.white.withOpacity(0.2),
+                      ),
+                    ),
+                  ),
                 ),
-                SizedBox(
-                  width: constrains.maxWidth * progress,
-                  height: 56,
-                  child: const ColoredBox(color: Colors.black),
+              ),
+              SizedBox(
+                width: constrains.maxWidth * Curves.decelerate.transform(animationProgress),
+                height: height,
+                child: ColoredBox(
+                  color: Colors.black.withOpacity(0.2),
                 ),
-              ],
-            ));
+              ),
+              Center(
+                child: Text(
+                  context.l10n.goToNavigator,
+                  style: context.textStyleV3.bodyLargeSemiBold.copyWith(
+                    color: colorsV2.backgroundSurface1,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: alignment,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+                  child: SvgPicture.asset(
+                    'assets/icons/svg/quick_filters/free_roam.svg',
+                    height: iconSize,
+                    width: iconSize,
+                    package: PackageConfig.packageName,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 }

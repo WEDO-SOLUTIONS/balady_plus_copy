@@ -34,8 +34,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
-class DashboardV2 extends ConsumerStatefulWidget {
-  const DashboardV2({
+class Dashboard extends ConsumerStatefulWidget {
+  const Dashboard({
     required this.scrollableController,
     super.key,
   });
@@ -43,10 +43,10 @@ class DashboardV2 extends ConsumerStatefulWidget {
   final uikit.BottomSheetScrollController<uikit.ThreeStateBottomSheet> scrollableController;
 
   @override
-  ConsumerState<DashboardV2> createState() => _DashboardState();
+  ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProviderStateMixin {
+class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
@@ -100,7 +100,7 @@ class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProvid
         },
         child: uikit.AppBottomSheet<uikit.ThreeStateBottomSheet>(
           animateOpening: false,
-          topHeader: const MapHiddenStateControls(),
+          topHeader: MapHiddenStateControls(widget.scrollableController),
           backgroundColor: context.colorsV2.backgroundSurface4,
           header: DashboardHeader(
             scrollController: widget.scrollableController,

@@ -20,6 +20,7 @@ class QuickFilters extends ConsumerWidget {
   final EdgeInsets padding;
   final QuickFilterScreen id;
   final bool isDashboard;
+  final double? height;
 
   const QuickFilters({
     required this.onQuickFilterTap,
@@ -27,11 +28,10 @@ class QuickFilters extends ConsumerWidget {
     required this.onFavouritesBookmarkTap,
     required this.id,
     required this.isDashboard,
+    this.height,
     super.key,
     this.selectedQuickFilter,
-    this.padding = const EdgeInsets.symmetric(
-      horizontal: 16,
-    ),
+    this.padding = const EdgeInsets.only(bottom: 16.0),
     this.customFilters,
     this.onCustomTap,
   });
@@ -104,6 +104,7 @@ class QuickFilters extends ConsumerWidget {
       padding: padding,
       filters: items,
       isDashboard: isDashboard,
+      height: height,
       id: id,
     );
   }
