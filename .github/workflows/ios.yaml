@@ -145,7 +145,7 @@ jobs:
           echo "BUILD_URL_STAGE=${BUILD_URL}" >> ${GITHUB_ENV}
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_urbi_pre.dart --flavor pre
-          BUILD_URL=$(curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/momrah-stg-${CI_ARTIFACT_SUFFIX}  | jq -r '.install_link')
+          BUILD_URL=$(curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/momrah-pre-${CI_ARTIFACT_SUFFIX}  | jq -r '.install_link')
           echo "BUILD_URL_PRE=${BUILD_URL}" >> ${GITHUB_ENV}
 
       - name: Send notification to mattermost channel
