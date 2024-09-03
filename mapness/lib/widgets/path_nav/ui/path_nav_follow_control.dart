@@ -17,9 +17,7 @@ class PathNavFollowControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final followState = ref.watch(followStateProvider);
-    final iconColor = followState.type != LocationFollowType.off
-        ? NonThemeColor.color30
-        : Colors.black;
+    final iconColor = followState.type != LocationFollowType.off ? NonThemeColor.color30 : Colors.black;
 
     return AnimatedOpacity(
       opacity: followState.enabled ? 1 : 1, // fix
@@ -27,13 +25,11 @@ class PathNavFollowControl extends ConsumerWidget {
       child: MapButton(
         onTap: () async {
           switch (followState.type) {
-            case LocationFollowType.followDirection:
             case LocationFollowType.followPosition:
               return;
-            case LocationFollowType.off:
+            case LocationFollowType.off || LocationFollowType.followDirection:
               final cameraPosition = ref.read(cameraPositionProvider);
-              final dgisController =
-                  await ref.read(dgisControllerProvider.future);
+              final dgisController = await ref.read(dgisControllerProvider.future);
               if (cameraPosition != null) {
                 // Animate to the entrance
                 await dgisController.setCameraPosition(
