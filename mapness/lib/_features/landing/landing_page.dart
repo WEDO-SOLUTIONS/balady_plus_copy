@@ -183,14 +183,21 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           type: MaterialType.transparency,
           child: Stack(
             children: [
-              if (scrollController.state != ThreeStateBottomSheet.hidden)
-                GestureDetector(
-                  onTap: () {
-                    scrollController.setState(ThreeStateBottomSheet.hidden);
+              ListenableBuilder(
+                  listenable: scrollController,
+                  builder: (context, _) {
+                    if (scrollController.state != ThreeStateBottomSheet.hidden) {
+                      return GestureDetector(
+                        onTap: () {
+                          scrollController.setState(ThreeStateBottomSheet.hidden);
 
-                    ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
-                  },
-                ),
+                          ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
+                        },
+                      );
+                    }
+
+                    return const SizedBox.shrink();
+                  }),
               MapDashboardControls(scrollController, key: const ValueKey('MapDashboardControls')),
               Dashboard(scrollableController: scrollController),
             ],
