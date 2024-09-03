@@ -367,10 +367,12 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   Future<void> _onErrorStatus(int? statusCode, String? reason) async {
     final reasonData = reason?.toWebsocketReason();
     final shareType = ref.read(websocketTypeProvider);
-    if (statusCode != null && statusCode != 1000 && shareType == SubscriptionType.get) {
-      await _processDrawUserMarker(isAvailable: false);
-    } else if (statusCode == null) {
-      await _processDrawUserMarker();
+    if (shareType == SubscriptionType.get) {
+      if (statusCode != null && statusCode != 1000) {
+        await _processDrawUserMarker(isAvailable: false);
+      } else if (statusCode == null) {
+        await _processDrawUserMarker();
+      }
     }
     if (statusCode != 1000 && statusCode != 1013 && statusCode != null) {
       try {
