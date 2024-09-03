@@ -62,6 +62,13 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
       longitude: position.longitude,
     );
 
+    final cameraData = ref.read(cameraPositionProvider) ?? await dgisController.value?.getCameraPosition();
+
+    final cameraZoom = cameraData?.zoom;
+    final point = cameraData?.point;
+    final bearing = cameraData?.bearing;
+    final newPoint = point;
+
     // Get viewports: visible (whole screen) and tappable (area of the screen where marker will not overlap on other elements)
     final visibleRect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.value?.visibleRect;
     final tappableRect = _getRectWithPaddings(visibleRect, paddingConfig);
@@ -70,16 +77,12 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     final isInViewZone = await _isInViewZone(visibleRect, dgisController, markerPoint);
 
     // Check if point is in tappable zone
-    final isInTappableZone = await _isInViewZone(tappableRect, dgisController, markerPoint);
+    var isInTappableZone = true;
+    if (bearing == 0.0 || bearing == 180.0 || bearing == null) {
+      isInTappableZone = await _isInViewZone(tappableRect, dgisController, markerPoint);
+    }
 
     final cameraHaveToBeMoved = isInViewZone && !isInTappableZone;
-
-    final cameraData = ref.read(cameraPositionProvider) ?? await dgisController.value?.getCameraPosition();
-
-    final cameraZoom = cameraData?.zoom;
-    final point = cameraData?.point;
-    final bearing = cameraData?.bearing;
-    final newPoint = point;
 
     if (cameraHaveToBeMoved && newPoint != null) {
       // If tapped point is to the left than min longitude => move right
