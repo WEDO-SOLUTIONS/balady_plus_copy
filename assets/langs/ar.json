@@ -4053,5 +4053,12 @@
   "debts": "الديون",
   "debt_origin": "مصدر المديونية",
   "show_debts": "عرض المديونيات",
-  "no_debts": "لا يوجد ديون"
+  "no_debts": "لا يوجد ديون",
+
+
+  "classification_certificate_verify": "التحقق من شهادة التصنيف",
+  "search_name": "بحث",
+  "search_method": "آلية البحث",
+  "advanced_search": "بحث متقدم"
+
 }

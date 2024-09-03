@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/classification_certificate/core/classification_certificate_routes/classification_certificate_route_names.dart';
 
 import '../utils/constants/remote_config.dart';
 
@@ -406,6 +407,29 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "ekram_services", "description": null, "tag": null},
       "en": {"title": "ekram_services", "description": null, "tag": null}
     },
+    {
+      "id": 222,
+      "icon": "note",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": true,
+      "isImportant": false,
+      "requireLogin": false,
+      "action": {
+        "type": "page",
+        "value": ClassificationCertificateRouteName.classificationCertificateVerifyOverviewScreen,
+      },
+      "ar": {
+        "title": "classification_certificate_verify",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "classification_certificate_verify",
+        "description": null,
+        "tag": null
+      }
+    },
   ],
   "business_license_services": [
     {
@@ -618,6 +642,31 @@ Map<String, dynamic> servicesConfig = {
         "tag": null
       },
       "en": {"title": "municpal_construction", "description": null, "tag": null}
+    },
+
+
+    {
+      "id": 222,
+      "icon": "note",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": true,
+      "isImportant": false,
+      "requireLogin": false,
+      "action": {
+        "type": "page",
+        "value": ClassificationCertificateRouteName.classificationCertificateVerifyOverviewScreen,
+      },
+      "ar": {
+        "title": "classification_certificate_verify",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "classification_certificate_verify",
+        "description": null,
+        "tag": null
+      }
     },
   ],
   "help_services": [

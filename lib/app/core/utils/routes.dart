@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_routes.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/pages/balady_calendar_page.dart';
+import 'package:balady_plus/app/features/classification_certificate/core/classification_certificate_routes/classification_certificate_routes.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
@@ -627,6 +628,7 @@ class Routes {
     all.addAll(routesApp);
     all.addAll(etmamRoutes);
     all.addAll(CommercialRoutes.routes);
+    all.addAll(ClassificationCertificateRoutes.routes);
     return all;
   }
 }

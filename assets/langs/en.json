@@ -4312,5 +4312,10 @@
   "debts": "Debts",
   "debt_origin": "Debt Origin",
   "show_debts": "Show Debts",
-  "no_debts": "No Debts"
+  "no_debts": "No Debts",
+
+  "classification_certificate_verify": "Classification Certificate Verify",
+  "search_name": "Search",
+  "search_method": "Search Method",
+  "advanced_search": "Advanced search"
 }
