@@ -22,4 +22,6 @@ class FeedbackWeekDaysDto extends FeedbackBaseDto {
         label: label,
         variants: variants,
       );
+
+  factory FeedbackWeekDaysDto.fromJson(Map<String, dynamic> json) => _$FeedbackWeekDaysDtoFromJson(json);
 }
