@@ -1,5 +1,4 @@
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
@@ -9,6 +8,7 @@ import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapDashboardControls extends ConsumerStatefulWidget {
@@ -26,106 +26,101 @@ class MapDashboardControls extends ConsumerStatefulWidget {
 class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
   late double _bottomPadding;
   late final ValueNotifier<uikit.ThreeStateBottomSheet> _notifierStateType;
-
+  final quickFilters = 64;
+  int paddingWithBottomSheet = 12;
 
   @override
   void initState() {
     super.initState();
+    final mediaQuery = ref.read(mediaQueryInfoProvider);
+
     _bottomPadding = widget.scrollController.sheetHeight;
     _notifierStateType = ValueNotifier(widget.scrollController.state);
 
-    widget.scrollController.addListener(update);
+    paddingWithBottomSheet *= mediaQuery?.devicePixelRatio.toInt() ?? 0;
+    widget.scrollController.addListener(_update);
   }
 
   @override
   void dispose() {
-    widget.scrollController.removeListener(update);
+    widget.scrollController.removeListener(_update);
     super.dispose();
   }
 
-  void update() {
+  void _update() {
     if (widget.scrollController.state != _notifierStateType.value && widget.scrollController.interpolation == 0) {
+
+      _notifierStateType.value = widget.scrollController.state;
+
       setState(() {
-        _notifierStateType.value =  widget.scrollController.state;
-        _bottomPadding = widget.scrollController.sheetHeight;
+        if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden) {
+          _bottomPadding = widget.scrollController.sheetHeight + quickFilters;
+        } else {
+          _bottomPadding = widget.scrollController.sheetHeight - paddingWithBottomSheet;
+        }
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool hideControls = widget.scrollController.state == uikit.ThreeStateBottomSheet.open &&
-        widget.scrollController.interpolation > 0.5;
-
+    final bool visibleControls = widget.scrollController.state == uikit.ThreeStateBottomSheet.expanded;
     return SizedBox(
       height: MediaQuery.of(context).size.height,
-      child: IgnorePointer(
-        ignoring: hideControls,
-        child: SafeArea(
-          bottom: false,
-          child: Visibility(
-            visible: !hideControls,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: Expanded(
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 100),
-                      opacity: widget.scrollController.viewportHeight > _bottomPadding + 200 ? 1 : 0,
-                      child: OverflowBox(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            left: uikit.Spacing.$3x,
-                            top: uikit.Spacing.$3x,
-                            right: uikit.Spacing.$3x,
-                            bottom: _bottomPadding,
-                          ),
-                          child: Row(
+      child: SafeArea(
+        bottom: false,
+        child: Visibility(
+          visible: !visibleControls,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Expanded(
+                  child: OverflowBox(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: uikit.Spacing.$3x,
+                        top: uikit.Spacing.$3x,
+                        right: uikit.Spacing.$3x,
+                        bottom: _bottomPadding,
+                      ),
+                      child: Row(
+                        children: [
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Spacer(),
-                                  IndoorControl(),
-                                  Spacer(),
-                                  EtaSharingControl(),
-                                ],
-                              ),
-                              const Spacer(),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const LayersControl(),
-                                  const SizedBox(height: uikit.Spacing.$2x),
-                                  const TrafficControl(),
-                                  const Spacer(),
-                                  const ZoomControl(),
-                                  const Spacer(),
-                                  const CompassControl(),
-                                  const SizedBox(height: uikit.Spacing.$2x),
-                                  ComplianceBuildingLegend(),
-                                  const SizedBox(height: uikit.Spacing.$2x),
-                                  const FollowControl(),
-                                  uikit.Spacing.$4x.heightBox,
-                                  SizedBox(
-                                    height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
-                                        ? 56 * (1 - widget.scrollController.interpolation)
-                                        : 0,
-                                  ),
-                                ],
-                              ),
+                              Spacer(),
+                              IndoorControl(),
+                              Spacer(),
+                              EtaSharingControl(),
                             ],
                           ),
-                        ),
+                          const Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const LayersControl(),
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              const TrafficControl(),
+                              const Spacer(),
+                              if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden) const ZoomControl(),
+                              const Spacer(),
+                              const CompassControl(),
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              ComplianceBuildingLegend(),
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              const FollowControl(),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

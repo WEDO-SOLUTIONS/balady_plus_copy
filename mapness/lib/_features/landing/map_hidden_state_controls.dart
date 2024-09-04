@@ -23,54 +23,51 @@ class MapHiddenStateControls extends BottomSheetComponentWidget<ThreeStateBottom
           return Visibility(
             visible: state == ThreeStateBottomSheet.hidden,
             child: SizedOverflowBox(
-              size: Size(double.infinity, 56 * delta),
+              size: Size(double.infinity, 64 * delta),
               child: Directionality(
                 textDirection: ref.watch(uiDirectionProvider),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                  child: MapQuickFilters(
-                    forMap: true,
-                    id: QuickFilterScreen.controls,
-                    customFilters: [
-                      FilterItemBuilder(
-                        filterType: FilterType.custom,
-                        builder: (context, {required isDashboard, required isSelected}) => Material(
+                child: MapQuickFilters(
+                  forMap: true,
+                  id: QuickFilterScreen.controls,
+                  customFilters: [
+                    FilterItemBuilder(
+                      filterType: FilterType.custom,
+                      builder: (context, {required isDashboard, required isSelected}) => Material(
+                        borderRadius: BorderRadius.circular(8),
+                        child: InkWell(
                           borderRadius: BorderRadius.circular(8),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
-                            onTap: () {
-                              FreeRoamRoute.open(ref.watch(goRouterProvider));
-                            },
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(minWidth: 52),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 9,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/icons/svg/quick_filters/free_roam.svg',
-                                      height: 24,
-                                      width: 24,
-                                      package: PackageConfig.packageName,
-                                      colorFilter: ColorFilter.mode(
-                                        isSelected ? Colors.white : context.color.textAndIconsBasePrimary,
-                                        BlendMode.srcIn,
-                                      ),
+                          onTap: () {
+                            FreeRoamRoute.open(ref.watch(goRouterProvider));
+                          },
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(minWidth: 52),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 9,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/icons/svg/quick_filters/free_roam.svg',
+                                    height: 24,
+                                    width: 24,
+                                    package: PackageConfig.packageName,
+                                    colorFilter: ColorFilter.mode(
+                                      isSelected ? Colors.white : context.color.textAndIconsBasePrimary,
+                                      BlendMode.srcIn,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
