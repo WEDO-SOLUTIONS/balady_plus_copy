@@ -9,6 +9,7 @@ class FeedbackWorkingHoursEntity extends FeedbackBaseEntity<List<FeedbackWeekDay
     required super.isRequired,
     required this.label,
     required this.variants,
+    required super.isHidden,
     List<FeedbackWeekDayWorkingHoursEntity>? value,
   }) : super(value: value);
 
@@ -19,6 +20,7 @@ class FeedbackWorkingHoursEntity extends FeedbackBaseEntity<List<FeedbackWeekDay
         label: label,
         variants: variants,
         value: value,
+        isHidden: isHidden,
       );
 }
 

@@ -14,6 +14,7 @@ part 'fields_entity/feedback_week_days_entity.dart';
 sealed class FeedbackBaseEntity<T> {
   final String id;
   final bool isRequired;
+  final bool isHidden;
   final T? value;
 
   bool get isValid => !isRequired || value != null;
@@ -21,6 +22,7 @@ sealed class FeedbackBaseEntity<T> {
   const FeedbackBaseEntity({
     required this.id,
     required this.isRequired,
+    required this.isHidden,
     required this.value,
   });
 

@@ -11,6 +11,7 @@ class FeedbackChipsDto extends FeedbackBaseDto {
     required super.isRequired,
     required this.label,
     required this.variants,
+    required super.isHidden,
   });
 
   @override
@@ -26,5 +27,6 @@ class FeedbackChipsDto extends FeedbackBaseDto {
                 ))
             .toList(),
         value: UnmodifiableSetView<String>({}),
+        isHidden: isHidden,
       );
 }

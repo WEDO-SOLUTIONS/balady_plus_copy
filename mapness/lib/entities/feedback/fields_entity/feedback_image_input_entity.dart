@@ -11,6 +11,7 @@ class FeedbackImageInputEntity extends FeedbackBaseEntity<List<XFile>> {
     required this.label,
     required this.maxSize,
     required this.acceptedFormats,
+    required super.isHidden,
     List<XFile>? value,
   }) : super(value: value);
 
@@ -22,5 +23,6 @@ class FeedbackImageInputEntity extends FeedbackBaseEntity<List<XFile>> {
         maxSize: maxSize,
         acceptedFormats: acceptedFormats,
         value: value,
+        isHidden: isHidden,
       );
 }

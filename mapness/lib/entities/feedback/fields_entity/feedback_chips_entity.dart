@@ -22,6 +22,7 @@ class FeedbackChipsEntity extends FeedbackBaseEntity<UnmodifiableSetView<String>
     required this.label,
     required this.variants,
     required super.value,
+    required super.isHidden,
   });
 
   @override
@@ -31,5 +32,6 @@ class FeedbackChipsEntity extends FeedbackBaseEntity<UnmodifiableSetView<String>
         label: label,
         variants: variants,
         value: UnmodifiableSetView<String>(value),
+        isHidden: isHidden,
       );
 }

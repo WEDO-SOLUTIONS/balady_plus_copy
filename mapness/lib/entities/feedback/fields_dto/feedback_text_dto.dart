@@ -10,6 +10,7 @@ class FeedbackTextDto extends FeedbackBaseDto {
     required super.id,
     required super.type,
     required super.isRequired,
+    required super.isHidden,
     required this.label,
     required this.length,
     required this.hint,
@@ -19,6 +20,7 @@ class FeedbackTextDto extends FeedbackBaseDto {
   FeedbackTextEntity toDomain() => FeedbackTextEntity(
         id: id,
         isRequired: isRequired,
+        isHidden: isHidden,
         label: label,
         maxLenght: length,
         hint: hint,

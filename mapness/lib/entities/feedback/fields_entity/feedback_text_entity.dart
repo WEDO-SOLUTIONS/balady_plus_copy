@@ -21,6 +21,7 @@ class FeedbackTextEntity extends FeedbackBaseEntity<String> {
     required this.label,
     required this.maxLenght,
     required this.hint,
+    required super.isHidden,
     String? value,
   }) : super(value: value);
 
@@ -50,5 +51,6 @@ class FeedbackTextEntity extends FeedbackBaseEntity<String> {
         hint: hint,
         type: type,
         value: value,
+        isHidden: isHidden,
       );
 }

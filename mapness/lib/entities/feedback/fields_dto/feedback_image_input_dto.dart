@@ -13,6 +13,7 @@ class FeedbackImageInputDto extends FeedbackBaseDto {
     required this.label,
     required this.size,
     required this.format,
+    required super.isHidden,
   });
 
   @override
@@ -22,5 +23,6 @@ class FeedbackImageInputDto extends FeedbackBaseDto {
         label: label,
         maxSize: size,
         acceptedFormats: format,
+        isHidden: isHidden,
       );
 }

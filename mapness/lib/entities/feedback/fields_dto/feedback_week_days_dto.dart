@@ -9,6 +9,7 @@ class FeedbackWeekDaysDto extends FeedbackBaseDto {
     required super.id,
     required super.type,
     required super.isRequired,
+    required super.isHidden,
     required this.label,
     required this.variants,
   });
@@ -17,6 +18,7 @@ class FeedbackWeekDaysDto extends FeedbackBaseDto {
   FeedbackWorkingHoursEntity toDomain() => FeedbackWorkingHoursEntity(
         id: id,
         isRequired: isRequired,
+        isHidden: isHidden,
         label: label,
         variants: variants,
       );
