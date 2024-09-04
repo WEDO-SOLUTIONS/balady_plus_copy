@@ -35,6 +35,7 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
 enum LangingFocusMaker { iwish, mosques }
@@ -69,10 +70,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     _scrollController.addListener(_calculatePadding);
 
     setupTapListener();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _calculatePadding();
-    });
 
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
@@ -117,7 +114,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _calculatePadding() {
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
+    final mediaQuery = ref.read(mediaQueryInfoProvider);
+    ref.read(cameraPaddingProvider.notifier).resetPadding(
+          defaultPadding: CameraSetPaddingMessage(
+            leftPadding: mediaQuery?.padding.left.toInt() ?? 0,
+            rightPadding: mediaQuery?.padding.right.toInt() ?? 0,
+            topPadding: mediaQuery?.padding.top.toInt() ?? 0,
+            bottomPadding: _scrollController.sheetHeight.toInt() * (mediaQuery?.devicePixelRatio ?? 0).toInt(),
+          ),
+        );
   }
 
   @override
@@ -160,14 +165,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(locationProvider.select((_) => null))
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
-        const landingPage = '/landing';
-
-        Future.delayed(const Duration(milliseconds: 250), () {
-          _calculatePadding();
-        });
-
-        if (next?.currentPath == landingPage) {
-        } else if (next?.currentPath == KiblahRoute.path) {
+        if (next?.currentPath == KiblahRoute.path) {
           _scrollController.setState(ThreeStateBottomSheet.hidden);
         }
       })

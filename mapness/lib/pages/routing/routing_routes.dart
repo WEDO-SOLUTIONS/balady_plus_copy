@@ -19,7 +19,6 @@ import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
@@ -68,7 +67,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   @override
   void deactivate() {
     ref.read(dgisControllerProvider).value?.hideRoutes();
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
     super.deactivate();
   }
 

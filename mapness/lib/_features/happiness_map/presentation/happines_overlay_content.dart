@@ -42,12 +42,6 @@ class _HapinessOverlayContentState extends ConsumerState<HappinesOverlayContent>
   }
 
   @override
-  void deactivate() {
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
-    super.deactivate();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final cameraPaddingController = ref.watch(cameraPaddingProvider.notifier);
 

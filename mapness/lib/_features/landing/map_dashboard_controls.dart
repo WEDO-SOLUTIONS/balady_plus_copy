@@ -24,12 +24,16 @@ class MapDashboardControls extends ConsumerStatefulWidget {
 }
 
 class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
-  late double bottomPadding;
+  late double _bottomPadding;
+  late final ValueNotifier<uikit.ThreeStateBottomSheet> _notifierStateType;
+
 
   @override
   void initState() {
     super.initState();
-    bottomPadding = widget.scrollController.sheetHeight;
+    _bottomPadding = widget.scrollController.sheetHeight;
+    _notifierStateType = ValueNotifier(widget.scrollController.state);
+
     widget.scrollController.addListener(update);
   }
 
@@ -40,9 +44,12 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
   }
 
   void update() {
-    setState(() {
-      bottomPadding = widget.scrollController.sheetHeight;
-    });
+    if (widget.scrollController.state != _notifierStateType.value && widget.scrollController.interpolation == 0) {
+      setState(() {
+        _notifierStateType.value =  widget.scrollController.state;
+        _bottomPadding = widget.scrollController.sheetHeight;
+      });
+    }
   }
 
   @override
@@ -66,14 +73,14 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                   child: Expanded(
                     child: AnimatedOpacity(
                       duration: const Duration(milliseconds: 100),
-                      opacity: widget.scrollController.viewportHeight > bottomPadding + 200 ? 1 : 0,
+                      opacity: widget.scrollController.viewportHeight > _bottomPadding + 200 ? 1 : 0,
                       child: OverflowBox(
                         child: Padding(
                           padding: EdgeInsets.only(
                             left: uikit.Spacing.$3x,
                             top: uikit.Spacing.$3x,
                             right: uikit.Spacing.$3x,
-                            bottom: bottomPadding,
+                            bottom: _bottomPadding,
                           ),
                           child: Row(
                             children: [
