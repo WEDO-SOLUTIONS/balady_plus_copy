@@ -7,7 +7,7 @@ import 'package:mapness/widgets/feedback/feedback_label.dart';
 
 class FeedbackChips extends StatelessWidget {
   final FeedbackChipsEntity field;
-  final void Function(Set<String>) onValueChange;
+  final void Function(Set<int>) onValueChange;
 
   const FeedbackChips({
     required this.field,
@@ -33,7 +33,7 @@ class FeedbackChips extends StatelessWidget {
                             )
                           : null,
                       onTap: () {
-                        final Set<String> selected;
+                        final Set<int> selected;
                         if (field.value?.contains(variant.id) ?? false) {
                           selected = {...?field.value}..remove(variant.id);
                         } else {
