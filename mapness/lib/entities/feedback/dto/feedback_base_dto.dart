@@ -15,11 +15,13 @@ sealed class FeedbackBaseDto {
   final String id;
   final String type;
   final bool isRequired;
+  final bool isHidden;
 
   FeedbackBaseDto({
     required this.id,
     required this.type,
     required this.isRequired,
+    required this.isHidden,
   });
 
   /// trick how to parse by type
@@ -34,7 +36,7 @@ sealed class FeedbackBaseDto {
         'image' => _$FeedbackImageInputDtoFromJson(json),
 
         /// chips (dropdown)
-        'dropdown' => _$FeedbackChipsDtoFromJson(json),
+        // 'dropdown' => _$FeedbackChipsDtoFromJson(json),
 
         /// week days
         'week_days' => _$FeedbackWeekDaysDtoFromJson(json),
