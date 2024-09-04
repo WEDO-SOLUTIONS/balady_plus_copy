@@ -25,4 +25,6 @@ class FeedbackImageInputDto extends FeedbackBaseDto {
         acceptedFormats: format,
         isHidden: isHidden,
       );
+
+  factory FeedbackImageInputDto.fromJson(Map<String, dynamic> json) => _$FeedbackImageInputDtoFromJson(json);
 }

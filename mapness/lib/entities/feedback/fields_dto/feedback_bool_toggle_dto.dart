@@ -20,4 +20,6 @@ class FeedbackBoolToggleDto extends FeedbackBaseDto {
         label: label,
         isHidden: isHidden,
       );
+
+  factory FeedbackBoolToggleDto.fromJson(Map<String, dynamic> json) => _$FeedbackBoolToggleDtoFromJson(json);
 }

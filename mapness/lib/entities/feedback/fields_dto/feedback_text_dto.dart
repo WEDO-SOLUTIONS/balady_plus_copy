@@ -1,6 +1,6 @@
 part of '../dto/feedback_base_dto.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable()
 class FeedbackTextDto extends FeedbackBaseDto {
   final String label;
   final int length;
@@ -15,6 +15,8 @@ class FeedbackTextDto extends FeedbackBaseDto {
     required this.length,
     required this.hint,
   });
+
+  factory FeedbackTextDto.fromJson(Map<String, dynamic> json) => _$FeedbackTextDtoFromJson(json);
 
   @override
   FeedbackTextEntity toDomain() => FeedbackTextEntity(

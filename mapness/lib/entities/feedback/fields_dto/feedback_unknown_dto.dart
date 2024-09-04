@@ -15,4 +15,6 @@ class FeedbackUnknownDto extends FeedbackBaseDto {
         isRequired: isRequired,
         isHidden: isHidden,
       );
+
+  factory FeedbackUnknownDto.fromJson(Map<String, dynamic> json) => _$FeedbackUnknownDtoFromJson(json);
 }
