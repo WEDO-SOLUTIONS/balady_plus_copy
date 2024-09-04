@@ -23,7 +23,7 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "search_method",
+              "search_method".tr(),
               style: Theme.of(context).textTheme.titleLarge!.copyWith(),
             ),
             const SizedBox(height: 16),
@@ -58,14 +58,9 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
               value: 1,
               groupValue: 4,
             ),
-            SearchNormalOptionsWidget(
-              title: 'Test Title.',
-              description: 'Test Description.',
-              onTap: () {},
-              value: 4,
-              groupValue: 4,
-            ),
             const SizedBox(height: 16),
+
+
             ElevatedButton(
               onPressed: () {},
               child: Text(
