@@ -23,6 +23,10 @@ import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
+import 'package:balady_authorization/auth_package.dart';
+
+// import 'baldy';
+
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
 
 class App extends StatelessWidget {
@@ -55,8 +59,10 @@ class App extends StatelessWidget {
       ],
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>()..onLoadingApp(),
-        child: AppWidget(
-          key: materialAppKey,
+        child: BaladyAuthorizationWidget(
+          child: AppWidget(
+            key: materialAppKey,
+          ),
         ),
       ),
     );

@@ -80,13 +80,16 @@ import 'features/retrive_dc_injection.dart';
 import 'features/violation_guide_injection.dart';
 import 'features/weather_alerts_injection.dart';
 
+
+import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+
 /// sl -> Service Locator
 final sl = GetIt.instance;
 
 void initialize() {
 
 
-
+  AuthenticationInjection.initialize();
 
 
   OLDInjection.init();

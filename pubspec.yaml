@@ -219,6 +219,18 @@ dependencies:
   bloc: ^8.1.4
   http_certificate_pinning: ^2.1.3
 
+
+
+  ############################################################
+  balady_authorization:
+    git:
+      url: https://tfs.momra.gov.sa/tfs/MOMRACollection/Mobile%20Apps/_git/Balady%20Authorization
+#      ref: master
+#      path: packages/firebase_messaging/firebase_messaging
+  ############################################################
+
+
+
 dependency_overrides:
   geolocator_android: ^4.2.2
   # for dio_http_cache
