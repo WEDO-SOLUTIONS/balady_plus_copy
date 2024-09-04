@@ -1,6 +1,6 @@
 part of '../dto/feedback_base_dto.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class FeedbackTextDto extends FeedbackBaseDto {
   final String label;
   final int length;
