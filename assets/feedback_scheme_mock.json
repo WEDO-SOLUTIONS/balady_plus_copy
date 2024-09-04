@@ -1,13 +1,14 @@
 [
     {
         "name": "Company name",
-        "icon_name": "nameChange",
+        "type": "company_name",
         "fields": [
             {
                 "id": "email",
                 "type": "email",
                 "label": "Email",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 50,
                 "hint": "Enter your email"
             },
@@ -16,6 +17,7 @@
                 "type": "singleline",
                 "label": "Company name",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 100,
                 "hint": "Enter company name"
             },
@@ -24,6 +26,7 @@
                 "type": "multiline",
                 "label": "Comment",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 500,
                 "hint": "Add extra information"
             },
@@ -32,6 +35,7 @@
                 "type": "image",
                 "label": "Images",
                 "is_required": false,
+                "is_hidden": false,
                 "size": 20480,
                 "format": [
                     "png",
@@ -41,21 +45,23 @@
             },
             {
                 "id": "business_owner",
-                "type": "owner",
+                "type": "boolean",
                 "label": "Business owner",
-                "is_required": false
+                "is_required": false,
+                "is_hidden": false
             }
         ]
     },
     {
         "name": "Area of activity",
-        "icon_name": "messageText",
+        "type": "area",
         "fields": [
             {
                 "id": "email",
                 "type": "email",
                 "label": "Email",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 50,
                 "hint": "Enter your email"
             },
@@ -64,6 +70,7 @@
                 "type": "singleline",
                 "label": "Area of activity",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 100,
                 "hint": "Enter area of activity"
             },
@@ -72,6 +79,7 @@
                 "type": "multiline",
                 "label": "Comment",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 500,
                 "hint": "Add extra information"
             },
@@ -80,6 +88,7 @@
                 "type": "image",
                 "label": "Images",
                 "is_required": false,
+                "is_hidden": false,
                 "size": 20480,
                 "format": [
                     "png",
@@ -89,21 +98,23 @@
             },
             {
                 "id": "business_owner",
-                "type": "owner",
+                "type": "boolean",
                 "label": "Business owner",
-                "is_required": false
+                "is_required": false,
+                "is_hidden": false
             }
         ]
     },
     {
         "name": "Address",
-        "icon_name": "pin",
+        "type": "address",
         "fields": [
             {
                 "id": "email",
                 "type": "email",
                 "label": "Email",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 50,
                 "hint": "Enter your email"
             },
@@ -112,6 +123,7 @@
                 "type": "singleline",
                 "label": "Address",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 100,
                 "hint": "Enter company address"
             },
@@ -120,6 +132,7 @@
                 "type": "multiline",
                 "label": "Comment",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 500,
                 "hint": "Add extra information"
             },
@@ -128,6 +141,7 @@
                 "type": "image",
                 "label": "Images",
                 "is_required": false,
+                "is_hidden": false,
                 "size": 20480,
                 "format": [
                     "png",
@@ -137,21 +151,97 @@
             },
             {
                 "id": "business_owner",
-                "type": "owner",
+                "type": "boolean",
                 "label": "Business owner",
-                "is_required": false
+                "is_required": false,
+                "is_hidden": false
             }
         ]
     },
     {
-        "name": "Phone",
-        "icon_name": "phone",
+        "name": "Opening hours",
+        "type": "opening_hours",
         "fields": [
             {
                 "id": "email",
                 "type": "email",
                 "label": "Email",
                 "is_required": false,
+                "is_hidden": false,
+                "length": 50,
+                "hint": "Enter your email"
+            },
+            {
+                "id": "days",
+                "type": "week_days",
+                "label": "Weak days",
+                "is_required": false,
+                "is_hidden": false,
+                "variants": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday"
+                ]
+            },
+            {
+                "id": "working_hours",
+                "type": "work_time",
+                "label": "Work time",
+                "is_required": false,
+                "is_hidden": false
+            },
+            {
+                "id": "breaks",
+                "type": "breaks",
+                "label": "Breaks",
+                "is_required": false,
+                "is_hidden": false
+            },
+            {
+                "id": "comment",
+                "type": "multiline",
+                "label": "Comment",
+                "is_required": false,
+                "is_hidden": false,
+                "length": 500,
+                "hint": "Add extra information"
+            },
+            {
+                "id": "image",
+                "type": "image",
+                "label": "Images",
+                "is_required": false,
+                "is_hidden": false,
+                "size": 20480,
+                "format": [
+                    "png",
+                    "jpg",
+                    "jpeg"
+                ]
+            },
+            {
+                "id": "business_owner",
+                "type": "boolean",
+                "label": "Business owner",
+                "is_required": false,
+                "is_hidden": false
+            }
+        ]
+    },
+    {
+        "name": "Phone",
+        "type": "phone",
+        "fields": [
+            {
+                "id": "email",
+                "type": "email",
+                "label": "Email",
+                "is_required": false,
+                "is_hidden": false,
                 "length": 50,
                 "hint": "Enter your email"
             },
@@ -160,6 +250,7 @@
                 "type": "phone",
                 "label": "Phone number",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 50,
                 "hint": "Input phone number"
             },
@@ -168,6 +259,7 @@
                 "type": "multiline",
                 "label": "Comment",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 500,
                 "hint": "Add extra information"
             },
@@ -176,6 +268,7 @@
                 "type": "image",
                 "label": "Images",
                 "is_required": false,
+                "is_hidden": false,
                 "size": 20480,
                 "format": [
                     "png",
@@ -185,29 +278,32 @@
             },
             {
                 "id": "business_owner",
-                "type": "owner",
+                "type": "boolean",
                 "label": "Business owner",
-                "is_required": false
+                "is_required": false,
+                "is_hidden": false
             }
         ]
     },
     {
         "name": "Website or social network account",
-        "icon_name": "web",
+        "type": "website",
         "fields": [
             {
                 "id": "email",
                 "type": "email",
                 "label": "Email",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 50,
                 "hint": "Enter your email"
             },
             {
-                "id": "website",
-                "type": "singleline",
+                "id": "website_url",
+                "type": "url",
                 "label": "Website or social network",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 100,
                 "hint": "Enter website or social network"
             },
@@ -216,6 +312,7 @@
                 "type": "multiline",
                 "label": "Comment",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 500,
                 "hint": "Add extra information"
             },
@@ -224,6 +321,7 @@
                 "type": "image",
                 "label": "Images",
                 "is_required": false,
+                "is_hidden": false,
                 "size": 20480,
                 "format": [
                     "png",
@@ -233,21 +331,23 @@
             },
             {
                 "id": "business_owner",
-                "type": "owner",
+                "type": "boolean",
                 "label": "Business owner",
-                "is_required": false
+                "is_required": false,
+                "is_hidden": false
             }
         ]
     },
     {
         "name": "Сompany has been closed",
-        "icon_name": "clearCircle",
+        "type": "closed",
         "fields": [
             {
                 "id": "email",
                 "type": "email",
                 "label": "Email",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 50,
                 "hint": "Enter your email"
             },
@@ -256,11 +356,24 @@
                 "type": "dropdown",
                 "label": "What's happened",
                 "is_required": false,
+                "is_hidden": false,
                 "variants": [
-                    "there is no company here",
-                    "temporarily closed",
-                    "moved",
-                    "other"
+                    {
+                        "id": 1,
+                        "value": "there is no company here"
+                    },
+                    {
+                        "id": 2,
+                        "value": "temporarily closed"
+                    },
+                    {
+                        "id": 3,
+                        "value": "сompany has moved"
+                    },
+                    {
+                        "id": 4,
+                        "value": "other"
+                    }
                 ]
             },
             {
@@ -268,6 +381,7 @@
                 "type": "multiline",
                 "label": "Comment",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 500,
                 "hint": "Add extra information"
             },
@@ -276,6 +390,7 @@
                 "type": "image",
                 "label": "Images",
                 "is_required": false,
+                "is_hidden": false,
                 "size": 20480,
                 "format": [
                     "png",
@@ -285,21 +400,23 @@
             },
             {
                 "id": "business_owner",
-                "type": "owner",
+                "type": "boolean",
                 "label": "Business owner",
-                "is_required": false
+                "is_required": false,
+                "is_hidden": false
             }
         ]
     },
     {
         "name": "Other",
-        "icon_name": "questionCircle",
+        "type": "other",
         "fields": [
             {
                 "id": "email",
                 "type": "email",
                 "label": "Email",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 50,
                 "hint": "Enter your email"
             },
@@ -308,6 +425,7 @@
                 "type": "multiline",
                 "label": "Comment",
                 "is_required": false,
+                "is_hidden": false,
                 "length": 500,
                 "hint": "Add extra information"
             },
@@ -316,6 +434,7 @@
                 "type": "image",
                 "label": "Images",
                 "is_required": false,
+                "is_hidden": false,
                 "size": 20480,
                 "format": [
                     "png",
@@ -325,9 +444,10 @@
             },
             {
                 "id": "business_owner",
-                "type": "owner",
+                "type": "boolean",
                 "label": "Business owner",
-                "is_required": false
+                "is_required": false,
+                "is_hidden": false
             }
         ]
     }
