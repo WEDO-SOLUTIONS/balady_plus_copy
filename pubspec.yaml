@@ -285,6 +285,7 @@ flutter:
     - assets/athkar/
     - assets/athkar_en/
     - assets/icons/services/
+    - assets/feedback_scheme_mock.json
 
   fonts:
     - family: Cairo
