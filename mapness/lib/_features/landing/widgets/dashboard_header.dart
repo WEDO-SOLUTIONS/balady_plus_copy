@@ -91,25 +91,18 @@ class _DashboardMenu extends ConsumerWidget {
               double.infinity,
               remainingSpaceForQuickFilters,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: Spacing.$4x),
-                MapQuickFilters(
-                  id: QuickFilterScreen.dashboard,
-                  isDashboard: true,
-                  customFilters: [
-                    FilterItemConfig(
-                      filterType: FilterType.custom,
-                      title: context.l10n.go,
-                      icon: 'assets/icons/svg/quick_filters/free_roam.svg',
-                      onTap: () {
-                        FreeRoamRoute.open(ref.watch(goRouterProvider));
-                      },
-                    ),
-                  ],
+            child: MapQuickFilters(
+              id: QuickFilterScreen.dashboard,
+              isDashboard: true,
+              customFilters: [
+                FilterItemConfig(
+                  filterType: FilterType.custom,
+                  title: context.l10n.go,
+                  icon: 'assets/icons/svg/quick_filters/free_roam.svg',
+                  onTap: () {
+                    FreeRoamRoute.open(ref.watch(goRouterProvider));
+                  },
                 ),
-                const SizedBox(height: Spacing.$4x),
               ],
             ),
           ),

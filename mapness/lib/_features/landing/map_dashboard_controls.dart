@@ -26,18 +26,15 @@ class MapDashboardControls extends ConsumerStatefulWidget {
 class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
   late double _bottomPadding;
   late final ValueNotifier<uikit.ThreeStateBottomSheet> _notifierStateType;
-  final quickFilters = 64;
-  int paddingWithBottomSheet = 12;
+  final int _quickFilters = 64;
+  final int _paddingWithBottomSheet = 12;
+  MediaQueryData? _mediaQuery;
 
   @override
   void initState() {
     super.initState();
-    final mediaQuery = ref.read(mediaQueryInfoProvider);
-
-    _bottomPadding = widget.scrollController.sheetHeight;
+    _mediaQuery = ref.read(mediaQueryInfoProvider);
     _notifierStateType = ValueNotifier(widget.scrollController.state);
-
-    paddingWithBottomSheet *= mediaQuery?.devicePixelRatio.toInt() ?? 0;
     widget.scrollController.addListener(_update);
   }
 
@@ -54,9 +51,10 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
 
       setState(() {
         if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden) {
-          _bottomPadding = widget.scrollController.sheetHeight + quickFilters;
+          _bottomPadding = widget.scrollController.sheetHeight + _quickFilters;
         } else {
-          _bottomPadding = widget.scrollController.sheetHeight - paddingWithBottomSheet;
+          _bottomPadding = widget.scrollController.sheetHeight -
+              _paddingWithBottomSheet * (_mediaQuery?.devicePixelRatio.toInt() ?? 0);
         }
       });
     }
@@ -66,7 +64,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
   Widget build(BuildContext context) {
     final bool visibleControls = widget.scrollController.state == uikit.ThreeStateBottomSheet.expanded;
     return SizedBox(
-      height: MediaQuery.of(context).size.height,
+      height: _mediaQuery?.size.height,
       child: SafeArea(
         bottom: false,
         child: Visibility(

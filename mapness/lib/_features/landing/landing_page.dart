@@ -45,7 +45,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     stateMapper: const ThreeStateMapper(),
   );
 
-  MediaQueryData? mediaQuery;
+  MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
 
   @override
@@ -53,7 +53,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    mediaQuery = ref.read(mediaQueryInfoProvider);
+    _mediaQuery = ref.read(mediaQueryInfoProvider);
     _scrollController.addListener(_calculatePadding);
     setupTapListener();
   }
@@ -68,10 +68,10 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void _calculatePadding() {
     ref.read(cameraPaddingProvider.notifier).resetPadding(
           defaultPadding: CameraSetPaddingMessage(
-            leftPadding: mediaQuery?.padding.left.toInt() ?? 0,
-            rightPadding: mediaQuery?.padding.right.toInt() ?? 0,
-            topPadding: mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: _scrollController.sheetHeight.toInt() * (mediaQuery?.devicePixelRatio ?? 0).toInt(),
+            leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
+            rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
+            topPadding: _mediaQuery?.padding.top.toInt() ?? 0,
+            bottomPadding: _scrollController.sheetHeight.toInt() * (_mediaQuery?.devicePixelRatio ?? 0).toInt(),
           ),
         );
   }
