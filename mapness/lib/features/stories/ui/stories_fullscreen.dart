@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -31,6 +33,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   late final IndexController _indexController;
 
   final ValueNotifier<int> _currentPageNotifier = ValueNotifier<int>(0);
+  late final Future<List<StoryData>> _storiesData;
 
   @override
   void initState() {
@@ -39,7 +42,6 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     ref.read(storyServiceProvider.notifier).pauseUpdate();
     _storyFrameController = StoryFrameController();
     _indexController = IndexController();
-
     _indexController.addListener(() {
       if (!mounted) {
         return;
@@ -65,6 +67,8 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     ref.read(storyServiceProvider.notifier).pauseUpdate();
+    final type = StoryArgsProvider.of(context).type;
+    _storiesData = _initStories(type);
   }
 
   void _setCurrentPage(int page) {
@@ -89,8 +93,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     return ref.read(localStoriesServiceProvider(type.file!).future);
   }
 
-  Future<List<StoryData>> _initStories(BuildContext context) async {
-    final type = StoryArgsProvider.of(context).type;
+  Future<List<StoryData>> _initStories(StoryTypes type) async {
     final List<StoryData> stories = await _loadStories(type);
 
     final index = stories.indexWhere(
@@ -125,7 +128,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
 
   @override
   Widget build(BuildContext context) => FutureBuilder<List<StoryData>>(
-        future: _initStories(context),
+        future: _storiesData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Material(

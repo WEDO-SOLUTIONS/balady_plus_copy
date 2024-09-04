@@ -53,6 +53,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   late final AnimationController _controller;
   late final Animation<double> _progress;
   late final StoryFrameData _frame;
+
   late final StoryFrameThemeData storyTheme = _frame.themeFromId(
     colorTheme: context.colorsV2,
     textTheme: context.textStyleV3,
@@ -72,23 +73,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: Duration(seconds: widget.duration),
-      vsync: this,
-    );
-
-    widget.controller?.pause = _controller.stop;
-    widget.controller?.play = _controller.forward;
-
-    widget.controller?.nextPage = _onNext;
-    widget.controller?.prevPage = _onPrevious;
-
-    _progress = Tween<double>(begin: 0, end: 1).animate(_controller);
-    _frame = widget.frame;
-    if (widget.type != StoryTypes.onboarding) {
-      _progress.addListener(_onProgressListener);
-    }
-
+    _initController();
     if (_frame.isAssetImage == true) {
       _imageLoaded();
     }
@@ -98,10 +83,14 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _controller.forward();
+      if (!_controller.isAnimating) {
+        _controller.forward();
+      }
       return;
     }
-    _controller.stop();
+    if (_controller.isAnimating) {
+      _controller.stop();
+    }
   }
 
   @override
@@ -122,6 +111,29 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
     if (_frame != widget.frame) {
       _frame = widget.frame;
       _controller.reset();
+    }
+  }
+
+  void _initController() {
+    _controller = AnimationController(
+      duration: Duration(seconds: widget.duration),
+      vsync: this,
+    );
+
+    widget.controller?.pause = _controller.stop;
+    widget.controller?.play = _controller.forward;
+
+    widget.controller?.nextPage = _onNext;
+    widget.controller?.prevPage = _onPrevious;
+
+    /// If the story is onboarding, the progress will be always 1
+    _progress = widget.type != StoryTypes.onboarding
+        ? Tween<double>(begin: 0, end: 1).animate(_controller)
+        : const AlwaysStoppedAnimation(1);
+
+    _frame = widget.frame;
+    if (widget.type != StoryTypes.onboarding) {
+      _progress.addListener(_onProgressListener);
     }
   }
 
@@ -296,7 +308,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                 child: FrameProgressIndicator(
                   frameIndex: widget.frameIndex,
                   framesLength: widget.frameLength,
-                  animation: storyArgs.type == StoryTypes.onboarding ? const AlwaysStoppedAnimation(1) : _progress,
+                  animation: _progress,
                   trackTheme: storyTheme.trackTheme,
                 ),
               ),
