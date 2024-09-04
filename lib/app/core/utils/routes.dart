@@ -176,6 +176,8 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
 
 import 'etmam_route_exports.dart' hide SplashPage;
 
+import 'package:balady_authorization/src/shared/authentication_routes/authentication_routes.dart';
+
 class Routes {
   static Map<String, Widget Function(BuildContext)> etmamRoutes = {
     //! Etmam Start
@@ -627,6 +629,7 @@ class Routes {
     all.addAll(routesApp);
     all.addAll(etmamRoutes);
     all.addAll(CommercialRoutes.routes);
+    all.addAll(AuthenticationRoutes.routes);
     return all;
   }
 }
