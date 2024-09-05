@@ -38,7 +38,7 @@ class Dashboard extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final uikit.BottomSheetScrollController<uikit.ThreeStateBottomSheet> scrollableController;
+  final uikit.StatefulBottomSheetController<uikit.ThreeStateBottomSheet> scrollableController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -83,7 +83,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
           return true;
         },
-        child: uikit.AppBottomSheet<uikit.ThreeStateBottomSheet>(
+        child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
           animateOpening: false,
           topHeader: MapHiddenStateControls(widget.scrollableController),
           backgroundColor: context.colorsV2.backgroundSurface4,
@@ -92,7 +92,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           ),
           scrollController: widget.scrollableController,
           sliverBeforeContent: SliverPersistentHeader(
-            delegate: DashboardHeaderDelegateV2(
+            delegate: DashboardHeaderDelegate(
               vsync: this,
               scrollController: widget.scrollableController,
             ),

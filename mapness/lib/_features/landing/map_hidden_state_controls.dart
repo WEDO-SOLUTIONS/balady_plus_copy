@@ -20,7 +20,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 class MapHiddenStateControls extends ConsumerStatefulWidget {
-  final BottomSheetScrollController<ThreeStateBottomSheet> controller;
+  final StatefulBottomSheetController<ThreeStateBottomSheet> controller;
 
   const MapHiddenStateControls(this.controller, {super.key});
 
@@ -77,7 +77,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
       }
     });
 
-    return BottomSheetBuilder<ThreeStateBottomSheet>(
+    return BottomSheetStateBuilder<ThreeStateBottomSheet>(
       defaultState: ThreeStateBottomSheet.open,
       builder: (context, state, interpolation, child) {
         final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;

@@ -53,14 +53,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   bool needToShow = true;
   final dashBoardMinimumSize = 0.13;
 
-  late final BottomSheetScrollController<ThreeStateBottomSheet> scrollController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> scrollController;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    scrollController = BottomSheetScrollController(
+    scrollController = StatefulBottomSheetController(
+      durationMultiplier: 1.0,
       initialState: ThreeStateBottomSheet.open,
       behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
       stateMapper: const LandingStateMapper(),

@@ -19,13 +19,13 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
-class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
+class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final BottomSheetScrollController scrollController;
   final TickerProvider _vsync;
 
   static const headerHeight = 72.0;
 
-  DashboardHeaderDelegateV2({
+  DashboardHeaderDelegate({
     required TickerProvider vsync,
     required this.scrollController,
   }) : _vsync = vsync;
