@@ -87,11 +87,16 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     if (etaInfo.type == EtaType.geolocation) {
       await _processDrawUserMarker();
 
-      await _processMoveCameraToUser();
-
       _isFirstLocationFetch = false;
 
       _lastActiveMessageTime = DateTime.now().toUtc();
+
+      // We need to wait some time, because current location need to initialize
+      unawaited(
+        Future.delayed(const Duration(seconds: 5), () async {
+          await _processMoveCameraToUser();
+        }),
+      );
     } else if (etaInfo.type == EtaType.streamMetadata) {
       _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
