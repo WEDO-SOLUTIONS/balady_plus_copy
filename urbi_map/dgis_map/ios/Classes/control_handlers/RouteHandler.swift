@@ -257,6 +257,8 @@ class RouteHandler {
             "routes": mappedRoutes
         ])
     }
+
+    
     
     func getActivePublicTransportRoute() -> TrafficRoute? {
         guard let routeIndex = routeEditor.activeRouteIndex else {
@@ -270,6 +272,23 @@ class RouteHandler {
         return routeEditor.routesInfo.routes.filter {
             !$0.route.publicTransportTransfers.isEmpty
         }
+    }
+
+    func moveCameraToActiveRouteIndex(_ index: UInt64) {
+                
+       let route = routeEditor.routesInfo.routes[Int(index)]
+        
+        let geometries = route.route.geometry.entries.map { entry in
+            PointGeometry(point: entry.value)
+        }
+        
+        let geometry = ComplexGeometry(geometries: geometries)
+        let position = calcPosition(camera: map.camera, geometry: geometry)
+        
+        self.moveCameraCancellable?.cancel()
+        self.moveCameraCancellable = self.map.camera.move(
+            position: position
+        ).sink {_ in } failure: {_ in }
     }
     
     

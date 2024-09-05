@@ -8,6 +8,20 @@ part 'websocker_error_handler_porvider.g.dart';
 enum WebsocketReason {
   expired,
   manual,
+  noData,
+}
+
+extension WebsocketReasonX on WebsocketReason {
+  String toName() {
+    switch (this) {
+      case WebsocketReason.expired:
+        return 'expired';
+      case WebsocketReason.manual:
+        return 'manual';
+      case WebsocketReason.noData:
+        return 'no_data';
+    }
+  }
 }
 
 extension WebSocketReasonX on String {
@@ -17,6 +31,8 @@ extension WebSocketReasonX on String {
         return WebsocketReason.expired;
       case 'manual':
         return WebsocketReason.manual;
+      case 'no_data':
+        return WebsocketReason.noData;
       default:
         return null;
     }

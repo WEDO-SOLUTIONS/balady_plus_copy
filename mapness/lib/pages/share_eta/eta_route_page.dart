@@ -38,6 +38,12 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
             _showEtaExpired(rootNavigatorKey.currentContext!);
           });
         }
+        if (code == 1000 && reasonData == WebsocketReason.noData) {
+          context.pop();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showBroadcastExpired(rootNavigatorKey.currentContext!);
+          });
+        }
       });
 
     final direction = Directionality.of(context);
@@ -77,6 +83,15 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
       context: context,
       isScrollControlled: true,
       builder: (_) => EtaShareExpired.eta(context),
+    );
+  }
+
+  void _showBroadcastExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.broadcastExpired(context),
     );
   }
 }

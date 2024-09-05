@@ -35,12 +35,17 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   static const String _lostConnection = 'assets/images_svg/eta_lost_connection_marker.svg';
 
   static const imgSize = 48;
+  static const streamBreakTimeout = 60;
 
   EtaInfoModel<EtaRoutePayload?>? _metaInfo;
 
   bool _reconnectingInProgress = false;
   bool _isFirstLocationFetch = true;
   EtaRoute? _lastActiveRoute;
+  Timer? _routeZoomingTimer;
+  Timer? _lastActiveMessageReceiverTimer;
+
+  DateTime? _lastActiveMessageTime;
 
   @override
   (EtaInfoModel<dynamic>?, EtaInfoModel<EtaRoutePayload?>?) build() {
@@ -73,6 +78,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       await _processMoveCameraToUser();
 
       _isFirstLocationFetch = false;
+
+      _lastActiveMessageTime = DateTime.now().toUtc();
     } else if (etaInfo.type == EtaType.streamMetadata) {
       _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
@@ -109,7 +116,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         if (current.valueOrNull?.isEmpty ?? false) {
           return;
         } else {
-          await ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(activeIndex);
+          await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(activeIndex);
         }
       });
     }
@@ -123,6 +130,13 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       debugPrint(e.toString());
     } finally {
       _lastActiveRoute = null;
+
+      // Stop active timers
+      _routeZoomingTimer?.cancel();
+      _routeZoomingTimer = null;
+
+      _lastActiveMessageReceiverTimer?.cancel();
+      _lastActiveMessageReceiverTimer = null;
 
       final settings = MapObjectManagerSettings.eta();
       final mapObjectManager = ref.read(
@@ -154,8 +168,34 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         shareEtaApiUrl: envProvider.shareEtaApi,
       );
       ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
-      // EtaWebsocket().addConnectionLostListener(_onErrorStatus);
+
       EtaWebsocket().addEtaInfoListener(_updateEtaInfo);
+      _routeZoomingTimer?.cancel();
+      _routeZoomingTimer = Timer.periodic(const Duration(seconds: 15), (_) async {
+        final (_, meta) = state;
+        if (meta == null) {
+          return;
+        }
+        final payload = meta.payload;
+        if (payload?.route?.routeIndex != null) {
+          final index = payload!.route!.routeIndex!;
+          await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(index);
+        }
+      });
+
+      _lastActiveMessageReceiverTimer?.cancel();
+      _lastActiveMessageReceiverTimer = Timer.periodic(const Duration(seconds: 10), (_) async {
+        final lastActiveMessageTime = _lastActiveMessageTime;
+        if (lastActiveMessageTime == null) {
+          return;
+        }
+        final currentTime = DateTime.now().toUtc();
+        final diff = currentTime.difference(lastActiveMessageTime).inSeconds;
+        if (diff > streamBreakTimeout) {
+          ref.read(websocketErrorHandlerProvider.notifier).setStatus(1000, WebsocketReason.noData.toName());
+          await stopStreaming();
+        }
+      });
     } catch (e) {
       rethrow;
     } finally {

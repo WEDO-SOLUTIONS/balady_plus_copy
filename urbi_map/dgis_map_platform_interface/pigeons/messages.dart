@@ -1151,6 +1151,9 @@ abstract class MapApi {
   void toggleFollowState();
 
   @async
+  void moveCameraToActiveRoute(int index);
+
+  @async
   void followNavigation();
 
   @async

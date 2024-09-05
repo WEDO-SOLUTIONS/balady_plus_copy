@@ -34,6 +34,11 @@ class EtaUserControl extends ConsumerWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _showLiveLocationExpired(rootNavigatorKey.currentContext!);
         });
+      } else if (code == 1000 && reasonData == WebsocketReason.noData) {
+        // Show error message
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showBroadcastExpired(rootNavigatorKey.currentContext!);
+        });
       }
     });
 
@@ -73,6 +78,15 @@ class EtaUserControl extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       builder: (_) => EtaShareExpired.liveLocation(context),
+    );
+  }
+
+  void _showBroadcastExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.broadcastExpired(context),
     );
   }
 }
