@@ -9,7 +9,7 @@ part 'fields_entity/feedback_text_entity.dart';
 part 'fields_entity/feedback_image_input_entity.dart';
 part 'fields_entity/feedback_unknown_entity.dart';
 part 'fields_entity/feedback_chips_entity.dart';
-part 'fields_entity/feedback_week_days_entity.dart';
+part 'fields_entity/feedback_schedule_entity.dart';
 
 sealed class FeedbackBaseEntity<T> {
   final String id;

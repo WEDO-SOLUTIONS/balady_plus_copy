@@ -1,20 +1,20 @@
 part of '../feedback_base_entity.dart';
 
-class FeedbackWorkingHoursEntity extends FeedbackBaseEntity<List<FeedbackWeekDayWorkingHoursEntity>> {
+class FeedbackScheduleEntity extends FeedbackBaseEntity<List<FeedbackScheduleWorkingHoursEntity>> {
   final String label;
   final List<String> variants;
 
-  const FeedbackWorkingHoursEntity({
+  const FeedbackScheduleEntity({
     required super.id,
     required super.isRequired,
     required this.label,
     required this.variants,
     required super.isHidden,
-    List<FeedbackWeekDayWorkingHoursEntity>? value,
+    List<FeedbackScheduleWorkingHoursEntity>? value,
   }) : super(value: value);
 
   @override
-  FeedbackWorkingHoursEntity updatedValue(List<FeedbackWeekDayWorkingHoursEntity> value) => FeedbackWorkingHoursEntity(
+  FeedbackScheduleEntity updatedValue(List<FeedbackScheduleWorkingHoursEntity> value) => FeedbackScheduleEntity(
         id: id,
         isRequired: isRequired,
         label: label,
@@ -25,11 +25,11 @@ class FeedbackWorkingHoursEntity extends FeedbackBaseEntity<List<FeedbackWeekDay
 }
 
 /// represents single day of the week
-class FeedbackWeekDayWorkingHoursEntity {
+class FeedbackScheduleWorkingHoursEntity {
   final TimeRange workingTime;
   final List<TimeRange> breaks;
 
-  const FeedbackWeekDayWorkingHoursEntity({
+  const FeedbackScheduleWorkingHoursEntity({
     required this.workingTime,
     this.breaks = const [],
   });

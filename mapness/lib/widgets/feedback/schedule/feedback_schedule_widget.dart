@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/widgets/feedback/working_hours/feedback_working_hours_interval_widget.dart';
+import 'package:mapness/widgets/feedback/schedule/feedback_working_hours_interval_widget.dart';
 
-class FeedbackWorkingHoursWidget extends StatelessWidget {
-  const FeedbackWorkingHoursWidget({Key? key}) : super(key: key);
+class FeedbackScheduleWidget extends StatelessWidget {
+  const FeedbackScheduleWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class FeedbackWorkingHoursWidget extends StatelessWidget {
       'Sunday',
     ];
 
-    const workingHours = FeedbackWeekDayWorkingHoursEntity(
+    const workingHours = FeedbackScheduleWorkingHoursEntity(
       workingTime: TimeRangeStartEnd(
         start: TimeOfDay(hour: 8, minute: 0),
         end: TimeOfDay(hour: 17, minute: 0),

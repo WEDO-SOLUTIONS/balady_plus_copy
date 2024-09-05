@@ -1,11 +1,11 @@
 part of '../dto/feedback_base_dto.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class FeedbackWeekDaysDto extends FeedbackBaseDto {
+class FeedbackScheduleDto extends FeedbackBaseDto {
   final String label;
   final List<String> variants;
 
-  FeedbackWeekDaysDto({
+  FeedbackScheduleDto({
     required super.id,
     required super.type,
     required super.isRequired,
@@ -15,7 +15,7 @@ class FeedbackWeekDaysDto extends FeedbackBaseDto {
   });
 
   @override
-  FeedbackWorkingHoursEntity toDomain() => FeedbackWorkingHoursEntity(
+  FeedbackScheduleEntity toDomain() => FeedbackScheduleEntity(
         id: id,
         isRequired: isRequired,
         isHidden: isHidden,
@@ -23,5 +23,5 @@ class FeedbackWeekDaysDto extends FeedbackBaseDto {
         variants: variants,
       );
 
-  factory FeedbackWeekDaysDto.fromJson(Map<String, dynamic> json) => _$FeedbackWeekDaysDtoFromJson(json);
+  factory FeedbackScheduleDto.fromJson(Map<String, dynamic> json) => _$FeedbackScheduleDtoFromJson(json);
 }
