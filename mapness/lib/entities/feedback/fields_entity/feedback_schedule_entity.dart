@@ -2,13 +2,11 @@ part of '../feedback_base_entity.dart';
 
 class FeedbackScheduleEntity extends FeedbackBaseEntity<List<FeedbackScheduleWorkingHoursEntity>> {
   final String label;
-  final List<String> variants;
 
   const FeedbackScheduleEntity({
     required super.id,
     required super.isRequired,
     required this.label,
-    required this.variants,
     required super.isHidden,
     List<FeedbackScheduleWorkingHoursEntity>? value,
   }) : super(value: value);
@@ -18,7 +16,6 @@ class FeedbackScheduleEntity extends FeedbackBaseEntity<List<FeedbackScheduleWor
         id: id,
         isRequired: isRequired,
         label: label,
-        variants: variants,
         value: value,
         isHidden: isHidden,
       );
