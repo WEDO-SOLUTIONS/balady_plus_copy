@@ -922,8 +922,8 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun startFreeRoam(result: Messages.Result<Void>?) {
-        navigationHandler.startFreeRoam()
+    override fun startFreeRoam(speedRangeZoom: SpeedRangeZoom, result: Messages.Result<Void>?) {
+        navigationHandler.startFreeRoam(speedRangeZoom = speedRangeZoom)
         result?.success(null)
     }
 

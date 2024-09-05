@@ -710,8 +710,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.onCompassClicked();
   }
 
-  Future<void> startFreeRoam() {
-    return _api.startFreeRoam();
+  Future<void> startFreeRoam(SpeedRangeZoom speedRangeZoom) {
+    return _api.startFreeRoam(speedRangeZoom);
   }
 
   Future<void> stopFreeRoam() {

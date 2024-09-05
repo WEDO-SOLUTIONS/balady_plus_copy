@@ -263,12 +263,14 @@ class NavigationHandler(
         navigationView.visibility = View.INVISIBLE
     }
 
-    fun startFreeRoam() {
+    fun startFreeRoam(speedRangeZoom: Messages.SpeedRangeZoom) {
+        setupCamera(speedRangeZoom = speedRangeZoom)
         navigationManager.start()
     }
 
     fun stopFreeRoam() {
         navigationManager.stop()
+        resetCamera()
     }
 
     private fun stateChannelListener(state: State) {

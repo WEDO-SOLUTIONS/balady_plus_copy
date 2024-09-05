@@ -1454,7 +1454,7 @@ abstract class MapApi {
   void setZoomRestrictions(double? min, double? max);
 
   @async
-  void startFreeRoam();
+  void startFreeRoam(SpeedRangeZoom speedRangeZoom);
 
   @async
   void stopFreeRoam();
