@@ -983,8 +983,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.startFreeRoam(completion: completion)
+    func startFreeRoamSpeedRangeZoom(_ speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.startFreeRoam(speedRangeZoom: speedRangeZoom, completion: completion)
     }
     
     func stopFreeRoam(completion: @escaping (FlutterError?) -> Void) {
