@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
+import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
@@ -144,7 +146,7 @@ class ShareEta extends _$ShareEta {
         final etaStatus = ref.read(etaWebsocketStatusProvider);
         final isSharingType = ref.read(websocketTypeProvider) == SubscriptionType.share;
         if (etaStatus && isSharingType && _streamType == EtaStreamType.eta) {
-          // TODO: Update route info
+          _updateRoute(current);
         }
       })
       ..listen(networkStatusProvider, (_, current) async {
@@ -155,6 +157,24 @@ class ShareEta extends _$ShareEta {
         final status = current;
         if (!status) {
           ref.read(websocketErrorHandlerProvider.notifier).setStatus(4001, 'Network status: $status');
+        }
+      })
+      ..listen(pathNavMessageProvider, (prev, current) {
+        if (prev?.state == PathNavMessageState.reroute && current?.state == null) {
+          final route = ref.read(etaRouteInfoProvider);
+          final location = ref.read(locationProvider);
+          if (route.isEmpty) {
+            return;
+          }
+
+          if (location != null) {
+            ref.read(etaRouteInfoProvider.notifier).setRoute(
+                  route.copyWith(
+                    routeIndex: 0,
+                    startPoint: EtaRoutePoint(lat: location.latitude, lon: location.longitude),
+                  ),
+                );
+          }
         }
       })
       ..onDispose(() {
@@ -237,6 +257,17 @@ class ShareEta extends _$ShareEta {
       debugPrint(e.toString());
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.share);
+    }
+  }
+
+  Future<void> _updateRoute(EtaRoute route) async {
+    final tokenId = EtaStreamStorage().state.streamToken;
+    final xStreamData = EtaStreamStorage().state.xStreamData;
+
+    if (tokenId != null && xStreamData != null) {
+      await ref
+          .read(etaServiceProvider.notifier)
+          .updateEtaStream(EtaRouteMetadataPayload(route: route), xStreamData: xStreamData, tokenId: tokenId);
     }
   }
 

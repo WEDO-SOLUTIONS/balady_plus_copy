@@ -29,7 +29,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'eta_geo_subscriber.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   static const String _unauthorizedUser = 'assets/images_svg/eta_unknown_user_marker.svg';
   static const String _autharizedUser = 'assets/images_svg/eta_auth_blank_user_marker.svg';
@@ -52,6 +52,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   @override
   (EtaInfoModel<dynamic>?, EtaInfoModel<EtaRoutePayload?>?) build() {
     final settings = MapObjectManagerSettings.eta();
+
     ref
       ..watch(
         mapObjectManagerProvider(
@@ -72,9 +73,6 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         if (!status) {
           ref.read(websocketErrorHandlerProvider.notifier).setStatus(4001, 'Network status: $status');
         }
-      })
-      ..onDispose(() {
-        EtaWebsocket().clearInfoListeners();
       });
 
     return (null, null);
@@ -193,7 +191,6 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       );
       ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
 
-      EtaWebsocket().addEtaInfoListener(_updateEtaInfo);
       _routeZoomingTimer?.cancel();
       _routeZoomingTimer = Timer.periodic(const Duration(seconds: 15), (_) async {
         final (_, meta) = state;
@@ -220,7 +217,10 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           await stopStreaming();
         }
       });
+
+      EtaWebsocket().addEtaInfoListener(_updateEtaInfo);
     } catch (e) {
+      await stopStreaming();
       rethrow;
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.get);

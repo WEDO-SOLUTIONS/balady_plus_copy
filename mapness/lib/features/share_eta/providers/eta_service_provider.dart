@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
@@ -17,6 +18,7 @@ class EtaService extends _$EtaService {
   @override
   Future<EtaStreamInfo?> build() async {
     await _init();
+
     return null;
   }
 
@@ -120,21 +122,22 @@ class EtaService extends _$EtaService {
     try {
       final response = await _dio!.put(
         '$_baseUrl/v1/geolocation/stream',
-        data: payload.toJson(),
+        data: EtaRouteUpdatePayload(metadata: payload).toJson(),
         options: Options(
           headers: headers,
         ),
       );
-
-      if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-        final etaStreamInfo = EtaStreamInfo.fromJson(data);
-        state = AsyncData(etaStreamInfo);
-      } else {
-        state = AsyncError(Exception('Failed to update ETA stream'), StackTrace.current);
+      final code = response.statusCode;
+      if (code == null) {
+        throw Exception('Failed to update ETA stream');
       }
-    } on Exception catch (e, st) {
-      state = AsyncError(e, st);
+
+      if (code < 200 || code >= 300) {
+        throw Exception('Failed to update ETA stream');
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      rethrow;
     }
   }
 }
