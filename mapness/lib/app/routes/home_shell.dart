@@ -73,10 +73,7 @@ class LandingRoute extends GoRouteData {
   const LandingRoute();
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      const TransculentPage(
-          child: LandingPage()
-      );
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(child: LandingPage());
 }
 
 class RoutingBranch extends StatefulShellBranchData {
@@ -85,6 +82,7 @@ class RoutingBranch extends StatefulShellBranchData {
 
 class RoutingRoute extends GoRouteData {
   static const path = '/routing';
+
   const RoutingRoute({this.collapseInitially = false});
 
   /// open page with collapsed bottom sheet

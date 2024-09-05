@@ -71,90 +71,90 @@ class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProvid
       });
 
     return PopScope(
-        onPopInvoked: (val) {
-          final currentRoute = ref.read(currentRouteProvider);
-          if (currentRoute?.currentPath == PhotoViewerRoute.path) {
-            context.pop();
-          }
-        },
-        child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
-          animateOpening: false,
-          topHeader: const MapHiddenStateControls(),
-          backgroundColor: context.colorsV2.backgroundSurface4,
-          header: DashboardHeader(
+      onPopInvoked: (val) {
+        final currentRoute = ref.read(currentRouteProvider);
+        if (currentRoute?.currentPath == PhotoViewerRoute.path) {
+          context.pop();
+        }
+      },
+      child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
+        animateOpening: false,
+        topHeader: const MapHiddenStateControls(),
+        backgroundColor: context.colorsV2.backgroundSurface4,
+        header: DashboardHeader(
+          scrollController: widget.scrollableController,
+        ),
+        scrollController: widget.scrollableController,
+        sliverBeforeContent: SliverPersistentHeader(
+          delegate: DashboardHeaderDelegateV2(
+            vsync: this,
             scrollController: widget.scrollableController,
           ),
-          scrollController: widget.scrollableController,
-          sliverBeforeContent: SliverPersistentHeader(
-            delegate: DashboardHeaderDelegateV2(
-              vsync: this,
-              scrollController: widget.scrollableController,
-            ),
-            pinned: true,
-            floating: true,
+          pinned: true,
+          floating: true,
+        ),
+        content: [
+          Column(
+            children: [
+              const SizedBox(height: uikit.Spacing.$4x),
+              const StoriesWidget(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              JoyParksCardV2(widget.scrollableController),
+              const SizedBox(height: uikit.Spacing.$3x),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
+                child: Row(
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    Expanded(child: WeatherCard()),
+                    SizedBox(width: uikit.Spacing.$3x),
+                    Expanded(child: QiblaCard()),
+                  ],
+                ),
+              ),
+              const SizedBox(height: uikit.Spacing.$8x),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    Expanded(
+                      child: PlacesForCart(
+                        title: context.l10n.placesForShopping,
+                        icon: General32Icons.shoppingLRTL,
+                        onTap: () => _openSearch(QuickFilter.shopping),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: PlacesForCart(
+                        title: context.l10n.placesForEatingOut,
+                        icon: General32Icons.restourantLRTL,
+                        onTap: () => _openSearch(QuickFilter.eatOut),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const PlacePreview(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const SnapAndSendCard(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const ComplianceCard(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const PrayerCard(),
+              CalendarSliderCard(
+                colorScheme: ref.read(colorSchemeProvider),
+                onShowAll: () => Metrics.logEventAdvanced(
+                  MetricsConstants.exploreKeys.kingdomCalendarViewAll,
+                  action: MetricAction.tap.name,
+                  group: MetricsConstants.exploreTag,
+                ),
+              ),
+            ],
           ),
-          content: [
-            Column(
-              children: [
-                const SizedBox(height: uikit.Spacing.$4x),
-                const StoriesWidget(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                JoyParksCardV2(widget.scrollableController),
-                const SizedBox(height: uikit.Spacing.$3x),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
-                  child: Row(
-                    textDirection: TextDirection.ltr,
-                    children: [
-                      Expanded(child: WeatherCard()),
-                      SizedBox(width: uikit.Spacing.$3x),
-                      Expanded(child: QiblaCard()),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: uikit.Spacing.$8x),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    textDirection: TextDirection.ltr,
-                    children: [
-                      Expanded(
-                        child: PlacesForCart(
-                          title: context.l10n.placesForShopping,
-                          icon: General32Icons.shoppingLRTL,
-                          onTap: () => _openSearch(QuickFilter.shopping),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: PlacesForCart(
-                          title: context.l10n.placesForEatingOut,
-                          icon: General32Icons.restourantLRTL,
-                          onTap: () => _openSearch(QuickFilter.eatOut),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const PlacePreview(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const SnapAndSendCard(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const ComplianceCard(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const PrayerCard(),
-                CalendarSliderCard(
-                  colorScheme: ref.read(colorSchemeProvider),
-                  onShowAll: () => Metrics.logEventAdvanced(
-                    MetricsConstants.exploreKeys.kingdomCalendarViewAll,
-                    action: MetricAction.tap.name,
-                    group: MetricsConstants.exploreTag,
-                  ),
-                ),
-              ],
-            ),
-          ],
+        ],
       ),
     );
   }

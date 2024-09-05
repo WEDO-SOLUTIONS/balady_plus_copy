@@ -49,7 +49,6 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
 
   void _update() {
     if (widget.scrollController.state != _notifierStateType.value && widget.scrollController.interpolation == 0) {
-
       _notifierStateType.value = widget.scrollController.state;
 
       setState(() {
@@ -105,7 +104,8 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                               const SizedBox(height: uikit.Spacing.$2x),
                               const TrafficControl(),
                               const Spacer(),
-                              if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden) const ZoomControl(),
+                              if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden)
+                                const ZoomControl(),
                               const Spacer(),
                               const CompassControl(),
                               const SizedBox(height: uikit.Spacing.$2x),
