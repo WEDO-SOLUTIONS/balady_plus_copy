@@ -11,13 +11,13 @@ class FeedbackScheduleWidget extends StatelessWidget {
     final l10n = context.l10n;
 
     final localizedDays = [
-      l10n.monday,
-      l10n.tuesday,
-      l10n.wednesday,
-      l10n.thursday,
-      l10n.friday,
-      l10n.saturday,
-      l10n.sunday,
+      l10n.weekdayNameShortMonday,
+      l10n.weekdayNameShortTuesday,
+      l10n.weekdayNameShortWednesday,
+      l10n.weekdayNameShortThursday,
+      l10n.weekdayNameShortFriday,
+      l10n.weekdayNameShortSaturday,
+      l10n.weekdayNameShortSunday,
     ];
 
     const workingHours = FeedbackScheduleWorkingHoursEntity(
