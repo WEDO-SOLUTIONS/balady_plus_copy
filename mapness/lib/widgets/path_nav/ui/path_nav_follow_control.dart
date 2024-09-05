@@ -19,37 +19,33 @@ class PathNavFollowControl extends ConsumerWidget {
     final followState = ref.watch(followStateProvider);
     final iconColor = followState.type != LocationFollowType.off ? NonThemeColor.color30 : Colors.black;
 
-    return AnimatedOpacity(
-      opacity: followState.enabled ? 1 : 1, // fix
-      duration: const Duration(milliseconds: 250),
-      child: MapButton(
-        onTap: () async {
-          switch (followState.type) {
-            case LocationFollowType.followPosition:
-              return;
-            case LocationFollowType.off || LocationFollowType.followDirection:
-              final cameraPosition = ref.read(cameraPositionProvider);
-              final dgisController = await ref.read(dgisControllerProvider.future);
-              if (cameraPosition != null) {
-                // Animate to the entrance
-                await dgisController.setCameraPosition(
-                  CameraPositionMessage(
-                    point: cameraPosition.point,
-                    zoom: 18,
-                    tilt: cameraPosition.tilt,
-                    bearing: cameraPosition.tilt,
-                  ),
-                );
-              }
-              await dgisController.followNavigation();
-          }
-        },
-        child: SvgPicture.asset(
-          'assets/icons/svg/ic_control_location.svg',
-          semanticsLabel: 'MinApps Screen',
-          package: 'mapness',
-          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-        ),
+    return MapButton(
+      onTap: () async {
+        switch (followState.type) {
+          case LocationFollowType.followPosition:
+            return;
+          case LocationFollowType.off || LocationFollowType.followDirection:
+            final cameraPosition = ref.read(cameraPositionProvider);
+            final dgisController = await ref.read(dgisControllerProvider.future);
+            if (cameraPosition != null) {
+              // Animate to the entrance
+              await dgisController.setCameraPosition(
+                CameraPositionMessage(
+                  point: cameraPosition.point,
+                  zoom: 18,
+                  tilt: cameraPosition.tilt,
+                  bearing: cameraPosition.tilt,
+                ),
+              );
+            }
+            await dgisController.followNavigation();
+        }
+      },
+      child: SvgPicture.asset(
+        'assets/icons/svg/ic_control_location.svg',
+        semanticsLabel: 'MinApps Screen',
+        package: 'mapness',
+        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
       ),
     );
   }
