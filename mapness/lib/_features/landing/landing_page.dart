@@ -39,12 +39,7 @@ class LandingPage extends ConsumerStatefulWidget {
 }
 
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> _scrollController = StatefulBottomSheetController(
-    initialState: ThreeStateBottomSheet.open,
-    behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
-    stateMapper: const ThreeStateMapper(),
-  );
-
+  late StatefulBottomSheetController<ThreeStateBottomSheet> _scrollController;
   MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
 
@@ -52,9 +47,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     _mediaQuery = ref.read(mediaQueryInfoProvider);
+
+    _scrollController = StatefulBottomSheetController(
+      initialState: ThreeStateBottomSheet.open,
+      behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
+      stateMapper: const ThreeStateMapper(),
+    );
     _scrollController.addListener(_calculatePadding);
+
     setupTapListener();
   }
 

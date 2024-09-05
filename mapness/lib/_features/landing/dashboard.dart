@@ -155,7 +155,8 @@ class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProvid
               ],
             ),
           ],
-        ));
+      ),
+    );
   }
 
   void _openSearch(QuickFilter quickFilter) {
