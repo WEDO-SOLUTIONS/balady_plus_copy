@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
@@ -37,6 +38,7 @@ class ShareEta extends _$ShareEta {
   ProviderSubscription? _websocketStatusSubscription;
   Timer? _locationSubscription;
   bool _reconnectingInProgress = false;
+  bool _lastConnectionStatus = true;
 
   EtaStreamType _streamType = EtaStreamType.geo;
 
@@ -85,16 +87,22 @@ class ShareEta extends _$ShareEta {
           );
         }
 
-        _locationSubscription = Timer.periodic(const Duration(seconds: sendLocationIntervalSeconds), (_) {
+        _locationSubscription = Timer.periodic(const Duration(seconds: sendLocationIntervalSeconds), (_) async {
           final location = ref.read(locationProvider);
           final eta = ref.read(pathNavEtaProvider);
 
           final arrivalAt = DateTime.now().toUtc().add(Duration(seconds: eta?.durationInSeconds ?? 0));
           final distance = eta?.rawDistance ?? 0;
+          final isGranded = await ref.read(locationProvider.notifier).checkLocationStatus();
 
-          if (location != null) {
+          if (location != null && isGranded) {
+            // If location is back after lost, remove the error status
+            if (ref.read(websocketErrorHandlerProvider).$1 == 4002) {
+              ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
+            }
+
             try {
-              EtaWebsocket().pushEtaInfo(
+              await EtaWebsocket().pushEtaInfo(
                 EtaInfoModel<EtaInfoPayload>(
                   type: EtaType.geolocation,
                   payload: EtaInfoPayload(
@@ -115,6 +123,9 @@ class ShareEta extends _$ShareEta {
             } catch (e) {
               debugPrint(e.toString());
             }
+          } else {
+            // If location lost, set error status to 4002
+            ref.read(websocketErrorHandlerProvider.notifier).setStatus(4002, 'Lost location');
           }
         });
       } else {
@@ -136,6 +147,16 @@ class ShareEta extends _$ShareEta {
           // TODO: Update route info
         }
       })
+      ..listen(networkStatusProvider, (_, current) async {
+        if (current == _lastConnectionStatus) {
+          return;
+        }
+        _lastConnectionStatus = current;
+        final status = current;
+        if (!status) {
+          ref.read(websocketErrorHandlerProvider.notifier).setStatus(4001, 'Network status: $status');
+        }
+      })
       ..onDispose(() {
         _stopSharingCurrent();
 
@@ -148,13 +169,14 @@ class ShareEta extends _$ShareEta {
 
   Future<void> _onErrorStatus(int statusCode, String reason) async {
     final reasonData = reason.toWebsocketReason();
-    if (statusCode != 1000 && statusCode != 1013) {
+    if (statusCode != 1000 && statusCode != 1013 && statusCode != 4002) {
       try {
         if (_reconnectingInProgress) {
           return;
         }
         _reconnectingInProgress = true;
         await EtaWebsocket().reconnect();
+        _lastConnectionStatus = true;
         ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
       } catch (e) {
         final tokenId = EtaStreamStorage().state.streamToken;
@@ -201,6 +223,9 @@ class ShareEta extends _$ShareEta {
 
       state = _streamType = EtaStreamType.eta;
       final etaRoute = ref.read(etaRouteInfoProvider);
+
+      _lastConnectionStatus = true;
+      _reconnectingInProgress = false;
 
       final payload = EtaStreamPayload(
         type: EtaStreamType.eta.name,

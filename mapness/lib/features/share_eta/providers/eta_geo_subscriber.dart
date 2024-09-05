@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -41,6 +42,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
   bool _reconnectingInProgress = false;
   bool _isFirstLocationFetch = true;
+  bool _lastConnectionStatus = true;
   EtaRoute? _lastActiveRoute;
   Timer? _routeZoomingTimer;
   Timer? _lastActiveMessageReceiverTimer;
@@ -60,6 +62,16 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       ..listen(websocketErrorHandlerProvider, (_, current) async {
         final (code, reason) = current;
         await _onErrorStatus(code, reason);
+      })
+      ..listen(networkStatusProvider, (_, current) async {
+        if (current == _lastConnectionStatus) {
+          return;
+        }
+        _lastConnectionStatus = current;
+        final status = current;
+        if (!status) {
+          ref.read(websocketErrorHandlerProvider.notifier).setStatus(4001, 'Network status: $status');
+        }
       })
       ..onDispose(() {
         EtaWebsocket().clearInfoListeners();
@@ -159,6 +171,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     await stopStreaming();
 
     _isFirstLocationFetch = true;
+    _lastConnectionStatus = true;
+    _reconnectingInProgress = false;
     final envProvider = await ref.read(dgisEnvironmentProvider.future);
 
     try {
@@ -447,13 +461,14 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         await _processDrawUserMarker();
       }
     }
-    if (statusCode != 1000 && statusCode != 1013 && statusCode != null) {
+    if (statusCode != 1000 && statusCode != 1013 && statusCode != null && statusCode != 4002) {
       try {
         if (_reconnectingInProgress) {
           return;
         }
         _reconnectingInProgress = true;
         await EtaWebsocket().reconnect();
+        _lastConnectionStatus = true;
         ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
       } catch (e) {
         await stopStreaming();
