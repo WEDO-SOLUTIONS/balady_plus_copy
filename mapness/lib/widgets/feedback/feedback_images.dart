@@ -25,7 +25,7 @@ class FeedbackImages extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const FeedbackLabel(text: 'Images'),
+          FeedbackLabel(text: field.label),
           Wrap(
             spacing: 8,
             runSpacing: 8,
