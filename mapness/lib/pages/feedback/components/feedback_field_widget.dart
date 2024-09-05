@@ -5,7 +5,7 @@ import 'package:mapness/widgets/feedback/feedback_bool_toggle.dart';
 import 'package:mapness/widgets/feedback/feedback_chips.dart';
 import 'package:mapness/widgets/feedback/feedback_images.dart';
 import 'package:mapness/widgets/feedback/feedback_text_field.dart';
-import 'package:mapness/widgets/feedback/working_hours/feedback_working_hours_widget.dart';
+import 'package:mapness/widgets/feedback/schedule/feedback_schedule_widget.dart';
 
 class FeedbackFieldWidget<V> extends StatelessWidget {
   final FeedbackBaseEntity<V> field;
@@ -46,7 +46,7 @@ class FeedbackFieldWidget<V> extends StatelessWidget {
           field: field as FeedbackChipsEntity,
           onValueChange: (value) => onValueChange(value as V),
         ),
-      FeedbackWorkingHoursEntity() => const FeedbackWorkingHoursWidget(
+      FeedbackScheduleEntity() => const FeedbackScheduleWidget(
           // field: field as FeedbackWorkingHoursEntity,
           // onValueChange: (value) => onValueChange(value as V),
           ),

@@ -10,7 +10,7 @@ part '../fields_dto/feedback_image_input_dto.dart';
 part '../fields_dto/feedback_text_dto.dart';
 part '../fields_dto/feedback_unknown_dto.dart';
 part '../fields_dto/feedback_chips_dto.dart';
-part '../fields_dto/feedback_week_days_dto.dart';
+part '../fields_dto/feedback_schedule_dto.dart';
 
 sealed class FeedbackBaseDto {
   final String id;
@@ -28,9 +28,9 @@ sealed class FeedbackBaseDto {
   /// Factory method to create the appropriate DTO based on the type
   factory FeedbackBaseDto.fromJson(Map<String, dynamic> json) => switch (json['type']) {
         'boolean' => FeedbackBoolToggleDto.fromJson(json),
-        'text' || 'email' || 'multiline' || 'phone' || 'url' || 'singleline' => FeedbackTextDto.fromJson(json),
+        'email' || 'multiline' || 'phone' || 'url' || 'singleline' => FeedbackTextDto.fromJson(json),
         'image' => FeedbackImageInputDto.fromJson(json),
-        'week_days' => FeedbackWeekDaysDto.fromJson(json),
+        'schedule' => FeedbackScheduleDto.fromJson(json),
         'dropdown' => FeedbackChipsDto.fromJson(json),
         _ => FeedbackUnknownDto.fromJson(json),
       };

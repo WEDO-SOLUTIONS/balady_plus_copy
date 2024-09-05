@@ -5,14 +5,14 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 
-class FeedbackWorkingHoursIntervalWidget extends StatelessWidget {
+class FeedbackScheduleIntervalWidget extends StatelessWidget {
   final void Function()? onDelete;
   final List<String> days;
-  final FeedbackWeekDayWorkingHoursEntity workingHours;
+  final FeedbackScheduleWorkingHoursEntity workingHours;
   final void Function() onDaysChange;
-  final void Function(FeedbackWeekDayWorkingHoursEntity) onWorkingHoursChange;
+  final void Function(FeedbackScheduleWorkingHoursEntity) onWorkingHoursChange;
 
-  const FeedbackWorkingHoursIntervalWidget({
+  const FeedbackScheduleIntervalWidget({
     required this.onDelete,
     required this.onDaysChange,
     required this.onWorkingHoursChange,
