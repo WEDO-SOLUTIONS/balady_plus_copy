@@ -139,11 +139,12 @@ class EtaArrivalCard extends HookConsumerWidget {
 
     final currentTime = DateTime.now().toUtc();
 
-    final time1 = arrivalTime.difference(startedDate).inSeconds;
-    final time2 = currentTime.difference(startedDate).inSeconds;
+    final arrivalDiff = arrivalTime.difference(startedDate).inSeconds;
+    final currentDiff = currentTime.difference(startedDate).inSeconds;
 
-    final progress = time2 / time1;
+    final progress = currentDiff / arrivalDiff;
 
+    // Because we use only time to calculate the progress, in some cases, arival time can be in the past. In this case, we should return 1.0
     if (progress < 0) {
       return 1.0;
     }
