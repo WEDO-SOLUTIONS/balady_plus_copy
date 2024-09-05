@@ -169,7 +169,7 @@ class ShareEta extends _$ShareEta {
 
   Future<void> _onErrorStatus(int statusCode, String reason) async {
     final reasonData = reason.toWebsocketReason();
-    if (statusCode != 1000 && statusCode != 1013 && statusCode != 4002) {
+    if (statusCode != 1000 && statusCode != 1013 && statusCode != 4002 && statusCode != 4004) {
       try {
         if (_reconnectingInProgress) {
           return;

@@ -38,7 +38,7 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
             _showEtaExpired(rootNavigatorKey.currentContext!);
           });
         }
-        if (code == 1000 && reasonData == WebsocketReason.noData) {
+        if (code == 4004) {
           context.pop();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showBroadcastExpired(rootNavigatorKey.currentContext!);

@@ -29,7 +29,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'eta_geo_subscriber.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   static const String _unauthorizedUser = 'assets/images_svg/eta_unknown_user_marker.svg';
   static const String _autharizedUser = 'assets/images_svg/eta_auth_blank_user_marker.svg';
@@ -81,61 +81,65 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   }
 
   Future<void> _updateEtaInfo(EtaInfoModel etaInfo) async {
-    final _etaInfo = etaInfo.type == EtaType.geolocation ? etaInfo : null;
-    state = (_etaInfo, _metaInfo);
+    try {
+      final _etaInfo = etaInfo.type == EtaType.geolocation ? etaInfo : null;
+      state = (_etaInfo, _metaInfo);
 
-    if (etaInfo.type == EtaType.geolocation) {
-      await _processDrawUserMarker();
+      if (etaInfo.type == EtaType.geolocation) {
+        await _processDrawUserMarker();
 
-      _isFirstLocationFetch = false;
+        _isFirstLocationFetch = false;
 
-      _lastActiveMessageTime = DateTime.now().toUtc();
+        _lastActiveMessageTime = DateTime.now().toUtc();
 
-      // We need to wait some time, because current location need to initialize
-      unawaited(
-        Future.delayed(const Duration(seconds: 5), () async {
-          await _processMoveCameraToUser();
-        }),
-      );
-    } else if (etaInfo.type == EtaType.streamMetadata) {
-      _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
+        // We need to wait some time, because current location need to initialize
+        unawaited(
+          Future.delayed(const Duration(seconds: 5), () async {
+            await _processMoveCameraToUser();
+          }),
+        );
+      } else if (etaInfo.type == EtaType.streamMetadata) {
+        _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
-      final route = _metaInfo?.payload?.route;
+        final route = _metaInfo?.payload?.route;
 
-      if (route == null || route.isEmpty) {
-        return;
-      }
-
-      final startPoint = route.startPoint?.routePoint;
-      final finishPoint = route.endPoint?.routePoint;
-      final type = route.type?.toRouteSearchOptions;
-      final activeIndex = route.routeIndex;
-
-      if (startPoint == null || finishPoint == null || type == null || activeIndex == null) {
-        return;
-      }
-
-      _addFinishPin(finishPoint);
-
-      if (_lastActiveRoute == route) {
-        return;
-      }
-
-      _lastActiveRoute = route;
-
-      ref.listen(
-          routesProvider(
-            startPoint: startPoint,
-            finishPoint: finishPoint,
-            navType: type,
-            showOnlyActiveRoute: true,
-          ), (_, current) async {
-        if (current.valueOrNull?.isEmpty ?? false) {
+        if (route == null || route.isEmpty) {
           return;
-        } else {
-          await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(activeIndex);
         }
-      });
+
+        final startPoint = route.startPoint?.routePoint;
+        final finishPoint = route.endPoint?.routePoint;
+        final type = route.type?.toRouteSearchOptions;
+        final activeIndex = route.routeIndex;
+
+        if (startPoint == null || finishPoint == null || type == null || activeIndex == null) {
+          return;
+        }
+
+        _addFinishPin(finishPoint);
+
+        if (_lastActiveRoute == route) {
+          return;
+        }
+
+        _lastActiveRoute = route;
+
+        ref.listen(
+            routesProvider(
+              startPoint: startPoint,
+              finishPoint: finishPoint,
+              navType: type,
+              showOnlyActiveRoute: true,
+            ), (_, current) async {
+          if (current.valueOrNull?.isEmpty ?? false) {
+            return;
+          } else {
+            await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(activeIndex);
+          }
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
@@ -154,6 +158,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
       _lastActiveMessageReceiverTimer?.cancel();
       _lastActiveMessageReceiverTimer = null;
+      _lastActiveMessageTime = null;
 
       final settings = MapObjectManagerSettings.eta();
       final mapObjectManager = ref.read(
@@ -211,7 +216,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         final currentTime = DateTime.now().toUtc();
         final diff = currentTime.difference(lastActiveMessageTime).inSeconds;
         if (diff > streamBreakTimeout) {
-          ref.read(websocketErrorHandlerProvider.notifier).setStatus(1000, WebsocketReason.noData.toName());
+          ref.read(websocketErrorHandlerProvider.notifier).setStatus(4004, WebsocketReason.noData.toName());
           await stopStreaming();
         }
       });
@@ -460,13 +465,13 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     final reasonData = reason?.toWebsocketReason();
     final shareType = ref.read(websocketTypeProvider);
     if (shareType == SubscriptionType.get) {
-      if (statusCode != null && statusCode != 1000) {
+      if (statusCode != null && statusCode != 1000 && statusCode != 4004) {
         await _processDrawUserMarker(isAvailable: false);
       } else if (statusCode == null) {
         await _processDrawUserMarker();
       }
     }
-    if (statusCode != 1000 && statusCode != 1013 && statusCode != null && statusCode != 4002) {
+    if (statusCode != 1000 && statusCode != 1013 && statusCode != null && statusCode != 4002 && statusCode != 4004) {
       try {
         if (_reconnectingInProgress) {
           return;

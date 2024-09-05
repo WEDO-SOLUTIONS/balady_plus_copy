@@ -34,7 +34,7 @@ class EtaUserControl extends ConsumerWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _showLiveLocationExpired(rootNavigatorKey.currentContext!);
         });
-      } else if (code == 1000 && reasonData == WebsocketReason.noData) {
+      } else if (code == 4004) {
         // Show error message
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _showBroadcastExpired(rootNavigatorKey.currentContext!);
