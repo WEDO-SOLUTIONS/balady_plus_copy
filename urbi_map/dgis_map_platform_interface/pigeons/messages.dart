@@ -54,15 +54,6 @@ class CameraPositionMessage {
   final double bearing;
 }
 
-class CameraVisibleAreaMessage {
-  const CameraVisibleAreaMessage(this.kind, this.bounds, this.minPoint, this.maxPoint);
-
-  final GeometryKindMessage kind;
-  final GeoRectMessage bounds;
-  final GeoPointMessage minPoint;
-  final GeoPointMessage maxPoint;
-}
-
 class CameraPositionPointMessage {
   CameraPositionPointMessage(this.x, this.y);
 
@@ -733,6 +724,12 @@ class GeometryMessage {
   final GeoPointMessage maxPoint;
 }
 
+class PolygonGeometryMessage {
+  const PolygonGeometryMessage(this.contours);
+
+  final List<Object?> contours;
+}
+
 enum SearchResultTypeMessage { recovery, discovery }
 
 class FlagFilterMessage {
@@ -1173,7 +1170,7 @@ abstract class MapApi {
   void setCameraPosition(CameraPositionMessage cameraPosition);
 
   @async
-  CameraVisibleAreaMessage getCameraVisibleArea();
+  PolygonGeometryMessage getCameraVisibleArea();
 
   @async
   void setCameraPositionPoint(CameraPositionPointMessage cameraPosition);

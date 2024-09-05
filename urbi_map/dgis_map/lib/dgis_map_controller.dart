@@ -151,7 +151,7 @@ class DgisMapController {
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) => _instance.setCameraPosition(cameraPosition);
 
   /// The intersection area between the camera's visibility pyramid and the map surface.
-  Future<CameraVisibleAreaMessage> getVisibleArea() => _instance.getCameraVisibleArea();
+  Future<PolygonGeometryMessage> getVisibleArea() => _instance.getCameraVisibleArea();
 
   /// Changes map camera position point
   Future<void> setCameraPositionPoint(CameraPositionPointMessage cameraPosition) =>

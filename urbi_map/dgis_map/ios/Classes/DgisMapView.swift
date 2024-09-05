@@ -392,7 +392,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func getCameraVisibleArea(completion: @escaping (CameraVisibleAreaMessage?, FlutterError?) -> Void) {
+    func getCameraVisibleArea(completion: @escaping (PolygonGeometryMessage?, FlutterError?) -> Void) {
         guard let map = self.map else {
             completion(nil, FlutterError(
                 code: "IllegalArgumentException",
@@ -402,15 +402,22 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
         
-        completion(
-            CameraVisibleAreaMessage.make(
-                withKind: map.camera.visibleArea.kind.toMessage(),
-                bounds: map.camera.visibleArea.bounds.toMessage(),
-                minPoint: map.camera.visibleArea.minPoint.toMessage(),
-                maxPoint: map.camera.visibleArea.maxPoint.toMessage()
-            ),
-            nil
-        )
+        let area = map.camera.visibleArea
+        if let polygon = area as? PolygonGeometry {
+            let contours = polygon.contours.map { $0.map { $0.toMessage() } }
+            completion(
+                PolygonGeometryMessage.make(
+                    withContours: contours
+                ),
+                nil
+            )
+        } else {
+            completion(nil, FlutterError(
+                code: "ParcingError",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+        }
     }
     
     
