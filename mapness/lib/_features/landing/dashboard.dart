@@ -37,7 +37,7 @@ class DashboardV2 extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final uikit.BottomSheetScrollController<uikit.ThreeStateBottomSheet> scrollableController;
+  final uikit.StatefulBottomSheetController<uikit.ThreeStateBottomSheet> scrollableController;
 
   @override
   ConsumerState<DashboardV2> createState() => _DashboardState();
@@ -70,19 +70,14 @@ class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProvid
         }
       });
 
-    return WillPopScope(
-        onWillPop: () async {
-          // TODO(Ayat): goroute has problems with WillPopScope and push method, this is as a temporary solution.
-          //  We are waiting for an update, now the latest version is 14.2.1
+    return PopScope(
+        onPopInvoked: (val) {
           final currentRoute = ref.read(currentRouteProvider);
           if (currentRoute?.currentPath == PhotoViewerRoute.path) {
             context.pop();
-            return false;
           }
-
-          return true;
         },
-        child: uikit.AppBottomSheet<uikit.ThreeStateBottomSheet>(
+        child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
           animateOpening: false,
           topHeader: const MapHiddenStateControls(),
           backgroundColor: context.colorsV2.backgroundSurface4,

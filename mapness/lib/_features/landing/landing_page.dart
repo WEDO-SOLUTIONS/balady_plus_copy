@@ -39,7 +39,7 @@ class LandingPage extends ConsumerStatefulWidget {
 }
 
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
-  late final BottomSheetScrollController<ThreeStateBottomSheet> _scrollController = BottomSheetScrollController(
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> _scrollController = StatefulBottomSheetController(
     initialState: ThreeStateBottomSheet.open,
     behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
     stateMapper: const ThreeStateMapper(),
@@ -133,21 +133,30 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           type: MaterialType.transparency,
           child: Stack(
             children: [
-              GestureDetector(
-                onTapDown: (_) {
+              ListenableBuilder(
+                listenable: _scrollController,
+                builder: (context, _) {
                   if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                    _scrollController.setState(ThreeStateBottomSheet.hidden);
+                    return GestureDetector(
+                      onTapDown: (_) {
+                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                          _scrollController.setState(ThreeStateBottomSheet.hidden);
+                        }
+                      },
+                      onTapUp: (_) {
+                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                          _scrollController.setState(ThreeStateBottomSheet.hidden);
+                        }
+                      },
+                      onTap: () {
+                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                          _scrollController.setState(ThreeStateBottomSheet.hidden);
+                        }
+                      },
+                    );
                   }
-                },
-                onTapUp: (_) {
-                  if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                    _scrollController.setState(ThreeStateBottomSheet.hidden);
-                  }
-                },
-                onTap: () {
-                  if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                    _scrollController.setState(ThreeStateBottomSheet.hidden);
-                  }
+
+                  return const SizedBox();
                 },
               ),
               MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),

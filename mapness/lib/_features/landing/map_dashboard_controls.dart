@@ -12,7 +12,7 @@ import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapDashboardControls extends ConsumerStatefulWidget {
-  final uikit.BottomSheetScrollController scrollController;
+  final uikit.StatefulBottomSheetController scrollController;
 
   const MapDashboardControls(
     this.scrollController, {
@@ -33,7 +33,10 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
   @override
   void initState() {
     super.initState();
-    _mediaQuery = ref.read(mediaQueryInfoProvider);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mediaQuery = ref.read(mediaQueryInfoProvider);
+    });
+
     _notifierStateType = ValueNotifier(widget.scrollController.state);
     widget.scrollController.addListener(_update);
   }
@@ -53,8 +56,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
         if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden) {
           _bottomPadding = widget.scrollController.sheetHeight + _quickFilters;
         } else {
-          _bottomPadding = widget.scrollController.sheetHeight -
-              _paddingWithBottomSheet * (_mediaQuery?.devicePixelRatio.toInt() ?? 0);
+          _bottomPadding = widget.scrollController.sheetHeight + _paddingWithBottomSheet;
         }
       });
     }
