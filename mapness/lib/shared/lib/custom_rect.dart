@@ -32,24 +32,25 @@ class CustomRect {
   /// With different bearings we have different points, so we need to set the orientation of the
   /// rectangle from points. The main idea is to set basis vectors in the directions of bearing and perpendicular to ir.
   /// So if the point in the left top quarter => this is topLeft point and etc.
+  // ignore: prefer_constructors_over_static_methods
   static CustomRect fromArea({
     required List<GeoPointMessage?> area,
     required GeoPointMessage center,
     required double bearing,
   }) {
-    final OA = algebra.Vector2(
+    final oa = algebra.Vector2(
       area[0]!.latitude - center.latitude,
       area[0]!.longitude - center.longitude,
     );
-    final OB = algebra.Vector2(
+    final ob = algebra.Vector2(
       area[1]!.latitude - center.latitude,
       area[1]!.longitude - center.longitude,
     );
-    final OC = algebra.Vector2(
+    final oc = algebra.Vector2(
       area[2]!.latitude - center.latitude,
       area[2]!.longitude - center.longitude,
     );
-    final OD = algebra.Vector2(
+    final od = algebra.Vector2(
       area[3]!.latitude - center.latitude,
       area[3]!.longitude - center.longitude,
     );
@@ -66,19 +67,19 @@ class CustomRect {
     );
 
     // Corner sign after cross with
-    final Acorner = (bearingToTop.cross(OA).sign < 0, bearingToRight.cross(OA).sign < 0);
-    final Bcorner = (bearingToTop.cross(OB).sign < 0, bearingToRight.cross(OB).sign < 0);
-    final Ccorner = (bearingToTop.cross(OC).sign < 0, bearingToRight.cross(OC).sign < 0);
-    final Dcorner = (bearingToTop.cross(OD).sign < 0, bearingToRight.cross(OD).sign < 0);
-    final corncers = [Acorner, Bcorner, Ccorner, Dcorner];
+    final aCorner = (bearingToTop.cross(oa).sign < 0, bearingToRight.cross(oa).sign < 0);
+    final bCorner = (bearingToTop.cross(ob).sign < 0, bearingToRight.cross(ob).sign < 0);
+    final cCorner = (bearingToTop.cross(oc).sign < 0, bearingToRight.cross(oc).sign < 0);
+    final dCorner = (bearingToTop.cross(od).sign < 0, bearingToRight.cross(od).sign < 0);
+    final corners = [aCorner, bCorner, cCorner, dCorner];
 
     GeoPointMessage? topLeft;
     GeoPointMessage? topRight;
     GeoPointMessage? bottomLeft;
     GeoPointMessage? bottomRight;
 
-    for (var i = 0; i < corncers.length; i++) {
-      final corner = corncers[i];
+    for (var i = 0; i < corners.length; i++) {
+      final corner = corners[i];
       if (corner == (true, true)) {
         topLeft = area[i];
       }
