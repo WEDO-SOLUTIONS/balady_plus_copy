@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
@@ -90,9 +91,9 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              constSpacer(),
-                              constIndoorControl(),
-                              constSpacer(),
+                              const Spacer(),
+                              const IndoorControl(),
+                              const Spacer(),
                               const EtaSharingControl(),
                                   uikit.Spacing.$4x.heightBox,
                                   SizedBox(
