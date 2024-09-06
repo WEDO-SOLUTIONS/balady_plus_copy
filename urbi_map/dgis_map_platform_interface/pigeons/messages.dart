@@ -726,6 +726,12 @@ class GeometryMessage {
   final GeoPointMessage maxPoint;
 }
 
+class PolygonGeometryMessage {
+  const PolygonGeometryMessage(this.contours);
+
+  final List<Object?> contours;
+}
+
 enum SearchResultTypeMessage { recovery, discovery }
 
 class FlagFilterMessage {
@@ -1167,6 +1173,9 @@ abstract class MapApi {
 
   @async
   void setCameraPosition(CameraPositionMessage cameraPosition);
+
+  @async
+  PolygonGeometryMessage getCameraVisibleArea();
 
   @async
   void setCameraPositionPoint(CameraPositionPointMessage cameraPosition);

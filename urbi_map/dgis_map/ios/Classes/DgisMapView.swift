@@ -397,6 +397,35 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+    func getCameraVisibleArea(completion: @escaping (PolygonGeometryMessage?, FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        
+        let area = map.camera.visibleArea
+        if let polygon = area as? PolygonGeometry {
+            let contours = polygon.contours.map { $0.map { $0.toMessage() } }
+            completion(
+                PolygonGeometryMessage.make(
+                    withContours: contours
+                ),
+                nil
+            )
+        } else {
+            completion(nil, FlutterError(
+                code: "ParcingError",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+        }
+    }
+    
+    
     func search(
         byObjectIdObjectId objectId: DgisObjectIdMessage,
         completion: @escaping (DirectoryObjectMessage?, FlutterError?) -> Void
