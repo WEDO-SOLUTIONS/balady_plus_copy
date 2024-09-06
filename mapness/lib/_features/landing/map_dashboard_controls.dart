@@ -87,7 +87,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                       ),
                       child: Row(
                         children: [
-                           Column(
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -95,12 +95,12 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                               const IndoorControl(),
                               const Spacer(),
                               const EtaSharingControl(),
-                                  uikit.Spacing.$4x.heightBox,
-                                  SizedBox(
-                                    height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
-                                        ? 56 * (1 - widget.scrollController.interpolation)
-                                        : 0,
-                                  )
+                              uikit.Spacing.$4x.heightBox,
+                              SizedBox(
+                                height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
+                                    ? 56 * (1 - widget.scrollController.interpolation)
+                                    : 0,
+                              )
                             ],
                           ),
                           const Spacer(),
