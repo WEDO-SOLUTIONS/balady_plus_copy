@@ -139,8 +139,11 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
               ListenableBuilder(
                 listenable: _scrollController,
                 builder: (_, __) {
-                  if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                    return GestureDetector(
+                  if (_scrollController.state == ThreeStateBottomSheet.hidden) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return GestureDetector(
                       onTapDown: (_) {
                         if (_scrollController.state != ThreeStateBottomSheet.hidden) {
                           _scrollController.setState(ThreeStateBottomSheet.hidden);
@@ -157,9 +160,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                         }
                       },
                     );
-                  }
-
-                  return const SizedBox.shrink();
                 },
               ),
               MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),

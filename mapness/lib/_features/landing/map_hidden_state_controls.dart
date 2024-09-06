@@ -33,9 +33,9 @@ class MapHiddenStateControls extends BottomSheetStateComponent<ThreeStateBottomS
                     FilterItemBuilder(
                       filterType: FilterType.custom,
                       builder: (context, {required isDashboard, required isSelected}) => Material(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
                           onTap: () => FreeRoamRoute.open(ref.watch(goRouterProvider)),
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(minWidth: 52),
