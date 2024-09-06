@@ -15,6 +15,10 @@ class EtaService extends _$EtaService {
 
   Dio? _dio;
 
+  static const authorizationKey = 'Authorization';
+  static const xStreamDataKey = 'X-Stream-Data';
+  static const gstreamTokenKey = 'GeoStreamingToken';
+
   @override
   Future<EtaStreamInfo?> build() async {
     await _init();
@@ -32,7 +36,7 @@ class EtaService extends _$EtaService {
     _dio = Dio();
 
     if (_dio != null && token.isNotEmpty) {
-      _dio!.options.headers['Authorization'] = 'Bearer $token';
+      _dio!.options.headers[authorizationKey] = 'Bearer $token';
     }
   }
 
@@ -76,8 +80,8 @@ class EtaService extends _$EtaService {
     state = const AsyncLoading();
     final headers = _dio!.options.headers
       ..addAll({
-        'X-Stream-Data': xStreamData,
-        'GeoStreamingToken': tokenId,
+        xStreamDataKey: xStreamData,
+        gstreamTokenKey: tokenId,
       });
 
     try {
@@ -115,8 +119,8 @@ class EtaService extends _$EtaService {
 
     final headers = _dio!.options.headers
       ..addAll({
-        'X-Stream-Data': xStreamData,
-        'GeoStreamingToken': tokenId,
+        xStreamDataKey: xStreamData,
+        gstreamTokenKey: tokenId,
       });
 
     try {

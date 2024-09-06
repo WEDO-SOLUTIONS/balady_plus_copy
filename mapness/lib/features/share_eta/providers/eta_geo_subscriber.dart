@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/app/routes/routes.dart';
@@ -13,6 +11,8 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/entities/route_type_mapper.dart';
+import 'package:mapness/features/share_eta/helpers/constants.dart';
+import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
@@ -37,6 +37,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
   static const imgSize = 48;
   static const streamBreakTimeout = 60;
+  static const stramBreakTimerInterval = 10;
+  static const routeZoomTimerInterval = 10;
 
   EtaInfoModel<EtaRoutePayload?>? _metaInfo;
 
@@ -71,7 +73,9 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         _lastConnectionStatus = current;
         final status = current;
         if (!status) {
-          ref.read(websocketErrorHandlerProvider.notifier).setStatus(4001, 'Network status: $status');
+          ref
+              .read(websocketErrorHandlerProvider.notifier)
+              .setStatus(EtaErrorStatusCodes.connectionLost, 'Network status: $status');
         }
       });
 
@@ -192,7 +196,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
 
       _routeZoomingTimer?.cancel();
-      _routeZoomingTimer = Timer.periodic(const Duration(seconds: 15), (_) async {
+      _routeZoomingTimer = Timer.periodic(const Duration(seconds: routeZoomTimerInterval), (_) async {
         final (_, meta) = state;
         if (meta == null) {
           return;
@@ -205,7 +209,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       });
 
       _lastActiveMessageReceiverTimer?.cancel();
-      _lastActiveMessageReceiverTimer = Timer.periodic(const Duration(seconds: 10), (_) async {
+      _lastActiveMessageReceiverTimer = Timer.periodic(const Duration(seconds: stramBreakTimerInterval), (_) async {
         final lastActiveMessageTime = _lastActiveMessageTime;
         if (lastActiveMessageTime == null) {
           return;
@@ -213,7 +217,9 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         final currentTime = DateTime.now().toUtc();
         final diff = currentTime.difference(lastActiveMessageTime).inSeconds;
         if (diff > streamBreakTimeout) {
-          ref.read(websocketErrorHandlerProvider.notifier).setStatus(4004, WebsocketReason.noData.toName());
+          ref
+              .read(websocketErrorHandlerProvider.notifier)
+              .setStatus(EtaErrorStatusCodes.noDataInStream, WebsocketReason.noData.toName());
           await stopStreaming();
         }
       });
@@ -316,53 +322,6 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     await mapObjectManager.addMarker(marker);
   }
 
-  //TODO(scroollocker): Move code to utils
-  Future<img.Image> processImage(String imgUrl, {bool isUnavailable = false}) async {
-    // Load the mask image from assets
-    final maskData = await rootBundle.load('packages/mapness/assets/images/marker_eta_mask.png');
-    final maskBytes = maskData.buffer.asUint8List();
-
-    final mask = img.decodeImage(maskBytes)!;
-
-    var mask48x48 = img.copyResize(mask, width: imgSize, height: imgSize, interpolation: img.Interpolation.average);
-
-    if (mask48x48.hasAlpha == false) {
-      mask48x48 = mask48x48.convert(format: mask48x48.format, numChannels: 4);
-    }
-
-    // Load the image from the network
-    final response = await http.get(Uri.parse(imgUrl));
-    var networkImage = img.decodeImage(response.bodyBytes)!;
-    if (networkImage.hasAlpha == false) {
-      networkImage = networkImage.convert(format: networkImage.format, numChannels: 4);
-    }
-
-    if (isUnavailable) {
-      networkImage = img.grayscale(networkImage);
-    }
-
-    networkImage = img.copyCropCircle(
-      networkImage,
-      centerX: networkImage.width ~/ 2,
-      centerY: networkImage.height ~/ 2,
-      radius: networkImage.width ~/ 2,
-    );
-
-    final img24x24 = img.copyResize(
-      networkImage,
-      width: imgSize ~/ 2,
-      height: imgSize ~/ 2,
-      interpolation: img.Interpolation.average,
-    );
-
-    final img48x48 = img.Image(width: imgSize, height: imgSize, numChannels: 4);
-
-    img.compositeImage(img48x48, img24x24, center: true, maskChannel: img.Channel.alpha);
-    img.compositeImage(mask48x48, img48x48, dstX: 0, dstY: 0, maskChannel: img.Channel.alpha);
-
-    return mask48x48;
-  }
-
   Future<Marker> _getMarker(GeoPointWithElevationMessage point, User? user) async {
     if (user == null) {
       return Marker(
@@ -376,7 +335,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         ),
       );
     } else if (user.photoUrl != null) {
-      final pic = await processImage(user.photoUrl!);
+      final pic = await EtaUtils.processImage(user.photoUrl!, imgSize);
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
         onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
@@ -415,7 +374,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         ),
       );
     } else if (user.photoUrl != null) {
-      final pic = await processImage(user.photoUrl!, isUnavailable: true);
+      final pic = await EtaUtils.processImage(user.photoUrl!, imgSize, isUnavailable: true);
       return Marker(
         id: 'ETA_MARKER_${DateTime.now().microsecondsSinceEpoch}',
         onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
@@ -465,13 +424,19 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     final reasonData = reason?.toWebsocketReason();
     final shareType = ref.read(websocketTypeProvider);
     if (shareType == SubscriptionType.get) {
-      if (statusCode != null && statusCode != 1000 && statusCode != 4004) {
+      if (statusCode != null &&
+          statusCode != EtaErrorStatusCodes.endConnection &&
+          statusCode != EtaErrorStatusCodes.noDataInStream) {
         await _processDrawUserMarker(isAvailable: false);
       } else if (statusCode == null) {
         await _processDrawUserMarker();
       }
     }
-    if (statusCode != 1000 && statusCode != 1013 && statusCode != null && statusCode != 4002 && statusCode != 4004) {
+    if (statusCode != EtaErrorStatusCodes.endConnection &&
+        statusCode != EtaErrorStatusCodes.hightLoad &&
+        statusCode != null &&
+        statusCode != EtaErrorStatusCodes.noLocation &&
+        statusCode != EtaErrorStatusCodes.noDataInStream) {
       try {
         if (_reconnectingInProgress) {
           return;
@@ -485,7 +450,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       } finally {
         _reconnectingInProgress = false;
       }
-    } else if (statusCode == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
+    } else if (statusCode == EtaErrorStatusCodes.endConnection &&
+        [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
       await stopStreaming();
     }
   }

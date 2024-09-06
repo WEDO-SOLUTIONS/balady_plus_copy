@@ -10,6 +10,7 @@ import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
+import 'package:mapness/features/share_eta/helpers/constants.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
@@ -99,7 +100,7 @@ class ShareEta extends _$ShareEta {
 
           if (location != null && isGranded) {
             // If location is back after lost, remove the error status
-            if (ref.read(websocketErrorHandlerProvider).$1 == 4002) {
+            if (ref.read(websocketErrorHandlerProvider).$1 == EtaErrorStatusCodes.noLocation) {
               ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
             }
 
@@ -127,7 +128,7 @@ class ShareEta extends _$ShareEta {
             }
           } else {
             // If location lost, set error status to 4002
-            ref.read(websocketErrorHandlerProvider.notifier).setStatus(4002, 'Lost location');
+            ref.read(websocketErrorHandlerProvider.notifier).setStatus(EtaErrorStatusCodes.noLocation, 'Lost location');
           }
         });
       } else {
@@ -156,7 +157,9 @@ class ShareEta extends _$ShareEta {
         _lastConnectionStatus = current;
         final status = current;
         if (!status) {
-          ref.read(websocketErrorHandlerProvider.notifier).setStatus(4001, 'Network status: $status');
+          ref
+              .read(websocketErrorHandlerProvider.notifier)
+              .setStatus(EtaErrorStatusCodes.connectionLost, 'Network status: $status');
         }
       })
       ..listen(pathNavMessageProvider, (prev, current) {
@@ -189,7 +192,10 @@ class ShareEta extends _$ShareEta {
 
   Future<void> _onErrorStatus(int statusCode, String reason) async {
     final reasonData = reason.toWebsocketReason();
-    if (statusCode != 1000 && statusCode != 1013 && statusCode != 4002 && statusCode != 4004) {
+    if (statusCode != EtaErrorStatusCodes.endConnection &&
+        statusCode != EtaErrorStatusCodes.hightLoad &&
+        statusCode != EtaErrorStatusCodes.noLocation &&
+        statusCode != EtaErrorStatusCodes.noDataInStream) {
       try {
         if (_reconnectingInProgress) {
           return;
@@ -207,7 +213,8 @@ class ShareEta extends _$ShareEta {
       } finally {
         _reconnectingInProgress = false;
       }
-    } else if (statusCode == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
+    } else if (statusCode == EtaErrorStatusCodes.endConnection &&
+        [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
       final tokenId = EtaStreamStorage().state.streamToken;
       final xStreamData = EtaStreamStorage().state.xStreamData;
       final isSharing = ref.read(websocketTypeProvider) == SubscriptionType.share;
