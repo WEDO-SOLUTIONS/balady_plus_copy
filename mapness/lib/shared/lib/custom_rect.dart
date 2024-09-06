@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:dgis_map/library.dart';
@@ -33,26 +34,34 @@ class CustomRect {
   /// rectangle from points. The main idea is to set basis vectors in the directions of bearing and perpendicular to ir.
   /// So if the point in the left top quarter => this is topLeft point and etc.
   // ignore: prefer_constructors_over_static_methods
-  static CustomRect fromArea({
+  static CustomRect? fromArea({
     required List<GeoPointMessage?> area,
     required GeoPointMessage center,
     required double bearing,
   }) {
+    final areaFirst = area[0];
+    final areaSecond = area[1];
+    final areaThird = area[2];
+    final areaFourth = area[3];
+    if (areaFirst == null || areaSecond == null || areaThird == null || areaFourth == null) {
+      log('One of the area points is null. Please check the data from SDK');
+      return null;
+    }
     final oa = algebra.Vector2(
-      area[0]!.latitude - center.latitude,
-      area[0]!.longitude - center.longitude,
+      areaFirst.latitude - center.latitude,
+      areaFirst.longitude - center.longitude,
     );
     final ob = algebra.Vector2(
-      area[1]!.latitude - center.latitude,
-      area[1]!.longitude - center.longitude,
+      areaSecond.latitude - center.latitude,
+      areaSecond.longitude - center.longitude,
     );
     final oc = algebra.Vector2(
-      area[2]!.latitude - center.latitude,
-      area[2]!.longitude - center.longitude,
+      areaThird.latitude - center.latitude,
+      areaThird.longitude - center.longitude,
     );
     final od = algebra.Vector2(
-      area[3]!.latitude - center.latitude,
-      area[3]!.longitude - center.longitude,
+      areaFourth.latitude - center.latitude,
+      areaFourth.longitude - center.longitude,
     );
     final rad = math.pi / 180 * bearing;
     // Vector to the top side of the rectangle

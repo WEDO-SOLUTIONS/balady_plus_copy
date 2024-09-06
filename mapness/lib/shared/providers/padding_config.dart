@@ -1,5 +1,3 @@
-
-
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
@@ -32,38 +30,41 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
 
     final sizeOfScreen = mediaQuery?.size;
     final safeArea = mediaQuery?.padding;
-
-    final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen!);
-
     const horizontalPadding = PoiCardMapControls.horizontalPadding + Markers.defaultWidth + MapButton.defaultSize;
 
-    final paddingConfig = PoiPaddingConfig(
-      paddingOfCamera: EdgeInsets.only(
+    PoiSheetSizes? sheetSizes;
+    EdgeInsets? paddingOfCamera;
+    if (sizeOfScreen != null) {
+      sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
+      paddingOfCamera = EdgeInsets.only(
         left: horizontalPadding,
         right: horizontalPadding,
         top: Markers.defaultHeight + (safeArea?.top ?? 0),
         // Calculate the bottom padding for the camera, use multiplier to calculate the padding
         bottom: (PoiCardMapControls.bottomPadding + sheetSizes.collapsedHeight * 1.5) + 10,
-      ),
+      );
+    }
+
+    final paddingConfig = PoiPaddingConfig(
+      paddingOfCamera: paddingOfCamera,
       sizeOfScreen: sizeOfScreen,
     );
 
-    final isMarkerPositionIsNull = directoryObject.markerPosition == null;
-
+    final markerPosition = directoryObject.markerPosition;
     final position = closestPoint ??
-        (isMarkerPositionIsNull
+        (markerPosition == null
             ? null
             : LatLng(
-                latitude: directoryObject.markerPosition!.latitude,
-                longitude: directoryObject.markerPosition!.longitude,
+                latitude: markerPosition.latitude,
+                longitude: markerPosition.longitude,
               ));
 
-    if (isMarkerPositionIsNull) {
+    if (position == null) {
       return;
     }
 
     final markerPoint = GeoPointMessage(
-      latitude: position!.latitude,
+      latitude: position.latitude,
       longitude: position.longitude,
     );
 
@@ -75,13 +76,17 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     final newPoint = point;
 
     // Get viewports: visible (whole screen) and tappable (area of the screen where marker will not overlap on other elements)
-    final visibleArea = await ref.read(dgisControllerProvider.notifier).getVisibleArea(dgisController.value!);
+    CustomRect? visibleRect;
+    final dgisControllerValue = dgisController.valueOrNull;
+    if (dgisControllerValue != null) {
+      final visibleArea = await ref.read(dgisControllerProvider.notifier).getVisibleArea(dgisControllerValue);
+      visibleRect = CustomRect.fromArea(
+        area: visibleArea.areaContour(),
+        center: markerPoint,
+        bearing: bearing ?? 0.0,
+      );
+    }
 
-    final visibleRect = CustomRect.fromArea(
-      area: visibleArea.areaContour(),
-      center: markerPoint,
-      bearing: bearing ?? 0.0,
-    );
     final tappableRect = _getRectWithPaddings(visibleRect, paddingConfig);
 
     // Check if point is in viewport
@@ -170,15 +175,17 @@ CustomRect? _getRectWithPaddings(CustomRect? rect, PoiPaddingConfig? paddingConf
   if (rect == null) {
     return null;
   }
-  if (paddingConfig == null || paddingConfig.paddingOfCamera == null) {
+  final paddingOfCamera = paddingConfig?.paddingOfCamera;
+  final sizeOfScreen = paddingConfig?.sizeOfScreen;
+  if (sizeOfScreen == null || paddingOfCamera == null) {
     return rect;
   }
-  final paddingInPixels = paddingConfig.paddingOfCamera!;
+  final paddingInPixels = paddingOfCamera;
   final paddingInPercents = EdgeInsets.only(
-    left: paddingInPixels.left / paddingConfig.sizeOfScreen!.width,
-    right: paddingInPixels.right / paddingConfig.sizeOfScreen!.width,
-    top: paddingInPixels.top / paddingConfig.sizeOfScreen!.height,
-    bottom: paddingInPixels.bottom / paddingConfig.sizeOfScreen!.height,
+    left: paddingInPixels.left / sizeOfScreen.width,
+    right: paddingInPixels.right / sizeOfScreen.width,
+    top: paddingInPixels.top / sizeOfScreen.height,
+    bottom: paddingInPixels.bottom / sizeOfScreen.height,
   );
 
   /// A rotated rectangle is defined by its four corners, say P1(x_1, y_1), P2(x_2, y_2), P3(x_3, y_3), P4(x_4, y_4).
