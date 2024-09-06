@@ -321,6 +321,84 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     );
   }
 
+  Future<bool> _processShareLink(
+      {required String tokenId, required String streamId, String? type, double? latitude, double? longitude}) async {
+    final Completer<Position?> completer = Completer();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final location = ref.read(locationProvider);
+      if (location != null) {
+        completer.complete(location);
+      } else {
+        _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
+          if (next != null) {
+            _locationListener?.close();
+            completer.complete(next);
+          }
+        });
+      }
+    });
+
+    // Wait for location to be available
+    await completer.future;
+
+    if (type == 'eta') {
+      try {
+        final uriPath = Uri(path: EtaRoute.path, queryParameters: {
+          EtaRoute.tokenKey: tokenId,
+          EtaRoute.streamKey: streamId,
+          if (latitude != null) EtaRoute.latKey: latitude.toString(),
+          if (longitude != null) EtaRoute.lonKey: longitude.toString(),
+        });
+        if (latitude != null && longitude != null) {
+          await ref.read(cameraPositionProvider.notifier).animateTo(
+                CameraPositionMessage(
+                  point: GeoPointMessage(latitude: latitude, longitude: longitude),
+                  zoom: 17,
+                  tilt: 0,
+                  bearing: 0,
+                ),
+              );
+        }
+        await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+        await ref.read(goRouterProvider).push(uriPath.toString());
+      } catch (e) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showEtaExpired(rootNavigatorKey.currentContext!);
+        });
+      }
+      return true;
+    } else if (type == 'live') {
+      try {
+        // Get old stream token and stream id
+        final oldToken = EtaStreamStorage().state.streamToken;
+        final oldXStreamData = EtaStreamStorage().state.xStreamData;
+
+        if (oldToken != null && oldXStreamData != null) {
+          await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
+        }
+
+        if (latitude != null && longitude != null) {
+          await ref.read(cameraPositionProvider.notifier).animateTo(
+                CameraPositionMessage(
+                  point: GeoPointMessage(latitude: latitude, longitude: longitude),
+                  zoom: 17,
+                  tilt: 0,
+                  bearing: 0,
+                ),
+              );
+        }
+        await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+      } catch (e) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showLiveLocationExpired(rootNavigatorKey.currentContext!);
+        });
+      }
+      return true;
+    }
+
+    return false;
+  }
+
   Future<void> openAppLink(Uri uri) async {
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
@@ -337,58 +415,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
 
     if (tokenId != null && streamId != null) {
-      if (type == 'eta') {
-        try {
-          final uriPath = Uri(path: EtaRoute.path, queryParameters: {
-            EtaRoute.tokenKey: tokenId,
-            EtaRoute.streamKey: streamId,
-            if (latitude != null) EtaRoute.latKey: latitude.toString(),
-            if (longitude != null) EtaRoute.lonKey: longitude.toString(),
-          });
-          if (latitude != null && longitude != null) {
-            await ref.read(cameraPositionProvider.notifier).animateTo(
-                  CameraPositionMessage(
-                    point: GeoPointMessage(latitude: latitude, longitude: longitude),
-                    zoom: 17,
-                    tilt: 0,
-                    bearing: 0,
-                  ),
-                );
-          }
-          await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
-          await ref.read(goRouterProvider).push(uriPath.toString());
-        } catch (e) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _showEtaExpired(rootNavigatorKey.currentContext!);
-          });
-        }
-        return;
-      } else if (type == 'live') {
-        try {
-          // Get old stream token and stream id
-          final oldToken = EtaStreamStorage().state.streamToken;
-          final oldXStreamData = EtaStreamStorage().state.xStreamData;
-
-          if (oldToken != null && oldXStreamData != null) {
-            await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
-          }
-
-          if (latitude != null && longitude != null) {
-            await ref.read(cameraPositionProvider.notifier).animateTo(
-                  CameraPositionMessage(
-                    point: GeoPointMessage(latitude: latitude, longitude: longitude),
-                    zoom: 17,
-                    tilt: 0,
-                    bearing: 0,
-                  ),
-                );
-          }
-          await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
-        } catch (e) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _showLiveLocationExpired(rootNavigatorKey.currentContext!);
-          });
-        }
+      if (await _processShareLink(
+        tokenId: tokenId,
+        streamId: streamId,
+        type: type,
+        latitude: latitude,
+        longitude: longitude,
+      )) {
+        // Stop processing the link if it was a share link
         return;
       }
     }

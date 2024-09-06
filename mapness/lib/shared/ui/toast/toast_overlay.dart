@@ -18,7 +18,11 @@ class ToastOverlay extends StatefulWidget {
   }) : super(key: key);
 
   /// Returns the [ToastOverlayState] of the nearest ancestor [ToastOverlay] widget.
-  static ToastOverlayState of(BuildContext context) => context.findAncestorStateOfType<ToastOverlayState>()!;
+  static ToastOverlayState of(BuildContext context) {
+    final toastOverlay = context.findAncestorStateOfType<ToastOverlayState>();
+    assert(toastOverlay != null, 'No ToastOverlay found in context');
+    return toastOverlay!;
+  }
 
   @override
   State<ToastOverlay> createState() => ToastOverlayState();
@@ -66,17 +70,15 @@ class ToastOverlayState extends State<ToastOverlay> {
         top: Spacing.$2x,
         child: Theme(
           data: Theme.of(context),
-          child: SafeArea(
-            child: _ToastTransition(
-              hide: hide,
-              title: title,
-              actionText: actionText,
-              onActionTap: onActionTap,
-              iconAsset: iconAsset,
-              displayDuration: displayDuration,
-              transitionDuration: transitionDuration,
-              iconData: iconData,
-            ),
+          child: _ToastTransition(
+            hide: hide,
+            title: title,
+            actionText: actionText,
+            onActionTap: onActionTap,
+            iconAsset: iconAsset,
+            displayDuration: displayDuration,
+            transitionDuration: transitionDuration,
+            iconData: iconData,
           ),
         ),
       ),

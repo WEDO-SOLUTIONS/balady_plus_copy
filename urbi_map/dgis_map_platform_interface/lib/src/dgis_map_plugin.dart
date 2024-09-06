@@ -646,6 +646,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.overlappedBy(outerRect, innerRect);
   }
 
+  Future<void> moveCameraToActiveRoute(int index) {
+    return _api.moveCameraToActiveRoute(index);
+  }
+
   Future<bool> contains(GeoRectMessage rect, GeoPointMessage point) {
     return _api.contains(rect, point);
   }
@@ -710,8 +714,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.onCompassClicked();
   }
 
-  Future<void> startFreeRoam() {
-    return _api.startFreeRoam();
+  Future<void> startFreeRoam(SpeedRangeZoom speedRangeZoom) {
+    return _api.startFreeRoam(speedRangeZoom);
   }
 
   Future<void> stopFreeRoam() {

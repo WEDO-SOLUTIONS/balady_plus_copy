@@ -24,6 +24,7 @@ import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
@@ -133,7 +134,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      ref.read(locationProvider.notifier).checkOnLocationPermissionGranted();
+      ref.read(locationProvider.notifier).checkLocationPermission();
     }
 
     super.didChangeAppLifecycleState(state);
@@ -154,6 +155,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(etaTimerIndicatorProvider)
       ..watch(shareEtaProvider)
       ..watch(etaGeoSubscriberProvider)
+      ..watch(etaServiceProvider)
       ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
       ..watch(locationProvider.select((_) => null))

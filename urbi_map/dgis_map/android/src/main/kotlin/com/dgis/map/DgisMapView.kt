@@ -142,6 +142,12 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun moveCameraToActiveRoute(index: Long, result: Messages.Result<Void>?) {
+        routeHandler?.moveCameraToActiveRoute(index)
+
+        result?.success(null)
+    }
+
     override fun loadStyles(asset: String, result: Messages.Result<Void>) {
         val styleAsset =
             FlutterInjector
@@ -922,8 +928,8 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun startFreeRoam(result: Messages.Result<Void>?) {
-        navigationHandler.startFreeRoam()
+    override fun startFreeRoam(speedRangeZoom: SpeedRangeZoom, result: Messages.Result<Void>?) {
+        navigationHandler.startFreeRoam(speedRangeZoom = speedRangeZoom)
         result?.success(null)
     }
 

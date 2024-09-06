@@ -147,7 +147,7 @@ class RouteHandler(
             mutableListOf()
         )
         routesEditor.setRouteParams(routeEditorParams)
-        routeEditorSource.setShowOnlyActiveRoute(routeEditorParams.routeSearchOptions.isPublicTransport)
+        routeEditorSource.setShowOnlyActiveRoute(params.getShowOnlyActiveRoute() ?: routeEditorParams.routeSearchOptions.isPublicTransport)
     }
 
     fun setRoutesVisible(visible: Boolean) {
@@ -200,6 +200,20 @@ class RouteHandler(
         }
     }
 
+     fun moveCameraToActiveRoute(index: Long) {
+        val route = routesEditor.routesInfo.routes[index.toInt()]
+
+        val geometries = route.route.geometry.entries
+            .map { entry ->
+                PointGeometry(entry.value)
+            }
+        ComplexGeometry(geometries).apply {
+            this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
+        }
+    }
+ 
+
+
     private fun onActiveRouteChanged(index: RouteIndex?) {
         if (index == null) return
         val route = routesEditor.routesInfo.routes[index.value.toInt()]
@@ -248,6 +262,8 @@ class RouteHandler(
             )
         }
     }
+
+    
 
     private fun onRoutesInfoChanged(routesInfo: RouteEditorRoutesInfo) {
         if (routesInfo.routes.isNotEmpty()) {

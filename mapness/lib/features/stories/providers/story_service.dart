@@ -29,7 +29,7 @@ class StoryService extends _$StoryService {
   }
 
   List<StoryData> syncronizeWatcheness(List<StoryData> stories) {
-    final watchStored = Map<String, int>.of(_viewedStories.toMap() as Map<String, int>);
+    final watchStored = Map.of(_viewedStories.toMap()).cast<String, int>();
 
     final updatedStories = stories.map(
       (story) {
@@ -67,11 +67,11 @@ class StoryService extends _$StoryService {
 
     _viewedStories = await ref.watch(hiveProvider('storiesBox').future);
 
-    // final stories = networkStories;
+    final stories = syncronizeWatcheness(networkStories);
 
     return [
-      ...networkStories.where((element) => !element.isViewed),
-      ...networkStories.where((element) => element.isViewed),
+      ...stories.where((element) => !element.isViewed),
+      ...stories.where((element) => element.isViewed),
     ].toList();
   }
 }

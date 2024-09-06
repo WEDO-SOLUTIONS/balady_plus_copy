@@ -191,6 +191,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.indoorControlHandler?.selectIndoorLevel(index: index.uint64Value)
         completion(nil)
     }
+
+    func moveCamera(toActiveRouteIndex: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.routeHandler?.moveCameraToActiveRouteIndex(toActiveRouteIndex.uint64Value)
+        completion(nil)
+    }
     
     func loadStylesAsset(_ asset: String, completion: @escaping (FlutterError?) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)
@@ -983,8 +988,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.startFreeRoam(completion: completion)
+    func startFreeRoamSpeedRangeZoom(_ speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.startFreeRoam(speedRangeZoom: speedRangeZoom, completion: completion)
     }
     
     func stopFreeRoam(completion: @escaping (FlutterError?) -> Void) {
