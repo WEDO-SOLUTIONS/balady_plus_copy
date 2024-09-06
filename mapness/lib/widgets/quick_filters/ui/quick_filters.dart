@@ -11,16 +11,18 @@ class QuickFilters extends ConsumerStatefulWidget {
   final List<FilterItem> filters;
   final QuickFilterScreen id;
   final bool isDashboard;
+  final double height;
 
-  static const height = 40.0;
+  static const defaultHeight = 40.0;
 
   const QuickFilters({
     required this.filters,
     required this.id,
+    double? height,
     this.isDashboard = false,
     super.key,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16),
-  });
+    this.padding = const EdgeInsets.only(bottom: 16),
+  }) : height = height ?? defaultHeight;
 
   @override
   ConsumerState<QuickFilters> createState() => _QuickFiltersState();
@@ -61,7 +63,7 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
     final reverse = originalDirectionality == TextDirection.rtl;
 
     return SizedBox(
-      height: QuickFilters.height,
+      height: widget.height,
       child: Directionality(
         textDirection: positionedListDirectionality,
         child: ScrollablePositionedList.separated(
@@ -73,21 +75,23 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
           itemCount: widget.filters.length,
           itemBuilder: (context, index) {
             final item = widget.filters[index];
-            return Directionality(
-              textDirection: originalDirectionality,
-              child: switch (item) {
-                FilterItemConfig() => QuickFilter(
-                    item: item,
-                    selected: item.selected,
-                    background:
-                        widget.isDashboard ? context.color.surfaceBaseSecondary : context.color.surfaceBasePrimary,
-                  ),
-                FilterItemBuilder() => item.builder(
-                    context,
-                    isSelected: item.selected,
-                    isDashboard: widget.isDashboard,
-                  ),
-              },
+            return Center(
+              child: Directionality(
+                textDirection: originalDirectionality,
+                child: switch (item) {
+                  FilterItemConfig() => QuickFilter(
+                      item: item,
+                      selected: item.selected,
+                      background:
+                          widget.isDashboard ? context.color.surfaceBaseSecondary : context.color.surfaceBasePrimary,
+                    ),
+                  FilterItemBuilder() => item.builder(
+                      context,
+                      isSelected: item.selected,
+                      isDashboard: widget.isDashboard,
+                    ),
+                },
+              ),
             );
           },
         ),

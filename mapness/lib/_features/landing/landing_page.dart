@@ -43,6 +43,10 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   late StatefulBottomSheetController<ThreeStateBottomSheet> _scrollController;
   MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
+  bool needToShow = true;
+  final dashBoardMinimumSize = 0.13;
+
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> scrollController;
 
   @override
   void initState() {
@@ -51,11 +55,12 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     _mediaQuery = ref.read(mediaQueryInfoProvider);
 
     _scrollController = StatefulBottomSheetController(
+      durationMultiplier: 1.0,
       initialState: ThreeStateBottomSheet.open,
       behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
       stateMapper: const ThreeStateMapper(),
     );
-    _scrollController.addListener(_calculatePadding);
+    scrollController.addListener(_calculatePadding);
 
     setupTapListener();
   }
@@ -80,9 +85,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   void dispose() {
-    _scrollController
-      ..removeListener(_calculatePadding)
-      ..dispose();
+    scrollController.removeListener(_calculatePadding);
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -92,7 +95,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      ref.read(locationProvider.notifier).checkOnLocationPermissionGranted();
+      ref.read(locationProvider.notifier).checkLocationPermission();
     }
 
     super.didChangeAppLifecycleState(state);
@@ -120,7 +123,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
         if (next?.currentPath == KiblahRoute.path) {
-          _scrollController.setState(ThreeStateBottomSheet.hidden);
+          scrollController.setState(ThreeStateBottomSheet.hidden);
         }
       })
 

@@ -5,6 +5,7 @@ import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/feedback.dart';
 import 'package:mapness/app/routes/free_roam.dart';
+import 'package:mapness/app/routes/free_roam_autostart_settings.dart';
 import 'package:mapness/app/routes/happines_map.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
@@ -35,6 +36,7 @@ final $appRoutes = [
   ...$happinesMapRoutes,
   ...$pathNavRoutes,
   ...$freeRoamRoutes,
+  ...$freeRoamAutostartSettingsRoutes,
   ...$roadPanelRoutes,
   ...$routingRoutes,
   ...$weatherRoutes,

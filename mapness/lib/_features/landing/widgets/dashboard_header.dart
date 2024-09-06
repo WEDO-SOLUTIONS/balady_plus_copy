@@ -19,13 +19,13 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
-class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
+class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final StatefulBottomSheetController scrollController;
   final TickerProvider _vsync;
 
   static const headerHeight = 72.0;
 
-  DashboardHeaderDelegateV2({
+  DashboardHeaderDelegate({
     required TickerProvider vsync,
     required this.scrollController,
   }) : _vsync = vsync;
@@ -35,7 +35,7 @@ class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    const heightOfQuickFilters = QuickFilters.height + Spacing.$4x;
+    const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$4x;
     final currentHeaderExtent = minExtent + max(0.0, heightOfQuickFilters - shrinkOffset);
 
     return FlexibleSpaceBar.createSettings(
@@ -53,7 +53,7 @@ class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
   double get maxExtent => headerHeight;
 
   @override
-  double get minExtent => headerHeight - Spacing.$4x - QuickFilters.height - Spacing.$2x;
+  double get minExtent => headerHeight - Spacing.$4x - QuickFilters.defaultHeight - Spacing.$2x;
 
   @override
   FloatingHeaderSnapConfiguration? get snapConfiguration => FloatingHeaderSnapConfiguration();
@@ -73,7 +73,7 @@ class _DashboardMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const heightOfQuickFilters = QuickFilters.height + Spacing.$4x * 2;
+    const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$4x * 2;
     final remainingSpaceForQuickFilters = max(0.0, heightOfQuickFilters - shrinkOffset);
     final quickFilterSizeProportion = remainingSpaceForQuickFilters / heightOfQuickFilters;
 
