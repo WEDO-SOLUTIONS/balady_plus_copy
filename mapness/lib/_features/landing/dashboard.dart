@@ -99,7 +99,7 @@ class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProvid
               const SizedBox(height: uikit.Spacing.$4x),
               const StoriesWidget(),
               const SizedBox(height: uikit.Spacing.$8x),
-              JoyParksCardV2(widget.scrollableController),
+              JoyParksCardV2(controller: widget.scrollableController),
               const SizedBox(height: uikit.Spacing.$3x),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),

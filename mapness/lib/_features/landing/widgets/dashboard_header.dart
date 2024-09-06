@@ -20,7 +20,7 @@ import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
 class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
-  final BottomSheetScrollController scrollController;
+  final StatefulBottomSheetController scrollController;
   final TickerProvider _vsync;
 
   static const headerHeight = 72.0;
@@ -64,7 +64,7 @@ class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
 
 class _DashboardMenu extends ConsumerWidget {
   final double shrinkOffset;
-  final BottomSheetScrollController scrollController;
+  final StatefulBottomSheetController scrollController;
 
   const _DashboardMenu({
     required this.scrollController,
@@ -99,9 +99,7 @@ class _DashboardMenu extends ConsumerWidget {
                   filterType: FilterType.custom,
                   title: context.l10n.go,
                   icon: 'assets/icons/svg/quick_filters/free_roam.svg',
-                  onTap: () {
-                    FreeRoamRoute.open(ref.watch(goRouterProvider));
-                  },
+                  onTap: () => FreeRoamRoute.open(ref.watch(goRouterProvider)),
                 ),
               ],
             ),
@@ -113,7 +111,7 @@ class _DashboardMenu extends ConsumerWidget {
 }
 
 class DashboardHeader extends ConsumerWidget {
-  final BottomSheetScrollController scrollController;
+  final StatefulBottomSheetController scrollController;
 
   const DashboardHeader({
     required this.scrollController,

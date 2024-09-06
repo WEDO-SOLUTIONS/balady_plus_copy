@@ -13,7 +13,7 @@ import 'package:mapness/app/routes/free_roam.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
-class MapHiddenStateControls extends BottomSheetComponentWidget<ThreeStateBottomSheet> {
+class MapHiddenStateControls extends BottomSheetStateComponent<ThreeStateBottomSheet> {
   const MapHiddenStateControls({super.key, super.defaultState = ThreeStateBottomSheet.hidden});
 
   @override
@@ -36,9 +36,7 @@ class MapHiddenStateControls extends BottomSheetComponentWidget<ThreeStateBottom
                         borderRadius: BorderRadius.circular(8),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(8),
-                          onTap: () {
-                            FreeRoamRoute.open(ref.watch(goRouterProvider));
-                          },
+                          onTap: () => FreeRoamRoute.open(ref.watch(goRouterProvider)),
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(minWidth: 52),
                             child: Padding(

@@ -138,7 +138,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             children: [
               ListenableBuilder(
                 listenable: _scrollController,
-                builder: (context, _) {
+                builder: (_, __) {
                   if (_scrollController.state != ThreeStateBottomSheet.hidden) {
                     return GestureDetector(
                       onTapDown: (_) {
@@ -159,7 +159,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                     );
                   }
 
-                  return const SizedBox();
+                  return const SizedBox.shrink();
                 },
               ),
               MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),

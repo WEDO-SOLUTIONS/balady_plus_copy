@@ -9,7 +9,6 @@ import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapDashboardControls extends ConsumerStatefulWidget {
@@ -29,15 +28,10 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
   late final ValueNotifier<uikit.ThreeStateBottomSheet> _notifierStateType;
   final int _quickFilters = 64;
   final int _paddingWithBottomSheet = 12;
-  MediaQueryData? _mediaQuery;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _mediaQuery = ref.read(mediaQueryInfoProvider);
-    });
-
     _notifierStateType = ValueNotifier(widget.scrollController.state);
     widget.scrollController.addListener(_update);
   }
@@ -66,7 +60,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
   Widget build(BuildContext context) {
     final bool visibleControls = widget.scrollController.state == uikit.ThreeStateBottomSheet.expanded;
     return SizedBox(
-      height: _mediaQuery?.size.height,
+      height: MediaQuery.of(context).size.height,
       child: SafeArea(
         bottom: false,
         child: Visibility(
