@@ -13,24 +13,24 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapDashboardControls extends ConsumerStatefulWidget {
-  final uikit.BottomSheetScrollController scrollController;
+  final uikit.StatefulBottomSheetController scrollController;
 
   const MapDashboardControls(
-    this.scrollController, {
-    super.key,
-  });
+      this.scrollController, {
+        super.key,
+      });
 
   @override
   ConsumerState<MapDashboardControls> createState() => _MapDashboardControlsState();
 }
 
 class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
-  late double bottomPadding;
+  late double _bottomPadding;
 
   @override
   void initState() {
     super.initState();
-    bottomPadding = widget.scrollController.sheetHeight;
+    _bottomPadding = widget.scrollController.sheetHeight;
     widget.scrollController.addListener(update);
   }
 
@@ -42,7 +42,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
 
   void update() {
     setState(() {
-      bottomPadding = widget.scrollController.sheetHeight;
+      _bottomPadding = widget.scrollController.sheetHeight;
     });
   }
 
@@ -54,7 +54,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
     final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
 
     final screenHeight = MediaQuery.of(context).size.height;
-    final isSheetCoversHalfOfTheScreen = widget.scrollController.viewportHeight < bottomPadding + screenHeight / 2;
+    final isSheetCoversHalfOfTheScreen = widget.scrollController.viewportHeight < _bottomPadding + screenHeight / 2;
     final isSheetStateOpen = widget.scrollController.state == uikit.ThreeStateBottomSheet.open;
     final isSheetScrolledForHalfOfTheState = widget.scrollController.interpolation > 0.5;
 
@@ -79,14 +79,14 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                   child: Expanded(
                     child: AnimatedOpacity(
                       duration: const Duration(milliseconds: 100),
-                      opacity: widget.scrollController.viewportHeight > bottomPadding + 200 ? 1 : 0,
+                      opacity: widget.scrollController.viewportHeight > _bottomPadding + 200 ? 1 : 0,
                       child: OverflowBox(
                         child: Padding(
                           padding: EdgeInsets.only(
                             left: uikit.Spacing.$3x,
                             top: uikit.Spacing.$3x,
                             right: uikit.Spacing.$3x,
-                            bottom: bottomPadding,
+                            bottom: _bottomPadding,
                           ),
                           child: Row(
                             children: [
