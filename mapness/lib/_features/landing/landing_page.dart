@@ -43,8 +43,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   late StatefulBottomSheetController<ThreeStateBottomSheet> _scrollController;
   MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
-  bool needToShow = true;
-  final dashBoardMinimumSize = 0.13;
 
   late final StatefulBottomSheetController<ThreeStateBottomSheet> scrollController;
 
@@ -166,7 +164,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                 },
               ),
               MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),
-              DashboardV2(scrollableController: _scrollController),
+              Dashboard(scrollableController: _scrollController),
             ],
           ),
         ),
