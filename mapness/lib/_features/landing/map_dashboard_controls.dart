@@ -9,6 +9,7 @@ import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
+import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapDashboardControls extends ConsumerStatefulWidget {
@@ -47,17 +48,29 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
 
   @override
   Widget build(BuildContext context) {
-    final bool hideControls = widget.scrollController.state == uikit.ThreeStateBottomSheet.open &&
-        widget.scrollController.interpolation > 0.5;
+    const controlsHeight = 56;
+
+    final freeRoamState = ref.watch(freeRoamStarterProvider);
+    final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isSheetCoversHalfOfTheScreen = widget.scrollController.viewportHeight < bottomPadding + screenHeight / 2;
+    final isSheetStateOpen = widget.scrollController.state == uikit.ThreeStateBottomSheet.open;
+    final isSheetScrolledForHalfOfTheState = widget.scrollController.interpolation > 0.5;
+
+    final bool hideControls = isGoToNavigatorShown ||
+        !widget.scrollController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState ||
+        isSheetCoversHalfOfTheScreen;
 
     return SizedBox(
-      height: MediaQuery.of(context).size.height,
+      height: screenHeight,
       child: IgnorePointer(
         ignoring: hideControls,
         child: SafeArea(
           bottom: false,
-          child: Visibility(
-            visible: !hideControls,
+          child: AnimatedOpacity(
+            opacity: hideControls ? 0.0 : 1.0,
+            duration: const Duration(milliseconds: 250),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -88,7 +101,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                                   uikit.Spacing.$4x.heightBox,
                                   SizedBox(
                                     height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
-                                        ? 56 * (1 - widget.scrollController.interpolation)
+                                        ? controlsHeight * (1 - widget.scrollController.interpolation)
                                         : 0,
                                   )
                                 ],
@@ -111,7 +124,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                                   uikit.Spacing.$4x.heightBox,
                                   SizedBox(
                                     height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
-                                        ? 56 * (1 - widget.scrollController.interpolation)
+                                        ? controlsHeight * (1 - widget.scrollController.interpolation)
                                         : 0,
                                   ),
                                 ],

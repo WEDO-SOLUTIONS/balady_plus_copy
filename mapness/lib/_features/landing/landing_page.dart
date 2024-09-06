@@ -54,20 +54,21 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   bool needToShow = true;
   final dashBoardMinimumSize = 0.13;
 
-  late final BottomSheetScrollController<ThreeStateBottomSheet> _scrollController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> scrollController;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    _scrollController = BottomSheetScrollController(
+    scrollController = StatefulBottomSheetController(
+      durationMultiplier: 1.0,
       initialState: ThreeStateBottomSheet.open,
       behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
       stateMapper: const LandingStateMapper(),
     );
 
-    _scrollController.addListener(_calculatePadding);
+    scrollController.addListener(_calculatePadding);
 
     setupTapListener();
 
@@ -123,9 +124,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   void dispose() {
-    _scrollController
-      ..removeListener(_calculatePadding)
-      ..dispose();
+    scrollController.removeListener(_calculatePadding);
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -170,7 +169,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
         if (next?.currentPath == landingPage) {
         } else if (next?.currentPath == KiblahRoute.path) {
-          _scrollController.setState(ThreeStateBottomSheet.hidden);
+          scrollController.setState(ThreeStateBottomSheet.hidden);
         }
       })
 
@@ -187,19 +186,23 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           type: MaterialType.transparency,
           child: Stack(
             children: [
-              AnimatedBuilder(
-                animation: _scrollController,
-                builder: (context, _) => _scrollController.state != ThreeStateBottomSheet.hidden
-                    ? GestureDetector(
+              ListenableBuilder(
+                  listenable: scrollController,
+                  builder: (context, _) {
+                    if (scrollController.state != ThreeStateBottomSheet.hidden) {
+                      return GestureDetector(
                         onTap: () {
-                          _scrollController.setState(ThreeStateBottomSheet.hidden);
+                          scrollController.setState(ThreeStateBottomSheet.hidden);
+
                           ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
                         },
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),
-              DashboardV2(scrollableController: _scrollController),
+                      );
+                    }
+
+                    return const SizedBox.shrink();
+                  }),
+              MapDashboardControls(scrollController, key: const ValueKey('MapDashboardControls')),
+              Dashboard(scrollableController: scrollController),
             ],
           ),
         ),

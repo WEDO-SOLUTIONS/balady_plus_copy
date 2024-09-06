@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -19,93 +21,94 @@ class SnapAndSendCard extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: SizedBox(
-          height: 188,
-          width: double.infinity,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(RadiusBorder.xl),
-            child: ColoredBox(
-              color: context.colorsV2.backgroundSurface1,
-              child: Stack(
-                children: [
-                  const SizedBox(
-                    height: 100,
-                    width: double.infinity,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xff7FB1BC), Color(0xff518591)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+        height: 188,
+        width: double.infinity,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(RadiusBorder.xl),
+          child: ColoredBox(
+            color: context.colorsV2.backgroundSurface1,
+            child: Stack(
+              children: [
+                const SizedBox(
+                  height: 100,
+                  width: double.infinity,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xff7FB1BC), Color(0xff518591)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
                     ),
                   ),
-                  SvgPicture.asset(
-                    'assets/images_svg/snap_map_grid.svg',
-                    package: PackageConfig.packageName,
-                    fit: BoxFit.cover,
-                    width: MediaQuery.of(context).size.width - horizontalPadding * 2,
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: Spacing.$6x + Spacing.$0_5x),
-                      child: SvgPicture.asset(
-                        'assets/images_svg/marker_photo.svg',
-                        package: PackageConfig.packageName,
-                      ),
+                ),
+                SvgPicture.asset(
+                  'assets/images_svg/snap_map_grid.svg',
+                  package: PackageConfig.packageName,
+                  fit: BoxFit.cover,
+                  width: max(0, MediaQuery.of(context).size.width - horizontalPadding * 2),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: Spacing.$6x + Spacing.$0_5x),
+                    child: SvgPicture.asset(
+                      'assets/images_svg/marker_photo.svg',
+                      package: PackageConfig.packageName,
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(Spacing.$6x),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  context.l10n.snapAndSendTitle,
-                                  style: context.textStyleV3.h4SemiBold,
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(Spacing.$6x),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                context.l10n.snapAndSendTitle,
+                                style: context.textStyleV3.h4SemiBold,
+                              ),
+                              const SizedBox(height: Spacing.$1x),
+                              Text(
+                                context.l10n.snapAndSendDescription,
+                                style: context.textStyleV3.captionLargeRegular.copyWith(
+                                  color: context.colorsV2.foregroundSoft,
                                 ),
-                                const SizedBox(height: Spacing.$1x),
-                                Text(
-                                  context.l10n.snapAndSendDescription,
-                                  style: context.textStyleV3.captionLargeRegular.copyWith(
-                                    color: context.colorsV2.foregroundSoft,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          AppButton(
-                            size: ButtonSize.small,
-                            padding: EdgeInsets.zero,
-                            innerPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            buttonColorScheme: ButtonColorScheme.onColor,
-                            color: context.colorsV2.accentContainerDefault.withOpacity(0.1),
-                            onTap: () {
-                              Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
-                                  action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
-                              CommonFunctions.openSnapAndSend();
-                            },
-                            trailing: Icon(
-                              SystemIcons.arrowRight,
-                              color: context.colorsV2.accentOnContainer,
-                            ),
-                          )
-                        ],
-                      ),
+                        ),
+                        AppButton(
+                          size: ButtonSize.small,
+                          padding: EdgeInsets.zero,
+                          innerPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          buttonColorScheme: ButtonColorScheme.onColor,
+                          color: context.colorsV2.accentContainerDefault.withOpacity(0.1),
+                          onTap: () {
+                            Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
+                                action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
+                            CommonFunctions.openSnapAndSend();
+                          },
+                          trailing: Icon(
+                            SystemIcons.arrowRight,
+                            color: context.colorsV2.accentOnContainer,
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }
