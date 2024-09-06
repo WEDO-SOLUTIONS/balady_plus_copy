@@ -23,30 +23,27 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
-
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/features/stories/data/story_service.dart';
-import 'package:mapness/features/stories/stories.dart';
-import 'package:mapness/features/stories/stories_widget.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
+import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 
-class DashboardV2 extends ConsumerStatefulWidget {
-  const DashboardV2({
+class Dashboard extends ConsumerStatefulWidget {
+  const Dashboard({
     required this.scrollableController,
     super.key,
   });
 
-  final uikit.BottomSheetScrollController<uikit.ThreeStateBottomSheet> scrollableController;
+  final uikit.StatefulBottomSheetController<uikit.ThreeStateBottomSheet> scrollableController;
 
   @override
-  ConsumerState<DashboardV2> createState() => _DashboardState();
+  ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProviderStateMixin {
+class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
@@ -73,110 +70,93 @@ class _DashboardState extends ConsumerState<DashboardV2> with SingleTickerProvid
         }
       });
 
-    return WillPopScope(
-        onWillPop: () async {
-          if (Stories.isShowing) {
-            Metrics.logEventAdvanced(
-              MetricsConstants.exploreKeys.storiesClose,
-              action: MetricAction.tap.name,
-              group: MetricsConstants.exploreTag,
-            );
-
-            //Resume the story update when viewport changed
-            ref.read(storyServiceProvider.notifier).resumeUpdate();
-            Stories.hide();
-            return false;
-          }
-
-          // TODO(Ayat): goroute has problems with WillPopScope and push method, this is as a temporary solution.
-          //  We are waiting for an update, now the latest version is 14.2.1
-          final currentRoute = ref.read(currentRouteProvider);
-          if (currentRoute?.currentPath == PhotoViewerRoute.path) {
-            context.pop();
-            return false;
-          }
-
-          return true;
-        },
-        child: uikit.AppBottomSheet<uikit.ThreeStateBottomSheet>(
-          animateOpening: false,
-          topHeader: const MapHiddenStateControls(),
-          backgroundColor: context.colorsV2.backgroundSurface4,
-          header: DashboardHeader(
+    return PopScope(
+      onPopInvoked: (val) {
+        final currentRoute = ref.read(currentRouteProvider);
+        if (currentRoute?.currentPath == PhotoViewerRoute.path) {
+          context.pop();
+        }
+      },
+      child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
+        animateOpening: false,
+        topHeader: MapHiddenStateControls(widget.scrollableController),
+        backgroundColor: context.colorsV2.backgroundSurface4,
+        header: DashboardHeader(
+          scrollController: widget.scrollableController,
+        ),
+        scrollController: widget.scrollableController,
+        sliverBeforeContent: SliverPersistentHeader(
+          delegate: DashboardHeaderDelegate(
+            vsync: this,
             scrollController: widget.scrollableController,
           ),
-          scrollController: widget.scrollableController,
-          sliverBeforeContent: SliverPersistentHeader(
-            delegate: DashboardHeaderDelegateV2(
-              vsync: this,
-              scrollController: widget.scrollableController,
-            ),
-            pinned: true,
-            floating: true,
+          pinned: true,
+          floating: true,
+        ),
+        content: [
+          Column(
+            children: [
+              const SizedBox(height: uikit.Spacing.$4x),
+              const StoriesWidget(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              JoyParksCardV2(controller: widget.scrollableController),
+              const SizedBox(height: uikit.Spacing.$3x),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
+                child: Row(
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    Expanded(child: WeatherCard()),
+                    SizedBox(width: uikit.Spacing.$3x),
+                    Expanded(child: QiblaCard()),
+                  ],
+                ),
+              ),
+              const SizedBox(height: uikit.Spacing.$8x),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    Expanded(
+                      child: PlacesForCart(
+                        title: context.l10n.placesForShopping,
+                        icon: General32Icons.shoppingLRTL,
+                        onTap: () => _openSearch(QuickFilter.shopping),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: PlacesForCart(
+                        title: context.l10n.placesForEatingOut,
+                        icon: General32Icons.restourantLRTL,
+                        onTap: () => _openSearch(QuickFilter.eatOut),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const PlacePreview(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const SnapAndSendCard(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const ComplianceCard(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const PrayerCard(),
+              CalendarSliderCard(
+                colorScheme: ref.read(colorSchemeProvider),
+                onShowAll: () => Metrics.logEventAdvanced(
+                  MetricsConstants.exploreKeys.kingdomCalendarViewAll,
+                  action: MetricAction.tap.name,
+                  group: MetricsConstants.exploreTag,
+                ),
+              ),
+            ],
           ),
-          content: [
-            Column(
-              children: [
-                const SizedBox(height: uikit.Spacing.$4x),
-                const StoriesWidget(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                JoyParksCardV2(widget.scrollableController),
-                const SizedBox(height: uikit.Spacing.$3x),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
-                  child: Row(
-                    textDirection: TextDirection.ltr,
-                    children: [
-                      Expanded(child: WeatherCard()),
-                      SizedBox(width: uikit.Spacing.$3x),
-                      Expanded(child: QiblaCard()),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: uikit.Spacing.$8x),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    textDirection: TextDirection.ltr,
-                    children: [
-                      Expanded(
-                        child: PlacesForCart(
-                          title: context.l10n.placesForShopping,
-                          icon: General32Icons.shoppingLRTL,
-                          onTap: () => _openSearch(QuickFilter.shopping),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: PlacesForCart(
-                          title: context.l10n.placesForEatingOut,
-                          icon: General32Icons.restourantLRTL,
-                          onTap: () => _openSearch(QuickFilter.eatOut),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const PlacePreview(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const SnapAndSendCard(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const ComplianceCard(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const PrayerCard(),
-                CalendarSliderCard(
-                  colorScheme: ref.read(colorSchemeProvider),
-                  onShowAll: () => Metrics.logEventAdvanced(
-                    MetricsConstants.exploreKeys.kingdomCalendarViewAll,
-                    action: MetricAction.tap.name,
-                    group: MetricsConstants.exploreTag,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ));
+        ],
+      ),
+    );
   }
 
   void _openSearch(QuickFilter quickFilter) {

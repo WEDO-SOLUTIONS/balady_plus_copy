@@ -65,6 +65,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   @override
   void deactivate() {
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
+    ref.read(dgisControllerProvider).value?.toggleFollowState();
     super.deactivate();
   }
 
@@ -110,10 +111,17 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
     await dgisController.setNavigatorVoice(ref.read(navigatorVoiceProvider));
 
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-    await dgisController.followNavigation();
 
-    await dgisController.freeRoamController.start();
+    await dgisController.freeRoamController.start(
+      SpeedRangeZoom(
+        maxSpeedRange: 5,
+        minSpeedRange: 0,
+        routeDistanceMillimeters: 0,
+        styleZoomValue: 16.5,
+      ),
+    );
     await dgisController.setMapAttributeBool('navigatorOn', value: true);
+    await dgisController.followNavigation();
   }
 
   @override
@@ -167,6 +175,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                         color: Colors.transparent,
                         child: uikit.BaladyManeuverAndLimit(
                           isPedestrian: false,
+                          hideSpeedLimit: info.speedLimit == null,
                           speedInfo: uikit.LimitsModel(
                             speed: info.speed,
                             speedExceed: info.speedExceed,

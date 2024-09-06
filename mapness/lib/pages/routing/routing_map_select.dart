@@ -14,7 +14,6 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
@@ -28,24 +27,6 @@ class RoutingMapSelect extends ConsumerStatefulWidget {
 }
 
 class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
-  @override
-  void deactivate() {
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
-    super.deactivate();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    ref.read(cameraPaddingProvider.notifier).resetPadding();
-  }
-
   @override
   Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);

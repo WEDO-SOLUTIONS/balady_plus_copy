@@ -128,6 +128,8 @@ class DgisController extends _$DgisController {
     );
   }
 
+  Future<PolygonGeometryMessage> getVisibleArea(DgisMapController controller) async => controller.getVisibleArea();
+
   Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
     final visibleRectSubscription =
         controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen(_listenVisibleRectangle);

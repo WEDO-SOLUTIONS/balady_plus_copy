@@ -264,6 +264,12 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.setCameraPosition(cameraPosition);
   }
 
+  /// Return the visible area of the screen that user looks at. Return
+  /// coordinates of the rectangle
+  Future<PolygonGeometryMessage> getCameraVisibleArea() {
+    return _api.getCameraVisibleArea();
+  }
+
   Future<void> setCameraPositionPoint(CameraPositionPointMessage cameraPosition) {
     return _api.setCameraPositionPoint(cameraPosition);
   }
@@ -646,6 +652,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.overlappedBy(outerRect, innerRect);
   }
 
+  Future<void> moveCameraToActiveRoute(int index) {
+    return _api.moveCameraToActiveRoute(index);
+  }
+
   Future<bool> contains(GeoRectMessage rect, GeoPointMessage point) {
     return _api.contains(rect, point);
   }
@@ -710,8 +720,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.onCompassClicked();
   }
 
-  Future<void> startFreeRoam() {
-    return _api.startFreeRoam();
+  Future<void> startFreeRoam(SpeedRangeZoom speedRangeZoom) {
+    return _api.startFreeRoam(speedRangeZoom);
   }
 
   Future<void> stopFreeRoam() {

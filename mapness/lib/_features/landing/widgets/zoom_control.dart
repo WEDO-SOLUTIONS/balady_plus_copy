@@ -22,13 +22,17 @@ class ZoomControl extends ConsumerWidget {
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
-            zoomState.zoomInEnabled ? zoomNotifier.onTapUp(ZoomControlType.zoomIn) : null;
+            if (zoomState.zoomInEnabled) {
+              zoomNotifier.onTapUp(ZoomControlType.zoomIn);
+            }
           },
           onTapDown: (_) {
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
-            zoomState.zoomInEnabled ? zoomNotifier.onTapDown(ZoomControlType.zoomIn) : null;
+            if (zoomState.zoomInEnabled) {
+              zoomNotifier.onTapDown(ZoomControlType.zoomIn);
+            }
           },
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(10),
@@ -41,13 +45,17 @@ class ZoomControl extends ConsumerWidget {
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
-            zoomState.zoomOutEnabled ? zoomNotifier.onTapUp(ZoomControlType.zoomOut) : null;
+            if (zoomState.zoomOutEnabled) {
+              zoomNotifier.onTapUp(ZoomControlType.zoomOut);
+            }
           },
           onTapDown: (_) {
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
-            zoomState.zoomOutEnabled ? zoomNotifier.onTapDown(ZoomControlType.zoomOut) : null;
+            if (zoomState.zoomOutEnabled) {
+              zoomNotifier.onTapDown(ZoomControlType.zoomOut);
+            }
           },
           disabled: !zoomState.zoomOutEnabled,
           borderRadius: const BorderRadius.only(

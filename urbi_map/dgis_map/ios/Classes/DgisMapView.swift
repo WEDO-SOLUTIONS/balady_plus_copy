@@ -191,6 +191,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.indoorControlHandler?.selectIndoorLevel(index: index.uint64Value)
         completion(nil)
     }
+
+    func moveCamera(toActiveRouteIndex: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.routeHandler?.moveCameraToActiveRouteIndex(toActiveRouteIndex.uint64Value)
+        completion(nil)
+    }
     
     func loadStylesAsset(_ asset: String, completion: @escaping (FlutterError?) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)
@@ -391,6 +396,35 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             nil
         )
     }
+    
+    func getCameraVisibleArea(completion: @escaping (PolygonGeometryMessage?, FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        
+        let area = map.camera.visibleArea
+        if let polygon = area as? PolygonGeometry {
+            let contours = polygon.contours.map { $0.map { $0.toMessage() } }
+            completion(
+                PolygonGeometryMessage.make(
+                    withContours: contours
+                ),
+                nil
+            )
+        } else {
+            completion(nil, FlutterError(
+                code: "ParcingError",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+        }
+    }
+    
     
     func search(
         byObjectIdObjectId objectId: DgisObjectIdMessage,
@@ -983,8 +1017,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.startFreeRoam(completion: completion)
+    func startFreeRoamSpeedRangeZoom(_ speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.startFreeRoam(speedRangeZoom: speedRangeZoom, completion: completion)
     }
     
     func stopFreeRoam(completion: @escaping (FlutterError?) -> Void) {

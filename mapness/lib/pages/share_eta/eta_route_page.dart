@@ -9,46 +9,70 @@ import 'package:mapness/features/share_eta/providers/websocker_error_handler_por
 import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_arrival_card.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 
-class EtaRoutePage extends ConsumerWidget {
-  const EtaRoutePage({super.key});
+class EtaRoutePage extends ConsumerStatefulWidget {
+  final double? latitude;
+  final double? longitude;
+  const EtaRoutePage({
+    super.key,
+    this.latitude,
+    this.longitude,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EtaRoutePage> createState() => _EtaRoutePageState();
+}
+
+class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
+  @override
+  Widget build(BuildContext context) {
     ref
       ..watch(etaGeoSubscriberProvider)
       ..listen(websocketErrorHandlerProvider, (_, current) {
         final (code, reason) = current;
 
-        if (code == 1000 && reason == 'expired') {
+        final reasonData = reason?.toWebsocketReason();
+
+        if (code == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
           context.pop();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showEtaExpired(rootNavigatorKey.currentContext!);
           });
         }
+        if (code == 4004) {
+          context.pop();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showBroadcastExpired(rootNavigatorKey.currentContext!);
+          });
+        }
       });
 
-    return const Material(
+    final direction = Directionality.of(context);
+
+    return Material(
       color: Colors.transparent,
       type: MaterialType.transparency,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Spacer(),
-          Padding(
-            padding: EdgeInsets.all(Spacing.$4x),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ZoomControl(),
-              ],
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const Spacer(),
+            const Padding(
+              padding: EdgeInsets.all(Spacing.$4x),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ZoomControl(),
+                ],
+              ),
             ),
-          ),
-          Spacer(),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: EtaArrivalCard(),
-          ),
-        ],
+            const Spacer(),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Directionality(textDirection: direction, child: const EtaArrivalCard()),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -59,6 +83,15 @@ class EtaRoutePage extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       builder: (_) => EtaShareExpired.eta(context),
+    );
+  }
+
+  void _showBroadcastExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.broadcastExpired(context),
     );
   }
 }
