@@ -482,12 +482,14 @@ class RouteEditorRouteParamsMessage {
     this.startPoint,
     this.finishPoint,
     this.options,
+    this.showOnlyActiveRoute,
   );
 
   final RouteEditorRoutePointMessage? startPoint;
   final RouteEditorRoutePointMessage? finishPoint;
 
   final RouteSearchOptionsMessage options;
+  final bool? showOnlyActiveRoute;
 }
 
 enum DesiredAccuracyMessage { low, medium, high }
@@ -1149,6 +1151,9 @@ abstract class MapApi {
   void toggleFollowState();
 
   @async
+  void moveCameraToActiveRoute(int index);
+
+  @async
   void followNavigation();
 
   @async
@@ -1454,7 +1459,7 @@ abstract class MapApi {
   void setZoomRestrictions(double? min, double? max);
 
   @async
-  void startFreeRoam();
+  void startFreeRoam(SpeedRangeZoom speedRangeZoom);
 
   @async
   void stopFreeRoam();

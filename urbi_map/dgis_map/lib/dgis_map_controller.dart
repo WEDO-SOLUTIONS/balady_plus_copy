@@ -485,6 +485,10 @@ class DgisMapController {
     return _instance.showRoutes();
   }
 
+  Future<void> moveCameraToActiveRoute(int index) {
+    return _instance.moveCameraToActiveRoute(index);
+  }
+
   /// Starts navigation
   Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
 

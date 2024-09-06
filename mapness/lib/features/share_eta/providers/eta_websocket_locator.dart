@@ -81,6 +81,7 @@ class EtaWebsocket {
     if (_lastErrorCode == code) {
       return;
     }
+
     for (final listener in _connectionLostListeners) {
       listener(code, reason);
     }
@@ -190,11 +191,16 @@ class EtaWebsocket {
 
     final config = _config!;
 
+    final newUrl = Uri.tryParse(config.host);
+    if (newUrl == null) {
+      throw Exception('Invalid host');
+    }
+
     final baseUrl = Uri(
       scheme: 'wss',
-      host: config.host,
+      host: newUrl.pathSegments.first,
       port: config.port,
-      path: _streamPath,
+      path: newUrl.hasEmptyPath ? _streamPath : newUrl.pathSegments.skip(1).join('/') + _streamPath,
       // We provide the streamId only for the subscription type
       queryParameters: config.subscriptionType == SubscriptionType.get
           ? {
@@ -239,8 +245,6 @@ class EtaWebsocket {
             }
           } catch (e) {
             debugPrint(e.toString());
-            // state = AsyncError(e, s);
-            //TODO(scroollocker): handle error
           }
         },
 

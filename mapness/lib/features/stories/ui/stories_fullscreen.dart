@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -23,7 +25,7 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
   ConsumerState<StoriesFullscreen> createState() => _StoriesFullscreenState();
 }
 
-class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with WidgetsBindingObserver {
+class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   late int _currentPage;
   late int _maxPages;
 
@@ -31,15 +33,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
   late final IndexController _indexController;
 
   final ValueNotifier<int> _currentPageNotifier = ValueNotifier<int>(0);
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _storyFrameController.play?.call();
-      return;
-    }
-    _storyFrameController.pause?.call();
-  }
+  late final Future<List<StoryData>> _storiesData;
 
   @override
   void initState() {
@@ -48,7 +42,6 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
     ref.read(storyServiceProvider.notifier).pauseUpdate();
     _storyFrameController = StoryFrameController();
     _indexController = IndexController();
-
     _indexController.addListener(() {
       if (!mounted) {
         return;
@@ -61,12 +54,10 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
         _setCurrentPage(_currentPage - 1);
       }
     });
-    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _storyFrameController.dispose();
     _indexController.dispose();
     super.dispose();
@@ -76,6 +67,8 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
   void didChangeDependencies() {
     super.didChangeDependencies();
     ref.read(storyServiceProvider.notifier).pauseUpdate();
+    final type = StoryArgsProvider.of(context).type;
+    _storiesData = _initStories(type);
   }
 
   void _setCurrentPage(int page) {
@@ -100,8 +93,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
     return ref.read(localStoriesServiceProvider(type.file!).future);
   }
 
-  Future<List<StoryData>> _initStories(BuildContext context) async {
-    final type = StoryArgsProvider.of(context).type;
+  Future<List<StoryData>> _initStories(StoryTypes type) async {
     final List<StoryData> stories = await _loadStories(type);
 
     final index = stories.indexWhere(
@@ -136,7 +128,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> with Widg
 
   @override
   Widget build(BuildContext context) => FutureBuilder<List<StoryData>>(
-        future: _initStories(context),
+        future: _storiesData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Material(

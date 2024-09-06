@@ -15,6 +15,7 @@ class Routes extends _$Routes {
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
     required RouteSearchOptionsMessage navType,
+    bool? showOnlyActiveRoute,
   }) async {
     final dgisController = ref.watch(dgisControllerProvider);
     unawaited(dgisController.value?.hideRoutes());
@@ -22,6 +23,7 @@ class Routes extends _$Routes {
       startPoint: startPoint?.pointMessage,
       finishPoint: finishPoint?.pointMessage,
       options: navType,
+      showOnlyActiveRoute: showOnlyActiveRoute,
     );
 
     final routesCompleter = Completer<List<RouteInfo>>();
