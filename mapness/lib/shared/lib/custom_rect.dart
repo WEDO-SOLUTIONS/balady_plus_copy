@@ -103,11 +103,16 @@ class CustomRect {
       }
     }
 
+    if (topLeft == null || topRight == null || bottomRight == null || bottomLeft == null) {
+      log('One of the area points is null. Please check the data from SDK');
+      return null;
+    }
+
     return CustomRect(
-      topLeft: topLeft!,
-      topRight: topRight!,
-      bottomRight: bottomRight!,
-      bottomLeft: bottomLeft!,
+      topLeft: topLeft,
+      topRight: topRight,
+      bottomRight: bottomRight,
+      bottomLeft: bottomLeft,
     );
   }
 }

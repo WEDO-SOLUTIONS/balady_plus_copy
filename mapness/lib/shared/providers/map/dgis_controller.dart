@@ -128,11 +128,7 @@ class DgisController extends _$DgisController {
     );
   }
 
-  // ignore: prefer_expression_function_bodies
-  Future<PolygonGeometryMessage> getVisibleArea(DgisMapController controller) async {
-    // ignore: unnecessary_await_in_return
-    return await controller.getVisibleArea();
-  }
+  Future<PolygonGeometryMessage> getVisibleArea(DgisMapController controller) async => controller.getVisibleArea();
 
   Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
     final visibleRectSubscription =
