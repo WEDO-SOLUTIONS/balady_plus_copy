@@ -44,8 +44,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
 
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> scrollController;
-
   @override
   void initState() {
     super.initState();
@@ -58,7 +56,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
       stateMapper: const ThreeStateMapper(),
     );
-    scrollController.addListener(_calculatePadding);
+    _scrollController.addListener(_calculatePadding);
 
     setupTapListener();
   }
@@ -83,7 +81,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   void dispose() {
-    scrollController.removeListener(_calculatePadding);
+    _scrollController.removeListener(_calculatePadding);
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -121,7 +119,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
         if (next?.currentPath == KiblahRoute.path) {
-          scrollController.setState(ThreeStateBottomSheet.hidden);
+          _scrollController.setState(ThreeStateBottomSheet.hidden);
         }
       })
 
@@ -145,22 +143,22 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   }
 
                   return GestureDetector(
-                      onTapDown: (_) {
-                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                          _scrollController.setState(ThreeStateBottomSheet.hidden);
-                        }
-                      },
-                      onTapUp: (_) {
-                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                          _scrollController.setState(ThreeStateBottomSheet.hidden);
-                        }
-                      },
-                      onTap: () {
-                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                          _scrollController.setState(ThreeStateBottomSheet.hidden);
-                        }
-                      },
-                    );
+                    onTapDown: (_) {
+                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                        _scrollController.setState(ThreeStateBottomSheet.hidden);
+                      }
+                    },
+                    onTapUp: (_) {
+                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                        _scrollController.setState(ThreeStateBottomSheet.hidden);
+                      }
+                    },
+                    onTap: () {
+                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                        _scrollController.setState(ThreeStateBottomSheet.hidden);
+                      }
+                    },
+                  );
                 },
               ),
               MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),
