@@ -135,7 +135,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      ref.read(locationProvider.notifier).checkOnLocationPermissionGranted();
+      ref.read(locationProvider.notifier).checkLocationPermission();
     }
 
     super.didChangeAppLifecycleState(state);
