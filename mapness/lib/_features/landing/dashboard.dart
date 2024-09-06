@@ -34,11 +34,11 @@ import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
-    required this.scrollableController,
+    required this.bottomSheetController,
     super.key,
   });
 
-  final uikit.StatefulBottomSheetController<uikit.ThreeStateBottomSheet> scrollableController;
+  final uikit.StatefulBottomSheetController<uikit.ThreeStateBottomSheet> bottomSheetController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -48,12 +48,12 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    widget.scrollableController.addListener(_scrollListenHandler);
+    widget.bottomSheetController.addListener(_scrollListenHandler);
   }
 
   @override
   void dispose() {
-    widget.scrollableController.removeListener(_scrollListenHandler);
+    widget.bottomSheetController.removeListener(_scrollListenHandler);
     super.dispose();
   }
 
@@ -62,12 +62,12 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     ref
       ..listen(searchByRubricsQueryProvider, (previous, next) {
         if (next != null) {
-          widget.scrollableController.setState(uikit.ThreeStateBottomSheet.hidden);
+          widget.bottomSheetController.setState(uikit.ThreeStateBottomSheet.hidden);
         }
       })
       ..listen(layersControlsProvider, (previous, next) {
         if (next.layersVisible) {
-          widget.scrollableController.setState(uikit.ThreeStateBottomSheet.hidden);
+          widget.bottomSheetController.setState(uikit.ThreeStateBottomSheet.hidden);
         }
       });
 
@@ -85,17 +85,14 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         },
         child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
           animateOpening: false,
-          topHeader: MapHiddenStateControls(widget.scrollableController),
+          topHeader: MapHiddenStateControls(widget.bottomSheetController),
           backgroundColor: context.colorsV2.backgroundSurface4,
           header: DashboardHeader(
-            scrollController: widget.scrollableController,
+            bottomSheetController: widget.bottomSheetController,
           ),
-          scrollController: widget.scrollableController,
+          scrollController: widget.bottomSheetController,
           sliverBeforeContent: SliverPersistentHeader(
-            delegate: DashboardHeaderDelegate(
-              vsync: this,
-              scrollController: widget.scrollableController,
-            ),
+            delegate: DashboardHeaderDelegate(vsync: this),
             pinned: true,
             floating: true,
           ),
@@ -105,7 +102,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                 const SizedBox(height: uikit.Spacing.$4x),
                 const StoriesWidget(),
                 const SizedBox(height: uikit.Spacing.$8x),
-                JoyParksCardV2(widget.scrollableController),
+                JoyParksCardV2(widget.bottomSheetController),
                 const SizedBox(height: uikit.Spacing.$3x),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
@@ -173,7 +170,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
   void _scrollListenHandler() {
     Future.delayed(Duration.zero, () {
-      if (widget.scrollableController.state != uikit.ThreeStateBottomSheet.hidden) {
+      if (widget.bottomSheetController.state != uikit.ThreeStateBottomSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(
               MapControlsStateDashboard(),
             );

@@ -9,7 +9,7 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class JoyParksCardV2 extends ConsumerWidget {
-  final BottomSheetScrollController controller;
+  final StatefulBottomSheetController controller;
 
   const JoyParksCardV2(this.controller, {super.key});
 

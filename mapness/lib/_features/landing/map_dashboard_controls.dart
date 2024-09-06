@@ -13,7 +13,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapDashboardControls extends ConsumerStatefulWidget {
-  final uikit.BottomSheetScrollController scrollController;
+  final uikit.StatefulBottomSheetController scrollController;
 
   const MapDashboardControls(
     this.scrollController, {

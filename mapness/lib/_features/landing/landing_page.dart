@@ -54,21 +54,21 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   bool needToShow = true;
   final dashBoardMinimumSize = 0.13;
 
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> scrollController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    scrollController = StatefulBottomSheetController(
+    bottomSheetController = StatefulBottomSheetController(
       durationMultiplier: 1.0,
       initialState: ThreeStateBottomSheet.open,
       behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
       stateMapper: const LandingStateMapper(),
     );
 
-    scrollController.addListener(_calculatePadding);
+    bottomSheetController.addListener(_calculatePadding);
 
     setupTapListener();
 
@@ -124,7 +124,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   void dispose() {
-    scrollController.removeListener(_calculatePadding);
+    bottomSheetController.removeListener(_calculatePadding);
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -169,7 +169,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
         if (next?.currentPath == landingPage) {
         } else if (next?.currentPath == KiblahRoute.path) {
-          scrollController.setState(ThreeStateBottomSheet.hidden);
+          bottomSheetController.setState(ThreeStateBottomSheet.hidden);
         }
       })
 
@@ -187,12 +187,12 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           child: Stack(
             children: [
               ListenableBuilder(
-                  listenable: scrollController,
+                  listenable: bottomSheetController,
                   builder: (context, _) {
-                    if (scrollController.state != ThreeStateBottomSheet.hidden) {
+                    if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
                       return GestureDetector(
                         onTap: () {
-                          scrollController.setState(ThreeStateBottomSheet.hidden);
+                          bottomSheetController.setState(ThreeStateBottomSheet.hidden);
 
                           ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
                         },
@@ -201,8 +201,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
                     return const SizedBox.shrink();
                   }),
-              MapDashboardControls(scrollController, key: const ValueKey('MapDashboardControls')),
-              Dashboard(scrollableController: scrollController),
+              MapDashboardControls(bottomSheetController, key: const ValueKey('MapDashboardControls')),
+              Dashboard(bottomSheetController: bottomSheetController),
             ],
           ),
         ),

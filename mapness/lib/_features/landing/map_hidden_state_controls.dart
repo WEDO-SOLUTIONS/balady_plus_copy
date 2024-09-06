@@ -81,7 +81,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
       defaultState: ThreeStateBottomSheet.open,
       builder: (context, state, interpolation, child) {
         final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
-        final delta = clampDouble(1 - interpolation * 3, 0, 1);
+        final delta = clampDouble(1 - interpolation * 4, 0, 1);
 
         const hiddenHeight = 0.0;
         const controlsHeight = 60.0;
@@ -112,32 +112,35 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 ],
               ),
             ),
-            secondChild: Opacity(
-              opacity: state == ThreeStateBottomSheet.hidden ? delta : hiddenHeight,
-              child: SizedOverflowBox(
-                size: Size(
-                    double.infinity, state == ThreeStateBottomSheet.hidden ? controlsHeight : controlsHeight * delta),
-                child: Directionality(
-                  textDirection: uiDirection,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                    child: MapQuickFilters(
-                      height: controlsHeight,
-                      forMap: true,
-                      id: QuickFilterScreen.controls,
-                      customFilters: [
-                        FilterItemBuilder(
-                          filterType: FilterType.custom,
-                          builder: (
-                            context, {
-                            required isDashboard,
-                            required isSelected,
-                          }) =>
-                              _FreeRoamQuickAction(
-                            isLaunching: showLaunchingFreeRoam,
+            secondChild: IgnorePointer(
+              ignoring: state != ThreeStateBottomSheet.hidden,
+              child: Opacity(
+                opacity: state == ThreeStateBottomSheet.hidden ? delta : hiddenHeight,
+                child: SizedOverflowBox(
+                  size: Size(
+                      double.infinity, state == ThreeStateBottomSheet.hidden ? controlsHeight : controlsHeight * delta),
+                  child: Directionality(
+                    textDirection: uiDirection,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                      child: MapQuickFilters(
+                        height: controlsHeight,
+                        forMap: true,
+                        id: QuickFilterScreen.controls,
+                        customFilters: [
+                          FilterItemBuilder(
+                            filterType: FilterType.custom,
+                            builder: (
+                              context, {
+                              required isDashboard,
+                              required isSelected,
+                            }) =>
+                                _FreeRoamQuickAction(
+                              isLaunching: showLaunchingFreeRoam,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
