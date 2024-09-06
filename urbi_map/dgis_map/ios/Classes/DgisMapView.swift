@@ -191,6 +191,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.indoorControlHandler?.selectIndoorLevel(index: index.uint64Value)
         completion(nil)
     }
+
+    func moveCamera(toActiveRouteIndex: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.routeHandler?.moveCameraToActiveRouteIndex(toActiveRouteIndex.uint64Value)
+        completion(nil)
+    }
     
     func loadStylesAsset(_ asset: String, completion: @escaping (FlutterError?) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)

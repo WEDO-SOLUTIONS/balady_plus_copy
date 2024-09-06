@@ -142,6 +142,12 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun moveCameraToActiveRoute(index: Long, result: Messages.Result<Void>?) {
+        routeHandler?.moveCameraToActiveRoute(index)
+
+        result?.success(null)
+    }
+
     override fun loadStyles(asset: String, result: Messages.Result<Void>) {
         val styleAsset =
             FlutterInjector

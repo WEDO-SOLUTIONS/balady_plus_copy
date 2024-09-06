@@ -358,15 +358,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
     await clearNavigationState();
 
-    action();
-    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-    ref.read(layersControlsProvider.notifier).updateLayerInfo();
-
     try {
       await _stopActiveSharing();
     } catch (e) {
       debugPrint(e.toString());
     }
+
+    action();
+    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
+    ref.read(layersControlsProvider.notifier).updateLayerInfo();
   }
 
   // Show the route page after the trip is finished
