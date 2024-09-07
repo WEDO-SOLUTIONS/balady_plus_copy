@@ -48,7 +48,10 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _mediaQuery = ref.read(mediaQueryInfoProvider);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mediaQuery = ref.read(mediaQueryInfoProvider);
+    });
 
     _scrollController = StatefulBottomSheetController(
       durationMultiplier: 1.0,
@@ -74,7 +77,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
             rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
             topPadding: _mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: _scrollController.sheetHeight.toInt() * (_mediaQuery?.devicePixelRatio ?? 0).toInt(),
+            bottomPadding: _scrollController.sheetHeight.toInt(),
           ),
         );
   }
