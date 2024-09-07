@@ -16,9 +16,9 @@ class MapDashboardControls extends ConsumerStatefulWidget {
   final uikit.StatefulBottomSheetController scrollController;
 
   const MapDashboardControls(
-      this.scrollController, {
-        super.key,
-      });
+    this.scrollController, {
+    super.key,
+  });
 
   @override
   ConsumerState<MapDashboardControls> createState() => _MapDashboardControlsState();
@@ -64,8 +64,8 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
     const controlsHeight = 56;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final bool areControlsVisible = !_shouldHideControls(screenHeight) &&
-        widget.scrollController.viewportHeight > _bottomPadding + 200;
+    final bool areControlsVisible =
+        !_shouldHideControls(screenHeight) && widget.scrollController.viewportHeight > _bottomPadding + 200;
 
     return SizedBox(
       height: screenHeight,
