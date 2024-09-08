@@ -24,6 +24,10 @@ import '../../domain/use_cases/get_ekram_permission.dart';
 import '../../entry_point_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+
 part 'auth_state.dart';
 
 class EntryPointCubit extends Cubit<EntryPointState> {
@@ -113,114 +117,99 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       getEkramPermissions();
     });
     refreshAPIGeeToken();
-
-    // sl<WeatherAlertsCubit>().startTracking();
-    // CommonFunctions.showBackGroundLocationConsent();
-    //getUserLocationData();
   }
 
-  Future<bool> onLogin({bool isFromEtmam = false}) async {
+  ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+  Future<bool> onLogin({
+    bool isFromEtmam = false,
+  }) async {
+    try {
+      slAuthentication<AuthenticationBloc>().add(GoLoginScreenAuthentication());
+    } catch (e) {
+      print("object");
+    }
+    return true;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  Future<bool> onLoginV2({
+    required LoginDataModel? data,
+    bool isFromEtmam = false,
+  }) async {
+    EasyLoading.show();
+    emit(state.copyWith(
+      status: AuthStatus.loading,
+    ));
+    late SSOToken token;
+
+    if (data != null) {
+      token = SSOToken(
+        token: data.accessToken,
+        refreshToken: data.refreshToken,
+        idToken: "",
+        expirationTime: data.expiresIn.toString(),
+      );
+    } else {
+      final failureOrSuccessForToken = await _getToken(NoParams());
+      await failureOrSuccessForToken.fold((failure) {
+        emit(state.copyWith(
+          status: AuthStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      }, (success) async {
+        token = SSOToken(
+          token: success.accessToken,
+          refreshToken: success.refreshToken,
+          idToken: success.idToken,
+          expirationTime: success.accessTokenExpirationDateTime.toString(),
+        );
+      });
+    }
+
+    _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
+
+    if (CommonProperties.fcmToken != null &&
+        CommonProperties.fcmToken!.isNotEmpty) {
+      CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+    }
+
+    EasyLoading.dismiss();
+    return CommonProperties.isLoggedIn;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  Future<void> onLoginNfaaz({
+    bool isFromEtmam = false,
+  }) async {
     EasyLoading.show();
     emit(state.copyWith(
       status: AuthStatus.loading,
     ));
     final failureOrSuccessForToken = await _getToken(NoParams());
-
     await failureOrSuccessForToken.fold((failure) {
-      emit(state.copyWith(
-        status: AuthStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
+      emit(
+        state.copyWith(
+          status: AuthStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ),
+      );
+      return;
     }, (success) async {
-      SSOToken token = SSOToken(
-          token: success.accessToken,
-          refreshToken: success.refreshToken,
-          idToken: success.idToken,
-          expirationTime: success.accessTokenExpirationDateTime.toString());
-      final failureOrSuccess = await _saveAuth(token);
-      if (failureOrSuccess.isRight()) {
-        emit(state.copyWith(
-          status: AuthStatus.loading,
-          token: token,
-          errorMessage: "",
-        ));
-
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
-        SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
-        final failureOrSuccess = await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
-        if (failureOrSuccess.isRight()) {
-          emit(state.copyWith(
-            status: AuthStatus.authenticated,
-            token: token,
-            userInfo: user,
-            errorMessage: "",
-          ));
-          FlutterUxcam.setUserIdentity(user.idNo);
-          FlutterUxcam.setUserProperty("name", user.arName ?? "");
-        }
-
-        final failureOrSuccessForCookie = await _getCookie(NoParams());
-
-        await failureOrSuccessForCookie.fold((l) async {
-          final failureOrSuccessForCookie = await _getCookie(NoParams());
-          await failureOrSuccessForCookie.fold((failure) {
-            emit(state.copyWith(
-              status: AuthStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            ));
-          }, (r) async {
-            SSOToken? token = state.token;
-            token?.appCookie = r;
-            if (token != null) {
-              await _saveAuth(token);
-              emit(state.copyWith(token: token));
-            }
-          });
-        }, (r) async {
-          SSOToken? token = state.token;
-          token?.appCookie = r;
-          if (token != null) {
-            await _saveAuth(token);
-            emit(state.copyWith(token: token));
-          }
-        });
-        EasyLoading.dismiss();
-        if (isFromEtmam) {
-          sl<EtmamEntryPointCubit>().onLogin();
-        }
-        if (state.status == AuthStatus.notAuthenticated) {
-          //MM  locator<CustomerSoundViewModel>().getUserRequests(showLoad: false);
-          //MM  PCPViewModel.checkIfSameLoggedInUser();
-
-          return false;
-        }
-        getEkramPermissions();
-        try {
-          BlocProvider.of<DashboardBloc>(
-                  NavigationService.navigatorKey.currentContext!)
-              .add(DashboardEventInitial());
-        } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      try {
+        sl<AuthenticationBloc>().add(
+          LoginWithNafazAuthentication(
+            accessToken: success.accessToken!,
+          ),
+        );
+      } catch (e) {
+        print("object");
       }
     });
-
-    if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
-      CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
-    }
-
-    EasyLoading.dismiss();
-    // getUserLocationData();
-    //MM   sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
-    //MM return isLoggedIn;
-    return CommonProperties.isLoggedIn;
+    return;
   }
+
+  ////////////////////////////////////////////////////////////////////////
 
   Future<void> refreshToken(String refreshToken) async {
     SSOToken? token = state.token;
@@ -250,8 +239,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             errorMessage: "",
           ));
 
-          if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
-            CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+          if (CommonProperties.fcmToken != null &&
+              CommonProperties.fcmToken!.isNotEmpty) {
+            CommonFunctions.updateNotificationSettings(
+                CommonProperties.fcmToken!);
           }
           return true;
         });
@@ -262,9 +253,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    DateTime? expireTime = DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
+    DateTime? expireTime =
+        DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
 
-    if (expireTime == null || (expireTime.difference(DateTime.now()).inHours <= 2)) {
+    if (expireTime == null ||
+        (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
       return await failureOrSuccess.fold((failure) {
         return false;
@@ -279,10 +272,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> checkifTokenExpired() async {
     if (state.status == AuthStatus.notAuthenticated) {
-      DateTime? expireTime = DateTime.tryParse(state.token?.expirationTime ?? "");
+      DateTime? expireTime =
+          DateTime.tryParse(state.token?.expirationTime ?? "");
 
       if (expireTime != null) {
-        if (!DateTime.now().add(const Duration(minutes: 15)).isBefore(expireTime)) {
+        if (!DateTime.now()
+            .add(const Duration(minutes: 15))
+            .isBefore(expireTime)) {
           if (state.token?.refreshToken != null) {
             return await refreshToken(state.token!.refreshToken!);
           }
@@ -294,6 +290,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
+    try {
+      sl<AuthenticationBloc>().add(LogoutAuthentication());
+    } catch (e) {
+      print("object");
+    }
     await _logout(NoParams());
     sl<DelegatorsCubit>().clearDelegators();
     final failureOrSuccess = await _clearAuth(NoParams());
@@ -315,7 +316,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       ));
     });
 
-    if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null &&
+        CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
   }
@@ -337,7 +339,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     // Fix White screen on startup
     // Helpers.backToHome();
 
-    if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null &&
+        CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
     CommonFunctions.showError("session_ended_error".tr());
@@ -346,7 +349,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> refreshSSOProfile() async {
     try {
       final failureOrSuccessForProfile = await _getProfile(NoParams());
-      await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
+      await failureOrSuccessForProfile.fold((failure) async {},
+          (success) async {
         final failureOrSuccess = await _saveSSOProfile(success);
         if (failureOrSuccess.isRight()) {
           emit(state.copyWith(
@@ -356,14 +360,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         }
       });
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   Future<void> checkVersion() async {
@@ -400,11 +404,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   void selectDelegator(DelegatorEntity? delegator) {
-    emit(state.copyWith(selectedDelegator: Nullable(delegator), selectedAgent: Nullable(null)));
+    emit(state.copyWith(
+        selectedDelegator: Nullable(delegator), selectedAgent: Nullable(null)));
   }
 
   void selectAgent(AgentEntity? agent) {
-    emit(state.copyWith(selectedDelegator: Nullable(null), selectedAgent: Nullable(agent)));
+    emit(state.copyWith(
+        selectedDelegator: Nullable(null), selectedAgent: Nullable(agent)));
   }
 
   Future<(GISParams, GISResponse)?> getUserLocationData() async {
@@ -413,11 +419,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
     if (latlng == null) {
     } else {
-      emit(state.copyWith(userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
+      emit(state.copyWith(
+          userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
 
       GetGISData getgis = GetGISData(repository: sl());
 
-      var result = await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
+      var result =
+          await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
       result.fold((l) {
         emit(state.copyWith(gisStatus: BlocStatus.failure));
       }, (r) {
@@ -442,7 +450,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> getEkramPermissions({bool allowTracking = false}) async {
     try {
       if (state.userInfo?.sub == null || state.userInfo?.tnm == null) return;
-      final failureOrSuccessForProfile = await _getEkramPermission(GetPermissionParamsModel(claims: [
+      final failureOrSuccessForProfile =
+          await _getEkramPermission(GetPermissionParamsModel(claims: [
         Claim(type: "sub", value: state.userInfo!.sub!),
         Claim(type: "tenant", value: state.userInfo!.tnm!)
       ]));
@@ -450,8 +459,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         print("permission failure$failure");
       }, (success) async {
         print("permission success$success");
-        if ((success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ?? false) &&
-            (success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ?? false)) {
+        if ((success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ??
+                false) &&
+            (success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ??
+                false)) {
           CommonProperties.showEkramDriver = true;
           sharedPrefs.setIsEkramDriver(true);
         } else {
@@ -459,14 +470,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         }
       });
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     CommonProperties.showEkramDriver =
         sharedPrefs.isEkramDriver() ?? CommonProperties.showEkramDriver;
     if (allowTracking) {
@@ -481,5 +492,83 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     emit(state.copyWith(blocStatus: BlocStatus.loading));
 
     emit(state.copyWith(blocStatus: BlocStatus.success));
+  }
+
+  void _saveDataLogin({
+    required SSOToken token,
+    required bool isFromEtmam,
+  }) async {
+    final failureOrSuccess = await _saveAuth(token);
+    if (failureOrSuccess.isRight()) {
+      emit(state.copyWith(
+        status: AuthStatus.loading,
+        token: token,
+        errorMessage: "",
+      ));
+
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
+      SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
+      final failureOrSuccess =
+          await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
+      if (failureOrSuccess.isRight()) {
+        emit(state.copyWith(
+          status: AuthStatus.authenticated,
+          token: token,
+          userInfo: user,
+          errorMessage: "",
+        ));
+        FlutterUxcam.setUserIdentity(user.idNo);
+        FlutterUxcam.setUserProperty("name", user.arName ?? "");
+      }
+
+      final failureOrSuccessForCookie = await _getCookie(NoParams());
+
+      await failureOrSuccessForCookie.fold((l) async {
+        final failureOrSuccessForCookie = await _getCookie(NoParams());
+        await failureOrSuccessForCookie.fold((failure) {
+          emit(state.copyWith(
+            status: AuthStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        }, (r) async {
+          SSOToken? token = state.token;
+          token?.appCookie = r;
+          if (token != null) {
+            await _saveAuth(token);
+            emit(state.copyWith(token: token));
+          }
+        });
+      }, (r) async {
+        SSOToken? token = state.token;
+        token?.appCookie = r;
+        if (token != null) {
+          await _saveAuth(token);
+          emit(state.copyWith(token: token));
+        }
+      });
+      EasyLoading.dismiss();
+      if (isFromEtmam) {
+        sl<EtmamEntryPointCubit>().onLogin();
+      }
+      if (state.status == AuthStatus.notAuthenticated) {
+        //MM  locator<CustomerSoundViewModel>().getUserRequests(showLoad: false);
+        //MM  PCPViewModel.checkIfSameLoggedInUser();
+        return;
+      }
+      getEkramPermissions();
+      try {
+        BlocProvider.of<DashboardBloc>(
+                NavigationService.navigatorKey.currentContext!)
+            .add(DashboardEventInitial());
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+    }
   }
 }

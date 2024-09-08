@@ -89,9 +89,6 @@ final sl = GetIt.instance;
 void initialize() {
 
 
-  AuthenticationInjection.initialize();
-
-
   OLDInjection.init();
   //! Features
   //? Entry Point
@@ -232,24 +229,28 @@ void initialize() {
       () => ChatBotRepositoryImplementation(sl()));
   sl.registerLazySingleton(() => SendQuestionMessageChatBot(sl()));
 
-  //Balady Calendar
+  //  Balady Calendar
   sl.registerLazySingleton<BaladyCalendarRemoteDataSource>(
       () => CalendarBaladyRemoteDataSourceImpl(webService: sl()));
   sl.registerLazySingleton<BaladyCalendarRepository>(
       () => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
-
-  //noification
+  /////////////// End
+  //  Noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
       () => NotificationRemoteDataSourceImplementation(webService: sl()));
   sl.registerLazySingleton<NotificationRepositoryImplementation>(
       () => NotificationRepositoryImplementation(remoteDataSource: sl()));
   sl.registerLazySingleton<NotificationManager>(
       () => NotificationManager(repository: sl()));
+  /////////////// End
 
-
-
-
+  ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
   /////////////// get All Commercial Injection Container
   CommercialInjectionContainer.init();
   /////////////// End
+  /////////////// get All Authentication Model Injection Container
+  AuthenticationInjection.initialize();
+  /////////////// End
+
 }

@@ -16,6 +16,12 @@ import '../../../weather/presentation/bloc/weather_bloc.dart';
 import '../../bottom_navigation_exports.dart' show BottomNavBarCubit;
 import 'mapness_page.dart';
 
+
+
+import 'package:balady_authorization/auth_package.dart';
+
+
+
 class BottomNavigationPage extends StatefulWidget {
   const BottomNavigationPage({super.key});
 
@@ -57,7 +63,19 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
               create: (_) => sl<WeatherBloc>(),
             ),
           ],
-          child: const MapnessPage(),
+          child: BaladyAuthorizationWidget(
+            authenticated: (LoginDataModel data) {
+              // sl<EntryPointCubit>().onLoadingApp();
+              sl<EntryPointCubit>().onLoginV2(data: data);
+            },
+            unAuthenticatedState: (data) {
+              sl<EntryPointCubit>().clearAuth();
+            },
+            linkWithNafaz: () {
+              sl<EntryPointCubit>().onLoginNfaaz();
+            },
+            child: const MapnessPage(),
+          ),
         ),
         BlocBuilder<EntryPointCubit, EntryPointState>(
           builder: (BuildContext context, EntryPointState state) {

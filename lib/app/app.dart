@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:bot_toast/bot_toast.dart'
@@ -23,7 +24,6 @@ import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
-import 'package:balady_authorization/auth_package.dart';
 
 // import 'baldy';
 
@@ -58,8 +58,8 @@ class App extends StatelessWidget {
         ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
-        value: sl<EntryPointCubit>()..onLoadingApp(),
-        child: BaladyAuthorizationWidget(
+        value: sl<EntryPointCubit>(),
+        child: BaladyAuthorizationBloc(
           child: AppWidget(
             key: materialAppKey,
           ),
