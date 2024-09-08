@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/dashboard.dart';
+import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/router.dart';
@@ -48,13 +49,16 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _mediaQuery = ref.read(mediaQueryInfoProvider);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mediaQuery = ref.read(mediaQueryInfoProvider);
+    });
 
     _scrollController = StatefulBottomSheetController(
       durationMultiplier: 1.0,
       initialState: ThreeStateBottomSheet.open,
       behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
-      stateMapper: const ThreeStateMapper(),
+      stateMapper: const LandingStateMapper(),
     );
     _scrollController.addListener(_calculatePadding);
 
@@ -69,12 +73,12 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _calculatePadding() {
-    ref.read(cameraPaddingProvider.notifier).resetPadding(
+    ref.watch(cameraPaddingProvider.notifier).resetPadding(
           defaultPadding: CameraSetPaddingMessage(
             leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
             rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
             topPadding: _mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: _scrollController.sheetHeight.toInt() * (_mediaQuery?.devicePixelRatio ?? 0).toInt(),
+            bottomPadding: _scrollController.sheetHeight.toInt(),
           ),
         );
   }
@@ -127,43 +131,48 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
-      child: Directionality(
-        textDirection: Directionality.of(context),
-        child: Material(
-          type: MaterialType.transparency,
-          child: Stack(
-            children: [
-              ListenableBuilder(
-                listenable: _scrollController,
-                builder: (_, __) {
-                  if (_scrollController.state == ThreeStateBottomSheet.hidden) {
-                    return const SizedBox.shrink();
-                  }
+    return PopScope(
+      onPopInvoked: (_LandingPageState) {
 
-                  return GestureDetector(
-                    onTapDown: (_) {
-                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                        _scrollController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
-                    onTapUp: (_) {
-                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                        _scrollController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
-                    onTap: () {
-                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                        _scrollController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
-                  );
-                },
-              ),
-              MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),
-              Dashboard(scrollableController: _scrollController),
-            ],
+      },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Directionality(
+          textDirection: Directionality.of(context),
+          child: Material(
+            type: MaterialType.transparency,
+            child: Stack(
+              children: [
+                ListenableBuilder(
+                  listenable: _scrollController,
+                  builder: (_, __) {
+                    if (_scrollController.state == ThreeStateBottomSheet.hidden) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return GestureDetector(
+                      onTapDown: (_) {
+                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                          _scrollController.setState(ThreeStateBottomSheet.hidden);
+                        }
+                      },
+                      onTapUp: (_) {
+                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                          _scrollController.setState(ThreeStateBottomSheet.hidden);
+                        }
+                      },
+                      onTap: () {
+                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                          _scrollController.setState(ThreeStateBottomSheet.hidden);
+                        }
+                      },
+                    );
+                  },
+                ),
+                MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),
+                Dashboard(scrollableController: _scrollController),
+              ],
+            ),
           ),
         ),
       ),
