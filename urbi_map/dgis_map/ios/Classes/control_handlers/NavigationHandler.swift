@@ -191,6 +191,8 @@ class NavigationHandler {
         map: Map,
         speedRangeZoom: SpeedRangeZoom
     ) {
+        map.graphicsPreset = .immersive
+        
         self.prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
             behaviour: NavigationHandler.navigationManager!.mapFollowController.cameraBehaviour
