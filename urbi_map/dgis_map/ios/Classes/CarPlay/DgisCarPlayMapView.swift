@@ -50,8 +50,11 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
         )
         
         map.addSource(source: MyLocationMapObjectSource(
-            context: context,
-            controller: MyLocationController(bearingSource: .auto)
+            context: try! (SwiftDgisMapPlugin.sdkContext!).context,
+            controllerSettings: MyLocationControllerSettings(
+                bearingSource: .auto
+            ),
+            markerType: .model
         ))
         
         self.map = map
