@@ -194,15 +194,27 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           errorMessage: (failure as ServerFailure).errorMessage,
         ),
       );
+      EasyLoading.dismiss();
       return;
     }, (success) async {
       try {
         sl<AuthenticationBloc>().add(
           LoginWithNafazAuthentication(
-            accessToken: success.accessToken!,
+            dataLogin: {
+              "access_token": success.accessToken,
+              "expires_in": success.accessTokenExpirationDateTime != null
+                  ? DateTime.now()
+                      .difference(success.accessTokenExpirationDateTime!)
+                      .inSeconds
+                  : 3500000,
+              "token_type": success.tokenType,
+              "refresh_token": success.refreshToken,
+              "scope": success.scopes ?? "",
+            },
           ),
         );
       } catch (e) {
+        EasyLoading.dismiss();
         print("object");
       }
     });
