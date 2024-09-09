@@ -112,6 +112,8 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       );
     }
 
+    await mapObjectManager.removeAllMarkers();
+
     /// add markers to map
     await mapObjectManager.addMarkers(markers);
   }
