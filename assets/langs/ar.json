@@ -4053,5 +4053,9 @@
   "debts": "الديون",
   "debt_origin": "مصدر المديونية",
   "show_debts": "عرض المديونيات",
-  "no_debts": "لا يوجد ديون"
+  "no_debts": "لا يوجد ديون",
+  "auth_pacakge_start": "start",
+  "biometric": "خدمة Touch ID/Face ID",
+  "auth_pacakge_end": "end",
+  "quick_access": "الرمز السريع"
 }

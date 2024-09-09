@@ -4312,5 +4312,10 @@
   "debts": "Debts",
   "debt_origin": "Debt Origin",
   "show_debts": "Show Debts",
-  "no_debts": "No Debts"
+  "no_debts": "No Debts",
+  "auth_pacakge_start": "start",
+  "biometric": "Touch ID/Face ID service",
+  "auth_pacakge_end": "end",
+  "quick_access": "Quick access"
+
 }

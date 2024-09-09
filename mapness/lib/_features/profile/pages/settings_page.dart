@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/features/_shared_features/auth_quick_access_cell/widgets/auth_quick_access_cell.dart';
+import 'package:balady_plus/app/features/_shared_features/biometric_cell/widgets/biometric_cell.dart';
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -62,6 +64,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ],
                       ),
                       const SizedBox(height: Spacing.$4x),
+                      ContentWrapper(
+                        color: context.color.surfaceBaseSecondary,
+                        children: const [
+                          BiometricCell(),
+                        ],
+                      ),
+                      const SizedBox(height: Spacing.$4x),
+                      ContentWrapper(
+                        color: context.color.surfaceBaseSecondary,
+                        children: const [authQuickAccessCell()],
+                      ),
+                      const SizedBox(height: Spacing.$4x),
                       Consumer(
                         builder: (context, ref, child) {
                           final language = ref.watch(appLanguageProvider);
@@ -75,7 +89,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                   leadingIcon: leadingIcon(language),
                                 ),
                                 content: const LanguagePicker(),
-                                expandIconColor: context.color.textAndIconsBaseSecondary,
+                                expandIconColor:
+                                    context.color.textAndIconsBaseSecondary,
                               ),
                             ],
                           );
@@ -97,7 +112,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 title: context.l10n.darkMap,
                                 actionWidget: ContentRowActionOptions(
                                   enabledToggle: true,
-                                  toggleInitialValue: ref.watch(darkModeProvider),
+                                  toggleInitialValue:
+                                      ref.watch(darkModeProvider),
                                 )),
                             onToggle: (_) {
                               ref.read(darkModeProvider.notifier).toggle();
