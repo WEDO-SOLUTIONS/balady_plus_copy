@@ -1,45 +1,47 @@
+import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_verify/utility/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/classification_certificate_verify_bloc.dart';
 
 class SearchNormalOptionsWidget extends StatelessWidget {
-  final String title;
-  final String description;
-  final int value;
-  final int groupValue;
-  final GestureTapCallback onTap;
+  final NormalSearchType type;
+  final NormalSearchType? groupValue;
 
   const SearchNormalOptionsWidget({
     super.key,
-    required this.title,
-    required this.description,
-    required this.value,
-    required this.groupValue,
-    required this.onTap,
+    required this.type,
+    this.groupValue,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            width: 1,
-            color: Theme.of(context).primaryColor,
-          )),
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(
+          width: 1,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
       elevation: 0,
       color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 6),
-            child: RadioListTile(
-              value: value,
-              groupValue: groupValue,
-              onChanged: (val) {},
-              title: Text(title.tr()),
-              subtitle: Text(description.tr()),
-            ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
+          child: RadioListTile(
+            value: type,
+            groupValue: groupValue,
+            onChanged: (val) {
+              context.read<ClassificationCertificateVerifyBloc>().add(
+                SelectNormalSearchTypeClassificationCertificateState(
+                  normalSearchType: type,
+                ),
+              );
+            },
+            title: Text(type.title.tr()),
+            subtitle: Text(type.description.tr()),
           ),
         ),
       ),

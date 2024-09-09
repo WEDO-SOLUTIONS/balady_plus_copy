@@ -7,3 +7,26 @@ class ClassificationCertificateVerifyEvents extends Equatable {
   // TODO: implement props
   List<Object?> get props => throw UnimplementedError();
 }
+
+
+class SelectSearchMethodClassificationCertificateState extends ClassificationCertificateVerifyEvents {
+  final SearchMethod typeMethod;
+
+  const SelectSearchMethodClassificationCertificateState({
+    required this.typeMethod,
+  });
+
+  @override
+  List<Object?> get props => [typeMethod];
+}
+
+class SelectNormalSearchTypeClassificationCertificateState extends ClassificationCertificateVerifyEvents {
+  final NormalSearchType normalSearchType;
+
+  const SelectNormalSearchTypeClassificationCertificateState({
+    required this.normalSearchType,
+  });
+
+  @override
+  List<Object?> get props => [normalSearchType];
+}

@@ -1,8 +1,13 @@
-import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_verify/widgets/search_normal_options_widget.dart';
+import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_verify/bloc/classification_certificate_verify_bloc.dart';
+import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_verify/utility/enums.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import '../widgets/advanced_search_widget.dart';
+import '../widgets/normal_search_verified_by_widget.dart';
+import '../widgets/normal_search_list_widget.dart';
 import '../widgets/search_type_widget.dart';
 
 class ClassificationCertificateVerifyScreen extends StatelessWidget {
@@ -10,64 +15,85 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColor.scaffoldBackground,
-      resizeToAvoidBottomInset: true,
-      appBar: DefaultAppBarWidget(
-        title: "back".tr(),
-        showBack: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "search_method".tr(),
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(),
-            ),
-            const SizedBox(height: 16),
-            Card(
-              color: Colors.grey.shade200,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+    return BlocProvider(
+      create: (BuildContext context) {
+        return ClassificationCertificateVerifyBloc();
+      },
+      child: Scaffold(
+        backgroundColor: AppColor.scaffoldBackground,
+        resizeToAvoidBottomInset: true,
+        appBar: DefaultAppBarWidget(
+          title: "back".tr(),
+          showBack: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "search_method".tr(),
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: SearchTypeWidget(
-                      title: 'search_name',
-                      onTap: () {},
-                      isSelected: true,
+              const SizedBox(height: 16),
+              // for select type search of screen
+              BlocBuilder<ClassificationCertificateVerifyBloc, ClassificationCertificateVerifyState>(
+                buildWhen: (state, stateNew) {
+                  return stateNew is NormalSearchClassificationCertificateState || stateNew is AdvancedMethodClassificationCertificateState;
+                },
+                builder: (contextBloc, state) {
+                  return Card(
+                    color: Colors.grey.shade200,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ),
-                  Expanded(
-                    child: SearchTypeWidget(
-                      title: 'advanced_search',
-                      onTap: () {},
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: SearchTypeWidget(
+                            typeMethod: SearchMethod.search,
+                            selectedTypeMethod: state.typeMethod,
+                          ),
+                        ),
+                        Expanded(
+                          child: SearchTypeWidget(
+                            typeMethod: SearchMethod.advancedSearch,
+                            selectedTypeMethod: state.typeMethod,
+                          ),
+                        ),
+                      ],
                     ),
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: BlocBuilder<ClassificationCertificateVerifyBloc, ClassificationCertificateVerifyState>(
+                    builder: (contextBloc, state) {
+                      if(state is NormalSearchClassificationCertificateState) {
+                        return NormalSearchListWidget(state: state);
+                      }
+                      if(state is NormalSearchVerifiedByClassificationCertificateState) {
+                        return NormalSearchVerifiedByWidget(state: state);
+                      }
+                      if(state is AdvancedMethodClassificationCertificateState) {
+                        return AdvancedSearchWidget();
+                      }
+                      return const SizedBox();
+                    },
                   ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            SearchNormalOptionsWidget(
-              title: 'Test Title.',
-              description: 'Test Description.',
-              onTap: () {},
-              value: 1,
-              groupValue: 4,
-            ),
-            const SizedBox(height: 16),
-
-
-            ElevatedButton(
-              onPressed: () {},
-              child: Text(
-                "search".tr(),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text(
+                  "search".tr(),
+                ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

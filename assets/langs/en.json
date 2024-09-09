@@ -4317,5 +4317,33 @@
   "classification_certificate_verify": "Classification Certificate Verify",
   "search_name": "Search",
   "search_method": "Search Method",
-  "advanced_search": "Advanced search"
+  "advanced_search": "Advanced search",
+  "verified_by": "Verified by",
+
+  "byCertificationNumber_title": "By certification number",
+  "byCertificationNumber_description": "Certificate number required",
+  "byContractorEngineeringOfficeName_title": "By contractor/engineering office name",
+  "byContractorEngineeringOfficeName_description": "Requires contractor/engineer name; both may be provided for more accurate data.",
+  "byCommercialRegistrationNoEngineeringOfficeLicenseNumber_title": "By commercial registration no./engineering office license  number",
+  "byCommercialRegistrationNoEngineeringOfficeLicenseNumber_description": "Requires commercial registration no./engineering office license no.; both may be provided for more accurate data.",
+  "byNationalID_title": "By the national ID number",
+  "byNationalID_description": "Requires ID number, Iqama, or Gulf ID number",
+  "enter_number":"Enter number",
+  "the_contractor":"Contractor",
+  "enter_contractor_name":"Enter contractor name",
+  "engineering_office":"Engineering office",
+  "enter_office_name":"Enter office name",
+
+  "commercial_registration": "Commercial Registration",
+  "enter_commercial_registration": "Enter Commercial Registration",
+  "engineering_office_license ": "Engineering office license ",
+  "enter_engineering_office_license": "Enter Engineering office license",
+  "id_number_type": "ID number type",
+  "select_type_two": "Select type",
+  "id_number_two": "ID number",
+  "enter_id_number_two": "Enter ID number",
+  "": "",
+  "": ""
+
+
 }

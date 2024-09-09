@@ -4059,6 +4059,33 @@
   "classification_certificate_verify": "التحقق من شهادة التصنيف",
   "search_name": "بحث",
   "search_method": "آلية البحث",
-  "advanced_search": "بحث متقدم"
+  "advanced_search": "بحث متقدم",
 
+  "verified_by": "التحقق بواسطة",
+
+  "byCertificationNumber_title": "البحث برقم شهادة التصنيف",
+  "byCertificationNumber_description": "يتطلب فقط رقم الشهادة",
+  "byContractorEngineeringOfficeName_title": "البحث بواسطة اسم المقاول/اسم المكتب الهندسي",
+  "byContractorEngineeringOfficeName_description": "يتطلب اسم المقاول او اسم المكتب الهندسي ومن الممكن كلاهما لدقة البيانات اكثر",
+  "byCommercialRegistrationNoEngineeringOfficeLicenseNumber_title": "البحث برقم السجل التجاري/الترخيص الهندسي",
+  "byCommercialRegistrationNoEngineeringOfficeLicenseNumber_description": "يتطلب رقم السجل التجاري او رقم ترخيص المكتب الهندسي ومن الممكن كلاهما لدقة البيانات اكثر",
+  "byNationalID_title": "البحث بواسطة الرقم الوطني الموحد",
+  "byNationalID_description": "يتطلب رقم الوطني اي رقم الهوية ، الاقامة ، رقم هوية خليجية",
+  "enter_number":"ادخل الرقم",
+  "the_contractor":"المقاول",
+  "enter_contractor_name":"ادخل اسم المقاول",
+  "engineering_office":"المكتب الهندسي",
+  "enter_office_name":"ادخل اسم المكتب الهندسي",
+
+
+  "commercial_registration": "السجل التجاري",
+  "enter_commercial_registration": "ادخل رقم السجل التجاري",
+  "engineering_office_license": " ترخيص المكتب الهندسي",
+  "enter_engineering_office_license": "ادخل رقم ترخيص المكتب الهندسي",
+  "id_number_type": "نوع الرقم الوطني الموحد",
+  "select_type_two": "اختر نوع الهوية",
+  "id_number_two": "الرقم الوطني",
+  "enter_id_number_two": "ادخل الهوية",
+  "": "",
+  "": ""
 }

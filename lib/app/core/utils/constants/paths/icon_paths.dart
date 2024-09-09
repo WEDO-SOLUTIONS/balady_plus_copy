@@ -437,6 +437,7 @@ class IconPath {
   static const check = '${_svgIconPath}check$_svg';
 
   static const chat_bot_icon = '${_svgIconPath}chat-bot$_svg';
+  static const arrowCircleDown = '${_pngIconPath}arrow-circle-down$_png';
 
 }
 
