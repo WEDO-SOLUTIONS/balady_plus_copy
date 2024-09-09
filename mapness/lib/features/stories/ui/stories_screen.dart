@@ -33,11 +33,11 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
     _reportOpenMetricaEvent();
   }
 
-  void _onClose() {
+  void _onClose([int? index]) {
     widget.onClose?.call();
     _reportCloseMetricaEvent();
     ref.read(storyServiceProvider.notifier).resumeUpdate();
-    context.pop();
+    context.pop<int?>(index);
   }
 
   @override
