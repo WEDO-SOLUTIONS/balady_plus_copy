@@ -35,14 +35,14 @@ class NavigationHandler {
     private(set) var isNavigating: Bool = false
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
-        let context = try! sdk.context
+        self.context = try! sdk.context
         self.map = map
 
         self.eventChannel = eventChannel
         NavigationHandler.navigationManager = try! NavigationManager(platformContext: context)
-        NavigationHandler.navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        NavigationHandler.navigationManager.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
-        NavigationHandler.navigationManager.routeMapSettings.onRouteDisplayFlags.insert(.immersiveRouteParts)
+        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
+        NavigationHandler.navigationManager!.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
+        NavigationHandler.navigationManager!.routeMapSettings.onRouteDisplayFlags.insert(.immersiveRouteParts)
         
         self.voiceManager = getVoiceManager(context: context)
 
