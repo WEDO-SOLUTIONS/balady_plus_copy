@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/splash/splash_exports.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +17,7 @@ import '../../../weather/presentation/bloc/weather_bloc.dart';
 import '../../bottom_navigation_exports.dart' show BottomNavBarCubit;
 import 'mapness_page.dart';
 
-
-
 import 'package:balady_authorization/auth_package.dart';
-
-
 
 class BottomNavigationPage extends StatefulWidget {
   const BottomNavigationPage({super.key});
@@ -67,6 +64,11 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             authenticated: (LoginDataModel data) {
               // sl<EntryPointCubit>().onLoadingApp();
               sl<EntryPointCubit>().onLoginV2(data: data);
+              Navigator.of(context).popUntil(
+                ModalRoute.withName(
+                  RouteName.bottomNavigation,
+                ),
+              );
             },
             unAuthenticatedState: (data) {
               sl<EntryPointCubit>().clearAuth();
