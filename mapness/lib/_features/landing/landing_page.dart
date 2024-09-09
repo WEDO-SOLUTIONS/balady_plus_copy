@@ -119,7 +119,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(etaServiceProvider)
       ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
-      ..watch(locationProvider.select((_) => null))
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
         if (next?.currentPath == KiblahRoute.path) {
@@ -131,48 +130,43 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
-    return PopScope(
-      onPopInvoked: (_LandingPageState) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Directionality(
+        textDirection: Directionality.of(context),
+        child: Material(
+          type: MaterialType.transparency,
+          child: Stack(
+            children: [
+              ListenableBuilder(
+                listenable: _scrollController,
+                builder: (_, __) {
+                  if (_scrollController.state == ThreeStateBottomSheet.hidden) {
+                    return const SizedBox.shrink();
+                  }
 
-      },
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: Material(
-            type: MaterialType.transparency,
-            child: Stack(
-              children: [
-                ListenableBuilder(
-                  listenable: _scrollController,
-                  builder: (_, __) {
-                    if (_scrollController.state == ThreeStateBottomSheet.hidden) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return GestureDetector(
-                      onTapDown: (_) {
-                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                          _scrollController.setState(ThreeStateBottomSheet.hidden);
-                        }
-                      },
-                      onTapUp: (_) {
-                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                          _scrollController.setState(ThreeStateBottomSheet.hidden);
-                        }
-                      },
-                      onTap: () {
-                        if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                          _scrollController.setState(ThreeStateBottomSheet.hidden);
-                        }
-                      },
-                    );
-                  },
-                ),
-                MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),
-                Dashboard(scrollableController: _scrollController),
-              ],
-            ),
+                  return GestureDetector(
+                    onTapDown: (_) {
+                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                        _scrollController.setState(ThreeStateBottomSheet.hidden);
+                      }
+                    },
+                    onTapUp: (_) {
+                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                        _scrollController.setState(ThreeStateBottomSheet.hidden);
+                      }
+                    },
+                    onTap: () {
+                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
+                        _scrollController.setState(ThreeStateBottomSheet.hidden);
+                      }
+                    },
+                  );
+                },
+              ),
+              MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),
+              Dashboard(scrollableController: _scrollController),
+            ],
           ),
         ),
       ),
