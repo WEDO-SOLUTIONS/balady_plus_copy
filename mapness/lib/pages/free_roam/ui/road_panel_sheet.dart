@@ -115,6 +115,9 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                               color: color.surfaceBaseTertiary,
                               children: [
                                 ContentRow(
+                                  onTap: () {
+                                    const SoundSettingsRoute().push(context);
+                                  },
                                   options: ContentRowOptions(
                                     subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
                                       color: color.textAndIconsBaseSecondary,
@@ -123,9 +126,6 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                                       color: colorsV2.foregroundDefault,
                                     ),
                                     actionWidget: ContentRowActionOptions(
-                                      actionPressed: () {
-                                        const SoundSettingsRoute().push(context);
-                                      },
                                       actionIcon: AppIcons(
                                         iconData: SystemIcons.arrowCornerRightLarge,
                                         color: context.staticColor.textAndIconsBaseTertiary,
@@ -162,6 +162,9 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                             const SizedBox(height: Spacing.$3x),
                             ContentContainer(
                               child: ContentRow(
+                                onTap: () {
+                                  const NavigatorSettingsRoute().push(context);
+                                },
                                 options: ContentRowOptions(
                                   leadingIcon: Icon(
                                     SystemIcons.settings,
@@ -170,9 +173,6 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                                   ),
                                   title: l10n.navigatorSettings,
                                   actionWidget: ContentRowActionOptions(
-                                    actionPressed: () {
-                                      const NavigatorSettingsRoute().push(context);
-                                    },
                                     actionIcon: AppIcons(
                                       iconData: SystemIcons.arrowCornerRightLarge,
                                       color: context.staticColor.textAndIconsBaseTertiary,

@@ -40,7 +40,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -150,9 +149,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     );
 
     _bottomSheetController = DgisBottomSheetController();
-    Future.delayed(const Duration(milliseconds: 250), () {
-      ref.read(cameraPaddingProvider.notifier).resetPadding();
-    });
   }
 
   @override

@@ -17,7 +17,6 @@ import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
-import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
@@ -27,6 +26,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 class ShareMyLocationContent extends HookConsumerWidget {
   final LatLng? closestPoint;
@@ -70,8 +70,14 @@ class ShareMyLocationContent extends HookConsumerWidget {
       }
       if (next.hasError) {
         LoadingOverlay.of(context).endLoading();
-        // Temporary solution
-        _showEtaExpired(context);
+        context.pop();
+        ToastOverlay.of(context).show(
+          title: context.l10n.failedShareLiveLocation,
+          actionText: context.l10n.tryAgain,
+          onActionTap: () {
+            _showEtaTimeSheet(context, ref);
+          },
+        );
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
         final streamId = next.value!.streamId;
@@ -245,15 +251,6 @@ class ShareMyLocationContent extends HookConsumerWidget {
           ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);
         },
       ),
-    );
-  }
-
-  void _showEtaExpired(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => EtaShareExpired.liveLocation(context),
     );
   }
 }

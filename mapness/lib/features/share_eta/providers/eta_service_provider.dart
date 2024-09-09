@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
@@ -13,9 +15,14 @@ class EtaService extends _$EtaService {
 
   Dio? _dio;
 
+  static const authorizationKey = 'Authorization';
+  static const xStreamDataKey = 'X-Stream-Data';
+  static const gstreamTokenKey = 'GeoStreamingToken';
+
   @override
   Future<EtaStreamInfo?> build() async {
     await _init();
+
     return null;
   }
 
@@ -29,7 +36,7 @@ class EtaService extends _$EtaService {
     _dio = Dio();
 
     if (_dio != null && token.isNotEmpty) {
-      _dio!.options.headers['Authorization'] = 'Bearer $token';
+      _dio!.options.headers[authorizationKey] = 'Bearer $token';
     }
   }
 
@@ -73,8 +80,8 @@ class EtaService extends _$EtaService {
     state = const AsyncLoading();
     final headers = _dio!.options.headers
       ..addAll({
-        'X-Stream-Data': xStreamData,
-        'GeoStreamingToken': tokenId,
+        xStreamDataKey: xStreamData,
+        gstreamTokenKey: tokenId,
       });
 
     try {
@@ -101,7 +108,8 @@ class EtaService extends _$EtaService {
     }
   }
 
-  Future<void> updateEtaStream() async {
+  Future<void> updateEtaStream(EtaRouteMetadataPayload payload,
+      {required String xStreamData, required String tokenId}) async {
     await _init();
 
     if (_dio == null) {
@@ -109,20 +117,31 @@ class EtaService extends _$EtaService {
       return;
     }
 
-    try {
-      final response = await _dio!.get(
-        '$_baseUrl/v1/geolocation/stream',
-      );
+    final headers = _dio!.options.headers
+      ..addAll({
+        xStreamDataKey: xStreamData,
+        gstreamTokenKey: tokenId,
+      });
 
-      if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-        final etaStreamInfo = EtaStreamInfo.fromJson(data);
-        state = AsyncData(etaStreamInfo);
-      } else {
-        state = AsyncError(Exception('Failed to update ETA stream'), StackTrace.current);
+    try {
+      final response = await _dio!.put(
+        '$_baseUrl/v1/geolocation/stream',
+        data: EtaRouteUpdatePayload(metadata: payload).toJson(),
+        options: Options(
+          headers: headers,
+        ),
+      );
+      final code = response.statusCode;
+      if (code == null) {
+        throw Exception('Failed to update ETA stream');
       }
-    } on Exception catch (e, st) {
-      state = AsyncError(e, st);
+
+      if (code < 200 || code >= 300) {
+        throw Exception('Failed to update ETA stream');
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      rethrow;
     }
   }
 }

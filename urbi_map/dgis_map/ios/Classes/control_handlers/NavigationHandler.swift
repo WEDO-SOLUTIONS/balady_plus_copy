@@ -343,8 +343,9 @@ class NavigationHandler {
         }
     }
 
-    func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
+    func startFreeRoam(speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
         do {
+            setupCamera(speedRangeZoom: speedRangeZoom)
             try self.navigationManager.start()
         } catch {
             completion(FlutterError(
@@ -360,6 +361,7 @@ class NavigationHandler {
 
     func stopFreeRoam() {
         self.navigationManager.stop()
+        resetCamera()
     }
 
     func toggleSounds(toggleType: SoundToggleType) {

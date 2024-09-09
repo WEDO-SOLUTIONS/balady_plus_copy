@@ -28,7 +28,7 @@ class EtaSharingTimeSheet extends HookWidget {
 
     return EtaShareSheet(
       title: context.l10n.shareLiveLocation,
-      confirmBtnTitle: context.l10n.share,
+      confirmBtnTitle: context.l10n.share_location_btn,
       onConfirmTap: () => onConfirmTap(selectedTimeType.value),
       contentBuilder: (context) => [
         ContentRow(

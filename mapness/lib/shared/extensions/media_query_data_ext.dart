@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 extension MediaQueryDataExt on MediaQueryData {
-  double get navbarPadding => 48 + viewPadding.bottom;
+  double get navbarPadding => (48 + viewPadding.bottom) * devicePixelRatio;
   double get quickFilterPadding => 48 * devicePixelRatio;
 
   // Update when ui-kit bottom sheet is implemented
@@ -16,6 +16,6 @@ extension MediaQueryDataExt on MediaQueryData {
     final initBottomSize = bottomSheetPadding;
 
     // calculate intitial padding for camera
-    return (initBottomSize * deviceHeight * devicePixelRatio) + (navbarSize * devicePixelRatio) + qfilterPadding;
+    return (initBottomSize * deviceHeight * devicePixelRatio) + navbarSize + qfilterPadding;
   }
 }
