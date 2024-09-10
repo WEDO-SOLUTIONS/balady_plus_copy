@@ -24,11 +24,11 @@ class FeedbackScheduleEntity extends FeedbackBaseEntity<List<FeedbackScheduleWor
 /// represents single day of the week
 class FeedbackScheduleWorkingHoursEntity {
   final TimeRange workingTime;
-  final List<TimeRange> breaks;
+  final TimeRangeStartEnd? breaks;
 
   const FeedbackScheduleWorkingHoursEntity({
     required this.workingTime,
-    this.breaks = const [],
+    this.breaks,
   });
 }
 
