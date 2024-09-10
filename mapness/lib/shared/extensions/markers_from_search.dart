@@ -137,6 +137,7 @@ enum MapMarkersType {
   wc,
   dentalCenters,
   schools,
+  shopping,
 }
 
 extension IconPathFromMapMarkersType on MapMarkersType {
@@ -163,6 +164,7 @@ extension IconPathFromMapMarkersType on MapMarkersType {
         MapMarkersType.wc => '$_pathPrefix/ic_wc.svg',
         MapMarkersType.dentalCenters => '$_pathPrefix/ic_tooth.svg',
         MapMarkersType.schools => '$_pathPrefix/ic_school_ltr.svg',
+        MapMarkersType.shopping => '$_pathPrefix/ic_shopping.svg',
       };
 }
 
