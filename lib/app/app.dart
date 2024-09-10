@@ -105,6 +105,46 @@ class AppWidgetState extends State<AppWidget> {
               appBarTheme: const AppBarTheme(
                 backgroundColor: AppColor.blue,
               ),
+              dropdownMenuTheme: const DropdownMenuThemeData(
+                inputDecorationTheme: InputDecorationTheme(
+
+                ),
+                menuStyle: MenuStyle(
+
+                ),
+              ),
+              inputDecorationTheme: InputDecorationTheme(
+                counterStyle: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+                hintStyle: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xff71717A),
+                  fontWeight: FontWeight.normal,
+                ),
+                errorStyle: const TextStyle(color: AppColor.error),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 16,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Color(0xffD4D4D8), width: 1.5,),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColor.primary800Light, width: 1.5,),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColor.error, width: 1.5,),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColor.error, width: 1.5,),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColor.primary800Light,
@@ -118,22 +158,26 @@ class AppWidgetState extends State<AppWidget> {
                   ),
                 ),
               ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColor.primary900Light,
+                ),
+              ),
               outlinedButtonTheme: OutlinedButtonThemeData(
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColor.primary900Light,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  minimumSize: const Size(double.infinity, 34),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  side: const BorderSide(
-                    width: .8,
-                    color: AppColor.primary900Light,
-                  )
-                ),
+                    foregroundColor: AppColor.primary900Light,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    minimumSize: const Size(double.infinity, 34),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    side: const BorderSide(
+                      width: .8,
+                      color: AppColor.primary900Light,
+                    )),
               ),
             ),
             builder: EasyLoading.init(builder: BotToastInit()),
