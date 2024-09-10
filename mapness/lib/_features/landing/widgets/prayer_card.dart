@@ -21,117 +21,123 @@ class PrayerCard extends StatelessWidget {
   const PrayerCard({super.key});
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(
-          left: Spacing.$4x,
-          right: Spacing.$4x,
-          bottom: Spacing.$8x,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-          child: SizedBox(
-            height: 347,
-            child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
-                bloc: sl<PrayerTimesCubit>(),
-                builder: (context, state) {
-                  final nextPrayer = state.nextPrayer;
+  Widget build(BuildContext context) {
+    final bloc = sl<PrayerTimesCubit>();
 
-                  if (state.status == BlocRequestStatus.submissionGetFailure) {
-                    return const SizedBox();
-                  } else if (nextPrayer == null || state.status == BlocRequestStatus.submissionGetCanceled) {
-                    return const Padding(
-                      padding: EdgeInsets.only(bottom: Spacing.$8x),
-                      child: CustomShimmerWidget(),
-                    );
-                  }
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: Spacing.$4x,
+        right: Spacing.$4x,
+        bottom: Spacing.$8x,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
+        child: SizedBox(
+          height: 347,
+          child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+              bloc: bloc,
+              builder: (context, state) {
+                final nextPrayer = state.nextPrayer;
 
-                  return Material(
-                    child: Ink.image(
-                      alignment: Alignment.topCenter,
-                      fit: BoxFit.cover,
-                      image: const AssetImage(
-                        'assets/images/ishan-seefromthesky-unsplash.jpg',
-                        package: PackageConfig.packageName,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          Metrics.logEventAdvanced(
-                            MetricsConstants.exploreKeys.prayerTimesBannerButton,
-                            action: MetricAction.tap.name,
-                            group: MetricsConstants.exploreTag,
-                          );
-                          NavigationService.navigatorKey.currentState!.pushNamed(
-                            RouteName.prayerTimes,
-                            arguments: context.read<PrayerTimesCubit>(),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: Spacing.$5x,
-                            horizontal: Spacing.$6x,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'remain_to_azan'.tr().replaceAll('{}', state.nextPrayer!.prayer.label.tr()),
-                                style: context.textStyleV3.bodyLargeRegular.copyWith(
-                                  color: context.color.textAndIconsBaseInversePrimary,
-                                ),
+                if (state.status == BlocRequestStatus.submissionGetFailure) {
+                  return const SizedBox();
+                } else if (nextPrayer == null || state.status == BlocRequestStatus.submissionGetCanceled) {
+                  return const Padding(
+                    padding: EdgeInsets.only(bottom: Spacing.$8x),
+                    child: CustomShimmerWidget(),
+                  );
+                }
+
+                return Material(
+                  child: Ink.image(
+                    alignment: Alignment.topCenter,
+                    fit: BoxFit.cover,
+                    image: const AssetImage(
+                      'assets/images/ishan-seefromthesky-unsplash.jpg',
+                      package: PackageConfig.packageName,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        Metrics.logEventAdvanced(
+                          MetricsConstants.exploreKeys.prayerTimesBannerButton,
+                          action: MetricAction.tap.name,
+                          group: MetricsConstants.exploreTag,
+                        );
+                        NavigationService.navigatorKey.currentState!.pushNamed(
+                          RouteName.prayerTimes,
+                          arguments: context.read<PrayerTimesCubit>(),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: Spacing.$5x,
+                          horizontal: Spacing.$6x,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'remain_to_azan'.tr().replaceAll('{}', state.nextPrayer!.prayer.label.tr()),
+                              style: context.textStyleV3.bodyLargeRegular.copyWith(
+                                color: context.color.textAndIconsBaseInversePrimary,
                               ),
-                              _NextPrayerTimer(
-                                prayer: nextPrayer.prayer,
-                                time: nextPrayer.dateTime,
-                              ),
-                              const Spacer(),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${'pray'.tr()} ${state.nextPrayer!.prayer.label.tr()}',
-                                        style: context.textStyleV3.bodySmallRegular.copyWith(
-                                          color: context.color.textAndIconsBaseInversePrimary,
-                                        ),
+                            ),
+                            _NextPrayerTimer(
+                              key: Key(nextPrayer.prayer.name),
+                              onTimerEnd: () => bloc.updateNextPrayer(),
+                              prayer: nextPrayer.prayer,
+                              time: nextPrayer.dateTime,
+                            ),
+                            const Spacer(),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${'pray'.tr()} ${state.nextPrayer!.prayer.label.tr()}',
+                                      style: context.textStyleV3.bodySmallRegular.copyWith(
+                                        color: context.color.textAndIconsBaseInversePrimary,
                                       ),
-                                      RichText(
-                                        textDirection: TextDirection.ltr,
-                                        text: TextSpan(
-                                          style: context.textStyleV3.h2Medium.copyWith(
-                                            color: context.colorsV2.staticWhite,
+                                    ),
+                                    RichText(
+                                      textDirection: TextDirection.ltr,
+                                      text: TextSpan(
+                                        style: context.textStyleV3.h2Medium.copyWith(
+                                          color: context.colorsV2.staticWhite,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: DateFormat('hh:mm').format(state.nextPrayer!.dateTime),
                                           ),
-                                          children: [
-                                            TextSpan(
-                                              text: DateFormat('hh:mm').format(state.nextPrayer!.dateTime),
-                                            ),
-                                            TextSpan(
-                                              text: state.nextPrayer!.dateTime.hour > 12 ? ' pm' : ' am',
-                                            ),
-                                          ],
-                                        ),
+                                          TextSpan(
+                                            text: state.nextPrayer!.dateTime.hour > 12 ? ' pm' : ' am',
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: _NotificationIconSwitch(),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: _NotificationIconSwitch(),
+                                )
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  );
-                }),
-          ),
+                  ),
+                );
+              }),
         ),
-      );
+      ),
+    );
+  }
 }
 
 class _NotificationIconSwitch extends StatefulWidget {
@@ -191,10 +197,13 @@ class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
 class _NextPrayerTimer extends StatefulWidget {
   final Prayers prayer;
   final DateTime time;
+  final Function() onTimerEnd;
 
   const _NextPrayerTimer({
     required this.prayer,
     required this.time,
+    required this.onTimerEnd,
+    super.key,
   });
 
   @override
@@ -202,11 +211,14 @@ class _NextPrayerTimer extends StatefulWidget {
 }
 
 class _NextPrayerTimerState extends State<_NextPrayerTimer> {
-  final _countDownStream = StreamController<Duration>();
+  late final StreamController<Duration> _countDownStream;
+  late final Timer _timer;
 
   @override
   void initState() {
     super.initState();
+
+    _countDownStream = StreamController<Duration>();
 
     DateTime prayerTime = widget.time;
     final DateTime now = DateTime.now();
@@ -216,14 +228,13 @@ class _NextPrayerTimerState extends State<_NextPrayerTimer> {
     final remainingTime = prayerTime.difference(now);
 
     _countDownStream.sink.add(remainingTime);
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!_countDownStream.isClosed) {
         final newRemainingTime = prayerTime.difference(DateTime.now());
         if (newRemainingTime.inSeconds >= 0) {
           _countDownStream.sink.add(newRemainingTime);
         } else {
-          timer.cancel();
-          _countDownStream.close();
+          widget.onTimerEnd();
         }
       }
     });
@@ -232,6 +243,7 @@ class _NextPrayerTimerState extends State<_NextPrayerTimer> {
   @override
   void dispose() {
     _countDownStream.close();
+    _timer.cancel();
     super.dispose();
   }
 
