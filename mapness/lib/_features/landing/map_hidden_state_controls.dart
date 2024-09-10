@@ -85,7 +85,6 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
 
         const hiddenHeight = 0.0;
         const controlsHeight = 60.0;
-        print('objectobject $delta $hiddenHeight');
         return AnimatedCrossFade(
             crossFadeState: freeRoamState.canStart && !freeRoamState.isAutorun
                 ? CrossFadeState.showFirst
