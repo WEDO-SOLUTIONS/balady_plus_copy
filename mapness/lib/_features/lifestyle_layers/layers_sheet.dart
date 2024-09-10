@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/router.dart';
 import 'package:mapness/widgets/lifestyle_layers/layers_sheet_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_details_content.dart';
 
@@ -188,18 +187,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   void _showBottomSheet() {
     ref.read(layersControlsProvider.notifier).initialize();
 
-    _layersController
-        .animateTo(
+    _layersController.animateTo(
       _layersPanelMaxHeight,
       duration: _showHideDuration,
       curve: curve,
-    )
-        .then((_) {
-      _layersController.addListener(() {
-        if (_layersController.isAttached && _layersController.size < .1) {
-          ref.read(goRouterProvider).pop();
-        }
-      });
-    });
+    );
   }
 }

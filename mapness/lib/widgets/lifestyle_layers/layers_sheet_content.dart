@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart' as layers_state;
+import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -50,6 +51,7 @@ class LayersSheetContent extends ConsumerWidget {
                         group: MetricsConstants.layersTag,
                         action: MetricAction.tap.toString(),
                       );
+                      ref.read(goRouterProvider).pop();
                       onClose();
                     },
                     padding: EdgeInsets.zero,
