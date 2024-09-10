@@ -159,7 +159,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         "${RemoteConfig.ssoUrl}/connect/endsession",
         queryParameters: {
           "id_token_hint": sl<EntryPointCubit>().state.token?.idToken,
-          "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
         },
       );
 
