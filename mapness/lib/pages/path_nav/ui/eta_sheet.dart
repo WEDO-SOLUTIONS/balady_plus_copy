@@ -81,7 +81,13 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       ..watch(websocketTypeProvider.select((_) => null))
       ..watch(shareEtaProvider.select((_) => null));
 
-    final _subtitleVoiceInstruction = voiceName != null ? '${l10n.announcedEvents} • $voiceName' : l10n.announcedEvents;
+    final _voiceInstructionTypeTitle = _mapVoiceInstructionsIndexToTitle(
+      context,
+      voiceInstruction: soundSettingsNotifier.currentSoundToggleType,
+    );
+
+    final _subtitleVoiceInstruction =
+        voiceName != null ? '$_voiceInstructionTypeTitle • $voiceName' : _voiceInstructionTypeTitle;
 
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
@@ -215,4 +221,14 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       }
     });
   }
+
+  String _mapVoiceInstructionsIndexToTitle(
+    BuildContext context, {
+    required SoundToggleType voiceInstruction,
+  }) =>
+      switch (voiceInstruction) {
+        SoundToggleType.all => context.l10n.announcedEvents,
+        SoundToggleType.important => context.l10n.onlyImportantManeuvers,
+        SoundToggleType.none => context.l10n.voiceIsOff,
+      };
 }

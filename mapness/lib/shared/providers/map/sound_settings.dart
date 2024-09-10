@@ -85,6 +85,8 @@ class SoundSettings extends _$SoundSettings {
   static const _soundToggleTypesList = SoundToggleType.values;
   static const _promptsVolumeList = [10, 30, 60];
 
+  SoundToggleType get currentSoundToggleType => SoundToggleType.values[state.voiceInstructionIndex];
+
   @override
   SoundSettingsModel build() {
     final sharedPrefs = ref.read(sharedPrefsProvider);

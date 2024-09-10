@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +28,10 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
     final l10n = context.l10n;
     final textStyleV3 = context.textStyleV3;
     final color = context.color;
+    final voiceInstructionSubtitle = _mapVoiceInstructionsIndexToTitle(
+      context,
+      voiceInstruction: soundSettingsNotifier.currentSoundToggleType,
+    );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -71,7 +76,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                               left: Spacing.$4x,
                             ),
                             title: l10n.voiceInstruction,
-                            subtitle: l10n.announcedEvents,
+                            subtitle: voiceInstructionSubtitle,
                           ),
                         ),
                         Padding(
@@ -254,4 +259,14 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
       ),
     );
   }
+
+  String _mapVoiceInstructionsIndexToTitle(
+    BuildContext context, {
+    required SoundToggleType voiceInstruction,
+  }) =>
+      switch (voiceInstruction) {
+        SoundToggleType.all => context.l10n.announcedEvents,
+        SoundToggleType.important => context.l10n.onlyImportantManeuvers,
+        SoundToggleType.none => context.l10n.voiceIsOff,
+      };
 }
