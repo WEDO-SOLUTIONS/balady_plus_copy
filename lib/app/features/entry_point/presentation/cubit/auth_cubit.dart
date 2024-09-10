@@ -129,7 +129,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     } catch (e) {
       print("object");
     }
-    return true;
+    return false;
   }
 
   ////////////////////////////////////////////////////////////////////////
