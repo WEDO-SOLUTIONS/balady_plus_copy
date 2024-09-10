@@ -2,12 +2,17 @@
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/entities/feedback/weekday_entity.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/persistent_structs.dart';
 
 class FeedbackScheduleIntervalWidget extends StatelessWidget {
   final void Function()? onDelete;
-  final List<String> days;
+  final PSet<WeekDay> days;
   final FeedbackScheduleWorkingHoursEntity workingHours;
   final void Function() onDaysChange;
   final void Function(FeedbackScheduleWorkingHoursEntity) onWorkingHoursChange;
@@ -29,7 +34,11 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           InputDropDownList(
-            label: days.join(', '),
+            label: days
+                .toList()
+                .sorted((a, b) => a.index.compareTo(b.index))
+                .map((day) => day.localizedShortName(context.l10n))
+                .join(', '),
             onTap: onDaysChange,
           ),
           const SizedBox(height: 6),
@@ -44,7 +53,7 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               InputDropDownList(
-                label: _formatBreaks(workingHours.breaks),
+                label: _formatBreaks(context.l10n, workingHours.breaks),
                 onTap: () {},
               ),
               const SizedBox(width: 6),
@@ -70,12 +79,11 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
     return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
-  String _formatBreaks(List<TimeRange> breaks) {
-    if (breaks.isEmpty) {
-      return 'No breaks';
-    } else {
-      return '${breaks.length} break${breaks.length > 1 ? 's' : ''}';
+  String _formatBreaks(AppLocalizations l10n, TimeRangeStartEnd? breaks) {
+    if (breaks == null) {
+      return l10n.feedbackNoBreaks;
     }
+    return _formatTimeRange(breaks);
   }
 }
 
