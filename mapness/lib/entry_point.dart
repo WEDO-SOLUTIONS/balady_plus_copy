@@ -434,7 +434,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
         if (isFirstRun) {
           // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
-          await Future.delayed(const Duration(milliseconds: 200));
+          await Future.delayed(const Duration(milliseconds: 300));
         }
         await _poiDeeplinkById(id, location);
       }
@@ -443,7 +443,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _myLocationDeepLinkHandler(latitude, longitude);
       } else {
         if (isFirstRun) {
-          await Future.delayed(const Duration(milliseconds: 200));
+          await Future.delayed(const Duration(milliseconds: 300));
         }
         await _poiDeepLinkByCoords(latitude, longitude);
       }
