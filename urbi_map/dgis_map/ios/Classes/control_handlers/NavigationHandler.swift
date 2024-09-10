@@ -257,7 +257,7 @@ class NavigationHandler {
             }
             
             // TODO: return back
-            try NavigationHandler.navigationManager!.startSimulation(
+            try NavigationHandler.navigationManager!.startNavigation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
                     routeSearchOptions: options
