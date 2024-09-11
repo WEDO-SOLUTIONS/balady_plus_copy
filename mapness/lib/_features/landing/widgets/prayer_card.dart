@@ -65,7 +65,7 @@ class PrayerCard extends StatelessWidget {
                         );
                         NavigationService.navigatorKey.currentState!.pushNamed(
                           RouteName.prayerTimes,
-                          arguments: context.read<PrayerTimesCubit>(),
+                          arguments: bloc,
                         );
                       },
                       child: Padding(
