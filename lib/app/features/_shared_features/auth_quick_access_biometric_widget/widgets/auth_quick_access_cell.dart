@@ -1,4 +1,3 @@
-import 'package:balady_authorization/src/features/quick_access/presentation/face_id_screen.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_authorization/src/shared/authentication_routes/authentication_route_names.dart';
 import 'package:balady_authorization/src/shared/profile_data/profile_model.dart';
