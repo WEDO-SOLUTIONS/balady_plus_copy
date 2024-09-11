@@ -18,6 +18,8 @@ class EnvironmentConfig {
   final String? proxy;
   final String baseApiDomain;
   final String shareEtaApi;
+  // TODO(Demezy): very probably will be changed in the future
+  final String feedbackApi;
 
   EnvironmentConfig({
     required this.url,
@@ -27,6 +29,7 @@ class EnvironmentConfig {
     required this.twinsApi,
     required this.baseApiDomain,
     required this.shareEtaApi,
+    required this.feedbackApi,
     this.proxy,
   });
 
@@ -39,6 +42,7 @@ class EnvironmentConfig {
         twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
+        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -49,6 +53,7 @@ class EnvironmentConfig {
         twinsApi: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
+        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -59,6 +64,7 @@ class EnvironmentConfig {
         twinsApi: 'https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
+        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -70,5 +76,6 @@ class EnvironmentConfig {
         twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
+        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
       );
 }
