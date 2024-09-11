@@ -29,7 +29,7 @@ class AuthBiometricCell extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 NavigationService.pushNamed(
-                  routeName: AuthenticationRouteName.loginWithBiometricsScreen,
+                  routeName: AuthenticationRouteName.activateBiometricsScreen,
                   args: ProfileModel.fromJson(state.loginData.toJson()),
                 );
               },
