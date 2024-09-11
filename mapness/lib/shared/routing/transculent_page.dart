@@ -414,6 +414,7 @@ class TRoute<T> extends ModalRoute<T> {
 class TransculentPage<T> extends Page<T> {
   const TransculentPage({
     required this.child,
+    super.name,
   });
   final Widget child;
 
