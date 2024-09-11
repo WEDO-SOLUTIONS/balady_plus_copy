@@ -302,10 +302,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               onTap: () {
                 ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
               },
-              child: Container(
-                color: AppColor.black.withOpacity(0.4),
-                width: double.maxFinite,
-                height: double.maxFinite,
+              child: SizedBox.expand(
+                child: ColoredBox(
+                  color: AppColor.black.withOpacity(0.4),
+                ),
               ),
             ),
           Positioned(
