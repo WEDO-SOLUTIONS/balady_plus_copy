@@ -1,6 +1,7 @@
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_authorization/src/shared/authentication_routes/authentication_route_names.dart';
 import 'package:balady_authorization/src/shared/profile_data/profile_model.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,10 +28,9 @@ class AuthBiometricCell extends StatelessWidget {
             color: const Color(0xFFF5F7FA),
             child: InkWell(
               onTap: () {
-
-                Navigator.of(context).pushNamed(
-                  AuthenticationRouteName.loginWithPasCodeScreen,
-                  arguments: ProfileModel.fromJson(state.loginData.toJson()),
+                NavigationService.pushNamed(
+                  routeName: AuthenticationRouteName.loginWithBiometricsScreen,
+                  args: ProfileModel.fromJson(state.loginData.toJson()),
                 );
               },
               borderRadius: BorderRadius.circular(8),
