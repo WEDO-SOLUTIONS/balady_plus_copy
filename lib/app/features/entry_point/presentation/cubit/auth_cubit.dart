@@ -337,7 +337,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> autoLogout() async {
     sharedPrefs.setSSOToken(null);
     sl<DelegatorsCubit>().clearDelegators();
-
+    try {
+      sl<AuthenticationBloc>().add(LogoutAuthentication());
+    } catch (e) {
+      print("object");
+    }
     //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
