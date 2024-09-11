@@ -119,6 +119,7 @@ dependencies:
   http: ^1.1.2
   image: ^4.2.0
   vector_math: ^2.1.4
+  fast_immutable_collections: ^10.2.4
 
 dependency_overrides:
   geolocator_android: ^4.2.2
