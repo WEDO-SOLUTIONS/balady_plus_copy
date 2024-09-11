@@ -22,7 +22,7 @@ sealed class FeedbackBaseDto {
     required this.id,
     required this.type,
     required this.isRequired,
-    required this.isHidden,
+    this.isHidden = false,
   });
 
   /// Factory method to create the appropriate DTO based on the type
