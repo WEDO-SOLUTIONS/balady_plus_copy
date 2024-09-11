@@ -48,26 +48,23 @@ class _FeedbackFormWidgetState extends State<FeedbackFormWidget> {
   bool isFormValid() => fieldNotifiers.every((notifier) => notifier.value.isValid);
 
   @override
-  // ignore: prefer_expression_function_bodies
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: EdgeInsets.zero,
-      primary: true,
-      shrinkWrap: true,
-      itemCount: fieldNotifiers.length,
-      itemBuilder: (context, index) {
-        final notifier = fieldNotifiers[index];
+  Widget build(BuildContext context) => ListView.separated(
+        padding: EdgeInsets.zero,
+        primary: true,
+        shrinkWrap: true,
+        itemCount: fieldNotifiers.length,
+        itemBuilder: (context, index) {
+          final notifier = fieldNotifiers[index];
 
-        return ValueListenableBuilder(
-          valueListenable: notifier,
-          builder: (context, field, child) => FeedbackFieldWidget(
-            field: field,
-            onValueChange: (value) => notifier.value = notifier.value.updatedValue(value),
-            key: ValueKey(field.id),
-          ),
-        );
-      },
-      separatorBuilder: (context, index) => Spacing.$4x.heightBox,
-    );
-  }
+          return ValueListenableBuilder(
+            valueListenable: notifier,
+            builder: (context, field, child) => FeedbackFieldWidget(
+              field: field,
+              onValueChange: (value) => notifier.value = notifier.value.updatedValue(value),
+              key: ValueKey(field.id),
+            ),
+          );
+        },
+        separatorBuilder: (context, index) => Spacing.$4x.heightBox,
+      );
 }
