@@ -10,6 +10,7 @@ import 'package:mapness/_features/favourites/mappers/add_request_item.dart';
 import 'package:mapness/_features/favourites/mappers/delete_favourite_items_request_item_mapper.dart';
 import 'package:mapness/_features/favourites/mappers/favorite_cache_item_mapper.dart';
 import 'package:mapness/_features/favourites/mappers/favourites_response_mapper.dart';
+import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -90,6 +91,8 @@ class _FavouriteCache extends _$FavouriteCache {
         workId: oldDataState.work?.id,
         homeId: oldDataState.home?.id,
       );
+
+      ref.invalidate(favouriteMarkersProvider);
     } on Exception catch (_) {
       await _addToDeletionSync([item]);
     }
