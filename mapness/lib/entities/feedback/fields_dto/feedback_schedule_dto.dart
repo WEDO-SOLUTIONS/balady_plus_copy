@@ -17,7 +17,6 @@ class FeedbackScheduleDto extends FeedbackBaseDto {
         id: id,
         isRequired: isRequired,
         isHidden: isHidden,
-        label: label,
       );
 
   factory FeedbackScheduleDto.fromJson(Map<String, dynamic> json) => _$FeedbackScheduleDtoFromJson(json);
