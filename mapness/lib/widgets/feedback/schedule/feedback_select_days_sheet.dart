@@ -1,114 +1,129 @@
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/entities/feedback/iset_weekday_extension.dart';
 import 'package:mapness/entities/feedback/weekday_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/extensions/persistent_structs.dart';
 import 'package:mapness/widgets/feedback/schedule/feedback_scroll_handle_widget.dart';
 
 /// TODO(Demezy): when uikit bottom sheet released, use it instead of this
 class FeedbackSelectDaysSheet extends StatelessWidget {
-  final ValueNotifier<PSet<WeekDay>> selectedDaysNotifier;
+  final FeedbackScheduleWorkingHoursEntity workingHours;
+  final void Function(FeedbackScheduleWorkingHoursEntity) onDaysChange;
 
-  final List<WeekDay> lockedDays;
+  final ISet<WeekDay> lockedDays;
 
   const FeedbackSelectDaysSheet({
-    required this.selectedDaysNotifier,
+    required this.workingHours,
+    required this.onDaysChange,
     required this.lockedDays,
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) => ValueListenableBuilder(
-        valueListenable: selectedDaysNotifier,
-        builder: (context, selectedDays, child) {
-          final selectAllState = _isAllDaysState(lockedDays, selectedDays);
+  Widget build(BuildContext context) {
+    final selectedDays = workingHours.days;
+    final selectAllState = _isAllDaysState(lockedDays, selectedDays);
 
-          return Container(
-            padding: const EdgeInsets.all(Spacing.$4x),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(Spacing.$4x),
-                topRight: Radius.circular(Spacing.$4x),
+    return Container(
+      padding: const EdgeInsets.all(Spacing.$4x),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(Spacing.$4x),
+          topRight: Radius.circular(Spacing.$4x),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const FeedbackScrollHandle(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.feedbackSelectDaysTitle,
+                    style: context.textStyle.heading2,
+                  ),
+                  Text(
+                    lockedDays
+                        .sortedByIndex()
+                        .map(
+                          (day) => day.localizedShortName(context.l10n),
+                        )
+                        .join(', '),
+                    style: context.textStyle.footNote.copyWith(
+                      color: context.colorsV2.foregroundSoft,
+                    ),
+                  ),
+                ],
               ),
+              uikit.AppButton.close(onTap: () => context.pop()),
+            ],
+          ),
+          const SizedBox(height: Spacing.$3x),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(Spacing.$4x),
+              color: context.colorsV2.backgroundSurface4,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.$4x,
+              vertical: Spacing.$2x,
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const FeedbackScrollHandle(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.l10n.feedbackSelectDaysTitle,
-                          style: context.textStyle.heading2,
-                        ),
-                        Text(
-                          lockedDays.map((day) => day.localizedShortName(context.l10n)).join(', '),
-                          style: context.textStyle.footNote.copyWith(
-                            color: context.colorsV2.foregroundSoft,
-                          ),
-                        ),
-                      ],
-                    ),
-                    uikit.AppButton.close(onTap: () => context.pop()),
-                  ],
-                ),
-                const SizedBox(height: Spacing.$3x),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Spacing.$4x),
-                    color: context.colorsV2.backgroundSurface4,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.$4x,
-                    vertical: Spacing.$2x,
-                  ),
-                  child: Column(
-                    children: [
-                      _SelectDayItem(
-                        state: selectAllState,
-                        disable: false,
-                        dayName: context.l10n.feedbackEverydayCheckboxLabel,
-                        onTap: () {
-                          selectedDaysNotifier.value = switch (selectAllState) {
-                            /// if all days are selected, select none
-                            BaladyCheckBoxState.checked => PSet({}),
+                _SelectDayItem(
+                  state: selectAllState,
+                  disable: false,
+                  dayName: context.l10n.feedbackEverydayCheckboxLabel,
+                  onTap: () {
+                    onDaysChange(
+                      switch (selectAllState) {
+                        /// if all days are selected, select none
+                        BaladyCheckBoxState.checked => workingHours.copyWith(days: ISet(const {})),
 
-                            /// if not all days are selected, select all days
-                            BaladyCheckBoxState.indeterminate || BaladyCheckBoxState.unchecked => PSet(
-                                WeekDay.values.toSet().difference(lockedDays.toSet()),
-                              ),
-                          };
-                        },
-                      ),
-                      for (final day in WeekDay.values)
-                        _SelectDayItem(
-                          state: [...selectedDays, ...lockedDays].contains(day)
-                              ? BaladyCheckBoxState.checked
-                              : BaladyCheckBoxState.unchecked,
-                          disable: lockedDays.contains(day),
-                          dayName: day.localizedShortName(context.l10n),
-                          onTap: () {
-                            selectedDaysNotifier.value = selectedDays.contains(day)
-                                ? PSet(selectedDays.difference({day}))
-                                : PSet({...selectedDays, day});
-                          },
-                        ),
-                    ],
-                  ),
+                        /// if not all days are selected, select all days
+                        BaladyCheckBoxState.indeterminate || BaladyCheckBoxState.unchecked => workingHours.copyWith(
+                            days: ISet(
+                              WeekDay.values.toSet().difference(lockedDays.toSet()),
+                            ),
+                          ),
+                      },
+                    );
+                  },
                 ),
+                for (final day in WeekDay.values)
+                  _SelectDayItem(
+                    state: [...selectedDays, ...lockedDays].contains(day)
+                        ? BaladyCheckBoxState.checked
+                        : BaladyCheckBoxState.unchecked,
+                    disable: lockedDays.contains(day),
+                    dayName: day.localizedShortName(context.l10n),
+                    onTap: () {
+                      onDaysChange(
+                        workingHours.copyWith(
+                          days: selectedDays.contains(day)
+                              ? ISet(selectedDays.difference({day}))
+                              : ISet({...selectedDays, day}),
+                        ),
+                      );
+                    },
+                  ),
               ],
             ),
-          );
-        },
-      );
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _SelectDayItem extends StatelessWidget {
