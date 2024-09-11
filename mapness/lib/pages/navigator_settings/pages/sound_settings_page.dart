@@ -1,13 +1,13 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
+import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -28,10 +28,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
     final l10n = context.l10n;
     final textStyleV3 = context.textStyleV3;
     final color = context.color;
-    final voiceInstructionSubtitle = _mapVoiceInstructionsIndexToTitle(
-      context,
-      voiceInstruction: soundSettingsNotifier.currentSoundToggleType,
-    );
+    final voiceInstructionSubtitle = soundSettingsNotifier.currentSoundToggleType.mapVoiceInstructionsToTitle(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -259,14 +256,4 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
       ),
     );
   }
-
-  String _mapVoiceInstructionsIndexToTitle(
-    BuildContext context, {
-    required SoundToggleType voiceInstruction,
-  }) =>
-      switch (voiceInstruction) {
-        SoundToggleType.all => context.l10n.announcedEvents,
-        SoundToggleType.important => context.l10n.onlyImportantManeuvers,
-        SoundToggleType.none => context.l10n.voiceIsOff,
-      };
 }
