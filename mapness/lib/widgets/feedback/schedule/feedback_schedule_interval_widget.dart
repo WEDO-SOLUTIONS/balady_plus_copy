@@ -2,17 +2,15 @@
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/entities/feedback/iset_weekday_extension.dart';
 import 'package:mapness/entities/feedback/weekday_entity.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/extensions/persistent_structs.dart';
 
 class FeedbackScheduleIntervalWidget extends StatelessWidget {
   final void Function()? onDelete;
-  final PSet<WeekDay> days;
   final FeedbackScheduleWorkingHoursEntity workingHours;
   final void Function() onDaysChange;
   final void Function(FeedbackScheduleWorkingHoursEntity) onWorkingHoursChange;
@@ -21,7 +19,6 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
     required this.onDelete,
     required this.onDaysChange,
     required this.onWorkingHoursChange,
-    required this.days,
     required this.workingHours,
     Key? key,
   }) : super(key: key);
@@ -34,11 +31,7 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           InputDropDownList(
-            label: days
-                .toList()
-                .sorted((a, b) => a.index.compareTo(b.index))
-                .map((day) => day.localizedShortName(context.l10n))
-                .join(', '),
+            label: workingHours.days.sortedByIndex().map((day) => day.localizedShortName(context.l10n)).join(', '),
             onTap: onDaysChange,
           ),
           const SizedBox(height: 6),
