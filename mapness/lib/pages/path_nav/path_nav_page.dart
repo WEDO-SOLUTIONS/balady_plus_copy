@@ -296,13 +296,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               ],
             ),
           ),
-          Positioned.fill(
-            child: isEtaExpanded
-                ? ColoredBox(
-                    color: AppColor.black.withOpacity(0.4),
-                  )
-                : const SizedBox.shrink(),
-          ),
+          if (isEtaExpanded)
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+              },
+              child: SizedBox.expand(
+                child: ColoredBox(
+                  color: AppColor.black.withOpacity(0.4),
+                ),
+              ),
+            ),
           Positioned(
             bottom: 0,
             right: 0,
