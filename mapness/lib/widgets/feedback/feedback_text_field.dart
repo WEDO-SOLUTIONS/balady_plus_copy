@@ -16,7 +16,6 @@ class FeedbackInput extends StatelessWidget {
   });
 
   @override
-  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     final keyboardType = switch (field.type) {
       FeedbackTextType.multilineText => TextInputType.multiline,

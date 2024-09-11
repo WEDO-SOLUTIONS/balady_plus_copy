@@ -21,9 +21,9 @@ class FeedbackScheduleWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     final intervals = field.value ?? const IList.empty();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
