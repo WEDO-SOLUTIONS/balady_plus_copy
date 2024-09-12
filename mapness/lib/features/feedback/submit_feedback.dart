@@ -7,7 +7,7 @@ import 'package:urbi_analytics/logger.dart';
 part 'submit_feedback.g.dart';
 
 @riverpod
-Future<void> postFeedback(
+Future<void> submitFeedback(
   AutoDisposeFutureProviderRef ref,
   FeedbackFormPayloadEntity payload,
 ) async {
