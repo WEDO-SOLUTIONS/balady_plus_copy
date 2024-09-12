@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
+import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -27,6 +28,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
     final l10n = context.l10n;
     final textStyleV3 = context.textStyleV3;
     final color = context.color;
+    final voiceInstructionSubtitle = soundSettingsNotifier.currentSoundToggleType.mapVoiceInstructionsToTitle(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -71,7 +73,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                               left: Spacing.$4x,
                             ),
                             title: l10n.voiceInstruction,
-                            subtitle: l10n.announcedEvents,
+                            subtitle: voiceInstructionSubtitle,
                           ),
                         ),
                         Padding(
