@@ -5,6 +5,7 @@ import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/iset_weekday_extension.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/time_range_extension.dart';
 import 'package:mapness/shared/lib/weekday_entity.dart';
 
 class FeedbackScheduleIntervalWidget extends StatelessWidget {
@@ -35,10 +36,7 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
             Row(
               children: [
                 InputDropDownList(
-                  label: switch (workingHours.workingTime) {
-                    TimeRangeStartEnd() => _formatTimeRange(workingHours.workingTime as TimeRangeStartEnd),
-                    _ => '00:00 - 23:59',
-                  },
+                  label: workingHours.workingTime.formatTimeRange(),
                   onTap: () {},
                 ),
                 const SizedBox(width: 6),
@@ -59,19 +57,11 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
         ),
       );
 
-  String _formatTimeRange(TimeRangeStartEnd timeRange) {
-    final range = timeRange;
-    return '${_formatTime(range.start)} - ${_formatTime(range.end)}';
-  }
-
-  String _formatTime(TimeOfDay time) =>
-      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-
   String _formatBreaks(AppLocalizations l10n, TimeRangeStartEnd? breaks) {
     if (breaks == null) {
       return l10n.feedbackNoBreaks;
     }
-    return _formatTimeRange(breaks);
+    return breaks.formatTimeRange();
   }
 }
 
