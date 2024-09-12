@@ -8,12 +8,12 @@ part 'feedback_form_payload_entity.freezed.dart';
 @freezed
 class FeedbackFormPayloadEntity with _$FeedbackFormPayloadEntity {
   const factory FeedbackFormPayloadEntity({
-    required FeedbackObjectType category,
+    required String category,
+    required FeedbackObjectType objectType,
     required IList<FeedbackFieldPayloadEntity> fields,
     required double latitude,
     required double longitude,
     required String objectId,
-    required String objectType,
     required String userEmail,
   }) = _FeedbackFormPayloadEntity;
 }
