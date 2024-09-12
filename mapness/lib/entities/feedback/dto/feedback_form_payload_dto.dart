@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/feedback/dto/feedback_field_payload_dto.dart';
 import 'package:mapness/entities/feedback/feedback_form_payload_entity.dart';
+import 'package:mapness/entities/feedback/feedback_object_type.dart';
 
 part 'feedback_form_payload_dto.g.dart';
 
@@ -12,7 +13,7 @@ class FeedbackFormPayloadDto {
   final double longitude;
   final String objectId;
   final String objectType;
-  final String userEmail;
+  final String? userEmail;
 
   const FeedbackFormPayloadDto({
     required this.category,
@@ -21,21 +22,25 @@ class FeedbackFormPayloadDto {
     required this.longitude,
     required this.objectId,
     required this.objectType,
-    required this.userEmail,
+    this.userEmail,
   });
 
   Map<String, dynamic> toJson() => _$FeedbackFormPayloadDtoToJson(this);
 
-  factory FeedbackFormPayloadDto.fromDomain(
-    FeedbackFormPayloadEntity entity,
-  ) =>
+  factory FeedbackFormPayloadDto.fromDomain({
+    required FeedbackFormPayloadEntity entity,
+    required double latitude,
+    required double longitude,
+    required FeedbackObjectType objectType,
+    String? userEmail,
+  }) =>
       FeedbackFormPayloadDto(
         category: entity.category,
         fields: entity.fields.map((e) => FeedbackFieldPayloadDto.fromDomain(e)).toList(),
-        latitude: entity.latitude,
-        longitude: entity.longitude,
-        objectId: entity.objectId,
-        objectType: entity.objectType.name,
-        userEmail: entity.userEmail,
+        latitude: latitude,
+        longitude: longitude,
+        objectId: entity.objectId.toString(),
+        objectType: objectType.name,
+        userEmail: userEmail,
       );
 }
