@@ -30,12 +30,12 @@ class FeedbackFormPayloadDto {
     FeedbackFormPayloadEntity entity,
   ) =>
       FeedbackFormPayloadDto(
-        category: entity.category.name,
+        category: entity.category,
         fields: entity.fields.map((e) => FeedbackFieldPayloadDto.fromDomain(e)).toList(),
         latitude: entity.latitude,
         longitude: entity.longitude,
         objectId: entity.objectId,
-        objectType: entity.objectType,
+        objectType: entity.objectType.name,
         userEmail: entity.userEmail,
       );
 }
