@@ -39,7 +39,14 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
               builder: (contextCubit, state) {
                 NotificationsSettingCubit cubit = contextCubit.watch<NotificationsSettingCubit>();
                 if (state is InitialNotificationsSettingsState || state is LoadingEventsSettingsState) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const SizedBox(
+                    // We set this height because of glich effect. In normal state it takes 112px
+                    // So the wrapper will not rebuild its height
+                    height: 112,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 }
                 if (state is FailureNotificationsSettingsState) {
                   return ReloadWidget(
@@ -60,58 +67,53 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
 
                   return Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                        ),
-                        child: Material(
+                      Material(
+                        borderRadius: BorderRadius.circular(8),
+                        color: const Color(0xFFF5F7FA),
+                        child: InkWell(
+                          onTap: () {
+                            cubit.setNotificationsProfile(
+                                SetNotificationsProfileParams(
+                                    enabled: !state.isChecked, channelId: 'mobile', applicationId: 'super-app'),
+                                !state.isChecked);
+                          },
                           borderRadius: BorderRadius.circular(8),
-                          color: const Color(0xFFF5F7FA),
-                          child: InkWell(
-                            onTap: () {
-                              cubit.setNotificationsProfile(
-                                  SetNotificationsProfileParams(
-                                      enabled: !state.isChecked, channelId: 'mobile', applicationId: 'super-app'),
-                                  !state.isChecked);
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: SizedBox(
-                              height: 48,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      IconPath.notificationIc2,
-                                      height: 24,
-                                      width: 24,
-                                      colorFilter: const ColorFilter.mode(
-                                        AppColor.primary900Light,
-                                        BlendMode.srcIn,
-                                      ),
+                          child: SizedBox(
+                            height: 48,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    IconPath.notificationIc2,
+                                    height: 24,
+                                    width: 24,
+                                    colorFilter: const ColorFilter.mode(
+                                      AppColor.primary900Light,
+                                      BlendMode.srcIn,
                                     ),
-                                    const SizedBox(
-                                      width: 12,
+                                  ),
+                                  const SizedBox(
+                                    width: 12,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 2.0),
+                                    child: Text(
+                                      'notifications'.tr(),
+                                      style: Theme.of(context)
+                                          .extension<ThemeTextStyles>()!
+                                          .text
+                                          .copyWith(color: const Color(0xFF1E2A36)),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 2.0),
-                                      child: Text(
-                                        'notifications'.tr(),
-                                        style: Theme.of(context)
-                                            .extension<ThemeTextStyles>()!
-                                            .text
-                                            .copyWith(color: const Color(0xFF1E2A36)),
-                                      ),
+                                  ),
+                                  const Spacer(),
+                                  IgnorePointer(
+                                    child: CupertinoSwitch(
+                                      onChanged: (bool value) {},
+                                      value: state.isChecked,
                                     ),
-                                    const Spacer(),
-                                    IgnorePointer(
-                                      child: CupertinoSwitch(
-                                        onChanged: (bool value) {},
-                                        value: state.isChecked,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -150,6 +152,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     SvgPicture.asset(
                                       "assets/icons/svg/profile/settings.svg",
@@ -157,6 +160,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                       width: 24,
                                       color: Colors.red,
                                     ),
+                                    const SizedBox(width: 4),
                                     Text(
                                       'manage_notification'.tr(),
                                       style: Theme.of(context)
@@ -169,6 +173,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                               ),
                             )
                           : const SizedBox.shrink(),
+                      const SizedBox(height: 8),
                     ],
                   );
                 }
