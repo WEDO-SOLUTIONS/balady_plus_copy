@@ -11,7 +11,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 class JoyParksCardV2 extends ConsumerWidget {
   final StatefulBottomSheetController controller;
 
-  const JoyParksCardV2({required this.controller ,super.key});
+  const JoyParksCardV2({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(

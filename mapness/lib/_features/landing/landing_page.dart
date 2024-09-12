@@ -41,7 +41,7 @@ class LandingPage extends ConsumerStatefulWidget {
 }
 
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
-  late StatefulBottomSheetController<ThreeStateBottomSheet> _scrollController;
+  late StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
   MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
 
@@ -54,13 +54,14 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
 
-    _scrollController = StatefulBottomSheetController(
+    bottomSheetController = StatefulBottomSheetController(
       durationMultiplier: 1.0,
       initialState: ThreeStateBottomSheet.open,
       behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
       stateMapper: const LandingStateMapper(),
     );
-    _scrollController.addListener(_calculatePadding);
+
+    bottomSheetController.addListener(_calculatePadding);
 
     setupTapListener();
   }
@@ -78,14 +79,14 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
             rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
             topPadding: _mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: _scrollController.sheetHeight.toInt(),
+            bottomPadding: bottomSheetController.sheetHeight.toInt(),
           ),
         );
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_calculatePadding);
+    bottomSheetController.removeListener(_calculatePadding);
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -122,7 +123,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
         if (next?.currentPath == KiblahRoute.path) {
-          _scrollController.setState(ThreeStateBottomSheet.hidden);
+          bottomSheetController.setState(ThreeStateBottomSheet.hidden);
         }
       })
 
@@ -139,33 +140,33 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           child: Stack(
             children: [
               ListenableBuilder(
-                listenable: _scrollController,
+                listenable: bottomSheetController,
                 builder: (_, __) {
-                  if (_scrollController.state == ThreeStateBottomSheet.hidden) {
+                  if (bottomSheetController.state == ThreeStateBottomSheet.hidden) {
                     return const SizedBox.shrink();
                   }
 
                   return GestureDetector(
                     onTapDown: (_) {
-                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                        _scrollController.setState(ThreeStateBottomSheet.hidden);
+                      if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+                        bottomSheetController.setState(ThreeStateBottomSheet.hidden);
                       }
                     },
                     onTapUp: (_) {
-                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                        _scrollController.setState(ThreeStateBottomSheet.hidden);
+                      if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+                        bottomSheetController.setState(ThreeStateBottomSheet.hidden);
                       }
                     },
                     onTap: () {
-                      if (_scrollController.state != ThreeStateBottomSheet.hidden) {
-                        _scrollController.setState(ThreeStateBottomSheet.hidden);
+                      if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+                        bottomSheetController.setState(ThreeStateBottomSheet.hidden);
                       }
                     },
                   );
                 },
               ),
-              MapDashboardControls(_scrollController, key: const ValueKey('MapDashboardControls')),
-              Dashboard(scrollableController: _scrollController),
+              MapDashboardControls(bottomSheetController, key: const ValueKey('MapDashboardControls')),
+              Dashboard(bottomSheetController: bottomSheetController),
             ],
           ),
         ),

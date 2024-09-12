@@ -81,7 +81,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
       defaultState: ThreeStateBottomSheet.open,
       builder: (context, state, interpolation, child) {
         final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
-        final delta = clampDouble(1 - interpolation * 3, 0, 1);
+        final delta = clampDouble(1 - interpolation * 4, 0, 1);
 
         const hiddenHeight = 0.0;
         const controlsHeight = 60.0;
