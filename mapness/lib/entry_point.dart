@@ -400,6 +400,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
+    await initCameraPositionPoint();
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
     final url = Uri.parse(parse.fragment);
