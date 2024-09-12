@@ -166,6 +166,8 @@ class DgisMapPlugin extends FlutterMapApi {
       (event) {
         final map = event as Map<dynamic, dynamic>;
         switch (map['event']) {
+          case MyLocationTapEvent.name:
+            return _objectTapEventHandler.myLocationTapEvent(map);
           case ZoomControlEnabledEvent.zoomInEvent:
             return _zoomEventHandler.zoomInEvent(map);
           case ZoomControlEnabledEvent.zoomOutEvent:
@@ -180,8 +182,7 @@ class DgisMapPlugin extends FlutterMapApi {
             return _indoorEventHandler.activeLevelEvent(map);
           case ObjectTapEvent.name:
             return _objectTapEventHandler.objectTapEvent(map);
-          case MyLocationTapEvent.name:
-            return _objectTapEventHandler.myLocationTapEvent(map);
+
           case RoadEventTapEvent.name:
             return _objectTapEventHandler.roadEventTapEvent(map);
           case MarkerTapEvent.name:
