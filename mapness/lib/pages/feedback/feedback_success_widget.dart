@@ -8,10 +8,10 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class FeedbackSuccessPage extends StatelessWidget {
+class FeedbackSuccessWidget extends StatelessWidget {
   final String username;
 
-  const FeedbackSuccessPage({required this.username, super.key});
+  const FeedbackSuccessWidget({required this.username, super.key});
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
