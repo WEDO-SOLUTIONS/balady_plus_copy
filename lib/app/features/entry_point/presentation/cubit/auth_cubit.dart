@@ -198,6 +198,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       return;
     }, (success) async {
       try {
+        EasyLoading.dismiss();
         sl<AuthenticationBloc>().add(
           LoginWithNafazAuthentication(
             dataLogin: {
