@@ -28,17 +28,10 @@ class AuthQuickAccessCell extends StatelessWidget {
             color: const Color(0xFFF5F7FA),
             child: InkWell(
               onTap: () {
-                if(isQuickAccess) {
-                  // NavigationService.pushNamed(
-                  //   routeName: AuthenticationRouteName.loginWithBiometricsScreen,
-                  //   args: ProfileModel.fromJson(state.loginData.toJson()),
-                  // );
-                } else {
-                  NavigationService.pushNamed(
-                    routeName: AuthenticationRouteName.registerPassCodeStep1Screen,
-                    args: ProfileModel.fromJson(state.loginData.toJson()),
-                  );
-                }
+                NavigationService.pushNamed(
+                  routeName: AuthenticationRouteName.registerPassCodeStep1Screen,
+                  args: ProfileModel.fromJson(state.loginData.toJson()),
+                );
               },
               borderRadius: BorderRadius.circular(8),
               child: SizedBox(
