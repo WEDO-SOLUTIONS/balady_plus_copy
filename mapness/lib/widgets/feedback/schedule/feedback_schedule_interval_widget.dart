@@ -37,7 +37,7 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
                 InputDropDownList(
                   label: switch (workingHours.workingTime) {
                     TimeRangeStartEnd() => _formatTimeRange(workingHours.workingTime as TimeRangeStartEnd),
-                    _ => '00:00 - 24:00',
+                    _ => '00:00 - 23:59',
                   },
                   onTap: () {},
                 ),
