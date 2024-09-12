@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/pages/feedback/feedback_page.dart';
 import 'package:mapness/pages/feedback/feedback_select_type_page.dart';
-import 'package:mapness/pages/feedback/feedback_success_page.dart';
+import 'package:mapness/pages/feedback/feedback_sent_page.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 
 part 'feedback.g.dart';
@@ -12,7 +12,7 @@ part 'feedback.g.dart';
   path: FeedbackBaseRoute.path,
   routes: <TypedGoRoute<GoRouteData>>[
     TypedGoRoute<FeedbackRoute>(path: ':categoryId', routes: <TypedGoRoute<GoRouteData>>[
-      TypedGoRoute<FeedbackSuccessRoute>(path: 'success'),
+      TypedGoRoute<FeedbackSentRoute>(path: 'success'),
     ]),
   ],
 )
@@ -62,26 +62,24 @@ class FeedbackRoute extends GoRouteData {
       );
 }
 
-class FeedbackSuccessRoute extends GoRouteData {
+class FeedbackSentRoute extends GoRouteData {
   /// Object id to report feedback for.
   final String objectId;
 
   final String categoryId;
 
-  const FeedbackSuccessRoute({required this.objectId, required this.categoryId});
+  const FeedbackSentRoute({required this.objectId, required this.categoryId});
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   static void open(GoRouter router, String objectId, String categoryId) {
-    final route = FeedbackSuccessRoute(objectId: objectId, categoryId: categoryId);
+    final route = FeedbackSentRoute(objectId: objectId, categoryId: categoryId);
     router.push(route.location);
   }
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
-        child: FeedbackSuccessPage(
-          username: '-',
-        ),
+        child: FeedbackSentPage(),
       );
 }
 

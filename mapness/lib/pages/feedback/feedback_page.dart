@@ -6,8 +6,8 @@ import 'package:mapness/entities/feedback/feedback_object_type.dart';
 import 'package:mapness/features/feedback/feedback_categories.dart';
 import 'package:mapness/features/feedback/poi_feedback.dart';
 import 'package:mapness/pages/feedback/components/feedback_form_widget.dart';
-import 'package:mapness/pages/feedback/feedback_failure.dart';
-import 'package:mapness/pages/feedback/feedback_loading.dart';
+import 'package:mapness/pages/feedback/feedback_failure_widget.dart';
+import 'package:mapness/pages/feedback/feedback_loading_widget.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
 class FeedbackPage extends ConsumerStatefulWidget {
@@ -31,7 +31,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
   Widget build(BuildContext context) {
     final objectId = int.tryParse(widget.poiId);
     if (objectId == null) {
-      return const FeedbackFailure();
+      return const FeedbackFailureWidget();
     }
     final poiData = ref.watch(poiFeedbackProvider(objectId));
     final objectType = poiData.valueOrNull?.types[0]?.type;
@@ -40,17 +40,17 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     );
 
     if (poiData.isLoading || categories.isLoading) {
-      return const FeedbackLoading();
+      return const FeedbackLoadingWidget();
       // return const Center(child: Text('Loading'));
     } else if (poiData.hasError || categories.hasError) {
-      return const FeedbackFailure();
+      return const FeedbackFailureWidget();
       // return const Center(child: Text('Error no data'));
     }
 
     final category = categories.value?.firstWhereOrNull((element) => element.id == widget.categoryId);
 
     if (category == null || category.fields.isEmpty) {
-      return const FeedbackFailure();
+      return const FeedbackFailureWidget();
     }
 
     return ValueListenableBuilder(
@@ -59,7 +59,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
         title: category.name,
         isSendEnabled: isFormValid,
         child: child!,
-        onSend: () => FeedbackSuccessRoute(
+        onSend: () => FeedbackSentRoute(
           objectId: widget.poiId,
           categoryId: widget.categoryId,
         ).replace(context),
