@@ -95,49 +95,14 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
         // We need to wait some time, because current location need to initialize
         unawaited(
-          Future.delayed(const Duration(seconds: 5), () {
+          Future.delayed(const Duration(seconds: 3), () {
             _processMoveCameraToUser();
           }),
         );
       } else if (etaInfo.type == EtaType.streamMetadata) {
         _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
-        final route = _metaInfo?.payload?.route;
-
-        if (route == null || route.isEmpty) {
-          return;
-        }
-
-        final startPoint = route.startPoint?.routePoint;
-        final finishPoint = route.endPoint?.routePoint;
-        final type = route.type?.toRouteSearchOptions;
-        final activeIndex = route.routeIndex;
-
-        if (startPoint == null || finishPoint == null || type == null || activeIndex == null) {
-          return;
-        }
-
-        _addFinishPin(finishPoint);
-
-        if (_lastActiveRoute == route) {
-          return;
-        }
-
-        _lastActiveRoute = route;
-
-        ref.listen(
-            routesProvider(
-              startPoint: startPoint,
-              finishPoint: finishPoint,
-              navType: type,
-              showOnlyActiveRoute: true,
-            ), (_, current) async {
-          if (current.valueOrNull?.isEmpty ?? false) {
-            return;
-          } else {
-            await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(activeIndex);
-          }
-        });
+        _createUserRoute();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -294,6 +259,51 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
                 bearing: 0,
               ),
             );
+      });
+    });
+  }
+
+  void _createUserRoute() {
+    ProviderSubscription? locationProviderSubscription;
+
+    locationProviderSubscription = ref.listen(locationProvider, (_, __) {
+      locationProviderSubscription?.close();
+
+      final route = _metaInfo?.payload?.route;
+
+      if (route == null || route.isEmpty) {
+        return;
+      }
+
+      final startPoint = route.startPoint?.routePoint;
+      final finishPoint = route.endPoint?.routePoint;
+      final type = route.type?.toRouteSearchOptions;
+      final activeIndex = route.routeIndex;
+
+      if (startPoint == null || finishPoint == null || type == null || activeIndex == null) {
+        return;
+      }
+
+      _addFinishPin(finishPoint);
+
+      if (_lastActiveRoute == route) {
+        return;
+      }
+
+      _lastActiveRoute = route;
+
+      ref.listen(
+          routesProvider(
+            startPoint: startPoint,
+            finishPoint: finishPoint,
+            navType: type,
+            showOnlyActiveRoute: true,
+          ), (_, current) async {
+        if (current.valueOrNull?.isEmpty ?? false) {
+          return;
+        } else {
+          await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(activeIndex);
+        }
       });
     });
   }
