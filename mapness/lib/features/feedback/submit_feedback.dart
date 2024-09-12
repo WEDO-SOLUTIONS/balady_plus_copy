@@ -19,6 +19,7 @@ Future<void> submitFeedback(
   final dio = await ref.read(feedbackDioProvider.future);
 
   if (poiInfo == null) {
+    // TODO(Demezy): When app exceptions released, use them instead
     throw Exception('POI info not found');
   }
 
@@ -26,6 +27,7 @@ Future<void> submitFeedback(
   final longitude = poiInfo.markerPosition?.longitude;
 
   if (latitude == null || longitude == null) {
+    // TODO(Demezy): When app exceptions released, use them instead
     throw Exception('Unknown POI position');
   }
 
@@ -36,7 +38,8 @@ Future<void> submitFeedback(
       userEmail: userInfo?.getEmail(),
       latitude: latitude,
       longitude: longitude,
-      objectType: FeedbackObjectType.fromMessage(poiInfo.types.firstOrNull?.type),
+      objectType:
+          FeedbackObjectType.fromMessage(poiInfo.types.firstOrNull?.type),
     ).toJson(),
   );
   log(response.data.toString());

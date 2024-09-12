@@ -9,7 +9,12 @@ import 'package:mapness/pages/feedback/feedback_success_widget.dart';
 import 'package:urbi_analytics/logger.dart';
 
 class FeedbackSentPage extends ConsumerWidget {
-  const FeedbackSentPage({Key? key}) : super(key: key);
+  final String payloadId;
+
+  const FeedbackSentPage({
+    required this.payloadId,
+    super.key,
+  });
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -17,11 +22,12 @@ class FeedbackSentPage extends ConsumerWidget {
     // TODO(Demezy): get data from form
     final sentFeedback = ref.watch(
       submitFeedbackProvider(
-        const FeedbackFormPayloadEntity(
-          objectId: 0,
-          fields: IList.empty(),
-          category: '',
-        ),
+        //   const FeedbackFormPayloadEntity(
+        //     objectId: 0,
+        //     fields: IList.empty(),
+        //     category: '',
+        //   ),
+        payload,
       ),
     );
 

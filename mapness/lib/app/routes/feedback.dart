@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/entities/feedback/feedback_form_payload_entity.dart';
 import 'package:mapness/pages/feedback/feedback_page.dart';
 import 'package:mapness/pages/feedback/feedback_select_type_page.dart';
 import 'package:mapness/pages/feedback/feedback_sent_page.dart';
@@ -11,9 +12,11 @@ part 'feedback.g.dart';
 @TypedGoRoute<FeedbackBaseRoute>(
   path: FeedbackBaseRoute.path,
   routes: <TypedGoRoute<GoRouteData>>[
-    TypedGoRoute<FeedbackRoute>(path: ':categoryId', routes: <TypedGoRoute<GoRouteData>>[
-      TypedGoRoute<FeedbackSentRoute>(path: 'success'),
-    ]),
+    TypedGoRoute<FeedbackRoute>(
+        path: ':categoryId',
+        routes: <TypedGoRoute<GoRouteData>>[
+          TypedGoRoute<FeedbackSentRoute>(path: 'success'),
+        ]),
   ],
 )
 
@@ -35,7 +38,8 @@ class FeedbackBaseRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(
         child: FeedbackSelectTypePage(objectId: objectId),
       );
 }
@@ -54,7 +58,8 @@ class FeedbackRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(
         child: FeedbackPage(
           poiId: objectId,
           categoryId: categoryId,
@@ -63,23 +68,22 @@ class FeedbackRoute extends GoRouteData {
 }
 
 class FeedbackSentRoute extends GoRouteData {
-  /// Object id to report feedback for.
   final String objectId;
+  final String payloadId;
 
-  final String categoryId;
-
-  const FeedbackSentRoute({required this.objectId, required this.categoryId});
+  const FeedbackSentRoute({required this.payloadId, required this.objectId});
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
-  static void open(GoRouter router, String objectId, String categoryId) {
-    final route = FeedbackSentRoute(objectId: objectId, categoryId: categoryId);
+  static void open(GoRouter router, String objectId, String payloadId) {
+    final route = FeedbackSentRoute(payloadId: payloadId);
     router.push(route.location);
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
-        child: FeedbackSentPage(),
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(
+        child: FeedbackSentPage(payloadId: payloadId),
       );
 }
 
