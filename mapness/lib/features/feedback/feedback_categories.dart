@@ -1,60 +1,36 @@
 import 'dart:developer';
 
-import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:mapness/entities/feedback/dto/feedback_category_dto.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
-import 'package:mapness/shared/providers/dgis_environment.dart';
-import 'package:mapness/shared/providers/dgis_http_network.dart';
+import 'package:mapness/entities/feedback/feedback_object_type.dart';
+import 'package:mapness/features/feedback/feedback_dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feedback_categories.g.dart';
 
-enum FeedbackObjectType {
-  building,
-  branch,
-  street,
-}
-
-@riverpod
-Future<Dio> _getDio(AutoDisposeFutureProviderRef ref) async {
-  final baseDio = await ref.watch(dGisHttpService.future);
-  final env = await ref.watch(dgisEnvironmentProvider.future);
-  return Dio(baseDio.options.copyWith(baseUrl: env.feedbackApi));
-}
-
+/// Provider class for fetching feedback categories.
 @riverpod
 class FeedbackCategories extends _$FeedbackCategories {
+  /// Fetches feedback categories for a given object type.
+  ///
+  /// @param objectType The type of object to fetch categories for.
+  /// @return List of FeedbackCategoryEntity objects.
   @override
   Future<List<FeedbackCategoryEntity>> build(
-    ObjectTypeMessage? objectType,
+    FeedbackObjectType objectType,
   ) async {
-    final dio = await ref.watch(_getDioProvider.future);
-
-    final dto = await _loadFromBackend(dio, _feedbackTypeFromMessage(objectType));
+    final dio = await ref.watch(feedbackDioProvider.future);
+    final dto = await _loadFromBackend(dio, objectType);
     return dto.map((e) => e.toDomain()).toList();
-  }
-
-  Future<void> postFeedback(
-    FeedbackCategoryEntity category,
-  ) async {
-    final dio = await ref.read(_getDioProvider.future);
-    // TODO(Demezy): fix this
-    final response = await dio.post('/api/1.0/discrepancy', data: {
-      'category': category.name,
-      'fields': [
-        {'id': 'owner', 'old_value': false, 'value': true}
-      ],
-      'latitude': 0,
-      'longitude': 0,
-      'object_id': 'string',
-      'object_type': 'string',
-      'user_email': 'string'
-    });
-    log(response.data.toString());
   }
 }
 
+/// Loads feedback categories from the backend
+///
+/// @param dio The Dio instance for making HTTP requests
+/// @param objectType The type of object to fetch categories for
+/// @return A list of FeedbackCategoryDto objects
 Future<List<FeedbackCategoryDto>> _loadFromBackend(
   Dio dio,
   FeedbackObjectType objectType,
@@ -67,12 +43,3 @@ Future<List<FeedbackCategoryDto>> _loadFromBackend(
   }
   return [];
 }
-
-FeedbackObjectType _feedbackTypeFromMessage(ObjectTypeMessage? message) => switch (message) {
-      ObjectTypeMessage.branch => FeedbackObjectType.branch,
-      ObjectTypeMessage.street => FeedbackObjectType.street,
-      ObjectTypeMessage.building => FeedbackObjectType.building,
-
-      /// default for others
-      _ => FeedbackObjectType.building,
-    };
