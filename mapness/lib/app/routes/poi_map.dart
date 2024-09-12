@@ -87,6 +87,7 @@ class PoiMapRoute extends GoRouteData {
         : null;
     if (dgisObjectId == -1) {
       return TransculentPage(
+        name: path,
         child: ShareMyLocationContent(
           key: const Key('POI MY LOCATION CARD WIDGET'),
           cameraConfig: cameraConfig,
@@ -95,6 +96,7 @@ class PoiMapRoute extends GoRouteData {
       );
     } else if (dgisObjectId == -2) {
       return TransculentPage(
+        name: path,
         child: ContentDeeplink(
           key: const Key('POI OTHER LOCATION CARD WIDGET'),
           cameraConfig: cameraConfig,
@@ -103,6 +105,7 @@ class PoiMapRoute extends GoRouteData {
       );
     }
     return TransculentPage(
+      name: path,
       child: PoiCardWidget(
         key: const Key('POI CARD WIDGET'),
         cameraConfig: cameraConfig,

@@ -55,6 +55,7 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.carServices => MapMarkersType.carServices,
         QuickFilter.markets => MapMarkersType.markets,
         QuickFilter.eatOut => MapMarkersType.restaurants,
+        QuickFilter.shopping => MapMarkersType.shopping,
         _ => null,
       };
 

@@ -98,6 +98,7 @@ class RoutingFavourites extends ConsumerWidget {
 
     return widgets.QuickFilters(
       filters: favourites,
+      padding: EdgeInsets.zero,
       id: QuickFilterScreen.routing,
     );
   }

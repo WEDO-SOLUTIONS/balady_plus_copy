@@ -3,7 +3,7 @@ import 'package:mapness/features/stories/models/story_types.dart';
 
 class StoryArgsProvider extends InheritedWidget {
   final StoryTypes type;
-  final VoidCallback onClose;
+  final void Function([int? index]) onClose;
   const StoryArgsProvider({
     required this.type,
     required this.onClose,

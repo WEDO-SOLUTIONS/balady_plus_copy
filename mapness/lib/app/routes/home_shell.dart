@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/features/services/presentation/pages/services_page.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -71,18 +70,10 @@ class LandingBranch extends StatefulShellBranchData {
 class LandingRoute extends GoRouteData {
   static const path = '/landing';
 
-  const LandingRoute({this.focusMaker});
-  final LangingFocusMaker? focusMaker;
+  const LandingRoute();
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
-        child: LandingPage(
-          focusMaker: focusMaker ??
-              LangingFocusMaker.values.firstWhereOrNull(
-                (element) => element.name == state.uri.queryParameters['focus-maker'],
-              ),
-        ),
-      );
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(child: LandingPage());
 }
 
 class RoutingBranch extends StatefulShellBranchData {
@@ -91,6 +82,7 @@ class RoutingBranch extends StatefulShellBranchData {
 
 class RoutingRoute extends GoRouteData {
   static const path = '/routing';
+
   const RoutingRoute({this.collapseInitially = false});
 
   /// open page with collapsed bottom sheet

@@ -118,7 +118,9 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 opacity: state == ThreeStateBottomSheet.hidden ? delta : hiddenHeight,
                 child: SizedOverflowBox(
                   size: Size(
-                      double.infinity, state == ThreeStateBottomSheet.hidden ? controlsHeight : controlsHeight * delta),
+                    double.infinity,
+                    state == ThreeStateBottomSheet.hidden ? controlsHeight : controlsHeight * delta,
+                  ),
                   child: Directionality(
                     textDirection: uiDirection,
                     child: Padding(

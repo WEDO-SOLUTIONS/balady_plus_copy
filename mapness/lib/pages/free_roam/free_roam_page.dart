@@ -175,6 +175,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                         color: Colors.transparent,
                         child: uikit.BaladyManeuverAndLimit(
                           isPedestrian: false,
+                          hideSpeedLimit: info.speedLimit == null,
                           speedInfo: uikit.LimitsModel(
                             speed: info.speed,
                             speedExceed: info.speedExceed,

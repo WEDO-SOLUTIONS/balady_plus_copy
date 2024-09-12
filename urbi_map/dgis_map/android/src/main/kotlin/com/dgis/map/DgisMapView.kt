@@ -19,6 +19,7 @@ import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.bearing
 import ru.dgis.sdk.directory.RubricId
 import ru.dgis.sdk.directory.SearchManager
+import ru.dgis.sdk.geometry.PolygonGeometry
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.platform.Locale
 import ru.dgis.sdk.platform.LocaleManager
@@ -292,6 +293,28 @@ class DgisMapView(
                 .setBearing(map.camera.position.bearing.value)
                 .build()
         )
+    }
+
+    override fun getCameraVisibleArea(result: Messages.Result<PolygonGeometryMessage>?) {
+        val map = map ?: kotlin.run {
+            result?.error(IllegalArgumentException("Map has not been initialized"))
+            return
+        }
+
+        val area = map.camera.visibleArea
+        if(area is PolygonGeometry) {
+            val polygonArea = area as PolygonGeometry
+            val contours = polygonArea.contours.map { element -> element.map { e -> e.toMessage() } }
+            result?.success(
+                PolygonGeometryMessage
+                    .Builder()
+                    .setContours(contours)
+                    .build()
+            )
+        } else {
+            result?.error(IllegalArgumentException("Area is not PolygonGeometry"))
+        }
+
     }
 
     override fun getNearestObjects(result: Messages.Result<List<RenderedObjectMessage>>) {

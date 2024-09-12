@@ -23,7 +23,6 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
-
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -71,94 +70,90 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         }
       });
 
-    return WillPopScope(
-        onWillPop: () async {
-          // TODO(Ayat): goroute has problems with WillPopScope and push method, this is as a temporary solution.
-          //  We are waiting for an update, now the latest version is 14.2.1
-          final currentRoute = ref.read(currentRouteProvider);
-          if (currentRoute?.currentPath == PhotoViewerRoute.path) {
-            context.pop();
-            return false;
-          }
-
-          return true;
-        },
-        child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
-          animateOpening: false,
-          topHeader: MapHiddenStateControls(widget.bottomSheetController),
-          backgroundColor: context.colorsV2.backgroundSurface4,
-          header: DashboardHeader(
-            bottomSheetController: widget.bottomSheetController,
-          ),
-          scrollController: widget.bottomSheetController,
-          sliverBeforeContent: SliverPersistentHeader(
-            delegate: DashboardHeaderDelegate(vsync: this),
-            pinned: true,
-            floating: true,
-          ),
-          content: [
-            Column(
-              children: [
-                const SizedBox(height: uikit.Spacing.$4x),
-                const StoriesWidget(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                JoyParksCardV2(widget.bottomSheetController),
-                const SizedBox(height: uikit.Spacing.$3x),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
-                  child: Row(
-                    textDirection: TextDirection.ltr,
-                    children: [
-                      Expanded(child: WeatherCard()),
-                      SizedBox(width: uikit.Spacing.$3x),
-                      Expanded(child: QiblaCard()),
-                    ],
-                  ),
+    return PopScope(
+      onPopInvoked: (val) {
+        final currentRoute = ref.read(currentRouteProvider);
+        if (currentRoute?.currentPath == PhotoViewerRoute.path) {
+          context.pop();
+        }
+      },
+      child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
+        animateOpening: false,
+        topHeader: MapHiddenStateControls(widget.bottomSheetController),
+        backgroundColor: context.colorsV2.backgroundSurface4,
+        header: DashboardHeader(
+          bottomSheetController: widget.bottomSheetController,
+        ),
+        scrollController: widget.bottomSheetController,
+        sliverBeforeContent: SliverPersistentHeader(
+          delegate: DashboardHeaderDelegate(vsync: this),
+          pinned: true,
+          floating: true,
+        ),
+        content: [
+          Column(
+            children: [
+              const SizedBox(height: uikit.Spacing.$4x),
+              const StoriesWidget(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              JoyParksCardV2(controller: widget.bottomSheetController),
+              const SizedBox(height: uikit.Spacing.$3x),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
+                child: Row(
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    Expanded(child: WeatherCard()),
+                    SizedBox(width: uikit.Spacing.$3x),
+                    Expanded(child: QiblaCard()),
+                  ],
                 ),
-                const SizedBox(height: uikit.Spacing.$8x),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    textDirection: TextDirection.ltr,
-                    children: [
-                      Expanded(
-                        child: PlacesForCart(
-                          title: context.l10n.placesForShopping,
-                          icon: General32Icons.shoppingLRTL,
-                          onTap: () => _openSearch(QuickFilter.shopping),
-                        ),
+              ),
+              const SizedBox(height: uikit.Spacing.$8x),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    Expanded(
+                      child: PlacesForCart(
+                        title: context.l10n.placesForShopping,
+                        icon: General32Icons.shoppingLRTL,
+                        onTap: () => _openSearch(QuickFilter.shopping),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: PlacesForCart(
-                          title: context.l10n.placesForEatingOut,
-                          icon: General32Icons.restourantLRTL,
-                          onTap: () => _openSearch(QuickFilter.eatOut),
-                        ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: PlacesForCart(
+                        title: context.l10n.placesForEatingOut,
+                        icon: General32Icons.restourantLRTL,
+                        onTap: () => _openSearch(QuickFilter.eatOut),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const PlacePreview(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const SnapAndSendCard(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const ComplianceCard(),
-                const SizedBox(height: uikit.Spacing.$8x),
-                const PrayerCard(),
-                CalendarSliderCard(
-                  colorScheme: ref.read(colorSchemeProvider),
-                  onShowAll: () => Metrics.logEventAdvanced(
-                    MetricsConstants.exploreKeys.kingdomCalendarViewAll,
-                    action: MetricAction.tap.name,
-                    group: MetricsConstants.exploreTag,
-                  ),
+              ),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const PlacePreview(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const SnapAndSendCard(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const ComplianceCard(),
+              const SizedBox(height: uikit.Spacing.$8x),
+              const PrayerCard(),
+              CalendarSliderCard(
+                colorScheme: ref.read(colorSchemeProvider),
+                onShowAll: () => Metrics.logEventAdvanced(
+                  MetricsConstants.exploreKeys.kingdomCalendarViewAll,
+                  action: MetricAction.tap.name,
+                  group: MetricsConstants.exploreTag,
                 ),
-              ],
-            ),
-          ],
-        ));
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   void _openSearch(QuickFilter quickFilter) {

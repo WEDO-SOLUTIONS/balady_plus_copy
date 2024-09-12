@@ -41,7 +41,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^2.0.13
+    version: ^2.0.14
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -118,6 +118,7 @@ dependencies:
   hooks_riverpod: ^2.4.1
   http: ^1.1.2
   image: ^4.2.0
+  vector_math: ^2.1.4
 
 dependency_overrides:
   geolocator_android: ^4.2.2
