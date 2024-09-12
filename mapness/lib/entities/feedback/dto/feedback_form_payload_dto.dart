@@ -5,7 +5,7 @@ import 'package:mapness/entities/feedback/feedback_object_type.dart';
 
 part 'feedback_form_payload_dto.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createFactory: false)
 class FeedbackFormPayloadDto {
   final String category;
   final List<FeedbackFieldPayloadDto> fields;

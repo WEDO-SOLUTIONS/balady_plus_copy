@@ -3,7 +3,7 @@ import 'package:mapness/entities/feedback/feedback_field_payload_entity.dart';
 
 part 'feedback_field_payload_dto.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createFactory: false)
 class FeedbackFieldPayloadDto {
   final String id;
   final String value;
