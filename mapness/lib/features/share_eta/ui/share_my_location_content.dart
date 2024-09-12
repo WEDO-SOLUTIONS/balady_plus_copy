@@ -19,7 +19,6 @@ import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharin
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -80,33 +79,14 @@ class ShareMyLocationContent extends HookConsumerWidget {
         );
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
-        final streamId = next.value!.streamId;
-        final streamToken = next.value!.streamToken;
-        final finishAt = next.value!.finishesAt;
-        final xStreamData = next.value!.xStreamData;
 
-        if (streamId == null ||
-            streamToken == null ||
-            finishAt == null ||
-            xStreamData == null ||
-            closestPoint == null) {
+        if (closestPoint == null) {
           return;
         }
 
         EtaStreamStorage()
-          ..setStreamId(streamId)
-          ..setToken(streamToken)
-          ..setXStreamData(xStreamData)
           ..setLatitude(closestPoint!.latitude)
           ..setLongitude(closestPoint!.longitude);
-
-        final estimatedTime = finishAt.dateTime;
-        if (estimatedTime != null) {
-          EtaStreamStorage().setEstimatedTime(estimatedTime);
-        }
-
-        ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
-        context.pop();
       }
     });
 
@@ -247,7 +227,9 @@ class ShareMyLocationContent extends HookConsumerWidget {
       isScrollControlled: true,
       builder: (context) => EtaSharingTimeSheet(
         onConfirmTap: (v) {
+          context.pop();
           LoadingOverlay.of(context).startLoading();
+
           ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);
         },
       ),

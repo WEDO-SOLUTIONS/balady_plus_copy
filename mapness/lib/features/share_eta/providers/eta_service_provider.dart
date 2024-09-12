@@ -23,6 +23,7 @@ class EtaService extends _$EtaService {
   Future<EtaStreamInfo?> build() async {
     await _init();
 
+    ref.keepAlive();
     return null;
   }
 

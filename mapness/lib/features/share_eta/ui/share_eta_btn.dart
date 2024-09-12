@@ -32,22 +32,7 @@ class ShareEtaBtn extends HookConsumerWidget {
     final bool isPulseactive = webSocketStatus && isEtaStream;
 
     ref.listen(etaServiceProvider, (prev, current) async {
-      if (current.hasValue && current.value != null && !current.isLoading) {
-        final streamId = current.value!.streamId;
-        final streamToken = current.value!.streamToken;
-        final xStreamData = current.value!.xStreamData;
-
-        if (streamId == null || streamToken == null || xStreamData == null) {
-          return;
-        }
-
-        EtaStreamStorage()
-          ..setStreamId(streamId)
-          ..setToken(streamToken)
-          ..setXStreamData(xStreamData);
-
-        await ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
-      } else if (current.hasError) {
+      if (current.hasError && !current.isLoading && current.value == null) {
         ToastOverlay.of(context).showNoInternet(
           onRetry: () {
             ref.read(shareEtaProvider.notifier).startSharingEta();

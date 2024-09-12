@@ -3,12 +3,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/ui/eta_control/user_pin_control.dart';
-import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 
 class EtaUserControl extends ConsumerWidget {
@@ -16,7 +16,7 @@ class EtaUserControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final (info, metaInfo) = ref.read(etaGeoSubscriberProvider);
+    final (info, metaInfo) = ref.watch(etaGeoSubscriberProvider);
 
     ref.listen(websocketErrorHandlerProvider, (_, current) {
       final (code, reason) = current;
@@ -73,20 +73,10 @@ class EtaUserControl extends ConsumerWidget {
   }
 
   void _showLiveLocationExpired(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => EtaShareExpired.liveLocation(context),
-    );
+    EtaUtils.showLiveLocationExpired(context);
   }
 
   void _showBroadcastExpired(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => EtaShareExpired.broadcastExpired(context),
-    );
+    EtaUtils.showBroadcastExpired(context);
   }
 }
