@@ -18,7 +18,10 @@ class FeedbackScheduleEntity extends FeedbackBaseEntity<IList<FeedbackScheduleWo
   }
 
   @override
-  FeedbackScheduleEntity updatedValue(IList<FeedbackScheduleWorkingHoursEntity> value) => FeedbackScheduleEntity(
+  FeedbackScheduleEntity updatedValue(
+    IList<FeedbackScheduleWorkingHoursEntity> value,
+  ) =>
+      FeedbackScheduleEntity(
         id: id,
         isRequired: isRequired,
         value: value,
