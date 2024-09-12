@@ -69,25 +69,25 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, EndSessionResponse>> clearAuth() async {
-    try {
-      // final data = await localDataSource.clearAuth();
-      final data = await remoteDataSource.endSession();
-
-      return Right(data);
-    } on ServerException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      return Left(ServerFailure(error.toString(),
-          statusCode: error.statusCode, errorCode: error.errorCode));
-    }
-  }
+  // @override
+  // Future<Either<Failure, EndSessionResponse>> clearAuth() async {
+  //   try {
+  //     // final data = await localDataSource.clearAuth();
+  //     final data = await remoteDataSource.endSession();
+  //
+  //     return Right(data);
+  //   } on ServerException catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     return Left(ServerFailure(error.toString(),
+  //         statusCode: error.statusCode, errorCode: error.errorCode));
+  //   }
+  // }
 
   @override
   Future<Either<Failure, TokenResponse>> refreshToken(

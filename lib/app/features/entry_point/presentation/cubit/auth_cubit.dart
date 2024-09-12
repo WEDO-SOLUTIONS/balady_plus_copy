@@ -41,7 +41,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   final GetCookie _getCookie;
   final GetAPIgeeToken _getAPIgeeToken;
 
-  final ClearAuth _clearAuth;
+  // final ClearAuth _clearAuth;
   final Logout _logout;
   final GetForceVersion _getForceVersion;
   final GetTestData _getTestData;
@@ -58,7 +58,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       required SaveSSOProfile saveSSOProfile,
       required CheckSSOProfile checkSSOProfile,
       required GetCookie getCookie,
-      required ClearAuth clearAuth,
+      // required ClearAuth clearAuth,
       required Logout logout,
       required GetAPIgeeToken getAPIgeeToken,
       required GetForceVersion forceVersion,
@@ -72,7 +72,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _checkSSOProfile = checkSSOProfile,
         _getCookie = getCookie,
         _getAPIgeeToken = getAPIgeeToken,
-        _clearAuth = clearAuth,
+        // _clearAuth = clearAuth,
         _logout = logout,
         _getPaymentUrl = GetPaymentUrl(repository: sl()),
         _getForceVersion = forceVersion,
@@ -310,24 +310,24 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }
     await _logout(NoParams());
     sl<DelegatorsCubit>().clearDelegators();
-    final failureOrSuccess = await _clearAuth(NoParams());
+    // final failureOrSuccess = await _clearAuth(NoParams());
 
-    await failureOrSuccess.fold((l) {
+    // await failureOrSuccess.fold((l) {
       sharedPrefs.setSSOToken(null);
       clearSSOInfo();
       emit(const EntryPointState(
         status: AuthStatus.notAuthenticated,
         showSplash: false,
       ));
-    }, (r) {
-      sharedPrefs.setSSOToken(null);
-      //MM sharedPrefs.setUserProfile(null);
-      clearSSOInfo();
-      emit(const EntryPointState(
-        status: AuthStatus.notAuthenticated,
-        showSplash: false,
-      ));
-    });
+    // }, (r) {
+    //   sharedPrefs.setSSOToken(null);
+    //   //MM sharedPrefs.setUserProfile(null);
+    //   clearSSOInfo();
+    //   emit(const EntryPointState(
+    //     status: AuthStatus.notAuthenticated,
+    //     showSplash: false,
+    //   ));
+    // });
 
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
