@@ -21,6 +21,7 @@ import 'package:mapness/features/share_eta/providers/websocker_error_handler_por
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_watching_sheet.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -90,14 +91,12 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       if (etaInfo.type == EtaType.geolocation) {
         await _processDrawUserMarker();
 
-        _isFirstLocationFetch = false;
-
         _lastActiveMessageTime = DateTime.now().toUtc();
 
         // We need to wait some time, because current location need to initialize
         unawaited(
-          Future.delayed(const Duration(seconds: 5), () async {
-            await _processMoveCameraToUser();
+          Future.delayed(const Duration(seconds: 5), () {
+            _processMoveCameraToUser();
           }),
         );
       } else if (etaInfo.type == EtaType.streamMetadata) {
@@ -267,8 +266,15 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     }
   }
 
-  Future<void> _processMoveCameraToUser() async {
-    if (_isFirstLocationFetch) {
+  void _processMoveCameraToUser() {
+    ProviderSubscription? locationProviderSubscription;
+    if (!_isFirstLocationFetch) {
+      return;
+    }
+    _isFirstLocationFetch = false;
+    locationProviderSubscription = ref.listen(locationProvider, (_, __) {
+      locationProviderSubscription?.close();
+
       final (etaInfo, _) = state;
       if (etaInfo == null) {
         return;
@@ -289,7 +295,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
               ),
             );
       });
-    }
+    });
   }
 
   Future<void> _processDrawMarker(GeoPointWithElevationMessage point, User? user) async {
