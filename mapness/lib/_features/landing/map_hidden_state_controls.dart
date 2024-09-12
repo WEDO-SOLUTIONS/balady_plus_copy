@@ -112,32 +112,37 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 ],
               ),
             ),
-            secondChild: Opacity(
-              opacity: state == ThreeStateBottomSheet.hidden ? delta : hiddenHeight,
-              child: SizedOverflowBox(
-                size: Size(
-                    double.infinity, state == ThreeStateBottomSheet.hidden ? controlsHeight : controlsHeight * delta),
-                child: Directionality(
-                  textDirection: uiDirection,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                    child: MapQuickFilters(
-                      height: controlsHeight,
-                      forMap: true,
-                      id: QuickFilterScreen.controls,
-                      customFilters: [
-                        FilterItemBuilder(
-                          filterType: FilterType.custom,
-                          builder: (
-                            context, {
-                            required isDashboard,
-                            required isSelected,
-                          }) =>
-                              _FreeRoamQuickAction(
-                            isLaunching: showLaunchingFreeRoam,
+            secondChild: IgnorePointer(
+              ignoring: state != ThreeStateBottomSheet.hidden,
+              child: Opacity(
+                opacity: state == ThreeStateBottomSheet.hidden ? delta : hiddenHeight,
+                child: SizedOverflowBox(
+                  size: Size(
+                    double.infinity,
+                    state == ThreeStateBottomSheet.hidden ? controlsHeight : controlsHeight * delta,
+                  ),
+                  child: Directionality(
+                    textDirection: uiDirection,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                      child: MapQuickFilters(
+                        height: controlsHeight,
+                        forMap: true,
+                        id: QuickFilterScreen.controls,
+                        customFilters: [
+                          FilterItemBuilder(
+                            filterType: FilterType.custom,
+                            builder: (
+                              context, {
+                              required isDashboard,
+                              required isSelected,
+                            }) =>
+                                _FreeRoamQuickAction(
+                              isLaunching: showLaunchingFreeRoam,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

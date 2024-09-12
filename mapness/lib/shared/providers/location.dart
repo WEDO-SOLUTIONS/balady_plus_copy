@@ -67,6 +67,11 @@ class _Location extends _$Location {
         unawaited(perm.Permission.location.request());
         return false;
       } else {
+        if (state == null) {
+          final position = await Geolocator.getLastKnownPosition();
+          state = position;
+        }
+
         return true;
       }
     } else {

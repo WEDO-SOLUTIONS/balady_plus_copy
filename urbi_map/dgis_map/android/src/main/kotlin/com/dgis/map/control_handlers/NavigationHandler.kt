@@ -51,9 +51,6 @@ class NavigationHandler(
     private val routeInfoCloseable: AutoCloseable
     private val betterRouteCloseable: AutoCloseable
 
-    private val locationSource: MyLocationMapObjectSource
-    private var prevLocationSource: MyLocationMapObjectSource? = null
-
     private var prevCameraBehaviour: CameraBehaviour? = null
 
     var isNavigating: Boolean = false
@@ -77,7 +74,6 @@ class NavigationHandler(
 
     init {
         navigationView.visibility = View.INVISIBLE
-        navigationView.navigationManager = navigationManager
 
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
         navigationManager.routeSourceSettings.calloutVisualizationMode =
@@ -96,19 +92,9 @@ class NavigationHandler(
         betterRouteCloseable =
             navigationManager.uiModel.betterRouteChannel.connect(::betterRouteListener)
 
-        locationSource = MyLocationMapObjectSource(
-            context = sdkContext,
-            controllerSettings = MyLocationControllerSettings()
-        )
     }
 
     fun setupCamera(speedRangeZoom: Messages.SpeedRangeZoom) {
-        this.prevLocationSource =
-            this.map.sources.first { it is MyLocationMapObjectSource } as? MyLocationMapObjectSource
-        if (this.prevLocationSource != null) {
-            map.removeSource(this.prevLocationSource!!)
-        }
-        map.addSource(locationSource)
         prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
@@ -136,10 +122,6 @@ class NavigationHandler(
     }
 
     fun resetCamera() {
-        map.removeSource(this.locationSource)
-        if (this.prevLocationSource != null) {
-            map.addSource(this.prevLocationSource!!)
-        }
         if (this.prevCameraBehaviour != null) {
             map.camera.setBehaviour(this.prevCameraBehaviour!!)
         }
@@ -219,6 +201,10 @@ class NavigationHandler(
             return
         }
 
+        if (navigationView.navigationManager == null) {
+            navigationView.navigationManager = navigationManager
+        }
+
         setupCamera(speedRangeZoom = speedRangeZoom)
         navigationManager.start(
             routeBuildOptions = RouteBuildOptions(
@@ -244,6 +230,10 @@ class NavigationHandler(
             return
         }
 
+        if (navigationView.navigationManager == null) {
+            navigationView.navigationManager = navigationManager
+        }
+
         setupCamera(speedRangeZoom = speedRangeZoom)
         navigationManager.startSimulation(
             routeBuildOptions = RouteBuildOptions(
@@ -258,6 +248,10 @@ class NavigationHandler(
     }
 
     fun stopNavigation() {
+        if (navigationView.navigationManager != null) {
+            navigationView.navigationManager = null
+        }
+
         navigationManager.stop()
         resetCamera()
         navigationView.visibility = View.INVISIBLE
