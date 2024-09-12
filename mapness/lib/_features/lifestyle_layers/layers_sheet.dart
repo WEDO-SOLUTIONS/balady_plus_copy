@@ -93,6 +93,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
                       },
                       onClose: () {
                         _hideLayersPanel();
+                        ref.read(goRouterProvider).pop();
                       },
                     ),
                     if (state.isLoading)
@@ -201,18 +202,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   void _showBottomSheet() {
     ref.read(layersControlsProvider.notifier).initialize();
 
-    _layersController
-        .animateTo(
+    _layersController.animateTo(
       _layersPanelMaxHeight,
       duration: _showHideDuration,
       curve: curve,
-    )
-        .then((_) {
-      _layersController.addListener(() {
-        if (_layersController.isAttached && _layersController.size < .1) {
-          ref.read(goRouterProvider).pop();
-        }
-      });
-    });
+    );
   }
 }
