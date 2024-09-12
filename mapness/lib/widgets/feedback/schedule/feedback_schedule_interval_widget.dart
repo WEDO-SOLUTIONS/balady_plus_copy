@@ -3,9 +3,9 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/iset_weekday_extension.dart';
-import 'package:mapness/entities/feedback/weekday_entity.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/weekday_entity.dart';
 
 class FeedbackScheduleIntervalWidget extends StatelessWidget {
   final void Function()? onDelete;

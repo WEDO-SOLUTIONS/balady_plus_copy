@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/iset_weekday_extension.dart';
-import 'package:mapness/entities/feedback/weekday_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/weekday_entity.dart';
 import 'package:mapness/widgets/feedback/schedule/feedback_scroll_handle_widget.dart';
 
 /// TODO(Demezy): when uikit bottom sheet released, use it instead of this
