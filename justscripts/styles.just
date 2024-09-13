@@ -12,3 +12,5 @@ add-bool-property name default_value:
     rm -rf _common-styles
 
 fix-parking: (add-bool-property "parking_filter_paid_on" "false") (add-bool-property "parking_filter_free_on" "false")
+
+fix-camerasOn: (add-bool-property "camerasOn" "true")
