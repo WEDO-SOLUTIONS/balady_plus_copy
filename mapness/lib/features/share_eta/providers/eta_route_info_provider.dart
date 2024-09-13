@@ -43,7 +43,7 @@ class EtaRouteInfo extends _$EtaRouteInfo {
     state = route;
   }
 
-  void setCratedAt(DateTime time) {
+  void setCreatedAt(DateTime time) {
     state = state.copyWith(createdAt: time.toIso8601String());
   }
 
