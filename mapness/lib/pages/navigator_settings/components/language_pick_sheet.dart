@@ -66,9 +66,10 @@ class LanguagePickSheet extends StatelessWidget {
                         ),
                       )
                       .insertBetween(
-                        Padding(
-                          padding: const EdgeInsets.only(left: Spacing.$4x),
-                          child: Divider(color: colorsV2.borderSoft),
+                        Divider(
+                          color: colorsV2.borderSoft,
+                          indent: Spacing.$4x,
+                          endIndent: 0,
                         ),
                       )
                       .toList(),

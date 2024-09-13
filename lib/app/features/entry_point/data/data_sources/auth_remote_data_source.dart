@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -116,8 +117,8 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   Future<SsoUserInfoModel?> getSSOProfile() async {
     Response? response;
     try {
-      response = await webServiceSSo.dio.get(ApiUrl.ssoUserInfo,
-          options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token}"}));
+      response = await webServiceSSo.dio
+          .get(ApiUrl.ssoUserInfo, options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token}"}));
 
       var data = response.data;
 
@@ -250,8 +251,8 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   Future<String?> getCookie() async {
     Response? response;
     try {
-      response = await webServiceSSo.dio.get(ApiUrl.ssoUserCookie,
-          options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token}"}));
+      response = await webServiceSSo.dio
+          .get(ApiUrl.ssoUserCookie, options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token}"}));
       String? cookie;
       if (response.headers['set-cookie']?.toString() != null) {
         cookie = response.headers['set-cookie'].toString();
@@ -360,14 +361,14 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
   @override
   Future<PermissionResponseModel> getEkramRules({required GetPermissionParamsModel params}) async {
-    var response;
+    Response response;
 
     try {
       response = await webService.dio.post(
         ApiUrl.ekramRules,
         data: params.toMap(),
       );
-      print(response.data["data"]);
+      debugPrint(response.data["data"]);
       var data = response.data["data"]?["result"];
       var parsedResult = data != null ? PermissionResponseModel.fromMap(data) : null;
 
@@ -375,10 +376,10 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     } on DioException catch (error) {
       throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
-      else {
+      debugPrint("Exception: $ex");
+      if (ex is ServerException) {
+        rethrow;
+      } else {
         try {
           //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
@@ -389,7 +390,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
   @override
   Future<String> getPaymentURL({required PaymentRequest params}) async {
-    var response;
+    Response response;
 
     try {
       response = await webService.dio.post(
@@ -402,13 +403,15 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     } on DioException catch (error) {
       throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
-      else {
+      debugPrint("Exception: $ex");
+      if (ex is ServerException) {
+        rethrow;
+      } else {
         try {
           //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+        } catch (ex) {
+          rethrow;
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
