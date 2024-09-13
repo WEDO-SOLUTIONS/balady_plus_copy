@@ -12,6 +12,7 @@ import 'package:mapness/app/routes/dark_map.dart';
 import 'package:mapness/app/routes/sound_settings.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/navigator_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class NavigatorSettingsPage extends ConsumerStatefulWidget {
@@ -24,6 +25,8 @@ class NavigatorSettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
   @override
   Widget build(BuildContext context) {
+    final navigatorSettings = ref.watch(navigatorSettingsProvider);
+    final navigatorSettingsNotifier = ref.read(navigatorSettingsProvider.notifier);
     final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
 
     final colorsV2 = context.colorsV2;
@@ -142,13 +145,12 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                             ),
                             title: l10n.speedCameras,
                             titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-
-                            /// Road cameras aren't available, support this function later
-                            actionWidget: const ContentRowActionOptions(
+                            actionWidget: ContentRowActionOptions(
                               enabledToggle: true,
-                              toggleInitialValue: true,
+                              toggleInitialValue: navigatorSettings,
                             ),
                           ),
+                          onToggle: (val) => navigatorSettingsNotifier.toggle(),
                         ),
                       ],
                     ),

@@ -50,199 +50,206 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
-              body: Padding(
-                padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    ContentWrapper(
-                      color: color.surfaceBaseTertiary,
-                      children: [
-                        ContentRow(
-                          options: ContentRowOptions(
-                            subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
-                              color: color.textAndIconsBaseSecondary,
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ContentWrapper(
+                        color: color.surfaceBaseTertiary,
+                        children: [
+                          ContentRow(
+                            options: ContentRowOptions(
+                              subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
+                                color: color.textAndIconsBaseSecondary,
+                              ),
+                              titleStyle: textStyleV3.bodyLargeMedium.copyWith(
+                                color: colorsV2.foregroundDefault,
+                              ),
+                              padding: const EdgeInsets.only(
+                                top: Spacing.$4x,
+                                bottom: Spacing.$3x,
+                                right: Spacing.$4x,
+                                left: Spacing.$4x,
+                              ),
+                              title: l10n.voiceInstruction,
+                              subtitle: voiceInstructionSubtitle,
                             ),
-                            titleStyle: textStyleV3.bodyLargeMedium.copyWith(
-                              color: colorsV2.foregroundDefault,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                            child: SegmentTabsButton(
+                              tabsContent: [
+                                TabsRowV2Content(title: l10n.segmentButtonOffTitle),
+                                TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
+                                TabsRowV2Content(title: l10n.segmentButtonAllTitle),
+                              ],
+                              onIndexChanged: (value) {
+                                if (value != null) {
+                                  soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
+                                }
+                              },
+                              initialIndex: soundSettingsModel.voiceInstructionIndex,
                             ),
+                          ),
+                          Padding(
                             padding: const EdgeInsets.only(
-                              top: Spacing.$4x,
-                              bottom: Spacing.$3x,
-                              right: Spacing.$4x,
+                              top: Spacing.$3x,
                               left: Spacing.$4x,
                             ),
-                            title: l10n.voiceInstruction,
-                            subtitle: voiceInstructionSubtitle,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                          child: SegmentTabsButton(
-                            tabsContent: [
-                              TabsRowV2Content(title: l10n.segmentButtonOffTitle),
-                              TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
-                              TabsRowV2Content(title: l10n.segmentButtonAllTitle),
-                            ],
-                            onIndexChanged: (value) {
-                              if (value != null) {
-                                soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
-                              }
-                            },
-                            initialIndex: soundSettingsModel.voiceInstructionIndex,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: Spacing.$3x,
-                            left: Spacing.$4x,
-                          ),
-                          child: Divider(
-                            height: 0.5,
-                            color: colorsV2.borderSoft,
-                            thickness: 1,
-                            indent: 0,
-                            endIndent: 0,
-                          ),
-                        ),
-                        ContentRow(
-                          onTap: () => const VoiceSettingsRoute().push(context),
-                          options: ContentRowOptions(
-                            wrapperColor: color.surfaceBaseTertiary,
-                            wrapperEnabled: true,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: Spacing.$3x,
-                              horizontal: Spacing.$4x,
-                            ),
-                            title: l10n.voice,
-                            titleStyle: context.textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                            actionWidget: ContentRowActionOptions(
-                                actionIcon: AppIcons(
-                                  iconData: SystemIcons.arrowCornerRightLarge,
-                                  color: colorsV2.foregroundSoft,
-                                ),
-                                actionText: soundSettingsModel.voiceName,
-                                actionTextStyle: textStyleV3.bodySmallMedium.copyWith(
-                                  color: colorsV2.foregroundSoft,
-                                )),
-                          ),
-                        ),
-                      ],
-                    ),
-                    ContentRow(
-                      options: ContentRowOptions(
-                        titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                          color: colorsV2.foregroundDefault,
-                        ),
-                        wrapperColor: color.surfaceBaseTertiary,
-                        wrapperEnabled: true,
-                        title: l10n.promptsVolume,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: Spacing.$3x,
-                          horizontal: Spacing.$4x,
-                        ),
-                        bottomWidget: SegmentTabsButton(
-                          tabsContent: [
-                            TabsRowV2Content(title: l10n.segmentButtonMinimumTitle),
-                            TabsRowV2Content(title: l10n.segmentButtonQuietTitle),
-                            TabsRowV2Content(title: l10n.segmentButtonStandardTitle),
-                          ],
-                          onIndexChanged: (value) {
-                            if (value != null) {
-                              soundSettingsNotifier.toggleNavigatorVolume(currentPromptVolumeIndex: value);
-                            }
-                          },
-                          initialIndex: soundSettingsModel.promptsVolumeIndex,
-                        ),
-                      ),
-                    ),
-                    ContentColumn(
-                      headerTitle: l10n.backgroundNavigation.toUpperCase(),
-                      content: [
-                        ContentRow(
-                          onToggle: (value) {
-                            soundSettingsNotifier.toggleBackgroundNavigation(backgroundNavigation: value);
-                          },
-                          options: ContentRowOptions(
-                            wrapperColor: color.surfaceBaseTertiary,
-                            wrapperEnabled: true,
-                            title: l10n.backgroundNavigation,
-                            titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                              color: color.textAndIconsBasePrimary,
-                            ),
-                            actionWidget: ContentRowActionOptions(
-                              enabledToggle: true,
-                              toggleInitialValue: soundSettingsModel.backgroundNavigation,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    ContentColumn(
-                      headerTitle: l10n.eventAlert,
-                      content: [
-                        ContentWrapper(
-                          color: color.surfaceBaseTertiary,
-                          children: [
-                            ContentRow(
-                              onToggle: (value) {
-                                soundSettingsNotifier.toggleRoadCameras(roadCameras: value);
-                              },
-                              options: ContentRowOptions(
-                                actionWidget: ContentRowActionOptions(
-                                  enabledToggle: true,
-                                  toggleInitialValue: soundSettingsModel.roadCameras,
-                                ),
-                                titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                                  color: colorsV2.foregroundDefault,
-                                ),
-                                padding: const EdgeInsets.only(
-                                  top: Spacing.$4x,
-                                  bottom: Spacing.$3x,
-                                  right: Spacing.$4x,
-                                  left: Spacing.$4x,
-                                ),
-                                title: l10n.roadCameras,
-                              ),
-                            ),
-                            Divider(
+                            child: Divider(
                               height: 0.5,
                               color: colorsV2.borderSoft,
                               thickness: 1,
-                              indent: Spacing.$4x,
+                              indent: 0,
                               endIndent: 0,
                             ),
-                            ContentRow(
-                              onToggle: (value) {
-                                soundSettingsNotifier.toggleOverSpeeding(overSpeeding: value);
-                              },
-                              options: ContentRowOptions(
-                                actionWidget: ContentRowActionOptions(
-                                  enabledToggle: true,
-                                  toggleInitialValue: soundSettingsModel.overSpeeding,
-                                ),
-                                titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                                  color: colorsV2.foregroundDefault,
-                                ),
-                                subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
-                                  color: colorsV2.foregroundSoft,
-                                ),
-                                subtitleMaxlines: 2,
-                                subtitle: l10n.overSpeedingSubtitle,
-                                padding: const EdgeInsets.only(
-                                  top: Spacing.$3x,
-                                  bottom: Spacing.$3x,
-                                  right: Spacing.$4x,
-                                  left: Spacing.$4x,
-                                ),
-                                title: l10n.overSpeeding,
+                          ),
+                          ContentRow(
+                            onTap: () => const VoiceSettingsRoute().push(context),
+                            options: ContentRowOptions(
+                              wrapperColor: color.surfaceBaseTertiary,
+                              wrapperEnabled: true,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: Spacing.$3x,
+                                horizontal: Spacing.$4x,
+                              ),
+                              title: l10n.voice,
+                              titleStyle: context.textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                              actionWidget: ContentRowActionOptions(
+                                  actionIcon: AppIcons(
+                                    iconData: SystemIcons.arrowCornerRightLarge,
+                                    color: colorsV2.foregroundSoft,
+                                  ),
+                                  actionText: soundSettingsModel.voiceName,
+                                  actionTextStyle: textStyleV3.bodySmallMedium.copyWith(
+                                    color: colorsV2.foregroundSoft,
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ContentRow(
+                        options: ContentRowOptions(
+                          titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                            color: colorsV2.foregroundDefault,
+                          ),
+                          wrapperColor: color.surfaceBaseTertiary,
+                          wrapperEnabled: true,
+                          title: l10n.promptsVolume,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: Spacing.$3x,
+                            horizontal: Spacing.$4x,
+                          ),
+                          bottomWidget: SegmentTabsButton(
+                            tabsContent: [
+                              TabsRowV2Content(title: l10n.segmentButtonMinimumTitle),
+                              TabsRowV2Content(title: l10n.segmentButtonQuietTitle),
+                              TabsRowV2Content(title: l10n.segmentButtonStandardTitle),
+                            ],
+                            onIndexChanged: (value) {
+                              if (value != null) {
+                                soundSettingsNotifier.toggleNavigatorVolume(currentPromptVolumeIndex: value);
+                              }
+                            },
+                            initialIndex: soundSettingsModel.promptsVolumeIndex,
+                          ),
+                        ),
+                      ),
+                      ContentColumn(
+                        headerTitle: l10n.backgroundNavigation.toUpperCase(),
+                        content: [
+                          ContentRow(
+                            onToggle: (value) {
+                              soundSettingsNotifier.toggleBackgroundNavigation(backgroundNavigation: value);
+                            },
+                            options: ContentRowOptions(
+                              wrapperColor: color.surfaceBaseTertiary,
+                              wrapperEnabled: true,
+                              title: l10n.backgroundNavigation,
+                              titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                                color: color.textAndIconsBasePrimary,
+                              ),
+                              actionWidget: ContentRowActionOptions(
+                                enabledToggle: true,
+                                toggleInitialValue: soundSettingsModel.backgroundNavigation,
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ].insertBetween(Spacing.$4x.heightBox).toList(),
+                          ),
+                        ],
+                      ),
+                      ContentColumn(
+                        headerTitle: l10n.eventAlert,
+                        content: [
+                          ContentWrapper(
+                            color: color.surfaceBaseTertiary,
+                            children: [
+                              ContentRow(
+                                onToggle: (value) {
+                                  soundSettingsNotifier.toggleRoadCameras(roadCameras: value);
+                                },
+                                options: ContentRowOptions(
+                                  actionWidget: ContentRowActionOptions(
+                                    enabledToggle: true,
+                                    toggleInitialValue: soundSettingsModel.roadCameras,
+                                  ),
+                                  titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                                    color: colorsV2.foregroundDefault,
+                                  ),
+                                  padding: const EdgeInsets.only(
+                                    top: Spacing.$4x,
+                                    bottom: Spacing.$3x,
+                                    right: Spacing.$4x,
+                                    left: Spacing.$4x,
+                                  ),
+                                  title: l10n.roadCameras,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: Spacing.$4x,
+                                ),
+                                child: Divider(
+                                  height: 0.5,
+                                  color: colorsV2.borderSoft,
+                                  thickness: 1,
+                                  indent: 0,
+                                  endIndent: 0,
+                                ),
+                              ),
+                              ContentRow(
+                                onToggle: (value) {
+                                  soundSettingsNotifier.toggleOverSpeeding(overSpeeding: value);
+                                },
+                                options: ContentRowOptions(
+                                  actionWidget: ContentRowActionOptions(
+                                    enabledToggle: true,
+                                    toggleInitialValue: soundSettingsModel.overSpeeding,
+                                  ),
+                                  titleStyle: textStyleV3.bodyLargeRegular.copyWith(
+                                    color: colorsV2.foregroundDefault,
+                                  ),
+                                  subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
+                                    color: colorsV2.foregroundSoft,
+                                  ),
+                                  subtitleMaxlines: 2,
+                                  subtitle: l10n.overSpeedingSubtitle,
+                                  padding: const EdgeInsets.only(
+                                    top: Spacing.$3x,
+                                    bottom: Spacing.$3x,
+                                    right: Spacing.$4x,
+                                    left: Spacing.$4x,
+                                  ),
+                                  title: l10n.overSpeeding,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ].insertBetween(Spacing.$4x.heightBox).toList(),
+                  ),
                 ),
               ),
             ),
