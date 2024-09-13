@@ -154,6 +154,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
                     ),
                 type: _routeType,
                 routeIndex: _activeRoute,
+                createdAt: DateTime.now().toUtc().toIso8601String(),
               ));
           widget.startNavigation(info);
         });
