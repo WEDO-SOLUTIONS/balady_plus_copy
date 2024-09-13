@@ -23,6 +23,7 @@ class FeedbackSelectTypePage extends ConsumerWidget {
     return FeedbackFormContainer(
       title: context.l10n.feedbackWhatsWrong,
       isSendVisible: false,
+      onSend: null,
       child: id == null ? Center(child: Loading.large()) : FeedbackSelectOptionsComponentWidget(objectId: id),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/feedback.dart';
@@ -27,7 +26,7 @@ class FeedbackPage extends ConsumerStatefulWidget {
 }
 
 class _FeedbackPageState extends ConsumerState<FeedbackPage> {
-
+  final _isFormValidNotifier = ValueNotifier(false);
   @override
   Widget build(BuildContext context) {
     final objectId = int.tryParse(widget.poiId);
@@ -42,17 +41,24 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
     if (poiData.isLoading || categories.isLoading) {
       return const FeedbackLoadingWidget();
-      // return const Center(child: Text('Loading'));
     } else if (poiData.hasError || categories.hasError) {
       return const FeedbackFailureWidget();
-      // return const Center(child: Text('Error no data'));
     }
 
-    final category = categories.value
-        ?.firstWhereOrNull((element) => element.id == widget.categoryId);
+    final category = categories.value?.firstWhereOrNull((element) => element.id == widget.categoryId);
 
     if (category == null || category.fields.isEmpty) {
       return const FeedbackFailureWidget();
+    }
+    final payloadId = 'feedback_${DateTime.now().millisecondsSinceEpoch}';
+    final feedbackSubmitPayloadProvider = ref.watch(submitFeedbackPayloadProvider(payloadId).notifier);
+
+    void _collectForm() {
+      /// tweak to pass compex structure through gorouter and not
+      /// to suck if user open page quickly
+
+      feedbackSubmitPayloadProvider.keepAliveForAWhile();
+      FeedbackSentRoute(payloadId: payloadId, objectId: widget.poiId, categoryId: widget.categoryId).replace(context);
     }
 
     return ValueListenableBuilder(
@@ -60,30 +66,33 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       builder: (context, isFormValid, child) => FeedbackFormContainer(
         title: category.name,
         isSendEnabled: isFormValid,
+        onSend: _collectForm,
         child: child!,
       ),
       child: FeedbackFormWidget(
-        final 
         fields: category.fields,
         isFormValidNotifier: _isFormValidNotifier,
+        payloadId: payloadId,
+        objectId: objectId,
+        categoryId: category.id,
       ),
     );
   }
 
-  void _collectForm(
-    int objectId,
-    String categoryId,
-  ) {
-    /// tweak to pass compex structure through gorouter and not
-    /// to suck if user open page quickly
+  // void _collectForm(
+  //   int objectId,
+  //   String categoryId,
+  // ) {
+  //   /// tweak to pass compex structure through gorouter and not
+  //   /// to suck if user open page quickly
 
-    ref.read(submitFeedbackPayloadProvider(payloadId).notifier).keepAliveForAWhile();
-    FeedbackSentRoute(payloadId: payloadId).replace(context);
+  //   ref.read(submitFeedbackPayloadProvider(objectId).notifier).keepAliveForAWhile();
+  //   FeedbackSentRoute(payloadId: payloadId).replace(context);
 
-    // ref.read(submitFeedbackPayloadProvider(payloadId).notifier).collectForm(
-    //       objectId: objectId,
-    //       categoryId: categoryId,
-    //       fields: category.fields,
-    //     );
-  }
+  //   // ref.read(submitFeedbackPayloadProvider(payloadId).notifier).collectForm(
+  //   //       objectId: objectId,
+  //   //       categoryId: categoryId,
+  //   //       fields: category.fields,
+  //   //     );
+  // }
 }

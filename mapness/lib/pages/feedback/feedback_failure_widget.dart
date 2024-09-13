@@ -9,6 +9,7 @@ class FeedbackFailureWidget extends StatelessWidget {
   Widget build(BuildContext context) => FeedbackFormContainer(
         title: '',
         isSendVisible: false,
+        onSend: null,
         child: Center(
           child: Text(context.l10n.failedToLoadData),
         ),

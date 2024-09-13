@@ -1,13 +1,13 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/features/feedback/submit_feedback_payload.dart';
 import 'package:mapness/pages/feedback/components/feedback_field_widget.dart';
 
 class FeedbackFormWidget extends ConsumerStatefulWidget {
-  final IList<FeedbackBaseEntity> fields;
+  final List<FeedbackBaseEntity> fields;
   final ValueNotifier<bool> isFormValidNotifier;
   final String payloadId;
   final int objectId;
@@ -23,8 +23,7 @@ class FeedbackFormWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _FeedbackFormWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _FeedbackFormWidgetState();
 }
 
 class _FeedbackFormWidgetState extends ConsumerState<FeedbackFormWidget> {
@@ -36,8 +35,7 @@ class _FeedbackFormWidgetState extends ConsumerState<FeedbackFormWidget> {
   @override
   void initState() {
     super.initState();
-    // fieldNotifiers =
-    //     widget.fields.map((field) => ValueNotifier(field)).toList();
+    fieldNotifiers = widget.fields.map((field) => ValueNotifier(field)).toList();
 
     for (final notifier in fieldNotifiers) {
       /// seems to be disgusting but actually user is limited to modify single field at a time, so
@@ -46,13 +44,11 @@ class _FeedbackFormWidgetState extends ConsumerState<FeedbackFormWidget> {
         widget.isFormValidNotifier.value = isFormValid();
 
         /// TODO(Demezy): refactor this in prefer of
-        // ref
-        //     .read(submitFeedbackPayloadProvider(widget.payloadId).notifier)
-        //     .collectForm(
-        //       objectId: widget.objectId,
-        //       categoryId: widget.categoryId,
-        //       fields: fieldNotifiers.map((e) => e.value),
-        //     );
+        ref.read(submitFeedbackPayloadProvider(widget.payloadId).notifier).collectForm(
+              objectId: widget.objectId,
+              categoryId: widget.categoryId,
+              fields: fieldNotifiers.map((e) => e.value),
+            );
       });
     }
   }
@@ -65,8 +61,7 @@ class _FeedbackFormWidgetState extends ConsumerState<FeedbackFormWidget> {
     super.dispose();
   }
 
-  bool isFormValid() =>
-      fieldNotifiers.every((notifier) => notifier.value.isValid);
+  bool isFormValid() => fieldNotifiers.every((notifier) => notifier.value.isValid);
 
   @override
   Widget build(BuildContext context) => ListView.separated(
@@ -81,8 +76,7 @@ class _FeedbackFormWidgetState extends ConsumerState<FeedbackFormWidget> {
             valueListenable: notifier,
             builder: (context, field, child) => FeedbackFieldWidget(
               field: field,
-              onValueChange: (value) =>
-                  notifier.value = notifier.value.updatedValue(value),
+              onValueChange: (value) => notifier.value = notifier.value.updatedValue(value),
               key: ValueKey(field.id),
             ),
           );

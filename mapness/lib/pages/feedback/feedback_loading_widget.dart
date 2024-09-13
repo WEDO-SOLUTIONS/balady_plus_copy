@@ -9,6 +9,7 @@ class FeedbackLoadingWidget extends StatelessWidget {
   Widget build(BuildContext context) => const FeedbackFormContainer(
         title: '',
         isSendVisible: false,
+        onSend: null,
         child: Center(
           child: Loading(
             size: LoaderSize.large,

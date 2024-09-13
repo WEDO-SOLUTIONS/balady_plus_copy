@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:mapness/entities/feedback/dto/feedback_form_payload_dto.dart';
 import 'package:mapness/entities/feedback/feedback_form_payload_entity.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
@@ -31,16 +32,25 @@ Future<void> submitFeedback(
     throw Exception('Unknown POI position');
   }
 
-  final response = await dio.post(
-    '/api/1.0/discrepancy',
-    data: FeedbackFormPayloadDto.fromDomain(
-      entity: payload,
-      userEmail: userInfo?.getEmail(),
-      latitude: latitude,
-      longitude: longitude,
-      objectType:
-          FeedbackObjectType.fromMessage(poiInfo.types.firstOrNull?.type),
-    ).toJson(),
-  );
-  log(response.data.toString());
+  try {
+    final objectType = FeedbackObjectType.fromMessage(poiInfo.types.firstOrNull?.type);
+    final response = await dio.post(
+      '/api/1.0/discrepancy',
+      data: FeedbackFormPayloadDto.fromDomain(
+        entity: payload,
+        userEmail: userInfo?.getEmail(),
+        latitude: latitude,
+        longitude: longitude,
+        objectType: objectType,
+      ).toJson(),
+    );
+    log(response.data.toString());
+  } on DioException catch (e) {
+    log(e.response?.statusCode?.toString() ?? '');
+    log(e.toString());
+    rethrow;
+  } catch (e) {
+    log(e.toString());
+    rethrow;
+  }
 }

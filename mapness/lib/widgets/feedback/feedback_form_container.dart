@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/features/feedback/submit_feedback_payload.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:uuid/uuid.dart';
 
 /// Basic wrapper for feedback pages
 class FeedbackFormContainer extends ConsumerWidget {
   final Widget child;
   final String title;
+  final VoidCallback? onSend;
   final VoidCallback? onBack;
   final bool isSendEnabled;
   final bool isSendVisible;
@@ -19,6 +18,7 @@ class FeedbackFormContainer extends ConsumerWidget {
   const FeedbackFormContainer({
     required this.child,
     required this.title,
+    required this.onSend,
     this.isSendEnabled = false,
     this.isSendVisible = true,
     super.key,
@@ -26,8 +26,7 @@ class FeedbackFormContainer extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
-      AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Material(
           color: context.colorsV2.backgroundSurface4,
@@ -36,18 +35,14 @@ class FeedbackFormContainer extends ConsumerWidget {
               appBar: BaladyTopBar.iconAndText(
                 title: title,
                 leading: ActionModel(
-                  icon: context.isLTR
-                      ? SystemIcons.arrowCornerLeftLarge
-                      : SystemIcons.arrowCornerRightLarge,
+                  icon: context.isLTR ? SystemIcons.arrowCornerLeftLarge : SystemIcons.arrowCornerRightLarge,
                   onPressed: onBack ?? context.pop,
                 ),
                 trailing: isSendVisible
                     ? ActionModel(
                         text: context.l10n.send,
                         isEnabled: isSendEnabled,
-                        onPressed: isSendEnabled
-                            ? () => _collectForm(objectId, categoryId)
-                            : null,
+                        onPressed: isSendEnabled ? onSend : null,
                       )
                     : null,
                 colorEnabled: context.colorsV2.accentDefault,
