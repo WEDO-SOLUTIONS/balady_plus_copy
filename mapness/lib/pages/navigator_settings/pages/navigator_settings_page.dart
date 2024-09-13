@@ -8,11 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/app/routes/navigator_settings.dart';
-import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/app/routes/dark_map.dart';
 import 'package:mapness/app/routes/sound_settings.dart';
+import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
