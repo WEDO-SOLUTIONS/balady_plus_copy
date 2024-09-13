@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
+import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -26,6 +27,8 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final dark = ref.watch(darkModeProvider);
+    final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
+
     final colorsV2 = context.colorsV2;
     final l10n = context.l10n;
     final color = context.color;
@@ -57,6 +60,36 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    ContentColumn(
+                      headerTitle: l10n.navigation,
+                      content: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(RadiusBorder.l),
+                            color: color.surfaceBaseTertiary,
+                          ),
+                          child: Column(
+                            children: [
+                              ContentRow(
+                                onToggle: (_) {
+                                  ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart();
+                                },
+                                options: ContentRowOptions(
+                                  title: l10n.autorunNavigator,
+                                  titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                  subtitle: l10n.automaticallyLaunchNavigator,
+                                  subtitleMaxlines: 2,
+                                  actionWidget: ContentRowActionOptions(
+                                    enabledToggle: true,
+                                    toggleInitialValue: autorun,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                     ContentColumn(
                       headerTitle: l10n.mapStyle,
                       content: [
