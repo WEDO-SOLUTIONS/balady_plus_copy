@@ -83,7 +83,7 @@ class EtaRoute with _$EtaRoute {
     @JsonKey(name: 'end_point') final EtaRoutePoint? endPoint,
     final RouteType? type,
     @JsonKey(name: 'route_index') final int? routeIndex,
-    @JsonKey(name: 'created_at') final  String? createdAt,
+    @JsonKey(name: 'created_at') final String? createdAt,
   }) = _EtaRoute;
 
   /// Creates a [EtaRoute] object from a JSON map.
