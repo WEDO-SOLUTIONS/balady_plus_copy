@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/app/routes/navigator_settings.dart';
+import 'package:mapness/app/routes/language_picker.dart';
 import 'package:mapness/pages/navigator_settings/components/voice_row_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -92,17 +92,12 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                                   (e) => VoiceRowWidget(package: e),
                                 )
                                 .insertBetween(
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: Spacing.$4x,
-                                    ),
-                                    child: Divider(
-                                      height: 0.5,
-                                      color: colorsV2.borderSoft,
-                                      thickness: 1,
-                                      indent: 0,
-                                      endIndent: 0,
-                                    ),
+                                  Divider(
+                                    height: 0.5,
+                                    color: colorsV2.borderSoft,
+                                    thickness: 1,
+                                    indent: Spacing.$4x,
+                                    endIndent: 0,
                                   ),
                                 )
                                 .toList(),
@@ -120,17 +115,12 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                                   (e) => VoiceRowWidget(package: e),
                                 )
                                 .insertBetween(
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: Spacing.$4x,
-                                    ),
-                                    child: Divider(
-                                      height: 0.5,
-                                      color: colorsV2.borderSoft,
-                                      thickness: 1,
-                                      indent: 0,
-                                      endIndent: 0,
-                                    ),
+                                  Divider(
+                                    height: 0.5,
+                                    color: colorsV2.borderSoft,
+                                    thickness: 1,
+                                    indent: Spacing.$4x,
+                                    endIndent: 0,
                                   ),
                                 )
                                 .toList(),
