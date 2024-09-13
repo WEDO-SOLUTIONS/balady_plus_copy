@@ -1,6 +1,22 @@
+import 'dart:async';
+
+import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/eta.dart';
+import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
+import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:urbi_analytics/logger.dart';
 
 class EtaUtils {
   static Future<img.Image> processImage(String imgUrl, int imgSize, {bool isUnavailable = false}) async {
@@ -47,5 +63,118 @@ class EtaUtils {
     img.compositeImage(mask48x48, img48x48, dstX: 0, dstY: 0, maskChannel: img.Channel.alpha);
 
     return mask48x48;
+  }
+
+  static Future<bool> processShareLink(WidgetRef ref,
+      {required String tokenId, required String streamId, String? type, double? latitude, double? longitude}) async {
+    final Completer<Position?> completer = Completer();
+    ProviderSubscription? _locationListener;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final location = ref.read(locationProvider);
+      if (location != null) {
+        completer.complete(location);
+      } else {
+        _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
+          if (next != null) {
+            _locationListener?.close();
+            completer.complete(next);
+          }
+        });
+      }
+    });
+
+    try {
+      // Wait for location to be available
+      await completer.future;
+    } catch (e) {
+      log(e.toString());
+    } finally {
+      _locationListener?.close();
+    }
+
+    if (type == 'eta') {
+      try {
+        final uriPath = Uri(path: EtaRoute.path, queryParameters: {
+          EtaRoute.tokenKey: tokenId,
+          EtaRoute.streamKey: streamId,
+          if (latitude != null) EtaRoute.latKey: latitude.toString(),
+          if (longitude != null) EtaRoute.lonKey: longitude.toString(),
+        });
+        if (latitude != null && longitude != null) {
+          await ref.read(cameraPositionProvider.notifier).animateTo(
+                CameraPositionMessage(
+                  point: GeoPointMessage(latitude: latitude, longitude: longitude),
+                  zoom: 17,
+                  tilt: 0,
+                  bearing: 0,
+                ),
+              );
+        }
+        await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+        unawaited(ref.read(goRouterProvider).push(uriPath.toString()));
+      } catch (e) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showEtaExpired(rootNavigatorKey.currentContext!);
+        });
+      }
+      return true;
+    } else if (type == 'live') {
+      try {
+        // Get old stream token and stream id
+        final oldToken = EtaStreamStorage().state.streamToken;
+        final oldXStreamData = EtaStreamStorage().state.xStreamData;
+
+        if (oldToken != null && oldXStreamData != null) {
+          await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
+        }
+
+        if (latitude != null && longitude != null) {
+          await ref.read(cameraPositionProvider.notifier).animateTo(
+                CameraPositionMessage(
+                  point: GeoPointMessage(latitude: latitude, longitude: longitude),
+                  zoom: 17,
+                  tilt: 0,
+                  bearing: 0,
+                ),
+              );
+        }
+        await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+      } catch (e) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showLiveLocationExpired(rootNavigatorKey.currentContext!);
+        });
+      }
+      return true;
+    }
+
+    return false;
+  }
+
+  static void showLiveLocationExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.liveLocation(context),
+    );
+  }
+
+  static void showEtaExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.eta(context),
+    );
+  }
+
+  static void showBroadcastExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.broadcastExpired(context),
+    );
   }
 }

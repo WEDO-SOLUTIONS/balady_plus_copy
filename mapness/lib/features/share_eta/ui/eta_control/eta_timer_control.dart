@@ -96,6 +96,7 @@ class EtaTimerControl extends ConsumerWidget {
             onConfirmTap: (v) async {
               await _stopShare(ref);
               await ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);
+              context.pop();
             },
           ),
         ),
