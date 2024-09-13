@@ -8,6 +8,7 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
+import 'package:mapness/app/routes/sound_settings.dart';
 import 'package:mapness/app/routes/road_panel.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';

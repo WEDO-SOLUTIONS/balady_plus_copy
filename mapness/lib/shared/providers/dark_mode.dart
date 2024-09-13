@@ -9,13 +9,9 @@ part 'dark_mode.g.dart';
 const _prefsKey = 'settings.darkMode';
 
 enum DarkMapStateEnum {
-  asInASystem('asInASystem'),
-  alwaysEnabled('alwaysEnabled'),
-  off('off');
-
-  const DarkMapStateEnum(this.key);
-
-  final String key;
+  asInASystem,
+  alwaysEnabled,
+  off,
 }
 
 class DarkMapStateModel {
@@ -42,7 +38,7 @@ class DarkMode extends _$DarkMode {
   @override
   DarkMapStateModel build() {
     final sharedPrefs = ref.read(sharedPrefsProvider);
-    final modeKey = sharedPrefs.getString(_prefsKey) ?? DarkMapStateEnum.asInASystem.key;
+    final modeKey = sharedPrefs.getString(_prefsKey) ?? DarkMapStateEnum.asInASystem.name;
     final currentMode = _getModeFromKey(modeKey);
     final currentIsDark = _getIsDarkFromMode(currentMode);
 
@@ -54,7 +50,7 @@ class DarkMode extends _$DarkMode {
     );
   }
 
-  DarkMapStateEnum _getModeFromKey(String key) => DarkMapStateEnum.values.firstWhere((e) => e.key == key);
+  DarkMapStateEnum _getModeFromKey(String key) => DarkMapStateEnum.values.firstWhere((e) => e.name == key);
 
   bool _getIsDarkFromMode(DarkMapStateEnum mode) => switch (mode) {
         DarkMapStateEnum.asInASystem =>
@@ -71,6 +67,6 @@ class DarkMode extends _$DarkMode {
       currentMapMode: currentMapMode,
     );
 
-    ref.read(sharedPrefsProvider).setString(_prefsKey, state.currentMapMode.key);
+    ref.read(sharedPrefsProvider).setString(_prefsKey, state.currentMapMode.name);
   }
 }

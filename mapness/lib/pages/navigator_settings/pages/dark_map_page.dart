@@ -68,17 +68,12 @@ class _DarkMapPage extends ConsumerState<DarkMapPage> {
                             ),
                           )
                           .insertBetween(
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: Spacing.$4x,
-                              ),
-                              child: Divider(
-                                height: 0.5,
-                                color: colorsV2.borderSoft,
-                                thickness: 1,
-                                indent: 0,
-                                endIndent: 0,
-                              ),
+                            Divider(
+                              height: 0.5,
+                              color: colorsV2.borderSoft,
+                              thickness: 1,
+                              indent: Spacing.$4x,
+                              endIndent: 0,
                             ),
                           )
                           .toList(),
