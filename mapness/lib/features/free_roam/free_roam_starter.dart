@@ -38,7 +38,7 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
       if (!state.canStart &&
           state.status is! AnimatingStatus &&
           event != null &&
-          event.speed - event.speedAccuracy >= 0.33333) {
+          event.speed - event.speedAccuracy >= 8.33333) {
         state = state.copyWith(
           canStart: true,
           isAutorun: isAutorun,
