@@ -14,14 +14,17 @@ class _NavigatorSettings extends _$NavigatorSettings {
 
   @override
   bool build() {
-    _initDgisController();
-
     final sharedPrefs = ref.read(sharedPrefsProvider);
-    return sharedPrefs.getBool(_prefsKey) ?? true;
+    final camerasOn = sharedPrefs.getBool(_prefsKey) ?? true;
+
+    _initDgisController(camerasOn);
+
+    return camerasOn;
   }
 
-  Future<void> _initDgisController() async {
+  Future<void> _initDgisController(bool camerasOn) async {
     _dgisController = await ref.read(dgisControllerProvider.future);
+    await _dgisController?.setMapAttributeBool(MapnessConstants.camerasOn, value: camerasOn);
   }
 
   Future<void> toggle() async {

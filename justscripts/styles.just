@@ -13,4 +13,4 @@ add-bool-property name default_value:
 
 fix-parking: (add-bool-property "parking_filter_paid_on" "false") (add-bool-property "parking_filter_free_on" "false")
 
-fix-camerasOn: (add-bool-property "camerasOn" "true")
+fix-camerasOn: (add-bool-property "camerasOn" "false")
