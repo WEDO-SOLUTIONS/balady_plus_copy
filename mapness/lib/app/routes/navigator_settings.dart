@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/pages/navigator_settings/components/language_pick_sheet.dart';
+import 'package:mapness/pages/navigator_settings/pages/dark_map_page.dart';
 import 'package:mapness/pages/navigator_settings/pages/navigator_settings_page.dart';
 import 'package:mapness/pages/navigator_settings/pages/sound_settings_page.dart';
 import 'package:mapness/pages/navigator_settings/pages/voice_page.dart';
@@ -15,12 +16,20 @@ part 'navigator_settings.g.dart';
   routes: <TypedGoRoute<GoRouteData>>[
     TypedGoRoute<SoundSettingsRoute>(
       path: SoundSettingsRoute.path,
+      routes: [
+        TypedGoRoute<DarkMapRoute>(
+          path: DarkMapRoute.path,
+        ),
+      ],
     ),
-    TypedGoRoute<VoiceSettingsRoute>(path: VoiceSettingsRoute.path, routes: [
-      TypedGoRoute<LanguagePickSheetRoute>(
-        path: LanguagePickSheetRoute.path,
-      ),
-    ]),
+    TypedGoRoute<VoiceSettingsRoute>(
+      path: VoiceSettingsRoute.path,
+      routes: [
+        TypedGoRoute<LanguagePickSheetRoute>(
+          path: LanguagePickSheetRoute.path,
+        ),
+      ],
+    ),
   ],
 )
 class NavigatorSettingsRoute extends GoRouteData {
@@ -71,6 +80,23 @@ class VoiceSettingsRoute extends GoRouteData {
   ) =>
       const TransculentPage(
         child: VoiceSettingsPage(),
+      );
+}
+
+class DarkMapRoute extends GoRouteData {
+  static const path = 'dark_map';
+
+  const DarkMapRoute();
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Page<void> buildPage(
+    BuildContext context,
+    GoRouterState state,
+  ) =>
+      const TransculentPage(
+        child: DarkMapPage(),
       );
 }
 

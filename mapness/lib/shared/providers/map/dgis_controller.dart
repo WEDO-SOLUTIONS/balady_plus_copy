@@ -58,14 +58,14 @@ class DgisController extends _$DgisController {
       ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA'],
     );
     await controller.setAppearance(
-      ref.read(darkModeProvider) ? MapAppearanceMessage.night : MapAppearanceMessage.day,
+      ref.read(darkModeProvider).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
     );
     ref
       ..listen(
         darkModeProvider,
         (previous, next) {
           controller.setAppearance(
-            next ? MapAppearanceMessage.night : MapAppearanceMessage.day,
+            next.isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
           );
         },
       )

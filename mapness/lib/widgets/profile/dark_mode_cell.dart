@@ -20,9 +20,7 @@ class DarkModeCell extends ConsumerWidget {
         borderRadius: BorderRadius.circular(8),
         color: context.color.surfaceBaseSecondary,
         child: InkWell(
-          onTap: () {
-            ref.read(darkModeProvider.notifier).toggle();
-          },
+          onTap: () {},
           borderRadius: BorderRadius.circular(8),
           child: SizedBox(
             height: 48,
@@ -49,8 +47,8 @@ class DarkModeCell extends ConsumerWidget {
                   IgnorePointer(
                     child: CupertinoSwitch(
                       activeColor: context.color.textAndIconsStatusAccent,
-                      onChanged: (bool value) {},
-                      value: darkMode,
+                      onChanged: (value) {},
+                      value: darkMode.isDark,
                     ),
                   ),
                 ],
