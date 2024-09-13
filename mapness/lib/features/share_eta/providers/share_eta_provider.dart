@@ -175,6 +175,7 @@ class ShareEta extends _$ShareEta {
                   route.copyWith(
                     routeIndex: 0,
                     startPoint: EtaRoutePoint(lat: location.latitude, lon: location.longitude),
+                    createdAt: DateTime.now().toUtc().toIso8601String(),
                   ),
                 );
           }
