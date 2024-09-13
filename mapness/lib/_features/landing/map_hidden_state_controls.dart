@@ -80,11 +80,11 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     return BottomSheetStateBuilder<ThreeStateBottomSheet>(
       defaultState: ThreeStateBottomSheet.open,
       builder: (context, state, interpolation, child) {
-        final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
-        final delta = clampDouble(1 - interpolation * 4, 0, 1);
-
         const hiddenHeight = 0.0;
         const controlsHeight = 60.0;
+
+        final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
+        final delta = state == ThreeStateBottomSheet.hidden ? clampDouble(1 - interpolation * 4, 0, 1) : hiddenHeight;
         return AnimatedCrossFade(
             crossFadeState: freeRoamState.canStart && !freeRoamState.isAutorun
                 ? CrossFadeState.showFirst
@@ -115,16 +115,14 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
             secondChild: IgnorePointer(
               ignoring: state != ThreeStateBottomSheet.hidden,
               child: Opacity(
-                opacity: state == ThreeStateBottomSheet.hidden ? delta : hiddenHeight,
-                child: SizedOverflowBox(
-                  size: Size(
-                    double.infinity,
-                    state == ThreeStateBottomSheet.hidden ? controlsHeight : controlsHeight * delta,
-                  ),
+                opacity: delta,
+                child: Align(
+                  heightFactor: delta,
+                  alignment: Alignment.topCenter,
                   child: Directionality(
                     textDirection: uiDirection,
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                      padding: EdgeInsets.only(bottom: Spacing.$2x * delta),
                       child: MapQuickFilters(
                         height: controlsHeight,
                         forMap: true,
