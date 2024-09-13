@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:mapness/entities/free_roam/autostart_state.dart';
@@ -10,8 +11,10 @@ part 'free_roam_starter.g.dart';
 
 @riverpod
 class _FreeRoamStarter extends _$FreeRoamStarter {
-  bool _isShown = false;
+  static bool _isShown = false;
   bool get isShown => _isShown;
+
+  ProviderSubscription<Position?>? _subscription;
 
   @override
   FreeRoamStartState build() {
@@ -35,7 +38,7 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
       if (!state.canStart &&
           state.status is! AnimatingStatus &&
           event != null &&
-          event.speed - event.speedAccuracy >= 8.33333) {
+          event.speed - event.speedAccuracy >= 0.33333) {
         state = state.copyWith(
           canStart: true,
           isAutorun: isAutorun,
@@ -44,10 +47,12 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
       }
     }
 
-    final subscription = ref.listen<Position?>(locationProvider, update);
+    if (!_isShown) {
+      _subscription = ref.listen<Position?>(locationProvider, update);
+    }
 
     ref.onDispose(() {
-      subscription.close();
+      _subscription?.close();
     });
 
     return FreeRoamStartState(
@@ -83,6 +88,7 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
       status: const CompletedStatus(),
     );
     _isShown = true;
+    _subscription?.close();
   }
 }
 

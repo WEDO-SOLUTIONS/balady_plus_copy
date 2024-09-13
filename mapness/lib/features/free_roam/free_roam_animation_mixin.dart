@@ -48,6 +48,7 @@ mixin FreeRoamAnimationMixin<T extends ConsumerStatefulWidget> on ConsumerState<
   void _update() {
     if (autostartAnimationController.status == AnimationStatus.completed) {
       const FreeRoamRoute().go(context);
+      ref.read(freeRoamStarterProvider.notifier).setShown();
       return;
     }
 
