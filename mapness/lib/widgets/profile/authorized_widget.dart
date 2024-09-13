@@ -137,7 +137,7 @@ class AuthorizedWidget extends ConsumerWidget {
               customActionWidget: AppButton.close(
                 color: context.color.surfaceContrastLow,
                 onTap: context.pop,
-                innerPadding: const EdgeInsets.all(Spacing.verticalGapBetweenStories),
+                innerPadding: const EdgeInsets.all(Spacing.$2x),
                 padding: EdgeInsets.zero,
               ),
             ),

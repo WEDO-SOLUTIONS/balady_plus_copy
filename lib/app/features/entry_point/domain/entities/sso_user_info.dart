@@ -150,8 +150,6 @@ class SsoUserInfo extends Equatable {
         dateDivided.add(int.tryParse(element)!);
       }
 
-      String hDate = hijriCalendar.gregorianToHijri(dateDivided[2], dateDivided[1], dateDivided[0]);
-
       String year = hijriCalendar.hYear.toString();
       String month =
           hijriCalendar.hMonth.toString().length == 1 ? "0${hijriCalendar.hMonth}" : hijriCalendar.hMonth.toString();

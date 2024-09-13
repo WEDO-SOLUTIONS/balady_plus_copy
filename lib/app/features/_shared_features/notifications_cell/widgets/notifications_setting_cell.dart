@@ -158,7 +158,10 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                       "assets/icons/svg/profile/settings.svg",
                                       height: 24,
                                       width: 24,
-                                      color: Colors.red,
+                                      colorFilter: const ColorFilter.mode(
+                                        Colors.red,
+                                        BlendMode.srcIn,
+                                      ),
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
