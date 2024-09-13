@@ -3,15 +3,15 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class FeedbackSuccessPage extends StatelessWidget {
-  final String username;
-
-  const FeedbackSuccessPage({required this.username, super.key});
+class FeedbackSuccessWidget extends StatelessWidget {
+  const FeedbackSuccessWidget({super.key});
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
@@ -33,7 +33,9 @@ class FeedbackSuccessPage extends StatelessWidget {
                       ),
                       const SizedBox(height: AppSizes.xxs),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSizes.xxs,
+                        ),
                         child: Text(
                           context.l10n.feedbackSuccessTitle,
                           style: context.textStyleV3.h3SemiBold,
@@ -42,11 +44,23 @@ class FeedbackSuccessPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs),
-                        child: Text(
-                          context.l10n.feedbackSuccessText(username),
-                          style: context.textStyleV3.bodyLargeRegular,
-                          textAlign: TextAlign.center,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSizes.xxs,
+                        ),
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            final userInfo = ref.watch(authProvider).valueOrNull;
+
+                            return Text(
+                              userInfo == null
+                                  ? context.l10n.feedbackSuccessTextUnauthorized
+                                  : context.l10n.feedbackSuccessText(
+                                      userInfo.getFirstAndLastName(),
+                                    ),
+                              style: context.textStyleV3.bodyLargeRegular,
+                              textAlign: TextAlign.center,
+                            );
+                          },
                         ),
                       ),
                     ],

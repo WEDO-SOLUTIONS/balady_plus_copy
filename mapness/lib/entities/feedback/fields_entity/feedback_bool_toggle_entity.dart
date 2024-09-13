@@ -7,6 +7,7 @@ class FeedbackBoolToggleEntity extends FeedbackBaseEntity<bool> {
     required super.id,
     required super.isRequired,
     required this.label,
+    required super.isHidden,
     bool? value,
   }) : super(value: value);
 
@@ -16,5 +17,6 @@ class FeedbackBoolToggleEntity extends FeedbackBaseEntity<bool> {
         isRequired: isRequired,
         label: label,
         value: value,
+        isHidden: isHidden,
       );
 }

@@ -14,7 +14,6 @@ class FeedbackSelectTypePage extends ConsumerWidget {
   });
 
   @override
-  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context, WidgetRef ref) {
     if (objectId == null) {
       return const SizedBox();
@@ -24,6 +23,7 @@ class FeedbackSelectTypePage extends ConsumerWidget {
     return FeedbackFormContainer(
       title: context.l10n.feedbackWhatsWrong,
       isSendVisible: false,
+      onSend: null,
       child: id == null ? Center(child: Loading.large()) : FeedbackSelectOptionsComponentWidget(objectId: id),
     );
   }
