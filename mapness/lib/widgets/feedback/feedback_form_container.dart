@@ -18,7 +18,7 @@ class FeedbackFormContainer extends ConsumerWidget {
   const FeedbackFormContainer({
     required this.child,
     required this.title,
-    required this.onSend,
+    this.onSend,
     this.isSendEnabled = false,
     this.isSendVisible = true,
     super.key,
