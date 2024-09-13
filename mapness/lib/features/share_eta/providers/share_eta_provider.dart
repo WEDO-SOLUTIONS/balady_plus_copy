@@ -298,7 +298,6 @@ class ShareEta extends _$ShareEta {
     } catch (e) {
       debugPrint(e.toString());
     } finally {
-      ref.read(etaRouteInfoProvider.notifier).clear();
       EtaWebsocket().removeConnectionLostListener(_onErrorStatus);
     }
   }
