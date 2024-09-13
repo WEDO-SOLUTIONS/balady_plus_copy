@@ -48,28 +48,31 @@ class FeedbackScheduleWidget extends StatelessWidget {
   }
 
   void _onWorkingHoursChange(int intervalIndex, TimeRange workingTime) {
-    if (field.value == null) {
+    /// help retarded dart analyzer to determine that value is not null
+    final value = field.value;
+    if (value == null) {
       return;
     }
 
     onValueChange(
-      field.value!.replace(
+      value.replace(
         intervalIndex,
         _WorkingHours(
           workingTime: workingTime,
-          days: field.value?[intervalIndex].days ?? const ISet.empty(),
+          days: value[intervalIndex].days,
         ),
       ),
     );
   }
 
   void _onIntervalDelete(int intervalIndex) {
-    if (field.value == null) {
+    final value = field.value;
+    if (value == null) {
       return;
     }
 
     onValueChange(
-      field.value!.removeAt(intervalIndex),
+      value.removeAt(intervalIndex),
     );
   }
 
