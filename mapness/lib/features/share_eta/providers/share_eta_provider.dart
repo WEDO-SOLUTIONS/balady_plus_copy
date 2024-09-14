@@ -175,10 +175,39 @@ class ShareEta extends _$ShareEta {
                   route.copyWith(
                     routeIndex: 0,
                     startPoint: EtaRoutePoint(lat: location.latitude, lon: location.longitude),
+                    createdAt: DateTime.now().toUtc().toIso8601String(),
                   ),
                 );
           }
         }
+      })
+      ..listen(etaServiceProvider, (_, next) {
+        if (!next.hasValue || next.isLoading || next.hasError || next.valueOrNull == null) {
+          return;
+        }
+        final streamId = next.value!.streamId;
+        final streamToken = next.value!.streamToken;
+
+        final xStreamData = next.value!.xStreamData;
+
+        if (streamId == null || streamToken == null || xStreamData == null) {
+          return;
+        }
+
+        EtaStreamStorage()
+          ..setStreamId(streamId)
+          ..setToken(streamToken)
+          ..setXStreamData(xStreamData);
+
+        final finishAt = next.value!.finishesAt;
+        if (finishAt != null) {
+          final estimatedTime = finishAt.dateTime;
+          if (estimatedTime != null) {
+            EtaStreamStorage().setEstimatedTime(estimatedTime);
+          }
+        }
+
+        ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
       })
       ..onDispose(() {
         _stopSharingCurrent();
@@ -297,7 +326,6 @@ class ShareEta extends _$ShareEta {
     } catch (e) {
       debugPrint(e.toString());
     } finally {
-      ref.read(etaRouteInfoProvider.notifier).clear();
       EtaWebsocket().removeConnectionLostListener(_onErrorStatus);
     }
   }

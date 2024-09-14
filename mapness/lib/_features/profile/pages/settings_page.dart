@@ -1,16 +1,17 @@
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/app/routes/dark_map.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
@@ -24,8 +25,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   // According to task BALADY-416 to hide flags we temporary hide it with boolean flag
   // We don't delete it because this goes against the design of this feature
   static const showFlags = false;
-
-  int tapsToGo = 7;
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
@@ -61,7 +60,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           NotificationsSettingCell(),
                         ],
                       ),
-                      const SizedBox(height: Spacing.$4x),
+                      Spacing.$4x.heightBox,
                       Consumer(
                         builder: (context, ref, child) {
                           final language = ref.watch(appLanguageProvider);
@@ -81,33 +80,30 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           );
                         },
                       ),
-                      const SizedBox(
-                        height: Spacing.$2x,
-                      ),
+                      Spacing.$2x.heightBox,
                       ContentWrapper(
                         color: context.color.surfaceBaseSecondary,
                         children: [
                           ContentRow(
+                            onTap: () => const DarkMapRoute().push(context),
                             options: ContentRowOptions(
-                                leadingIcon: AppIcons(
-                                  iconData: GeneralIcons.darkMode,
-                                  color: context.color.textAndIconsStatusAccent,
-                                  size: 24,
+                              leadingIcon: AppIcons(
+                                iconData: GeneralIcons.darkMode,
+                                color: context.color.textAndIconsStatusAccent,
+                                size: 24,
+                              ),
+                              title: context.l10n.darkMap,
+                              actionWidget: ContentRowActionOptions(
+                                actionIcon: AppIcons(
+                                  iconData: SystemIcons.arrowCornerRightLarge,
+                                  color: context.colorsV2.foregroundSoft,
                                 ),
-                                title: context.l10n.darkMap,
-                                actionWidget: ContentRowActionOptions(
-                                  enabledToggle: true,
-                                  toggleInitialValue: ref.watch(darkModeProvider),
-                                )),
-                            onToggle: (_) {
-                              ref.read(darkModeProvider.notifier).toggle();
-                            },
+                              ),
+                            ),
                           )
                         ],
                       ),
-                      const SizedBox(
-                        height: Spacing.$2x,
-                      ),
+                      Spacing.$2x.heightBox,
                     ],
                   ),
                 ),

@@ -13,14 +13,12 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:provider/provider.dart';
 
 class RoutingSearchBar extends ConsumerStatefulWidget {
+  final String placeholder;
+
   const RoutingSearchBar({
     required this.placeholder,
-    required this.draggableScrollableController,
     super.key,
   });
-
-  final String placeholder;
-  final DraggableScrollableController draggableScrollableController;
 
   @override
   ConsumerState<RoutingSearchBar> createState() => _RoutingSearchBarState();

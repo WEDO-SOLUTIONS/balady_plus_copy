@@ -50,6 +50,19 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [
+          // Close the panel when tapping on the screen
+          // [CustomTransitionPage.barrierDismissible = true] doesn't work
+          // so we have to add a transparent InkWell to close the panel manually
+          //
+          // I hope this is temporary and GoRouter will support barrierDismissible
+          InkWell(
+            splashColor: Colors.transparent,
+            onTap: _hideLayersPanel,
+            child: const SizedBox(
+              width: double.maxFinite,
+              height: double.maxFinite,
+            ),
+          ),
           DraggableScrollableSheet(
             controller: _layersController,
             minChildSize: .0,
@@ -145,6 +158,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
       duration: _showHideDuration,
       curve: curve,
     );
+    ref.read(goRouterProvider).pop();
   }
 
   void _showLayersPanel() {
@@ -188,18 +202,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   void _showBottomSheet() {
     ref.read(layersControlsProvider.notifier).initialize();
 
-    _layersController
-        .animateTo(
+    _layersController.animateTo(
       _layersPanelMaxHeight,
       duration: _showHideDuration,
       curve: curve,
-    )
-        .then((_) {
-      _layersController.addListener(() {
-        if (_layersController.isAttached && _layersController.size < .1) {
-          ref.read(goRouterProvider).pop();
-        }
-      });
-    });
+    );
   }
 }

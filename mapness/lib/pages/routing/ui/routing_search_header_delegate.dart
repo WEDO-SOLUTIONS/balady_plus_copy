@@ -4,18 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/routing/ui/routing_search_bar.dart';
 
 class RoutingSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final String placeholder;
+
   RoutingSearchHeaderDelegate({
     required this.placeholder,
-    required this.draggableScrollableController,
   });
-
-  final String placeholder;
-  final DraggableScrollableController draggableScrollableController;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
         placeholder: placeholder,
-        draggableScrollableController: draggableScrollableController,
       );
 
   @override
@@ -29,14 +26,12 @@ class RoutingSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class DashboardHeader extends ConsumerWidget {
+  final String placeholder;
+
   const DashboardHeader({
     required this.placeholder,
-    required this.draggableScrollableController,
     super.key,
   });
-
-  final String placeholder;
-  final DraggableScrollableController draggableScrollableController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
@@ -69,7 +64,6 @@ class DashboardHeader extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: RoutingSearchBar(
                 placeholder: placeholder,
-                draggableScrollableController: draggableScrollableController,
               ),
             ),
             const SizedBox(

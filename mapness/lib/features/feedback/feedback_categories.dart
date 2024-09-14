@@ -1,30 +1,45 @@
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/services.dart';
+import 'package:dio/dio.dart';
 import 'package:mapness/entities/feedback/dto/feedback_category_dto.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
+import 'package:mapness/entities/feedback/feedback_object_type.dart';
+import 'package:mapness/features/feedback/feedback_dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feedback_categories.g.dart';
 
+/// Provider class for fetching feedback categories.
 @riverpod
 class FeedbackCategories extends _$FeedbackCategories {
+  /// Fetches feedback categories for a given object type.
+  ///
+  /// @param objectType The type of object to fetch categories for.
+  /// @return List of FeedbackCategoryEntity objects.
   @override
-  Future<List<FeedbackCategoryEntity>> build() async {
-    final data = await _loadMock();
-    final scheme = FeedbackCategoryDto.parseList(data);
-    return scheme.map((e) => e.toDomain()).toList();
+  Future<List<FeedbackCategoryEntity>> build(
+    FeedbackObjectType objectType,
+  ) async {
+    final dio = await ref.watch(feedbackDioProvider.future);
+    final dto = await _loadFromBackend(dio, objectType);
+    return dto.map((e) => e.toDomain()).toList();
   }
+}
 
-  Future<List<dynamic>> _loadMock() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    try {
-      final input = await rootBundle.loadString('assets/feedback_scheme_mock.json');
-      return jsonDecode(input) as List<dynamic>;
-    } catch (e) {
-      log(e.toString());
-    }
-    return [];
+/// Loads feedback categories from the backend
+///
+/// @param dio The Dio instance for making HTTP requests
+/// @param objectType The type of object to fetch categories for
+/// @return A list of FeedbackCategoryDto objects
+Future<List<FeedbackCategoryDto>> _loadFromBackend(
+  Dio dio,
+  FeedbackObjectType objectType,
+) async {
+  try {
+    final response = await dio.get('/api/1.0/discrepancy/${objectType.name}/categories');
+    return FeedbackCategoryDto.parseList(response.data);
+  } catch (e) {
+    log(e.toString());
   }
+  return [];
 }

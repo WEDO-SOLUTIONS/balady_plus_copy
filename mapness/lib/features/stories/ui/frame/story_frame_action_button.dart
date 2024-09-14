@@ -58,6 +58,7 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
   /// Handles the navigation action by pushing the specified location to the router.
   void handleNavigationAction(BuildContext context, String location) {
     final router = GoRouter.of(context);
+    final onClose = StoryArgsProvider.of(context).onClose;
     const bottomBarLocations = <int, String>{
       0: '/explore',
       1: '/routing',
@@ -71,7 +72,7 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
         key = bottomBarLocations.length - 1 - entry.key;
       }
       if (location.contains(entry.value)) {
-        router.pop(key);
+        onClose(key);
         return;
       }
     }

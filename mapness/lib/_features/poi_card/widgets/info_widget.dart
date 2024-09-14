@@ -83,9 +83,14 @@ class InfoWidget extends ConsumerWidget {
       }
     };
 
+    final objectId = data.id?.objectId.toString();
+
     final feedback = PoiContentFeedback(
       onFeedbackTap: () {
-        FeedbackBaseRoute(objectId: data.id!.objectId.toString()).push(context);
+        if (objectId == null) {
+          return;
+        }
+        FeedbackBaseRoute(objectId: objectId).push(context);
       },
       title: context.l10n.reportError,
       buttonText: context.l10n.send,
@@ -105,7 +110,7 @@ class InfoWidget extends ConsumerWidget {
       license: data.getLicense(context.l10n),
       accessibilityInfo: data.getAccessibility(context.l10n, qrTradeLicense),
       parking: data.getParking(context.l10n),
-      feedback: feedback,
+      feedback: objectId != null ? feedback : null,
     );
 
     return SafeArea(

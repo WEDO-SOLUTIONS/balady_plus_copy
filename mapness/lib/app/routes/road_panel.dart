@@ -27,6 +27,13 @@ class RoadPanelRoute extends GoRouteData {
     }
   }
 
+  static bool isCurrent(BuildContext context) {
+    final router = GoRouter.of(context);
+    final matches = router.routerDelegate.currentConfiguration.matches;
+
+    return matches.last.matchedLocation == path;
+  }
+
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) => CustomTransitionPage(
         fullscreenDialog: true,

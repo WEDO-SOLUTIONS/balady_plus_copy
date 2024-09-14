@@ -1,0 +1,17 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+        generate_for:
+          - "lib/entities/**.dart"
+          - "lib/features/**/*.dart"
+
+      json_serializable:
+        options:
+          include_if_null: false
+          checked: true
+        generate_for:
+          - "lib/features/**/*.dart"
+          - "lib/entities/**/*.dart"
+          - "lib/_features/poi_card/domain/dto/dgis_photos_dto.dart"

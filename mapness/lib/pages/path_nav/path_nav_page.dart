@@ -31,7 +31,6 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -39,7 +38,6 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
-import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -250,22 +248,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: padding,
-                      child: Consumer(
-                        builder: (context, ref, _) {
-                          final navi = ref.watch(appFeaturesProvider);
-                          return Visibility(
-                            visible: navi.naviEnabled,
-                            replacement: const SizedBox.square(
-                              dimension: 28,
-                            ),
-                            child: const TrafficControl(),
-                          );
-                        },
-                      ),
-                    ),
                     const Spacer(),
                     Padding(
                       padding: padding,
@@ -296,13 +278,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               ],
             ),
           ),
-          Positioned.fill(
-            child: isEtaExpanded
-                ? ColoredBox(
-                    color: AppColor.black.withOpacity(0.4),
-                  )
-                : const SizedBox.shrink(),
-          ),
+          if (isEtaExpanded)
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+              },
+              child: SizedBox.expand(
+                child: ColoredBox(
+                  color: AppColor.black.withOpacity(0.4),
+                ),
+              ),
+            ),
           Positioned(
             bottom: 0,
             right: 0,

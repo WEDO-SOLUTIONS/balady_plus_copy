@@ -4,8 +4,8 @@ import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/widgets/feedback/feedback_bool_toggle.dart';
 import 'package:mapness/widgets/feedback/feedback_chips.dart';
 import 'package:mapness/widgets/feedback/feedback_images.dart';
+import 'package:mapness/widgets/feedback/feedback_schedule_widget.dart';
 import 'package:mapness/widgets/feedback/feedback_text_field.dart';
-import 'package:mapness/widgets/feedback/working_hours/feedback_working_hours_widget.dart';
 
 class FeedbackFieldWidget<V> extends StatelessWidget {
   final FeedbackBaseEntity<V> field;
@@ -20,6 +20,7 @@ class FeedbackFieldWidget<V> extends StatelessWidget {
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
+    // TODO(Demezy): figure out how not to typecast. Or blame stupid type system.
     return switch (field) {
       FeedbackTextEntity() => FeedbackInput(
           onValueChange: (value) => onValueChange(value as V),
@@ -46,10 +47,11 @@ class FeedbackFieldWidget<V> extends StatelessWidget {
           field: field as FeedbackChipsEntity,
           onValueChange: (value) => onValueChange(value as V),
         ),
-      FeedbackWorkingHoursEntity() => const FeedbackWorkingHoursWidget(
-          // field: field as FeedbackWorkingHoursEntity,
-          // onValueChange: (value) => onValueChange(value as V),
-          ),
+      FeedbackScheduleEntity() => FeedbackScheduleWidget(
+          field: field as FeedbackScheduleEntity,
+          onValueChange: (value) => onValueChange(value as V),
+          key: ValueKey(field.id.hashCode ^ field.value.hashCode),
+        ),
       _ => Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Spacing.$4x),

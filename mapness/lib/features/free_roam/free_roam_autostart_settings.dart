@@ -10,6 +10,8 @@ const String _prefsKey = 'is_free_roam_autostart';
 
 @riverpod
 class _FreeRoamAutostartSettings extends _$FreeRoamAutostartSettings {
+  bool get isEnabled => state == AutostartState.always;
+
   @override
   AutostartState build() {
     final sharedPrefs = ref.read(sharedPrefsProvider);
@@ -26,6 +28,14 @@ class _FreeRoamAutostartSettings extends _$FreeRoamAutostartSettings {
     ref.read(freeRoamStarterProvider.notifier).setShown();
     ref.read(sharedPrefsProvider).setBool(_prefsKey, isAutostart);
     state = isAutostart ? AutostartState.always : AutostartState.declined;
+  }
+
+  void toggleAutostart() {
+    if (state == AutostartState.always) {
+      state = AutostartState.declined;
+    } else {
+      state = AutostartState.always;
+    }
   }
 }
 

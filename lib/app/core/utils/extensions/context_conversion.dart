@@ -1,28 +1,24 @@
-import 'package:flutter/material.dart'
-    show
-        BuildContext,
-        MaterialPageRoute,
-        MediaQuery,
-        Navigator,
-        Route,
-        Size,
-        Widget;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show translator;
+import 'package:flutter/material.dart' show BuildContext, MaterialPageRoute, MediaQuery, Navigator, Route, Size, Widget;
+import 'package:localize_and_translate/localize_and_translate.dart' show translator;
 
 import '../../services/services_exports.dart';
 
 extension ContextConversion on BuildContext {
   double get topPadding => MediaQuery.of(mainContext).padding.top;
+
   double get bottomPadding => MediaQuery.of(mainContext).padding.bottom;
+
   double get leftPadding => MediaQuery.of(mainContext).padding.left;
+
   double get rightPadding => MediaQuery.of(mainContext).padding.right;
+
   double get screenHeight => MediaQuery.of(mainContext).size.height;
+
   double get screenWidth => MediaQuery.of(mainContext).size.width;
+
   Size get screenSize => MediaQuery.of(mainContext).size;
 
-  BuildContext get mainContext =>
-      NavigationService.navigatorKey.currentContext!;
+  BuildContext get mainContext => NavigationService.navigatorKey.currentContext!;
 
   Future<T?> refreshCurrentPage<T extends Object?, TO extends Object?>(
     Widget currentPage,
@@ -38,14 +34,18 @@ extension ContextConversion on BuildContext {
   }) =>
       Navigator.of(this).pushNamed(routeName, arguments: arguments);
 
-  void popRoute<T extends Object?>([T? result]) =>
-      Navigator.of(this).pop(result);
+  void popRoute<T extends Object?>([T? result]) => Navigator.of(this).pop(result);
 
-  void popDialog<T extends Object?>([T? result]) =>
-      Navigator.of(this).pop(true);
+  void popDialog<T extends Object?>([T? result]) => Navigator.of(this).pop(true);
 
-  void popRouteUntilFirst<T extends Object?>([T? result]) =>
-      Navigator.of(this).popUntil((route) => route.isFirst);
+  void popRouteUntilFirst<T extends Object?>([T? result]) => Navigator.of(this).popUntil((route) => route.isFirst);
+
+  void popUntilRoute<T extends Object?>(String name) {
+    Navigator.of(this).popUntil((route) {
+      final settings = route.settings;
+      return settings.name == name;
+    });
+  }
 
   Future<T?> replaceRouteByNamedRoute<T extends Object?, TO extends Object?>(
     String routeName, {

@@ -284,10 +284,18 @@ class RouteHandler {
         
         let geometry = ComplexGeometry(geometries: geometries)
         let position = calcPosition(camera: map.camera, geometry: geometry)
+
+         // We need to update zoom to make route contain the screen
+        let newZoom = position.zoom.value - 1.0
+        
+        var updatedPosition = map.camera.position
+
+        updatedPosition.zoom = Zoom(value: newZoom)
+        
         
         self.moveCameraCancellable?.cancel()
         self.moveCameraCancellable = self.map.camera.move(
-            position: position
+            position: updatedPosition
         ).sink {_ in } failure: {_ in }
     }
     
