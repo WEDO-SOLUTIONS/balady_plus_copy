@@ -93,7 +93,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
                       },
                       onClose: () {
                         _hideLayersPanel();
-                        ref.read(goRouterProvider).pop();
                       },
                     ),
                     if (state.isLoading)
@@ -159,6 +158,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
       duration: _showHideDuration,
       curve: curve,
     );
+    ref.read(goRouterProvider).pop();
   }
 
   void _showLayersPanel() {
