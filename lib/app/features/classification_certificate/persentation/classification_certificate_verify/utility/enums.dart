@@ -45,22 +45,37 @@ enum NormalSearchByType {
   byCertificationNumber(
     title: "certificate_number",
     hintText: "enter_number",
+    validatorMessage: "certificate_number_validator",
+    regex: r'(?=.*?[0-9]{3,20})]',
   ),
   byFacilityName(
-    title: "the_contractor_office_name",
+    title: "the_contractor_engineering_office",
     hintText: "enter_the_contractor_office_name",
+    validatorMessage: "the_contractor_engineering_office_validator",
+    regex: r"[a-zA-Z\u0621-\u064A{3,20}]",
   ),
   byCRLICNumber(
     title: "commercial_registration_engineering_office_license",
     hintText: "enter_commercial_registration_engineering_office_license",
+    validatorMessage: "commercial_registration_engineering_office_license_validator",
+    regex: r'(?=.*?[0-9]{3,20})]',
   ),
   byEstablishmentId(
     title: "establishment_Id",
     hintText: "enter_establishment_Id",
+    validatorMessage: "establishment_Id_validator",
+    regex: r'(?=.*?[0-9]{3,20})]',
   );
 
-  const NormalSearchByType({required this.title, required this.hintText});
+  const NormalSearchByType({
+    required this.title,
+    required this.hintText,
+    required this.regex,
+    required this.validatorMessage,
+  });
 
   final String title;
   final String hintText;
+  final String validatorMessage;
+  final String regex;
 }

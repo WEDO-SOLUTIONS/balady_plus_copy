@@ -22,17 +22,17 @@ class NormalSearchVerifiedByWidget extends StatelessWidget {
               child: Text(
                 "verified_by".tr(),
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
             ),
             TextButton(
               onPressed: () {
                 context.read<ClassificationCertificateVerifyBloc>().add(
-                  SelectSearchMethodClassificationCertificateState(
-                    typeMethod: state.typeMethod,
-                  ),
-                );
+                      SelectSearchMethodClassificationCertificateState(
+                        typeMethod: state.typeMethod,
+                      ),
+                    );
               },
               child: Text("edit".tr()),
             ),
@@ -52,7 +52,12 @@ class NormalSearchVerifiedByWidget extends StatelessWidget {
             decoration: InputDecoration(
               hintText: state.normalSearchType.verifiedBy.hintText.tr(),
             ),
-            validator: (text) => (text?.isNotEmpty ?? true) ? "" : null,
+            validator: (text) =>
+                RegExp(state.normalSearchType.verifiedBy.regex).hasMatch(
+              text ?? "",
+            )
+                    ? state.normalSearchType.verifiedBy.validatorMessage
+                    : null,
           ),
         ),
       ],
