@@ -250,6 +250,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           setState(() {
             loading = false;
           });
+          // TODO(Scroollocker): Fix close browser window after logout after new flutter_appauth version upgraded
+          Navigator.of(ctx).pop();
         },
         title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
         logOutText: context.l10n.logOut,
