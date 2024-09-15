@@ -36,8 +36,8 @@ class DarkMapStateModel {
 @Riverpod(keepAlive: true)
 class DarkMode extends _$DarkMode {
   @override
-  DarkMapStateModel build() {
-    final sharedPrefs = ref.read(sharedPrefsProvider);
+  Future<DarkMapStateModel> build() async {
+    final sharedPrefs = await ref.read($asyncPrefsLoaderProvider.future);
     final modeKey = sharedPrefs.getString(_prefsKey) ?? DarkMapStateEnum.asInASystem.name;
     final currentMode = _getModeFromKey(modeKey);
     final currentIsDark = _getIsDarkFromMode(currentMode);
@@ -62,11 +62,22 @@ class DarkMode extends _$DarkMode {
   void changeDarkModeState(DarkMapStateEnum currentMapMode) {
     final isDark = _getIsDarkFromMode(currentMapMode);
 
-    state = state.copyWith(
-      isDark: isDark,
-      currentMapMode: currentMapMode,
-    );
+    final stateData = state.valueOrNull;
+    if (stateData == null) {
+      state = AsyncData(DarkMapStateModel(
+        isDark: isDark,
+        currentMapMode: currentMapMode,
+      ));
+    } else {
+      state = AsyncData(stateData.copyWith(
+        isDark: isDark,
+        currentMapMode: currentMapMode,
+      ));
+    }
 
-    ref.read(sharedPrefsProvider).setString(_prefsKey, state.currentMapMode.name);
+    ref.read(sharedPrefsProvider).setString(
+          _prefsKey,
+          currentMapMode.name,
+        );
   }
 }
