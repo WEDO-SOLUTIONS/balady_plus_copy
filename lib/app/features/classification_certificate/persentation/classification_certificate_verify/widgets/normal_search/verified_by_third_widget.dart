@@ -2,7 +2,7 @@ import 'package:balady_plus/app/features/classification_certificate/persentation
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'title_with_widget.dart';
+import '../title_with_widget.dart';
 
 ///  This Map on enum [NormalSearchType.byCommercialRegistrationNoEngineeringOfficeLicenseNumber]
 class VerifiedByThirdWidget extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/classification_certificate_verify_bloc.dart';
+import '../../bloc/classification_certificate_verify_bloc.dart';
 
 class SearchNormalOptionsWidget extends StatelessWidget {
   final NormalSearchType type;

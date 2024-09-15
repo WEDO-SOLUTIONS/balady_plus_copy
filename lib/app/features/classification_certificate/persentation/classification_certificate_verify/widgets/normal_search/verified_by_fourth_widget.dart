@@ -3,7 +3,7 @@ import 'package:balady_plus/app/features/classification_certificate/persentation
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'title_with_widget.dart';
+import '../title_with_widget.dart';
 
 ///  This Map on enum [NormalSearchType.byNationalID]
 class VerifiedByFourthWidget extends StatelessWidget {
@@ -16,6 +16,7 @@ class VerifiedByFourthWidget extends StatelessWidget {
       children: [
         TitleWithWidget(
           title: 'id_number_type',
+          isRequired: true,
           widget: DropdownMenu<String>(
             //initialSelection: menuItems.first,
             // controller: menuController,
@@ -43,6 +44,7 @@ class VerifiedByFourthWidget extends StatelessWidget {
         const SizedBox(height: 18),
         TitleWithWidget(
           title: 'id_number_two',
+          isRequired: true,
           widget: TextFormField(
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,

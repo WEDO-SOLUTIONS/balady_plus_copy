@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../bloc/classification_certificate_verify_bloc.dart';
-import 'search_normal_options_widget.dart';
+import 'normal_search/search_normal_options_widget.dart';
 
 class TitleWithWidget extends StatelessWidget {
   final String title;
