@@ -33,7 +33,7 @@ class DarkMapModeRowWidget extends ConsumerWidget {
         titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
           color: context.colorsV2.foregroundDefault,
         ),
-        customActionWidget: darModeState.currentMapMode == currentMode
+        customActionWidget: darModeState.valueOrNull?.currentMapMode == currentMode
             ? Icon(
                 SystemIcons.checkmark,
                 color: context.colorsV2.successDefault,
