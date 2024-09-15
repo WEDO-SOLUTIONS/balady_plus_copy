@@ -54,7 +54,9 @@ class _DarkMapPage extends ConsumerState<DarkMapPage> {
                     SizedBox(
                       width: double.infinity,
                       child: Image.asset(
-                        dark.isDark ? 'assets/images/dark_map_preview.png' : 'assets/images/light_map_preview.png',
+                        dark.valueOrNull?.isDark ?? false
+                            ? 'assets/images/dark_map_preview.png'
+                            : 'assets/images/light_map_preview.png',
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.high,
                       ),

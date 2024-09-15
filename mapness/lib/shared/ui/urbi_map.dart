@@ -34,7 +34,7 @@ class UrbiMap extends ConsumerWidget {
             ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA'],
           );
           await controller.setAppearance(
-            ref.read(darkModeProvider).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
+            (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
           );
           await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 

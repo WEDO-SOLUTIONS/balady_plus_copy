@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/entry_point/data/models/test_model.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/services_exports.dart';
@@ -20,23 +20,16 @@ import '../models/permission_response_model.dart';
 
 abstract class EntryPointRemoteDataSource {
   Future<AuthorizationTokenResponse> authorize();
-
   Future<EndSessionResponse> endSession();
-
   Future<String> logout();
 
   Future<TokenResponse> refreshToken(String refreshToken);
-
   Future<SsoUserInfoModel?> getSSOProfile();
-
   Future<String?> getCookie();
-
   Future<ApigeeTokenResponse> getAPIgeeToken();
-
   Future<ForceUpdateResponseModel> getForceVersion({required ForceUpdateParams params});
 
   Future<dynamic> getDataTest();
-
   Future<PermissionResponseModel> getEkramRules({required GetPermissionParamsModel params});
 
   Future<String> getPaymentURL({required PaymentRequest params});
@@ -51,6 +44,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   final AuthorizationServiceConfiguration _serviceConfiguration = AuthorizationServiceConfiguration(
     authorizationEndpoint: '${RemoteConfig.ssoUrl}/connect/authorize',
     tokenEndpoint: '${RemoteConfig.ssoUrl}/connect/token',
+    endSessionEndpoint: "${RemoteConfig.ssoUrl}/connect/endsession",
   );
 
   EntryPointRemoteDataSourceImpl({required this.webService});
@@ -117,15 +111,15 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   Future<SsoUserInfoModel?> getSSOProfile() async {
     Response? response;
     try {
-      response = await webServiceSSo.dio
-          .get(ApiUrl.ssoUserInfo, options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token}"}));
+      response = await webServiceSSo.dio.get(ApiUrl.ssoUserInfo,
+          options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token ?? ""}"}));
 
       var data = response.data;
 
       var parsedResult = data != null ? SsoUserInfoModel.fromJson(data) : null;
 
       return parsedResult.toFuture();
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -156,6 +150,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         "${RemoteConfig.ssoUrl}/connect/endsession",
         queryParameters: {
           "id_token_hint": sl<EntryPointCubit>().state.token?.idToken,
+          "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
         },
       );
 
@@ -166,7 +161,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       //    ApigeeResponseModel<UpdateDeviceResponseModel>.fromMap(response.data,
       //        parsedResult: parsedResult);
       return response.data;
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -209,7 +204,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       //  ApigeeResponseModel<ForceUpdateResponseModel>.fromMap(response.data,
       //    parsedResult: parsedResult);
       return parsedResult!.toFuture();
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -237,6 +232,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       EndSessionResponse? response = await _appAuth.endSession(
         EndSessionRequest(
           idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
+          postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
           serviceConfiguration: _serviceConfiguration,
         ),
       );
@@ -251,15 +247,15 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   Future<String?> getCookie() async {
     Response? response;
     try {
-      response = await webServiceSSo.dio
-          .get(ApiUrl.ssoUserCookie, options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token}"}));
+      response = await webServiceSSo.dio.get(ApiUrl.ssoUserCookie,
+          options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token ?? ""}"}));
       String? cookie;
       if (response.headers['set-cookie']?.toString() != null) {
         cookie = response.headers['set-cookie'].toString();
       }
 
       return cookie;
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -297,7 +293,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       ApigeeTokenResponseModel apigeeResponse = ApigeeTokenResponseModel.fromMap(response.data);
       return apigeeResponse.toFuture();
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -331,7 +327,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       /*  final result =
           ApigeeResponseModel<List<TestModel>>.fromMap(data).data?.result;
-
+   
       List<TestModel>? d = result != null
           ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
           : null;
@@ -339,10 +335,10 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
  ;*/
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      //List<TestModel>? d = result != null ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x))) : null;
+      List<TestModel>? d = result != null ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x))) : null;
 
       return result.toFuture();
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       error.errorLog();
       throw ServerException(
         error.toString(),
@@ -368,15 +364,15 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         ApiUrl.ekramRules,
         data: params.toMap(),
       );
-      debugPrint(response.data["data"]);
+      print(response.data["data"]);
       var data = response.data["data"]?["result"];
       var parsedResult = data != null ? PermissionResponseModel.fromMap(data) : null;
 
       return parsedResult!.toFuture();
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
-      debugPrint("Exception: $ex");
+      print(ex);
       if (ex is ServerException) {
         rethrow;
       } else {
@@ -400,18 +396,16 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       print(response);
       print(response.data["data"]);
       return response.data["data"]?["result"];
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
-      debugPrint("Exception: $ex");
+      print(ex);
       if (ex is ServerException) {
         rethrow;
       } else {
         try {
           //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {
-          rethrow;
-        }
+        } catch (ex) {}
         throw ServerException(("errors_server_error_2").tr());
       }
     }

@@ -85,6 +85,11 @@ class EtaUtils {
     });
 
     try {
+      Future.delayed(const Duration(seconds: 10), () {
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      });
       // Wait for location to be available
       await completer.future;
     } catch (e) {

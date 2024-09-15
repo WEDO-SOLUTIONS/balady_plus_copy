@@ -46,6 +46,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   bool _reconnectingInProgress = false;
   bool _isFirstLocationFetch = true;
   bool _lastConnectionStatus = true;
+  bool _isRoutePresent = false;
   EtaRoute? _lastActiveRoute;
   Timer? _routeZoomingTimer;
   Timer? _lastActiveMessageReceiverTimer;
@@ -95,14 +96,14 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
         // We need to wait some time, because current location need to initialize
         unawaited(
-          Future.delayed(const Duration(seconds: 3), () {
+          Future.delayed(const Duration(seconds: 2), () {
             _processMoveCameraToUser();
           }),
         );
       } else if (etaInfo.type == EtaType.streamMetadata) {
         _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
-        _createUserRoute();
+        await _createUserRoute();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -166,7 +167,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           return;
         }
         final payload = meta.payload;
-        if (payload?.route?.routeIndex != null) {
+        if (payload?.route?.routeIndex != null && _isRoutePresent) {
           final index = payload!.route!.routeIndex!;
           await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(index);
         }
@@ -263,48 +264,67 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     });
   }
 
-  void _createUserRoute() {
+  Future<void> _createUserRoute() async {
     ProviderSubscription? locationProviderSubscription;
 
+    final _locationCompleter = Completer();
+
     locationProviderSubscription = ref.listen(locationProvider, (_, __) {
+      _locationCompleter.complete();
+
       locationProviderSubscription?.close();
+    });
+    final currentLocation = ref.read(locationProvider);
+    if (currentLocation != null) {
+      _locationCompleter.complete();
+    }
 
-      final route = _metaInfo?.payload?.route;
-
-      if (route == null || route.isEmpty) {
-        return;
+    Future.delayed(const Duration(seconds: 10), () {
+      if (!_locationCompleter.isCompleted) {
+        _locationCompleter.complete();
       }
+    });
 
-      final startPoint = route.startPoint?.routePoint;
-      final finishPoint = route.endPoint?.routePoint;
-      final type = route.type?.toRouteSearchOptions;
-      final activeIndex = route.routeIndex;
+    // Wait for location to be available
+    await _locationCompleter.future;
 
-      if (startPoint == null || finishPoint == null || type == null || activeIndex == null) {
+    final route = _metaInfo?.payload?.route;
+
+    if (route == null || route.isEmpty) {
+      return;
+    }
+
+    final startPoint = route.startPoint?.routePoint;
+    final finishPoint = route.endPoint?.routePoint;
+    final type = route.type?.toRouteSearchOptions;
+    final activeIndex = route.routeIndex;
+
+    if (startPoint == null || finishPoint == null || type == null || activeIndex == null) {
+      return;
+    }
+
+    _addFinishPin(finishPoint);
+
+    if (_lastActiveRoute == route) {
+      return;
+    }
+
+    _lastActiveRoute = route;
+
+    ref.listen(
+        routesProvider(
+          startPoint: startPoint,
+          finishPoint: finishPoint,
+          navType: type,
+          showOnlyActiveRoute: true,
+        ), (_, current) async {
+      if (current.valueOrNull?.isEmpty ?? false) {
+        _isRoutePresent = false;
         return;
+      } else {
+        _isRoutePresent = true;
+        await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(activeIndex);
       }
-
-      _addFinishPin(finishPoint);
-
-      if (_lastActiveRoute == route) {
-        return;
-      }
-
-      _lastActiveRoute = route;
-
-      ref.listen(
-          routesProvider(
-            startPoint: startPoint,
-            finishPoint: finishPoint,
-            navType: type,
-            showOnlyActiveRoute: true,
-          ), (_, current) async {
-        if (current.valueOrNull?.isEmpty ?? false) {
-          return;
-        } else {
-          await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(activeIndex);
-        }
-      });
     });
   }
 
