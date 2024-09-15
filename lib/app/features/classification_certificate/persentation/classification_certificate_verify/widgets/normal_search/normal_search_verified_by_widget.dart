@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../bloc/classification_certificate_verify_bloc.dart';
+import '../title_with_widget.dart';
 import 'search_normal_options_widget.dart';
 
 class NormalSearchVerifiedByWidget extends StatelessWidget {
@@ -43,7 +44,17 @@ class NormalSearchVerifiedByWidget extends StatelessWidget {
           groupValue: state.normalSearchType,
         ),
         const SizedBox(height: 12),
-        state.verifiedByWidget,
+        TitleWithWidget(
+          title: state.normalSearchType.verifiedBy.title,
+          widget: TextFormField(
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+            decoration: InputDecoration(
+              hintText: state.normalSearchType.verifiedBy.hintText.tr(),
+            ),
+            validator: (text) => (text?.isNotEmpty ?? true) ? "" : null,
+          ),
+        ),
       ],
     );
   }

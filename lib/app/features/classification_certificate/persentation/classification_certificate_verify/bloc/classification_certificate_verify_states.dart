@@ -26,8 +26,12 @@ class NormalSearchClassificationCertificateState
 
 class AdvancedMethodClassificationCertificateState
     extends ClassificationCertificateVerifyState {
-  const AdvancedMethodClassificationCertificateState(
-      {required super.typeMethod});
+  // final AdvancedSearchRequestModel searchRequestModel;
+
+  const AdvancedMethodClassificationCertificateState({
+    required super.typeMethod,
+    // required this.searchRequestModel,
+  });
 
   @override
   List<Object?> get props => [super.typeMethod];
@@ -36,11 +40,11 @@ class AdvancedMethodClassificationCertificateState
 class NormalSearchVerifiedByClassificationCertificateState
     extends ClassificationCertificateVerifyState {
   final NormalSearchType normalSearchType;
-  final Widget verifiedByWidget;
+  // final NormalSearchRequestModel searchRequestModel;
 
   const NormalSearchVerifiedByClassificationCertificateState({
     required this.normalSearchType,
-    required this.verifiedByWidget,
+    // required this.searchRequestModel,
     required super.typeMethod,
   });
 
