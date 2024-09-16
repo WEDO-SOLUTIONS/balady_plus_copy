@@ -35,20 +35,21 @@ class NavigationHandler {
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
         let context = try! sdk.context
-        
+        map.graphicsPreset = GraphicsPreset.immersive
         self.map = map
         self.eventChannel = eventChannel
-        
         self.navigationManager = try! NavigationManager(platformContext: context)
         self.navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
         self.navigationManager.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
+        self.navigationManager.routeMapSettings.onRouteDisplayFlags.insert(.immersiveRouteParts)
         self.navigationManager.mapManager.addMap(map: self.map)
         
         self.voiceManager = getVoiceManager(context: context)
         
         self.locationSource = MyLocationMapObjectSource(
             context: context,
-            controller: navigationManager.mapLocationController.myLocationIndicatorController
+            controllerSettings: MyLocationControllerSettings(),
+            markerType: MyLocationMapObjectMarkerType.model
         )
 
         self.speedControlModel = SpeedControlModel(
@@ -144,12 +145,12 @@ class NavigationHandler {
     
     func betterRouteResponse(response: BetterRouteResponseMessage) {
         switch response {
-        case .accept:
-            self.navigationManager.uiModel.betterRouteResponse(response: .accept)
-        case .reject:
-            self.navigationManager.uiModel.betterRouteResponse(response: .reject)
-        case .timeout:
-            self.navigationManager.uiModel.betterRouteResponse(response: .timeout)
+            case .accept:
+                self.navigationManager.uiModel.betterRouteResponse(response: .accept)
+            case .reject:
+                self.navigationManager.uiModel.betterRouteResponse(response: .reject)
+            case .timeout:
+                self.navigationManager.uiModel.betterRouteResponse(response: .timeout)
         }
     }
     
@@ -361,8 +362,16 @@ class NavigationHandler {
         self.navigationManager.stop()
     }
 
-    func toggleSounds(enabled: Bool) {
-        self.dashboardControlModel.toggleSounds(enabled: enabled)
+    func toggleSounds(toggleType: SoundToggleType) {
+        self.dashboardControlModel.toggleSounds(toggleType: toggleType)
+    }
+
+    func toggleRoadCameras(roadCameras: Bool) {
+        self.dashboardControlModel.toggleRoadCameras(roadCameras: roadCameras)
+    }
+
+    func toggleOverSpeeding(overSpeeding: Bool) {
+        self.dashboardControlModel.toggleOverSpeeding(overSpeeding: overSpeeding)
     }
     
     func calcPositionForRoute(options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {

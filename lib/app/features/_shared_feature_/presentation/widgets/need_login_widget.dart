@@ -1,9 +1,10 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/constants/constants.dart';
 
 class NeedLoginWidget extends StatefulWidget {
   final String? img;
@@ -11,9 +12,13 @@ class NeedLoginWidget extends StatefulWidget {
   final String? desc;
   final Function(bool isSuccess)? onSuccessLogin;
 
-  const NeedLoginWidget(
-      {Key? key, this.desc, this.img, this.title, this.onSuccessLogin})
-      : super(key: key);
+  const NeedLoginWidget({
+    Key? key,
+    this.desc,
+    this.img,
+    this.title,
+    this.onSuccessLogin,
+  }) : super(key: key);
 
   @override
   _NeedLoginWidgetState createState() => _NeedLoginWidgetState();
@@ -22,66 +27,72 @@ class NeedLoginWidget extends StatefulWidget {
 class _NeedLoginWidgetState extends State<NeedLoginWidget> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CustomSvgIconWidget(
-              IconPath.lock,
-              iconSize: 82,
-              iconColor: AppColor.primary900Light,
-            ),
-            const SizedBox(height: 16),
-            CustomTextWidget(
-              widget.title ?? ("not_registered").tr(),
-              fontColor: AppColor.blackModern600Light,
-              fontWeight: AppFontWeight.bold,
-              fontSize: 20,
-            ),
-            const SizedBox(height: 8),
-            CustomTextWidget(
-              widget.desc ?? ('not_register_desc').tr(),
-              fontColor: AppColor.blackModern500Light,
-              fontWeight: AppFontWeight.bold,
-              fontSize: 13,
-              maxLines: null,
-              textAlign: TextAlign.center,
-              height: 1.5,
-            ),
-            const SizedBox(height: 16),
-            EnhancedCustomElevatedButtonWidget(
-              btnPressed: () async {
-                Navigator.pop(context);
-                bool isSuccess = await CommonFunctions.onLogin();
-                if (widget.onSuccessLogin != null)
-                  widget.onSuccessLogin!(isSuccess);
-              },
-              btnText: ("signInButton").tr(),
-              btnTextSize: 18,
-              btnTextWeight: AppFontWeight.bold,
-              btnTextColor: AppColor.white,
-              btnHeight: 56,
-              btnRadius: 8,
-            ),
-            const SizedBox(height: 12),
-            EnhancedCustomElevatedButtonWidget(
-              btnPressed: () {
-                Navigator.of(context).pop();
-              },
-              btnText: ("notNow").tr(),
-              btnTextSize: 16,
-              btnTextWeight: AppFontWeight.bold,
-              btnTextColor: AppColor.primary900Light,
-              btnBorderWidth: 1,
-              btnColor: Colors.transparent,
-              btnBorderColor: AppColor.primary900Light,
-              btnHeight: 56,
-              btnRadius: 8,
-            ),
-          ],
+    return BlocListener<EntryPointCubit, EntryPointState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.authenticated) {
+          if (widget.onSuccessLogin != null) {
+            widget.onSuccessLogin!(true);
+          }
+        }
+      },
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CustomSvgIconWidget(
+                IconPath.lock,
+                iconSize: 82,
+                iconColor: AppColor.primary900Light,
+              ),
+              const SizedBox(height: 16),
+              CustomTextWidget(
+                widget.title ?? ("not_registered").tr(),
+                fontColor: AppColor.blackModern600Light,
+                fontWeight: AppFontWeight.bold,
+                fontSize: 20,
+              ),
+              const SizedBox(height: 8),
+              CustomTextWidget(
+                widget.desc ?? ('not_register_desc').tr(),
+                fontColor: AppColor.blackModern500Light,
+                fontWeight: AppFontWeight.bold,
+                fontSize: 13,
+                maxLines: null,
+                textAlign: TextAlign.center,
+                height: 1.5,
+              ),
+              const SizedBox(height: 16),
+              EnhancedCustomElevatedButtonWidget(
+                btnPressed: () {
+                  CommonFunctions.onLogin();
+                },
+                btnText: ("signInButton").tr(),
+                btnTextSize: 18,
+                btnTextWeight: AppFontWeight.bold,
+                btnTextColor: AppColor.white,
+                btnHeight: 56,
+                btnRadius: 8,
+              ),
+              const SizedBox(height: 12),
+              EnhancedCustomElevatedButtonWidget(
+                btnPressed: () {
+                  Navigator.of(context).pop();
+                },
+                btnText: ("notNow").tr(),
+                btnTextSize: 16,
+                btnTextWeight: AppFontWeight.bold,
+                btnTextColor: AppColor.primary900Light,
+                btnBorderWidth: 1,
+                btnColor: Colors.transparent,
+                btnBorderColor: AppColor.primary900Light,
+                btnHeight: 56,
+                btnRadius: 8,
+              ),
+            ],
+          ),
         ),
       ),
     );

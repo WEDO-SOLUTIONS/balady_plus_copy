@@ -80,13 +80,13 @@ import 'features/retrive_dc_injection.dart';
 import 'features/violation_guide_injection.dart';
 import 'features/weather_alerts_injection.dart';
 
+
+import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+
 /// sl -> Service Locator
 final sl = GetIt.instance;
 
 void initialize() {
-
-
-
 
 
   OLDInjection.init();
@@ -229,24 +229,28 @@ void initialize() {
       () => ChatBotRepositoryImplementation(sl()));
   sl.registerLazySingleton(() => SendQuestionMessageChatBot(sl()));
 
-  //Balady Calendar
+  //  Balady Calendar
   sl.registerLazySingleton<BaladyCalendarRemoteDataSource>(
       () => CalendarBaladyRemoteDataSourceImpl(webService: sl()));
   sl.registerLazySingleton<BaladyCalendarRepository>(
       () => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
-
-  //noification
+  /////////////// End
+  //  Noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
       () => NotificationRemoteDataSourceImplementation(webService: sl()));
   sl.registerLazySingleton<NotificationRepositoryImplementation>(
       () => NotificationRepositoryImplementation(remoteDataSource: sl()));
   sl.registerLazySingleton<NotificationManager>(
       () => NotificationManager(repository: sl()));
+  /////////////// End
 
-
-
-
+  ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
   /////////////// get All Commercial Injection Container
   CommercialInjectionContainer.init();
   /////////////// End
+  /////////////// get All Authentication Model Injection Container
+  AuthenticationInjection.initialize();
+  /////////////// End
+
 }

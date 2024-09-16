@@ -4,8 +4,10 @@ import com.dgis.map.extensions.toMessage
 import com.dgis.map.map_api.Messages
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
+import ru.dgis.sdk.map.DefaultRasterUrlTemplate
+import ru.dgis.sdk.map.RasterTileSource
+import ru.dgis.sdk.map.RasterUrlTemplate
 import ru.dgis.sdk.map.Source
-import ru.dgis.sdk.map.createRasterTileDataSource
 import ru.dgis.sdk.navigation.VoiceManager
 import ru.dgis.sdk.navigation.getVoiceManager
 import ru.dgis.sdk.update.PackageInfo
@@ -36,10 +38,11 @@ class WeatherHandler(
                     }
 
                     if (temperatureTileSource == null) {
-                        temperatureTileSource = createRasterTileDataSource(
+                        temperatureTileSource = RasterTileSource(
                                 sdkContext,
-                                message.layerName ?: "",
-                                message.rasterTileUri ?: ""
+
+                        message.layerName ?: "",
+                            RasterUrlTemplate(DefaultRasterUrlTemplate(message.rasterTileUri ?: ""))
                         )
 
                     }
@@ -57,10 +60,10 @@ class WeatherHandler(
                         }
 
                         if (precipitationTileSource == null) {
-                            precipitationTileSource = createRasterTileDataSource(
+                            precipitationTileSource = RasterTileSource(
                                     sdkContext,
-                                    message.layerName ?: "",
-                                    message.rasterTileUri ?: ""
+                    message.layerName ?: "",
+                                RasterUrlTemplate(DefaultRasterUrlTemplate(message.rasterTileUri ?: ""))
                             )
 
                         }

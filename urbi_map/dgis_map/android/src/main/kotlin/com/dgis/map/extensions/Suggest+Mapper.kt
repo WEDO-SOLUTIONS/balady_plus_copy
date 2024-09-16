@@ -44,18 +44,16 @@ fun SuggestHandler.toMessage(searchQueryId: String?): SuggestHandlerMessage {
 }
 
 fun SuggestedType.toMessage(): SuggestedTypeMessage = when(this) {
-    SuggestedType.ADM_DIV -> SuggestedTypeMessage.ADM_DIV
     SuggestedType.ATTRACTION -> SuggestedTypeMessage.ATTRACTION
     SuggestedType.ATTRIBUTE -> SuggestedTypeMessage.ATTRIBUTE
     SuggestedType.BRANCH -> SuggestedTypeMessage.BRANCH
     SuggestedType.BUILDING -> SuggestedTypeMessage.BUILDING
     SuggestedType.COORDINATES -> SuggestedTypeMessage.COORDINATES
     SuggestedType.CROSSROAD -> SuggestedTypeMessage.CROSSROAD
-    SuggestedType.DISTRICT_AREA -> SuggestedTypeMessage.DISTRICT_AREA
+    SuggestedType.ADM_DIV_DISTRICT_AREA -> SuggestedTypeMessage.ADM_DIV_DISTRICT_AREA
     SuggestedType.ORG -> SuggestedTypeMessage.ORG
-    SuggestedType.ORG_CATEGORY -> SuggestedTypeMessage.ORG_CATEGORY
     SuggestedType.PARKING -> SuggestedTypeMessage.PARKING
-    SuggestedType.REGION -> SuggestedTypeMessage.REGION
+    SuggestedType.ADM_DIV_REGION -> SuggestedTypeMessage.ADM_DIV_REGION
     SuggestedType.ROAD -> SuggestedTypeMessage.ROAD
     SuggestedType.ROUTE -> SuggestedTypeMessage.ROUTE
     SuggestedType.STATION -> SuggestedTypeMessage.STATION
@@ -63,21 +61,38 @@ fun SuggestedType.toMessage(): SuggestedTypeMessage = when(this) {
     SuggestedType.STREET -> SuggestedTypeMessage.STREET
     SuggestedType.TEXT -> SuggestedTypeMessage.TEXT
     SuggestedType.UNKNOWN -> SuggestedTypeMessage.UNKNOWN
+    SuggestedType.ADM_DIV_CITY -> SuggestedTypeMessage.ADM_DIV_CITY
+    SuggestedType.ADM_DIV_COUNTRY -> SuggestedTypeMessage.ADM_DIV_COUNTRY
+    SuggestedType.ADM_DIV_DISTRICT -> SuggestedTypeMessage.ADM_DIV_DISTRICT
+    SuggestedType.ADM_DIV_DISTRICT_AREA -> SuggestedTypeMessage.ADM_DIV_DISTRICT_AREA
+    SuggestedType.ADM_DIV_DIVISION -> SuggestedTypeMessage.ADM_DIV_DIVISION
+    SuggestedType.ADM_DIV_LIVING_AREA -> SuggestedTypeMessage.ADM_DIV_LIVING_AREA
+    SuggestedType.ADM_DIV_PLACE -> SuggestedTypeMessage.ADM_DIV_PLACE
+    SuggestedType.ADM_DIV_REGION -> SuggestedTypeMessage.ADM_DIV_REGION
+    SuggestedType.ADM_DIV_SETTLEMENT -> SuggestedTypeMessage.ADM_DIV_SETTLEMENT
+    SuggestedType.KILOMETER_ROAD_SIGN -> SuggestedTypeMessage.KILOMETER_ROAD_SIGN
+    SuggestedType.MARKET_ATTRIBUTE -> SuggestedTypeMessage.MARKET_ATTRIBUTE
+    SuggestedType.MARKET_BRAND -> SuggestedTypeMessage.MARKET_BRAND
+    SuggestedType.MARKET_CATEGORY -> SuggestedTypeMessage.MARKET_CATEGORY
+    SuggestedType.MARKET_SUGGESTOR_CATEGORY -> SuggestedTypeMessage.MARKET_SUGGESTOR_CATEGORY
+    SuggestedType.META_RUBRIC -> SuggestedTypeMessage.META_RUBRIC
+    SuggestedType.ROUTE_TYPE -> SuggestedTypeMessage.ROUTE_TYPE
+    SuggestedType.RUBRIC -> SuggestedTypeMessage.RUBRIC
+    SuggestedType.STATION_METRO -> SuggestedTypeMessage.STATION_METRO
+
 }
 
 fun SuggestedTypeMessage.toSuggestType(): SuggestedType = when(this) {
-    SuggestedTypeMessage.ADM_DIV -> SuggestedType.ADM_DIV
     SuggestedTypeMessage.ATTRACTION -> SuggestedType.ATTRACTION
     SuggestedTypeMessage.ATTRIBUTE -> SuggestedType.ATTRIBUTE
     SuggestedTypeMessage.BRANCH -> SuggestedType.BRANCH
     SuggestedTypeMessage.BUILDING -> SuggestedType.BUILDING
     SuggestedTypeMessage.COORDINATES -> SuggestedType.COORDINATES
     SuggestedTypeMessage.CROSSROAD -> SuggestedType.CROSSROAD
-    SuggestedTypeMessage.DISTRICT_AREA -> SuggestedType.DISTRICT_AREA
+    SuggestedTypeMessage.ADM_DIV_DISTRICT_AREA -> SuggestedType.ADM_DIV_DISTRICT_AREA
     SuggestedTypeMessage.ORG -> SuggestedType.ORG
-    SuggestedTypeMessage.ORG_CATEGORY -> SuggestedType.ORG_CATEGORY
     SuggestedTypeMessage.PARKING -> SuggestedType.PARKING
-    SuggestedTypeMessage.REGION -> SuggestedType.REGION
+    SuggestedTypeMessage.ADM_DIV_REGION -> SuggestedType.ADM_DIV_REGION
     SuggestedTypeMessage.ROAD -> SuggestedType.ROAD
     SuggestedTypeMessage.ROUTE -> SuggestedType.ROUTE
     SuggestedTypeMessage.STATION -> SuggestedType.STATION
@@ -85,6 +100,24 @@ fun SuggestedTypeMessage.toSuggestType(): SuggestedType = when(this) {
     SuggestedTypeMessage.STREET -> SuggestedType.STREET
     SuggestedTypeMessage.TEXT -> SuggestedType.TEXT
     SuggestedTypeMessage.UNKNOWN -> SuggestedType.UNKNOWN
+    SuggestedTypeMessage.ADM_DIV_CITY -> SuggestedType.ADM_DIV_CITY
+    SuggestedTypeMessage.ADM_DIV_COUNTRY -> SuggestedType.ADM_DIV_COUNTRY
+    SuggestedTypeMessage.ADM_DIV_DISTRICT -> SuggestedType.ADM_DIV_DISTRICT
+    SuggestedTypeMessage.ADM_DIV_DISTRICT_AREA -> SuggestedType.ADM_DIV_DISTRICT_AREA
+    SuggestedTypeMessage.ADM_DIV_DIVISION -> SuggestedType.ADM_DIV_DIVISION
+    SuggestedTypeMessage.ADM_DIV_LIVING_AREA -> SuggestedType.ADM_DIV_LIVING_AREA
+    SuggestedTypeMessage.ADM_DIV_PLACE -> SuggestedType.ADM_DIV_PLACE
+    SuggestedTypeMessage.ADM_DIV_REGION -> SuggestedType.ADM_DIV_REGION
+    SuggestedTypeMessage.ADM_DIV_SETTLEMENT -> SuggestedType.ADM_DIV_SETTLEMENT
+    SuggestedTypeMessage.KILOMETER_ROAD_SIGN -> SuggestedType.KILOMETER_ROAD_SIGN
+    SuggestedTypeMessage.MARKET_ATTRIBUTE -> SuggestedType.MARKET_ATTRIBUTE
+    SuggestedTypeMessage.MARKET_BRAND -> SuggestedType.MARKET_BRAND
+    SuggestedTypeMessage.MARKET_CATEGORY -> SuggestedType.MARKET_CATEGORY
+    SuggestedTypeMessage.MARKET_SUGGESTOR_CATEGORY -> SuggestedType.MARKET_SUGGESTOR_CATEGORY
+    SuggestedTypeMessage.META_RUBRIC -> SuggestedType.META_RUBRIC
+    SuggestedTypeMessage.ROUTE_TYPE -> SuggestedType.ROUTE_TYPE
+    SuggestedTypeMessage.RUBRIC -> SuggestedType.RUBRIC
+    SuggestedTypeMessage.STATION_METRO -> SuggestedType.STATION_METRO
 }
 
 fun MarkedUpText.toMessage(): MarkedUpTextMessage {

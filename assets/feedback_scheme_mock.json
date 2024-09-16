@@ -1,0 +1,334 @@
+[
+    {
+        "name": "Company name",
+        "icon_name": "nameChange",
+        "fields": [
+            {
+                "id": "email",
+                "type": "email",
+                "label": "Email",
+                "is_required": false,
+                "length": 50,
+                "hint": "Enter your email"
+            },
+            {
+                "id": "company_name",
+                "type": "singleline",
+                "label": "Company name",
+                "is_required": false,
+                "length": 100,
+                "hint": "Enter company name"
+            },
+            {
+                "id": "comment",
+                "type": "multiline",
+                "label": "Comment",
+                "is_required": false,
+                "length": 500,
+                "hint": "Add extra information"
+            },
+            {
+                "id": "image",
+                "type": "image",
+                "label": "Images",
+                "is_required": false,
+                "size": 20480,
+                "format": [
+                    "png",
+                    "jpg",
+                    "jpeg"
+                ]
+            },
+            {
+                "id": "business_owner",
+                "type": "owner",
+                "label": "Business owner",
+                "is_required": false
+            }
+        ]
+    },
+    {
+        "name": "Area of activity",
+        "icon_name": "messageText",
+        "fields": [
+            {
+                "id": "email",
+                "type": "email",
+                "label": "Email",
+                "is_required": false,
+                "length": 50,
+                "hint": "Enter your email"
+            },
+            {
+                "id": "area_of_activity",
+                "type": "singleline",
+                "label": "Area of activity",
+                "is_required": false,
+                "length": 100,
+                "hint": "Enter area of activity"
+            },
+            {
+                "id": "comment",
+                "type": "multiline",
+                "label": "Comment",
+                "is_required": false,
+                "length": 500,
+                "hint": "Add extra information"
+            },
+            {
+                "id": "image",
+                "type": "image",
+                "label": "Images",
+                "is_required": false,
+                "size": 20480,
+                "format": [
+                    "png",
+                    "jpg",
+                    "jpeg"
+                ]
+            },
+            {
+                "id": "business_owner",
+                "type": "owner",
+                "label": "Business owner",
+                "is_required": false
+            }
+        ]
+    },
+    {
+        "name": "Address",
+        "icon_name": "pin",
+        "fields": [
+            {
+                "id": "email",
+                "type": "email",
+                "label": "Email",
+                "is_required": false,
+                "length": 50,
+                "hint": "Enter your email"
+            },
+            {
+                "id": "address",
+                "type": "singleline",
+                "label": "Address",
+                "is_required": false,
+                "length": 100,
+                "hint": "Enter company address"
+            },
+            {
+                "id": "comment",
+                "type": "multiline",
+                "label": "Comment",
+                "is_required": false,
+                "length": 500,
+                "hint": "Add extra information"
+            },
+            {
+                "id": "image",
+                "type": "image",
+                "label": "Images",
+                "is_required": false,
+                "size": 20480,
+                "format": [
+                    "png",
+                    "jpg",
+                    "jpeg"
+                ]
+            },
+            {
+                "id": "business_owner",
+                "type": "owner",
+                "label": "Business owner",
+                "is_required": false
+            }
+        ]
+    },
+    {
+        "name": "Phone",
+        "icon_name": "phone",
+        "fields": [
+            {
+                "id": "email",
+                "type": "email",
+                "label": "Email",
+                "is_required": false,
+                "length": 50,
+                "hint": "Enter your email"
+            },
+            {
+                "id": "phone",
+                "type": "phone",
+                "label": "Phone number",
+                "is_required": false,
+                "length": 50,
+                "hint": "Input phone number"
+            },
+            {
+                "id": "comment",
+                "type": "multiline",
+                "label": "Comment",
+                "is_required": false,
+                "length": 500,
+                "hint": "Add extra information"
+            },
+            {
+                "id": "image",
+                "type": "image",
+                "label": "Images",
+                "is_required": false,
+                "size": 20480,
+                "format": [
+                    "png",
+                    "jpg",
+                    "jpeg"
+                ]
+            },
+            {
+                "id": "business_owner",
+                "type": "owner",
+                "label": "Business owner",
+                "is_required": false
+            }
+        ]
+    },
+    {
+        "name": "Website or social network account",
+        "icon_name": "web",
+        "fields": [
+            {
+                "id": "email",
+                "type": "email",
+                "label": "Email",
+                "is_required": false,
+                "length": 50,
+                "hint": "Enter your email"
+            },
+            {
+                "id": "website",
+                "type": "singleline",
+                "label": "Website or social network",
+                "is_required": false,
+                "length": 100,
+                "hint": "Enter website or social network"
+            },
+            {
+                "id": "comment",
+                "type": "multiline",
+                "label": "Comment",
+                "is_required": false,
+                "length": 500,
+                "hint": "Add extra information"
+            },
+            {
+                "id": "image",
+                "type": "image",
+                "label": "Images",
+                "is_required": false,
+                "size": 20480,
+                "format": [
+                    "png",
+                    "jpg",
+                    "jpeg"
+                ]
+            },
+            {
+                "id": "business_owner",
+                "type": "owner",
+                "label": "Business owner",
+                "is_required": false
+            }
+        ]
+    },
+    {
+        "name": "Сompany has been closed",
+        "icon_name": "clearCircle",
+        "fields": [
+            {
+                "id": "email",
+                "type": "email",
+                "label": "Email",
+                "is_required": false,
+                "length": 50,
+                "hint": "Enter your email"
+            },
+            {
+                "id": "dropdown",
+                "type": "dropdown",
+                "label": "What's happened",
+                "is_required": false,
+                "variants": [
+                    "there is no company here",
+                    "temporarily closed",
+                    "moved",
+                    "other"
+                ]
+            },
+            {
+                "id": "comment",
+                "type": "multiline",
+                "label": "Comment",
+                "is_required": false,
+                "length": 500,
+                "hint": "Add extra information"
+            },
+            {
+                "id": "image",
+                "type": "image",
+                "label": "Images",
+                "is_required": false,
+                "size": 20480,
+                "format": [
+                    "png",
+                    "jpg",
+                    "jpeg"
+                ]
+            },
+            {
+                "id": "business_owner",
+                "type": "owner",
+                "label": "Business owner",
+                "is_required": false
+            }
+        ]
+    },
+    {
+        "name": "Other",
+        "icon_name": "questionCircle",
+        "fields": [
+            {
+                "id": "email",
+                "type": "email",
+                "label": "Email",
+                "is_required": false,
+                "length": 50,
+                "hint": "Enter your email"
+            },
+            {
+                "id": "comment",
+                "type": "multiline",
+                "label": "Comment",
+                "is_required": false,
+                "length": 500,
+                "hint": "Add extra information"
+            },
+            {
+                "id": "image",
+                "type": "image",
+                "label": "Images",
+                "is_required": false,
+                "size": 20480,
+                "format": [
+                    "png",
+                    "jpg",
+                    "jpeg"
+                ]
+            },
+            {
+                "id": "business_owner",
+                "type": "owner",
+                "label": "Business owner",
+                "is_required": false
+            }
+        ]
+    }
+]

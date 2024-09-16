@@ -718,14 +718,70 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.stopFreeRoam();
   }
 
-  Future<void> toggleSound({required bool enabled}) {
-    return _api.toggleSound(enabled);
+  /// The [toggleVoiceInstruction] is responsible for switching the sound.
+  ///
+  /// Parameters:
+  /// - [toggleType]: The type of toggle that determines which voice instructions
+  /// will be enabled or disabled.
+  ///
+  /// if the [SoundToggleType.important] thing is selected so that the sounds of maneuvers are not heard,
+  /// if [SoundToggleType.none] turns off all sounds
+  /// [SoundToggleType.all], enable voice acting for all sounds.
+  Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) {
+    return _api.toggleVoiceInstruction(toggleType);
   }
 
+  /// The [toggleRoadCameras] method is responsible for enabling or disabling
+  /// notifications related to road cameras.
+  ///
+  /// Parameters:
+  /// - [roadCameras]: A boolean value where `true` enables notifications for road cameras,
+  /// and `false` disables them.
+  Future<void> toggleRoadCameras({required bool roadCameras}) {
+    return _api.toggleRoadCameras(roadCameras);
+  }
+
+  /// The [toggleOverSpeeding] method controls the notifications for overspeeding.
+  ///
+  /// Parameters:
+  /// - [overSpeeding]: A boolean value where `true` enables overspeeding notifications,
+  /// and `false` disables them.
+  Future<void> toggleOverSpeeding({required bool overSpeeding}) {
+    return _api.toggleOverSpeeding(overSpeeding);
+  }
+
+  /// The [setNavigatorVolume] method sets the volume for the navigator's voice instructions.
+  ///
+  /// Parameters:
+  /// - [volume]: The [AudioVolumeMessage] that specifies the desired volume level.
+  Future<void> setNavigatorVolume({required int volume}) {
+    return _api.setNavigatorVolume(volume);
+  }
+
+  /// The [muteOtherSounds] method is responsible for muting or unmuting other sounds
+  /// while the navigator is active.
+  ///
+  /// Parameters:
+  /// - [mute]: A boolean value where `true` mutes other sounds,
+  /// and `false` allows other sounds to play.
+  Future<void> muteOtherSounds({required bool mute}) {
+    return _api.muteOtherSounds(mute);
+  }
+
+  /// Notifies the system when traffic and parking data have been attached.
+  ///
+  /// This method is called to signal that the traffic and parking information
+  /// has been successfully linked to the map. It returns a [Future] that
+  /// completes when the operation is finished.
   Future<void> onTrafficAndParkingAttached() {
     return _api.onTrafficAndParkingAttached();
   }
 
+  /// Notifies the system when traffic and parking data have been detached.
+  ///
+  /// This method is called to signal that the traffic and parking information
+  /// has been successfully removed or unlinked from the map. It returns a [Future]
+  /// that completes when the operation is finished.
   Future<void> onTrafficAndParkingDetached() {
     return _api.onTrafficAndParkingDetached();
   }
@@ -762,22 +818,64 @@ class DgisMapPlugin extends FlutterMapApi {
     );
   }
 
+  /// Retrieves a list of available packages.
+  ///
+  /// Returns:
+  /// - [Future<List<PackageMessage?>>]: A future that completes with a list of [PackageMessage] objects,
+  /// representing the available packages.
   Future<List<PackageMessage?>> listPackages() {
     return _api.listPackages();
   }
 
-  Future<List<PackageMessage?>> listVoices() {
+  /// Retrieves a list of available voices.
+  ///
+  /// Returns:
+  /// - [Future<List<VoiceMessage?>>]: A future that completes with a list of [VoiceMessage] objects,
+  /// representing the available voices.
+  Future<List<VoiceMessage?>> listVoices() {
     return _api.listVoices();
   }
 
+  /// Plays a welcome message associated with a specific voice.
+  ///
+  /// Parameters:
+  /// - [id]: The identifier of the welcome message to be played.
+  ///
+  /// Returns:
+  /// - [Future<void>]: A future that completes when the action is done.
+  Future<void> voicePlayWelcome(String id) {
+    return _api.voicePlayWelcome(id);
+  }
+
+  /// Installs a package based on its identifier.
+  ///
+  /// Parameters:
+  /// - [id]: The identifier of the package to be installed.
+  ///
+  /// Returns:
+  /// - [Future<void>]: A future that completes when the installation is done.
   Future<void> installPackage(String id) {
     return _api.installPackage(id);
   }
 
+  /// Installs a voice based on its identifier.
+  ///
+  /// Parameters:
+  /// - [id]: The identifier of the voice to be installed.
+  ///
+  /// Returns:
+  /// - [Future<void>]: A future that completes when the installation is done.
   Future<void> installVoice(String id) {
     return _api.installVoice(id);
   }
 
+  /// Sets the navigator's voice based on its identifier.
+  ///
+  /// Parameters:
+  /// - [id]: The identifier of the voice to be set as the navigator's voice.
+  ///
+  /// Returns:
+  /// - [Future<void>]: A future that completes when the voice is set.
   Future<void> setNavigatorVoice(String id) {
     return _api.setNavigatorVoice(id);
   }

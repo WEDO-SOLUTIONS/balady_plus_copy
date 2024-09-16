@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
+import 'package:mapness/_features/landing/widgets/eta_sharing_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
@@ -93,6 +94,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                               Spacer(),
                               IndoorControl(),
                               Spacer(),
+                              EtaSharingControl(),
                             ],
                           ),
                           const Spacer(),
@@ -119,9 +121,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                               const ZoomControl(),
                               const Spacer(),
                               const CompassControl(),
-                              const SizedBox(
-                                height: 8,
-                              ),
+                              const SizedBox(height: 8),
                               const FollowControl(),
                             ],
                           ),
@@ -129,9 +129,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: bottomExtent,
-                  ),
+                  SizedBox(height: bottomExtent),
                 ],
               ),
             ),

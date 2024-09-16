@@ -25,7 +25,7 @@ import '../dependency_injection_exports.dart' show sl;
 class EntryPointInjection {
   static void init() {
     sl.registerLazySingleton(() => EntryPointCubit(
-        clearAuth: sl(),
+        // clearAuth: sl(),
         // checkProfile: sl(),
         getProfile: sl(),
         saveSSOProfile: sl(),
@@ -42,7 +42,7 @@ class EntryPointInjection {
 
     //! Use Case
     sl.registerLazySingleton(() => GetToken(repository: sl()));
-    sl.registerLazySingleton(() => ClearAuth(repository: sl()));
+    // sl.registerLazySingleton(() => ClearAuth(repository: sl()));
     sl.registerLazySingleton(() => SaveAuth(repository: sl()));
     sl.registerLazySingleton(() => RefreshToken(repository: sl()));
     sl.registerLazySingleton(() => CheckAuth(repository: sl()));

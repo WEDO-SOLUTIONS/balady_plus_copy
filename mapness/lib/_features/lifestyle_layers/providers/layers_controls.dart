@@ -429,7 +429,6 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-
   MapRequestParams _createParams(
     VisibleRect visibleRect,
     LayerType layer,
@@ -699,10 +698,6 @@ class LayersControls extends _$LayersControls {
       ref.read(cameraPositionProvider),
       ref.read(cameraPositionProvider.notifier).animateTo,
     );
-  }
-
-  Future<void> _showJoyParks() async {
-    // TODO: Implement showing closest joy park in future tasks
   }
 
   void onError() {

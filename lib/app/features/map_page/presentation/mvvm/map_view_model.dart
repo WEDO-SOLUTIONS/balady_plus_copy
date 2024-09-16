@@ -307,8 +307,8 @@ class MapViewModel extends BaseViewModel {
             id: markerInfo?.objectId?.objectId.toString() ?? const Uuid().v4(),
             options: MarkerOptionsMessage(
               position: markerInfo!.geoPoint,
-              icon: MarkerIconMessage(
-                path: iconPath,
+              icon: SvgMarkerIcon(
+                svgPath: iconPath,
                 width: 24,
               ),
             ),
@@ -413,7 +413,6 @@ class MapViewModel extends BaseViewModel {
       final permission = await Permission.location.request();
       if (permission.isGranted) {
         await controller.onLocationPermissionGranted();
-
         await controller.toggleFollowState();
 
         await controller.setCameraPosition(
@@ -800,8 +799,8 @@ class MapViewModel extends BaseViewModel {
                           elevation: 1,
                           latitude: element.getLocation()!.latitude,
                           longitude: element.getLocation()!.longitude),
-                      icon: MarkerIconMessage(
-                        path: Constants.icMarker,
+                      icon: SvgMarkerIcon(
+                        svgPath: Constants.icMarker,
                         width: 30,
                       ),
                     ),
@@ -928,8 +927,8 @@ class MapViewModel extends BaseViewModel {
         id: id.toString(),
         options: MarkerOptionsMessage(
           position: markerPosition,
-          icon: MarkerIconMessage(
-            path: Constants.icMarker,
+          icon: SvgMarkerIcon(
+            svgPath: Constants.icMarker,
             width: 40,
           ),
         ),
@@ -969,8 +968,8 @@ class MapViewModel extends BaseViewModel {
         id: "ComplianceRoad",
         options: MarkerOptionsMessage(
           position: markerPosition,
-          icon: MarkerIconMessage(
-            path: Constants.icMarker,
+          icon: SvgMarkerIcon(
+            svgPath: Constants.icMarker,
             width: 40,
           ),
         ),
@@ -1012,8 +1011,8 @@ class MapViewModel extends BaseViewModel {
             id: element.id.toString(),
             options: MarkerOptionsMessage(
               position: element.latLng,
-              icon: MarkerIconMessage(
-                path: iconPath,
+              icon: SvgMarkerIcon(
+                svgPath: iconPath,
                 width: 30,
               ),
             ),
@@ -1372,19 +1371,19 @@ class MapViewModel extends BaseViewModel {
         queryText.contains("مدينه") &&
         queryText.contains("حى") &&
         queryText.contains("حي")) {
-      allowedResultTypes = [SuggestedTypeMessage.admDiv];
+      allowedResultTypes = [SuggestedTypeMessage.admDivCity];
     } else {
       allowedResultTypes = [
-        SuggestedTypeMessage.admDiv,
+        SuggestedTypeMessage.admDivCity,
         SuggestedTypeMessage.attraction,
         SuggestedTypeMessage.attribute,
         SuggestedTypeMessage.branch,
         SuggestedTypeMessage.building,
         SuggestedTypeMessage.coordinates,
         SuggestedTypeMessage.crossroad,
-        SuggestedTypeMessage.districtArea,
+        SuggestedTypeMessage.admDivDistrict,
         SuggestedTypeMessage.parking,
-        SuggestedTypeMessage.region,
+        SuggestedTypeMessage.admDivRegion,
         SuggestedTypeMessage.road,
         SuggestedTypeMessage.route,
         SuggestedTypeMessage.station,

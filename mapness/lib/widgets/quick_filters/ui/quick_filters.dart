@@ -75,11 +75,19 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
             final item = widget.filters[index];
             return Directionality(
               textDirection: originalDirectionality,
-              child: QuickFilter(
-                item: item,
-                selected: item.selected,
-                background: widget.isDashboard ? context.color.surfaceBaseSecondary : context.color.surfaceBasePrimary,
-              ),
+              child: switch (item) {
+                FilterItemConfig() => QuickFilter(
+                    item: item,
+                    selected: item.selected,
+                    background:
+                        widget.isDashboard ? context.color.surfaceBaseSecondary : context.color.surfaceBasePrimary,
+                  ),
+                FilterItemBuilder() => item.builder(
+                    context,
+                    isSelected: item.selected,
+                    isDashboard: widget.isDashboard,
+                  ),
+              },
             );
           },
         ),

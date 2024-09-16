@@ -22,7 +22,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class EntryPointRemoteDataSource {
   Future<AuthorizationTokenResponse> authorize();
-  Future<EndSessionResponse> endSession();
+  // Future<EndSessionResponse> endSession();
   Future<String> logout();
 
   Future<TokenResponse> refreshToken(String refreshToken);
@@ -285,29 +285,29 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     }
   }
 
-  @override
-  Future<EndSessionResponse> endSession() async {
-    try {
-      EndSessionResponse? response = await _appAuth.endSession(
-        EndSessionRequest(
-          idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
-          postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
-          serviceConfiguration: _serviceConfiguration,
-        ),
-      );
-
-      return response!;
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      throw ServerException("", errorCode: error.toString());
-    }
-  }
+  // @override
+  // Future<EndSessionResponse> endSession() async {
+  //   try {
+  //     EndSessionResponse? response = await _appAuth.endSession(
+  //       EndSessionRequest(
+  //         idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
+  //         postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
+  //         serviceConfiguration: _serviceConfiguration,
+  //       ),
+  //     );
+  //
+  //     return response!;
+  //   } catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     throw ServerException("", errorCode: error.toString());
+  //   }
+  // }
 
   @override
   Future<String?> getCookie() async {

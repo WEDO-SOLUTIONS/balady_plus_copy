@@ -8,10 +8,10 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class JoyParksCard extends ConsumerWidget {
-  final DraggableScrollableController controller;
+class JoyParksCardV2 extends ConsumerWidget {
+  final BottomSheetScrollController controller;
 
-  const JoyParksCard(this.controller, {super.key});
+  const JoyParksCardV2(this.controller, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
@@ -20,7 +20,7 @@ class JoyParksCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: GestureDetector(
             onTap: () {
-              controller.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+              controller.setState(ThreeStateBottomSheet.hidden);
 
               ref.read(layersControlsProvider.notifier).toggleIwish();
             },

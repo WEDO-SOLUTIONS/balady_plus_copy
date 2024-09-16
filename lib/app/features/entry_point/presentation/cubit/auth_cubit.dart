@@ -19,11 +19,14 @@ import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../location/presentation/bloc/location_bloc.dart';
 import '../../../profile_features/delegators/delegators_exports.dart';
-import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 import '../../data/models/get_permission_params_model.dart';
 import '../../domain/use_cases/get_ekram_permission.dart';
 import '../../entry_point_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_authorization/src/utils/injection/injection_container.dart';
 
 part 'auth_state.dart';
 
@@ -38,7 +41,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   final GetCookie _getCookie;
   final GetAPIgeeToken _getAPIgeeToken;
 
-  final ClearAuth _clearAuth;
+  // final ClearAuth _clearAuth;
   final Logout _logout;
   final GetForceVersion _getForceVersion;
   final GetTestData _getTestData;
@@ -55,7 +58,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       required SaveSSOProfile saveSSOProfile,
       required CheckSSOProfile checkSSOProfile,
       required GetCookie getCookie,
-      required ClearAuth clearAuth,
+      // required ClearAuth clearAuth,
       required Logout logout,
       required GetAPIgeeToken getAPIgeeToken,
       required GetForceVersion forceVersion,
@@ -69,7 +72,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _checkSSOProfile = checkSSOProfile,
         _getCookie = getCookie,
         _getAPIgeeToken = getAPIgeeToken,
-        _clearAuth = clearAuth,
+        // _clearAuth = clearAuth,
         _logout = logout,
         _getPaymentUrl = GetPaymentUrl(repository: sl()),
         _getForceVersion = forceVersion,
@@ -114,105 +117,57 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       getEkramPermissions();
     });
     refreshAPIGeeToken();
-
-    // sl<WeatherAlertsCubit>().startTracking();
-    // CommonFunctions.showBackGroundLocationConsent();
-    //getUserLocationData();
   }
 
-  Future<bool> onLogin({bool isFromEtmam = false}) async {
+  ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+  Future<bool> onLogin({
+    bool isFromEtmam = false,
+  }) async {
+    try {
+      slAuthentication<AuthenticationBloc>().add(GoLoginScreenAuthentication());
+    } catch (e) {
+      print("object");
+    }
+    return false;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  Future<bool> onLoginV2({
+    required LoginDataModel? data,
+    bool isFromEtmam = false,
+  }) async {
     EasyLoading.show();
     emit(state.copyWith(
       status: AuthStatus.loading,
     ));
-    final failureOrSuccessForToken = await _getToken(NoParams());
+    late SSOToken token;
 
-    await failureOrSuccessForToken.fold((failure) {
-      emit(state.copyWith(
-        status: AuthStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) async {
-      SSOToken token = SSOToken(
+    if (data != null) {
+      token = SSOToken(
+        token: data.accessToken,
+        refreshToken: data.refreshToken,
+        idToken: "",
+        expirationTime: data.expiresIn.toString(),
+      );
+    } else {
+      final failureOrSuccessForToken = await _getToken(NoParams());
+      await failureOrSuccessForToken.fold((failure) {
+        emit(state.copyWith(
+          status: AuthStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      }, (success) async {
+        token = SSOToken(
           token: success.accessToken,
           refreshToken: success.refreshToken,
           idToken: success.idToken,
-          expirationTime: success.accessTokenExpirationDateTime.toString());
-      final failureOrSuccess = await _saveAuth(token);
-      if (failureOrSuccess.isRight()) {
-        emit(state.copyWith(
-          status: AuthStatus.loading,
-          token: token,
-          errorMessage: "",
-        ));
+          expirationTime: success.accessTokenExpirationDateTime.toString(),
+        );
+      });
+    }
 
-        Map<String, dynamic> decodedToken =
-            JwtDecoder.decode(token.token ?? "");
-        SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
-        final failureOrSuccess =
-            await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
-        if (failureOrSuccess.isRight()) {
-          emit(state.copyWith(
-            status: AuthStatus.authenticated,
-            token: token,
-            userInfo: user,
-            errorMessage: "",
-          ));
-          FlutterUxcam.setUserIdentity(user.idNo);
-          FlutterUxcam.setUserProperty("name", user.arName ?? "");
-        }
-
-        final failureOrSuccessForCookie = await _getCookie(NoParams());
-
-        await failureOrSuccessForCookie.fold((l) async {
-          final failureOrSuccessForCookie = await _getCookie(NoParams());
-          await failureOrSuccessForCookie.fold((failure) {
-            emit(state.copyWith(
-              status: AuthStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            ));
-          }, (r) async {
-            SSOToken? token = state.token;
-            token?.appCookie = r;
-            if (token != null) {
-              await _saveAuth(token);
-              emit(state.copyWith(token: token));
-            }
-          });
-        }, (r) async {
-          SSOToken? token = state.token;
-          token?.appCookie = r;
-          if (token != null) {
-            await _saveAuth(token);
-            emit(state.copyWith(token: token));
-          }
-        });
-        EasyLoading.dismiss();
-        if (isFromEtmam) {
-          sl<EtmamEntryPointCubit>().onLogin();
-        }
-        if (state.status == AuthStatus.notAuthenticated) {
-          //MM  locator<CustomerSoundViewModel>().getUserRequests(showLoad: false);
-          //MM  PCPViewModel.checkIfSameLoggedInUser();
-
-          return false;
-        }
-        getEkramPermissions();
-        try {
-          BlocProvider.of<DashboardBloc>(
-                  NavigationService.navigatorKey.currentContext!)
-              .add(DashboardEventInitial());
-        } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-      }
-    });
+    _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
 
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
@@ -220,11 +175,54 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }
 
     EasyLoading.dismiss();
-    // getUserLocationData();
-    //MM   sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
-    //MM return isLoggedIn;
     return CommonProperties.isLoggedIn;
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  Future<void> onLoginNfaaz({
+    bool isFromEtmam = false,
+  }) async {
+    EasyLoading.show();
+    emit(state.copyWith(
+      status: AuthStatus.loading,
+    ));
+    final failureOrSuccessForToken = await _getToken(NoParams());
+    await failureOrSuccessForToken.fold((failure) {
+      emit(
+        state.copyWith(
+          status: AuthStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ),
+      );
+      EasyLoading.dismiss();
+      return;
+    }, (success) async {
+      try {
+        EasyLoading.dismiss();
+        sl<AuthenticationBloc>().add(
+          LoginWithNafazAuthentication(
+            dataLogin: {
+              "access_token": success.accessToken,
+              "expires_in": success.accessTokenExpirationDateTime != null
+                  ? DateTime.now()
+                      .difference(success.accessTokenExpirationDateTime!)
+                      .inSeconds
+                  : 3500000,
+              "token_type": success.tokenType,
+              "refresh_token": success.refreshToken,
+              "scope": success.scopes ?? "",
+            },
+          ),
+        );
+      } catch (e) {
+        EasyLoading.dismiss();
+        print("object");
+      }
+    });
+    return;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
 
   Future<void> refreshToken(String refreshToken) async {
     SSOToken? token = state.token;
@@ -305,24 +303,31 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
+    try {
+      sl<AuthenticationBloc>().add(LogoutAuthentication());
+    } catch (e) {
+      print("object");
+    }
     await _logout(NoParams());
     sl<DelegatorsCubit>().clearDelegators();
-    final failureOrSuccess = await _clearAuth(NoParams());
+    // final failureOrSuccess = await _clearAuth(NoParams());
 
-    await failureOrSuccess.fold((l) {
+    // await failureOrSuccess.fold((l) {
       sharedPrefs.setSSOToken(null);
       clearSSOInfo();
       emit(const EntryPointState(
         status: AuthStatus.notAuthenticated,
+        showSplash: false,
       ));
-    }, (r) {
-      sharedPrefs.setSSOToken(null);
-      //MM sharedPrefs.setUserProfile(null);
-      clearSSOInfo();
-      emit(const EntryPointState(
-        status: AuthStatus.notAuthenticated,
-      ));
-    });
+    // }, (r) {
+    //   sharedPrefs.setSSOToken(null);
+    //   //MM sharedPrefs.setUserProfile(null);
+    //   clearSSOInfo();
+    //   emit(const EntryPointState(
+    //     status: AuthStatus.notAuthenticated,
+    //     showSplash: false,
+    //   ));
+    // });
 
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
@@ -333,7 +338,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> autoLogout() async {
     sharedPrefs.setSSOToken(null);
     sl<DelegatorsCubit>().clearDelegators();
-
+    try {
+      sl<AuthenticationBloc>().add(LogoutAuthentication());
+    } catch (e) {
+      print("object");
+    }
     //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
@@ -368,14 +377,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         }
       });
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   Future<void> checkVersion() async {
@@ -478,14 +487,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         }
       });
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     CommonProperties.showEkramDriver =
         sharedPrefs.isEkramDriver() ?? CommonProperties.showEkramDriver;
     if (allowTracking) {
@@ -500,5 +509,83 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     emit(state.copyWith(blocStatus: BlocStatus.loading));
 
     emit(state.copyWith(blocStatus: BlocStatus.success));
+  }
+
+  void _saveDataLogin({
+    required SSOToken token,
+    required bool isFromEtmam,
+  }) async {
+    final failureOrSuccess = await _saveAuth(token);
+    if (failureOrSuccess.isRight()) {
+      emit(state.copyWith(
+        status: AuthStatus.loading,
+        token: token,
+        errorMessage: "",
+      ));
+
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
+      SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
+      final failureOrSuccess =
+          await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
+      if (failureOrSuccess.isRight()) {
+        emit(state.copyWith(
+          status: AuthStatus.authenticated,
+          token: token,
+          userInfo: user,
+          errorMessage: "",
+        ));
+        FlutterUxcam.setUserIdentity(user.idNo);
+        FlutterUxcam.setUserProperty("name", user.arName ?? "");
+      }
+
+      final failureOrSuccessForCookie = await _getCookie(NoParams());
+
+      await failureOrSuccessForCookie.fold((l) async {
+        final failureOrSuccessForCookie = await _getCookie(NoParams());
+        await failureOrSuccessForCookie.fold((failure) {
+          emit(state.copyWith(
+            status: AuthStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        }, (r) async {
+          SSOToken? token = state.token;
+          token?.appCookie = r;
+          if (token != null) {
+            await _saveAuth(token);
+            emit(state.copyWith(token: token));
+          }
+        });
+      }, (r) async {
+        SSOToken? token = state.token;
+        token?.appCookie = r;
+        if (token != null) {
+          await _saveAuth(token);
+          emit(state.copyWith(token: token));
+        }
+      });
+      EasyLoading.dismiss();
+      if (isFromEtmam) {
+        sl<EtmamEntryPointCubit>().onLogin();
+      }
+      if (state.status == AuthStatus.notAuthenticated) {
+        //MM  locator<CustomerSoundViewModel>().getUserRequests(showLoad: false);
+        //MM  PCPViewModel.checkIfSameLoggedInUser();
+        return;
+      }
+      getEkramPermissions();
+      try {
+        BlocProvider.of<DashboardBloc>(
+                NavigationService.navigatorKey.currentContext!)
+            .add(DashboardEventInitial());
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+    }
   }
 }

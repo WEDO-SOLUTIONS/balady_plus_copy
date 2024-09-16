@@ -23,7 +23,7 @@ class RoutingFavourites extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final favourites = [
       if (showBookmark)
-        FilterItem(
+        FilterItemConfig(
           filterType: FilterType.favourites,
           icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
           onTap: () async {
@@ -42,7 +42,7 @@ class RoutingFavourites extends ConsumerWidget {
             }
           },
         ),
-      FilterItem(
+      FilterItemConfig(
         filterType: FilterType.home,
         title: context.l10n.home,
         icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
@@ -67,7 +67,7 @@ class RoutingFavourites extends ConsumerWidget {
           }
         },
       ),
-      FilterItem(
+      FilterItemConfig(
         filterType: FilterType.work,
         title: context.l10n.work,
         icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',

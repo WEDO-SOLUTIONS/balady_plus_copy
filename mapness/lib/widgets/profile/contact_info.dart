@@ -70,13 +70,9 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                   color: context.color.textAndIconsStatusAccent,
                 ),
                 actionWidget: ContentRowActionOptions(
-                  actionIcon: context.isLTR
-                      ? SystemIcons.arrowCornerRightLarge.icon(
-                          color: context.color.textAndIconsBaseSecondary,
-                        )
-                      : SystemIcons.arrowCornerLeftLarge.icon(
-                          color: context.color.textAndIconsBaseSecondary,
-                        ),
+                  actionIcon: SystemIcons.arrowCornerRightLarge.icon(
+                    color: context.color.textAndIconsBaseSecondary,
+                  ),
                 ),
                 // text hack for rtl @ symbol, it's not supported in flutter
                 title: context.isLTR ? '@$momrahTwitter' : '$momrahTwitter@',

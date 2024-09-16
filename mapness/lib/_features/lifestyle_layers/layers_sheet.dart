@@ -28,6 +28,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   @override
   void initState() {
     super.initState();
+
     _layersController = DraggableScrollableController();
     _parkingLotsController = DraggableScrollableController();
     WidgetsBinding.instance.addPostFrameCallback((_) => _showBottomSheet());
@@ -35,9 +36,9 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
 
   @override
   void dispose() {
-    super.dispose();
     _layersController.dispose();
     _parkingLotsController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,16 +50,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          ColoredBox(
-            color: context.staticColor.surfaceOverlayModal,
-            child: GestureDetector(onTap: () {
-              if (state.layersPanelType == LayersPanelType.layers) {
-                _hideLayersPanel();
-              } else {
-                _showLayersPanel();
-              }
-            }),
-          ),
           DraggableScrollableSheet(
             controller: _layersController,
             minChildSize: .0,
@@ -160,13 +151,11 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
     ref.watch(layersControlsProvider.notifier).update(
           layersWidgetType: LayersPanelType.layers,
         );
-    _layersController
-        .animateTo(
-          _layersPanelMaxHeight,
-          duration: duration,
-          curve: curve,
-        )
-        .then((_) {});
+    _layersController.animateTo(
+      _layersPanelMaxHeight,
+      duration: duration,
+      curve: curve,
+    );
     _parkingLotsController
       ..removeListener(_parkingControllerListener)
       ..animateTo(

@@ -5,12 +5,12 @@ import '../../../../core/errors/errors_exports.dart' show Failure;
 import '../../../../core/services/services_exports.dart' show UseCase, NoParams;
 import '../../entry_point_exports.dart';
 
-class ClearAuth extends UseCase<EndSessionResponse, NoParams> {
-  final EntryPointRepository repository;
-
-  ClearAuth({required this.repository});
-  @override
-  Future<Either<Failure, EndSessionResponse>> call(NoParams params) async {
-    return await repository.clearAuth();
-  }
-}
+// class ClearAuth extends UseCase<EndSessionResponse, NoParams> {
+//   final EntryPointRepository repository;
+//
+//   ClearAuth({required this.repository});
+//   @override
+//   Future<Either<Failure, EndSessionResponse>> call(NoParams params) async {
+//     return await repository.clearAuth();
+//   }
+// }

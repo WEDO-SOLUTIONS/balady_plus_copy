@@ -40,9 +40,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     private var compassControlHandler: CompassControlHandler?
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler?
-    
-    private lazy var positioningService = PlatformPositioningServicesFactory()
-    
+        
     private var moveCameraCancellable: DGis.Cancellable?
 
     init(
@@ -120,8 +118,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             map: map,
             sdk: self.sdk,
             eventChannel: eventChannel,
-            navigationHandler: navigationHandler!,
-            positioningService: self.positioningService
+            navigationHandler: navigationHandler!
         )
         
         self.searchHandler = SearchHandler(
@@ -200,7 +197,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
         
-        let styleFuture = try! self.sdk.makeStyleFactory().loadFile(path: assetPath)
+        let styleFuture = try! self.sdk.styleFactory.loadFile(path: assetPath)
         cancelable.append(
             styleFuture.sink (
                 receiveValue: { [map = self.map] style in
@@ -217,6 +214,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+        
     func overrideLocalesLocales(_ locales: [String], completion: @escaping (FlutterError?) -> Void) {
         let manager = getLocaleManager(context: try! sdk.context)
         manager.overrideLocales(locales: locales.map {
@@ -503,9 +501,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             ))
             return
         }
+        let location = try! self.sdk.locationService.lastLocation?.coordinates.value
+
         searchHandler.getDistanceTo(
             points: points,
-            location: positioningService.locationProvider?.lastLocation?.coordinate,
+            location: location,
             completion: completion
         )
     }
@@ -830,15 +830,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
     ) {
-        guard let locationProvider = self.positioningService.locationProvider else {
-            completion(FlutterError(
-                code: "LocationError",
-                message: "PlatformPositioningServicesFactory cannot be created",
-                details: nil
-            ))
-            return
-        }
-        locationProvider.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
         completion(nil)
     }
     
@@ -850,13 +841,15 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
         
+        
         let map = mapFactory.map
+        
         map.addSource(source: MyLocationMapObjectSource(
             context: context,
-            controller: MyLocationController(bearingSource: .auto)
+            controllerSettings:  MyLocationControllerSettings()
         ))
-        self.map = map
         
+        self.map = map
         let mapView = mapFactory.mapView
         
         // This gesture is temporarily disabled as it conflicts with MapObjectTappedCallback
@@ -904,7 +897,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                     logicalPixel: LogicalPixel(value: 50),
                     maxZoom: Zoom(value: 18)
                 ),
-            imageFactory: try! self.sdk.makeImageFactory(),
+            imageFactory: try! self.sdk.imageFactory,
             routeHandler: self.routeHandler,
             eventChannel: eventChannel,
             registrar: self.registrar
@@ -996,11 +989,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func stopFreeRoam(completion: @escaping (FlutterError?) -> Void) {
         self.navigationHandler?.stopFreeRoam()
-        completion(nil)
-    }
-
-    func toggleSoundEnabled(_ enabled: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.toggleSounds(enabled: enabled.boolValue)
         completion(nil)
     }
     
@@ -1100,7 +1088,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         packagesHandler?.installPackage(id, completion: completion)
     }
 
-    func listVoices(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
+    func listVoices(completion: @escaping ([VoiceMessage]?, FlutterError?) -> Void) {
         packagesHandler?.listVoices(completion: completion)
     }
 
@@ -1129,6 +1117,47 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func setBetterRouteSettingsMessage(_ message: BetterRouteSettingsMessage, completion: @escaping (FlutterError?) -> Void) {
         navigationHandler?.setBetterRouteSettings(settings: message)
+        completion(nil)
+    }
+
+    func toggleVoiceInstructionToggleType(_ toggleType: SoundToggleType, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleSounds(toggleType: toggleType)
+        completion(nil)
+    }
+
+    func toggleOverSpeedingToggleType(_ overSpeeding: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleOverSpeeding(overSpeeding: overSpeeding.boolValue)
+        completion(nil)
+    }
+
+    func toggleRoadCamerasToggleType(_ roadCameras: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleRoadCameras(roadCameras: roadCameras.boolValue)
+        completion(nil)
+    }
+    
+    func setNavigatorVolumeVolume(_ volume: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        do {
+            try sdk.audioSettings?.volume = UInt32(volume.int32Value)
+            completion(nil)
+        } catch {
+            completion(FlutterError(code: "ERROR_SETTING_VOLUME", message: "Failed to set volume", details: error.localizedDescription))
+        }
+    }
+
+    func muteOtherSoundsMute(_ mute: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        do {
+            if mute.boolValue {
+                try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.duck
+               } else {
+                   try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.ignore
+               }
+               completion(nil)
+           } catch {
+               completion(FlutterError(code: "ERROR_SETTING_AUDIO_POLICY", message: "Failed to set audio focus policy", details: error.localizedDescription))
+           }
+    }
+    
+    func voicePlayWelcomeId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         completion(nil)
     }
 }

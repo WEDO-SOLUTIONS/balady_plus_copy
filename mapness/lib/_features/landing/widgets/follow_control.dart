@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
@@ -16,25 +17,29 @@ class FollowControl extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final followState = ref.watch(followStateProvider);
     final followNotifier = ref.watch(followStateProvider.notifier);
-    final iconColor = followState.type != LocationFollowType.off ? NonThemeColor.color30 : AppColor.black;
+    final iconColor = followState.type == LocationFollowType.off ? NonThemeColor.color30 : AppColor.black;
 
-    return AnimatedOpacity(
-      opacity: followState.enabled ? 1 : 1, // fix
-      duration: const Duration(milliseconds: 250),
-      child: MapButton(
-        onTap: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.locateMeIcon,
-            group: MetricsConstants.exploreTag,
-            action: MetricAction.tap.name,
-          );
+    return MapButton(
+      onTap: () async {
+        Metrics.logEventAdvanced(
+          MetricsConstants.exploreKeys.locateMeIcon,
+          group: MetricsConstants.exploreTag,
+          action: MetricAction.tap.name,
+        );
+
+        final location = ref.read(locationProvider.notifier);
+        final result = await location.checkLocationPermission();
+
+        if (result) {
           followNotifier.toggleFollowState();
-        },
-        child: Icon(
-          TransportIcons.locationLTR,
-          color: iconColor,
-          size: 24,
-        ),
+        }
+      },
+      child: Icon(
+        followState.type == LocationFollowType.followDirection
+            ? TransportIcons.locationDirectionNavigator
+            : TransportIcons.locationLTR,
+        color: iconColor,
+        size: 24,
       ),
     );
   }

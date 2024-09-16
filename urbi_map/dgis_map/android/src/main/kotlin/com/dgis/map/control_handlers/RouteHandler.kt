@@ -14,13 +14,20 @@ import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
+import ru.dgis.sdk.map.DefaultRasterUrlTemplate
+import ru.dgis.sdk.map.GraphicsPreset
+import ru.dgis.sdk.map.RasterTileSource
+import ru.dgis.sdk.map.RasterUrlTemplate
 import ru.dgis.sdk.map.RouteEditorSource
 import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.RouteMapObjectCalloutLabelDisplayMode
+import ru.dgis.sdk.map.RouteMapObjectDisplayFlag
+import ru.dgis.sdk.map.RouteMapObjectPermanentDisplayFlag
 import ru.dgis.sdk.map.Source
 import ru.dgis.sdk.map.calcPosition
-import ru.dgis.sdk.map.createRasterTileDataSource
+import ru.dgis.sdk.navigation.RouteMapSettings
 import ru.dgis.sdk.routing.*
+import java.util.EnumSet
 import ru.dgis.sdk.map.Map as DgisMap
 
 class RouteHandler(
@@ -52,10 +59,11 @@ class RouteHandler(
     init {
         val routesEditor = RouteEditor(sdkContext)
         this.routeEditorSource = RouteEditorSource(
-            sdkContext, routesEditor, calloutLabelDisplayMode = RouteMapObjectCalloutLabelDisplayMode.RELATIVE_TO_ACTIVE_ROUTE_VALUES
+            sdkContext,
+            routesEditor
         )
-        this.trafficRouter = TrafficRouter(sdkContext)
 
+        this.trafficRouter = TrafficRouter(sdkContext)
         publicTransportHandler = PublicTransportHandler(eventSink, this)
 
         closables.add(routesEditor.routesInfoChannel.connect {
@@ -72,7 +80,6 @@ class RouteHandler(
         })
 
         this.routesEditor = routesEditor
-
         map.addSource(routeEditorSource)
     }
 
@@ -117,8 +124,8 @@ class RouteHandler(
                     params.finishPoint!!.point.longitude
                 ),
                 objectId = DgisObjectId(
-                        objectId = params.finishPoint!!.objectId?.objectId ?: 0,
-                        entranceId = params.finishPoint!!.objectId?.entranceId ?: 0,
+                    objectId = params.finishPoint!!.objectId?.objectId ?: 0,
+                    entranceId = params.finishPoint!!.objectId?.entranceId ?: 0,
                 ),
                 levelId = params.finishPoint!!.levelId?.let {
                     LevelId(it)
@@ -154,6 +161,7 @@ class RouteHandler(
     fun onRouteTap(route: RouteMapObject) {
         if (navigationHandler.isNavigating) {
             navigationHandler.onRouteTap(route)
+
         } else {
             this.routesEditor.setActiveRouteIndex(route.routeIndex)
         }
@@ -165,20 +173,25 @@ class RouteHandler(
             Messages.RouteSearchOptionsMessage.BICYCLE -> RouteSearchOptions(
                 BicycleRouteSearchOptions()
             )
+
             Messages.RouteSearchOptionsMessage.PEDESTRIAN -> RouteSearchOptions(
                 PedestrianRouteSearchOptions()
             )
+
             Messages.RouteSearchOptionsMessage.TRUCK -> RouteSearchOptions(
                 TruckRouteSearchOptions(
                     CarRouteSearchOptions()
                 )
             )
+
             Messages.RouteSearchOptionsMessage.SCOOTER -> RouteSearchOptions(
                 ScooterRouteSearchOptions()
             )
+
             Messages.RouteSearchOptionsMessage.PUBLIC_TRANSPORT -> RouteSearchOptions(
                 PublicTransportRouteSearchOptions()
             )
+
             Messages.RouteSearchOptionsMessage.TAXI -> RouteSearchOptions(
                 TaxiRouteSearchOptions(
                     CarRouteSearchOptions()
@@ -210,9 +223,9 @@ class RouteHandler(
     companion object {
         private fun getPedestrianRouteData(route: Route): Triple<Int, Int, List<Int>> {
             return Triple(
-                    first = route.roadSubtypes.entries.filter { it.value == RoadSubtype.STAIRWAY_DOWN || it.value == RoadSubtype.STAIRWAY_UP }.size,
-                    second = route.obstacles.entries.size,
-                    third = route.altitudes.entries.map { it.value.toInt() }
+                first = route.roadSubtypes.entries.filter { it.value == RoadSubtype.STAIRWAY_DOWN || it.value == RoadSubtype.STAIRWAY_UP }.size,
+                second = route.obstacles.entries.size,
+                third = route.altitudes.entries.map { it.value.toInt() }
             )
         }
 
@@ -222,16 +235,16 @@ class RouteHandler(
             val distance = route.route.geometry.last?.point?.distance?.meters ?: 0.0
             val duration = route.route.geometry.first?.point?.let {
                 route.traffic.durations.calculateDuration(
-                        it
+                    it
                 ).inSeconds
             } ?: 0
 
             return mapOf(
-                    "distance" to distance,
-                    "duration" to duration,
-                    "stairwayCount" to stairwayCount,
-                    "gateCount" to gateCount,
-                    "altitudes" to altitudes
+                "distance" to distance,
+                "duration" to duration,
+                "stairwayCount" to stairwayCount,
+                "gateCount" to gateCount,
+                "altitudes" to altitudes
             )
         }
     }
@@ -276,18 +289,29 @@ class RouteHandler(
         }
     }
 
-    fun findBriefRouteInfos(searchPoints: List<BriefRouteInfoSearchPoints>,
-                            routeSearchOptions: RouteSearchOptions): Future<List<BriefRouteInfo?>> {
-        return trafficRouter.findBriefRouteInfos(searchPoints,routeSearchOptions)
+    fun findBriefRouteInfos(
+        searchPoints: List<BriefRouteInfoSearchPoints>,
+        routeSearchOptions: RouteSearchOptions
+    ): Future<List<BriefRouteInfo?>> {
+        return trafficRouter.findBriefRouteInfos(searchPoints, routeSearchOptions)
     }
 
     fun getLastLocation(): GeoPointMessage? {
         return locationSource.lastLocation?.let {
+
             GeoPointMessage.Builder().setLatitude(it.latitude).setLongitude(it.longitude).build()
         }
     }
 
-    fun createRasterTileDataSource_(context: Context, sublayerName: String, urlTemplate: String): Source {
-        return createRasterTileDataSource(context, sublayerName,urlTemplate)
+    fun createRasterTileDataSource_(
+        context: Context,
+        sublayerName: String,
+        urlTemplate: String
+    ): Source {
+        return RasterTileSource(
+            context,
+            sublayerName,
+            RasterUrlTemplate(DefaultRasterUrlTemplate(urlTemplate))
+        )
     }
 }
