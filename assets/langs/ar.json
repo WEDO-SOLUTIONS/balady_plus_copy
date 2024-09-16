@@ -4117,7 +4117,8 @@
   "password_changed_successfully": "تم تغيير كلمة المرور بنجاح",
   "biometric_success": "تم تسجيل البصمة بنجاح",
   "resend_otp_successfully": "تم إعادة إرسال رمز التحقق بنجاح",
-  "enter_national_id_iqama":"ادخل رقم الهوية / الإقامة",
-  "new_password":"كلمة المرور الجديدة",
+  "enter_national_id_iqama": "ادخل رقم الهوية / الإقامة",
+  "new_password": "كلمة المرور الجديدة",
+  "smart_advisor": "المساعد الذكي",
   "auth_pacakge_end": "end"
 }

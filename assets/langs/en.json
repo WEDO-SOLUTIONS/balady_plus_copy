@@ -4378,6 +4378,7 @@
   "biometric_success": "Biometrics has beed registered successfully",
   "resend_otp_successfully": "OTP has been resent successfully",
   "enter_national_id_iqama": "Enter national ID / Iqama",
-  "new_password":"New password",
+  "new_password": "New password",
+  "smart_advisor": "Smart Advisor",
   "auth_pacakge_end": "end"
 }
