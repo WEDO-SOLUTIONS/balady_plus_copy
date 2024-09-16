@@ -223,7 +223,8 @@ dependencies:
 
   ############################################################
   balady_authorization:
-    path: /Users/amr/Developer/balady_authorization
+    git:
+      url: https://tfs.momra.gov.sa/tfs/MOMRACollection/Mobile%20Apps/_git/Balady%20Authorization
 #      ref: master
 #      path: packages/firebase_messaging/firebase_messaging
   ############################################################
