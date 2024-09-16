@@ -21,7 +21,7 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
   @override
   void initState() {
     super.initState();
-    initializeFreeRoam(this, duration: const Duration(seconds: 140));
+    initializeFreeRoam(this);
   }
 
   @override
