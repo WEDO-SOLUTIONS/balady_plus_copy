@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/entry_point/data/models/test_model.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
@@ -160,7 +159,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         },
       );
       return response.data;
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -285,7 +284,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       ApigeeTokenResponseModel apigeeResponse = ApigeeTokenResponseModel.fromMap(response.data);
       return apigeeResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -310,7 +309,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result.toFuture();
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       error.errorLog();
       throw ServerException(
         error.toString(),
@@ -367,7 +366,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       devtools.log(response.toString());
       devtools.log(response.data["data"]);
       return response.data["data"]?["result"];
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } on ServerException catch (e) {
       devtools.log(e.toString());
