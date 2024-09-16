@@ -233,4 +233,18 @@ class BaladyServices {
 
     return null;
   }
+
+    static void openIssueLicense() {
+    NavigationService.navigatorKey.currentState
+        ?.pushNamed(RouteName.commercialLicensePage);
+  }
+
+  static void openChatGPT() {
+    NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
+  }
+
+  static void openObjections() {
+    NavigationService.navigatorKey.currentState
+        ?.pushNamed(RouteName.objectableTransactions);
+  }
 }
