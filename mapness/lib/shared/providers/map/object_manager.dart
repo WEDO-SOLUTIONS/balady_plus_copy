@@ -122,7 +122,6 @@ class MapObjectManager extends _$MapObjectManager {
           toManager: await future,
         );
 
-    _markers.addAll(markers);
     currentMarkerIcon = markers.firstOrNull?.options.icon?.svgPath;
   }
 
