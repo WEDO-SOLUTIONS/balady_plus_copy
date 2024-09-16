@@ -11,6 +11,8 @@ import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/road_panel.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
@@ -25,6 +27,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -265,6 +268,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
     await dgisController.value?.freeRoamController.stop();
     await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
 
+    await _parkingCheck();
     action();
   }
 
@@ -286,5 +290,17 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
         const LandingRoute().go(context);
       }
     });
+  }
+
+  /// If I enable parking during [FreeRoam], after the check is completed they are hidden if hidden from [Layers].
+  /// If it is enabled in [Layers], then if I disable it in [FreeRoam], then after completion they are also disabled
+  Future<void> _parkingCheck() async {
+    final layers = ref.watch(layersControlsProvider);
+    final parkingState = ref.watch(parkingStateProvider);
+    final parkingNotifier = ref.read(parkingStateProvider.notifier);
+
+    if (layers.selectedType != LayerType.parkingLots && parkingState.visible) {
+      await parkingNotifier.hideParking();
+    }
   }
 }
