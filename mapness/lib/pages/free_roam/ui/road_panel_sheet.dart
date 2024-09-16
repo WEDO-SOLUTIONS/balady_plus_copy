@@ -1,5 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
@@ -7,6 +8,8 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
+import 'package:mapness/app/routes/road_panel.dart';
+import 'package:mapness/app/routes/sound_settings.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -157,6 +160,7 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                                     initialIndex: soundSettingsModel.voiceInstructionIndex,
                                   ),
                                 ),
+                                Spacing.$3x.heightBox,
                               ],
                             ),
                             const SizedBox(height: Spacing.$3x),
@@ -241,7 +245,10 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
         .then((_) {
       sheetController.addListener(() {
         final navigator = ref.read(goRouterProvider);
-        if (sheetController.isAttached && sheetController.size < .1 && navigator.canPop()) {
+        if (sheetController.isAttached &&
+            sheetController.size < .1 &&
+            RoadPanelRoute.isCurrent(context) &&
+            navigator.canPop()) {
           navigator.pop();
         }
       });

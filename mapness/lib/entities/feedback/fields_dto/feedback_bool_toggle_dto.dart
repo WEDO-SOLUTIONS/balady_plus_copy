@@ -10,6 +10,7 @@ class FeedbackBoolToggleDto extends FeedbackBaseDto {
     required super.type,
     required super.isRequired,
     required this.label,
+    required super.isHidden,
   });
 
   @override
@@ -17,5 +18,8 @@ class FeedbackBoolToggleDto extends FeedbackBaseDto {
         id: id,
         isRequired: isRequired,
         label: label,
+        isHidden: isHidden,
       );
+
+  factory FeedbackBoolToggleDto.fromJson(Map<String, dynamic> json) => _$FeedbackBoolToggleDtoFromJson(json);
 }

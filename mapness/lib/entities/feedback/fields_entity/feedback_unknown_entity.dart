@@ -4,8 +4,13 @@ class FeedbackUnknownEntity extends FeedbackBaseEntity<void> {
   const FeedbackUnknownEntity({
     required super.id,
     required super.isRequired,
+    required super.isHidden,
   }) : super(value: null);
 
   @override
-  FeedbackUnknownEntity updatedValue(void value) => this;
+  FeedbackUnknownEntity updatedValue(void value) => FeedbackUnknownEntity(
+        id: id,
+        isRequired: isRequired,
+        isHidden: isHidden,
+      );
 }

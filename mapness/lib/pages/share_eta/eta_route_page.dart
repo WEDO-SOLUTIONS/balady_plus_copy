@@ -4,10 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_arrival_card.dart';
-import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
 
 class EtaRoutePage extends ConsumerStatefulWidget {
   final double? latitude;
@@ -23,6 +24,14 @@ class EtaRoutePage extends ConsumerStatefulWidget {
 }
 
 class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(cameraPaddingProvider.notifier).resetPadding();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ref
@@ -78,20 +87,10 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
   }
 
   void _showEtaExpired(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => EtaShareExpired.eta(context),
-    );
+    EtaUtils.showEtaExpired(context);
   }
 
   void _showBroadcastExpired(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => EtaShareExpired.broadcastExpired(context),
-    );
+    EtaUtils.showBroadcastExpired(context);
   }
 }

@@ -50,29 +50,31 @@ class KiblahPage extends ConsumerWidget {
         title: isReady ? '$userBearing°' : context.l10n.calibrating,
         textStyle: context.textStyle.footNoteBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          const Center(child: KiblahCompass()),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: double.infinity,
-              margin: EdgeInsets.only(
-                left: Spacing.$4x,
-                right: Spacing.$4x,
-                top: Spacing.$4x,
-                bottom: MediaQuery.of(context).padding.bottom + Spacing.$0_5x,
-              ),
-              child: AppButton(
-                primaryIcon: GeneralIcons.mosq,
-                primaryLabel: context.l10n.mosquesNearYou,
-                buttonColorScheme: ButtonColorScheme.primary,
-                onTap: () => _onMosquesNearTap(ref),
+      body: SafeArea(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            const Center(child: KiblahCompass()),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                  left: Spacing.$4x,
+                  right: Spacing.$4x,
+                  top: Spacing.$4x,
+                  bottom: Spacing.$5x,
+                ),
+                child: AppButton(
+                  primaryIcon: GeneralIcons.mosq,
+                  primaryLabel: context.l10n.mosquesNearYou,
+                  buttonColorScheme: ButtonColorScheme.primary,
+                  onTap: () => _onMosquesNearTap(ref),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

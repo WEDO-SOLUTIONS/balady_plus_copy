@@ -7,9 +7,8 @@ import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cub
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/services_exports.dart';
@@ -18,7 +17,6 @@ import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../entry_point_exports.dart';
 import '../models/get_permission_params_model.dart';
 import '../models/permission_response_model.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class EntryPointRemoteDataSource {
   Future<AuthorizationTokenResponse> authorize();
@@ -29,12 +27,10 @@ abstract class EntryPointRemoteDataSource {
   Future<SsoUserInfoModel?> getSSOProfile();
   Future<String?> getCookie();
   Future<ApigeeTokenResponse> getAPIgeeToken();
-  Future<ForceUpdateResponseModel> getForceVersion(
-      {required ForceUpdateParams params});
+  Future<ForceUpdateResponseModel> getForceVersion({required ForceUpdateParams params});
 
   Future<dynamic> getDataTest();
-  Future<PermissionResponseModel> getEkramRules(
-      {required GetPermissionParamsModel params});
+  Future<PermissionResponseModel> getEkramRules({required GetPermissionParamsModel params});
 
   Future<String> getPaymentURL({required PaymentRequest params});
 }
@@ -42,12 +38,10 @@ abstract class EntryPointRemoteDataSource {
 class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   final WebService webService;
 
-  final WebService webServiceSSo = WebService.newDio(
-      dio: CommonFunctions.getDio(baseUrl: RemoteConfig.ssoUrl));
+  final WebService webServiceSSo = WebService.newDio(dio: CommonFunctions.getDio(baseUrl: RemoteConfig.ssoUrl));
 
   final FlutterAppAuth _appAuth = FlutterAppAuth();
-  final AuthorizationServiceConfiguration _serviceConfiguration =
-      AuthorizationServiceConfiguration(
+  final AuthorizationServiceConfiguration _serviceConfiguration = AuthorizationServiceConfiguration(
     authorizationEndpoint: '${RemoteConfig.ssoUrl}/connect/authorize',
     tokenEndpoint: '${RemoteConfig.ssoUrl}/connect/token',
     endSessionEndpoint: "${RemoteConfig.ssoUrl}/connect/endsession",
@@ -58,8 +52,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   @override
   Future<AuthorizationTokenResponse> authorize() async {
     try {
-      AuthorizationTokenResponse? response =
-          await _appAuth.authorizeAndExchangeCode(
+      AuthorizationTokenResponse? response = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
           RemoteConfig.ssoClient,
           RemoteConfig.ssoLoginUrl,
@@ -70,7 +63,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
             'profile',
             'offline_access',
             'EmployeeAdminstration.Api',
-
           ],
 
           // fawzi add extra pram to login
@@ -79,14 +71,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       );
       response?.accessToken.actionLog();
       return response!;
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+    } catch (error) {
       throw ServerException(
         error.toString(),
       );
@@ -112,14 +97,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       );
 
       return response!;
-    } on PlatformException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+    } on PlatformException catch (error) {
       if (error.toString().contains("invalid_grant")) {
         sl<EntryPointCubit>().autoLogout();
       }
@@ -134,42 +112,29 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     Response? response;
     try {
       response = await webServiceSSo.dio.get(ApiUrl.ssoUserInfo,
-          options: Options(headers: {
-            "Authorization": "Bearer " + (CommonProperties.token ?? "")
-          }));
+          options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token ?? ""}"}));
 
       var data = response.data;
 
       var parsedResult = data != null ? SsoUserInfoModel.fromJson(data) : null;
 
       return parsedResult.toFuture();
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      if (error is ServerException) {
+    } catch (ex) {
+      if (ex is ServerException) {
         rethrow;
       } else {
+        try {
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (_) {}
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: error.toString(),
+              errorMessage: ex.toString(),
             ),
             response: response);
       }
@@ -196,33 +161,22 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       //    ApigeeResponseModel<UpdateDeviceResponseModel>.fromMap(response.data,
       //        parsedResult: parsedResult);
       return response.data;
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      if (error is ServerException) {
+    } catch (ex) {
+      if (ex is ServerException) {
         rethrow;
       } else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (_) {}
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: error.toString(),
+              errorMessage: ex.toString(),
             ),
             response: response);
       }
@@ -230,8 +184,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   }
 
   @override
-  Future<ForceUpdateResponseModel> getForceVersion(
-      {required ForceUpdateParams params}) async {
+  Future<ForceUpdateResponseModel> getForceVersion({required ForceUpdateParams params}) async {
     Response? response;
 
     try {
@@ -245,40 +198,28 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       var data = response.data["data"]?["result"];
 
-      var parsedResult =
-          data != null ? ForceUpdateResponseModel.fromMap(data) : null;
+      var parsedResult = data != null ? ForceUpdateResponseModel.fromMap(data) : null;
 
       //final decodedResponse =
       //  ApigeeResponseModel<ForceUpdateResponseModel>.fromMap(response.data,
       //    parsedResult: parsedResult);
       return parsedResult!.toFuture();
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      if (error is ServerException) {
+    } catch (ex) {
+      if (ex is ServerException) {
         rethrow;
       } else {
+        try {
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: error.toString(),
+              errorMessage: ex.toString(),
             ),
             response: response);
       }
@@ -291,19 +232,13 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       EndSessionResponse? response = await _appAuth.endSession(
         EndSessionRequest(
           idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
+          postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
           serviceConfiguration: _serviceConfiguration,
         ),
       );
 
       return response!;
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+    } catch (error) {
       throw ServerException("", errorCode: error.toString());
     }
   }
@@ -313,42 +248,29 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     Response? response;
     try {
       response = await webServiceSSo.dio.get(ApiUrl.ssoUserCookie,
-          options: Options(headers: {
-            "Authorization": "Bearer " + (CommonProperties.token ?? "")
-          }));
+          options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token ?? ""}"}));
       String? cookie;
       if (response.headers['set-cookie']?.toString() != null) {
         cookie = response.headers['set-cookie'].toString();
       }
 
       return cookie;
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      if (error is ServerException) {
+    } catch (ex) {
+      if (ex is ServerException) {
         rethrow;
       } else {
+        try {
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (_) {}
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: error.toString(),
+              errorMessage: ex.toString(),
             ),
             response: response);
       }
@@ -361,48 +283,32 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     try {
       String username = RemoteConfig.apigeeUsername;
       String password = RemoteConfig.apigeePassword;
-      String basicAuth =
-          'Basic ' + base64Encode(utf8.encode('$username:$password'));
+      String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
       response = await webService.dio.post(ApiUrl.apigeeToken,
           options: Options(
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              "Authorization": basicAuth
-            },
+            headers: {"Content-Type": "application/x-www-form-urlencoded", "Authorization": basicAuth},
           ),
           data: {"grant_type": "client_credentials"});
 
-      ApigeeTokenResponseModel apigeeResponse =
-          ApigeeTokenResponseModel.fromMap(response.data);
+      ApigeeTokenResponseModel apigeeResponse = ApigeeTokenResponseModel.fromMap(response.data);
       return apigeeResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+    } on DioError catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      if (error is ServerException) {
+    } catch (ex) {
+      if (ex is ServerException) {
         rethrow;
       } else {
+        try {
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (_) {}
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: error.toString(),
+              errorMessage: ex.toString(),
             ),
             response: response);
       }
@@ -429,35 +335,19 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
  ;*/
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      List<TestModel>? d = result != null
-          ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
-          : null;
+      List<TestModel>? d = result != null ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x))) : null;
 
       return result.toFuture();
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+    } on DioError catch (error) {
       error.errorLog();
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      error.errorLog();
-      if (error is ServerException) {
+    } catch (ex) {
+      ex.errorLog();
+      if (ex is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr());
@@ -466,9 +356,8 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   }
 
   @override
-  Future<PermissionResponseModel> getEkramRules(
-      {required GetPermissionParamsModel params}) async {
-    var response;
+  Future<PermissionResponseModel> getEkramRules({required GetPermissionParamsModel params}) async {
+    Response response;
 
     try {
       response = await webService.dio.post(
@@ -477,43 +366,19 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       );
       print(response.data["data"]);
       var data = response.data["data"]?["result"];
-      var parsedResult =
-          data != null ? PermissionResponseModel.fromMap(data) : null;
+      var parsedResult = data != null ? PermissionResponseModel.fromMap(data) : null;
 
       return parsedResult!.toFuture();
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      print(error);
-      if (error is ServerException)
-        throw error;
-      else {
+    } on DioError catch (error) {
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException) {
+        rethrow;
+      } else {
         try {
-          //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
-        } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -521,7 +386,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
   @override
   Future<String> getPaymentURL({required PaymentRequest params}) async {
-    var response;
+    Response response;
 
     try {
       response = await webService.dio.post(
@@ -531,39 +396,16 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       print(response);
       print(response.data["data"]);
       return response.data["data"]?["result"];
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      print(error);
-      if (error is ServerException)
-        throw error;
-      else {
+    } on DioError catch (error) {
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException) {
+        rethrow;
+      } else {
         try {
-          //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
-        } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
         throw ServerException(("errors_server_error_2").tr());
       }
     }

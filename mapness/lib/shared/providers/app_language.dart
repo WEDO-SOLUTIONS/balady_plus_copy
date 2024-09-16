@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart' show sl;
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
@@ -84,6 +86,7 @@ class AppLanguage extends _$AppLanguage {
     // Update condition text for the weather texts
     ref.read(forecastWeatherProvider.notifier).forceRefresh();
     CommonFunctions.changeLanguage(lang: value.baladyCompat);
+    sl<EntryPointCubit>().refreshSSOProfile();
     state = value;
   }
 }

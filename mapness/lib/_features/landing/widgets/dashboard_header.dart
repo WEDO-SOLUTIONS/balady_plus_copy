@@ -20,15 +20,11 @@ import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
 class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final StatefulBottomSheetController scrollController;
   final TickerProvider _vsync;
 
   static const headerHeight = 72.0;
 
-  DashboardHeaderDelegate({
-    required TickerProvider vsync,
-    required this.scrollController,
-  }) : _vsync = vsync;
+  DashboardHeaderDelegate({required TickerProvider vsync}) : _vsync = vsync;
 
   @override
   TickerProvider? get vsync => _vsync;
@@ -43,7 +39,6 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
       maxExtent: maxExtent,
       currentExtent: currentHeaderExtent,
       child: _DashboardMenu(
-        scrollController: scrollController,
         shrinkOffset: shrinkOffset,
       ),
     );
@@ -64,12 +59,8 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class _DashboardMenu extends ConsumerWidget {
   final double shrinkOffset;
-  final StatefulBottomSheetController scrollController;
 
-  const _DashboardMenu({
-    required this.scrollController,
-    required this.shrinkOffset,
-  });
+  const _DashboardMenu({required this.shrinkOffset});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -111,10 +102,10 @@ class _DashboardMenu extends ConsumerWidget {
 }
 
 class DashboardHeader extends ConsumerWidget {
-  final StatefulBottomSheetController scrollController;
+  final StatefulBottomSheetController bottomSheetController;
 
   const DashboardHeader({
-    required this.scrollController,
+    required this.bottomSheetController,
     super.key,
   });
 
@@ -139,7 +130,7 @@ class DashboardHeader extends ConsumerWidget {
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
               const SearchRoute().push(context);
-              scrollController.setState(ThreeStateBottomSheet.hidden);
+              bottomSheetController.setState(ThreeStateBottomSheet.hidden);
             },
             child: AbsorbPointer(
               child: BaladyInput.searchV2(

@@ -8,12 +8,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
 import 'package:mapness/app/routes/path_nav.dart';
+import 'package:mapness/app/routes/sound_settings.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
+import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
 import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -81,7 +83,11 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       ..watch(websocketTypeProvider.select((_) => null))
       ..watch(shareEtaProvider.select((_) => null));
 
-    final _subtitleVoiceInstruction = voiceName != null ? '${l10n.announcedEvents} • $voiceName' : l10n.announcedEvents;
+    final _voiceInstructionTypeTitle =
+        soundSettingsNotifier.currentSoundToggleType.mapVoiceInstructionsToTitle(context);
+
+    final _subtitleVoiceInstruction =
+        voiceName != null ? '$_voiceInstructionTypeTitle • $voiceName' : _voiceInstructionTypeTitle;
 
     return EtaSheetWrapper(
       isExpanded: _isExpanded,
