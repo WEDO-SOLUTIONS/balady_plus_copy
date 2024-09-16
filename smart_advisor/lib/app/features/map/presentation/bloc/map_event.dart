@@ -1,0 +1,28 @@
+part of 'map_bloc.dart';
+
+abstract class MapEvent extends Equatable {
+  const MapEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class GetZonesEvent extends MapEvent {
+  final double lat;
+  final double lon;
+
+  const GetZonesEvent({required this.lat, required this.lon});
+}
+
+class GetGISDataEvent extends MapEvent {
+  final double lat;
+  final double lon;
+
+  const GetGISDataEvent({required this.lat, required this.lon});
+}
+
+class ValidatePointEvent extends MapEvent {
+  final double lat;
+  final double lon;
+  const ValidatePointEvent({required this.lat, required this.lon});
+}
