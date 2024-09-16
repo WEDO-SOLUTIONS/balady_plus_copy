@@ -26,7 +26,6 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -295,11 +294,9 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   /// If it is enabled in [Layers], then if I disable it in [FreeRoam], then after completion they are also disabled
   Future<void> _parkingCheck() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
-    final parkingNotifier = ref.read(parkingStateProvider.notifier);
     final layersNotifier = ref.watch(layersControlsProvider.notifier);
 
     if (sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false) {
-      await parkingNotifier.hideParking();
       await layersNotifier.toggleParking();
       await sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, false);
     }
