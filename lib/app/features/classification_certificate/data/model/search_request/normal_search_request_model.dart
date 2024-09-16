@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/features/classification_certificate/data/model/search_request/search_request_model.dart';
 
 class NormalSearchRequestModel implements SearchRequestModel {
-  final String searchQuery;
+  String searchQuery;
   @override
   final int pageNumber;
   @override
@@ -9,8 +9,8 @@ class NormalSearchRequestModel implements SearchRequestModel {
 
   NormalSearchRequestModel({
     required this.searchQuery,
-    required this.pageSize,
-    required this.pageNumber,
+    this.pageSize = 10,
+    this.pageNumber = 1,
   });
 
   @override
@@ -39,23 +39,23 @@ class NormalSearchRequestModel implements SearchRequestModel {
 class CertificateNumberSearchRequestModel extends NormalSearchRequestModel {
   CertificateNumberSearchRequestModel({
     required super.searchQuery,
-    required super.pageSize,
-    required super.pageNumber,
+    super.pageSize,
+    super.pageNumber,
   });
+
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = super.toJson();
-    data['Serial_number'] = super.searchQuery;
+    data['serial-number'] = super.searchQuery;
     return data;
   }
 }
 
-class FacilityNameSearchRequestModel
-    extends NormalSearchRequestModel {
+class FacilityNameSearchRequestModel extends NormalSearchRequestModel {
   FacilityNameSearchRequestModel({
     required super.searchQuery,
-    required super.pageSize,
-    required super.pageNumber,
+     super.pageSize,
+     super.pageNumber,
   });
 
   @override
@@ -69,8 +69,8 @@ class FacilityNameSearchRequestModel
 class CRLICNumberSearchRequestModel extends NormalSearchRequestModel {
   CRLICNumberSearchRequestModel({
     required super.searchQuery,
-    required super.pageSize,
-    required super.pageNumber,
+     super.pageSize,
+     super.pageNumber,
   });
 
   @override
@@ -84,9 +84,10 @@ class CRLICNumberSearchRequestModel extends NormalSearchRequestModel {
 class EstablishmentIdSearchRequestModel extends NormalSearchRequestModel {
   EstablishmentIdSearchRequestModel({
     required super.searchQuery,
-    required super.pageSize,
-    required super.pageNumber,
+     super.pageSize,
+     super.pageNumber,
   });
+
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = super.toJson();

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import '../widgets/action_button_widget.dart';
 import '../widgets/advanced_search_widget.dart';
 import '../widgets/normal_search/normal_search_list_widget.dart';
 import '../widgets/search_type_widget.dart';
@@ -37,9 +38,12 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               // for select type search of screen
-              BlocBuilder<ClassificationCertificateVerifyBloc, ClassificationCertificateVerifyState>(
+              BlocBuilder<ClassificationCertificateVerifyBloc,
+                  ClassificationCertificateVerifyState>(
                 buildWhen: (state, stateNew) {
-                  return stateNew is NormalSearchClassificationCertificateState || stateNew is AdvancedMethodClassificationCertificateState;
+                  return stateNew
+                          is NormalSearchClassificationCertificateState ||
+                      stateNew is AdvancedMethodClassificationCertificateState;
                 },
                 builder: (contextBloc, state) {
                   return Card(
@@ -69,29 +73,32 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Expanded(
                 child: SingleChildScrollView(
-                  child: BlocBuilder<ClassificationCertificateVerifyBloc, ClassificationCertificateVerifyState>(
+                  child: BlocBuilder<ClassificationCertificateVerifyBloc,
+                      ClassificationCertificateVerifyState>(
                     builder: (contextBloc, state) {
-                      if(state is NormalSearchClassificationCertificateState) {
-                        return NormalSearchListWidget(state: state);
+                     Widget? child;
+                      if (state
+                          is NormalSearchClassificationCertificateState) {
+                        child = NormalSearchListWidget(state: state);
                       }
-                      if(state is NormalSearchVerifiedByClassificationCertificateState) {
-                        return NormalSearchVerifiedByWidget(state: state);
+                      if (state
+                          is NormalSearchVerifiedByClassificationCertificateState) {
+                        child = NormalSearchVerifiedByWidget(state: state);
                       }
-                      if(state is AdvancedMethodClassificationCertificateState) {
-                        return AdvancedSearchWidget(state: state);
+                      if (state
+                          is AdvancedMethodClassificationCertificateState) {
+                        child = AdvancedSearchWidget(state: state);
                       }
-                      return const SizedBox();
+                      return Form(
+                        key: contextBloc.read<ClassificationCertificateVerifyBloc>().formKey,
+                        child: child ?? const SizedBox(),
+                      );
                     },
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {},
-                child: Text(
-                  "search".tr(),
-                ),
-              ),
+              const ActionButtonWidget(),
             ],
           ),
         ),

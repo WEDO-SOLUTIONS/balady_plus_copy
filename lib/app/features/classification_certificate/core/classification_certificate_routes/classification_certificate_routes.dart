@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_list/pages/classification_certificate_list_screen.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../persentation/classification_certificate_details/pages/classification_certificate_details_screen.dart';
@@ -16,7 +17,8 @@ class ClassificationCertificateRoutes {
     ClassificationCertificateRouteName.classificationCertificateDetailsScreen: (context) =>
     const ClassificationCertificateDetailsScreen(),
 
-
+    ClassificationCertificateRouteName.classificationCertificateListScreen: (context) =>
+    const ClassificationCertificateListScreen(),
 
 
   };

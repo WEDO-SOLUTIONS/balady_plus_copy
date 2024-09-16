@@ -7,8 +7,8 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
   final int pageSize;
 
   AdvancedSearchRequestModel({
-    required this.pageSize,
-    required this.pageNumber,
+    this.pageSize = 10,
+    this.pageNumber = 1,
   });
 
   @override

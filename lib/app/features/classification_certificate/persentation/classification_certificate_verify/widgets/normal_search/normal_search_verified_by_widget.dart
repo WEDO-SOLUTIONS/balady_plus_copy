@@ -52,12 +52,22 @@ class NormalSearchVerifiedByWidget extends StatelessWidget {
             decoration: InputDecoration(
               hintText: state.normalSearchType.verifiedBy.hintText.tr(),
             ),
-            validator: (text) =>
-                RegExp(state.normalSearchType.verifiedBy.regex).hasMatch(
-              text ?? "",
-            )
-                    ? state.normalSearchType.verifiedBy.validatorMessage
-                    : null,
+            onChanged: (text) {
+              state.searchRequestModel.searchQuery = text;
+            },
+            onSaved: (text) {
+              state.searchRequestModel.searchQuery = text ?? "";
+            },
+            onFieldSubmitted: (text) {
+              state.searchRequestModel.searchQuery = text;
+            },
+            validator: (text) {
+              if (RegExp(state.normalSearchType.verifiedBy.regex)
+                  .hasMatch(text ?? "")) {
+                return null;
+              }
+              return state.normalSearchType.verifiedBy.validatorMessage.tr();
+            },
           ),
         ),
       ],

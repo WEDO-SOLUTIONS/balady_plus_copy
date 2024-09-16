@@ -1,0 +1,77 @@
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/features/classification_certificate/domain/entity/classification_certificate_list_entity.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'title_value_item_widget.dart';
+
+class ClassificationCertificateItemWidget extends StatelessWidget {
+  final ClassificationCertificateItemEntity classificationCertificate;
+
+  const ClassificationCertificateItemWidget({
+    super.key,
+    required this.classificationCertificate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+
+      },
+      child: Card(
+        margin: const EdgeInsets.only(top: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  SvgPicture.asset(IconPath.newOfficeIcon),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(classificationCertificate.facilityName),
+                  ),
+                  Chip(
+                    padding: EdgeInsets.zero,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        side: BorderSide(
+                          width: 1,
+                          color: Colors.blueAccent,
+                        )),
+                    backgroundColor: Colors.blueAccent.withAlpha(70),
+                    label: Text(
+                      'التصنيف A',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.blueAccent,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              TitleValueItemWidget(
+                title: 'serialNumber',
+                value: classificationCertificate.serialNumber,
+              ),
+              const SizedBox(height: 8),
+              TitleValueItemWidget(
+                title: 'cRorLicNumber',
+                value: classificationCertificate.cRorLicNumber,
+              ),
+              const SizedBox(height: 8),
+              TitleValueItemWidget(
+                title: 'expiry_data',
+                value: classificationCertificate.certificateExpirationDate,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

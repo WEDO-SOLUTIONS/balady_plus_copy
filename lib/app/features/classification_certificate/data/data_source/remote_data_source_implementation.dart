@@ -1,4 +1,3 @@
-
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
@@ -8,37 +7,35 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-import '../model/classification_certificate_details_model.dart';
+import '../../core/endpoints.dart';
+import '../model/classification_certificate_list.dart';
+import '../model/search_request/search_request_model.dart';
 import 'remote_data_source.dart';
 
 class ClassificationCertificateRemoteDataSource implements ClassificationCertificateSearchRemoteDataSource {
   final WebService webService;
 
-  ClassificationCertificateRemoteDataSource(
-      {required this.webService});
+  ClassificationCertificateRemoteDataSource({required this.webService});
 
   @override
-  Future<ClassificationCertificateDetailsModel> searchClassificationCertificate(
-      int licenseNumber, String date) async {
+  Future<ClassificationCertificateList> searchClassificationCertificate(
+      SearchRequestModel params) async {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getConstructionLicenseData(licenseNumber, date),
+        EndpointsClassificationCertificate.searchEndPoints,
+        queryParameters: params.toJson(),
       );
       final data = response.data;
-
       var parsedResult = data != null
-          ? ClassificationCertificateDetailsModel.fromJson(data["data"]["result"])
+          ? ClassificationCertificateList.fromJson(data["data"]["result"])
           : null;
       final decodedResponse =
-          ResponseBodyModel<ClassificationCertificateDetailsModel>.fromMap(response.data,
-              parsedResult: parsedResult);
-
+          ResponseBodyModel<ClassificationCertificateList>.fromMap(
+        response.data,
+        parsedResult: parsedResult,
+      );
       return decodedResponse.data!.result!;
-
-      // final result = ResponseBodyModel.fromMap(data).data?.result;
-      // CommercialLicenseDataModel commercialLicencedata = CommercialLicenseDataModel.fromJson(result!);
-      // return  commercialLicencedata;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

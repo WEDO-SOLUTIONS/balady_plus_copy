@@ -30,3 +30,11 @@ class SelectNormalSearchTypeClassificationCertificateState extends Classificatio
   @override
   List<Object?> get props => [normalSearchType];
 }
+
+class GoSearchScreenClassificationCertificateState extends ClassificationCertificateVerifyEvents {
+
+  const GoSearchScreenClassificationCertificateState();
+
+  @override
+  List<Object?> get props => [];
+}
