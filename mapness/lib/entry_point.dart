@@ -46,6 +46,7 @@ import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/map/map_page.dart';
+import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
@@ -230,7 +231,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 builder: (context, child) => child != null
                     ? LoadingOverlay(
                         child: ToastOverlay(
-                          child: child,
+                          child: GlobalScopes(
+                            child: child,
+                          ),
                         ),
                       )
                     : const SizedBox.shrink(),
