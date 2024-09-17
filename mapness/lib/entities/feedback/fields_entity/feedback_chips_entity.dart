@@ -1,14 +1,14 @@
 part of '../feedback_base_entity.dart';
 
 class FeedbackChipsItemEntity {
-  final FeedbackIcon? icon;
+  final String? iconUrl;
   final String label;
   final int id;
 
   const FeedbackChipsItemEntity({
     required this.id,
     required this.label,
-    this.icon,
+    this.iconUrl,
   });
 }
 

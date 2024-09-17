@@ -1,14 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/feedback/dto/feedback_base_dto.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
-import 'package:mapness/entities/feedback/feedback_icon.dart';
+
 part 'feedback_category_dto.g.dart';
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class FeedbackCategoryDto {
   final String? id;
   final String name;
-  final String? iconName;
+  final String? icon;
 
   final List<FeedbackBaseDto> fields;
 
@@ -16,7 +16,7 @@ class FeedbackCategoryDto {
     required this.name,
     required this.fields,
     this.id,
-    this.iconName,
+    this.icon,
   });
 
   factory FeedbackCategoryDto.fromJson(Map<String, dynamic> json) => _$FeedbackCategoryDtoFromJson(json);
@@ -31,6 +31,6 @@ class FeedbackCategoryDto {
         id: id ?? name,
         name: name,
         fields: fields.map((e) => e.toDomain()).toList(),
-        icon: FeedbackIcon.fromName(iconName ?? ''),
+        iconUrl: icon,
       );
 }

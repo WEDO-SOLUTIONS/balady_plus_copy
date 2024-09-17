@@ -1,8 +1,8 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/entities/feedback/feedback_icon.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/feedback_label.dart';
 
 class FeedbackChips extends StatelessWidget {
@@ -24,27 +24,44 @@ class FeedbackChips extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: field.variants
-                .map((variant) => Chips(
-                      title: variant.label,
-                      isSelected: field.value?.contains(variant.id) ?? false,
-                      leadingIcon: variant.icon != null
-                          ? ChipIconData(
-                              variant.icon!.iconData(isLTR: context.isLTR),
-                            )
-                          : null,
-                      onTap: () {
-                        final Set<int> selected;
-                        if (field.value?.contains(variant.id) ?? false) {
-                          selected = {...?field.value}..remove(variant.id);
-                        } else {
-                          selected = {variant.id};
-                        }
-                        onValueChange(selected);
-                      },
-                      style: ChipsStyle.whiteBackground,
-                    ))
+                .map(
+                  (variant) => Chips(
+                    title: variant.label,
+                    isSelected: field.value?.contains(variant.id) ?? false,
+                    leadingIcon: variant.iconUrl == null
+                        ? null
+                        : iconBuilder(
+                            context: context,
+                            iconUrl: variant.iconUrl!,
+                          ),
+                    onTap: () {
+                      final Set<int> selected;
+                      if (field.value?.contains(variant.id) ?? false) {
+                        selected = {...?field.value}..remove(variant.id);
+                      } else {
+                        selected = {variant.id};
+                      }
+                      onValueChange(selected);
+                    },
+                    style: ChipsStyle.whiteBackground,
+                  ),
+                )
                 .toList(),
           )
         ],
+      );
+
+  ChipIconWidget iconBuilder({
+    required BuildContext context,
+    required String iconUrl,
+  }) =>
+      ChipIconWidget(
+        ({required isSelected}) => SvgPicture.network(
+          iconUrl,
+          colorFilter: ColorFilter.mode(
+            isSelected ? context.color.textAndIconsStatusAccent : context.color.textAndIconsBasePrimary,
+            BlendMode.srcIn,
+          ),
+        ),
       );
 }
