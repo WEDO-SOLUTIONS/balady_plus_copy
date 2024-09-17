@@ -338,18 +338,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip(VoidCallback action) async {
+    try {
+      await _stopActiveSharing();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+
     if (_navigationState.value != PathNavState.finished) {
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
       _navigationState.value = PathNavState.finished;
     }
     await clearNavigationState();
-
-    try {
-      await _stopActiveSharing();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
 
     action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
