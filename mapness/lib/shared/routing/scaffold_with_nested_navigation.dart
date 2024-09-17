@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/common/providers/route_onboarding.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/routes/stories.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -87,32 +86,35 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
             group: _tag,
             action: MetricAction.tap.name,
           );
-          final naviEnabled = ref.read(appFeaturesProvider).naviEnabled;
-          if (selected == 2 && naviEnabled) {
-            final isShowRoute = await ref.read(routeOnboardingProvider.future);
-            if (isShowRoute) {
-              _goToPage(selected);
-              return;
-            }
-            if (!mounted) {
-              return;
-            }
-            StoriesRoute.openRoute(context, onClose: () {
-              ref.read(routeOnboardingProvider.notifier).setShown(true);
-              _goToPage(selected);
-            });
 
-            // Stories.showOnboarding(
-            //   context,
-            //   StoryTypes.route,
-            //   'route',
-            //   onClose: () async {
-            //     await ref.read(routeOnboardingProvider.notifier).setShown(true);
-            //     _goToPage(selected);
-            //   },
-            // );
-            return;
-          }
+          ///We commented this route onboarding because is not needed, we maybe return it in the future
+
+          //final naviEnabled = ref.read(appFeaturesProvider).naviEnabled;
+          // if (selected == 2 && naviEnabled) {
+          //   final isShowRoute = await ref.read(routeOnboardingProvider.future);
+          //   if (isShowRoute) {
+          //     _goToPage(selected);
+          //     return;
+          //   }
+          //   if (!mounted) {
+          //     return;
+          //   }
+          //   StoriesRoute.openRoute(context, onClose: () {
+          //     ref.read(routeOnboardingProvider.notifier).setShown(true);
+          //     _goToPage(selected);
+          //   });
+          //
+          //   // Stories.showOnboarding(
+          //   //   context,
+          //   //   StoryTypes.route,
+          //   //   'route',
+          //   //   onClose: () async {
+          //   //     await ref.read(routeOnboardingProvider.notifier).setShown(true);
+          //   //     _goToPage(selected);
+          //   //   },
+          //   // );
+          //   return;
+          // }
           _goToPage(selected);
         },
       );

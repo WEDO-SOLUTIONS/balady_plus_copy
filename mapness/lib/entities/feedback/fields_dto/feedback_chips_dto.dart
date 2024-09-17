@@ -26,24 +26,3 @@ class FeedbackChipsDto extends FeedbackBaseDto {
 
   factory FeedbackChipsDto.fromJson(Map<String, dynamic> json) => _$FeedbackChipsDtoFromJson(json);
 }
-
-@JsonSerializable(fieldRename: FieldRename.snake)
-class FeedbackChipsItemDto {
-  final int id;
-  final String value;
-  final String? icon;
-
-  FeedbackChipsItemDto({
-    required this.id,
-    required this.value,
-    this.icon,
-  });
-
-  FeedbackChipsItemEntity toDomain() => FeedbackChipsItemEntity(
-        id: id,
-        label: value,
-        iconUrl: icon,
-      );
-
-  factory FeedbackChipsItemDto.fromJson(Map<String, dynamic> json) => _$FeedbackChipsItemDtoFromJson(json);
-}
