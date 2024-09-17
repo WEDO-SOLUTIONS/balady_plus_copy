@@ -3,6 +3,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
@@ -24,7 +28,12 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
     final isTrafficEnabled = trafficState.status == TrafficControlStatus.enabled;
 
     final parkingState = ref.watch(parkingStateProvider);
-    final parkingNotifier = ref.read(parkingStateProvider.notifier);
+
+    final layersNotifier = ref.watch(layersControlsProvider.notifier);
+    final layers = ref.watch(layersControlsProvider);
+
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+
     final isParkingEnabled = parkingState.visible;
 
     return SizedBox(
@@ -40,8 +49,16 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
           ),
           _ParkingWidget(
             isEnabled: isParkingEnabled,
-            parkingState: parkingNotifier,
             isNoTopBorderRadius: isTrafficVisable,
+            onParkingTap: () {
+              final parkingEnabledFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
+
+              if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
+                sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
+              }
+
+              layersNotifier.toggleParking();
+            },
           )
         ],
       ),
@@ -52,11 +69,11 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
 class _ParkingWidget extends StatelessWidget {
   final bool isEnabled;
   final bool isNoTopBorderRadius;
-  final ParkingState parkingState;
+  final void Function() onParkingTap;
 
   const _ParkingWidget({
     required this.isEnabled,
-    required this.parkingState,
+    required this.onParkingTap,
     this.isNoTopBorderRadius = false,
   });
 
@@ -68,7 +85,7 @@ class _ParkingWidget extends StatelessWidget {
                 bottomRight: Radius.circular(RadiusBorder.ml),
               )
             : null,
-        onTap: isEnabled ? parkingState.hideParking : parkingState.showParking,
+        onTap: onParkingTap,
         child: SizedBox(
           width: 24,
           height: 24,

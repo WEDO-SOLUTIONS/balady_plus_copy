@@ -17,7 +17,6 @@ class StoryFrameTexts {
   /// Constructs a [StoryFrameTexts] instance from an ID.
   factory StoryFrameTexts.fromId(AppLocalizations l10n, String id) => StoryFrameTexts(
         title: _titleFromId(l10n, id),
-        subTitle: l10n.theShortestRoute,
         description: _descriptionFromId(l10n, id),
       );
 

@@ -2,21 +2,22 @@ import 'dart:convert';
 
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/entry_point/data/models/test_model.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'dart:developer' as devtools show log;
 import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/services/services_exports.dart';
-import '../../../../core/utils/constants/remote_config.dart';
-import '../../../_shared_feature_/data/models/response_body_model.dart';
-import '../../entry_point_exports.dart';
-import '../models/get_permission_params_model.dart';
-import '../models/permission_response_model.dart';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
+import 'package:balady_plus/app/features/entry_point/data/models/get_permission_params_model.dart';
+import 'package:balady_plus/app/features/entry_point/data/models/permission_response_model.dart';
 
 abstract class EntryPointRemoteDataSource {
   Future<AuthorizationTokenResponse> authorize();
@@ -52,25 +53,25 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   @override
   Future<AuthorizationTokenResponse> authorize() async {
     try {
-      AuthorizationTokenResponse? response = await _appAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          RemoteConfig.ssoClient,
-          RemoteConfig.ssoLoginUrl,
-          serviceConfiguration: _serviceConfiguration,
-          clientSecret: RemoteConfig.ssoSecret,
-          scopes: [
-            'openid',
-            'profile',
-            'offline_access',
-            'EmployeeAdminstration.Api',
-          ],
-
-          // fawzi add extra pram to login
-          //  additionalParameters: {"appId":"BaladySuperApp","fcmToken":CommonProperties.fcmToken!,"deviceId":CommonProperties.deviceId!}
-        ),
+      final request = AuthorizationTokenRequest(
+        RemoteConfig.ssoClient,
+        RemoteConfig.ssoLoginUrl,
+        serviceConfiguration: _serviceConfiguration,
+        clientSecret: RemoteConfig.ssoSecret,
+        scopes: [
+          'openid',
+          'profile',
+          'offline_access',
+          'EmployeeAdminstration.Api',
+        ],
       );
-      response?.accessToken.actionLog();
-      return response!;
+      AuthorizationTokenResponse? response = await _appAuth.authorizeAndExchangeCode(request);
+      if (response == null) {
+        throw Exception('Response of [authorize] is null. Please check the response. ${request.toString()}');
+      }
+
+      response.accessToken.actionLog();
+      return response;
     } catch (error) {
       throw ServerException(
         error.toString(),
@@ -81,29 +82,32 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   @override
   Future<TokenResponse> refreshToken(String refreshToken) async {
     try {
-      TokenResponse? response = await _appAuth.token(
-        TokenRequest(
-          RemoteConfig.ssoClient,
-          RemoteConfig.ssoLoginUrl,
-          serviceConfiguration: _serviceConfiguration,
-          refreshToken: refreshToken,
-          clientSecret: RemoteConfig.ssoSecret,
-          scopes: [
-            'openid',
-            'profile',
-            'offline_access',
-          ],
-        ),
+      final request = TokenRequest(
+        RemoteConfig.ssoClient,
+        RemoteConfig.ssoLoginUrl,
+        serviceConfiguration: _serviceConfiguration,
+        refreshToken: refreshToken,
+        clientSecret: RemoteConfig.ssoSecret,
+        scopes: [
+          'openid',
+          'profile',
+          'offline_access',
+        ],
       );
+      TokenResponse? response = await _appAuth.token(request);
+      if (response == null) {
+        throw Exception('Response of [refreshToken] is null. Please check the response. ${request.toString()}');
+      }
 
-      return response!;
+      return response;
     } on PlatformException catch (error) {
-      if (error.toString().contains("invalid_grant")) {
+      final errorMessage = error.toString();
+      if (errorMessage.contains("invalid_grant")) {
         sl<EntryPointCubit>().autoLogout();
       }
-      throw ServerException(
-        "",
-      );
+      throw ServerException(errorMessage);
+    } catch (error) {
+      rethrow;
     }
   }
 
@@ -111,33 +115,34 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   Future<SsoUserInfoModel?> getSSOProfile() async {
     Response? response;
     try {
-      response = await webServiceSSo.dio.get(ApiUrl.ssoUserInfo,
-          options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token ?? ""}"}));
+      response = await webServiceSSo.dio.get(
+        ApiUrl.ssoUserInfo,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer ${CommonProperties.token}",
+          },
+        ),
+      );
 
       var data = response.data;
+      if (data == null) {
+        return null;
+      }
 
-      var parsedResult = data != null ? SsoUserInfoModel.fromJson(data) : null;
+      var parsedResult = SsoUserInfoModel.fromJson(data);
 
-      return parsedResult.toFuture();
-    } on DioError catch (error) {
+      return parsedResult;
+    } on DioException catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (_) {}
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: ex.toString(),
-            ),
-            response: response);
-      }
+    } on ServerException catch (e) {
+      devtools.log(e.toString());
+      rethrow;
+    } catch (e) {
+      throw serverException(e, response);
     }
   }
 
@@ -153,33 +158,18 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
           "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
         },
       );
-
-      // var data = response.data["data"]?["result"];
-
-      // var parsedResult = data != null ? data : null;
-      // final decodedResponse =
-      //    ApigeeResponseModel<UpdateDeviceResponseModel>.fromMap(response.data,
-      //        parsedResult: parsedResult);
       return response.data;
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
+    } on ServerException catch (e) {
+      devtools.log(e.toString());
+      rethrow;
     } catch (ex) {
-      if (ex is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (_) {}
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: ex.toString(),
-            ),
-            response: response);
-      }
+      throw serverException(ex, response);
     }
   }
 
@@ -196,33 +186,25 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         },
       );
 
-      var data = response.data["data"]?["result"];
+      final data = response.data["data"]?["result"];
+      if (data == null) {
+        throw ServerException("errors_server_error_2".tr());
+      }
 
-      var parsedResult = data != null ? ForceUpdateResponseModel.fromMap(data) : null;
+      var parsedResult = ForceUpdateResponseModel.fromMap(data);
 
-      //final decodedResponse =
-      //  ApigeeResponseModel<ForceUpdateResponseModel>.fromMap(response.data,
-      //    parsedResult: parsedResult);
-      return parsedResult!.toFuture();
-    } on DioError catch (error) {
+      return parsedResult;
+    } on DioException catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
+    } on ServerException catch (e) {
+      devtools.log(e.toString());
+      rethrow;
     } catch (ex) {
-      if (ex is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: ex.toString(),
-            ),
-            response: response);
-      }
+      throw serverException(ex, response);
     }
   }
 
@@ -237,43 +219,45 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         ),
       );
 
-      return response!;
+      if (response == null) {
+        throw ServerException('Response of [endSession] is null. Please check the response.');
+      }
+
+      return response;
     } catch (error) {
-      throw ServerException("", errorCode: error.toString());
+      throw ServerException(error.toString(), errorCode: error.toString());
     }
   }
 
   @override
   Future<String?> getCookie() async {
+    const key = 'set-cookie';
     Response? response;
     try {
-      response = await webServiceSSo.dio.get(ApiUrl.ssoUserCookie,
-          options: Options(headers: {"Authorization": "Bearer ${CommonProperties.token ?? ""}"}));
-      String? cookie;
-      if (response.headers['set-cookie']?.toString() != null) {
-        cookie = response.headers['set-cookie'].toString();
+      response = await webServiceSSo.dio.get(
+        ApiUrl.ssoUserCookie,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer ${CommonProperties.token}",
+          },
+        ),
+      );
+      if (response.headers.map.containsKey(key)) {
+        final value = response.headers.map[key];
+        return value.toString();
       }
-
-      return cookie;
-    } on DioError catch (error) {
+      return null;
+    } on DioException catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
+    } on ServerException catch (e) {
+      devtools.log(e.toString());
+      rethrow;
     } catch (ex) {
-      if (ex is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (_) {}
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: ex.toString(),
-            ),
-            response: response);
-      }
+      throw serverException(ex, response);
     }
   }
 
@@ -281,64 +265,51 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   Future<ApigeeTokenResponse> getAPIgeeToken() async {
     Response? response;
     try {
-      String username = RemoteConfig.apigeeUsername;
-      String password = RemoteConfig.apigeePassword;
-      String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+      final username = RemoteConfig.apigeeUsername;
+      final password = RemoteConfig.apigeePassword;
+      final basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
-      response = await webService.dio.post(ApiUrl.apigeeToken,
-          options: Options(
-            headers: {"Content-Type": "application/x-www-form-urlencoded", "Authorization": basicAuth},
-          ),
-          data: {"grant_type": "client_credentials"});
+      response = await webService.dio.post(
+        ApiUrl.apigeeToken,
+        options: Options(
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": basicAuth,
+          },
+        ),
+        data: {
+          "grant_type": "client_credentials",
+        },
+      );
 
       ApigeeTokenResponseModel apigeeResponse = ApigeeTokenResponseModel.fromMap(response.data);
       return apigeeResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
+    } on ServerException catch (e) {
+      devtools.log(e.toString());
+      rethrow;
     } catch (ex) {
-      if (ex is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (_) {}
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: ex.toString(),
-            ),
-            response: response);
-      }
+      throw serverException(ex, response);
     }
   }
 
   @override
   Future getDataTest() async {
     try {
-      final response = await webService.dio.get(
-        ApiUrl.dashboardCards,
-      );
+      final response = await webService.dio.get(ApiUrl.dashboardCards);
 
       var data = response.data;
       data.toString().successLog();
 
-      /*  final result =
-          ApigeeResponseModel<List<TestModel>>.fromMap(data).data?.result;
-   
-      List<TestModel>? d = result != null
-          ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
-          : null;
-
- ;*/
-
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      List<TestModel>? d = result != null ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x))) : null;
 
       return result.toFuture();
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       error.errorLog();
       throw ServerException(
         error.toString(),
@@ -357,57 +328,62 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
   @override
   Future<PermissionResponseModel> getEkramRules({required GetPermissionParamsModel params}) async {
-    Response response;
+    Response? response;
 
     try {
       response = await webService.dio.post(
         ApiUrl.ekramRules,
         data: params.toMap(),
       );
-      print(response.data["data"]);
+      devtools.log(response.data["data"]);
       var data = response.data["data"]?["result"];
-      var parsedResult = data != null ? PermissionResponseModel.fromMap(data) : null;
-
-      return parsedResult!.toFuture();
-    } on DioError catch (error) {
-      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
-        throw ServerException(("errors_server_error_2").tr());
+      if (data == null) {
+        throw ServerException("errors_server_error_2".tr());
       }
+      var parsedResult = PermissionResponseModel.fromMap(data);
+
+      return parsedResult;
+    } on DioException catch (error) {
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
+    } on ServerException catch (e) {
+      devtools.log(e.toString());
+      rethrow;
+    } catch (ex) {
+      devtools.log(ex.toString());
+      throw serverException(ex, response);
     }
   }
 
   @override
   Future<String> getPaymentURL({required PaymentRequest params}) async {
-    Response response;
+    Response? response;
 
     try {
       response = await webService.dio.post(
         ApiUrl.paymentURL,
         data: params.toMap(),
       );
-      print(response);
-      print(response.data["data"]);
+      devtools.log(response.toString());
+      devtools.log(response.data["data"]);
       return response.data["data"]?["result"];
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
+    } on ServerException catch (e) {
+      devtools.log(e.toString());
+      rethrow;
     } catch (ex) {
-      print(ex);
-      if (ex is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
-        throw ServerException(("errors_server_error_2").tr());
-      }
+      devtools.log(ex.toString());
+      throw serverException(ex, response);
     }
   }
+
+  // HANDLERS
+
+  Exception serverException(Object ex, Response? response) => ServerException(
+        "errors_server_error_2".tr(),
+        exception: APIException(
+          errorMessage: ex.toString(),
+        ),
+        response: response,
+      );
 }
