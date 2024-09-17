@@ -46,7 +46,7 @@ class FeedbackSelectOptionsWidget extends StatelessWidget {
                 final item = categoriesValue[index];
                 return FeedbackTypeItemWidget(
                   title: item.name,
-                  icon: item.icon,
+                  iconUrl: item.iconUrl,
                   onTap: () => onTap(
                     item,
                     poiDataValue.id?.objectId,

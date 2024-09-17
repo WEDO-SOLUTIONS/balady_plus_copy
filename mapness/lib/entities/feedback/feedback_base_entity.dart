@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mapness/entities/feedback/feedback_icon.dart';
 import 'package:mapness/shared/lib/weekday_entity.dart';
 
 part 'fields_entity/feedback_bool_toggle_entity.dart';
