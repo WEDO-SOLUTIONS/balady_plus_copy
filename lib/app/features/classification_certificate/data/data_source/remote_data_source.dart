@@ -1,8 +1,7 @@
-
-
 import 'package:balady_plus/app/features/classification_certificate/data/model/classification_certificate_list.dart';
+import 'package:balady_plus/app/features/classification_certificate/data/model/details/details_request_model.dart';
 
-import '../model/classification_certificate_details_model.dart';
+import '../model/details/classification_certificate_details_model.dart';
 import '../model/search_request/search_request_model.dart';
 
 abstract class ClassificationCertificateSearchRemoteDataSource {
@@ -10,6 +9,5 @@ abstract class ClassificationCertificateSearchRemoteDataSource {
 }
 
 abstract class ClassificationCertificateDetailsRemoteDataSource {
-  Future<ClassificationCertificateDetailsModel> getDetailsClassificationCertificate(
-      int licenseNumber, String date);
+  Future<ClassificationCertificateDetails> getDetailsClassificationCertificate(DetailsRequestModel params);
 }

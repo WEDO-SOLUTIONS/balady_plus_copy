@@ -5,7 +5,7 @@ import 'package:balady_plus/app/features/classification_certificate/data/model/s
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entity/classification_certificate_list_entity.dart';
-import '../../../domain/use_cases/get_construction_license_inquery_data.dart';
+import '../../../domain/use_cases/classification_certificate_use_cases.dart';
 import 'classification_certificate_list_state.dart';
 
 class ClassificationCertificateListCubit

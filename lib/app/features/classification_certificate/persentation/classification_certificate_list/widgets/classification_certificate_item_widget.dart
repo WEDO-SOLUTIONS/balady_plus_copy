@@ -16,9 +16,7 @@ class ClassificationCertificateItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-
-      },
+      onTap: () {},
       child: Card(
         margin: const EdgeInsets.only(top: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -31,17 +29,16 @@ class ClassificationCertificateItemWidget extends StatelessWidget {
                 children: [
                   SvgPicture.asset(IconPath.newOfficeIcon),
                   const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(classificationCertificate.facilityName),
-                  ),
+                  Flexible(child: Text(classificationCertificate.facilityName)),
                   Chip(
                     padding: EdgeInsets.zero,
                     shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        side: BorderSide(
-                          width: 1,
-                          color: Colors.blueAccent,
-                        )),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      side: BorderSide(
+                        width: 1,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
                     backgroundColor: Colors.blueAccent.withAlpha(70),
                     label: Text(
                       'التصنيف A',

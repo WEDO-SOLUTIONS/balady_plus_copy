@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart' show Either;
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
 
+import '../../data/model/details/details_request_model.dart';
 import '../../data/model/search_request/search_request_model.dart';
 import '../entity/classification_certificate_details_entity.dart';
 import '../entity/classification_certificate_list_entity.dart';
@@ -17,3 +18,15 @@ class SearchClassificationCertificateUseCases extends UseCase<ClassificationCert
     return await repository.searchClassificationCertificate(params);
   }
 }
+
+
+class GetDetailsClassificationCertificateUseCases extends UseCase<ClassificationCertificateDetailsEentity, DetailsRequestModel> {
+  final DetailsClassificationCertificateRepository repository;
+
+  GetDetailsClassificationCertificateUseCases({required this.repository});
+  @override
+  Future<Either<Failure, ClassificationCertificateDetailsEentity>> call(DetailsRequestModel params) async {
+    return await repository.getDetailsClassificationCertificate(params);
+  }
+}
+
