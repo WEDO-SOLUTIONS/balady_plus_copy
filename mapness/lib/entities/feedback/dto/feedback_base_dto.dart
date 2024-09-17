@@ -11,6 +11,7 @@ part '../fields_dto/feedback_text_dto.dart';
 part '../fields_dto/feedback_unknown_dto.dart';
 part '../fields_dto/feedback_chips_dto.dart';
 part '../fields_dto/feedback_schedule_dto.dart';
+part '../fields_dto/feedback_chips_item_dto.dart';
 
 sealed class FeedbackBaseDto {
   final String id;
