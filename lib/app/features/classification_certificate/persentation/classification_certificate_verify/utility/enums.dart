@@ -48,28 +48,28 @@ enum NormalSearchByType {
     title: "certificate_number",
     hintText: "enter_number",
     validatorMessage: "certificate_number_validator",
-    regex: r'(?=.*?[0-9]).{4,10}',
+    regex: r'(?=.*?[0-9]).{8,10}',
     keyboardType: TextInputType.number,
   ),
   byFacilityName(
     title: "the_contractor_engineering_office",
     hintText: "enter_the_contractor_office_name",
     validatorMessage: "the_contractor_engineering_office_validator",
-    regex: r"[a-zA-Z\u0621-\u064A]{3,20}",
+    regex: r"[a-zA-Z\u0621-\u064A]{2,20}",
     keyboardType: TextInputType.text,
   ),
   byCRLICNumber(
     title: "commercial_registration_engineering_office_license",
     hintText: "enter_commercial_registration_engineering_office_license",
     validatorMessage: "commercial_registration_engineering_office_license_validator",
-    regex: r'(?=.*?[0-9]).{4,10}',
+    regex: r'(?=.*?[0-9]).{10}',
     keyboardType: TextInputType.number,
   ),
   byEstablishmentId(
     title: "establishment_Id",
     hintText: "enter_establishment_Id",
     validatorMessage: "establishment_Id_validator",
-    regex: r'(?=.*?[0-9]).{4,10}',
+    regex: r'(?=.*?[0-9]).{10}',
     keyboardType: TextInputType.number,
   );
 
