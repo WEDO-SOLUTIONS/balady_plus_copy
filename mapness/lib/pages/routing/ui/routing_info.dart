@@ -17,8 +17,10 @@ import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
@@ -55,6 +57,16 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         });
       }
     }
+
+    final size = ref.read(mediaQueryInfoProvider)?.size;
+    ref.read(cameraPositionProvider.notifier).setPadding(
+          CameraSetPaddingMessage(
+            leftPadding: 60,
+            topPadding: 120,
+            rightPadding: 240,
+            bottomPadding: (size?.height ?? 0 / 3).ceil(),
+          ),
+        );
   }
 
   @override

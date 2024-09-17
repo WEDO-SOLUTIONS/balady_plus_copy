@@ -109,7 +109,7 @@ class SoundSettings extends _$SoundSettings {
     final prefsVoiceInstructionIndex = sharedPrefs.getInt(MapnessConstants.voiceInstructionIndexPrefsKey);
     final prefsMuffleOtherSounds = sharedPrefs.getBool(MapnessConstants.muffleOtherSoundsPrefsKey);
     final prefsPromptsVolumeIndex = sharedPrefs.getInt(MapnessConstants.promptsVolumeIndexPrefsKey);
-    final prefsBackgroundNavigation = sharedPrefs.getBool(MapnessConstants.backgroundNavigationPrefsKey);
+    const prefsBackgroundNavigation = false;
     final prefsRoadCameras = sharedPrefs.getBool(MapnessConstants.roadCamerasPrefsKey);
     final prefsOverSpeeding = sharedPrefs.getBool(MapnessConstants.overSpeedingPrefsKey);
 
