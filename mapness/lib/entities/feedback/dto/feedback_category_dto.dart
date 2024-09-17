@@ -6,7 +6,7 @@ part 'feedback_category_dto.g.dart';
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class FeedbackCategoryDto {
-  final String? id;
+  final String id;
   final String name;
   final String? icon;
 
@@ -15,7 +15,7 @@ class FeedbackCategoryDto {
   FeedbackCategoryDto({
     required this.name,
     required this.fields,
-    this.id,
+    required this.id,
     this.icon,
   });
 
@@ -28,7 +28,7 @@ class FeedbackCategoryDto {
   /// convert to domain
   FeedbackCategoryEntity toDomain() => FeedbackCategoryEntity(
         // TODO: remove this when backend is ready
-        id: id ?? name,
+        id: id,
         name: name,
         fields: fields.map((e) => e.toDomain()).toList(),
         iconUrl: icon,
