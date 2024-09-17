@@ -13,10 +13,10 @@ class FeedbackChipsItemDto {
   });
 
   FeedbackChipsItemEntity toDomain() => FeedbackChipsItemEntity(
-    id: id,
-    label: value,
-    iconUrl: icon,
-  );
+        id: id,
+        label: value,
+        iconUrl: icon,
+      );
 
   factory FeedbackChipsItemDto.fromJson(Map<String, dynamic> json) => _$FeedbackChipsItemDtoFromJson(json);
 
