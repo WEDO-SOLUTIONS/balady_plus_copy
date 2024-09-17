@@ -23,6 +23,8 @@ class FeedbackImages extends StatelessWidget {
     super.key,
   });
 
+  bool get isAddImageButtonVisible => (field.value ?? []).length < 10;
+
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,17 +34,18 @@ class FeedbackImages extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _Button(onTap: () async {
-                final permission = await Permission.photos.request();
-                if (permission.isDenied || permission.isPermanentlyDenied) {
-                  await showPermissionDeniedDialog(context);
-                  return;
-                }
-                final image = await _pickedImage();
-                if (image != null) {
-                  onValueChange([...field.value ?? [], image]);
-                }
-              }),
+              if (isAddImageButtonVisible)
+                _Button(onTap: () async {
+                  final permission = await Permission.photos.request();
+                  if (permission.isDenied || permission.isPermanentlyDenied) {
+                    await showPermissionDeniedDialog(context);
+                    return;
+                  }
+                  final image = await _pickedImage();
+                  if (image != null) {
+                    onValueChange([...field.value ?? [], image]);
+                  }
+                }),
               ...(field.value ?? []).map(
                 (img) {
                   final fileType = img.path.split('.').last.toLowerCase();
