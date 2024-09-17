@@ -7,17 +7,63 @@ import 'package:balady_plus/app/features/classification_certificate/domain/entit
 
 import 'package:dartz/dartz.dart';
 import '../../domain/repository/classification_certificate_repository.dart';
+import '../model/lookups/classification_certificate_lookups_model.dart';
+import '../model/search_request/activities_request_model.dart';
+import '../model/search_request/lookups_request_model.dart';
 import '../model/search_request/search_request_model.dart';
 
 class ClassificationCertificateRepositoryImplementation
     implements
         ClassificationCertificateSearchRepository,
-        DetailsClassificationCertificateRepository {
+        DetailsClassificationCertificateRepository,
+        ClassificationCertificateLookupsRepository{
   final ClassificationCertificateRemoteDataSource remoteDataSource;
 
   ClassificationCertificateRepositoryImplementation({
     required this.remoteDataSource,
   });
+
+  @override
+  Future<Either<Failure, ClassificationCertificateLookupsModel>>
+  getLookups(LookupsRequestModel params) async {
+    try {
+      final data =
+      await remoteDataSource.getLookups(params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>>
+  getActivitiesBySectors(ActivitiesRequestModel params) async {
+    try {
+      final data =
+      await remoteDataSource.getActivitiesBySectors(params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 
   @override
   Future<Either<Failure, ClassificationCertificateList>>
@@ -42,10 +88,10 @@ class ClassificationCertificateRepositoryImplementation
 
   @override
   Future<Either<Failure, ClassificationCertificateDetailsEentity>>
-      getDetailsClassificationCertificate(DetailsRequestModel params) async {
+  getDetailsClassificationCertificate(DetailsRequestModel params) async {
     try {
       final data =
-          await remoteDataSource.getDetailsClassificationCertificate(params);
+      await remoteDataSource.getDetailsClassificationCertificate(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

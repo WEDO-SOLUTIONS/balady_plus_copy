@@ -17,21 +17,37 @@ class ClassificationCertificateInjectionContainer {
     //////////////////////////////////////////////////////////////////////
     // Repository
     sl.registerLazySingleton<ClassificationCertificateRepositoryImplementation>(
-          () => ClassificationCertificateRepositoryImplementation(
-            remoteDataSource: sl<ClassificationCertificateRemoteDataSource>(),
+      () => ClassificationCertificateRepositoryImplementation(
+        remoteDataSource: sl<ClassificationCertificateRemoteDataSource>(),
       ),
     );
     //////////////////////////////////////////////////////////////////////
     // Use Cases
+    sl.registerLazySingleton<GetLookupsClassificationCertificateUseCases>(
+      () => GetLookupsClassificationCertificateUseCases(
+        repository: sl<ClassificationCertificateRepositoryImplementation>()
+            as ClassificationCertificateLookupsRepository,
+      ),
+    );
+
+    sl.registerLazySingleton<GetActivitiesClassificationCertificateUseCases>(
+      () => GetActivitiesClassificationCertificateUseCases(
+        repository: sl<ClassificationCertificateRepositoryImplementation>()
+            as ClassificationCertificateLookupsRepository,
+      ),
+    );
+
     sl.registerLazySingleton<SearchClassificationCertificateUseCases>(
-          () => SearchClassificationCertificateUseCases(
-          repository: sl<ClassificationCertificateRepositoryImplementation>() as ClassificationCertificateSearchRepository,
+      () => SearchClassificationCertificateUseCases(
+        repository: sl<ClassificationCertificateRepositoryImplementation>()
+            as ClassificationCertificateSearchRepository,
       ),
     );
 
     sl.registerLazySingleton<GetDetailsClassificationCertificateUseCases>(
-          () => GetDetailsClassificationCertificateUseCases(
-        repository: sl<ClassificationCertificateRepositoryImplementation>() as DetailsClassificationCertificateRepository,
+      () => GetDetailsClassificationCertificateUseCases(
+        repository: sl<ClassificationCertificateRepositoryImplementation>()
+            as DetailsClassificationCertificateRepository,
       ),
     );
   }

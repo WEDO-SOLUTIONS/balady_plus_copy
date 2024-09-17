@@ -31,9 +31,18 @@ class SelectNormalSearchTypeClassificationCertificateState extends Classificatio
   List<Object?> get props => [normalSearchType];
 }
 
-class GoSearchScreenClassificationCertificateState extends ClassificationCertificateVerifyEvents {
+// class GoSearchScreenClassificationCertificateState extends ClassificationCertificateVerifyEvents {
+//
+//   const GoSearchScreenClassificationCertificateState();
+//
+//   @override
+//   List<Object?> get props => [];
+// }
 
-  const GoSearchScreenClassificationCertificateState();
+
+class GetLookupsClassificationCertificateState extends ClassificationCertificateVerifyEvents {
+
+  const GetLookupsClassificationCertificateState();
 
   @override
   List<Object?> get props => [];

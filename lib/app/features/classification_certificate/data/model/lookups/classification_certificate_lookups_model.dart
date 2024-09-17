@@ -33,11 +33,11 @@ class ClassificationCertificateLookupsModel  {
       );
 
   factory ClassificationCertificateLookupsModel.fromJson(Map<String, dynamic> json) => ClassificationCertificateLookupsModel(
-    types: List<ClassificationCertificateLookupModel>.from(json["types"].map((x) => ClassificationCertificateLookupModel.fromJson(x))),
-    sectors: List<ClassificationCertificateLookupModel>.from(json["sectors"].map((x) => ClassificationCertificateLookupModel.fromJson(x))),
-    classificationCertificateLookups: List<ClassificationCertificateLookupModel>.from(json["ClassificationCertificateLookups"].map((x) => ClassificationCertificateLookupModel.fromJson(x))),
-    services: List<ClassificationCertificateLookupModel>.from(json["services"].map((x) => ClassificationCertificateLookupModel.fromJson(x))),
-    cities: List<CityLookupsModel>.from(json["cities"].map((x) => CityLookupsModel.fromJson(x))),
+    types: List<ClassificationCertificateLookupModel>.from(json["types"]['items'].map((x) => ClassificationCertificateLookupModel.fromJson(x))),
+    sectors: List<ClassificationCertificateLookupModel>.from(json["sectors"]['items'].map((x) => ClassificationCertificateLookupModel.fromJson(x))),
+    classificationCertificateLookups: List<ClassificationCertificateLookupModel>.from(json["degrees"]['items'].map((x) => ClassificationCertificateLookupModel.fromJson(x))),
+    services: List<ClassificationCertificateLookupModel>.from(json["services"]['items'].map((x) => ClassificationCertificateLookupModel.fromJson(x))),
+    cities: List<CityLookupsModel>.from(json["cities"]['items'].map((x) => CityLookupsModel.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {

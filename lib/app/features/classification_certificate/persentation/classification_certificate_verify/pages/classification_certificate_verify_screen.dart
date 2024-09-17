@@ -43,8 +43,10 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
                 buildWhen: (state, stateNew) {
                   return stateNew
                           is NormalSearchClassificationCertificateState ||
-                      stateNew is AdvancedMethodClassificationCertificateState;
+                      stateNew is AdvancedMethodClassificationCertificateState ||
+                      stateNew is  AdvancedMethodNotWorkingClassificationCertificateState;
                 },
+
                 builder: (contextBloc, state) {
                   return Card(
                     color: Colors.grey.shade200,
@@ -76,9 +78,8 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
                   child: BlocBuilder<ClassificationCertificateVerifyBloc,
                       ClassificationCertificateVerifyState>(
                     builder: (contextBloc, state) {
-                     Widget? child;
-                      if (state
-                          is NormalSearchClassificationCertificateState) {
+                      Widget? child;
+                      if (state is NormalSearchClassificationCertificateState) {
                         child = NormalSearchListWidget(state: state);
                       }
                       if (state
@@ -89,8 +90,22 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
                           is AdvancedMethodClassificationCertificateState) {
                         child = AdvancedSearchWidget(state: state);
                       }
+
+                      if (state
+                          is AdvancedMethodNotWorkingClassificationCertificateState) {
+                        return const Column(
+                          children: [
+                            Text(
+                              "the_advanced_search_not_working_tray_agin_later",
+                            ),
+                          ],
+                        );
+                      }
+
                       return Form(
-                        key: contextBloc.read<ClassificationCertificateVerifyBloc>().formKey,
+                        key: contextBloc
+                            .read<ClassificationCertificateVerifyBloc>()
+                            .formKey,
                         child: child ?? const SizedBox(),
                       );
                     },
