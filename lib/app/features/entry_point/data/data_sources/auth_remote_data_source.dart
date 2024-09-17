@@ -335,7 +335,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         ApiUrl.ekramRules,
         data: params.toMap(),
       );
-      print(response.data["data"]);
+      devtools.log(response.data["data"]);
       var data = response.data["data"]?["result"];
       if (data == null) {
         throw ServerException("errors_server_error_2".tr());
