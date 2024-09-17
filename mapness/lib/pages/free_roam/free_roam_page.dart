@@ -202,46 +202,55 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Padding(
-                  padding: padding,
-                  child: AnimatedOpacity(
-                      opacity: isControlsActive ? 1 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: const TrafficParkingControl()),
-                ),
-                const Spacer(),
-                Padding(
-                  padding: padding,
+                Expanded(
                   child: AnimatedOpacity(
                     opacity: isControlsActive ? 1 : 0,
-                    duration: const Duration(milliseconds: 150),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IndoorControl(),
-                        ZoomControl(),
-                      ],
+                    duration: const Duration(milliseconds: 250),
+                    child: IgnorePointer(
+                      ignoring: !isControlsActive,
+                      child: GestureDetector(
+                        onTap: () {
+                          timer?.cancel();
+                          timer = null;
+                          wasSetActive = true;
+                          isControlsActive = true;
+                          startControlsDisapearTimer();
+                        },
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: padding,
+                              child: TrafficParkingControl(),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: padding,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IndoorControl(),
+                                  ZoomControl(),
+                                ],
+                              ),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: padding,
+                              child: CompassControl(),
+                            ),
+                            SizedBox(height: 8),
+                            Padding(
+                              padding: padding,
+                              child: FollowControl(),
+                            ),
+                            SizedBox(height: 12),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                const Spacer(),
-                Padding(
-                  padding: padding,
-                  child: AnimatedOpacity(
-                      opacity: isControlsActive ? 1 : 0,
-                      duration: const Duration(milliseconds: 150),
-                      child: const CompassControl()),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: padding,
-                  child: AnimatedOpacity(
-                    opacity: isControlsActive ? 1 : 0,
-                    duration: const Duration(milliseconds: 150),
-                    child: const FollowControl(),
-                  ),
-                ),
-                const SizedBox(height: 12),
                 Center(
                   child: RoadPanel(
                     isLoading: isLoading,
@@ -256,38 +265,21 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
         ),
       );
 
-  // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
-  // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
-  Future<void> _endTrip(VoidCallback action) async {
-    if (!mounted) {
-      return;
-    }
-    final dgisController = ref.read(dgisControllerProvider);
-    await dgisController.value?.freeRoamController.stop();
-    await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
-
-    await _parkingCheck();
-    action();
-  }
-
   // Show the home page after the trip is finished
   Future<void> _endTripAndShowHome() async {
-    if (!mounted) {
-      return;
-    }
-
+    final dgisController = ref.read(dgisControllerProvider);
     Metrics.logEventAdvanced(
       MetricsConstants.navigationKeys.endTripAndShowHome,
       group: MetricsConstants.navigationTag,
       action: MetricAction.tap.toString(),
     );
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
-
-    await _endTrip(() {
-      if (context.mounted) {
-        const LandingRoute().go(context);
-      }
-    });
+    await dgisController.value?.freeRoamController.stop();
+    await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
+    await _parkingCheck();
+    if (mounted && context.mounted) {
+      const LandingRoute().go(context);
+    }
   }
 
   /// If I enable parking during [FreeRoam], after the check is completed they are hidden if hidden from [Layers].
