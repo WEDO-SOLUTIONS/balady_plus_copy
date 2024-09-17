@@ -18,7 +18,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     as EtmamCommonProperties hide Log;
-import '../../../../core/remote_services/web_service.dart' as web;
+import '../../../../core/remote_services/pega_web_service.dart' as web;
 
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/errors/exceptions.dart';
@@ -44,7 +44,7 @@ import '../models/compliance_gis_resopnseـmodel.dart';
 import '../models/complinace_licenses_response_model.dart';
 import '../models/save_contract_info_request.dart';
 import '../models/save_location_compliance_request.dart';
-import '../../../../core/remote_services/web_service.dart' as web;
+import '../../../../core/remote_services/pega_web_service.dart' as web;
 import '../models/upload_dms_attachment_response.dart';
 
 abstract class CreateComplianceRemoteDataSource {
@@ -1084,7 +1084,7 @@ class CreateComplianceRemoteDataSourceImpl
       {required ComplinaceAttachmentRequest params}) async {
     final mimeType = lookupMimeType(params.attahment.filePath ?? "");
 
-    final body = await locator<web.WebService>().uploadFileSSO(
+    final body = await locator<web.PegaWebService>().uploadFileSSO(
       ApiUrl.complianceAttachment(
           params.requestId.toString(), params.attahment.id),
       base64: base64Decode(params.attahment.base64 ?? ""),
@@ -1313,7 +1313,7 @@ class CreateComplianceRemoteDataSourceImpl
 
   @override
   Future<Uint8List?> downLoadCertificate({required String params}) async {
-    final body = await locator<web.WebService>()
+    final body = await locator<web.PegaWebService>()
         .getNewApigeeRequestWithoutUTF(ApiUrl.downLoadBuildingLicense(params));
     bool state = body['state'];
     dynamic data = body['data'];

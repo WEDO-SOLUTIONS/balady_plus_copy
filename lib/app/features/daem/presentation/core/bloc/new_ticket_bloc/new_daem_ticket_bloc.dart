@@ -203,6 +203,7 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
             endUserLocation: endUserLocation,
             baladiah: baladiah,
             description: description);
+
     emitter(state.copyWith(status: BlocStatus.loaded));
     if (response.item1 != null &&
         response.item1! &&

@@ -198,8 +198,7 @@ class ApiUrl {
 
 // Pega Incdients
 
-  static const String IncidentDownloadFile =
-      '/prweb/PRRestService/FrontUserBalady/V1/DownloadFile';
+
 
   static const String IncidentRetrieveData =
       '/prweb/PRRestService/FrontUserBalady/V1/RetrieveData';
@@ -207,56 +206,30 @@ class ApiUrl {
   static const String IncidentCreate =
       '/prweb/PRRestService/FrontUserBalady/V1/CreateIncidentRequest';
 
-  static const String IncidentUploadFile =
-      '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
 
-  static const String MSRCreate =
-      '/prweb/PRRestService/FrontUserBalady/V1/CreateMuncipalServiceRequest';
 
-  static const String MSRRetrieveMSRData =
-      '/prweb/PRRestService/FrontUserBalady/V1/RetrieveMSRData';
 
-  static const String INQMainClassifications =
-      '/prweb/PRRestService/FrontUserBalady/V1/GetMainClassifications';
-  static const String INQSubClassifications =
-      '/prweb/PRRestService/FrontUserBalady/V1/GetSubClassifications';
 
-  static const String INQSPLClassifications =
-      '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassifications';
 
-  static const String INQAllSPLClassifications =
-      '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassificationsByType';
 
-  static const String INQMainAndSubClassifications =
-      '/prweb/PRRestService/FrontUserBalady/V1/GetMainAndSubClassificationsForSpecialClassification';
 
-  static const String INQCreate =
-      '/prweb/PRRestService/FrontUserBalady/V1/CreateInquiryRequest';
+
+
+
 
   ///! Daem
 
-  static const String DaemRetrieveData =
-      '/prweb/PRRestService/FrontUserBalady/V1/RetrieveTSRData';
-  static const String DaemCreateTikcet =
-      '/prweb/PRRestService/FrontUserBalady/V1/CreateDaemTicket';
-  static const String DaemUploadFile =
-      '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
+
+
+
 
 //! CRM
 
-  static const String crmRequestsList =
-      '/prweb/PRRestService/FrontUserBalady/V1/GetIncidentRequests';
-  static const String IncidentRequestDetails =
-      '/prweb/PRRestService/FrontUserBalady/V1/FetchIncidentRequest';
-
-  static const String MSRRequestDetails =
-      '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
 
   static const String IncidentEvaluate =
       "/prweb/PRRestService/FrontUserBalady/V1/SubmitPetitionerEvaluation";
 
-  static const String FetchInquiryRequest =
-      '/prweb/PRRestService/FrontUserBalady/V1/FetchInquiryRequest';
+
 
   static const requestDetails =
       'v1/damaged-vehicle-mobile/incident-request-details';
@@ -576,4 +549,70 @@ class ApiUrl {
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//CRM APIgee
+
+  static const String crmRequestsList ='/v1/crm-services/mobile/incidents';
+  // '/prweb/PRRestService/FrontUserBalady/V1/GetIncidentRequests';
+
+
+  static const String IncidentRequestDetails =  '/v1/crm-services/mobile/fetch-incidents';
+  //'/prweb/PRRestService/FrontUserBalady/V1/FetchIncidentRequest';
+
+
+  static const String FetchMuncipalServiceRequest = '/v1/crm-services/mobile/fetch-municipalities';
+// '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
+
+
+  static const String FetchInquiryRequest = '/v1/crm-services/mobile/fetch-inquiry';
+// '/prweb/PRRestService/FrontUserBalady/V1/FetchInquiryRequest';
+
+
+  static const String DaemRetrieveData = '/v1/crm-services/mobile/retrieve-tsr-data';
+     // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveTSRData';
+
+
+  static const String DaemCreateTikcet = '/v1/crm-services/mobile/create-daem-ticket';
+    //  '/prweb/PRRestService/FrontUserBalady/V1/CreateDaemTicket';
+
+  static const String MSRRetrieveMSRData = '/v1/crm-services/mobile/retrieve-msr-data';
+     // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveMSRData';
+
+
+  static const String MSRCreate = '/v1/crm-services/mobile/create-muncipal-service';
+      //'/prweb/PRRestService/FrontUserBalady/V1/CreateMuncipalServiceRequest';
+
+  static const String INQMainAndSubClassifications = '/v1/crm-services/mobile/main-and-sub-for-special-classification';
+    //  '/prweb/PRRestService/FrontUserBalady/V1/GetMainAndSubClassificationsForSpecialClassification';
+
+  static const String INQAllSPLClassifications = '/v1/crm-services/mobile/special-classifications-by-type';
+      //'/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassificationsByType';
+
+  static const String INQCreate = '/v1/crm-services/mobile/create-inquiry';
+     // '/prweb/PRRestService/FrontUserBalady/V1/CreateInquiryRequest';
+
+
+  static const String IncidentDaemUploadFile = '/v1/crm-services/mobile/stream/upload';
+     // '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
+
+
+  static const String IncidentDownloadFile = '/v1/crm-services/mobile/download-file';
+    //  '/prweb/PRRestService/FrontUserBalady/V1/DownloadFile';
+
+
+
+
+
+  ///////////// not used apis
+  // static const String INQMainClassifications =
+  //     '/prweb/PRRestService/FrontUserBalady/V1/GetMainClassifications';
+  // static const String INQSubClassifications =
+  //     '/prweb/PRRestService/FrontUserBalady/V1/GetSubClassifications';
+  //
+  // static const String INQSPLClassifications =
+  //     '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassifications';
+
 }

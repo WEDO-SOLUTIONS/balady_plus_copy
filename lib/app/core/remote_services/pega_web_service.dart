@@ -16,7 +16,7 @@ import '../utils/constants/remote_config.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     as EtmamCommonProperties hide Log;
 
-class WebService {
+class PegaWebService {
   static String baseURL = RemoteConfig.apigeeURL;
   static String pegaBaseURL = RemoteConfig.pegaURL;
 
