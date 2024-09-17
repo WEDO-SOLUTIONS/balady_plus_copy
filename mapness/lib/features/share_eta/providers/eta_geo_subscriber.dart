@@ -92,14 +92,9 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       if (etaInfo.type == EtaType.geolocation) {
         await _processDrawUserMarker();
 
-        _lastActiveMessageTime = DateTime.now().toUtc();
+        unawaited(_processMoveCameraToUser());
 
-        // We need to wait some time, because current location need to initialize
-        unawaited(
-          Future.delayed(const Duration(seconds: 2), () {
-            _processMoveCameraToUser();
-          }),
-        );
+        _lastActiveMessageTime = DateTime.now().toUtc();
       } else if (etaInfo.type == EtaType.streamMetadata) {
         _isRoutePresent = false;
         _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
@@ -234,26 +229,43 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     }
   }
 
-  void _processMoveCameraToUser() {
+  Future<void> _processMoveCameraToUser() async {
     ProviderSubscription? locationProviderSubscription;
+
     if (!_isFirstLocationFetch) {
       return;
     }
-    _isFirstLocationFetch = false;
+
+    final Completer _locationCompleter = Completer();
+
     locationProviderSubscription = ref.listen(locationProvider, (_, __) {
+      _locationCompleter.complete();
+
       locationProviderSubscription?.close();
+    });
 
-      final (etaInfo, _) = state;
-      if (etaInfo == null) {
-        return;
+    Future.delayed(const Duration(seconds: 2), () {
+      if (!_locationCompleter.isCompleted) {
+        _locationCompleter.complete();
       }
+    });
 
-      /// Move camera to user position
-      final payload = etaInfo.payload as EtaInfoPayload;
-      if (payload.lat == null || payload.lon == null) {
-        return;
-      }
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
+    await _locationCompleter.future;
+
+    _isFirstLocationFetch = false;
+
+    final (etaInfo, _) = state;
+    if (etaInfo == null) {
+      return;
+    }
+
+    /// Move camera to user position
+    final payload = etaInfo.payload as EtaInfoPayload;
+    if (payload.lat == null || payload.lon == null) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
         await ref.read(cameraPositionProvider.notifier).animateTo(
               CameraPositionMessage(
                 point: GeoPointMessage(latitude: payload.lat!, longitude: payload.lon!),
@@ -262,7 +274,9 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
                 bearing: 0,
               ),
             );
-      });
+      } catch (e) {
+        debugPrint(e.toString());
+      }
     });
   }
 
