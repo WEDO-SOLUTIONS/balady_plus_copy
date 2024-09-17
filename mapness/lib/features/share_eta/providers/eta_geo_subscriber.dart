@@ -37,7 +37,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   static const String _lostConnection = 'assets/images_svg/eta_lost_connection_marker.svg';
 
   static const imgSize = 48;
-  static const streamBreakTimeout = 60;
+  static const streamBreakTimeout = 30;
   static const stramBreakTimerInterval = 10;
   static const routeZoomTimerInterval = 10;
 
@@ -47,6 +47,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   bool _isFirstLocationFetch = true;
   bool _lastConnectionStatus = true;
   bool _isRoutePresent = false;
+  bool _isStreamStopped = false;
   EtaRoute? _lastActiveRoute;
   Timer? _routeZoomingTimer;
   Timer? _lastActiveMessageReceiverTimer;
@@ -107,6 +108,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   }
 
   Future<void> stopStreaming() async {
+    _isStreamStopped = true;
     try {
       EtaWebsocket().clearInfoListeners();
       await EtaWebsocket().stop();
@@ -142,6 +144,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   Future<void> startStreaming(String tokenId, String streamId) async {
     // Stop previous stream
     await stopStreaming();
+
+    _isStreamStopped = false;
 
     _isFirstLocationFetch = true;
     _lastConnectionStatus = true;
@@ -182,7 +186,6 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           ref
               .read(websocketErrorHandlerProvider.notifier)
               .setStatus(EtaErrorStatusCodes.noDataInStream, WebsocketReason.noData.toName());
-          await stopStreaming();
         }
       });
 
@@ -475,10 +478,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   Future<void> _onErrorStatus(int? statusCode, String? reason) async {
     final reasonData = reason?.toWebsocketReason();
     final shareType = ref.read(websocketTypeProvider);
-    if (shareType == SubscriptionType.get) {
-      if (statusCode != null &&
-          statusCode != EtaErrorStatusCodes.endConnection &&
-          statusCode != EtaErrorStatusCodes.noDataInStream) {
+    if (shareType == SubscriptionType.get && !_isStreamStopped) {
+      if (statusCode != null && statusCode != EtaErrorStatusCodes.endConnection) {
         await _processDrawUserMarker(isAvailable: false);
       } else if (statusCode == null) {
         await _processDrawUserMarker();
@@ -504,6 +505,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       }
     } else if (statusCode == EtaErrorStatusCodes.endConnection &&
         [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
+      await stopStreaming();
+    } else if (statusCode == EtaErrorStatusCodes.hightLoad) {
       await stopStreaming();
     }
   }

@@ -117,6 +117,14 @@ class EtaUtils {
                 ),
               );
         }
+        // Get old stream token and stream id
+        final oldToken = EtaStreamStorage().state.streamToken;
+        final oldXStreamData = EtaStreamStorage().state.xStreamData;
+
+        if (oldToken != null && oldXStreamData != null) {
+          await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
+        }
+
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
         unawaited(ref.read(goRouterProvider).push(uriPath.toString()));
       } catch (e) {

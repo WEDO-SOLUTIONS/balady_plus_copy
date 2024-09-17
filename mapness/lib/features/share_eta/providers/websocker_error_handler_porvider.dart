@@ -51,6 +51,10 @@ class WebsocketErrorHandler extends _$WebsocketErrorHandler {
   }
 
   void setStatus(int? code, String? reason) {
+    final (currentCode, _) = state;
+    if (currentCode == code) {
+      return;
+    }
     String? reasonJson;
     if (reason != null && reason.isNotEmpty) {
       try {
