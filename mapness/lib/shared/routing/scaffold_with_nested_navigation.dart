@@ -86,6 +86,9 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
             group: _tag,
             action: MetricAction.tap.name,
           );
+
+          ///We commented this route onboarding because is not needed, we maybe return it in the future
+
           //final naviEnabled = ref.read(appFeaturesProvider).naviEnabled;
           // if (selected == 2 && naviEnabled) {
           //   final isShowRoute = await ref.read(routeOnboardingProvider.future);
