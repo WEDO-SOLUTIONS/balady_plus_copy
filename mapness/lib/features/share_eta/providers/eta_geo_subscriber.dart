@@ -101,6 +101,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           }),
         );
       } else if (etaInfo.type == EtaType.streamMetadata) {
+        _isRoutePresent = false;
         _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
         await _createUserRoute();
@@ -167,6 +168,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           return;
         }
         final payload = meta.payload;
+
         if (payload?.route?.routeIndex != null && _isRoutePresent) {
           final index = payload!.route!.routeIndex!;
           await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(index);
