@@ -47,7 +47,7 @@ class NormalSearchVerifiedByWidget extends StatelessWidget {
         TitleWithWidget(
           title: state.normalSearchType.verifiedBy.title,
           widget: TextFormField(
-            keyboardType: TextInputType.number,
+            keyboardType: state.normalSearchType.verifiedBy.keyboardType,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               hintText: state.normalSearchType.verifiedBy.hintText.tr(),

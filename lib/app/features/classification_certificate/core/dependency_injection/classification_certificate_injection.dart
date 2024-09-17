@@ -25,13 +25,13 @@ class ClassificationCertificateInjectionContainer {
     // Use Cases
     sl.registerLazySingleton<SearchClassificationCertificateUseCases>(
           () => SearchClassificationCertificateUseCases(
-          repository: sl<ClassificationCertificateSearchRepository>(),
+          repository: sl<ClassificationCertificateRepositoryImplementation>() as ClassificationCertificateSearchRepository,
       ),
     );
 
     sl.registerLazySingleton<GetDetailsClassificationCertificateUseCases>(
           () => GetDetailsClassificationCertificateUseCases(
-        repository: sl<DetailsClassificationCertificateRepository>(),
+        repository: sl<ClassificationCertificateRepositoryImplementation>() as DetailsClassificationCertificateRepository,
       ),
     );
   }
