@@ -1,13 +1,12 @@
+import 'dart:async';
 import 'dart:io';
-
-import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart' show sl;
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -77,16 +76,20 @@ class AppLanguage extends _$AppLanguage {
     return language;
   }
 
-  void update(Language value) {
-    ref.read(sharedPrefsProvider).setString(_prefsKey, value.name);
-    ref.read(navigatorVoiceProvider.notifier).update(value.navigatorVoice);
-
-    // Update cached text for the favourites items
-    ref.read(favouriteCacheProvider.notifier).forceRefresh();
-    // Update condition text for the weather texts
-    ref.read(forecastWeatherProvider.notifier).forceRefresh();
+  Future<void> update(Language value) async {
+    // Main language change. We use information from this classes in other places
+    // so we need to update the prefs and translator first
+    await ref.read(sharedPrefsProvider).setString(_prefsKey, value.name);
     CommonFunctions.changeLanguage(lang: value.baladyCompat);
-    sl<EntryPointCubit>().refreshSSOProfile();
+
+    ref.read(navigatorVoiceProvider.notifier).update(value.navigatorVoice);
+    // Update the SSO profile to get the information in the new language
+    unawaited(ref.read(authProvider.notifier).forceUpdate());
+    // Update cached text for the favourites items
+    unawaited(ref.read(favouriteCacheProvider.notifier).forceRefresh());
+    // Update condition text for the weather texts
+    unawaited(ref.read(forecastWeatherProvider.notifier).forceRefresh());
+
     state = value;
   }
 }

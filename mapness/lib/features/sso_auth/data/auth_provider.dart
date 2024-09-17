@@ -1,5 +1,4 @@
-import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart'
-    show sl;
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart' show sl;
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
@@ -65,5 +64,11 @@ class Auth extends _$Auth {
 
     await FlutterUxcam.setUserIdentity(userId);
     return CommonProperties.userInfo;
+  }
+
+  Future<void> forceUpdate() async {
+    await sl<EntryPointCubit>().refreshSSOProfile();
+    final data = sl<EntryPointCubit>().state.userInfo;
+    state = AsyncValue.data(data);
   }
 }
