@@ -82,11 +82,14 @@ class ClassificationCertificateRemoteDataSource
   }
 
   @override
-  Future<ClassificationCertificateDetails> getDetailsClassificationCertificate(DetailsRequestModel params) async {
+  Future<ClassificationCertificateDetails> getDetailsClassificationCertificate(
+      DetailsRequestModel params) async {
     var response;
     try {
       response = await webService.dio.get(
-        EndpointsClassificationCertificate.searchEndPoints,
+        EndpointsClassificationCertificate.getEstablishmentsDetails(
+          params.serialNumber,
+        ),
         queryParameters: params.toJson(),
       );
       final data = response.data;

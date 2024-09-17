@@ -1,9 +1,11 @@
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/features/classification_certificate/core/classification_certificate_routes/classification_certificate_route_names.dart';
 import 'package:balady_plus/app/features/classification_certificate/domain/entity/classification_certificate_list_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import 'title_value_item_widget.dart';
 
@@ -18,12 +20,21 @@ class ClassificationCertificateItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String dataEn = Helpers.changeToEnglish(
-        classificationCertificate.certificateExpirationDate
+      classificationCertificate.certificateExpirationDate,
     );
     DateTime parsedDate = DateTime.parse(dataEn);
-    String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+    String formattedDate = DateFormat(
+      'dd/MM/yyyy',
+      "locale".tr(),
+    ).format(parsedDate);
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          ClassificationCertificateRouteName
+              .classificationCertificateDetailsScreen,
+          arguments: classificationCertificate.toJson(),
+        );
+      },
       child: Card(
         margin: const EdgeInsets.only(top: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -36,7 +47,10 @@ class ClassificationCertificateItemWidget extends StatelessWidget {
                 children: [
                   SvgPicture.asset(IconPath.newOfficeIcon),
                   const SizedBox(width: 8),
-                  Flexible(child: Text(classificationCertificate.facilityName)),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: Text(classificationCertificate.facilityName),
+                  ),
                   Chip(
                     padding: EdgeInsets.zero,
                     shape: const RoundedRectangleBorder(

@@ -4353,6 +4353,7 @@
   "classification_certificate_verification_inquiry_result": "Classification Certificate Verification Inquiry Result",
   "serialNumber":"Serial Number",
   "cRorLicNumber":"License number",
+  "certificate_verification_result": "Certificate verification result",
   "auth_pacakge_start": "start",
   "biometric": "Touch ID/Face ID service",
   "passcode": "Passcode",

@@ -1,16 +1,25 @@
-abstract class DetailsRequestModel {
-  final int pageSize;
-  final int pageNumber;
+class DetailsRequestModel {
+  final String certificateExpirationDate;
+  final String classificationGrade;
+  final String serialNumber;
 
   DetailsRequestModel({
-    required this.pageSize,
-    required this.pageNumber,
+    required this.certificateExpirationDate,
+    required this.classificationGrade,
+    required this.serialNumber,
   });
 
-  DetailsRequestModel copyWith({
-    int pageSize,
-    int pageNumber,
-  });
+  factory DetailsRequestModel.fromJson(Map<String, dynamic> json) => DetailsRequestModel(
+    classificationGrade: json["ClassificationGrade"],
+    certificateExpirationDate: json["CertificateExpirationDate"],
+    serialNumber: json["SerialNumber"],
+  );
 
-  Map<String, dynamic> toJson();
+
+  Map<String, dynamic> toJson() {
+    return {
+      "cert-expiry-date": certificateExpirationDate,
+      "classification-grade": classificationGrade,
+    };
+  }
 }

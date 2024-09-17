@@ -1,8 +1,9 @@
-
-
 import 'package:balady_plus/app/features/classification_certificate/domain/entity/classification_certificate_list_entity.dart';
 
-class ClassificationCertificateList extends ClassificationCertificateListEntity {
+import '../../../../core/services/local/helpers.dart';
+
+class ClassificationCertificateList
+    extends ClassificationCertificateListEntity {
   // final int totalPageCount;
   // final int totalItemCount;
   // final int currentPageRecordCount;
@@ -25,28 +26,34 @@ class ClassificationCertificateList extends ClassificationCertificateListEntity 
       ClassificationCertificateList(
         totalPageCount: totalPageCount ?? this.totalPageCount,
         totalItemCount: totalItemCount ?? this.totalItemCount,
-        currentPageRecordCount: currentPageRecordCount ?? this.currentPageRecordCount,
-        classificationCertificateItem: classificationCertificateItem ?? this.classificationCertificateItem,
+        currentPageRecordCount:
+            currentPageRecordCount ?? this.currentPageRecordCount,
+        classificationCertificateItem:
+            classificationCertificateItem ?? this.classificationCertificateItem,
       );
 
-  factory ClassificationCertificateList.fromJson(Map<String, dynamic> json) => ClassificationCertificateList(
-    totalPageCount: json["totalPageCount"],
-    totalItemCount: json["totalItemCount"],
-    currentPageRecordCount: json["currentPageRecordCount"],
-    classificationCertificateItem: List<ClassificationCertificateItem>.from(json["items"].map((x) => ClassificationCertificateItem.fromJson(x))),
-  );
+  factory ClassificationCertificateList.fromJson(Map<String, dynamic> json) =>
+      ClassificationCertificateList(
+        totalPageCount: json["totalPageCount"],
+        totalItemCount: json["totalItemCount"],
+        currentPageRecordCount: json["currentPageRecordCount"],
+        classificationCertificateItem: List<ClassificationCertificateItem>.from(
+            json["items"]
+                .map((x) => ClassificationCertificateItem.fromJson(x))),
+      );
 
   @override
   Map<String, dynamic> toJson() => {
-    "totalPageCount": totalPageCount,
-    "totalItemCount": totalItemCount,
-    "currentPageRecordCount": currentPageRecordCount,
-    "ClassificationCertificateItem": List<dynamic>.from(classificationCertificateItem.map((x) => x.toJson())),
-  };
+        "totalPageCount": totalPageCount,
+        "totalItemCount": totalItemCount,
+        "currentPageRecordCount": currentPageRecordCount,
+        "ClassificationCertificateItem": List<dynamic>.from(
+            classificationCertificateItem.map((x) => x.toJson())),
+      };
 }
 
-class ClassificationCertificateItem extends ClassificationCertificateItemEntity {
-
+class ClassificationCertificateItem
+    extends ClassificationCertificateItemEntity {
   ClassificationCertificateItem({
     required super.certificateExpirationDate,
     required super.serialNumber,
@@ -64,27 +71,29 @@ class ClassificationCertificateItem extends ClassificationCertificateItemEntity 
     String? facilityName,
   }) =>
       ClassificationCertificateItem(
-        certificateExpirationDate: certificateExpirationDate ?? this.certificateExpirationDate,
+        certificateExpirationDate:
+            certificateExpirationDate ?? this.certificateExpirationDate,
         serialNumber: serialNumber ?? this.serialNumber,
         cRorLicNumber: cRorLicNumber ?? this.cRorLicNumber,
         classificationGrade: classificationGrade ?? this.classificationGrade,
         facilityName: facilityName ?? this.facilityName,
       );
 
-  factory ClassificationCertificateItem.fromJson(Map<String, dynamic> json) => ClassificationCertificateItem(
-    certificateExpirationDate: json["CertificateExpirationDate"],
-    serialNumber: json["SerialNumber"],
-    cRorLicNumber: json["CRorLICNumber"],
-    classificationGrade: json["ClassificationGrade"],
-    facilityName: json["FacilityName"],
-  );
+  factory ClassificationCertificateItem.fromJson(Map<String, dynamic> json) =>
+      ClassificationCertificateItem(
+        certificateExpirationDate: Helpers.changeToEnglish(
+          json["CertificateExpirationDate"],
+        ),
+        serialNumber: json["SerialNumber"],
+        cRorLicNumber: json["CRorLICNumber"],
+        classificationGrade: json["ClassificationGrade"],
+        facilityName: json["FacilityName"],
+      );
 
   @override
   Map<String, dynamic> toJson() => {
-    "CertificateExpirationDate": certificateExpirationDate,
-    "SerialNumber": serialNumber,
-    "CRorLICNumber": cRorLicNumber,
-    "ClassificationGrade": classificationGrade,
-    "FacilityName": facilityName,
-  };
+        "CertificateExpirationDate": certificateExpirationDate,
+        "SerialNumber": serialNumber,
+        "ClassificationGrade": classificationGrade,
+      };
 }

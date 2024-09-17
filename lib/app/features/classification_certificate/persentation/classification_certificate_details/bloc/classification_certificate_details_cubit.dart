@@ -1,0 +1,68 @@
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/errors/exceptions.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/features/classification_certificate/data/model/details/details_request_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../domain/use_cases/classification_certificate_use_cases.dart';
+import 'classification_certificate_details_state.dart';
+
+class ClassificationCertificateDetailsCubit
+    extends Cubit<ClassificationCertificateDetailsState> {
+  final GetDetailsClassificationCertificateUseCases getDetailsUseCases;
+
+  final DetailsRequestModel detailsRequestModel;
+
+  ////////////////////////////////////////////////////////////////////////////
+  ClassificationCertificateDetailsCubit({
+    required this.detailsRequestModel,
+  })  : getDetailsUseCases = sl<GetDetailsClassificationCertificateUseCases>(),
+        super(const ClassificationCertificateDetailsState()) {
+    getDetailsClassificationCertificate(
+      detailsRequestModel: detailsRequestModel,
+    );
+  }
+
+  void getDetailsClassificationCertificate(
+      {required DetailsRequestModel detailsRequestModel}) async {
+    try {
+      emit(const LoadingDetailsClassificationCertificateState());
+      var response = await getDetailsUseCases(detailsRequestModel);
+      response.fold(
+        (filer) {
+          emit(
+            FieldDetailsClassificationCertificateState(
+              errorMessage: filer.toString(),
+            ),
+          );
+        },
+        (data) {
+          emit(
+            SuccessDetailsClassificationCertificateState(
+              classificationCertificateDetails: data,
+            ),
+          );
+        },
+      );
+    } on ServerException catch (error) {
+      emit(
+        FieldDetailsClassificationCertificateState(
+          errorMessage: error.errorMessage,
+        ),
+      );
+    } catch (error, stackTrace) {
+      emit(
+        FieldDetailsClassificationCertificateState(
+          errorMessage: error.toString(),
+        ),
+      );
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
+  }
+}
