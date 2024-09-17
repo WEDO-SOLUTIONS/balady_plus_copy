@@ -264,36 +264,20 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
         ),
       );
 
-  // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
-  // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
-  Future<void> _endTrip(VoidCallback action) async {
-    if (!mounted) {
-      return;
-    }
-    final dgisController = ref.read(dgisControllerProvider);
-    await dgisController.value?.freeRoamController.stop();
-    await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
-
-    action();
-  }
-
   // Show the home page after the trip is finished
   Future<void> _endTripAndShowHome() async {
-    if (!mounted) {
-      return;
-    }
-
+    final dgisController = ref.read(dgisControllerProvider);
     Metrics.logEventAdvanced(
       MetricsConstants.navigationKeys.endTripAndShowHome,
       group: MetricsConstants.navigationTag,
       action: MetricAction.tap.toString(),
     );
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
+    await dgisController.value?.freeRoamController.stop();
+    await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
 
-    await _endTrip(() {
-      if (context.mounted) {
-        const LandingRoute().go(context);
-      }
-    });
+    if (mounted && context.mounted) {
+      const LandingRoute().go(context);
+    }
   }
 }

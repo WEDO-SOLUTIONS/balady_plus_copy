@@ -206,12 +206,8 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
     );
   }
 
-  Future<void> _endTrip(VoidCallback action) async {
-    await ref.read(dgisControllerProvider).value?.freeRoamController.stop();
-    action();
-  }
-
   Future<void> _endTripAndShowHome() async {
+    final dgisController = ref.read(dgisControllerProvider);
     Metrics.logEventAdvanced(
       MetricsConstants.navigationKeys.endTripAndShowHome,
       group: MetricsConstants.navigationTag,
@@ -219,12 +215,13 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
     );
 
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
+    await ref.read(dgisControllerProvider).value?.freeRoamController.stop();
+    await dgisController.value?.freeRoamController.stop();
+    await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
 
-    await _endTrip(() {
-      if (context.mounted) {
-        const LandingRoute().go(context);
-      }
-    });
+    if (context.mounted) {
+      const LandingRoute().go(context);
+    }
   }
 
   void _hideLayersPanel() {
