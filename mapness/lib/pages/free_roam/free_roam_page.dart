@@ -201,46 +201,55 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Padding(
-                  padding: padding,
-                  child: AnimatedOpacity(
-                      opacity: isControlsActive ? 1 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: const TrafficParkingControl()),
-                ),
-                const Spacer(),
-                Padding(
-                  padding: padding,
+                Expanded(
                   child: AnimatedOpacity(
                     opacity: isControlsActive ? 1 : 0,
-                    duration: const Duration(milliseconds: 150),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IndoorControl(),
-                        ZoomControl(),
-                      ],
+                    duration: const Duration(milliseconds: 250),
+                    child: IgnorePointer(
+                      ignoring: !isControlsActive,
+                      child: GestureDetector(
+                        onTap: () {
+                          timer?.cancel();
+                          timer = null;
+                          wasSetActive = true;
+                          isControlsActive = true;
+                          startControlsDisapearTimer();
+                        },
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: padding,
+                              child: TrafficParkingControl(),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: padding,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IndoorControl(),
+                                  ZoomControl(),
+                                ],
+                              ),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: padding,
+                              child: CompassControl(),
+                            ),
+                            SizedBox(height: 8),
+                            Padding(
+                              padding: padding,
+                              child: FollowControl(),
+                            ),
+                            SizedBox(height: 12),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                const Spacer(),
-                Padding(
-                  padding: padding,
-                  child: AnimatedOpacity(
-                      opacity: isControlsActive ? 1 : 0,
-                      duration: const Duration(milliseconds: 150),
-                      child: const CompassControl()),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: padding,
-                  child: AnimatedOpacity(
-                    opacity: isControlsActive ? 1 : 0,
-                    duration: const Duration(milliseconds: 150),
-                    child: const FollowControl(),
-                  ),
-                ),
-                const SizedBox(height: 12),
                 Center(
                   child: RoadPanel(
                     isLoading: isLoading,

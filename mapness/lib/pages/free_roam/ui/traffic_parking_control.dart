@@ -31,6 +31,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
       width: 50,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           _TrafficControl(
             isEnabled: isTrafficEnabled,

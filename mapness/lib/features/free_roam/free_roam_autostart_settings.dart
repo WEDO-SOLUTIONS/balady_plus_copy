@@ -30,13 +30,7 @@ class _FreeRoamAutostartSettings extends _$FreeRoamAutostartSettings {
     state = isAutostart ? AutostartState.always : AutostartState.declined;
   }
 
-  void toggleAutostart() {
-    if (state == AutostartState.always) {
-      state = AutostartState.declined;
-    } else {
-      state = AutostartState.always;
-    }
-  }
+  void toggleAutostart() => setState(isAutostart: state != AutostartState.always);
 }
 
 final freeRoamAutostartSettingsProvider = _freeRoamAutostartSettingsProvider;

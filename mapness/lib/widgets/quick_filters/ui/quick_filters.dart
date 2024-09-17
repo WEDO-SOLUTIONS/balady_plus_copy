@@ -12,6 +12,7 @@ class QuickFilters extends ConsumerStatefulWidget {
   final QuickFilterScreen id;
   final bool isDashboard;
   final double height;
+  final ItemScrollController? itemScrollController;
 
   static const defaultHeight = 40.0;
 
@@ -22,6 +23,7 @@ class QuickFilters extends ConsumerStatefulWidget {
     this.isDashboard = false,
     super.key,
     this.padding = const EdgeInsets.only(bottom: 16),
+    this.itemScrollController,
   }) : height = height ?? defaultHeight;
 
   @override
@@ -34,12 +36,16 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
   @override
   void initState() {
     super.initState();
-    itemScrollController = ItemScrollController();
+    itemScrollController = widget.itemScrollController ?? ItemScrollController();
   }
 
   @override
   void didUpdateWidget(QuickFilters oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.itemScrollController != oldWidget.itemScrollController) {
+      itemScrollController = widget.itemScrollController ?? ItemScrollController();
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final requestId = ref.read(quickFiltersRequestSourceScreenProvider);
       if (requestId != null && requestId != widget.id) {
