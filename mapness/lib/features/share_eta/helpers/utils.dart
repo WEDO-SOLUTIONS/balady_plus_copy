@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/eta.dart';
+import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
@@ -126,6 +127,10 @@ class EtaUtils {
       return true;
     } else if (type == 'live') {
       try {
+        // Move to landing page
+        if (rootNavigatorKey.currentContext != null) {
+          const LandingRoute().go(rootNavigatorKey.currentContext!);
+        }
         // Get old stream token and stream id
         final oldToken = EtaStreamStorage().state.streamToken;
         final oldXStreamData = EtaStreamStorage().state.xStreamData;
