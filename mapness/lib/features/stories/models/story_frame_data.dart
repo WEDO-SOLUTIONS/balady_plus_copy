@@ -65,6 +65,7 @@ class StoryFrameData {
     bool? fullscreenImage,
     bool? isAssetImage,
     Color? closeButtonColor,
+    StoryFrameTexts? networkTexts,
   }) =>
       StoryFrameData(
         isAssetImage: isAssetImage ?? this.isAssetImage,
@@ -74,6 +75,7 @@ class StoryFrameData {
         fullscreenImage: fullscreenImage ?? this.fullscreenImage,
         action: action ?? this.action,
         duration: duration ?? this.duration,
+        networkTexts: networkTexts ?? this.networkTexts,
       );
 
   /// Returns the theme for this [StoryFrameData] based on the story ID and the provided color and text themes.
@@ -93,8 +95,7 @@ class StoryFrameData {
   /// Returns the texts for this [StoryFrameData] based on the story ID and the provided localizations.
   StoryFrameTexts textFromId({
     required AppLocalizations l10n,
-  }) =>
-      networkTexts ?? StoryFrameTexts.fromId(l10n, storyId);
+  }) => networkTexts ?? StoryFrameTexts.fromId(l10n, storyId);
 
   String? imageUrlForLocale(TextDirection direction) => direction == TextDirection.rtl ? arabicImageUrl : imageUrl;
 }
