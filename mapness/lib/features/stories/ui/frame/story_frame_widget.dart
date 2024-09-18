@@ -19,7 +19,9 @@ import 'package:urbi_utils/urbi_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'story_frame_action_button.dart';
+
 part 'story_frame_content.dart';
+
 part 'frame_progress_indicator.dart';
 
 class StoryFrameWidget extends StatefulWidget {
@@ -271,26 +273,29 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   Align _buildAction(BoxConstraints contraints) => Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-            width: contraints.maxWidth,
-            padding: storyTheme.actionTheme.padding,
-            decoration: BoxDecoration(
-              gradient: storyTheme.actionTheme.hasGradient
-                  ? LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: const [0, 1],
-                      colors: [
-                        storyTheme.backgroundColor.withOpacity(0),
-                        storyTheme.backgroundColor,
-                      ],
-                    )
-                  : null,
-            ),
-            child: StoryFrameActionButton(
-              actionTheme: storyTheme.actionTheme,
-              action: widget.frame.action!,
-              onNext: _onNext,
-            )),
+          width: contraints.maxWidth,
+          padding: storyTheme.actionTheme.padding,
+          decoration: BoxDecoration(
+            gradient: storyTheme.actionTheme.hasGradient
+                ? LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0, 1],
+                    colors: [
+                      storyTheme.backgroundColor.withOpacity(0),
+                      storyTheme.backgroundColor,
+                    ],
+                  )
+                : null,
+          ),
+          child: _frame.isButtonEnabled
+              ? StoryFrameActionButton(
+                  actionTheme: storyTheme.actionTheme,
+                  action: widget.frame.action!,
+                  onNext: _onNext,
+                )
+              : const SizedBox.shrink(),
+        ),
       );
 
   Padding _buildTopbar(BuildContext context) => Padding(
