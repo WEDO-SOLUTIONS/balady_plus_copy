@@ -41,6 +41,8 @@ class StoryFrameData {
   /// The texts to be displayed in the network story.
   final StoryFrameTexts? networkTexts;
 
+  final bool isButtonEnabled;
+
   /// Constructs a [StoryFrameData] object.
   const StoryFrameData({
     required this.storyId,
@@ -53,6 +55,7 @@ class StoryFrameData {
     this.isAssetImage = false,
     this.networkTheme,
     this.networkTexts,
+    this.isButtonEnabled = true,
   });
 
   /// Creates a copy of this [StoryFrameData] object with the given fields replaced with the new values.

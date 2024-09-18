@@ -42,6 +42,7 @@ extension NetworkStoryFrameMapper on NetworkStoryFrame {
           title: title,
           description: description,
         ),
+        isButtonEnabled: actionButton.isEnabled,
       );
 }
 
