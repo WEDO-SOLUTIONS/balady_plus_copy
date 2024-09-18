@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
+import 'package:mapness/_features/landing/widgets/eta_sharing_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -271,7 +272,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     const SizedBox(height: 8),
                     const Padding(
                       padding: padding,
-                      child: PathNavFollowControl(),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          EtaSharingControl(),
+                          PathNavFollowControl(),
+                        ],
+                      ),
                     ),
                     const Spacer(),
                   ],

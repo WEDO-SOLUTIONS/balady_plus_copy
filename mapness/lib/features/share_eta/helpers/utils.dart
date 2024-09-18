@@ -10,6 +10,7 @@ import 'package:image/image.dart' as img;
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/eta.dart';
 import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
@@ -17,6 +18,7 @@ import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:urbi_analytics/logger.dart';
 
 class EtaUtils {
@@ -137,7 +139,13 @@ class EtaUtils {
       try {
         // Move to landing page
         if (rootNavigatorKey.currentContext != null) {
-          const LandingRoute().go(rootNavigatorKey.currentContext!);
+          final currentRoute = ref.read(currentRouteProvider);
+
+          /// Fix for BSA-1010 - if start route isn't navigator, then we go to landing page
+          /// Because we don't need to close navigation
+          if (currentRoute?.currentPath != PathNavRoute.path) {
+            const LandingRoute().go(rootNavigatorKey.currentContext!);
+          }
         }
         // Get old stream token and stream id
         final oldToken = EtaStreamStorage().state.streamToken;
