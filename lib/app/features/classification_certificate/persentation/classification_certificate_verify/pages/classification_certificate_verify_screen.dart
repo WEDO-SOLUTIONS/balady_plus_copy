@@ -43,7 +43,7 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
                 buildWhen: (state, stateNew) {
                   return stateNew
                           is NormalSearchClassificationCertificateState ||
-                      stateNew is AdvancedMethodClassificationCertificateState ||
+                      stateNew is AdvancedSearchState ||
                       stateNew is  AdvancedMethodNotWorkingClassificationCertificateState;
                 },
 
@@ -87,7 +87,7 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
                         child = NormalSearchVerifiedByWidget(state: state);
                       }
                       if (state
-                          is AdvancedMethodClassificationCertificateState) {
+                          is AdvancedSearchState) {
                         child = AdvancedSearchWidget(state: state);
                       }
 

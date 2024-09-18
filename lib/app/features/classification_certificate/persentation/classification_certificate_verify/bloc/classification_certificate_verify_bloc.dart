@@ -1,11 +1,15 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/features/classification_certificate/data/model/lookups/city_lookups_model.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/model/search_request/lookups_request_model.dart';
 import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_verify/utility/enums.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/model/lookups/activity_lookups_model.dart';
+import '../../../data/model/lookups/classification_certificate_lookup_model.dart';
 import '../../../data/model/lookups/classification_certificate_lookups_model.dart';
+import '../../../data/model/search_request/activities_request_model.dart';
 import '../../../data/model/search_request/advanced_search_request_model.dart';
 import '../../../data/model/search_request/normal_search_request_model.dart';
 import '../../../domain/use_cases/classification_certificate_use_cases.dart';
@@ -47,38 +51,16 @@ class ClassificationCertificateVerifyBloc extends Bloc<
               add(const GetLookupsClassificationCertificateState());
             } else {
               emit(
-                AdvancedMethodClassificationCertificateState(
+                AdvancedSearchState(
                   typeMethod: event.typeMethod,
+                  cities: lookups!.cities,
+                  degrees: lookups!.degrees,
+                  classificationType: lookups!.classificationType,
                   searchRequestModel: AdvancedSearchRequestModel(),
                 ),
               );
             }
         }
-      },
-    );
-
-    on<GetLookupsClassificationCertificateState>(
-      (event, emit) async {
-        var response = await getLookups(LookupsRequestModel());
-        response.fold(
-          (filer) {
-            // emit state Advanced Search not working tray agyn latter
-            emit(
-              const AdvancedMethodNotWorkingClassificationCertificateState(
-                typeMethod: SearchMethod.advancedSearch,
-              ),
-            );
-          },
-          (data) {
-            lookups = data;
-            emit(
-              AdvancedMethodClassificationCertificateState(
-                typeMethod: SearchMethod.advancedSearch,
-                searchRequestModel: AdvancedSearchRequestModel(),
-              ),
-            );
-          },
-        );
       },
     );
 
@@ -113,6 +95,111 @@ class ClassificationCertificateVerifyBloc extends Bloc<
         );
       },
     );
+
+    ////////////////////////////
+    on<GetLookupsClassificationCertificateState>(
+      (event, emit) async {
+        var response = await getLookups(LookupsRequestModel());
+        response.fold(
+          (filer) {
+            // emit state Advanced Search not working tray agyn latter
+            emit(
+              const AdvancedMethodNotWorkingClassificationCertificateState(
+                typeMethod: SearchMethod.advancedSearch,
+              ),
+            );
+          },
+          (data) {
+            lookups = data;
+            emit(
+              AdvancedSearchState(
+                typeMethod: SearchMethod.advancedSearch,
+                cities: lookups!.cities,
+                degrees: lookups!.degrees,
+                classificationType: lookups!.classificationType,
+                searchRequestModel: AdvancedSearchRequestModel(),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    on<SelectClassificationTypeState>(
+      (event, emit) async {
+        var typeState = state;
+        if (typeState is AdvancedSearchState) {
+          var sectors = lookups!.sectors.where(
+            (sector) {
+              return event.classificationType.code == 1 && sector.code == 6;
+            },
+          ).toList();
+          var services = lookups!.services.where(
+            (service) {
+              return event.classificationType.code == 0 && service.code == 0;
+            },
+          ).toList();
+          emit(
+            AdvancedSearchByClassificationTypeState(
+              sectors: sectors,
+              services: services,
+              typeMethod: typeState.typeMethod,
+              searchRequestModel: typeState.searchRequestModel.copyWith(
+                classificationType: event.classificationType,
+                //  send null to delete if selected old choose
+                sectors: null,
+                service: null,
+              ),
+              classificationType: typeState.classificationType,
+              degrees: typeState.degrees,
+              cities: typeState.cities,
+            ),
+          );
+        }
+      },
+    );
+
+    on<SelectSectorState>(
+      (event, emit) async {
+        var typeState = state;
+        if (typeState is AdvancedSearchByClassificationTypeState) {
+          var response = await getActivities(
+            ActivitiesRequestModel(sectors: event.sector.code),
+          );
+          response.fold(
+            (filer) {
+              // emit state Cant get activity
+              // emit(
+              //
+              // );
+            },
+            (activity) {
+              emit(
+                AdvancedMethodBySectorsState(
+                  sectors: typeState.sectors,
+                  services: typeState.services,
+                  typeMethod: typeState.typeMethod,
+                  classificationType: typeState.classificationType,
+                  degrees: typeState.degrees,
+                  cities: typeState.cities,
+                  ////////////////////////////////////////////////////////////
+                  searchRequestModel: typeState.searchRequestModel.copyWith(
+                    sectors: event.sector,
+                    //  send null to delete if selected old choose
+                    activity: null,
+                  ),
+                  activity: activity,
+                ),
+              );
+            },
+          );
+        }
+      },
+    );
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
 
     // // go to search Screen
     // on<GoSearchScreenClassificationCertificateState>(

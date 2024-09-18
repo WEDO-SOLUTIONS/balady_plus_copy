@@ -23,7 +23,7 @@ class ActionButtonWidget extends StatelessWidget {
                 ClassificationCertificateRouteName.classificationCertificateListScreen,
                 arguments: state.searchRequestModel,
             );
-          } else if(state is AdvancedMethodClassificationCertificateState) {
+          } else if(state is AdvancedSearchState) {
             Navigator.of(context).pushNamed(
               ClassificationCertificateRouteName.classificationCertificateListScreen,
               arguments: state.searchRequestModel,

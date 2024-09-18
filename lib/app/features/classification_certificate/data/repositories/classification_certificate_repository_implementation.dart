@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/classification_certificate/domain/entit
 
 import 'package:dartz/dartz.dart';
 import '../../domain/repository/classification_certificate_repository.dart';
+import '../model/lookups/activity_lookups_model.dart';
 import '../model/lookups/classification_certificate_lookups_model.dart';
 import '../model/search_request/activities_request_model.dart';
 import '../model/search_request/lookups_request_model.dart';
@@ -45,7 +46,7 @@ class ClassificationCertificateRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, List<String>>>
+  Future<Either<Failure, List<ActivityLookupsModel>>>
   getActivitiesBySectors(ActivitiesRequestModel params) async {
     try {
       final data =

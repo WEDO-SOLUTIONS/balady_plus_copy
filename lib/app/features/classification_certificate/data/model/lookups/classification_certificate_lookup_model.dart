@@ -4,7 +4,7 @@ class ClassificationCertificateLookupModel {
   final String valueAr;
   final String lookUpCode;
   final String valueEn;
-  final String code;
+  final int code;
 
   ClassificationCertificateLookupModel({
     required this.lookUpType,
@@ -19,7 +19,7 @@ class ClassificationCertificateLookupModel {
     String? valueAr,
     String? lookUpCode,
     String? valueEn,
-    String? code,
+    int? code,
   }) =>
       ClassificationCertificateLookupModel(
         lookUpType: lookUpType ?? this.lookUpType,
@@ -34,7 +34,7 @@ class ClassificationCertificateLookupModel {
     valueAr: json["Value_Ar"],
     lookUpCode: json["LookUpCode"],
     valueEn: json["Value_En"],
-    code: json["Code"],
+    code: int.tryParse(json["Code"] ?? "") ?? -1,
   );
 
   Map<String, dynamic> toJson() => {

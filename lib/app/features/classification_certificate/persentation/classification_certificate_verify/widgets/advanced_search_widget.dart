@@ -6,13 +6,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../data/model/lookups/activity_lookups_model.dart';
+import '../../../data/model/lookups/city_lookups_model.dart';
+import '../../../data/model/lookups/classification_certificate_lookup_model.dart';
+
 class AdvancedSearchWidget extends StatelessWidget {
-  final AdvancedMethodClassificationCertificateState state;
+  final AdvancedSearchState state;
 
   const AdvancedSearchWidget({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
+    ClassificationCertificateVerifyBloc bloc =
+        context.read<ClassificationCertificateVerifyBloc>();
     return Column(
       children: [
         Row(
@@ -40,92 +46,123 @@ class AdvancedSearchWidget extends StatelessWidget {
         TitleWithWidget(
           title: 'type',
           isRequired: true,
-          widget: DropdownButtonFormField<String>(
+          widget: DropdownButtonFormField<ClassificationCertificateLookupModel>(
             hint: Text("select".tr()),
+            value: state.searchRequestModel.classificationType,
             icon: Image.asset(IconPath.arrowCircleDown, width: 24, height: 24),
             validator: (value) => value == null ? 'field required'.tr() : null,
-            onChanged: (String? menu) {},
-            items:
-                ["menuItems", "String", "test"].map<DropdownMenuItem<String>>(
-              (String item) {
-                return DropdownMenuItem<String>(
+            onChanged: (ClassificationCertificateLookupModel? menu) {
+              // Cull Action Update States
+              if (menu != null && state.searchRequestModel.classificationType != menu) {
+                bloc.add(
+                  SelectClassificationTypeState(classificationType: menu),
+                );
+                state.searchRequestModel.copyWith(
+                  classificationType: menu,
+                );
+              }
+            },
+            items: state.classificationType
+                .map<DropdownMenuItem<ClassificationCertificateLookupModel>>(
+              (ClassificationCertificateLookupModel item) {
+                return DropdownMenuItem<ClassificationCertificateLookupModel>(
                   value: item,
-                  child: Text(item),
+                  child: Text(
+                    "locale".tr() == "ar" ? item.valueAr : item.valueEn,
+                  ),
                 );
               },
             ).toList(),
           ),
         ),
         const SizedBox(height: 12),
-        TitleWithWidget(
-          title: 'sector',
-          isRequired: true,
-          widget: DropdownButtonFormField<String>(
-            hint: Text("select_sector".tr()),
-            icon: Image.asset(IconPath.arrowCircleDown, width: 24, height: 24),
-            validator: (value) => value == null ? 'field required'.tr() : null,
-            onChanged: (String? menu) {},
-            items:
-                ["menuItems", "String", "test"].map<DropdownMenuItem<String>>(
-              (String item) {
-                return DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(item),
-                );
+        if (state is AdvancedSearchByClassificationTypeState)
+          TitleWithWidget(
+            title: 'sector',
+            isRequired: true,
+            widget:
+                DropdownButtonFormField<ClassificationCertificateLookupModel>(
+              hint: Text("select_sector".tr()),
+              value: state.searchRequestModel.sector,
+              icon:
+                  Image.asset(IconPath.arrowCircleDown, width: 24, height: 24),
+              validator: (value) =>
+                  value == null ? 'field required'.tr() : null,
+              onChanged: (ClassificationCertificateLookupModel? menu) {
+                // Cull Action Update States
               },
-            ).toList(),
+              items: (state as AdvancedSearchByClassificationTypeState)
+                  .sectors
+                  .map<DropdownMenuItem<ClassificationCertificateLookupModel>>(
+                (ClassificationCertificateLookupModel item) {
+                  return DropdownMenuItem<ClassificationCertificateLookupModel>(
+                    value: item,
+                    child: Text(
+                      "locale".tr() == "ar" ? item.valueAr : item.valueEn,
+                    ),
+                  );
+                },
+              ).toList(),
+            ),
           ),
-        ),
         const SizedBox(height: 12),
         TitleWithWidget(
           title: 'city',
           isRequired: true,
-          widget: DropdownButtonFormField<String>(
+          widget: DropdownButtonFormField<CityLookupsModel>(
             hint: Text("city_select".tr()),
+            value: state.searchRequestModel.city,
             icon: Image.asset(IconPath.arrowCircleDown, width: 24, height: 24),
             validator: (value) => value == null ? 'field required'.tr() : null,
-            onChanged: (String? menu) {},
-            items:
-                ["menuItems", "String", "test"].map<DropdownMenuItem<String>>(
-              (String item) {
-                return DropdownMenuItem<String>(
+            onChanged: (CityLookupsModel? menu) {
+              // Cull Action Update States
+            },
+            items: state.cities.map<DropdownMenuItem<CityLookupsModel>>(
+              (CityLookupsModel item) {
+                return DropdownMenuItem<CityLookupsModel>(
                   value: item,
-                  child: Text(item),
+                  child: Text(item.city),
                 );
               },
             ).toList(),
           ),
         ),
         const SizedBox(height: 12),
-        TitleWithWidget(
-          title: 'activity',
-          widget: DropdownMenu<String>(
-            //initialSelection: menuItems.first,
-            // controller: menuController,
-            width: double.maxFinite,
-            expandedInsets: EdgeInsets.zero,
-            hintText: "select_activity".tr(),
-            requestFocusOnTap: true,
-            enableFilter: true,
-            trailingIcon: Image.asset(
-              IconPath.arrowCircleDown,
-              width: 24,
-              height: 24,
+
+        if (state is AdvancedMethodBySectorsState)
+          TitleWithWidget(
+            title: 'activity',
+            widget: DropdownMenu<ActivityLookupsModel>(
+              width: double.maxFinite,
+              expandedInsets: EdgeInsets.zero,
+              hintText: "select_activity".tr(),
+              requestFocusOnTap: true,
+              enableFilter: true,
+              trailingIcon: Image.asset(
+                IconPath.arrowCircleDown,
+                width: 24,
+                height: 24,
+              ),
+              onSelected: (ActivityLookupsModel? menu) {
+                // Cull Action Update States
+              },
+              dropdownMenuEntries: (state as AdvancedMethodBySectorsState)
+                  .activity
+                  .map<DropdownMenuEntry<ActivityLookupsModel>>(
+                (ActivityLookupsModel service) {
+                  return DropdownMenuEntry<
+                      ActivityLookupsModel>(
+                    value: service,
+                    label: service.activityValue,
+                  );
+                },
+              ).toList(),
             ),
-            onSelected: (String? menu) {},
-            dropdownMenuEntries: ["menuItems", "String", "test"]
-                .map<DropdownMenuEntry<String>>((String menu) {
-              return DropdownMenuEntry<String>(
-                value: menu,
-                label: menu,
-              );
-            }).toList(),
           ),
-        ),
         const SizedBox(height: 12),
         TitleWithWidget(
           title: 'certificate_degree',
-          widget: DropdownMenu<String>(
+          widget: DropdownMenu<ClassificationCertificateLookupModel>(
             //initialSelection: menuItems.first,
             // controller: menuController,
             width: double.maxFinite,
@@ -138,14 +175,19 @@ class AdvancedSearchWidget extends StatelessWidget {
               width: 24,
               height: 24,
             ),
-            onSelected: (String? menu) {},
-            dropdownMenuEntries: ["menuItems", "String", "test"]
-                .map<DropdownMenuEntry<String>>((String menu) {
-              return DropdownMenuEntry<String>(
-                value: menu,
-                label: menu,
-              );
-            }).toList(),
+            onSelected: (ClassificationCertificateLookupModel? menu) {
+              // Cull Action Update States
+            },
+            dropdownMenuEntries: state.degrees
+                .map<DropdownMenuEntry<ClassificationCertificateLookupModel>>(
+              (ClassificationCertificateLookupModel service) {
+                return DropdownMenuEntry<ClassificationCertificateLookupModel>(
+                  value: service,
+                  label:
+                      "locale".tr() == "ar" ? service.valueAr : service.valueEn,
+                );
+              },
+            ).toList(),
           ),
         ),
         const SizedBox(height: 12),
@@ -156,9 +198,7 @@ class AdvancedSearchWidget extends StatelessWidget {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
             readOnly: true,
-            onTap: () {
-
-            },
+            onTap: () {},
             decoration: InputDecoration(
                 hintText: "select_date".tr(),
                 suffixIcon: Padding(
@@ -177,9 +217,7 @@ class AdvancedSearchWidget extends StatelessWidget {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
             readOnly: true,
-            onTap: () {
-
-            },
+            onTap: () {},
             decoration: InputDecoration(
                 hintText: "select_date".tr(),
                 suffixIcon: Padding(
@@ -208,31 +246,41 @@ class AdvancedSearchWidget extends StatelessWidget {
         ),
         ////////////////////////////
         const SizedBox(height: 12),
-        TitleWithWidget(
-          title: 'service',
-          widget: DropdownMenu<String>(
-            //initialSelection: menuItems.first,
-            // controller: menuController,
-            width: double.maxFinite,
-            expandedInsets: EdgeInsets.zero,
-            hintText: "select_service".tr(),
-            requestFocusOnTap: true,
-            enableFilter: true,
-            trailingIcon: Image.asset(
-              IconPath.arrowCircleDown,
-              width: 24,
-              height: 24,
+        if (state is AdvancedSearchByClassificationTypeState)
+          TitleWithWidget(
+            title: 'service',
+            widget: DropdownMenu<ClassificationCertificateLookupModel>(
+              //initialSelection: menuItems.first,
+              // controller: menuController,
+              width: double.maxFinite,
+              expandedInsets: EdgeInsets.zero,
+              hintText: "select_service".tr(),
+              requestFocusOnTap: true,
+              enableFilter: true,
+              trailingIcon: Image.asset(
+                IconPath.arrowCircleDown,
+                width: 24,
+                height: 24,
+              ),
+              onSelected: (ClassificationCertificateLookupModel? menu) {
+                // Cull Action Update States
+              },
+              dropdownMenuEntries: (state
+                      as AdvancedSearchByClassificationTypeState)
+                  .services
+                  .map<DropdownMenuEntry<ClassificationCertificateLookupModel>>(
+                (ClassificationCertificateLookupModel service) {
+                  return DropdownMenuEntry<
+                      ClassificationCertificateLookupModel>(
+                    value: service,
+                    label: "locale".tr() == "ar"
+                        ? service.valueAr
+                        : service.valueEn,
+                  );
+                },
+              ).toList(),
             ),
-            onSelected: (String? menu) {},
-            dropdownMenuEntries: ["menuItems", "String", "test"]
-                .map<DropdownMenuEntry<String>>((String menu) {
-              return DropdownMenuEntry<String>(
-                value: menu,
-                label: menu,
-              );
-            }).toList(),
           ),
-        ),
         const SizedBox(height: 12),
       ],
     );

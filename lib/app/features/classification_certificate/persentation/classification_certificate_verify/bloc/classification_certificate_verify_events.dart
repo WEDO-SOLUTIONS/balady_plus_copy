@@ -31,6 +31,22 @@ class SelectNormalSearchTypeClassificationCertificateState extends Classificatio
   List<Object?> get props => [normalSearchType];
 }
 
+class SelectClassificationTypeState extends ClassificationCertificateVerifyEvents {
+  final ClassificationCertificateLookupModel classificationType;
+  const SelectClassificationTypeState({required this.classificationType});
+
+  @override
+  List<Object?> get props => [classificationType];
+}
+
+class SelectSectorState extends ClassificationCertificateVerifyEvents {
+  final ClassificationCertificateLookupModel sector;
+  const SelectSectorState({required this.sector});
+
+  @override
+  List<Object?> get props => [sector];
+}
+
 // class GoSearchScreenClassificationCertificateState extends ClassificationCertificateVerifyEvents {
 //
 //   const GoSearchScreenClassificationCertificateState();

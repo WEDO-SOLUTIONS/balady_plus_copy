@@ -5,6 +5,7 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
 
 import '../../data/model/details/details_request_model.dart';
+import '../../data/model/lookups/activity_lookups_model.dart';
 import '../../data/model/lookups/classification_certificate_lookups_model.dart';
 import '../../data/model/search_request/activities_request_model.dart';
 import '../../data/model/search_request/lookups_request_model.dart';
@@ -26,13 +27,13 @@ class GetLookupsClassificationCertificateUseCases
 }
 
 class GetActivitiesClassificationCertificateUseCases
-    extends UseCase<List<String>, ActivitiesRequestModel> {
+    extends UseCase<List<ActivityLookupsModel>, ActivitiesRequestModel> {
   final ClassificationCertificateLookupsRepository repository;
 
   GetActivitiesClassificationCertificateUseCases({required this.repository});
 
   @override
-  Future<Either<Failure, List<String>>> call(
+  Future<Either<Failure, List<ActivityLookupsModel>>> call(
       ActivitiesRequestModel params) async {
     return await repository.getActivitiesBySectors(params);
   }

@@ -11,6 +11,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import '../../core/endpoints.dart';
 import '../model/classification_certificate_list.dart';
 import '../model/details/details_request_model.dart';
+import '../model/lookups/activity_lookups_model.dart';
 import '../model/search_request/activities_request_model.dart';
 import '../model/search_request/lookups_request_model.dart';
 import '../model/search_request/search_request_model.dart';
@@ -20,13 +21,14 @@ class ClassificationCertificateRemoteDataSource
     implements
         ClassificationCertificateSearchRemoteDataSource,
         ClassificationCertificateDetailsRemoteDataSource,
-        ClassificationCertificateLookupsRemoteDataSource{
+        ClassificationCertificateLookupsRemoteDataSource {
   final WebService webService;
 
   ClassificationCertificateRemoteDataSource({required this.webService});
 
   @override
-  Future<ClassificationCertificateLookupsModel> getLookups(LookupsRequestModel params) async {
+  Future<ClassificationCertificateLookupsModel> getLookups(
+      LookupsRequestModel params) async {
     var response;
     try {
       response = await webService.dio.get(
@@ -34,7 +36,7 @@ class ClassificationCertificateRemoteDataSource
         queryParameters: params.toJson(),
       );
       final data = response.data;
-      var result = data["data"]["result"] as Map<String,dynamic>;
+      var result = data["data"]["result"] as Map<String, dynamic>;
       var parsedResult = ClassificationCertificateLookupsModel.fromJson(result);
       return parsedResult;
     } on DioError catch (error, stackTrace) {
@@ -79,7 +81,8 @@ class ClassificationCertificateRemoteDataSource
   }
 
   @override
-  Future<List<String>> getActivitiesBySectors(ActivitiesRequestModel params) async {
+  Future<List<ActivityLookupsModel>> getActivitiesBySectors(
+      ActivitiesRequestModel params) async {
     var response;
     try {
       response = await webService.dio.get(
@@ -87,15 +90,12 @@ class ClassificationCertificateRemoteDataSource
         queryParameters: params.toJson(),
       );
       final data = response.data;
-      var parsedResult = data != null
-          ? ClassificationCertificateList.fromJson(data["data"]["result"])
-          : null;
-      final decodedResponse =
-      ResponseBodyModel<ClassificationCertificateList>.fromMap(
-        response.data,
-        parsedResult: parsedResult,
+      List<ActivityLookupsModel> list = List<ActivityLookupsModel>.from(
+        data["data"]["result"].map(
+          (x) => ActivityLookupsModel.fromJson(x),
+        ),
       );
-      return ["",""];
+      return list;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -151,7 +151,7 @@ class ClassificationCertificateRemoteDataSource
           ? ClassificationCertificateList.fromJson(data["data"]["result"])
           : null;
       final decodedResponse =
-      ResponseBodyModel<ClassificationCertificateList>.fromMap(
+          ResponseBodyModel<ClassificationCertificateList>.fromMap(
         response.data,
         parsedResult: parsedResult,
       );
@@ -211,11 +211,11 @@ class ClassificationCertificateRemoteDataSource
       final data = response.data;
       var parsedResult = data != null
           ? ClassificationCertificateDetails.fromJson(
-        data["data"]["result"],
-      )
+              data["data"]["result"],
+            )
           : null;
       final decodedResponse =
-      ResponseBodyModel<ClassificationCertificateDetails>.fromMap(
+          ResponseBodyModel<ClassificationCertificateDetails>.fromMap(
         response.data,
         parsedResult: parsedResult,
       );
@@ -257,5 +257,4 @@ class ClassificationCertificateRemoteDataSource
       }
     }
   }
-
 }

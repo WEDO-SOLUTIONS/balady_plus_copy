@@ -11,7 +11,7 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
 
   //////////////////////// Required Field //////////////////////////
   ClassificationCertificateLookupModel? classificationType;
-  ClassificationCertificateLookupModel? sectors;
+  ClassificationCertificateLookupModel? sector;
   CityLookupsModel? city;
   //////////////////////////////////////////////////
   ClassificationCertificateLookupModel? activity;
@@ -26,7 +26,7 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
     this.pageNumber = 1,
     ////////////////////////////////////////////////////
     this.classificationType,
-    this.sectors,
+    this.sector,
     this.city,
     ////////////////////////////////////////////////////
     this.activity,
@@ -58,7 +58,7 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
         pageNumber: pageSize ?? this.pageNumber,
         ////////////////////////////////////////////////////
         classificationType: classificationType ?? this.classificationType,
-        sectors: sectors ?? this.sectors,
+        sector: sectors ?? this.sector,
         city: city ?? this.city,
         ////////////////////////////////////////////////////
         activity: activity ?? this.activity,
@@ -79,8 +79,8 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
     if (classificationType != null) {
       data['classification-type'] = classificationType!.code;
     }
-    if (sectors != null) {
-      data['classification-domain'] = sectors!.code;
+    if (sector != null) {
+      data['classification-domain'] = sector!.code;
     }
     if (city != null) {
       data['city'] = city!.cityCode;

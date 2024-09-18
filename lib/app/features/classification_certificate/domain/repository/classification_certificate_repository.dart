@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../data/model/details/details_request_model.dart';
+import '../../data/model/lookups/activity_lookups_model.dart';
 import '../../data/model/lookups/classification_certificate_lookups_model.dart';
 import '../../data/model/search_request/activities_request_model.dart';
 import '../../data/model/search_request/lookups_request_model.dart';
@@ -17,7 +18,7 @@ abstract class ClassificationCertificateSearchRepository {
 
 abstract class ClassificationCertificateLookupsRepository {
   Future<Either<Failure, ClassificationCertificateLookupsModel>> getLookups(LookupsRequestModel params);
-  Future<Either<Failure, List<String>>> getActivitiesBySectors(ActivitiesRequestModel params);
+  Future<Either<Failure, List<ActivityLookupsModel>>> getActivitiesBySectors(ActivitiesRequestModel params);
 }
 
 abstract class DetailsClassificationCertificateRepository {
