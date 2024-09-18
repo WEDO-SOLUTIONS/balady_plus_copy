@@ -6,17 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
 import 'package:mapness/app/routes/road_panel.dart';
 import 'package:mapness/app/routes/sound_settings.dart';
-import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
-import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoadPanelSheet extends ConsumerStatefulWidget {
   const RoadPanelSheet({super.key});
@@ -190,7 +187,8 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                               buttonColorScheme: ButtonColorScheme.warning,
                               color: colorsV2.errorDefault,
                               primaryLabel: l10n.endTrip,
-                              onTap: _endTripAndShowHome,
+                              onTap: () =>
+                                  ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
                             )
                           ],
                         ),
@@ -204,24 +202,6 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
         },
       ),
     );
-  }
-
-  Future<void> _endTripAndShowHome() async {
-    final dgisController = ref.read(dgisControllerProvider);
-    Metrics.logEventAdvanced(
-      MetricsConstants.navigationKeys.endTripAndShowHome,
-      group: MetricsConstants.navigationTag,
-      action: MetricAction.tap.toString(),
-    );
-
-    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
-    await ref.read(dgisControllerProvider).value?.freeRoamController.stop();
-    await dgisController.value?.freeRoamController.stop();
-    await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
-
-    if (context.mounted) {
-      const LandingRoute().go(context);
-    }
   }
 
   void _hideLayersPanel() {

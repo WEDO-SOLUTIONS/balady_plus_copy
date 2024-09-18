@@ -1,33 +1,22 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/road_panel.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
+import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/pages/free_roam/ui/road_panel.dart';
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/pages/path_nav/lib/utils.dart';
-import 'package:mapness/shared/constants/constants.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/navigator_voice.dart';
-import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class FreeRoamPage extends ConsumerStatefulWidget {
@@ -52,8 +41,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   @override
   void initState() {
     super.initState();
-
-    _initFreeRoam().then((_) {
+    ref.read(freeRoamManagerProvider.notifier).initFreeRoam().then((_) {
       setState(() {
         isLoading = false;
       });
@@ -65,8 +53,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
 
   @override
   void deactivate() {
-    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
-    ref.read(dgisControllerProvider).value?.toggleFollowState();
+    ref.read(freeRoamManagerProvider.notifier).deactivate();
     super.deactivate();
   }
 
@@ -83,46 +70,6 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
         wasSetActive = false;
       });
     });
-  }
-
-  Future<void> restoreNavigationState() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-
-    final state = base64.decode(
-      ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!,
-    );
-    try {
-      await dgisController.restoreNavigationState(
-        state,
-        SpeedRangeZoom(
-          maxSpeedRange: 5,
-          minSpeedRange: 0,
-          routeDistanceMillimeters: 0,
-          styleZoomValue: 16.5,
-        ),
-      );
-    } catch (e) {
-      context.pop();
-    }
-  }
-
-  Future<void> _initFreeRoam() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-
-    await dgisController.setNavigatorVoice(ref.read(navigatorVoiceProvider));
-
-    await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-
-    await dgisController.freeRoamController.start(
-      SpeedRangeZoom(
-        maxSpeedRange: 5,
-        minSpeedRange: 0,
-        routeDistanceMillimeters: 0,
-        styleZoomValue: 16.5,
-      ),
-    );
-    await dgisController.setMapAttributeBool('navigatorOn', value: true);
-    await dgisController.followNavigation();
   }
 
   @override
@@ -254,7 +201,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                 Center(
                   child: RoadPanel(
                     isLoading: isLoading,
-                    onEndTrip: _endTripAndShowHome,
+                    onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
                     onOpenSheet: () => RoadPanelRoute.open(context),
                   ),
                 ),
@@ -264,33 +211,4 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
           ],
         ),
       );
-
-  // Show the home page after the trip is finished
-  Future<void> _endTripAndShowHome() async {
-    final dgisController = ref.read(dgisControllerProvider);
-    Metrics.logEventAdvanced(
-      MetricsConstants.navigationKeys.endTripAndShowHome,
-      group: MetricsConstants.navigationTag,
-      action: MetricAction.tap.toString(),
-    );
-    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
-    await dgisController.value?.freeRoamController.stop();
-    await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
-    await _parkingCheck();
-    if (mounted && context.mounted) {
-      const LandingRoute().go(context);
-    }
-  }
-
-  /// If I enable parking during [FreeRoam], after the check is completed they are hidden if hidden from [Layers].
-  /// If it is enabled in [Layers], then if I disable it in [FreeRoam], then after completion they are also disabled
-  Future<void> _parkingCheck() async {
-    final sharedPrefs = ref.read(sharedPrefsProvider);
-    final layersNotifier = ref.watch(layersControlsProvider.notifier);
-
-    if (sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false) {
-      await layersNotifier.toggleParking();
-      await sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, false);
-    }
-  }
 }
