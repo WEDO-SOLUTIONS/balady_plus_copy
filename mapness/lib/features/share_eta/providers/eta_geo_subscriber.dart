@@ -37,7 +37,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   static const String _lostConnection = 'assets/images_svg/eta_lost_connection_marker.svg';
 
   static const imgSize = 48;
-  static const streamBreakTimeout = 60;
+  static const streamBreakTimeout = 30;
   static const stramBreakTimerInterval = 10;
   static const routeZoomTimerInterval = 10;
 
@@ -47,6 +47,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   bool _isFirstLocationFetch = true;
   bool _lastConnectionStatus = true;
   bool _isRoutePresent = false;
+  bool _isStreamStopped = false;
   EtaRoute? _lastActiveRoute;
   Timer? _routeZoomingTimer;
   Timer? _lastActiveMessageReceiverTimer;
@@ -92,15 +93,11 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       if (etaInfo.type == EtaType.geolocation) {
         await _processDrawUserMarker();
 
-        _lastActiveMessageTime = DateTime.now().toUtc();
+        unawaited(_processMoveCameraToUser());
 
-        // We need to wait some time, because current location need to initialize
-        unawaited(
-          Future.delayed(const Duration(seconds: 2), () {
-            _processMoveCameraToUser();
-          }),
-        );
+        _lastActiveMessageTime = DateTime.now().toUtc();
       } else if (etaInfo.type == EtaType.streamMetadata) {
+        _isRoutePresent = false;
         _metaInfo = etaInfo as EtaInfoModel<EtaRoutePayload?>;
 
         await _createUserRoute();
@@ -111,6 +108,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   }
 
   Future<void> stopStreaming() async {
+    _isStreamStopped = true;
     try {
       EtaWebsocket().clearInfoListeners();
       await EtaWebsocket().stop();
@@ -147,6 +145,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     // Stop previous stream
     await stopStreaming();
 
+    _isStreamStopped = false;
+
     _isFirstLocationFetch = true;
     _lastConnectionStatus = true;
     _reconnectingInProgress = false;
@@ -167,6 +167,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           return;
         }
         final payload = meta.payload;
+
         if (payload?.route?.routeIndex != null && _isRoutePresent) {
           final index = payload!.route!.routeIndex!;
           await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(index);
@@ -185,7 +186,6 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
           ref
               .read(websocketErrorHandlerProvider.notifier)
               .setStatus(EtaErrorStatusCodes.noDataInStream, WebsocketReason.noData.toName());
-          await stopStreaming();
         }
       });
 
@@ -232,26 +232,43 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     }
   }
 
-  void _processMoveCameraToUser() {
+  Future<void> _processMoveCameraToUser() async {
     ProviderSubscription? locationProviderSubscription;
+
     if (!_isFirstLocationFetch) {
       return;
     }
-    _isFirstLocationFetch = false;
+
+    final Completer _locationCompleter = Completer();
+
     locationProviderSubscription = ref.listen(locationProvider, (_, __) {
+      _locationCompleter.complete();
+
       locationProviderSubscription?.close();
+    });
 
-      final (etaInfo, _) = state;
-      if (etaInfo == null) {
-        return;
+    Future.delayed(const Duration(seconds: 2), () {
+      if (!_locationCompleter.isCompleted) {
+        _locationCompleter.complete();
       }
+    });
 
-      /// Move camera to user position
-      final payload = etaInfo.payload as EtaInfoPayload;
-      if (payload.lat == null || payload.lon == null) {
-        return;
-      }
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
+    await _locationCompleter.future;
+
+    _isFirstLocationFetch = false;
+
+    final (etaInfo, _) = state;
+    if (etaInfo == null) {
+      return;
+    }
+
+    /// Move camera to user position
+    final payload = etaInfo.payload as EtaInfoPayload;
+    if (payload.lat == null || payload.lon == null) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
         await ref.read(cameraPositionProvider.notifier).animateTo(
               CameraPositionMessage(
                 point: GeoPointMessage(latitude: payload.lat!, longitude: payload.lon!),
@@ -260,7 +277,9 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
                 bearing: 0,
               ),
             );
-      });
+      } catch (e) {
+        debugPrint(e.toString());
+      }
     });
   }
 
@@ -459,10 +478,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   Future<void> _onErrorStatus(int? statusCode, String? reason) async {
     final reasonData = reason?.toWebsocketReason();
     final shareType = ref.read(websocketTypeProvider);
-    if (shareType == SubscriptionType.get) {
-      if (statusCode != null &&
-          statusCode != EtaErrorStatusCodes.endConnection &&
-          statusCode != EtaErrorStatusCodes.noDataInStream) {
+    if (shareType == SubscriptionType.get && !_isStreamStopped) {
+      if (statusCode != null && statusCode != EtaErrorStatusCodes.endConnection) {
         await _processDrawUserMarker(isAvailable: false);
       } else if (statusCode == null) {
         await _processDrawUserMarker();
@@ -488,6 +505,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       }
     } else if (statusCode == EtaErrorStatusCodes.endConnection &&
         [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
+      await stopStreaming();
+    } else if (statusCode == EtaErrorStatusCodes.hightLoad) {
       await stopStreaming();
     }
   }
