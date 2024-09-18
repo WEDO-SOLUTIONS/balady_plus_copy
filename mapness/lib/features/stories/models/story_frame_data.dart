@@ -95,10 +95,7 @@ class StoryFrameData {
   /// Returns the texts for this [StoryFrameData] based on the story ID and the provided localizations.
   StoryFrameTexts textFromId({
     required AppLocalizations l10n,
-  }) {
-    print('textFromId $networkTexts');
-    return networkTexts ?? StoryFrameTexts.fromId(l10n, storyId);
-  }
+  }) => networkTexts ?? StoryFrameTexts.fromId(l10n, storyId);
 
   String? imageUrlForLocale(TextDirection direction) => direction == TextDirection.rtl ? arabicImageUrl : imageUrl;
 }

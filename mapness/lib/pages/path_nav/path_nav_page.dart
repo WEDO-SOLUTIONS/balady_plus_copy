@@ -159,9 +159,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           styleZoomValue: 16.5,
         ),
       );
-      await dgisController.setMapAttributeBool('navigatorOn', value: true);
       await saveNavigationState();
     }
+
+    await dgisController.setMapAttributeBool('navigatorOn', value: true);
   }
 
   @override
