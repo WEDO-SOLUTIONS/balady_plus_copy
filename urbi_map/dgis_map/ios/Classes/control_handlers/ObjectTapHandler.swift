@@ -96,8 +96,8 @@ class ObjectTapHandler {
         self.eventChannel = eventChannel
         self.ioObjectManager = ioObjectManager
         self.objectsQueue = DispatchQueue(
-            label: "com.mapness.panoramas.markers-queue",
-            qos: .utility
+            label: "com.mapness.markers-queue",
+            qos: .userInteractive
         )
         self.registrar = registrar
         self.flutterApi = FlutterMapApi(binaryMessenger: registrar.messenger())
