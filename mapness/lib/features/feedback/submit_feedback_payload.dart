@@ -25,7 +25,12 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
       fields: fields
           .map((e) => FeedbackFieldPayloadEntity(
                 fieldId: e.id,
-                value: e.value,
+
+                /// Oh my god, this is so bad. Blame dart sum types.
+                /// And retarded type system. Oh there are no such thing...
+                /// Sum types of course.
+                /// https://github.com/dart-lang/language/issues/83
+                value: e.valueToJson(),
               ))
           .toIList(),
       category: categoryId,
@@ -36,9 +41,7 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
   void keepAliveForAWhile() {
     final link = ref.keepAlive();
     // TODO(Demezy): tweak somehow not to do such shit
-    /// Since some navigation it is possible that provider would be disposed
-    Future.delayed(const Duration(minutes: 1), () {
-      link.close();
-    });
+    /// Since some navigation, it is possible that provider would be disposed
+    Future.delayed(const Duration(minutes: 1), link.close);
   }
 }

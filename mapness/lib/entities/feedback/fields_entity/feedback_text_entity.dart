@@ -53,4 +53,7 @@ class FeedbackTextEntity extends FeedbackBaseEntity<String> {
         value: value,
         isHidden: isHidden,
       );
+
+  @override
+  dynamic valueToJson() => value;
 }
