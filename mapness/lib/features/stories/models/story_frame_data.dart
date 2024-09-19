@@ -59,16 +59,16 @@ class StoryFrameData {
   });
 
   /// Creates a copy of this [StoryFrameData] object with the given fields replaced with the new values.
-  StoryFrameData copyWith({
-    String? storyId,
-    String? imageUrl,
-    bool? isWatched,
-    StoryFrameAction? action,
-    int? duration,
-    bool? fullscreenImage,
-    bool? isAssetImage,
-    Color? closeButtonColor,
-    StoryFrameTexts? networkTexts,
+  StoryFrameData copyWith(
+          {String? storyId,
+          String? imageUrl,
+          bool? isWatched,
+          StoryFrameAction? action,
+          int? duration,
+          bool? fullscreenImage,
+          bool? isAssetImage,
+          Color? closeButtonColor,
+          StoryFrameTexts? networkTexts,
           bool? isButtonEnabled}) =>
       StoryFrameData(
         isAssetImage: isAssetImage ?? this.isAssetImage,
@@ -99,7 +99,8 @@ class StoryFrameData {
   /// Returns the texts for this [StoryFrameData] based on the story ID and the provided localizations.
   StoryFrameTexts textFromId({
     required AppLocalizations l10n,
-  }) => networkTexts ?? StoryFrameTexts.fromId(l10n, storyId);
+  }) =>
+      networkTexts ?? StoryFrameTexts.fromId(l10n, storyId);
 
   String? imageUrlForLocale(TextDirection direction) => direction == TextDirection.rtl ? arabicImageUrl : imageUrl;
 }
