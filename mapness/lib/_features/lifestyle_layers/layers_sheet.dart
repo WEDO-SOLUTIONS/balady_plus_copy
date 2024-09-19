@@ -167,6 +167,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
 
   // If the main layer [_layersController] is in hidden position then close the panel and make pop
   void _layersControllerListener() {
+    // I did it like in 2gis, if the curtain is below half, it will close immediately
     if (_isShown && _layersController.size <= _layersHiddenHeight) {
       final goRoute = ref.read(goRouterProvider);
 
