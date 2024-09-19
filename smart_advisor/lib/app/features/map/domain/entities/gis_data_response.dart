@@ -97,4 +97,37 @@ class GisDataResponse {
 
     return address;
   }
+
+  Map<String, dynamic> toJson() => {
+        "Admin_MunicipalityID": adminMunicipalityId,
+        "Admin_MunicipalityName": adminMunicipalityName,
+        "AmanaCode": amanaCode,
+        "AmanaName": amanaName,
+        "Balady_DistrictID": baladyDistrictId,
+        "Balady_DistrictName": baladyDistrictName,
+        "CityName": cityName,
+        "CleanInfo": cleanInfo,
+        "DistrictID": districtId,
+        "DistrictName": districtName,
+        "Following": following,
+        "IsWithinArcheologicalZones": isWithinArcheologicalZones,
+        "IsWithinHPZones": isWithinHpZones,
+        "IsWithinNeomZones": isWithinNeomZones,
+        "LightInfo": lightInfo,
+        "LocationURL": locationUrl,
+        "MUNICIPALITYUNIQUECODE": municipalityuniquecode,
+        "MunicipalityID": municipalityId,
+        "MunicipalityName": municipalityName,
+        "Region": region,
+        "StreetCode": streetCode,
+        "StreetName": streetName,
+        "SubDistrictID": subDistrictId,
+        "SubDistrictName": subDistrictName,
+        "Sub_MunicipalityID": subMunicipalityId,
+        "Sub_MunicipalityName": subMunicipalityName,
+        "Sub_Municipalityguid": subMunicipalityguid,
+        "parcel_No": parcelNo,
+        "plan_No": planNo,
+        "isVillage": isVillage
+      };
 }

@@ -1,3 +1,4 @@
+import '../../../smart_advisor.dart';
 import '../../core/services/local/navigation_services.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';
@@ -65,7 +66,7 @@ class _StartpageState extends State<Startpage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      NavigationService.navigatorKey.currentState!.pop(context);
+                      Navigator.pop(SmartAdvisor.ctx);
                     },
                     icon: SvgPicture.asset(
                       IconPath.backIcon,
@@ -86,7 +87,7 @@ class _StartpageState extends State<Startpage> {
               Padding(
                 padding: const EdgeInsets.only(right: 40, left: 40),
                 child: Text(
-                  "اخبرنا اهتمامتك لنساعدك ونوجه التطبيق حسب اهتمامتك واحتياجاتك",
+                  "اخبرنا عن اهتماماتك لنساعدك ونوجه التطبيق حسب اهتماماتك واحتياجاتك",
                   style: AppStyle.textRegularRomanStyle
                       .copyWith(color: AppColor.textSecondaryColor),
                   textAlign: TextAlign.center,

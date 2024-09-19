@@ -14,7 +14,7 @@ class InternetDialog extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
-        height: 250,
+        height: 210,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -23,8 +23,10 @@ class InternetDialog extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 20),
+          padding:
+              const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 20),
           child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 height: 4,
@@ -53,9 +55,14 @@ class InternetDialog extends StatelessWidget {
               const SizedBox(
                 height: 8,
               ),
-              Text(
-                'هل سيكون العمل الجديد عبر الانترنت بشكل كامل',
-                style: AppStyle.textRegularRomanStyle,
+              Row(
+                children: [
+                  Text(
+                    'هل سيكون العمل الجديد عبر الانترنت بشكل كامل',
+                    style: AppStyle.textRegularRomanStyle,
+                    textAlign: TextAlign.start,
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 30,
@@ -64,7 +71,7 @@ class InternetDialog extends StatelessWidget {
                 children: [
                   CustomButton(
                       btnHeight: 40,
-                      btnWidth: 174,
+                      btnWidth: 170,
                       btnColor: AppColor.surfaceAccentSecondaryColor,
                       textColor: AppColor.statusAccentColor,
                       onPress: () {
@@ -82,7 +89,7 @@ class InternetDialog extends StatelessWidget {
                   ),
                   CustomButton(
                       btnHeight: 40,
-                      btnWidth: 174,
+                      btnWidth: 170,
                       btnColor: AppColor.statusAccentColor,
                       onPress: () {
                         NavigationService.navigatorKey.currentState!.push(

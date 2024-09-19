@@ -47,6 +47,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
     on<GetViolationDetailsEvent>(_getViolationDetailsHanlder);
     on<GetViolationVD>(_getVDViolation);
     add(GetEntityActivityDetailsEvent());
+
+    sharedPrefs.saveRecentlyOpened(args);
   }
 
   void _getViolationDetailsHanlder(

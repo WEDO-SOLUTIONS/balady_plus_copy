@@ -59,11 +59,14 @@ class CalculatorState extends Equatable {
       ];
 
   double getTotalArea() {
-    return (double.tryParse(totalArea ?? "") ?? 0) +
-        (addetionalActivitesResponse
-                ?.map((e) =>
-                    (e.area ?? 0).toDouble()) // Convert each area to double
-                .reduce((value, element) => value + element) ??
-            0);
+    print("GFDDDDD ${totalArea}");
+    return (addetionalActivitesResponse?.isEmpty ?? true)
+        ? (double.tryParse(totalArea ?? "") ?? 0)
+        : (double.tryParse(totalArea ?? "") ?? 0) +
+            (addetionalActivitesResponse
+                    ?.map((e) =>
+                        (e.area ?? 0).toDouble()) // Convert each area to double
+                    .reduce((value, element) => value + element) ??
+                0);
   }
 }

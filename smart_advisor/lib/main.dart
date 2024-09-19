@@ -7,7 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di
     show initialize;
 
-import './app/core/services/services_exports.dart' show SimpleBlocObserver;
+import './app/core/se§rvices/services_exports.dart' show SimpleBlocObserver;
 import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
 import './app/app.dart';
 import './app/core/dependency_injection/dependency_injection_exports.dart'

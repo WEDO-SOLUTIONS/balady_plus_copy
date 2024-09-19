@@ -35,10 +35,10 @@ class _FeesCalculatorPageState extends State<FeesCalculatorPage> {
     // TODO: implement initState
     super.initState();
 
-    for (int i = 1;
-        i <= (widget.args.entityActivityDetailsResponse?.maxYears ?? 0);
+    for (int i = 0;
+        i < (widget.args.entityActivityDetailsResponse?.maxYears ?? 0);
         i++) {
-      licenseYears.add(LookUpItem(id: i, name: i.toString()));
+      licenseYears.add(LookUpItem(id: i + 1, name: (i + 1).toString()));
     }
   }
 
@@ -85,8 +85,10 @@ class _FeesCalculatorPageState extends State<FeesCalculatorPage> {
                       value: state.getTotalArea().toString(),
                       unit: 'متر مربع',
                     ),
-                    const SizedBox(height: 16),
-                    sectionTitle('الأنشطة الإضافية'),
+                    if (state.addetionalActivitesResponse?.isNotEmpty ?? false)
+                      const SizedBox(height: 16),
+                    if (state.addetionalActivitesResponse?.isNotEmpty ?? false)
+                      sectionTitle('الأنشطة الإضافية'),
                     ListView.builder(
                       shrinkWrap: true,
                       itemCount: state.addetionalActivitesResponse?.length ?? 0,
@@ -109,45 +111,48 @@ class _FeesCalculatorPageState extends State<FeesCalculatorPage> {
                         );
                       },
                     ),
-                    const SizedBox(height: 16),
-                    sectionTitle('التصاريح'),
-                    ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: state.permits?.length ?? 0,
-                      itemBuilder: (ctx, index) {
-                        return PermitItem(
-                          permitType: state.permits![index].permitTypeId!,
-                          onDelete: () {
-                            context.read<CalculatorBloc>().add(
-                                DeleteAddetionalActivityItemEvent(
-                                    index: index));
-                          },
-                          label: state.permits?[index].name ?? "",
-                          onDaysChanged: (String? t) {
-                            context.read<CalculatorBloc>().add(
-                                ChangePermitDaysEvent(
-                                    data: t ?? "", index: index));
-                          },
-                          onHeightChanged: (String? data) {
-                            context.read<CalculatorBloc>().add(
-                                ChangePermitHeightEvent(
-                                    data: data ?? "", index: index));
-                          },
-                          onNoOfVeichleChanged: (String? data) {
-                            context.read<CalculatorBloc>().add(
-                                ChangePermitNoOfVeichlesEvent(
-                                    data: data ?? "", index: index));
-                          },
-                          onWidthChanged: (String? data) {
-                            context.read<CalculatorBloc>().add(
-                                ChangePermitWidthEvent(
-                                    data: data ?? "", index: index));
-                          },
-                        );
-                      },
-                    ),
-                    SizedBox(height: 16),
+                    if (state.permits?.isNotEmpty ?? false)
+                      const SizedBox(height: 16),
+                    if (state.permits?.isNotEmpty ?? false)
+                      sectionTitle('التصاريح'),
+                    if (state.permits?.isNotEmpty ?? false)
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: state.permits?.length ?? 0,
+                        itemBuilder: (ctx, index) {
+                          return PermitItem(
+                            permitType: state.permits![index].permitTypeId!,
+                            onDelete: () {
+                              context.read<CalculatorBloc>().add(
+                                  DeleteAddetionalActivityItemEvent(
+                                      index: index));
+                            },
+                            label: state.permits?[index].name ?? "",
+                            onDaysChanged: (String? t) {
+                              context.read<CalculatorBloc>().add(
+                                  ChangePermitDaysEvent(
+                                      data: t ?? "", index: index));
+                            },
+                            onHeightChanged: (String? data) {
+                              context.read<CalculatorBloc>().add(
+                                  ChangePermitHeightEvent(
+                                      data: data ?? "", index: index));
+                            },
+                            onNoOfVeichleChanged: (String? data) {
+                              context.read<CalculatorBloc>().add(
+                                  ChangePermitNoOfVeichlesEvent(
+                                      data: data ?? "", index: index));
+                            },
+                            onWidthChanged: (String? data) {
+                              context.read<CalculatorBloc>().add(
+                                  ChangePermitWidthEvent(
+                                      data: data ?? "", index: index));
+                            },
+                          );
+                        },
+                      ),
+                    // SizedBox(height: 16),
                     sectionTitle('خيارات النظافه'),
                     CalculatorDropdown(
                       title: "خيارات النظافة",

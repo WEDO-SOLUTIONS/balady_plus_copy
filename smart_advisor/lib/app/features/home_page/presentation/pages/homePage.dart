@@ -1,4 +1,7 @@
+import 'package:smart_advisor/app/core/services/services_exports.dart';
+
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../select_activity/domain/entities/activity_details_page_params.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/utils_exports.dart';
 import '/app/features/_shared_feature_/presentation/models/grideViewModel.dart';
@@ -26,6 +29,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<ActivityDetailsPageParams> list = sharedPrefs.getRecentlyOpened();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: BlocProvider(
@@ -49,15 +53,12 @@ class HomePage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 210),
-                                  child: Text(
-                                    ("select_entity_type").tr(),
-                                    style: GoogleFonts.cairo(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
+                                Text(
+                                  ("select_entity_type").tr(),
+                                  style: GoogleFonts.cairo(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
                                   ),
                                 ),
                                 const SizedBox(
@@ -73,8 +74,8 @@ class HomePage extends StatelessWidget {
                                           const NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount:
-                                          (state.sectors?.length ?? 0) >= 3
-                                              ? 3
+                                          (state.sectors?.length ?? 0) >= 4
+                                              ? 4
                                               : (state.sectors?.length ?? 0),
                                       itemBuilder: (context, index) {
                                         return HomeSectorCardItem(
@@ -124,7 +125,7 @@ class HomePage extends StatelessWidget {
 
                                 // VdCard(),
                                 const SizedBox(height: 16),
-                                /* Text(
+                                Text(
                                   ("recently").tr(),
                                   style: GoogleFonts.cairo(
                                       fontSize: 18,
@@ -134,30 +135,23 @@ class HomePage extends StatelessWidget {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                               Container(
+                                Container(
                                   height: 92,
-                                  child: ListView(
+                                  child: ListView.builder(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
-                                      children: [
-                                        HomeRecentCard(
+                                      itemCount: list.length ?? 0,
+                                      itemBuilder: (context, index) {
+                                        return HomeRecentCard(
                                           onPress: () {
                                             /*  Navigator.push(context,
                                                 MaterialPageRoute(builder: (ctx) {
                                               return const MapPage();
                                             }));*/
                                           },
-                                        ),
-                                        HomeRecentCard(
-                                          onPress: () {
-                                            /* Navigator.push(context,
-                                                MaterialPageRoute(builder: (ctx) {
-                                              return const MapPage();
-                                            }));*/
-                                          },
-                                        ),
-                                      ]),
-                                ),*/
+                                        );
+                                      }),
+                                ),
                                 const SizedBox(height: 100),
                               ],
                             ),

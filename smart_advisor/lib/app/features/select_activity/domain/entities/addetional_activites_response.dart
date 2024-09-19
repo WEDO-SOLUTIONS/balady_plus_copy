@@ -63,4 +63,16 @@ class AddetionalActivityItem {
           minArea: minArea ?? this.minArea,
           homogeneous: homogeneous ?? this.homogeneous,
           area: area ?? this.area);
+
+  Map<String, dynamic> toJson() => {
+        "activityId": activityId,
+        "activityName": activityName,
+        "isicNumber": isicNumber,
+        "isicName": isicName,
+        "masterActivityId": masterActivityId,
+        "masterActivityName": masterActivityName,
+        "maxArea": maxArea,
+        "minArea": minArea,
+        "homogeneous": homogeneous,
+      };
 }
