@@ -1,25 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:smart_advisor/app/features/map/presentation/bloc/map_bloc.dart';
-import 'package:smart_advisor/app/features/select_activity/domain/entities/activity_details_page_params.dart';
-
-class MapPage extends StatefulWidget {
-  final ActivityDetailsPageParams args;
-  const MapPage({super.key, required this.args});
-
-  @override
-  State<MapPage> createState() => _MapPageState();
-}
-
-class _MapPageState extends State<MapPage> {
-  //late DgisMapController controller;
-  late MapBloc bloc = MapBloc(args: widget.args);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-/*
 import '/app/core/utils/utils_exports.dart';
 import '/app/features/map/presentation/bloc/map_bloc.dart';
 import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
@@ -169,4 +147,3 @@ class _MapPageState extends State<MapPage> {
     }
   }
 }
-*/
