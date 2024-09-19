@@ -42,7 +42,9 @@ class EnvironmentConfig {
         twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
-        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
+
+        /// swagger: https://momrah-balady-dev-discrepancy.on-premise.2gis.dev/docs/
+        feedbackApi: 'https://momrah-balady-dev-discrepancy.on-premise.2gis.dev/docs/',
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -76,6 +78,8 @@ class EnvironmentConfig {
         twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
-        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
+
+        /// swagger: https://momrah-balady-discrepancy.on-premise.2gis.dev/docs/
+        feedbackApi: 'https://momrah-balady-discrepancy.on-premise.2gis.dev/docs/',
       );
 }
