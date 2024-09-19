@@ -16,7 +16,7 @@ class LayersSheet extends ConsumerStatefulWidget {
 
 class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
   static const _layersPanelMaxHeight = .5;
-  static const _layersHiddenHeight = 0.1;
+  static const _layersHiddenHeight = 0.05;
   static const _parkingPanelMaxHeight = .35;
   static const duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
