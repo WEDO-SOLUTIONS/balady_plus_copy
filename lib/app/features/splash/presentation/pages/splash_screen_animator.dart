@@ -1,45 +1,68 @@
-import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:gif/gif.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
-import '../../splash_exports.dart' show BottomLogoWidget, CenterLogoWidget;
+import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../widgets/splash_screen_animation.dart';
 
-class SplashScreenAnimator extends StatelessWidget {
+class SplashScreenAnimator extends StatefulWidget {
   final SplashScreenAnimation animation;
   final AnimationController controller;
+
   SplashScreenAnimator({Key? key, required this.controller})
       : animation = SplashScreenAnimation(controller),
         super(key: key);
 
   @override
+  State<SplashScreenAnimator> createState() => _SplashScreenAnimatorState();
+}
+
+class _SplashScreenAnimatorState extends State<SplashScreenAnimator> with SingleTickerProviderStateMixin {
+
+
+  @override
   Widget build(BuildContext context) {
     if (CommonFunctions.changeSpalsh()) {
-      /*return Image.asset(
-        "assets/images/eid-splash.png",
-        fit: BoxFit.fill,
-      );*/
+      return Scaffold(
+        backgroundColor: AppColor.primary900Light,
+        body: SizedBox(
+          width: double.maxFinite,
+          height: double.maxFinite,
+          child: Gif(
+            image: const AssetImage("assets/images/splash-screen.gif"),
+            // controller: GifController(vsync: this), // if duration and fps is null, original gif fps will be used.
+            // fps: 30,
+            // duration: const Duration(seconds: 10),
+            fit: BoxFit.cover,
+            autostart: Autostart.once,
+            onFetchCompleted: () async {
+              await Future.delayed(const Duration(seconds: 4));
+              sl<EntryPointCubit>().hideSplash();
+            },
+          ),
+        ),
+      );
 
-       return Gif(
-         image: const AssetImage("assets/images/splash-screen.gif"),
-         // controller:
-         //    _controller, // if duration and fps is null, original gif fps will be used.
-         fps: 30,
-
-         fit: BoxFit.cover,
-
-         duration: const Duration(seconds: 10),
-         autostart: Autostart.once,
-         onFetchCompleted: () {},
-       );
+      // return Gif(
+      //   image: const AssetImage("assets/images/splash-screen.gif"),
+      //   // controller:
+      //   //    _controller, // if duration and fps is null, original gif fps will be used.
+      //   fps: 30,
+      //
+      //   fit: BoxFit.cover,
+      //
+      //   duration: const Duration(seconds: 10),
+      //   autostart: Autostart.once,
+      //   onFetchCompleted: () {},
+      // );
     }
     return Scaffold(
         backgroundColor: AppColor.primary900Light,
         body: AnimatedBuilder(
-          animation: animation.controller,
+          animation: widget.animation.controller,
           builder: (context, _) {
             return Center(
               child: Lottie.asset(
@@ -47,7 +70,7 @@ class SplashScreenAnimator extends StatelessWidget {
                 fit: BoxFit.fill,
                 height: 168,
                 width: 228,
-                controller: controller,
+                controller: widget.controller,
               ),
             );
           },
