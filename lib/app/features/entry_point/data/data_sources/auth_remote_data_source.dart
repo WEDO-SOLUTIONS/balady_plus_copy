@@ -21,23 +21,16 @@ import 'package:balady_plus/app/features/entry_point/data/models/permission_resp
 
 abstract class EntryPointRemoteDataSource {
   Future<AuthorizationTokenResponse> authorize();
-
   Future<EndSessionResponse> endSession();
-
   Future<String> logout();
 
   Future<TokenResponse> refreshToken(String refreshToken);
-
   Future<SsoUserInfoModel?> getSSOProfile();
-
   Future<String?> getCookie();
-
   Future<ApigeeTokenResponse> getAPIgeeToken();
-
   Future<ForceUpdateResponseModel> getForceVersion({required ForceUpdateParams params});
 
   Future<dynamic> getDataTest();
-
   Future<PermissionResponseModel> getEkramRules({required GetPermissionParamsModel params});
 
   Future<String> getPaymentURL({required PaymentRequest params});
@@ -221,10 +214,8 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       EndSessionResponse? response = await _appAuth.endSession(
         EndSessionRequest(
           idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
+          postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
           serviceConfiguration: _serviceConfiguration,
-          additionalParameters: {
-            "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl,
-          },
         ),
       );
 
@@ -315,10 +306,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       var data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel
-          .fromMap(data)
-          .data
-          ?.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result.toFuture();
     } on DioException catch (error) {
@@ -391,8 +379,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
   // HANDLERS
 
-  Exception serverException(Object ex, Response? response) =>
-      ServerException(
+  Exception serverException(Object ex, Response? response) => ServerException(
         "errors_server_error_2".tr(),
         exception: APIException(
           errorMessage: ex.toString(),
