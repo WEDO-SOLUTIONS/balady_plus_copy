@@ -187,8 +187,8 @@ class ActivitesRemoteDataSourceImplementation
   Future<List<LookUpItemModel>> getIsics(IsicsRequestParams params) async {
     try {
       final response = await webService.dio.get(
-        ApiUrls.getIsics(params.rubricId),
-      );
+          ApiUrls.getIsics(params.categoryId),
+          queryParameters: {"rubricId": params.rubricId});
       print(response.data);
 
       final result = ResponseBodyModel.fromMap(response.data).data?.result;

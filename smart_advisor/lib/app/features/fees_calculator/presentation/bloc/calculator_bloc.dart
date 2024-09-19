@@ -45,6 +45,8 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
 
     on<ChangePermitDaysEvent>(changePermitDays);
     on<ChangePermitNoOfVeichlesEvent>(changePermitNoOfVeichles);
+
+    print("GGGDDF ${args.area.toString()}");
   }
 
   void changePermitNoOfVeichles(

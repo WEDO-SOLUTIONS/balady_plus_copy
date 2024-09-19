@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '/app/features/home_page/presentation/bloc/home_bloc.dart';
 import '/app/features/home_page/presentation/bloc/home_event.dart';
 import '/app/features/home_page/presentation/bloc/home_state.dart';
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
+//import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 class ChatBotWidget extends StatefulWidget {
   const ChatBotWidget({super.key});
@@ -24,7 +24,7 @@ class _ChatBotWidgetState extends State<ChatBotWidget> {
         builder: (context, state) {
           return GestureDetector(
             onTap: () {
-              BaladyServices.openChatGPT();
+              //   BaladyServices.openChatGPT();
             },
             child: Container(
               margin: EdgeInsets.all(32),

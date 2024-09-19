@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:mapness/pages/path_nav/ui/layout_size_wrapper.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:search_highlight_text/search_highlight_text.dart';
 import 'package:smart_advisor/app/core/utils/constants/language.dart';
@@ -8,6 +7,7 @@ import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets
 import 'package:smart_advisor/app/features/documents/models/general_conditions_model.dart';
 import 'package:collection/collection.dart';
 
+import '../../core/utils/layout_size_wrapper.dart';
 import '../_shared_feature_/presentation/widgets/custom_widgets/general_text_dialog.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';

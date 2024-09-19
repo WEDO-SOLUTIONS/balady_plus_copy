@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -6,25 +9,56 @@ import 'package:smart_advisor/app/features/shared_features/widgets/app_bar.dart'
 
 import '../blocs/_bloc/qr_bloc.dart';
 
+String scanResult = "";
+late QRViewController controller;
+final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+
 class QrScanPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _QrScanPageState();
 }
 
 class _QrScanPageState extends State<QrScanPage> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
   String? qrText;
 
   @override
   void reassemble() {
     super.reassemble();
-    if (controller != null) {
-      if (Theme.of(context).platform == TargetPlatform.android) {
-        controller!.pauseCamera();
-      }
-      controller!.resumeCamera();
+    if (Platform.isAndroid && controller != null) {
+      controller?.pauseCamera();
     }
+    if (controller != null) controller?.resumeCamera();
+  }
+
+  listen() {
+    controller?.scannedDataStream.take(1).listen((scanData) async {
+      scanResult = scanData.code!;
+      checkBarcode(context);
+    });
+  }
+
+  void checkBarcode(BuildContext context) async {
+    // success
+    controller.pauseCamera();
+    if (scanResult.isNotEmpty) {
+      String text = scanResult.split("/").last ?? "";
+      if (text.isNotEmpty)
+        context.read<QRBloc>().add(GetQrDetailsEvent(qr: text));
+    } else {
+      CommonFunctions.showError("خطأ");
+      Timer(const Duration(seconds: 3), () async {
+        controller.resumeCamera();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+    //facilityRatingViewModel.ratingItems = [];
+    // locator.resetLazySingleton(instance: facilityRatingViewModel);
+    //locator.resetLazySingleton(instance: viewModel);
   }
 
   @override
@@ -43,25 +77,19 @@ class _QrScanPageState extends State<QrScanPage> {
               appBar: CustomAppBar(
                 title: 'مسح الرمز المرئي',
               ),
-              body: Column(
+              body: Stack(
                 children: <Widget>[
                   Expanded(
                     flex: 4,
                     child: QRView(
                       key: qrKey,
-                      onQRViewCreated: (QRViewController controller) {
+                      onQRViewCreated: (QRViewController c) {
                         setState(() {
-                          this.controller = controller;
+                          controller = c;
                         });
-                        controller.scannedDataStream.take(1).listen((scanData) {
-                          setState(() {
-                            qrText = scanData.code;
-                          });
-                          String text = scanData.code?.split("/").last ?? "";
-                          if (text.isNotEmpty)
-                            context
-                                .read<QRBloc>()
-                                .add(GetQrDetailsEvent(qr: text));
+                        controller.scannedDataStream.listen((scanData) async {
+                          scanResult = scanData.code!;
+                          checkBarcode(context);
                         });
                       },
                       overlay: QrScannerOverlayShape(
@@ -73,6 +101,12 @@ class _QrScanPageState extends State<QrScanPage> {
                       ),
                     ),
                   ),
+                  if (state.qrStatus == BlocStatus.loading)
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: AppColor.statusAccentColor,
+                      ),
+                    )
                 ],
               ),
             );
@@ -80,13 +114,5 @@ class _QrScanPageState extends State<QrScanPage> {
         ),
       ),
     );
-  }
-
-  void _onQRViewCreated(QRViewController controller) {}
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
   }
 }

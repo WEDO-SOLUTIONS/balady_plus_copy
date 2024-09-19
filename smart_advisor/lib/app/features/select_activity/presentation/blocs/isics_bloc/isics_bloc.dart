@@ -23,8 +23,7 @@ class IsicsBloc extends Bloc<IsicsEvent, IsicsState> {
       emit(state.copyWith(isicsStatus: BlocStatus.loading));
 
       final failureOrSuccess = await _getIsics(IsicsRequestParams(
-        rubricId: args.rubric.id,
-      ));
+          rubricId: args.rubric.id, categoryId: args.category.id));
       await failureOrSuccess.fold(
         (failure) async {
           print(failure);

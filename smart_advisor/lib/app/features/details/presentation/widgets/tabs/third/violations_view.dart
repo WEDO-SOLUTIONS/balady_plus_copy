@@ -12,7 +12,7 @@ import '/app/features/home2/widgets/objection_card.dart';
 import '/app/features/home2/widgets/violating_commercial_activities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
+//import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 import '../../../../data/models/entity_violation_activity_model.dart';
 
@@ -120,7 +120,7 @@ class _ViolationsViewState extends State<ViolationsView> {
                     btnColor: AppColor.surfaceAccentSecondaryColor,
                     textColor: AppColor.statusAccentColor,
                     onPress: () {
-                      BaladyServices.openObjections();
+                      //     BaladyServices.openObjections();
                     },
                     text: "التقديم على اعتراض"),
                 /*const ObjectionCard(

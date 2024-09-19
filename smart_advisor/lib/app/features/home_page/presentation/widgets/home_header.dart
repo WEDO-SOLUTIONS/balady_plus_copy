@@ -6,8 +6,6 @@ import '/app/core/utils/constants/app_style.dart';
 import '/app/core/utils/utils_exports.dart';
 import '/app/features/shared_features/widgets/custom_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_svg/svg.dart';
 import '/app/core/utils/constants/paths/icon_paths.dart';
 import '/app/features/start_page/startPage.dart';
 import '/app/features/_shared_feature_/presentation/widgets/custom_widgets/customTextField.dart';
@@ -69,7 +67,7 @@ class HomeHeader extends StatelessWidget {
                   style:
                       AppStyle.accentBoldStyle.copyWith(color: AppColor.white),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Container(
@@ -78,16 +76,14 @@ class HomeHeader extends StatelessWidget {
                     "تعرف على كافة الاشتراطات والمعلومات المتعلقة بالمنشأة ",
                     textAlign: TextAlign.center,
                     maxLines: 2,
-                    style: GoogleFonts.cairo(
-                        //wordSpacing: 5.0,
-                        fontSize: 16,
-                        color: Colors.white),
+                    style: AppStyle.textRegularRomanStyle
+                        .copyWith(color: AppColor.white),
                   ),
                 ),
               ],
             ),
             const SizedBox(
-              height: 30,
+              height: 60,
             ),
             GestureDetector(
                 onTap: () {
@@ -96,6 +92,7 @@ class HomeHeader extends StatelessWidget {
                 },
                 child: const Textfield(
                   isEnabled: false,
+                  title: "ابحث عن منشأة",
                 )),
           ],
         ),

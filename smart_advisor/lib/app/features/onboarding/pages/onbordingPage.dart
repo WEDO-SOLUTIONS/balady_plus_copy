@@ -1,3 +1,5 @@
+import 'package:smart_advisor/smart_advisor.dart';
+
 import '../../../core/services/local/navigation_services.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';
@@ -70,8 +72,8 @@ class _OnbordingpageState extends State<Onbordingpage> {
               btnHeight: 48,
               btnColor: AppColor.statusAccentColor,
               onPress: () {
-                NavigationService.navigatorKey.currentState!
-                    .push(MaterialPageRoute(builder: (ctx) {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (ctx) {
                   return Startpage();
                 }));
               },

@@ -1,4 +1,4 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:smart_advisor/app/features/map/presentation/bloc/map_bloc.dart';
 import 'package:smart_advisor/app/features/select_activity/domain/entities/activity_details_page_params.dart';
 
@@ -18,8 +18,8 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Container();
   }
-}*/
-
+}
+/*
 import '/app/core/utils/utils_exports.dart';
 import '/app/features/map/presentation/bloc/map_bloc.dart';
 import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
@@ -169,3 +169,4 @@ class _MapPageState extends State<MapPage> {
     }
   }
 }
+*/

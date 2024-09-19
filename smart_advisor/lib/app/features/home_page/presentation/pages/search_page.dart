@@ -35,7 +35,7 @@ class _SearchPageState extends State<SearchPage> {
           builder: (context, state) {
             return Scaffold(
               appBar: CustomAppBar(
-                title: "بحث",
+                title: "ابحث عن منشاه ",
               ),
               body: Padding(
                 padding: const EdgeInsets.all(16.0),

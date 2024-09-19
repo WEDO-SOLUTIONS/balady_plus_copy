@@ -126,7 +126,9 @@ class _RubricDialogState extends State<RubricDialog> {
                         context,
                         RouteName.isicsPage,
                         arguments: IsicsPageParams(
-                            rubric: state.rubrics![selectedIndex]),
+                          rubric: state.rubrics![selectedIndex],
+                          category: widget.args.category,
+                        ),
                       );
                     },
                     text: "التالي"),
