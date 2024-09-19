@@ -61,7 +61,9 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
 
   @override
   Widget build(BuildContext context) {
-    const controlsHeight = 56;
+    final freeRoamState = ref.watch(freeRoamStarterProvider);
+    final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
+    final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
     final screenHeight = MediaQuery.of(context).size.height;
 
     final bool areControlsVisible =

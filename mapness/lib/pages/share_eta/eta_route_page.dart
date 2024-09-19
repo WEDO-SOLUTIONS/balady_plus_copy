@@ -1,14 +1,20 @@
+import 'dart:async';
+
 import 'package:balady_uikit/balady_uikit.dart' show Spacing;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/features/share_eta/helpers/constants.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_arrival_card.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 class EtaRoutePage extends ConsumerStatefulWidget {
   final double? latitude;
@@ -24,6 +30,8 @@ class EtaRoutePage extends ConsumerStatefulWidget {
 }
 
 class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
+  Timer? _etaExpiredTimer;
+
   @override
   void initState() {
     super.initState();
@@ -33,24 +41,65 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
   }
 
   @override
+  void dispose() {
+    _etaExpiredTimer?.cancel();
+    _etaExpiredTimer = null;
+    ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref
       ..watch(etaGeoSubscriberProvider)
+      ..listen(etaWebsocketStatusProvider, (_, current) {
+        final connected = current;
+
+        if (!connected && _etaExpiredTimer != null) {
+          _etaExpiredTimer?.cancel();
+          _etaExpiredTimer = null;
+          ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
+        }
+      })
       ..listen(websocketErrorHandlerProvider, (_, current) {
         final (code, reason) = current;
 
         final reasonData = reason?.toWebsocketReason();
 
-        if (code == 1000 && [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
+        if (code != EtaErrorStatusCodes.noDataInStream && _etaExpiredTimer != null) {
+          _etaExpiredTimer?.cancel();
+          _etaExpiredTimer = null;
+          ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
+        }
+
+        if (code == EtaErrorStatusCodes.endConnection &&
+            [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
           context.pop();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showEtaExpired(rootNavigatorKey.currentContext!);
           });
-        }
-        if (code == 4004) {
-          context.pop();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _showBroadcastExpired(rootNavigatorKey.currentContext!);
+        } else if (code == EtaErrorStatusCodes.noDataInStream) {
+          if (_etaExpiredTimer != null) {
+            return;
+          }
+          ToastOverlay.of(rootNavigatorKey.currentContext!).show(
+              title: context.l10n.restoringConnection,
+              isDismissible: false,
+              displayDuration: const Duration(seconds: 30));
+          _etaExpiredTimer = Timer(const Duration(seconds: 30), () async {
+            _etaExpiredTimer?.cancel();
+            _etaExpiredTimer = null;
+
+            await ref.read(etaGeoSubscriberProvider.notifier).stopStreaming();
+
+            ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
+            if (context.mounted) {
+              context.pop();
+            }
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _showBroadcastExpired(rootNavigatorKey.currentContext!);
+            });
           });
         }
       });

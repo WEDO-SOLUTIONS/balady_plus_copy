@@ -18,6 +18,7 @@ import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class MapHiddenStateControls extends ConsumerStatefulWidget {
   final StatefulBottomSheetController<ThreeStateBottomSheet> controller;
@@ -29,10 +30,13 @@ class MapHiddenStateControls extends ConsumerStatefulWidget {
 }
 
 class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls> {
+  late final ItemScrollController quickScrollController;
+
   @override
   void initState() {
     super.initState();
     widget.controller.addListener(update);
+    quickScrollController = ItemScrollController();
   }
 
   @override
@@ -74,6 +78,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     ref.listen(freeRoamStarterProvider, (_, state) {
       if (state.canStart && state.isAutorun) {
         widget.controller.setState(ThreeStateBottomSheet.hidden);
+        quickScrollController.scrollTo(index: 0, duration: const Duration(milliseconds: 150), alignment: 1);
       }
     });
 
@@ -126,6 +131,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                       child: MapQuickFilters(
                         height: controlsHeight,
                         forMap: true,
+                        itemScrollController: quickScrollController,
                         id: QuickFilterScreen.controls,
                         customFilters: [
                           FilterItemBuilder(
@@ -232,6 +238,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction> with TickerProv
           borderRadius: BorderRadius.circular(borderRadius),
           onTap: () {
             FreeRoamRoute.open(ref.watch(goRouterProvider));
+            ref.read(freeRoamStarterProvider.notifier).setShown();
           },
           child: ConstrainedBox(
             constraints: BoxConstraints(

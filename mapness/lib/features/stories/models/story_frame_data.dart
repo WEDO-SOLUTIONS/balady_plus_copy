@@ -41,6 +41,8 @@ class StoryFrameData {
   /// The texts to be displayed in the network story.
   final StoryFrameTexts? networkTexts;
 
+  final bool isButtonEnabled;
+
   /// Constructs a [StoryFrameData] object.
   const StoryFrameData({
     required this.storyId,
@@ -53,6 +55,7 @@ class StoryFrameData {
     this.isAssetImage = false,
     this.networkTheme,
     this.networkTexts,
+    this.isButtonEnabled = true,
   });
 
   /// Creates a copy of this [StoryFrameData] object with the given fields replaced with the new values.
@@ -65,6 +68,7 @@ class StoryFrameData {
     bool? fullscreenImage,
     bool? isAssetImage,
     Color? closeButtonColor,
+    StoryFrameTexts? networkTexts,
   }) =>
       StoryFrameData(
         isAssetImage: isAssetImage ?? this.isAssetImage,
@@ -74,6 +78,7 @@ class StoryFrameData {
         fullscreenImage: fullscreenImage ?? this.fullscreenImage,
         action: action ?? this.action,
         duration: duration ?? this.duration,
+        networkTexts: networkTexts ?? this.networkTexts,
       );
 
   /// Returns the theme for this [StoryFrameData] based on the story ID and the provided color and text themes.
@@ -93,8 +98,7 @@ class StoryFrameData {
   /// Returns the texts for this [StoryFrameData] based on the story ID and the provided localizations.
   StoryFrameTexts textFromId({
     required AppLocalizations l10n,
-  }) =>
-      networkTexts ?? StoryFrameTexts.fromId(l10n, storyId);
+  }) => networkTexts ?? StoryFrameTexts.fromId(l10n, storyId);
 
   String? imageUrlForLocale(TextDirection direction) => direction == TextDirection.rtl ? arabicImageUrl : imageUrl;
 }

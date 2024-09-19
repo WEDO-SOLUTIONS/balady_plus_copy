@@ -11,7 +11,10 @@ import 'package:mapness/widgets/feedback/feedback_select_options_widget.dart';
 
 class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
   final int objectId;
-  const FeedbackSelectOptionsComponentWidget({required this.objectId, Key? key}) : super(key: key);
+  const FeedbackSelectOptionsComponentWidget({
+    required this.objectId,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

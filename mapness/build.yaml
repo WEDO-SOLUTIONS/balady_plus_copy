@@ -3,6 +3,8 @@ targets:
     builders:
       freezed:
         options:
+          # Add build_extensions to speed up freezed generation
+          build_extensions: { ".dart": [".freezed.dart"] }
         generate_for:
           - "lib/entities/**.dart"
           - "lib/features/**/*.dart"
@@ -11,7 +13,18 @@ targets:
         options:
           include_if_null: false
           checked: true
+          # Add explicit_to_json for faster serialization
+          explicit_to_json: true
         generate_for:
           - "lib/features/**/*.dart"
           - "lib/entities/**/*.dart"
           - "lib/_features/poi_card/domain/dto/dgis_photos_dto.dart"
+
+      riverpod_generator:
+        options:
+          provider_name_suffix: "Provider"
+        generate_for:
+          # include:
+          #   - "lib/features/**/*.dart"
+          exclude:
+            - "lib/app/routes/**"

@@ -59,11 +59,8 @@ class EntryPointState extends Equatable {
       userInfo: userInfo ?? this.userInfo,
       blocStatus: blocStatus ?? this.blocStatus,
       apigeeToken: apigeeToken ?? this.apigeeToken,
-      selectedDelegator: selectedDelegator == null
-          ? this.selectedDelegator
-          : selectedDelegator.value,
-      selectedAgent:
-          selectedAgent == null ? this.selectedAgent : selectedAgent.value,
+      selectedDelegator: selectedDelegator == null ? this.selectedDelegator : selectedDelegator.value,
+      selectedAgent: selectedAgent == null ? this.selectedAgent : selectedAgent.value,
       userLocation: userLocation ?? this.userLocation,
       userLocationGIS: userLocationGIS ?? this.userLocationGIS,
       gisStatus: gisStatus ?? this.gisStatus,
@@ -80,6 +77,7 @@ class EntryPointState extends Equatable {
   @override
   List<Object?> get props => [
         status,
+        userInfo,
         token,
         cityId,
         blocStatus,
@@ -93,6 +91,5 @@ class EntryPointState extends Equatable {
       ];
 
   @override
-  String toString() =>
-      'AuthState(status: $status, errorMessage: $errorMessage)';
+  String toString() => 'AuthState(status: $status, errorMessage: $errorMessage)';
 }

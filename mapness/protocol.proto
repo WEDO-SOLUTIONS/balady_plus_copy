@@ -129,6 +129,7 @@ message Story {
       string title = 1;
       Link link = 2;
       Style style = 3;
+      bool is_enabled = 4;
     }
 
     Image background = 1;

@@ -158,28 +158,6 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                         ),
                       ),
                       ContentColumn(
-                        headerTitle: l10n.backgroundNavigation.toUpperCase(),
-                        content: [
-                          ContentRow(
-                            onToggle: (value) {
-                              soundSettingsNotifier.toggleBackgroundNavigation(backgroundNavigation: value);
-                            },
-                            options: ContentRowOptions(
-                              wrapperColor: color.surfaceBaseTertiary,
-                              wrapperEnabled: true,
-                              title: l10n.backgroundNavigation,
-                              titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                                color: color.textAndIconsBasePrimary,
-                              ),
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: soundSettingsModel.backgroundNavigation,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      ContentColumn(
                         headerTitle: l10n.eventAlert,
                         content: [
                           ContentWrapper(

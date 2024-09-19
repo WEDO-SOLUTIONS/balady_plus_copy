@@ -2,16 +2,16 @@ part of 'toast_overlay.dart';
 
 class _ToastWidget extends StatelessWidget {
   final String title;
-  final String actionText;
+  final String? actionText;
   final String? iconAsset;
   final IconData? iconData;
 
-  final VoidCallback onActionTap;
+  final VoidCallback? onActionTap;
 
   const _ToastWidget({
     required this.title,
-    required this.actionText,
-    required this.onActionTap,
+    this.actionText,
+    this.onActionTap,
     this.iconData,
     this.iconAsset,
   });
@@ -52,18 +52,21 @@ class _ToastWidget extends StatelessWidget {
                       title,
                       style: context.textStyleV3.bodyLargeRegular,
                     ),
-                    GestureDetector(
-                      onTap: onActionTap,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-                        child: Text(
-                          actionText,
-                          style: context.textStyleV3.bodyLargeRegular.copyWith(
-                            color: context.colorsV2.accentActive,
+                    if (actionText != null)
+                      GestureDetector(
+                        onTap: onActionTap,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                          child: Text(
+                            actionText!,
+                            style: context.textStyleV3.bodyLargeRegular.copyWith(
+                              color: context.colorsV2.accentActive,
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      )
+                    else
+                      const SizedBox(height: Spacing.$3x),
                   ],
                 ),
               ),

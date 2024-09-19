@@ -50,8 +50,7 @@ class EnvironmentConfig {
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://apiservicesstg.balady.gov.sa/',
         jobsApi: 'https://apiservicesstg.balady.gov.sa/v1/recruitment-services',
-        twinsApi:
-            'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
+        twinsApi: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://sa1.ops.2gis.dev/balady-geo-urbi',
         feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
@@ -62,10 +61,9 @@ class EnvironmentConfig {
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://apiservices.balady.gov.sa/',
         jobsApi: 'https://apiservices.balady.gov.sa/v1/recruitment-services',
-        twinsApi:
-            'https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1',
+        twinsApi: 'https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
+        shareEtaApi: 'https://urbi-lifestyle.momrah.gov.sa',
         feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
       );
 
