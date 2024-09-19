@@ -444,6 +444,14 @@ class IconPath {
   static const biometric = '${_authPath}biometric$_svg';
   static const quick_access = '${_authPath}quick_access$_svg';
 
+  static const chat_bot_like_icon = '${_svgIconPath}chat-bot-like$_svg';
+  static const chat_bot_dislike_icon = '${_svgIconPath}chat-bot-dislike$_svg';
+  static const chat_bot_copy_icon = '${_svgIconPath}chat-bot-copy$_svg';
+
+
+
+
+
 }
 
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

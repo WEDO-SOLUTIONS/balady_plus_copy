@@ -93,12 +93,34 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
     }
   }
 
-  // void _sendEvent(DateTime dateSendData,Map<String,dynamic> dataEvent) {
-  //   Duration duration = DateTime.now().difference(dateSendData);
-  //   dataEvent["Answer_End_Duration"] = duration.inMilliseconds;
-  //   CommonFunctions.sendUXCamEventWithProperties(
-  //     UXCamEvents.sendQuestionChatBot,
-  //     dataEvent,
-  //   );
-  // }
+  @override
+  Future<Either<Failure, bool>> sendFeedBack({required String messID, required bool like}) async {
+
+    try {
+      final isEnabled = await remoteDataSource.sendFeedBack(messID: messID, like: like);
+      return Right(isEnabled);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+
+
+
+
+// void _sendEvent(DateTime dateSendData,Map<String,dynamic> dataEvent) {
+//   Duration duration = DateTime.now().difference(dateSendData);
+//   dataEvent["Answer_End_Duration"] = duration.inMilliseconds;
+//   CommonFunctions.sendUXCamEventWithProperties(
+//     UXCamEvents.sendQuestionChatBot,
+//     dataEvent,
+//   );
+// }
 }

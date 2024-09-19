@@ -18,6 +18,7 @@ abstract class ChatBotDataSources {
   Future<ChatBotMessageModel> sendQuestionMessage({required String question});
 
   Future<bool> chatBotIsEnabled();
+  Future<bool> sendFeedBack({required String messID, required bool like});
 }
 
 class ChatBotDataSourcesImplementation extends ChatBotDataSources {
@@ -93,7 +94,7 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         "Answer": result['response'],
         "Duration_Seconds": dateGetData.difference(dateSendData).inSeconds,
         "Duration_Milliseconds":
-            dateGetData.difference(dateSendData).inMilliseconds,
+        dateGetData.difference(dateSendData).inMilliseconds,
       };
       // CommonFunctions.sendUXCamEventWithProperties(
       //   UXCamEvents.sendQuestionChatBot,
@@ -158,12 +159,12 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         ),
       );
       StreamTransformer<Uint8List, List<int>> unit8Transformer =
-          StreamTransformer.fromHandlers(
+      StreamTransformer.fromHandlers(
         handleData: (data, sink) => sink.add(List<int>.from(data)),
       );
 
       StreamTransformer<String, String> stringTransformer =
-          StreamTransformer.fromHandlers(
+      StreamTransformer.fromHandlers(
         handleData: (data, sink) {
           print("sink : $data");
           // String sOne = data.substring(7);
@@ -238,5 +239,54 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         );
       }
     }
+  }
+
+
+  @override
+  Future<bool> sendFeedBack({required String messID, required bool like}) async {
+
+    Response? response;
+    try {
+      response = await webService.dio.post(ApiUrl.sendMessagechatBotFeedback,data: {"msg_id":messID,"feedback_value":like ? 1 : 0});
+      final data = response.data;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return result['msg_id'] == messID ;
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+
   }
 }

@@ -615,4 +615,9 @@ class ApiUrl {
   // static const String INQSPLClassifications =
   //     '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassifications';
 
+
+
+  static const sendMessagechatBotFeedback = '/v1/chatbot-services/assign-feedback';
+
+
 }

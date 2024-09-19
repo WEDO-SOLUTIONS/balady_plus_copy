@@ -10,4 +10,7 @@ abstract class ChatBotRepository {
       {required String question});
 
   Future<Either<Failure, bool>> chatBotIsEnabled();
+
+  Future<Either<Failure, bool>> sendFeedBack(
+      {required String messID, required bool like});
 }

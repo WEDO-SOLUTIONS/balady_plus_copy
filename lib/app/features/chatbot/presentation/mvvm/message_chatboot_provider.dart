@@ -16,7 +16,8 @@ class MessageChatBotProvider extends BaseViewModel {
   final ScrollController scrollController;
   final ValueNotifier<ChatBotMessageEntities> message;
   StreamSubscription? listen;
-
+  bool isClose = false;
+  String? messageID;
   MessageChatBotProvider({
     required this.repository,
     required this.message,
@@ -36,7 +37,7 @@ class MessageChatBotProvider extends BaseViewModel {
         question: question,
       );
       response.fold(
-        (error) {
+            (error) {
           message.value = message.value.copyWith(
             answer: error is ServerFailure
                 ? error.errorMessage
@@ -51,24 +52,34 @@ class MessageChatBotProvider extends BaseViewModel {
           }
           scrollControllerAction();
         },
-        (stream) {
+            (stream) {
           print("STAAAART STREAM 11");
           if (!isClose) {
             String typeData = "";
             listen = stream.listen((messageType) {
-              if(messageType.indexOf('\\') > 0 && messageType.indexOf('n') == -1) {
-                typeData = messageType; // what are the steps to apply to a commercial license
-              } else if (messageType.isNotEmpty) {
-                typeData += messageType;
-                String editMessage = typeData.replaceAll("\\n", "\n");
-                message.value = message.value.copyWith(
-                  answer: "${message.value.answer}$editMessage",
-                );
-                typeData = "";
-                isLoading = false;
-                notifyListeners();
-                message.notifyListeners();
-                scrollControllerAction();
+
+              if(messageID == null)
+              {
+                messageID = messageType;
+              }
+              else {
+                if (messageType.indexOf('\\') > 0 &&
+                    messageType.indexOf('n') == -1) {
+                  typeData =
+                      messageType; // what are the steps to apply to a commercial license
+                } else if (messageType.isNotEmpty) {
+                  typeData += messageType;
+                  String editMessage = typeData.replaceAll("\\n", "\n");
+                  message.value = message.value.copyWith(
+                      answer: "${message.value.answer}$editMessage",
+                      messID: messageID
+                  );
+                  typeData = "";
+                  isLoading = false;
+                  notifyListeners();
+                  message.notifyListeners();
+                  scrollControllerAction();
+                }
               }
             });
             listen!.onDone(() {
@@ -101,13 +112,13 @@ class MessageChatBotProvider extends BaseViewModel {
       );
       return message.value;
     } catch (error, stackTrace) {
-  LogsViewModel().sendEventFromModel(
-    event: ErrorExceptionModel(
-      nameEvent: EventsName.handledException,
-      message: error.toString(),
-      stackTrace: stackTrace.toString(),
-    ),
-  );
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       message.value = message.value.copyWith(
         answer: 'error_please_try_again_later'.tr(),
         haveError: true,
@@ -119,8 +130,6 @@ class MessageChatBotProvider extends BaseViewModel {
     notifyListeners();
     return message.value;
   }
-
-  bool isClose = false;
   void closeAnswer() {
     if (listen != null) {
       listen!.cancel();
@@ -140,5 +149,56 @@ class MessageChatBotProvider extends BaseViewModel {
         duration: const Duration(milliseconds: 450),
       );
     }
+  }
+
+
+
+
+  Future sendFeedBack(String messID,bool like) async {
+    isLoading = true;
+
+    try {
+
+      Either<Failure, bool> response;
+      response = await repository.repository.sendFeedBack(messID: messID, like: like);
+      response.fold(
+            (error) {
+          isLoading = false;
+          message.value = message.value.copyWith(
+              isLiked: null
+          );
+          message.notifyListeners();
+          notifyListeners();
+        },
+            (sucessfull) {
+
+          if(sucessfull)
+          {
+            message.value = message.value.copyWith(
+                isLiked: like
+            );
+
+          }
+
+          isLoading = false;
+          message.notifyListeners();
+          notifyListeners();
+
+        },
+      );
+
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+
+    }
+    isLoading = false;
+    notifyListeners();
+
   }
 }

@@ -20,7 +20,7 @@ class ChatBotProvider extends BaseViewModel {
   ScrollController scrollController = ScrollController();
 
   ValueNotifier<List<MessageChatBotProvider>> chatBotMessage =
-      ValueNotifier<List<MessageChatBotProvider>>([]);
+  ValueNotifier<List<MessageChatBotProvider>>([]);
 
   bool isEnabled = false;
   bool isLoadingEnabled = false;
@@ -64,13 +64,13 @@ class ChatBotProvider extends BaseViewModel {
       });
       return chatBotMessage;
     } catch (error, stackTrace) {
-  LogsViewModel().sendEventFromModel(
-    event: ErrorExceptionModel(
-      nameEvent: EventsName.handledException,
-      message: error.toString(),
-      stackTrace: stackTrace.toString(),
-    ),
-  );
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // setMessage(
       //   ChatBotMessageModel(
       //     message: error.toString(),
@@ -89,14 +89,14 @@ class ChatBotProvider extends BaseViewModel {
     notifyListeners();
     try {
       Either<Failure, bool> response =
-          await repository.repository.chatBotIsEnabled();
+      await repository.repository.chatBotIsEnabled();
       response.fold(
-        (error) {
+            (error) {
           isLoadingEnabled = false;
           isEnabled = false;
           notifyListeners();
         },
-        (isEnabled) {
+            (isEnabled) {
           isLoadingEnabled = false;
           this.isEnabled = isEnabled;
           sharedPrefs.setChatbotSessionId(Uuid().v4());
@@ -105,13 +105,13 @@ class ChatBotProvider extends BaseViewModel {
       );
       return;
     } catch (error, stackTrace) {
-  LogsViewModel().sendEventFromModel(
-    event: ErrorExceptionModel(
-      nameEvent: EventsName.handledException,
-      message: error.toString(),
-      stackTrace: stackTrace.toString(),
-    ),
-  );
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       errorMessage = error.toString();
     }
     isLoadingEnabled = false;
@@ -119,13 +119,5 @@ class ChatBotProvider extends BaseViewModel {
     return;
   }
 
-// void setMessage(ChatBotMessageEntities message) {
-//   chatBotMessage.value.add(message);
-//   chatBotMessage.notifyListeners();
-//   scrollController.animateTo(
-//     scrollController.position.maxScrollExtent + 150,
-//     curve: Curves.easeOut,
-//     duration: const Duration(milliseconds: 300),
-//   );
-// }
+
 }
