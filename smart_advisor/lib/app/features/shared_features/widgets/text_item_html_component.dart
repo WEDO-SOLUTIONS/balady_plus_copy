@@ -33,14 +33,11 @@ class TextItemHtmlComponent extends StatelessWidget {
             }));
           } else {
             Navigator.push(context, MaterialPageRoute(builder: (ctx) {
-              return GeneralCommercialConditionPage();
-            }));
-            /* Navigator.push(context, MaterialPageRoute(builder: (ctx) {
               return WebViewPage(
                 url: url ?? "",
                 title: "details".tr(),
               );
-            }));*/
+            }));
           }
         },
         style: {
