@@ -1616,7 +1616,7 @@ class CommonFunctions {
     int todayDay = today.day;
     int todayMonth = today.month;
     int todayYear = today.year;
-    var allowedDays = [13, 14, 15, 16, 17, 18, 19, 20];
+    var allowedDays = [22, 23, 24, 25];
     if (allowedDays.contains(todayDay) && todayMonth == 9 && todayYear == 2024)
       return true;
     return false;
