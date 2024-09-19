@@ -55,7 +55,7 @@ class EnvironmentConfig {
         twinsApi: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://sa1.ops.2gis.dev/balady-geo-urbi',
-        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
+        feedbackApi: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services ',
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -66,7 +66,7 @@ class EnvironmentConfig {
         twinsApi: 'https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://urbi-lifestyle.momrah.gov.sa',
-        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
+        feedbackApi: 'https://apiservices.balady.gov.sa/v1/urbi-services',
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
