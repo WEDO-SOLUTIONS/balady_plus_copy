@@ -69,7 +69,7 @@ class StoryFrameData {
     bool? isAssetImage,
     Color? closeButtonColor,
     StoryFrameTexts? networkTexts,
-  }) =>
+          bool? isButtonEnabled}) =>
       StoryFrameData(
         isAssetImage: isAssetImage ?? this.isAssetImage,
         storyId: storyId ?? this.storyId,
@@ -79,6 +79,7 @@ class StoryFrameData {
         action: action ?? this.action,
         duration: duration ?? this.duration,
         networkTexts: networkTexts ?? this.networkTexts,
+        isButtonEnabled: isButtonEnabled ?? this.isButtonEnabled,
       );
 
   /// Returns the theme for this [StoryFrameData] based on the story ID and the provided color and text themes.
