@@ -27,8 +27,6 @@ class _FreeRoamManager extends _$FreeRoamManager {
 
     await dgisController.setNavigatorVoice(ref.read(navigatorVoiceProvider));
 
-    await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-
     await dgisController.freeRoamController.start(
       SpeedRangeZoom(
         maxSpeedRange: 5,
@@ -37,8 +35,9 @@ class _FreeRoamManager extends _$FreeRoamManager {
         styleZoomValue: 16.5,
       ),
     );
-    await dgisController.setMapAttributeBool(_navigatorOn, value: true);
+    await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
     await dgisController.followNavigation();
+    await dgisController.setMapAttributeBool(_navigatorOn, value: true);
   }
 
   Future<void> restoreNavigationState(void Function() onError) async {
