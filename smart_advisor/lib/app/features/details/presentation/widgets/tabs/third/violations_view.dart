@@ -120,7 +120,7 @@ class _ViolationsViewState extends State<ViolationsView> {
                     btnColor: AppColor.surfaceAccentSecondaryColor,
                     textColor: AppColor.statusAccentColor,
                     onPress: () {
-                      //     BaladyServices.openObjections();
+                      BaladyServices.openObjections();
                     },
                     text: "التقديم على اعتراض"),
                 /*const ObjectionCard(
