@@ -16,7 +16,7 @@ class LayersSheet extends ConsumerStatefulWidget {
 
 class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
   static const _layersPanelMaxHeight = .5;
-  static const _layersHiddenHeight = 0.25;
+  static const _layersHiddenHeight = 0.1;
   static const _parkingPanelMaxHeight = .35;
   static const duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
@@ -167,7 +167,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
 
   // If the main layer [_layersController] is in hidden position then close the panel and make pop
   void _layersControllerListener() {
-    // I did it like in 2gis, if the curtain is below half, it will close immediately
     if (_isShown && _layersController.size <= _layersHiddenHeight) {
       final goRoute = ref.read(goRouterProvider);
 
