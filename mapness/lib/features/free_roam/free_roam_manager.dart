@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
@@ -38,6 +40,12 @@ class _FreeRoamManager extends _$FreeRoamManager {
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
     await dgisController.followNavigation();
     await dgisController.setMapAttributeBool(_navigatorOn, value: true);
+
+    if (Platform.isIOS) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        dgisController.setMapAttributeBool(_navigatorOn, value: true);
+      });
+    }
   }
 
   Future<void> restoreNavigationState(void Function() onError) async {
