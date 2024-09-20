@@ -13,4 +13,7 @@ class FeedbackUnknownEntity extends FeedbackBaseEntity<void> {
         isRequired: isRequired,
         isHidden: isHidden,
       );
+
+  @override
+  dynamic valueToJson() => null;
 }

@@ -34,4 +34,7 @@ class FeedbackChipsEntity extends FeedbackBaseEntity<UnmodifiableSetView<int>> {
         value: UnmodifiableSetView<int>(value),
         isHidden: isHidden,
       );
+
+  @override
+  dynamic valueToJson() => value?.toList();
 }

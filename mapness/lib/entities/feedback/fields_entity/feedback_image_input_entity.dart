@@ -25,4 +25,8 @@ class FeedbackImageInputEntity extends FeedbackBaseEntity<List<XFile>> {
         value: value,
         isHidden: isHidden,
       );
+
+  @override
+  dynamic valueToJson() => value?.map((e) => base64Encode(File(e.path).readAsBytesSync())).toList();
+  // value?.map((e) => File(e.path).readAsBytesSync()).toList();
 }
