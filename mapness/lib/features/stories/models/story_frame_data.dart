@@ -59,25 +59,29 @@ class StoryFrameData {
   });
 
   /// Creates a copy of this [StoryFrameData] object with the given fields replaced with the new values.
-  StoryFrameData copyWith(
-          {String? storyId,
-          String? imageUrl,
-          bool? isWatched,
-          StoryFrameAction? action,
-          int? duration,
-          bool? fullscreenImage,
-          bool? isAssetImage,
-          Color? closeButtonColor,
-          StoryFrameTexts? networkTexts,
-          bool? isButtonEnabled}) =>
+  StoryFrameData copyWith({
+    String? storyId,
+    String? imageUrl,
+    String? arabicImageUrl,
+    bool? fullscreenImage,
+    bool? isWatched,
+    StoryFrameAction? action,
+    int? duration,
+    bool? isAssetImage,
+    NetworkStoryThemeData? networkTheme,
+    StoryFrameTexts? networkTexts,
+    bool? isButtonEnabled,
+  }) =>
       StoryFrameData(
-        isAssetImage: isAssetImage ?? this.isAssetImage,
         storyId: storyId ?? this.storyId,
         imageUrl: imageUrl ?? this.imageUrl,
-        isWatched: isWatched ?? this.isWatched,
+        arabicImageUrl: arabicImageUrl ?? this.arabicImageUrl,
         fullscreenImage: fullscreenImage ?? this.fullscreenImage,
+        isWatched: isWatched ?? this.isWatched,
         action: action ?? this.action,
         duration: duration ?? this.duration,
+        isAssetImage: isAssetImage ?? this.isAssetImage,
+        networkTheme: networkTheme ?? this.networkTheme,
         networkTexts: networkTexts ?? this.networkTexts,
         isButtonEnabled: isButtonEnabled ?? this.isButtonEnabled,
       );
