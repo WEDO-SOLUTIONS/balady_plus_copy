@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/ui/stories_screen.dart';
+import 'package:mapness/features/stories/ui/stories_transition.dart';
+// import 'package:mapness/features/stories/ui/stories_transition.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 
 part 'stories.g.dart';
@@ -105,15 +107,7 @@ class StoriesRoute extends GoRouteData {
         initialStoryId: args.initialStoryId,
       ),
       fullscreenDialog: true,
-      transitionsBuilder: (context, animation, _, child) => SlideTransition(
-        position: animation.drive(
-          Tween<Offset>(
-            begin: const Offset(0, 1),
-            end: Offset.zero,
-          ).chain(
-            CurveTween(curve: Curves.ease),
-          ),
-        ),
+      transitionsBuilder: (_, __, ___, child) => StoriesTransition(
         child: child,
       ),
     );

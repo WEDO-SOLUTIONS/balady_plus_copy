@@ -179,15 +179,13 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   Widget build(BuildContext context) => LayoutBuilder(
       builder: (context, contraints) => SizedBox.fromSize(
             size: contraints.biggest,
-            child: ColoredBox(
-              color: storyTheme.backgroundColor,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.paddingOf(context).top,
-                  bottom: MediaQuery.paddingOf(context).bottom,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.paddingOf(context).bottom,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Material(
                   child: Stack(
                     children: [
                       if (widget.frame.imageUrl != null && widget.frame.fullscreenImage)
