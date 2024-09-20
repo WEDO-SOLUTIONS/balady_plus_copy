@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/classification_certificate/data/model/search_request/search_request_model.dart';
 
+import '../lookups/activity_lookups_model.dart';
 import '../lookups/city_lookups_model.dart';
 import '../lookups/classification_certificate_lookup_model.dart';
 
@@ -14,7 +15,7 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
   ClassificationCertificateLookupModel? sector;
   CityLookupsModel? city;
   //////////////////////////////////////////////////
-  ClassificationCertificateLookupModel? activity;
+  ActivityLookupsModel? activity;
   ClassificationCertificateLookupModel? classificationGrade;
   String? expiryDateFrom;
   String? expiryDateTo;
@@ -46,7 +47,7 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
     ClassificationCertificateLookupModel? sectors,
     CityLookupsModel? city,
     ////////////////////////////////////////////////////
-    ClassificationCertificateLookupModel? activity,
+    ActivityLookupsModel? activity,
     ClassificationCertificateLookupModel? classificationGrade,
     String? expiryDateFrom,
     String? expiryDateTo,
@@ -87,7 +88,7 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
     }
     //////////////////////////////////////////////////
     if (activity != null) {
-      data['activity-id'] = activity!.code;
+      data['activity-id'] = activity!.activityValue;
     }
     if (classificationGrade != null) {
       data['classification-grade'] = classificationGrade!.code;
