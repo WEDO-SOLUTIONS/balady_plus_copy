@@ -71,20 +71,20 @@ class StoryFrameData {
     NetworkStoryThemeData? networkTheme,
     StoryFrameTexts? networkTexts,
     bool? isButtonEnabled,
-  }) => StoryFrameData(
-      storyId: storyId ?? this.storyId,
-      imageUrl: imageUrl ?? this.imageUrl,
-      arabicImageUrl: arabicImageUrl ?? this.arabicImageUrl,
-      fullscreenImage: fullscreenImage ?? this.fullscreenImage,
-      isWatched: isWatched ?? this.isWatched,
-      action: action ?? this.action,
-      duration: duration ?? this.duration,
-      isAssetImage: isAssetImage ?? this.isAssetImage,
-      networkTheme: networkTheme ?? this.networkTheme,
-      networkTexts: networkTexts ?? this.networkTexts,
-      isButtonEnabled: isButtonEnabled ?? this.isButtonEnabled,
-    );
-
+  }) =>
+      StoryFrameData(
+        storyId: storyId ?? this.storyId,
+        imageUrl: imageUrl ?? this.imageUrl,
+        arabicImageUrl: arabicImageUrl ?? this.arabicImageUrl,
+        fullscreenImage: fullscreenImage ?? this.fullscreenImage,
+        isWatched: isWatched ?? this.isWatched,
+        action: action ?? this.action,
+        duration: duration ?? this.duration,
+        isAssetImage: isAssetImage ?? this.isAssetImage,
+        networkTheme: networkTheme ?? this.networkTheme,
+        networkTexts: networkTexts ?? this.networkTexts,
+        isButtonEnabled: isButtonEnabled ?? this.isButtonEnabled,
+      );
 
   /// Returns the theme for this [StoryFrameData] based on the story ID and the provided color and text themes.
   StoryFrameThemeData themeFromId({
