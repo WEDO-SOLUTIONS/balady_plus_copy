@@ -91,7 +91,7 @@ class ClassificationCertificateRemoteDataSource
       );
       final data = response.data;
       List<ActivityLookupsModel> list = List<ActivityLookupsModel>.from(
-        data["data"]["result"].map(
+        data["data"]["result"]['items'].map(
           (x) => ActivityLookupsModel.fromJson(x),
         ),
       );
