@@ -135,6 +135,15 @@ class AdvancedMethodNotWorkingClassificationCertificateState
   List<Object?> get props => [super.typeMethod];
 }
 
+class AdvancedSearchLoadingState
+    extends ClassificationCertificateVerifyState {
+  const AdvancedSearchLoadingState({required super.typeMethod});
+
+  @override
+  List<Object?> get props => [super.typeMethod];
+}
+
+
 class NormalSearchVerifiedByClassificationCertificateState
     extends ClassificationCertificateVerifyState {
   final NormalSearchType normalSearchType;

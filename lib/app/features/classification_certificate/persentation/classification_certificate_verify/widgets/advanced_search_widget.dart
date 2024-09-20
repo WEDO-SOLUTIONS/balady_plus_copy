@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_verify/bloc/classification_certificate_verify_bloc.dart';
 import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_verify/widgets/title_with_widget.dart';
@@ -19,18 +20,12 @@ class AdvancedSearchWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     ClassificationCertificateVerifyBloc bloc =
         context.read<ClassificationCertificateVerifyBloc>();
+
     return Column(
       children: [
         Row(
           children: [
-            Expanded(
-              child: Text(
-                "verified_by".tr(),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-            ),
+            const Spacer(),
             TextButton(
               onPressed: () {
                 context.read<ClassificationCertificateVerifyBloc>().add(
@@ -53,12 +48,10 @@ class AdvancedSearchWidget extends StatelessWidget {
             validator: (value) => value == null ? 'field required'.tr() : null,
             onChanged: (ClassificationCertificateLookupModel? menu) {
               // Cull Action Update States
-              if (menu != null && state.searchRequestModel.classificationType != menu) {
+              if (menu != null &&
+                  state.searchRequestModel.classificationType != menu) {
                 bloc.add(
                   SelectClassificationTypeState(classificationType: menu),
-                );
-                state.searchRequestModel.copyWith(
-                  classificationType: menu,
                 );
               }
             },
@@ -84,12 +77,21 @@ class AdvancedSearchWidget extends StatelessWidget {
                 DropdownButtonFormField<ClassificationCertificateLookupModel>(
               hint: Text("select_sector".tr()),
               value: state.searchRequestModel.sector,
-              icon:
-                  Image.asset(IconPath.arrowCircleDown, width: 24, height: 24),
+              isExpanded: true,
+              icon: Image.asset(
+                IconPath.arrowCircleDown,
+                width: 24,
+                height: 24,
+              ),
               validator: (value) =>
                   value == null ? 'field required'.tr() : null,
               onChanged: (ClassificationCertificateLookupModel? menu) {
                 // Cull Action Update States
+                if (menu != null && state.searchRequestModel.sector != menu) {
+                  bloc.add(
+                    SelectSectorState(sector: menu),
+                  );
+                }
               },
               items: (state as AdvancedSearchByClassificationTypeState)
                   .sectors
@@ -99,6 +101,7 @@ class AdvancedSearchWidget extends StatelessWidget {
                     value: item,
                     child: Text(
                       "locale".tr() == "ar" ? item.valueAr : item.valueEn,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   );
                 },
@@ -116,6 +119,15 @@ class AdvancedSearchWidget extends StatelessWidget {
             validator: (value) => value == null ? 'field required'.tr() : null,
             onChanged: (CityLookupsModel? menu) {
               // Cull Action Update States
+              if (state.searchRequestModel.city != menu) {
+                bloc.add(
+                  UpdateRequestModelAdvancedSearchState(
+                    searchRequestModel: state.searchRequestModel.copyWith(
+                      city: menu,
+                    ),
+                  ),
+                );
+              }
             },
             items: state.cities.map<DropdownMenuItem<CityLookupsModel>>(
               (CityLookupsModel item) {
@@ -128,7 +140,6 @@ class AdvancedSearchWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-
         if (state is AdvancedMethodBySectorsState)
           TitleWithWidget(
             title: 'activity',
@@ -143,15 +154,24 @@ class AdvancedSearchWidget extends StatelessWidget {
                 width: 24,
                 height: 24,
               ),
-              onSelected: (ActivityLookupsModel? menu) {
-                // Cull Action Update States
+              onSelected: (ActivityLookupsModel? activity) {
+                // Cull Action Request model
+                if (activity != null &&
+                    state.searchRequestModel.activity != activity) {
+                  bloc.add(
+                    UpdateRequestModelAdvancedSearchState(
+                      searchRequestModel: state.searchRequestModel.copyWith(
+                        activity: activity,
+                      ),
+                    ),
+                  );
+                }
               },
               dropdownMenuEntries: (state as AdvancedMethodBySectorsState)
                   .activity
                   .map<DropdownMenuEntry<ActivityLookupsModel>>(
                 (ActivityLookupsModel service) {
-                  return DropdownMenuEntry<
-                      ActivityLookupsModel>(
+                  return DropdownMenuEntry<ActivityLookupsModel>(
                     value: service,
                     label: service.activityValue,
                   );
@@ -163,8 +183,6 @@ class AdvancedSearchWidget extends StatelessWidget {
         TitleWithWidget(
           title: 'certificate_degree',
           widget: DropdownMenu<ClassificationCertificateLookupModel>(
-            //initialSelection: menuItems.first,
-            // controller: menuController,
             width: double.maxFinite,
             expandedInsets: EdgeInsets.zero,
             hintText: "select_degree".tr(),
@@ -175,8 +193,18 @@ class AdvancedSearchWidget extends StatelessWidget {
               width: 24,
               height: 24,
             ),
-            onSelected: (ClassificationCertificateLookupModel? menu) {
-              // Cull Action Update States
+            onSelected: (ClassificationCertificateLookupModel? grade) {
+              // Cull Action Request model
+              if (grade != null &&
+                  state.searchRequestModel.classificationGrade != grade) {
+                bloc.add(
+                  UpdateRequestModelAdvancedSearchState(
+                    searchRequestModel: state.searchRequestModel.copyWith(
+                      classificationGrade: grade,
+                    ),
+                  ),
+                );
+              }
             },
             dropdownMenuEntries: state.degrees
                 .map<DropdownMenuEntry<ClassificationCertificateLookupModel>>(
@@ -200,13 +228,14 @@ class AdvancedSearchWidget extends StatelessWidget {
             readOnly: true,
             onTap: () {},
             decoration: InputDecoration(
-                hintText: "select_date".tr(),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SvgPicture.asset(
-                    IconPath.calendar,
-                  ),
-                )),
+              hintText: "select_date".tr(),
+              suffixIcon: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SvgPicture.asset(
+                  IconPath.calendar,
+                ),
+              ),
+            ),
             // validator: (text) => (text?.isNotEmpty ?? true) ? "" : null,
           ),
         ),
@@ -219,13 +248,14 @@ class AdvancedSearchWidget extends StatelessWidget {
             readOnly: true,
             onTap: () {},
             decoration: InputDecoration(
-                hintText: "select_date".tr(),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SvgPicture.asset(
-                    IconPath.calendar,
-                  ),
-                )),
+              hintText: "select_date".tr(),
+              suffixIcon: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SvgPicture.asset(
+                  IconPath.calendar,
+                ),
+              ),
+            ),
             validator: (text) => (text?.isNotEmpty ?? true) ? "" : null,
           ),
         ),
@@ -238,10 +268,12 @@ class AdvancedSearchWidget extends StatelessWidget {
             decoration: InputDecoration(
               hintText: "phoneNumberFieldHint".tr(),
             ),
-            validator: (text) =>
-                (text == null || text.isEmpty /* || vild if add phone */)
-                    ? null
-                    : "null",
+            validator: (text) {
+              if (text == null || text.isEmpty) {
+                return null;
+              }
+              return Helpers.validateMobile(text);
+            },
           ),
         ),
         ////////////////////////////
@@ -262,8 +294,18 @@ class AdvancedSearchWidget extends StatelessWidget {
                 width: 24,
                 height: 24,
               ),
-              onSelected: (ClassificationCertificateLookupModel? menu) {
-                // Cull Action Update States
+              onSelected: (ClassificationCertificateLookupModel? service) {
+                // Cull Action Request model
+                if (service != null &&
+                    state.searchRequestModel.service != service) {
+                  bloc.add(
+                    UpdateRequestModelAdvancedSearchState(
+                      searchRequestModel: state.searchRequestModel.copyWith(
+                        service: service,
+                      ),
+                    ),
+                  );
+                }
               },
               dropdownMenuEntries: (state
                       as AdvancedSearchByClassificationTypeState)

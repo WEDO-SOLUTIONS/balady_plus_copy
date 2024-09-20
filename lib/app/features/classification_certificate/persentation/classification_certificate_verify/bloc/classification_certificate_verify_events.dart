@@ -47,6 +47,15 @@ class SelectSectorState extends ClassificationCertificateVerifyEvents {
   List<Object?> get props => [sector];
 }
 
+
+class UpdateRequestModelAdvancedSearchState extends ClassificationCertificateVerifyEvents {
+  final AdvancedSearchRequestModel searchRequestModel;
+  const UpdateRequestModelAdvancedSearchState({required this.searchRequestModel});
+
+  @override
+  List<Object?> get props => [searchRequestModel];
+}
+
 // class GoSearchScreenClassificationCertificateState extends ClassificationCertificateVerifyEvents {
 //
 //   const GoSearchScreenClassificationCertificateState();

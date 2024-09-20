@@ -99,12 +99,14 @@ class ClassificationCertificateVerifyBloc extends Bloc<
     ////////////////////////////
     on<GetLookupsClassificationCertificateState>(
       (event, emit) async {
+        emit(const AdvancedSearchLoadingState(
+            typeMethod: SearchMethod.advancedSearch));
         var response = await getLookups(LookupsRequestModel());
         response.fold(
           (filer) {
             // emit state Advanced Search not working tray agyn latter
             emit(
-              const AdvancedMethodNotWorkingClassificationCertificateState(
+              const AdvancedMethodNotWorkingState(
                 typeMethod: SearchMethod.advancedSearch,
               ),
             );
@@ -124,8 +126,6 @@ class ClassificationCertificateVerifyBloc extends Bloc<
         );
       },
     );
-
-    ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
     on<SelectClassificationTypeState>(
       (event, emit) async {
@@ -133,12 +133,15 @@ class ClassificationCertificateVerifyBloc extends Bloc<
         if (typeState is AdvancedSearchState) {
           var sectors = lookups!.sectors.where(
             (sector) {
-              return event.classificationType.code == 1 && sector.code == 6;
+              return (event.classificationType.code == 1 && sector.code == 6) ||
+                  (event.classificationType.code == 0 && sector.code != 6);
             },
           ).toList();
           var services = lookups!.services.where(
             (service) {
-              return event.classificationType.code == 0 && service.code == 0;
+              return (event.classificationType.code == 0 &&
+                      service.code == 0) ||
+                  (event.classificationType.code == 0 && service.code != 0);
             },
           ).toList();
           emit(
@@ -151,6 +154,7 @@ class ClassificationCertificateVerifyBloc extends Bloc<
                 //  send null to delete if selected old choose
                 sectors: null,
                 service: null,
+                activity: null,
               ),
               classificationType: typeState.classificationType,
               degrees: typeState.degrees,
@@ -174,26 +178,49 @@ class ClassificationCertificateVerifyBloc extends Bloc<
               // emit(
               //
               // );
+              emit(state);
             },
             (activity) {
-              emit(
-                AdvancedMethodBySectorsState(
-                  sectors: typeState.sectors,
-                  services: typeState.services,
-                  typeMethod: typeState.typeMethod,
-                  classificationType: typeState.classificationType,
-                  degrees: typeState.degrees,
-                  cities: typeState.cities,
-                  ////////////////////////////////////////////////////////////
-                  searchRequestModel: typeState.searchRequestModel.copyWith(
-                    sectors: event.sector,
-                    //  send null to delete if selected old choose
-                    activity: null,
+              if (activity.isNotEmpty) {
+                emit(
+                  AdvancedMethodBySectorsState(
+                    sectors: typeState.sectors,
+                    services: typeState.services,
+                    typeMethod: typeState.typeMethod,
+                    classificationType: typeState.classificationType,
+                    degrees: typeState.degrees,
+                    cities: typeState.cities,
+                    ////////////////////////////////////////////////////////////
+                    searchRequestModel: typeState.searchRequestModel.copyWith(
+                      sectors: event.sector,
+                      //  send null to delete if selected old choose
+                      activity: null,
+                    ),
+                    activity: activity,
                   ),
-                  activity: activity,
-                ),
-              );
+                );
+              }
             },
+          );
+        }
+      },
+    );
+
+    on<UpdateRequestModelAdvancedSearchState>(
+      (event, emit) async {
+        AdvancedSearchState? typeState;
+        if (state is AdvancedMethodBySectorsState) {
+          typeState = state as AdvancedMethodBySectorsState;
+        } else if (state is AdvancedSearchByClassificationTypeState) {
+          typeState = state as AdvancedSearchByClassificationTypeState;
+        } else if (state is AdvancedSearchState) {
+          typeState = state as AdvancedSearchState;
+        }
+        if (typeState != null) {
+          emit(
+            typeState.copyWith(
+              searchRequestModel: event.searchRequestModel,
+            ),
           );
         }
       },

@@ -37,6 +37,7 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(),
               ),
               const SizedBox(height: 16),
+
               // for select type search of screen
               BlocBuilder<ClassificationCertificateVerifyBloc,
                   ClassificationCertificateVerifyState>(
@@ -44,9 +45,9 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
                   return stateNew
                           is NormalSearchClassificationCertificateState ||
                       stateNew is AdvancedSearchState ||
-                      stateNew is  AdvancedMethodNotWorkingClassificationCertificateState;
+                      stateNew is AdvancedMethodNotWorkingState ||
+                      stateNew is AdvancedSearchLoadingState;
                 },
-
                 builder: (contextBloc, state) {
                   return Card(
                     color: Colors.grey.shade200,
@@ -86,13 +87,27 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
                           is NormalSearchVerifiedByClassificationCertificateState) {
                         child = NormalSearchVerifiedByWidget(state: state);
                       }
-                      if (state
-                          is AdvancedSearchState) {
-                        child = AdvancedSearchWidget(state: state);
+                      if (state is AdvancedSearchState) {
+                        child = AdvancedSearchWidget(
+                          key: Key(state.toString()),
+                          state: state,
+                        );
                       }
-
-                      if (state
-                          is AdvancedMethodNotWorkingClassificationCertificateState) {
+                      if (state is AdvancedSearchLoadingState) {
+                        return const Padding(
+                          padding: EdgeInsets.all(24.0),
+                          child: Column(
+                            children: [
+                              Center(child: CircularProgressIndicator()),
+                              SizedBox(height: 16),
+                              Text(
+                                "loading....",
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      if (state is AdvancedMethodNotWorkingState) {
                         return const Column(
                           children: [
                             Text(
