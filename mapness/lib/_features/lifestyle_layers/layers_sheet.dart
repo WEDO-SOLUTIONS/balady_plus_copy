@@ -16,7 +16,7 @@ class LayersSheet extends ConsumerStatefulWidget {
 
 class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
   static const _layersPanelMaxHeight = .5;
-  static const _layersHiddenHeight = .0;
+  static const _layersHiddenHeight = 0.05;
   static const _parkingPanelMaxHeight = .35;
   static const duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
@@ -168,7 +168,11 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   // If the main layer [_layersController] is in hidden position then close the panel and make pop
   void _layersControllerListener() {
     if (_isShown && _layersController.size <= _layersHiddenHeight) {
-      ref.read(goRouterProvider).pop();
+      final goRoute = ref.read(goRouterProvider);
+
+      if (goRoute.canPop()) {
+        goRoute.pop();
+      }
     }
   }
 

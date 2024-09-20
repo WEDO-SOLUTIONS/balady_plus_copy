@@ -27,6 +27,15 @@ class FeedbackScheduleEntity extends FeedbackBaseEntity<IList<FeedbackScheduleWo
         value: value,
         isHidden: isHidden,
       );
+
+  @override
+  dynamic valueToJson() {
+    if (value == null) {
+      return null;
+    }
+
+    return FeedbackSchedulePayloadDto.fromDomain(value!);
+  }
 }
 
 /// represents single day of the week

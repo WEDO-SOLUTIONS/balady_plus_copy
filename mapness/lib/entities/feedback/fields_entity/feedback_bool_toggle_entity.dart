@@ -19,4 +19,7 @@ class FeedbackBoolToggleEntity extends FeedbackBaseEntity<bool> {
         value: value,
         isHidden: isHidden,
       );
+
+  @override
+  dynamic valueToJson() => value;
 }

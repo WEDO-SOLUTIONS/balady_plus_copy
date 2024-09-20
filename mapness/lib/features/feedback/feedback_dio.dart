@@ -16,5 +16,11 @@ part 'feedback_dio.g.dart';
 Future<Dio> feedbackDio(AutoDisposeFutureProviderRef ref) async {
   final baseDio = await ref.watch(dGisHttpService.future);
   final env = await ref.watch(dgisEnvironmentProvider.future);
-  return Dio(baseDio.options.copyWith(baseUrl: env.feedbackApi));
+
+  return Dio(baseDio.options.copyWith(
+    baseUrl: env.feedbackApi,
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(seconds: 30),
+    sendTimeout: const Duration(seconds: 30),
+  ));
 }
