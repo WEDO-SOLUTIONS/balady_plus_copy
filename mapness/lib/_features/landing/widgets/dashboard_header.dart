@@ -130,7 +130,6 @@ class DashboardHeader extends ConsumerWidget {
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
               const SearchRoute().push(context);
-              bottomSheetController.setState(ThreeStateBottomSheet.hidden);
             },
             child: AbsorbPointer(
               child: BaladyInput.searchV2(
