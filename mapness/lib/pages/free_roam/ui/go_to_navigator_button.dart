@@ -3,7 +3,9 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/app/routes/free_roam.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
+import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -41,63 +43,71 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
 
       return ClipRRect(
         borderRadius: BorderRadius.circular(RadiusBorder.l),
-        child: SizedBox(
-          height: height,
-          child: Stack(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: height,
-                child: ColoredBox(color: colorsV2.accentDefault),
-              ),
-              Align(
-                alignment: alignment,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
-                  child: SizedBox(
-                    width: squareSize,
-                    height: squareSize,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(RadiusBorder.s),
-                      child: ColoredBox(
-                        color: Colors.white.withOpacity(0.2),
+        child: InkWell(
+          onTap: () {
+            ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
+            const FreeRoamRoute().go(context);
+            ref.read(freeRoamStarterProvider.notifier).setShown();
+          },
+          borderRadius: BorderRadius.circular(RadiusBorder.l),
+          child: SizedBox(
+            height: height,
+            child: Stack(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: height,
+                  child: ColoredBox(color: colorsV2.accentDefault),
+                ),
+                Align(
+                  alignment: alignment,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
+                    child: SizedBox(
+                      width: squareSize,
+                      height: squareSize,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(RadiusBorder.s),
+                        child: ColoredBox(
+                          color: Colors.white.withOpacity(0.2),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: constrains.maxWidth * Curves.decelerate.transform(animationProgress),
-                height: height,
-                child: ColoredBox(
-                  color: Colors.black.withOpacity(0.2),
-                ),
-              ),
-              Center(
-                child: Text(
-                  context.l10n.goToNavigator,
-                  style: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                    color: colorsV2.backgroundSurface1,
+                SizedBox(
+                  width: constrains.maxWidth * Curves.decelerate.transform(animationProgress),
+                  height: height,
+                  child: ColoredBox(
+                    color: Colors.black.withOpacity(0.2),
                   ),
                 ),
-              ),
-              Align(
-                alignment: alignment,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-                  child: SvgPicture.asset(
-                    'assets/icons/svg/quick_filters/free_roam.svg',
-                    height: iconSize,
-                    width: iconSize,
-                    package: PackageConfig.packageName,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
+                Center(
+                  child: Text(
+                    context.l10n.goToNavigator,
+                    style: context.textStyleV3.bodyLargeSemiBold.copyWith(
+                      color: colorsV2.backgroundSurface1,
                     ),
                   ),
                 ),
-              ),
-            ],
+                Align(
+                  alignment: alignment,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+                    child: SvgPicture.asset(
+                      'assets/icons/svg/quick_filters/free_roam.svg',
+                      height: iconSize,
+                      width: iconSize,
+                      package: PackageConfig.packageName,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

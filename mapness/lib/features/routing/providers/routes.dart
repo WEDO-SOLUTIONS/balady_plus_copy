@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -27,8 +28,8 @@ class Routes extends _$Routes {
     );
 
     final routesCompleter = Completer<List<RouteInfo>>();
-    final routesInfoChangedSubscription = dgisController.value?.routesInfoChangedEvents.listen((event) {
-      dgisController.value?.showRoutes();
+    final subscribtion = dgisController.value?.routesInfoChangedEvents.listen((event) async {
+      await dgisController.value?.showRoutes();
       routesCompleter.complete(event.routes);
     });
     Timer(const Duration(minutes: 2), () {
@@ -37,8 +38,10 @@ class Routes extends _$Routes {
       }
       routesCompleter.completeError(TimeoutException('no routes fond in time'));
     });
+
     ref.onDispose(() {
-      routesInfoChangedSubscription?.cancel();
+      subscribtion?.cancel();
+      ref.read(cameraPaddingProvider.notifier).resetPadding();
     });
 
     await dgisController.value?.setRouteParams(params);

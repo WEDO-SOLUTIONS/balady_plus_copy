@@ -42,7 +42,9 @@ class EnvironmentConfig {
         twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
-        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
+
+        /// swagger: https://momrah-balady-dev-discrepancy.on-premise.2gis.dev/docs/
+        feedbackApi: 'https://momrah-balady-dev-discrepancy.on-premise.2gis.dev/',
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -50,11 +52,10 @@ class EnvironmentConfig {
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://apiservicesstg.balady.gov.sa/',
         jobsApi: 'https://apiservicesstg.balady.gov.sa/v1/recruitment-services',
-        twinsApi:
-            'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
+        twinsApi: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://sa1.ops.2gis.dev/balady-geo-urbi',
-        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
+        feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/',
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -62,11 +63,10 @@ class EnvironmentConfig {
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://apiservices.balady.gov.sa/',
         jobsApi: 'https://apiservices.balady.gov.sa/v1/recruitment-services',
-        twinsApi:
-            'https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1',
+        twinsApi: 'https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
-        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
+        shareEtaApi: 'https://urbi-lifestyle.momrah.gov.sa',
+        feedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/',
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -78,6 +78,8 @@ class EnvironmentConfig {
         twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
-        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae',
+
+        /// swagger: https://momrah-balady-discrepancy.on-premise.2gis.dev/docs/
+        feedbackApi: 'https://momrah-balady-discrepancy.on-premise.2gis.dev/',
       );
 }

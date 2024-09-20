@@ -104,7 +104,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 strokeColor: 0xD3FFFFFF,
                 strokeWidth: 1.25,
                 textPlacement: MarkerTextPlacementMessage(
-                  placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.topRight,
+                  placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
                 ),
               ),
               position: markerInfo.geoPoint,

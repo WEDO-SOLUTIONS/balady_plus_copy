@@ -1,32 +1,22 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/road_panel.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
+import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/pages/free_roam/ui/road_panel.dart';
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/pages/path_nav/lib/utils.dart';
-import 'package:mapness/shared/constants/constants.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/navigator_voice.dart';
-import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class FreeRoamPage extends ConsumerStatefulWidget {
@@ -51,8 +41,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   @override
   void initState() {
     super.initState();
-
-    _initFreeRoam().then((_) {
+    ref.read(freeRoamManagerProvider.notifier).initFreeRoam().then((_) {
       setState(() {
         isLoading = false;
       });
@@ -64,8 +53,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
 
   @override
   void deactivate() {
-    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
-    ref.read(dgisControllerProvider).value?.toggleFollowState();
+    ref.read(freeRoamManagerProvider.notifier).deactivate();
     super.deactivate();
   }
 
@@ -82,46 +70,6 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
         wasSetActive = false;
       });
     });
-  }
-
-  Future<void> restoreNavigationState() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-
-    final state = base64.decode(
-      ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!,
-    );
-    try {
-      await dgisController.restoreNavigationState(
-        state,
-        SpeedRangeZoom(
-          maxSpeedRange: 5,
-          minSpeedRange: 0,
-          routeDistanceMillimeters: 0,
-          styleZoomValue: 16.5,
-        ),
-      );
-    } catch (e) {
-      context.pop();
-    }
-  }
-
-  Future<void> _initFreeRoam() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-
-    await dgisController.setNavigatorVoice(ref.read(navigatorVoiceProvider));
-
-    await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-
-    await dgisController.freeRoamController.start(
-      SpeedRangeZoom(
-        maxSpeedRange: 5,
-        minSpeedRange: 0,
-        routeDistanceMillimeters: 0,
-        styleZoomValue: 16.5,
-      ),
-    );
-    await dgisController.setMapAttributeBool('navigatorOn', value: true);
-    await dgisController.followNavigation();
   }
 
   @override
@@ -201,50 +149,59 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Padding(
-                  padding: padding,
-                  child: AnimatedOpacity(
-                      opacity: isControlsActive ? 1 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: const TrafficParkingControl()),
-                ),
-                const Spacer(),
-                Padding(
-                  padding: padding,
+                Expanded(
                   child: AnimatedOpacity(
                     opacity: isControlsActive ? 1 : 0,
-                    duration: const Duration(milliseconds: 150),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IndoorControl(),
-                        ZoomControl(),
-                      ],
+                    duration: const Duration(milliseconds: 250),
+                    child: IgnorePointer(
+                      ignoring: !isControlsActive,
+                      child: GestureDetector(
+                        onTap: () {
+                          timer?.cancel();
+                          timer = null;
+                          wasSetActive = true;
+                          isControlsActive = true;
+                          startControlsDisapearTimer();
+                        },
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: padding,
+                              child: TrafficParkingControl(),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: padding,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IndoorControl(),
+                                  ZoomControl(),
+                                ],
+                              ),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: padding,
+                              child: CompassControl(),
+                            ),
+                            SizedBox(height: 8),
+                            Padding(
+                              padding: padding,
+                              child: FollowControl(),
+                            ),
+                            SizedBox(height: 12),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                const Spacer(),
-                Padding(
-                  padding: padding,
-                  child: AnimatedOpacity(
-                      opacity: isControlsActive ? 1 : 0,
-                      duration: const Duration(milliseconds: 150),
-                      child: const CompassControl()),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: padding,
-                  child: AnimatedOpacity(
-                    opacity: isControlsActive ? 1 : 0,
-                    duration: const Duration(milliseconds: 150),
-                    child: const FollowControl(),
-                  ),
-                ),
-                const SizedBox(height: 12),
                 Center(
                   child: RoadPanel(
                     isLoading: isLoading,
-                    onEndTrip: _endTripAndShowHome,
+                    onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
                     onOpenSheet: () => RoadPanelRoute.open(context),
                   ),
                 ),
@@ -254,37 +211,4 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
           ],
         ),
       );
-
-  // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
-  // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
-  Future<void> _endTrip(VoidCallback action) async {
-    if (!mounted) {
-      return;
-    }
-    final dgisController = ref.read(dgisControllerProvider);
-    await dgisController.value?.freeRoamController.stop();
-    await dgisController.value?.setMapAttributeBool('navigatorOn', value: false);
-
-    action();
-  }
-
-  // Show the home page after the trip is finished
-  Future<void> _endTripAndShowHome() async {
-    if (!mounted) {
-      return;
-    }
-
-    Metrics.logEventAdvanced(
-      MetricsConstants.navigationKeys.endTripAndShowHome,
-      group: MetricsConstants.navigationTag,
-      action: MetricAction.tap.toString(),
-    );
-    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
-
-    await _endTrip(() {
-      if (context.mounted) {
-        const LandingRoute().go(context);
-      }
-    });
-  }
 }

@@ -2,23 +2,25 @@ part of 'toast_overlay.dart';
 
 class _ToastTransition extends StatefulWidget {
   final String title;
-  final String actionText;
+  final String? actionText;
   final VoidCallback hide;
-  final VoidCallback onActionTap;
+  final VoidCallback? onActionTap;
   final String? iconAsset;
   final IconData? iconData;
   final Duration displayDuration;
   final Duration transitionDuration;
+  final bool? isDismissible;
 
   const _ToastTransition({
     required this.hide,
     required this.title,
-    required this.actionText,
-    required this.onActionTap,
     required this.iconAsset,
     required this.iconData,
     required this.transitionDuration,
     required this.displayDuration,
+    this.isDismissible,
+    this.actionText,
+    this.onActionTap,
   });
 
   @override
@@ -54,7 +56,7 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
 
   void _onActionTap() {
     _hide();
-    widget.onActionTap();
+    widget.onActionTap?.call();
   }
 
   @override
@@ -64,19 +66,27 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
   }
 
   @override
-  Widget build(BuildContext context) => Dismissible(
-        key: UniqueKey(),
-        onDismissed: (_) => _hide(),
-        direction: DismissDirection.up,
-        child: SlideTransition(
-          position: _animation,
-          child: _ToastWidget(
-            title: widget.title,
-            actionText: widget.actionText,
-            onActionTap: _onActionTap,
-            iconAsset: widget.iconAsset,
-            iconData: widget.iconData,
+  Widget build(BuildContext context) => widget.isDismissible ?? false
+      ? Dismissible(
+          key: UniqueKey(),
+          onDismissed: (_) => _hide(),
+          direction: DismissDirection.up,
+          child: SlideTransition(
+            position: _animation,
+            child: _ToastWidget(
+              title: widget.title,
+              actionText: widget.actionText,
+              onActionTap: _onActionTap,
+              iconAsset: widget.iconAsset,
+              iconData: widget.iconData,
+            ),
           ),
-        ),
-      );
+        )
+      : _ToastWidget(
+          title: widget.title,
+          actionText: widget.actionText,
+          onActionTap: _onActionTap,
+          iconAsset: widget.iconAsset,
+          iconData: widget.iconData,
+        );
 }

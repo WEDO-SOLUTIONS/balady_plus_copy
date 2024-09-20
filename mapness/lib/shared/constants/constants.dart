@@ -15,4 +15,5 @@ class MapnessConstants {
   static const voicesLanguagePrefsKey = 'voices_language';
   static const camerasOn = 'camerasOn';
   static const analyticsTripStopped = 'tripStopped';
+  static const parkingEnabledFreeRoam = 'parkingEnabledFreeRoam';
 }

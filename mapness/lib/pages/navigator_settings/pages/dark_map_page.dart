@@ -53,12 +53,15 @@ class _DarkMapPage extends ConsumerState<DarkMapPage> {
                   children: <Widget>[
                     SizedBox(
                       width: double.infinity,
-                      child: Image.asset(
-                        dark.valueOrNull?.isDark ?? false
-                            ? 'assets/images/dark_map_preview.png'
-                            : 'assets/images/light_map_preview.png',
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.high,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                        child: Image.asset(
+                          dark.valueOrNull?.isDark ?? false
+                              ? 'assets/images/dark_map_preview.jpg'
+                              : 'assets/images/light_map_preview.jpg',
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
+                        ),
                       ),
                     ),
                     ContentWrapper(

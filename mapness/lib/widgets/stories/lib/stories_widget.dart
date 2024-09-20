@@ -40,7 +40,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
     });
   }
 
-  void openStory(BuildContext context, String id) {
+  void _openStory(BuildContext context, String id) {
     Metrics.logEventAdvanced(MetricsConstants.exploreKeys.storyBanner,
         group: MetricsConstants.exploreTag, action: MetricAction.tap.name, props: {'id': id});
     StoriesRoute.openById(context, storyId: id);
@@ -67,7 +67,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
       textDirection: Directionality.of(context),
       child: thumbnails.maybeWhen(
         data: (data) => StoriesRow(
-          onThumbnailPressed: (id) => openStory(context, id),
+          onThumbnailPressed: (id) => _openStory(context, id),
           stories: data,
         ),
         orElse: () => const SizedBox.shrink(),

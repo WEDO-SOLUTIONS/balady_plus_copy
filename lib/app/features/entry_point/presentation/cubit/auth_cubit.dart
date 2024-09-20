@@ -298,7 +298,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     sl<DelegatorsCubit>().clearDelegators();
     final failureOrSuccess = await _clearAuth(NoParams());
 
-    await failureOrSuccess.fold((l) {
+    failureOrSuccess.fold((l) {
       sharedPrefs.setSSOToken(null);
       clearSSOInfo();
       emit(const EntryPointState(
@@ -346,13 +346,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> refreshSSOProfile() async {
     try {
       final failureOrSuccessForProfile = await _getProfile(NoParams());
-      await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
+      await failureOrSuccessForProfile.fold((_) async {}, (success) async {
         final failureOrSuccess = await _saveSSOProfile(success);
         if (failureOrSuccess.isRight()) {
           emit(state.copyWith(
             userInfo: success,
           ));
-          _saveSSOProfile(success);
         }
       });
     } catch (error, stackTrace) {
@@ -426,6 +425,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         return (state.userLocation, state.userLocationGIS);
       });
     }
+    return null;
   }
 
   Future<String?> getPaymentURL(PaymentRequest request) async {

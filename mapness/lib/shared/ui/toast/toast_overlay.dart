@@ -54,10 +54,11 @@ class ToastOverlayState extends State<ToastOverlay> {
 
   void show({
     required String title,
-    required String actionText,
-    required VoidCallback onActionTap,
+    String? actionText,
+    VoidCallback? onActionTap,
     String? iconAsset,
     IconData? iconData,
+    bool? isDismissible,
     Duration displayDuration = const Duration(seconds: 3),
     Duration transitionDuration = const Duration(milliseconds: 200),
   }) {
@@ -71,6 +72,7 @@ class ToastOverlayState extends State<ToastOverlay> {
         child: Theme(
           data: Theme.of(context),
           child: _ToastTransition(
+            isDismissible: isDismissible,
             hide: hide,
             title: title,
             actionText: actionText,

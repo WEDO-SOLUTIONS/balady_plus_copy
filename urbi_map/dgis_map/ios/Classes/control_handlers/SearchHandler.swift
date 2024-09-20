@@ -13,7 +13,7 @@ class SearchHandler: NSObject {
     private var searchCancelable: Cancellable?
     private var itemMarkerInfosCancellable: Cancellable?
     private var suggestCancelable: Cancellable?
-    private var objectLabelsJob: Operation?
+    private var objectLabelsQueue: OperationQueue
 
     private var labelCancellables = Set<Cancellable>()
     
@@ -41,6 +41,7 @@ class SearchHandler: NSObject {
         self.map = map
         self.sdkContext = sdkContext
         self.vendorConfig = vendorConfig
+        self.objectLabelsQueue = OperationQueue()
     }
 
     func cancel() {
@@ -48,7 +49,7 @@ class SearchHandler: NSObject {
         self.searchCancelable?.cancel()
         self.suggestCancelable?.cancel()
         self.itemMarkerInfosCancellable?.cancel()
-        self.objectLabelsJob?.cancel()
+        self.objectLabelsQueue.cancelAllOperations()
         self.labelCancellables.forEach { $0.cancel() }
     }
 
@@ -296,10 +297,7 @@ class SearchHandler: NSObject {
                     return
                 }
 
-                let operationQueue = OperationQueue()
-
                 let operation = BlockOperation {
-                    
                     let objectIds = markersInfo.compactMap { $0.objectId }
 
                     self.resolveMarkerTitle(response: response, objectIds: objectIds) { resolveResult in
@@ -317,8 +315,7 @@ class SearchHandler: NSObject {
                     }
                 }
                 
-                self.objectLabelsJob = operation
-                operationQueue.addOperation(operation)
+                self.objectLabelsQueue.addOperation(operation)
             }, failure: { error in
                 completion(
                     nil,

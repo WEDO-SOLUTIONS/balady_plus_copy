@@ -54,7 +54,7 @@ class EtaArrivalCard extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  context.l10n.arrivingInTime(_getArrivalTime(context, streamData)),
+                  _getArrivalTime(context, streamData),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: context.textStyleV3.h3Medium.copyWith(
@@ -152,30 +152,42 @@ class EtaArrivalCard extends HookConsumerWidget {
     return progress.clamp(0.0, 1.0);
   }
 
+  String _formatArrivalTime(BuildContext context, String remaining) => context.l10n.arrivingInTime(remaining);
+
   String _getArrivalTime(BuildContext context, EtaInfoModel<dynamic>? streamData) {
     if (streamData == null) {
-      return context.l10n.timerMin('--');
+      return _formatArrivalTime(context, context.l10n.timerMin('--'));
     }
     final data = streamData as EtaInfoModel<EtaInfoPayload?>;
     final arrivalAt = data.payload?.eta?.arrivalAt;
     if (arrivalAt == null) {
-      return context.l10n.timerMin('--');
+      return _formatArrivalTime(context, context.l10n.timerMin('--'));
     }
     final arrivalTime = DateTime.tryParse(arrivalAt);
     if (arrivalTime == null) {
-      return context.l10n.timerMin('--');
+      return _formatArrivalTime(context, context.l10n.timerMin('--'));
     }
     final currentTime = DateTime.now().toUtc();
     final remainingTime = arrivalTime.difference(currentTime);
+
     if (remainingTime.isNegative) {
-      return context.l10n.timerMin('0');
+      return _formatArrivalTime(context, context.l10n.timerMin('0'));
     }
+
+    if (remainingTime.inSeconds < 60) {
+      return context.l10n.lessThenMinute;
+    }
+
     final remainingHours = remainingTime.inHours;
     final remainingMinutes = remainingTime.inMinutes.remainder(60);
 
+    if (remainingTime.inSeconds < 60) {
+      return context.l10n.lessThenMinute;
+    }
+
     return remainingHours > 0
-        ? context.l10n.timerHrMin(remainingHours.toString(), remainingMinutes.toString())
-        : context.l10n.timerMin(remainingMinutes.toString());
+        ? _formatArrivalTime(context, context.l10n.timerHrMin(remainingHours.toString(), remainingMinutes.toString()))
+        : _formatArrivalTime(context, context.l10n.timerMin(remainingMinutes.toString()));
   }
 
   String _getUpdatedAt(BuildContext context, EtaInfoModel<dynamic>? streamData) {
