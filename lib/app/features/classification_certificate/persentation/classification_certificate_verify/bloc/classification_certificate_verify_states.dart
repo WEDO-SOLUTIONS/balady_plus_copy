@@ -84,6 +84,25 @@ class AdvancedSearchByClassificationTypeState
 
 
   @override
+  AdvancedSearchByClassificationTypeState copyWith({
+    AdvancedSearchRequestModel? searchRequestModel,
+    List<ClassificationCertificateLookupModel>? classificationType,
+    List<ClassificationCertificateLookupModel>? degrees,
+    List<ClassificationCertificateLookupModel>? services,
+    List<ClassificationCertificateLookupModel>? sectors,
+    List<CityLookupsModel>? cities,
+  }) =>
+      AdvancedSearchByClassificationTypeState(
+        sectors: degrees ?? this.sectors,
+        services: services ?? this.services,
+        typeMethod: super.typeMethod ,
+        searchRequestModel: searchRequestModel ?? super.searchRequestModel,
+        classificationType: classificationType ?? super.classificationType,
+        cities: cities ?? super.cities,
+        degrees: degrees ?? super.degrees,
+      );
+
+  @override
   List<Object?> get props => [
     typeMethod,
     cities,
@@ -94,7 +113,6 @@ class AdvancedSearchByClassificationTypeState
     services,
   ];
 }
-
 
 class AdvancedMethodBySectorsState extends AdvancedSearchByClassificationTypeState {
 
@@ -113,6 +131,27 @@ class AdvancedMethodBySectorsState extends AdvancedSearchByClassificationTypeSta
 
 
   @override
+  AdvancedMethodBySectorsState copyWith({
+    AdvancedSearchRequestModel? searchRequestModel,
+    List<ActivityLookupsModel>? activity,
+    List<ClassificationCertificateLookupModel>? classificationType,
+    List<ClassificationCertificateLookupModel>? degrees,
+    List<ClassificationCertificateLookupModel>? services,
+    List<ClassificationCertificateLookupModel>? sectors,
+    List<CityLookupsModel>? cities,
+  }) =>
+      AdvancedMethodBySectorsState(
+        searchRequestModel: searchRequestModel ?? super.searchRequestModel,
+        activity: activity ?? this.activity,
+        sectors: degrees ?? super.sectors,
+        services: services ?? super.services,
+        typeMethod: super.typeMethod ,
+        classificationType: classificationType ?? super.classificationType,
+        cities: cities ?? super.cities,
+        degrees: degrees ?? super.degrees,
+      );
+
+  @override
   List<Object?> get props => [
     typeMethod,
     cities,
@@ -125,9 +164,9 @@ class AdvancedMethodBySectorsState extends AdvancedSearchByClassificationTypeSta
   ];
 }
 ////////////////////////////////////////////////////////////
-class AdvancedMethodNotWorkingClassificationCertificateState
+class AdvancedMethodNotWorkingState
     extends ClassificationCertificateVerifyState {
-  const AdvancedMethodNotWorkingClassificationCertificateState({
+  const AdvancedMethodNotWorkingState({
     required super.typeMethod,
   });
 
