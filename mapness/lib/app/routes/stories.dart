@@ -4,7 +4,6 @@ import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/ui/stories_screen.dart';
 import 'package:mapness/features/stories/ui/stories_transition.dart';
-// import 'package:mapness/features/stories/ui/stories_transition.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 
 part 'stories.g.dart';
@@ -106,6 +105,7 @@ class StoriesRoute extends GoRouteData {
         onClose: args.onClose,
         initialStoryId: args.initialStoryId,
       ),
+      opaque: false,
       fullscreenDialog: true,
       transitionsBuilder: (_, __, ___, child) => StoriesTransition(
         child: child,
