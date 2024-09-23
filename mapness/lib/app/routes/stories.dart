@@ -108,6 +108,8 @@ class StoriesRoute extends GoRouteData {
       opaque: false,
       fullscreenDialog: true,
       transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+        type: args.type,
+        onClose: args.onClose,
         child: child,
       ),
     );

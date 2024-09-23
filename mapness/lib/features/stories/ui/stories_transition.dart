@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
 
 class StoriesTransition extends StatefulWidget {
   final Widget child;
   final VoidCallback? onClose;
+  final StoryTypes type;
 
   const StoriesTransition({
     required this.child,
+    required this.type,
     this.onClose,
     super.key,
   });
@@ -62,9 +65,17 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
         canPop: false,
         child: GestureDetector(
           onVerticalDragUpdate: (details) {
+            /// Disable swipe to dismiss for onboarding stories
+            if (widget.type == StoryTypes.onboarding) {
+              return;
+            }
             _controller.value -= _calculateRatio(details.delta.dy);
           },
           onVerticalDragEnd: (details) {
+            /// Disable swipe to dismiss for onboarding stories
+            if (widget.type == StoryTypes.onboarding) {
+              return;
+            }
             final predictedValue = _controller.value - _calculateRatio(details.velocity.pixelsPerSecond.dy * 0.25);
             if (predictedValue < _dismissOffsetRatio) {
               _dismiss(from: _controller.value);
