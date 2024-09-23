@@ -5,6 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
 
 class FeedbackInput extends StatelessWidget {
   final FeedbackTextEntity field;
@@ -25,7 +26,6 @@ class FeedbackInput extends StatelessWidget {
     };
     final allowedInputPattern = switch (field.type) {
       FeedbackTextType.email => RegExp(r'[a-zA-Z0-9\._+\-@]'),
-      FeedbackTextType.phone => RegExp(r'[0-9]'),
       FeedbackTextType.url => RegExp(r'[a-zA-Z0-9./:?_\-]'),
       _ => null,
     };
@@ -55,6 +55,9 @@ class FeedbackInput extends StatelessWidget {
         keyboardType: keyboardType,
         maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
         onChanged: fieldState.didChange,
+        inputFormatters: [
+          if (field.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
+        ],
       ),
       // validator: ,
     );

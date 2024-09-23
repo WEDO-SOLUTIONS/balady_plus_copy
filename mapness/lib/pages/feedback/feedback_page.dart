@@ -43,20 +43,27 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     }
     final poiData = ref.watch(poiFeedbackProvider(objectId));
     final objectType = poiData.valueOrNull?.types[0]?.type;
-    final categories = ref.watch(
-      feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType)),
-    );
+    final provider = feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType));
+    final categories = ref.watch(provider);
 
     if (poiData.isLoading || categories.isLoading) {
       return const FeedbackLoadingWidget();
     } else if (poiData.hasError || categories.hasError) {
-      return const FeedbackFailureWidget();
+      return FeedbackFailureWidget(
+        onRetry: () {
+          ref.invalidate(provider);
+        },
+      );
     }
 
     final category = categories.value?.firstWhereOrNull((element) => element.id == widget.categoryId);
 
     if (category == null || category.fields.isEmpty) {
-      return const FeedbackFailureWidget();
+      return FeedbackFailureWidget(
+        onRetry: () {
+          ref.invalidate(provider);
+        },
+      );
     }
 
     return FormBuilder(

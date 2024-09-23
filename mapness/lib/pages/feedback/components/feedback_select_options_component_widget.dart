@@ -6,7 +6,8 @@ import 'package:mapness/entities/feedback/feedback_category.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
 import 'package:mapness/features/feedback/feedback_categories.dart';
 import 'package:mapness/features/feedback/poi_feedback.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/pages/feedback/feedback_failure_widget.dart';
+// import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/feedback_select_options_widget.dart';
 
 class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
@@ -20,7 +21,8 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final poiData = ref.watch(poiFeedbackProvider(objectId));
     final objectType = poiData.valueOrNull?.types[0]?.type;
-    final categories = ref.watch(feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType)));
+    final provider = feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType));
+    final categories = ref.watch(provider);
 
     return switch ((poiData, categories)) {
       (AsyncValue(value: final poiData), AsyncValue(value: final categories))
@@ -31,7 +33,13 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
           onTap: (category, objectId) => _onTap(context, category, objectId),
         ),
       (AsyncLoading(), _) || (_, AsyncLoading()) => Center(child: Loading.large()),
-      _ => Center(child: Text(context.l10n.failedToLoadData)),
+      (_, AsyncData(isLoading: final isLoading)) when isLoading == true => Center(child: Loading.large()),
+      _ => FeedbackFailureWidget(
+          isFullscreen: false,
+          onRetry: () {
+            ref.invalidate(feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType)));
+          },
+        ),
     };
   }
 
