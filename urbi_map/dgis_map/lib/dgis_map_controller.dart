@@ -499,6 +499,10 @@ class DgisMapController {
   Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
       _instance.startNavigationSimulation(speedRangeZoom);
 
+  /// Starts navigation simulation settings.
+  Future<void> simulationSpeed(double speed) =>
+      _instance.simulationSpeed(speed);
+
   Future<Uint8List> saveNavigationState() => _instance.saveNavigationState();
 
   Future<void> restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom) =>

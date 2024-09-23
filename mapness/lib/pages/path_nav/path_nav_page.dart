@@ -161,8 +161,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       );
       await saveNavigationState();
     }
-
-    await dgisController.setMapAttributeBool('navigatorOn', value: true);
   }
 
   @override
@@ -352,7 +350,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       _navigationState.value = PathNavState.finished;
     }
     await clearNavigationState();
-    await ref.read(dgisControllerProvider).value?.setMapAttributeBool('navigatorOn', value: false);
 
     action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();

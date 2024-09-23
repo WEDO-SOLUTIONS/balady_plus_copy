@@ -979,6 +979,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+    func simulationSpeedSpeed(_ speed: NSNumber, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+        self.navigationHandler?.simulationSpeed(speed: speed)
+    }
+    
     func startNavigationSimulationSpeedRangeZoom(_ speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
         guard let routeHandler = self.routeHandler else {
             completion(FlutterError(
