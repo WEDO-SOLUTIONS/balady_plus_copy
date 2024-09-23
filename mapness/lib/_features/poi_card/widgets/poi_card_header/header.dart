@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
@@ -14,7 +13,6 @@ import 'package:mapness/_features/poi_card/widgets/poi_card_header/title.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_header/worktime.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 
@@ -104,15 +102,7 @@ class PoiHeader extends ConsumerWidget {
                           color: context.color.textAndIconsBasePrimary.withAlpha(10),
                         ),
                         padding: const EdgeInsets.all(Spacing.$2x),
-                        child: SvgPicture.asset(
-                          'assets/icons/svg/ic_search_close.svg',
-                          semanticsLabel: 'MinApps Screen',
-                          package: PackageConfig.packageName,
-                          colorFilter: ColorFilter.mode(
-                            context.color.textAndIconsBasePrimary.withOpacity(0.7),
-                            BlendMode.srcIn,
-                          ),
-                        ),
+                        child: SystemIcons.close.icon(),
                       ),
                     ),
                   ),

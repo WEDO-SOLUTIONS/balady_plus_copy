@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,11 +55,10 @@ class PoiCardMapControlsV2 extends StatelessWidget {
                     child: Row(
                       children: [
                         const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Spacer(),
                             IndoorControl(),
-                            Spacer(),
                           ],
                         ),
                         const Spacer(),
@@ -85,9 +85,7 @@ class PoiCardMapControlsV2 extends StatelessWidget {
                             const ZoomControl(),
                             const Spacer(),
                             const CompassControl(),
-                            const SizedBox(
-                              height: 8,
-                            ),
+                            ui_kit.Spacing.$3x.heightBox,
                             const FollowControl(),
                           ],
                         ),

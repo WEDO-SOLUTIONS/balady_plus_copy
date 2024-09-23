@@ -230,6 +230,15 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     }
 
     /// has value
+    ref.listen(
+      poiPhotoProvider(objectId),
+      (previous, next) {
+        if (next.hasValue == true && next.value?.items.isNotEmpty == true) {
+          return;
+        }
+      },
+    );
+
     final name = data.buildingInfo.buildingName;
     if (name != null) {
       data.title = name;
@@ -244,26 +253,28 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           ),
         ),
         Positioned(
+          ///Retrieve padding for map controls when photo is shown
+          ///also map controls has own padding that calculates from bottomSheetHeight
           child: Consumer(
             builder: (context, ref, child) {
               final photos = ref.watch(poiPhotoProvider(objectId));
-              final isPhotosNotEmpty = !photos.hasValue || photos.requireValue.items.isEmpty;
-              var padding = isPhotosNotEmpty ? 0.0 : _paddingHeightWhenPhotosShown;
+              final hasPhotos = photos.hasValue && photos.requireValue.items.isNotEmpty;
+              var padding = hasPhotos ? _paddingHeightWhenPhotosShown : 0.0;
               return ValueListenableBuilder(
                   valueListenable: _bottomSheetAspectRatio,
                   builder: (_, aspectRatio, __) {
                     final roundedRatio = aspectRatio.roundDecimal(1);
-                    if (aspectRatio < PoiBottomSheetConfig.lowerAspectRatio) {
+                    if (roundedRatio < PoiBottomSheetConfig.lowerAspectRatio) {
                       padding = 0.0;
                     }
-                    if (roundedRatio == PoiBottomSheetConfig.lowerAspectRatio) {
+                    if (roundedRatio >= PoiBottomSheetConfig.lowerAspectRatio && hasPhotos) {
                       padding = _paddingHeightWhenPhotosShown;
                     }
-
                     return AnimatedPadding(
-                      duration: const Duration(milliseconds: 100),
+                      duration: const Duration(milliseconds: 150),
                       padding: EdgeInsets.only(
                         bottom: padding,
+                        // bottom: 0.0,
                       ),
                       child: child,
                     );
