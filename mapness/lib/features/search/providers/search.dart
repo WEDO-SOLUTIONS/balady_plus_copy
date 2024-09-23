@@ -134,7 +134,7 @@ class Search extends _$Search {
           searchQuery,
           sortingType: SortingTypeMessage.byDistance,
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
-          spatialRestriction: _getRestrictionFromRect() ?? spatialRestriction ?? _saRestrictions,
+          spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
         ),
       );
@@ -218,7 +218,7 @@ class Search extends _$Search {
           query,
           sortingType: SortingTypeMessage.byDistance,
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
-          spatialRestriction: _getRestrictionFromRect() ?? spatialRestriction ?? _saRestrictions,
+          spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
         ),
       );
