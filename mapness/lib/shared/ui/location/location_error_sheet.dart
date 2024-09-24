@@ -81,10 +81,12 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheet> with Wi
                   final serviceStatus = await perm.Permission.location.serviceStatus;
 
                   if (permissionStatus.isPermanentlyDenied) {
+                    ///Here we check our app has location permission and if doesn't - go to appSettings
                     await perm.openAppSettings();
                   } else if (!permissionStatus.isGranted) {
                     await perm.Permission.location.request();
                   } else if (serviceStatus == perm.ServiceStatus.disabled) {
+                    ///Here we check is location on or off on device and if off - go to locationSettings
                     await Geolocator.openLocationSettings();
                   }
                 },
