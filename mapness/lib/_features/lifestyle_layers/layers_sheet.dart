@@ -15,13 +15,13 @@ class LayersSheet extends ConsumerStatefulWidget {
 }
 
 class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
-  static const _layersPanelMaxHeight = .5;
+  static const _layersPanelMaxHeight = .4;
   static const _layersHiddenHeight = 0.05;
   static const _parkingPanelMaxHeight = .35;
-  static const duration = Duration(milliseconds: 250);
+  static const _duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
 
-  static const curve = Curves.easeIn;
+  static const _curve = Curves.easeIn;
 
   late final DraggableScrollableController _layersController;
   late final DraggableScrollableController _parkingLotsController;
@@ -161,7 +161,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
     _layersController.animateTo(
       .0,
       duration: _showHideDuration,
-      curve: curve,
+      curve: _curve,
     );
   }
 
@@ -182,15 +182,15 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
         );
     _layersController.animateTo(
       _layersPanelMaxHeight,
-      duration: duration,
-      curve: curve,
+      duration: _duration,
+      curve: _curve,
     );
     _parkingLotsController
       ..removeListener(_parkingControllerListener)
       ..animateTo(
         0,
-        duration: duration,
-        curve: curve,
+        duration: _duration,
+        curve: _curve,
       );
   }
 
@@ -200,14 +200,14 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
         );
     _layersController.animateTo(
       .11,
-      duration: duration,
-      curve: curve,
+      duration: _duration,
+      curve: _curve,
     );
     _parkingLotsController
         .animateTo(
       _parkingPanelMaxHeight,
-      duration: duration,
-      curve: curve,
+      duration: _duration,
+      curve: _curve,
     )
         .then((_) {
       _parkingLotsController.addListener(_parkingControllerListener);
@@ -221,7 +221,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
         .animateTo(
       _layersPanelMaxHeight,
       duration: _showHideDuration,
-      curve: curve,
+      curve: _curve,
     )
         .then((_) {
       _isShown = true;
