@@ -611,6 +611,8 @@ class DgisMapController {
 
   ///Set map attribute bool
   Future<void> setMapAttributeBool(String name, {required bool value}) => _instance.setMapAttributeBool(name, value);
+
+
 }
 
 /// Extension methods for `WeekTimeSearchMessage`.
