@@ -36,7 +36,7 @@ class StoryService extends _$StoryService {
         final watchedFrames = watchStored[story.storyId];
 
         if (watchedFrames != null) {
-         return story.copyWith(isWatched: true);
+          return story.copyWith(isWatched: true);
         }
 
         return story;
