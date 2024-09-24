@@ -500,8 +500,7 @@ class DgisMapController {
       _instance.startNavigationSimulation(speedRangeZoom);
 
   /// Starts navigation simulation settings.
-  Future<void> simulationSpeed(double speed) =>
-      _instance.simulationSpeed(speed);
+  Future<void> simulationSpeed(double speed) => _instance.simulationSpeed(speed);
 
   Future<Uint8List> saveNavigationState() => _instance.saveNavigationState();
 
@@ -611,8 +610,6 @@ class DgisMapController {
 
   ///Set map attribute bool
   Future<void> setMapAttributeBool(String name, {required bool value}) => _instance.setMapAttributeBool(name, value);
-
-
 }
 
 /// Extension methods for `WeekTimeSearchMessage`.
