@@ -61,7 +61,7 @@ class LayersSheetContent extends ConsumerWidget {
             ],
           ),
         ),
-        // TODO(Ayat): For now we hide the switches and present only the Lifestyle logic, we will come back to this later
+        // TODO(Ayat): BSA(1069) For now we hide the switches and present only the Lifestyle logic, we will come back to this later
         // SliverToBoxAdapter(
         //   child: Column(
         //     children: [
