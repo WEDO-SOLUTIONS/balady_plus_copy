@@ -42,7 +42,7 @@ class StoriesRow extends StatelessWidget {
                       title: story.thumbnail?.title,
                       networkImage: story.thumbnail?.imageUrl,
                       onTap: () => onThumbnailPressed(story.storyId),
-                      isWatched: story.isViewed,
+                      isWatched: story.isWatched,
                     );
                   },
                   separatorBuilder: (_, __) => const SizedBox(width: Spacing.$2x),

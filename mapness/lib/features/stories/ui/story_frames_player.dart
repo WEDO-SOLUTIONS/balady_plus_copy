@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,10 +37,6 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
   @override
   void initState() {
     super.initState();
-    currentIndex = max(
-      0,
-      widget.story.frames.indexWhere((element) => !element.isWatched),
-    );
     ref.read(storyServiceProvider.notifier).markStoryAsRead(widget.story.storyId, currentIndex);
   }
 

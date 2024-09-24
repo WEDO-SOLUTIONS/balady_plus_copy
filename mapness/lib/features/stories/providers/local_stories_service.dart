@@ -15,8 +15,8 @@ class LocalStoriesService extends _$LocalStoriesService {
     final stories = networkStories;
 
     return [
-      ...stories.where((element) => element.isViewed),
-      ...stories.where((element) => !element.isViewed),
+      ...stories.where((element) => element.isWatched),
+      ...stories.where((element) => !element.isWatched),
     ];
   }
 }
