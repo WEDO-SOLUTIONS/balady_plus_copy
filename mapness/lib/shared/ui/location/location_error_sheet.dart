@@ -80,13 +80,15 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheet> with Wi
                   final permissionStatus = await perm.Permission.location.status;
                   final serviceStatus = await perm.Permission.location.serviceStatus;
 
+                  ///On android, you can turn off GPS, but on ios, you can only restrict the application's access to GPS
+                  /// So here we firstly check - Has app permissions? And if it doesn't - we redirect user to app settings
+                  /// On android, if user turn off a gps service - we redirect him to service settings page
+
                   if (permissionStatus.isPermanentlyDenied) {
-                    ///Here we check our app has location permission and if doesn't - go to appSettings
                     await perm.openAppSettings();
                   } else if (!permissionStatus.isGranted) {
                     await perm.Permission.location.request();
                   } else if (serviceStatus == perm.ServiceStatus.disabled) {
-                    ///Here we check is location on or off on device and if off - go to locationSettings
                     await Geolocator.openLocationSettings();
                   }
                 },
