@@ -23,10 +23,10 @@ class PoiLoadingSheet extends StatelessWidget {
                   child: SheetDragger(),
                 ),
               ),
-              Positioned(
+              const Positioned(
                 right: 16,
                 top: 16,
-                child: CustomCloseButton(onClose: () {}),
+                child: CustomCloseButton(),
               ),
               Center(
                 child: Loading.medium(title: context.l10n.loading),

@@ -15,7 +15,6 @@ class WorktimeComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
-    final colorsThemeExt = context.color;
     if (state != PoiCardBottomSheetState.halfOpen) {
       return const SizedBox.shrink();
     }
@@ -24,7 +23,7 @@ class WorktimeComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
       child: Text(
         worktime,
         style: context.textStyle.footNoteBold.copyWith(
-          color: colorsThemeExt.textAndIconsBaseSecondary.withAlpha(125),
+          color: context.color.textAndIconsBaseSecondary.withAlpha(125),
         ),
       ),
     );

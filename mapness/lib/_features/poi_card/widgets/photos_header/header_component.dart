@@ -28,7 +28,8 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) => Opacity(
         opacity: _resolveOpacity(state, interpolation),
         child: ValueListenableBuilder<double>(
-          builder: (ctx, val, child) => SizedBox(
+          valueListenable: aspectRatio,
+          builder: (_, val, __) => SizedBox(
             height: isPhotosNotEmpty ? 0.0 : _transformPhotoSize(val),
             child: Padding(
               padding: const EdgeInsets.only(
@@ -39,7 +40,6 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
               ),
             ),
           ),
-          valueListenable: aspectRatio,
         ),
       );
 

@@ -110,11 +110,10 @@ class PoiHeader extends ConsumerWidget {
               ),
             ],
           ),
-          if (workingHours?.title != null) ...[
+          if (workingHours?.title != null)
             WorktimeComponent(
               worktime: workingHours!.title,
             ),
-          ],
           TabComponent(
             tabController: tabController,
             objectId: data.id?.objectId ?? 0,

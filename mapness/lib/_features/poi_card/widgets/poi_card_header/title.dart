@@ -14,16 +14,13 @@ class TitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> 
         );
 
   @override
-  Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
-    final titleTextStyle = context.textStyle.heading1.copyWith(
-      color: context.color.textAndIconsBasePrimary,
-    );
-    return Text(
-      title,
-      style: titleTextStyle,
-      overflow: TextOverflow.ellipsis,
-      maxLines: state != PoiCardBottomSheetState.hidden ? 2 : 1,
-      textAlign: TextAlign.start,
-    );
-  }
+  Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) => Text(
+        title,
+        style: context.textStyle.heading1.copyWith(
+          color: context.color.textAndIconsBasePrimary,
+        ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: state != PoiCardBottomSheetState.hidden ? 2 : 1,
+        textAlign: TextAlign.start,
+      );
 }

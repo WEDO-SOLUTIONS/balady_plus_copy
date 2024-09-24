@@ -1,7 +1,7 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:flutter/material.dart';
 import 'package:mapness/_features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 
 final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSheetState> {
@@ -40,11 +40,10 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
       return null;
     }
 
-    const black = Color(0xff000000);
     if (state == FourStateBottomSheet.open) {
-      return black.withOpacity(max(0.0, state.index - interpolation * 2 - 1) * 0.7);
+      return Colors.black.withOpacity(max(0.0, state.index - interpolation * 2 - 1) * 0.7);
     }
 
-    return black.withOpacity((state.index + interpolation - 1) * 0.7);
+    return Colors.black.withOpacity((state.index + interpolation - 1) * 0.7);
   }
 }
