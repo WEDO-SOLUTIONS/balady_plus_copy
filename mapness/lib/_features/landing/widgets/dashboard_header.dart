@@ -19,23 +19,19 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
-class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
-  final BottomSheetScrollController scrollController;
+class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final TickerProvider _vsync;
 
   static const headerHeight = 72.0;
 
-  DashboardHeaderDelegateV2({
-    required TickerProvider vsync,
-    required this.scrollController,
-  }) : _vsync = vsync;
+  DashboardHeaderDelegate({required TickerProvider vsync}) : _vsync = vsync;
 
   @override
   TickerProvider? get vsync => _vsync;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    const heightOfQuickFilters = QuickFilters.height + Spacing.$4x;
+    const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$4x;
     final currentHeaderExtent = minExtent + max(0.0, heightOfQuickFilters - shrinkOffset);
 
     return FlexibleSpaceBar.createSettings(
@@ -43,7 +39,6 @@ class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
       maxExtent: maxExtent,
       currentExtent: currentHeaderExtent,
       child: _DashboardMenu(
-        scrollController: scrollController,
         shrinkOffset: shrinkOffset,
       ),
     );
@@ -53,7 +48,7 @@ class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
   double get maxExtent => headerHeight;
 
   @override
-  double get minExtent => headerHeight - Spacing.$4x - QuickFilters.height - Spacing.$2x;
+  double get minExtent => headerHeight - Spacing.$4x - QuickFilters.defaultHeight - Spacing.$2x;
 
   @override
   FloatingHeaderSnapConfiguration? get snapConfiguration => FloatingHeaderSnapConfiguration();
@@ -64,16 +59,12 @@ class DashboardHeaderDelegateV2 extends SliverPersistentHeaderDelegate {
 
 class _DashboardMenu extends ConsumerWidget {
   final double shrinkOffset;
-  final BottomSheetScrollController scrollController;
 
-  const _DashboardMenu({
-    required this.scrollController,
-    required this.shrinkOffset,
-  });
+  const _DashboardMenu({required this.shrinkOffset});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const heightOfQuickFilters = QuickFilters.height + Spacing.$4x * 2;
+    const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$4x * 2;
     final remainingSpaceForQuickFilters = max(0.0, heightOfQuickFilters - shrinkOffset);
     final quickFilterSizeProportion = remainingSpaceForQuickFilters / heightOfQuickFilters;
 
@@ -91,25 +82,16 @@ class _DashboardMenu extends ConsumerWidget {
               double.infinity,
               remainingSpaceForQuickFilters,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: Spacing.$4x),
-                MapQuickFilters(
-                  id: QuickFilterScreen.dashboard,
-                  isDashboard: true,
-                  customFilters: [
-                    FilterItemConfig(
-                      filterType: FilterType.custom,
-                      title: context.l10n.go,
-                      icon: 'assets/icons/svg/quick_filters/free_roam.svg',
-                      onTap: () {
-                        FreeRoamRoute.open(ref.watch(goRouterProvider));
-                      },
-                    ),
-                  ],
+            child: MapQuickFilters(
+              id: QuickFilterScreen.dashboard,
+              isDashboard: true,
+              customFilters: [
+                FilterItemConfig(
+                  filterType: FilterType.custom,
+                  title: context.l10n.go,
+                  icon: 'assets/icons/svg/quick_filters/free_roam.svg',
+                  onTap: () => FreeRoamRoute.open(ref.watch(goRouterProvider)),
                 ),
-                const SizedBox(height: Spacing.$4x),
               ],
             ),
           ),
@@ -120,10 +102,10 @@ class _DashboardMenu extends ConsumerWidget {
 }
 
 class DashboardHeader extends ConsumerWidget {
-  final BottomSheetScrollController scrollController;
+  final StatefulBottomSheetController bottomSheetController;
 
   const DashboardHeader({
-    required this.scrollController,
+    required this.bottomSheetController,
     super.key,
   });
 
@@ -148,7 +130,7 @@ class DashboardHeader extends ConsumerWidget {
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
               const SearchRoute().push(context);
-              scrollController.setState(ThreeStateBottomSheet.hidden);
+              bottomSheetController.setState(ThreeStateBottomSheet.hidden);
             },
             child: AbsorbPointer(
               child: BaladyInput.searchV2(

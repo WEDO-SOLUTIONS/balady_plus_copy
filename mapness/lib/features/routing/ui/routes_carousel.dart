@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
+import 'package:mapness/features/share_eta/entities/route_type_mapper.dart';
+import 'package:mapness/features/share_eta/models/eta_route_info.dart' as eta;
+import 'package:mapness/features/share_eta/models/eta_route_info.dart';
+import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
@@ -55,6 +61,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   static const _bottomSheetHeight = 320.0;
   late PageController _pageController;
   bool _animating = false;
+  int _activeRoute = 0;
 
   @override
   void initState() {
@@ -111,16 +118,44 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
             return;
           }
 
+          _activeRoute = index;
+
           ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
         },
         refresh: () {
           ref.invalidate(routesProvider);
         },
         startNavigation: (info) {
+          final _routeType = widget.navType.toRouteType();
+
+          final location = ref.read(locationProvider);
+          if (location == null && widget.points[0]?.etaPoint == null) {
+            return;
+          }
+
+          final finishLocation =
+              widget.points[1] ?? RouteParamsPoint(latitude: location!.latitude, longitude: location.longitude);
+
           // Set finish point for ETA stream
           EtaStreamStorage()
-            ..setLatitude(widget.points[1]!.latitude)
-            ..setLongitude(widget.points[1]!.longitude);
+            ..setLatitude(finishLocation.latitude)
+            ..setLongitude(finishLocation.longitude);
+
+          ref.read(etaRouteInfoProvider.notifier).setRoute(eta.EtaRoute(
+                startPoint: widget.points[0]?.etaPoint ??
+                    EtaRoutePoint(
+                      lat: location!.latitude,
+                      lon: location.longitude,
+                    ),
+                endPoint: widget.points[1]?.etaPoint ??
+                    EtaRoutePoint(
+                      lat: location!.latitude,
+                      lon: location.longitude,
+                    ),
+                type: _routeType,
+                routeIndex: _activeRoute,
+                createdAt: DateTime.now().toUtc().toIso8601String(),
+              ));
           widget.startNavigation(info);
         });
   }

@@ -5,5 +5,12 @@
   "problems.decorations.enabled": true,
   "dart.promptToRunIfErrors": false,
   "git.allowNoVerifyCommit": true,
-  "git.confirmNoVerifyCommit": false
+  "git.confirmNoVerifyCommit": false,
+  "editor.rulers": [
+    120
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  }
 }

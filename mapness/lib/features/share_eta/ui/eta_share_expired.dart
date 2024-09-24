@@ -24,6 +24,11 @@ class EtaShareExpired extends StatelessWidget {
         subtitle: context.l10n.driverReachedDestination.multilines,
       );
 
+  factory EtaShareExpired.broadcastExpired(BuildContext context) => EtaShareExpired(
+        title: context.l10n.locationUnavailableEta,
+        subtitle: context.l10n.broadcastHasExpired.multilines,
+      );
+
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {

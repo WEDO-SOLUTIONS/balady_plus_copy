@@ -85,6 +85,8 @@ class SoundSettings extends _$SoundSettings {
   static const _soundToggleTypesList = SoundToggleType.values;
   static const _promptsVolumeList = [10, 30, 60];
 
+  SoundToggleType get currentSoundToggleType => SoundToggleType.values[state.voiceInstructionIndex];
+
   @override
   SoundSettingsModel build() {
     final sharedPrefs = ref.read(sharedPrefsProvider);
@@ -107,7 +109,7 @@ class SoundSettings extends _$SoundSettings {
     final prefsVoiceInstructionIndex = sharedPrefs.getInt(MapnessConstants.voiceInstructionIndexPrefsKey);
     final prefsMuffleOtherSounds = sharedPrefs.getBool(MapnessConstants.muffleOtherSoundsPrefsKey);
     final prefsPromptsVolumeIndex = sharedPrefs.getInt(MapnessConstants.promptsVolumeIndexPrefsKey);
-    final prefsBackgroundNavigation = sharedPrefs.getBool(MapnessConstants.backgroundNavigationPrefsKey);
+    const prefsBackgroundNavigation = false;
     final prefsRoadCameras = sharedPrefs.getBool(MapnessConstants.roadCamerasPrefsKey);
     final prefsOverSpeeding = sharedPrefs.getBool(MapnessConstants.overSpeedingPrefsKey);
 

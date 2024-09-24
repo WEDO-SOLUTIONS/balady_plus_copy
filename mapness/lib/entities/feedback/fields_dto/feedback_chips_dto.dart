@@ -3,7 +3,7 @@ part of '../dto/feedback_base_dto.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class FeedbackChipsDto extends FeedbackBaseDto {
   final String label;
-  final List<String> variants;
+  final List<FeedbackChipsItemDto> variants;
 
   FeedbackChipsDto({
     required super.id,
@@ -11,6 +11,7 @@ class FeedbackChipsDto extends FeedbackBaseDto {
     required super.isRequired,
     required this.label,
     required this.variants,
+    required super.isHidden,
   });
 
   @override
@@ -18,13 +19,10 @@ class FeedbackChipsDto extends FeedbackBaseDto {
         id: id,
         isRequired: isRequired,
         label: label,
-        variants: variants
-            // TODO: refactor if backend desire to use ids
-            .map((e) => FeedbackChipsItemEntity(
-                  id: e,
-                  label: e,
-                ))
-            .toList(),
-        value: UnmodifiableSetView<String>({}),
+        variants: variants.map((e) => e.toDomain()).toList(),
+        value: UnmodifiableSetView<int>({}),
+        isHidden: isHidden,
       );
+
+  factory FeedbackChipsDto.fromJson(Map<String, dynamic> json) => _$FeedbackChipsDtoFromJson(json);
 }

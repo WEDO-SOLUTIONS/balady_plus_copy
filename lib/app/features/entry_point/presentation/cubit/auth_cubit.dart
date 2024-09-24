@@ -373,7 +373,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           emit(state.copyWith(
             userInfo: success,
           ));
-          _saveSSOProfile(success);
         }
       });
     } catch (error, stackTrace) {
@@ -451,6 +450,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         return (state.userLocation, state.userLocationGIS);
       });
     }
+    return null;
   }
 
   Future<String?> getPaymentURL(PaymentRequest request) async {

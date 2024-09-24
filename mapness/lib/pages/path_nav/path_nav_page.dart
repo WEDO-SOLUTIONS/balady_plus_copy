@@ -31,7 +31,6 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -39,7 +38,6 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
-import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -163,6 +161,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       );
       await saveNavigationState();
     }
+
+    await dgisController.setMapAttributeBool('navigatorOn', value: true);
   }
 
   @override
@@ -250,22 +250,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: padding,
-                      child: Consumer(
-                        builder: (context, ref, _) {
-                          final navi = ref.watch(appFeaturesProvider);
-                          return Visibility(
-                            visible: navi.naviEnabled,
-                            replacement: const SizedBox.square(
-                              dimension: 28,
-                            ),
-                            child: const TrafficControl(),
-                          );
-                        },
-                      ),
-                    ),
                     const Spacer(),
                     Padding(
                       padding: padding,
@@ -296,13 +280,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               ],
             ),
           ),
-          Positioned.fill(
-            child: isEtaExpanded
-                ? ColoredBox(
-                    color: AppColor.black.withOpacity(0.4),
-                  )
-                : const SizedBox.shrink(),
-          ),
+          if (isEtaExpanded)
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+              },
+              child: SizedBox.expand(
+                child: ColoredBox(
+                  color: AppColor.black.withOpacity(0.4),
+                ),
+              ),
+            ),
           Positioned(
             bottom: 0,
             right: 0,
@@ -351,22 +340,23 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip(VoidCallback action) async {
+    try {
+      await _stopActiveSharing();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+
     if (_navigationState.value != PathNavState.finished) {
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
       _navigationState.value = PathNavState.finished;
     }
     await clearNavigationState();
+    await ref.read(dgisControllerProvider).value?.setMapAttributeBool('navigatorOn', value: false);
 
     action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
-
-    try {
-      await _stopActiveSharing();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
   }
 
   // Show the route page after the trip is finished

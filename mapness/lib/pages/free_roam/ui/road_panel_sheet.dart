@@ -1,19 +1,19 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
-import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/app/routes/road_panel.dart';
+import 'package:mapness/app/routes/sound_settings.dart';
+import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
-import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoadPanelSheet extends ConsumerStatefulWidget {
   const RoadPanelSheet({super.key});
@@ -115,6 +115,9 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                               color: color.surfaceBaseTertiary,
                               children: [
                                 ContentRow(
+                                  onTap: () {
+                                    const SoundSettingsRoute().push(context);
+                                  },
                                   options: ContentRowOptions(
                                     subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
                                       color: color.textAndIconsBaseSecondary,
@@ -123,9 +126,6 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                                       color: colorsV2.foregroundDefault,
                                     ),
                                     actionWidget: ContentRowActionOptions(
-                                      actionPressed: () {
-                                        const SoundSettingsRoute().push(context);
-                                      },
                                       actionIcon: AppIcons(
                                         iconData: SystemIcons.arrowCornerRightLarge,
                                         color: context.staticColor.textAndIconsBaseTertiary,
@@ -157,11 +157,15 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                                     initialIndex: soundSettingsModel.voiceInstructionIndex,
                                   ),
                                 ),
+                                Spacing.$3x.heightBox,
                               ],
                             ),
                             const SizedBox(height: Spacing.$3x),
                             ContentContainer(
                               child: ContentRow(
+                                onTap: () {
+                                  const NavigatorSettingsRoute().push(context);
+                                },
                                 options: ContentRowOptions(
                                   leadingIcon: Icon(
                                     SystemIcons.settings,
@@ -170,9 +174,6 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                                   ),
                                   title: l10n.navigatorSettings,
                                   actionWidget: ContentRowActionOptions(
-                                    actionPressed: () {
-                                      const NavigatorSettingsRoute().push(context);
-                                    },
                                     actionIcon: AppIcons(
                                       iconData: SystemIcons.arrowCornerRightLarge,
                                       color: context.staticColor.textAndIconsBaseTertiary,
@@ -186,7 +187,8 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                               buttonColorScheme: ButtonColorScheme.warning,
                               color: colorsV2.errorDefault,
                               primaryLabel: l10n.endTrip,
-                              onTap: _endTripAndShowHome,
+                              onTap: () =>
+                                  ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
                             )
                           ],
                         ),
@@ -200,27 +202,6 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
         },
       ),
     );
-  }
-
-  Future<void> _endTrip(VoidCallback action) async {
-    await ref.read(dgisControllerProvider).value?.freeRoamController.stop();
-    action();
-  }
-
-  Future<void> _endTripAndShowHome() async {
-    Metrics.logEventAdvanced(
-      MetricsConstants.navigationKeys.endTripAndShowHome,
-      group: MetricsConstants.navigationTag,
-      action: MetricAction.tap.toString(),
-    );
-
-    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
-
-    await _endTrip(() {
-      if (context.mounted) {
-        const LandingRoute().go(context);
-      }
-    });
   }
 
   void _hideLayersPanel() {
@@ -241,7 +222,10 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
         .then((_) {
       sheetController.addListener(() {
         final navigator = ref.read(goRouterProvider);
-        if (sheetController.isAttached && sheetController.size < .1 && navigator.canPop()) {
+        if (sheetController.isAttached &&
+            sheetController.size < .1 &&
+            RoadPanelRoute.isCurrent(context) &&
+            navigator.canPop()) {
           navigator.pop();
         }
       });

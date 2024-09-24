@@ -1,18 +1,18 @@
 part of '../feedback_base_entity.dart';
 
 class FeedbackChipsItemEntity {
-  final FeedbackIcon? icon;
+  final String? iconUrl;
   final String label;
-  final String id;
+  final int id;
 
   const FeedbackChipsItemEntity({
     required this.id,
     required this.label,
-    this.icon,
+    this.iconUrl,
   });
 }
 
-class FeedbackChipsEntity extends FeedbackBaseEntity<UnmodifiableSetView<String>> {
+class FeedbackChipsEntity extends FeedbackBaseEntity<UnmodifiableSetView<int>> {
   final String label;
   final List<FeedbackChipsItemEntity> variants;
 
@@ -22,14 +22,19 @@ class FeedbackChipsEntity extends FeedbackBaseEntity<UnmodifiableSetView<String>
     required this.label,
     required this.variants,
     required super.value,
+    required super.isHidden,
   });
 
   @override
-  FeedbackChipsEntity updatedValue(Set<String> value) => FeedbackChipsEntity(
+  FeedbackChipsEntity updatedValue(Set<int> value) => FeedbackChipsEntity(
         id: id,
         isRequired: isRequired,
         label: label,
         variants: variants,
-        value: UnmodifiableSetView<String>(value),
+        value: UnmodifiableSetView<int>(value),
+        isHidden: isHidden,
       );
+
+  @override
+  dynamic valueToJson() => value?.toList();
 }

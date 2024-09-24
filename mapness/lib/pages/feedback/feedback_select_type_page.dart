@@ -14,7 +14,6 @@ class FeedbackSelectTypePage extends ConsumerWidget {
   });
 
   @override
-  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context, WidgetRef ref) {
     if (objectId == null) {
       return const SizedBox();

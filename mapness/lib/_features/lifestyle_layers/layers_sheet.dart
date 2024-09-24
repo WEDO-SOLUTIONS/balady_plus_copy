@@ -16,6 +16,7 @@ class LayersSheet extends ConsumerStatefulWidget {
 
 class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
   static const _layersPanelMaxHeight = .5;
+  static const _layersHiddenHeight = 0.05;
   static const _parkingPanelMaxHeight = .35;
   static const duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
@@ -25,11 +26,15 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   late final DraggableScrollableController _layersController;
   late final DraggableScrollableController _parkingLotsController;
 
+  // Another one to check if the panel is shown and we don't pop it on small size of the sheet
+  bool _isShown = false;
+
   @override
   void initState() {
     super.initState();
 
     _layersController = DraggableScrollableController();
+    _layersController.addListener(_layersControllerListener);
     _parkingLotsController = DraggableScrollableController();
     WidgetsBinding.instance.addPostFrameCallback((_) => _showBottomSheet());
   }
@@ -50,6 +55,19 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [
+          // Close the panel when tapping on the screen
+          // [CustomTransitionPage.barrierDismissible = true] doesn't work
+          // so we have to add a transparent InkWell to close the panel manually
+          //
+          // I hope this is temporary and GoRouter will support barrierDismissible
+          InkWell(
+            splashColor: Colors.transparent,
+            onTap: _hideLayersPanel,
+            child: const SizedBox(
+              width: double.maxFinite,
+              height: double.maxFinite,
+            ),
+          ),
           DraggableScrollableSheet(
             controller: _layersController,
             minChildSize: .0,
@@ -147,6 +165,17 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
     );
   }
 
+  // If the main layer [_layersController] is in hidden position then close the panel and make pop
+  void _layersControllerListener() {
+    if (_isShown && _layersController.size <= _layersHiddenHeight) {
+      final goRoute = ref.read(goRouterProvider);
+
+      if (goRoute.canPop()) {
+        goRoute.pop();
+      }
+    }
+  }
+
   void _showLayersPanel() {
     ref.watch(layersControlsProvider.notifier).update(
           layersWidgetType: LayersPanelType.layers,
@@ -195,11 +224,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
       curve: curve,
     )
         .then((_) {
-      _layersController.addListener(() {
-        if (_layersController.isAttached && _layersController.size < .1) {
-          ref.read(goRouterProvider).pop();
-        }
-      });
+      _isShown = true;
     });
   }
 }

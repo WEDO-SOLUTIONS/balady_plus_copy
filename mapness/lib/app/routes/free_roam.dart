@@ -25,7 +25,7 @@ class FreeRoamRoute extends GoRouteData {
     const route = FreeRoamRoute();
     final location = route.location;
 
-    router.go(location);
+    router.push(location);
   }
 }
 

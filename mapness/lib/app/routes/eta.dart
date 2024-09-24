@@ -35,7 +35,7 @@ class EtaRoute extends GoRouteData {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: LayoutBuilder(
-          builder: (context, constraints) => const EtaRoutePage(),
+          builder: (context, constraints) => EtaRoutePage(latitude: lat, longitude: lon),
         ),
       );
 }

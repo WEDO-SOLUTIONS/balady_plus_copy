@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -7,21 +5,22 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SsoUserInfo extends Equatable {
-  const SsoUserInfo(
-      {this.name,
-      this.phone,
-      this.mail,
-      this.arName,
-      this.enName,
-      this.idNo,
-      this.nid,
-      this.idType,
-      this.sex,
-      this.dob,
-      this.sname,
-      this.sub,
-      this.nationality,
-      this.tnm});
+  const SsoUserInfo({
+    this.name,
+    this.phone,
+    this.mail,
+    this.arName,
+    this.enName,
+    this.idNo,
+    this.nid,
+    this.idType,
+    this.sex,
+    this.dob,
+    this.sname,
+    this.sub,
+    this.nationality,
+    this.tnm,
+  });
 
   final String? name;
   final String? phone;
@@ -116,9 +115,9 @@ class SsoUserInfo extends Equatable {
 
   String getFirstAndLastName() {
     if (CommonFunctions.isAppAR) {
-      return getFirstName() + " " + getLastName();
+      return "${getFirstName()} ${getLastName()}";
     } else {
-      return getFirstNameEn() + " " + getLastNameEn();
+      return "${getFirstNameEn()} ${getLastNameEn()}";
     }
   }
 
@@ -166,28 +165,18 @@ class SsoUserInfo extends Equatable {
         dateDivided.add(int.tryParse(element)!);
       }
 
-      String hDate = hijriCalendar.gregorianToHijri(
-          dateDivided[2], dateDivided[1], dateDivided[0]);
-
       String year = hijriCalendar.hYear.toString();
-      String month = hijriCalendar.hMonth.toString().length == 1
-          ? "0" + hijriCalendar.hMonth.toString()
-          : hijriCalendar.hMonth.toString();
-      String day = hijriCalendar.hDay.toString().length == 1
-          ? "0" + hijriCalendar.hDay.toString()
-          : hijriCalendar.hDay.toString();
+      String month =
+          hijriCalendar.hMonth.toString().length == 1 ? "0${hijriCalendar.hMonth}" : hijriCalendar.hMonth.toString();
+      String day = hijriCalendar.hDay.toString().length == 1 ? "0${hijriCalendar.hDay}" : hijriCalendar.hDay.toString();
 
       if (dateDivided[2] > 1800) {
-        return year + "/" + month + "/" + day;
+        return "$year/$month/$day";
       } else {
         String year = dateDivided[2].toString();
-        String month = dateDivided[1].toString().length == 1
-            ? "0" + dateDivided[1].toString()
-            : dateDivided[1].toString();
-        String day = dateDivided[0].toString().length == 1
-            ? "0" + dateDivided[0].toString()
-            : dateDivided[0].toString();
-        return year + "/" + month + "/" + day;
+        String month = dateDivided[1].toString().length == 1 ? "0${dateDivided[1]}" : dateDivided[1].toString();
+        String day = dateDivided[0].toString().length == 1 ? "0${dateDivided[0]}" : dateDivided[0].toString();
+        return "$year/$month/$day";
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -202,15 +191,12 @@ class SsoUserInfo extends Equatable {
   }
 
   String getEmail() {
-    String email =
-        mail?.replaceAll("\u200e", '').replaceAll("\u200f", '').trim() ?? "";
+    String email = mail?.replaceAll("\u200e", '').replaceAll("\u200f", '').trim() ?? "";
     return email;
   }
 
   String getPhone() {
-    return phone != null
-        ? (!phone!.startsWith("0") ? "0" + phone! : phone!)
-        : "";
+    return phone != null ? (!phone!.startsWith("0") ? "0${phone!}" : phone!) : "";
   }
 
   String getGender() {
@@ -222,5 +208,5 @@ class SsoUserInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [idNo, name, mail, phone];
+  List<Object?> get props => [idNo, name, mail, phone, nationality];
 }

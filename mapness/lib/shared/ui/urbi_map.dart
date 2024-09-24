@@ -24,7 +24,7 @@ class UrbiMap extends ConsumerWidget {
           await controller.initialize();
 
           // Styles
-          await controller.loadStyles('assets/maps/styles/_common-styles.2gis');
+          await controller.loadStyles('assets/maps/styles/styles.2gis');
 
           // Appearance
           await controller.setZoomRestrictions(
@@ -34,7 +34,7 @@ class UrbiMap extends ConsumerWidget {
             ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA'],
           );
           await controller.setAppearance(
-            ref.read(darkModeProvider) ? MapAppearanceMessage.night : MapAppearanceMessage.day,
+            (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
           );
           await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 

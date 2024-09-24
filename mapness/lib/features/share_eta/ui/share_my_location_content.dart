@@ -17,16 +17,15 @@ import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
-import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 class ShareMyLocationContent extends HookConsumerWidget {
   final LatLng? closestPoint;
@@ -70,37 +69,24 @@ class ShareMyLocationContent extends HookConsumerWidget {
       }
       if (next.hasError) {
         LoadingOverlay.of(context).endLoading();
-        // Temporary solution
-        _showEtaExpired(context);
+        context.pop();
+        ToastOverlay.of(context).show(
+          title: context.l10n.failedShareLiveLocation,
+          actionText: context.l10n.tryAgain,
+          onActionTap: () {
+            _showEtaTimeSheet(context, ref);
+          },
+        );
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
-        final streamId = next.value!.streamId;
-        final streamToken = next.value!.streamToken;
-        final finishAt = next.value!.finishesAt;
-        final xStreamData = next.value!.xStreamData;
 
-        if (streamId == null ||
-            streamToken == null ||
-            finishAt == null ||
-            xStreamData == null ||
-            closestPoint == null) {
+        if (closestPoint == null) {
           return;
         }
 
         EtaStreamStorage()
-          ..setStreamId(streamId)
-          ..setToken(streamToken)
-          ..setXStreamData(xStreamData)
           ..setLatitude(closestPoint!.latitude)
           ..setLongitude(closestPoint!.longitude);
-
-        final estimatedTime = finishAt.dateTime;
-        if (estimatedTime != null) {
-          EtaStreamStorage().setEstimatedTime(estimatedTime);
-        }
-
-        ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
-        context.pop();
       }
     });
 
@@ -241,19 +227,12 @@ class ShareMyLocationContent extends HookConsumerWidget {
       isScrollControlled: true,
       builder: (context) => EtaSharingTimeSheet(
         onConfirmTap: (v) {
+          context.pop();
           LoadingOverlay.of(context).startLoading();
+
           ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);
         },
       ),
-    );
-  }
-
-  void _showEtaExpired(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => EtaShareExpired.liveLocation(context),
     );
   }
 }

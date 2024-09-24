@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
@@ -10,6 +11,7 @@ import 'package:mapness/features/share_eta/providers/websocker_error_handler_por
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn_action.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 class ShareEtaBtn extends HookConsumerWidget {
   final int durationMinutes;
@@ -23,30 +25,18 @@ class ShareEtaBtn extends HookConsumerWidget {
 
     final webSocketStatus = ref.watch(etaWebsocketStatusProvider);
     final (connectionCode, _) = ref.watch(websocketErrorHandlerProvider);
+    final shareEtaType = ref.watch(shareEtaProvider);
 
-    final bool isPulseactive = webSocketStatus;
+    final bool isEtaStream = shareEtaType == EtaStreamType.eta;
+
+    final bool isPulseactive = webSocketStatus && isEtaStream;
 
     ref.listen(etaServiceProvider, (prev, current) async {
-      if (current.hasValue && current.value != null && !current.isLoading) {
-        final streamId = current.value!.streamId;
-        final streamToken = current.value!.streamToken;
-        final finishAt = current.value!.finishesAt;
-        final xStreamData = current.value!.xStreamData;
-
-        if (streamId == null || streamToken == null || finishAt == null || xStreamData == null) {
-          return;
-        }
-
-        EtaStreamStorage()
-          ..setStreamId(streamId)
-          ..setToken(streamToken)
-          ..setXStreamData(xStreamData);
-
-        await ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
-      } else if (current.hasError) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          ToastMessageFactory.toastWithoutAction(text: 'Error', context: context),
+      if (current.hasError && !current.isLoading && current.value == null) {
+        ToastOverlay.of(context).showNoInternet(
+          onRetry: () {
+            ref.read(shareEtaProvider.notifier).startSharingEta();
+          },
         );
       }
     });
@@ -60,11 +50,17 @@ class ShareEtaBtn extends HookConsumerWidget {
       color: context.colorsV2.staticWhite,
       children: [
         ContentRow(
-          onTap: () {
+          onTap: () async {
             if (isPulseactive || isEtaStreamLoading) {
               return;
             }
-            ref.read(shareEtaProvider.notifier).startSharingEta();
+            try {
+              await _stopSharingPrevious(ref);
+            } catch (e) {
+              debugPrint(e.toString());
+            } finally {
+              await ref.read(shareEtaProvider.notifier).startSharingEta();
+            }
           },
           options: ContentRowOptions(
             padding: EdgeInsets.symmetric(
@@ -99,5 +95,13 @@ class ShareEtaBtn extends HookConsumerWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _stopSharingPrevious(WidgetRef ref) async {
+    final tokenId = EtaStreamStorage().state.streamToken;
+    final xStreamData = EtaStreamStorage().state.xStreamData;
+    if (tokenId != null && xStreamData != null) {
+      await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, xStreamData);
+    }
   }
 }

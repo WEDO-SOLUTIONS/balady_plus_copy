@@ -1,6 +1,5 @@
 package com.dgis.map.control_handlers
 
-import android.content.res.Resources
 import com.dgis.map.FusedLocationSource
 import com.dgis.map.control_handlers.public_transport.PublicTransportHandler
 import com.dgis.map.map_api.Messages
@@ -15,27 +14,22 @@ import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.DefaultRasterUrlTemplate
-import ru.dgis.sdk.map.GraphicsPreset
+import ru.dgis.sdk.map.Map as DgisMap
 import ru.dgis.sdk.map.RasterTileSource
 import ru.dgis.sdk.map.RasterUrlTemplate
 import ru.dgis.sdk.map.RouteEditorSource
 import ru.dgis.sdk.map.RouteMapObject
-import ru.dgis.sdk.map.RouteMapObjectCalloutLabelDisplayMode
-import ru.dgis.sdk.map.RouteMapObjectDisplayFlag
-import ru.dgis.sdk.map.RouteMapObjectPermanentDisplayFlag
 import ru.dgis.sdk.map.Source
+import ru.dgis.sdk.map.Zoom
 import ru.dgis.sdk.map.calcPosition
-import ru.dgis.sdk.navigation.RouteMapSettings
 import ru.dgis.sdk.routing.*
-import java.util.EnumSet
-import ru.dgis.sdk.map.Map as DgisMap
 
 class RouteHandler(
-    private val map: DgisMap,
-    sdkContext: Context,
-    private val eventSink: EventChannel.EventSink,
-    private val locationSource: FusedLocationSource,
-    private val navigationHandler: NavigationHandler,
+        private val map: DgisMap,
+        sdkContext: Context,
+        private val eventSink: EventChannel.EventSink,
+        private val locationSource: FusedLocationSource,
+        private val navigationHandler: NavigationHandler,
 ) : AutoCloseable {
     private val closables = mutableListOf<AutoCloseable>()
 
@@ -58,26 +52,27 @@ class RouteHandler(
 
     init {
         val routesEditor = RouteEditor(sdkContext)
-        this.routeEditorSource = RouteEditorSource(
-            sdkContext,
-            routesEditor
-        )
+        this.routeEditorSource = RouteEditorSource(sdkContext, routesEditor)
 
         this.trafficRouter = TrafficRouter(sdkContext)
         publicTransportHandler = PublicTransportHandler(eventSink, this)
 
-        closables.add(routesEditor.routesInfoChannel.connect {
-            if (options?.isPublicTransport == true) {
-                publicTransportHandler.onRoutesChanged()
-            }
-            this.onRoutesInfoChanged(it)
-        })
-        closables.add(routesEditor.activeRouteIndexChannel.connect {
-            if (options?.isPublicTransport == true) {
-                publicTransportHandler.onActiveRouteChanged()
-            }
-            this.onActiveRouteChanged(it)
-        })
+        closables.add(
+                routesEditor.routesInfoChannel.connect {
+                    if (options?.isPublicTransport == true) {
+                        publicTransportHandler.onRoutesChanged()
+                    }
+                    this.onRoutesInfoChanged(it)
+                }
+        )
+        closables.add(
+                routesEditor.activeRouteIndexChannel.connect {
+                    if (options?.isPublicTransport == true) {
+                        publicTransportHandler.onActiveRouteChanged()
+                    }
+                    this.onActiveRouteChanged(it)
+                }
+        )
 
         this.routesEditor = routesEditor
         map.addSource(routeEditorSource)
@@ -94,44 +89,48 @@ class RouteHandler(
     }
 
     fun setRouteParams(params: RouteEditorRouteParamsMessage) {
-        val startPoint = if (params.startPoint == null) {
-            locationSource.lastLocation?.let {
-                RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
-            }
-        } else {
-            RouteSearchPoint(
-                coordinates = GeoPoint(
-                    params.startPoint!!.point.latitude,
-                    params.startPoint!!.point.longitude
-                ),
-                objectId = DgisObjectId(
-                    objectId = params.startPoint!!.objectId?.objectId ?: 0,
-                    entranceId = params.startPoint!!.objectId?.entranceId ?: 0,
-                ),
-                levelId = params.startPoint!!.levelId?.let {
-                    LevelId(it)
+        val startPoint =
+                if (params.startPoint == null) {
+                    locationSource.lastLocation?.let {
+                        RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
+                    }
+                } else {
+                    RouteSearchPoint(
+                            coordinates =
+                                    GeoPoint(
+                                            params.startPoint!!.point.latitude,
+                                            params.startPoint!!.point.longitude
+                                    ),
+                            objectId =
+                                    DgisObjectId(
+                                            objectId = params.startPoint!!.objectId?.objectId ?: 0,
+                                            entranceId = params.startPoint!!.objectId?.entranceId
+                                                            ?: 0,
+                                    ),
+                            levelId = params.startPoint!!.levelId?.let { LevelId(it) }
+                    )
                 }
-            )
-        }
-        val finishPoint = if (params.finishPoint == null) {
-            locationSource.lastLocation?.let {
-                RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
-            }
-        } else {
-            RouteSearchPoint(
-                coordinates = GeoPoint(
-                    params.finishPoint!!.point.latitude,
-                    params.finishPoint!!.point.longitude
-                ),
-                objectId = DgisObjectId(
-                    objectId = params.finishPoint!!.objectId?.objectId ?: 0,
-                    entranceId = params.finishPoint!!.objectId?.entranceId ?: 0,
-                ),
-                levelId = params.finishPoint!!.levelId?.let {
-                    LevelId(it)
+        val finishPoint =
+                if (params.finishPoint == null) {
+                    locationSource.lastLocation?.let {
+                        RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
+                    }
+                } else {
+                    RouteSearchPoint(
+                            coordinates =
+                                    GeoPoint(
+                                            params.finishPoint!!.point.latitude,
+                                            params.finishPoint!!.point.longitude
+                                    ),
+                            objectId =
+                                    DgisObjectId(
+                                            objectId = params.finishPoint!!.objectId?.objectId ?: 0,
+                                            entranceId = params.finishPoint!!.objectId?.entranceId
+                                                            ?: 0,
+                                    ),
+                            levelId = params.finishPoint!!.levelId?.let { LevelId(it) }
+                    )
                 }
-            )
-        }
 
         if (startPoint == null || finishPoint == null) {
             return
@@ -140,14 +139,13 @@ class RouteHandler(
         this.options = getRouteSearchOptions(params.options)
         this.finishPoint = finishPoint
 
-        val routeEditorParams = RouteEditorRouteParams(
-            startPoint,
-            finishPoint,
-            options!!,
-            mutableListOf()
-        )
+        val routeEditorParams =
+                RouteEditorRouteParams(startPoint, finishPoint, options!!, mutableListOf())
         routesEditor.setRouteParams(routeEditorParams)
-        routeEditorSource.setShowOnlyActiveRoute(routeEditorParams.routeSearchOptions.isPublicTransport)
+        routeEditorSource.setShowOnlyActiveRoute(
+                params.getShowOnlyActiveRoute()
+                        ?: routeEditorParams.routeSearchOptions.isPublicTransport
+        )
     }
 
     fun setRoutesVisible(visible: Boolean) {
@@ -161,42 +159,43 @@ class RouteHandler(
     fun onRouteTap(route: RouteMapObject) {
         if (navigationHandler.isNavigating) {
             navigationHandler.onRouteTap(route)
-
         } else {
             this.routesEditor.setActiveRouteIndex(route.routeIndex)
         }
     }
 
-    private fun getRouteSearchOptions(opts: Messages.RouteSearchOptionsMessage): RouteSearchOptions {
+    private fun getRouteSearchOptions(
+            opts: Messages.RouteSearchOptionsMessage
+    ): RouteSearchOptions {
         return when (opts) {
             Messages.RouteSearchOptionsMessage.CAR -> RouteSearchOptions(CarRouteSearchOptions())
-            Messages.RouteSearchOptionsMessage.BICYCLE -> RouteSearchOptions(
-                BicycleRouteSearchOptions()
-            )
+            Messages.RouteSearchOptionsMessage.BICYCLE ->
+                    RouteSearchOptions(BicycleRouteSearchOptions())
+            Messages.RouteSearchOptionsMessage.PEDESTRIAN ->
+                    RouteSearchOptions(PedestrianRouteSearchOptions())
+            Messages.RouteSearchOptionsMessage.TRUCK ->
+                    RouteSearchOptions(TruckRouteSearchOptions(CarRouteSearchOptions()))
+            Messages.RouteSearchOptionsMessage.SCOOTER ->
+                    RouteSearchOptions(ScooterRouteSearchOptions())
+            Messages.RouteSearchOptionsMessage.PUBLIC_TRANSPORT ->
+                    RouteSearchOptions(PublicTransportRouteSearchOptions())
+            Messages.RouteSearchOptionsMessage.TAXI ->
+                    RouteSearchOptions(TaxiRouteSearchOptions(CarRouteSearchOptions()))
+        }
+    }
 
-            Messages.RouteSearchOptionsMessage.PEDESTRIAN -> RouteSearchOptions(
-                PedestrianRouteSearchOptions()
-            )
+    fun moveCameraToActiveRoute(index: Long) {
+        val route = routesEditor.routesInfo.routes[index.toInt()]
 
-            Messages.RouteSearchOptionsMessage.TRUCK -> RouteSearchOptions(
-                TruckRouteSearchOptions(
-                    CarRouteSearchOptions()
-                )
-            )
+        val geometries = route.route.geometry.entries.map { entry -> PointGeometry(entry.value) }
 
-            Messages.RouteSearchOptionsMessage.SCOOTER -> RouteSearchOptions(
-                ScooterRouteSearchOptions()
-            )
+        ComplexGeometry(geometries).apply {
+            val oldPosition = calcPosition(map.camera, this)
 
-            Messages.RouteSearchOptionsMessage.PUBLIC_TRANSPORT -> RouteSearchOptions(
-                PublicTransportRouteSearchOptions()
-            )
+            // Need add zoom value to route may contain the screen
+            val newPosition = oldPosition.copy(zoom = Zoom(oldPosition.zoom.value - 1))
 
-            Messages.RouteSearchOptionsMessage.TAXI -> RouteSearchOptions(
-                TaxiRouteSearchOptions(
-                    CarRouteSearchOptions()
-                )
-            )
+            this@RouteHandler.map.camera.move(newPosition)
         }
     }
 
@@ -204,28 +203,31 @@ class RouteHandler(
         if (index == null) return
         val route = routesEditor.routesInfo.routes[index.value.toInt()]
 
-        val geometries = route.route.geometry.entries
-            .map { entry ->
-                PointGeometry(entry.value)
-            }
+        val geometries = route.route.geometry.entries.map { entry -> PointGeometry(entry.value) }
         ComplexGeometry(geometries).apply {
             this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
         }
 
         eventSink.success(
-            mapOf(
-                "event" to Events.onActiveRouteChanged.name,
-                "index" to index.value,
-            )
+                mapOf(
+                        "event" to Events.onActiveRouteChanged.name,
+                        "index" to index.value,
+                )
         )
     }
 
     companion object {
         private fun getPedestrianRouteData(route: Route): Triple<Int, Int, List<Int>> {
             return Triple(
-                first = route.roadSubtypes.entries.filter { it.value == RoadSubtype.STAIRWAY_DOWN || it.value == RoadSubtype.STAIRWAY_UP }.size,
-                second = route.obstacles.entries.size,
-                third = route.altitudes.entries.map { it.value.toInt() }
+                    first =
+                            route.roadSubtypes.entries
+                                    .filter {
+                                        it.value == RoadSubtype.STAIRWAY_DOWN ||
+                                                it.value == RoadSubtype.STAIRWAY_UP
+                                    }
+                                    .size,
+                    second = route.obstacles.entries.size,
+                    third = route.altitudes.entries.map { it.value.toInt() }
             )
         }
 
@@ -233,31 +235,33 @@ class RouteHandler(
             val (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
 
             val distance = route.route.geometry.last?.point?.distance?.meters ?: 0.0
-            val duration = route.route.geometry.first?.point?.let {
-                route.traffic.durations.calculateDuration(
-                    it
-                ).inSeconds
-            } ?: 0
+            val duration =
+                    route.route.geometry.first?.point?.let {
+                        route.traffic.durations.calculateDuration(it).inSeconds
+                    }
+                            ?: 0
 
             return mapOf(
-                "distance" to distance,
-                "duration" to duration,
-                "stairwayCount" to stairwayCount,
-                "gateCount" to gateCount,
-                "altitudes" to altitudes
+                    "distance" to distance,
+                    "duration" to duration,
+                    "stairwayCount" to stairwayCount,
+                    "gateCount" to gateCount,
+                    "altitudes" to altitudes
             )
         }
     }
 
     private fun onRoutesInfoChanged(routesInfo: RouteEditorRoutesInfo) {
         if (routesInfo.routes.isNotEmpty()) {
-            val geometries = routesInfo.routes
-                .map { route ->
-                    route.route.geometry.entries
-                        .map { entry ->
-                            PointGeometry(entry.value)
-                        }
-                }.flatten()
+            val geometries =
+                    routesInfo
+                            .routes
+                            .map { route ->
+                                route.route.geometry.entries.map { entry ->
+                                    PointGeometry(entry.value)
+                                }
+                            }
+                            .flatten()
             ComplexGeometry(geometries).apply {
                 this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
             }
@@ -265,18 +269,16 @@ class RouteHandler(
             val mappedRoutes = routesInfo.routes.map(::mapRouteInfo)
 
             eventSink.success(
-                mapOf(
-                    "event" to Events.onRoutesInfoChanged.name,
-                    "routes" to mappedRoutes
-                )
+                    mapOf("event" to Events.onRoutesInfoChanged.name, "routes" to mappedRoutes)
             )
         }
     }
 
     fun getActivePublicTransportRoute(): TrafficRoute? {
-        val route = routesEditor.activeRouteIndex?.let {
-            routesEditor.routesInfo.routes[it.value.toInt()]
-        }
+        val route =
+                routesEditor.activeRouteIndex?.let {
+                    routesEditor.routesInfo.routes[it.value.toInt()]
+                }
         if (route == null || route.route.publicTransportTransfers.isEmpty) {
             return null
         }
@@ -284,34 +286,31 @@ class RouteHandler(
     }
 
     fun getPublicTransportRoutes(): List<TrafficRoute> {
-        return routesEditor.routesInfo.routes.filter {
-            !it.route.publicTransportTransfers.isEmpty
-        }
+        return routesEditor.routesInfo.routes.filter { !it.route.publicTransportTransfers.isEmpty }
     }
 
     fun findBriefRouteInfos(
-        searchPoints: List<BriefRouteInfoSearchPoints>,
-        routeSearchOptions: RouteSearchOptions
+            searchPoints: List<BriefRouteInfoSearchPoints>,
+            routeSearchOptions: RouteSearchOptions
     ): Future<List<BriefRouteInfo?>> {
         return trafficRouter.findBriefRouteInfos(searchPoints, routeSearchOptions)
     }
 
     fun getLastLocation(): GeoPointMessage? {
         return locationSource.lastLocation?.let {
-
             GeoPointMessage.Builder().setLatitude(it.latitude).setLongitude(it.longitude).build()
         }
     }
 
     fun createRasterTileDataSource_(
-        context: Context,
-        sublayerName: String,
-        urlTemplate: String
+            context: Context,
+            sublayerName: String,
+            urlTemplate: String
     ): Source {
         return RasterTileSource(
-            context,
-            sublayerName,
-            RasterUrlTemplate(DefaultRasterUrlTemplate(urlTemplate))
+                context,
+                sublayerName,
+                RasterUrlTemplate(DefaultRasterUrlTemplate(urlTemplate))
         )
     }
 }

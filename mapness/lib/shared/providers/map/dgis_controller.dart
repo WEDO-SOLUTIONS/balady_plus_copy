@@ -48,7 +48,7 @@ class DgisController extends _$DgisController {
     await controller.initialize();
 
     // Styles
-    await controller.loadStyles('assets/maps/styles/_common-styles.2gis');
+    await controller.loadStyles('assets/maps/styles/styles.2gis');
 
     // Appearance
     await controller.setZoomRestrictions(
@@ -58,14 +58,14 @@ class DgisController extends _$DgisController {
       ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA'],
     );
     await controller.setAppearance(
-      ref.read(darkModeProvider) ? MapAppearanceMessage.night : MapAppearanceMessage.day,
+      (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
     );
     ref
       ..listen(
         darkModeProvider,
         (previous, next) {
           controller.setAppearance(
-            next ? MapAppearanceMessage.night : MapAppearanceMessage.day,
+            next.valueOrNull?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day,
           );
         },
       )
@@ -127,6 +127,8 @@ class DgisController extends _$DgisController {
       ),
     );
   }
+
+  Future<PolygonGeometryMessage> getVisibleArea(DgisMapController controller) async => controller.getVisibleArea();
 
   Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
     final visibleRectSubscription =

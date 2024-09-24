@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/share_eta/entities/share_eta_time_type.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
@@ -48,6 +49,7 @@ class EtaTimerControl extends ConsumerWidget {
             const SizedBox(width: 8),
             Text(
               estimatedTimeString,
+              textDirection: ref.watch(uiDirectionProvider),
               style: context.textStyleV3.captionLargeMedium.copyWith(color: context.colorsV2.foregroundDefault),
             ),
           ],
@@ -94,6 +96,7 @@ class EtaTimerControl extends ConsumerWidget {
             onConfirmTap: (v) async {
               await _stopShare(ref);
               await ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);
+              context.pop();
             },
           ),
         ),

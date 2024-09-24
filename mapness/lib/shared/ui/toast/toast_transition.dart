@@ -2,23 +2,25 @@ part of 'toast_overlay.dart';
 
 class _ToastTransition extends StatefulWidget {
   final String title;
-  final String actionText;
+  final String? actionText;
   final VoidCallback hide;
-  final VoidCallback onActionTap;
+  final VoidCallback? onActionTap;
   final String? iconAsset;
   final IconData? iconData;
   final Duration displayDuration;
   final Duration transitionDuration;
+  final bool? isDismissible;
 
   const _ToastTransition({
     required this.hide,
     required this.title,
-    required this.actionText,
-    required this.onActionTap,
     required this.iconAsset,
     required this.iconData,
     required this.transitionDuration,
     required this.displayDuration,
+    this.isDismissible,
+    this.actionText,
+    this.onActionTap,
   });
 
   @override
@@ -47,30 +49,44 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
 
   Future<void> _hide() async {
     await _controller.reverse();
-    if (_controller.isCompleted) {
+    if (_controller.isCompleted || _controller.isDismissed) {
       widget.hide();
     }
   }
 
   void _onActionTap() {
     _hide();
-    widget.onActionTap();
+    widget.onActionTap?.call();
   }
 
   @override
-  Widget build(BuildContext context) => Dismissible(
-        key: UniqueKey(),
-        onDismissed: (_) => _hide(),
-        direction: DismissDirection.up,
-        child: SlideTransition(
-          position: _animation,
-          child: _ToastWidget(
-            title: widget.title,
-            actionText: widget.actionText,
-            onActionTap: _onActionTap,
-            iconAsset: widget.iconAsset,
-            iconData: widget.iconData,
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.isDismissible ?? false
+      ? Dismissible(
+          key: UniqueKey(),
+          onDismissed: (_) => _hide(),
+          direction: DismissDirection.up,
+          child: SlideTransition(
+            position: _animation,
+            child: _ToastWidget(
+              title: widget.title,
+              actionText: widget.actionText,
+              onActionTap: _onActionTap,
+              iconAsset: widget.iconAsset,
+              iconData: widget.iconData,
+            ),
           ),
-        ),
-      );
+        )
+      : _ToastWidget(
+          title: widget.title,
+          actionText: widget.actionText,
+          onActionTap: _onActionTap,
+          iconAsset: widget.iconAsset,
+          iconData: widget.iconData,
+        );
 }

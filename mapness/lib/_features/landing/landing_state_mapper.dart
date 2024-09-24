@@ -14,7 +14,7 @@ final class LandingStateMapper implements BottomSheetStateMapper<ThreeStateBotto
   int index(ThreeStateBottomSheet state) => state.index.clamp(0, 2);
 
   @override
-  bool shouldPopOn(BottomSheetScrollController<ThreeStateBottomSheet> controller) {
+  bool shouldPopOn(StatefulBottomSheetController<ThreeStateBottomSheet> controller) {
     switch (controller.closestState) {
       case ThreeStateBottomSheet.hidden:
         return true;

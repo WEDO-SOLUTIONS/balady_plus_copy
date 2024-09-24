@@ -8,11 +8,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/app/routes/navigator_settings.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/app/routes/dark_map.dart';
+import 'package:mapness/app/routes/sound_settings.dart';
+import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map/navigator_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class NavigatorSettingsPage extends ConsumerStatefulWidget {
@@ -25,7 +25,10 @@ class NavigatorSettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
   @override
   Widget build(BuildContext context) {
-    final dark = ref.watch(darkModeProvider);
+    final navigatorSettings = ref.watch(navigatorSettingsProvider);
+    final navigatorSettingsNotifier = ref.read(navigatorSettingsProvider.notifier);
+    final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
+
     final colorsV2 = context.colorsV2;
     final l10n = context.l10n;
     final color = context.color;
@@ -58,26 +61,50 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ContentColumn(
+                      headerTitle: l10n.navigation,
+                      content: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(RadiusBorder.l),
+                            color: color.surfaceBaseTertiary,
+                          ),
+                          child: Column(
+                            children: [
+                              ContentRow(
+                                onToggle: (_) {
+                                  ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart();
+                                },
+                                options: ContentRowOptions(
+                                  title: l10n.autorunNavigator,
+                                  titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                  subtitle: l10n.automaticallyLaunchNavigator,
+                                  subtitleMaxlines: 2,
+                                  actionWidget: ContentRowActionOptions(
+                                    enabledToggle: true,
+                                    toggleInitialValue: autorun,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    ContentColumn(
                       headerTitle: l10n.mapStyle,
                       content: [
                         ContentRow(
-                          onToggle: (_) {
-                            ref.read(darkModeProvider.notifier).toggle();
-                            Metrics.logEventAdvanced(MetricsConstants.navigationKeys.darkMode,
-                                group: MetricsConstants.navigationTag,
-                                action: MetricAction.tap.toString(),
-                                props: {
-                                  'dark': !dark,
-                                });
-                          },
+                          onTap: () => const DarkMapRoute().push(context),
                           options: ContentRowOptions(
                             wrapperColor: color.surfaceBaseTertiary,
                             wrapperEnabled: true,
                             title: l10n.darkMap,
                             titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
                             actionWidget: ContentRowActionOptions(
-                              enabledToggle: true,
-                              toggleInitialValue: dark,
+                              actionIcon: AppIcons(
+                                iconData: SystemIcons.arrowCornerRightLarge,
+                                color: colorsV2.foregroundSoft,
+                              ),
                             ),
                           ),
                         ),
@@ -118,13 +145,12 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                             ),
                             title: l10n.speedCameras,
                             titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-
-                            /// Road cameras aren't available, support this function later
-                            actionWidget: const ContentRowActionOptions(
+                            actionWidget: ContentRowActionOptions(
                               enabledToggle: true,
-                              toggleInitialValue: true,
+                              toggleInitialValue: navigatorSettings,
                             ),
                           ),
+                          onToggle: (val) => navigatorSettingsNotifier.toggle(),
                         ),
                       ],
                     ),

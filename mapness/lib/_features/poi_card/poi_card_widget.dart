@@ -40,7 +40,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -49,6 +48,8 @@ import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
+
+GlobalKey key = GlobalKey<_ContentState>();
 
 class PoiCardWidget extends StatelessWidget {
   final DgisObjectIdMessage objectId;
@@ -65,12 +66,13 @@ class PoiCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) => _Content(
-            objectId: objectId,
-            cameraConfig: cameraConfig,
-            biggestHeight: constraints.biggest.height,
-            biggestWidth: constraints.biggest.width,
-            closestPoint: closestPoint,
-            key: ValueKey(objectId)),
+          objectId: objectId,
+          cameraConfig: cameraConfig,
+          biggestHeight: constraints.biggest.height,
+          biggestWidth: constraints.biggest.width,
+          closestPoint: closestPoint,
+          key: key,
+        ),
       );
 }
 
@@ -150,9 +152,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     );
 
     _bottomSheetController = DgisBottomSheetController();
-    Future.delayed(const Duration(milliseconds: 250), () {
-      ref.read(cameraPaddingProvider.notifier).resetPadding();
-    });
   }
 
   @override

@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/image_denied_dialog.dart';
 import 'package:mapness/widgets/feedback/feedback_label.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 const _imageSize = 62.0;
 
@@ -21,21 +23,29 @@ class FeedbackImages extends StatelessWidget {
     super.key,
   });
 
+  bool get isAddImageButtonVisible => (field.value ?? []).length < 10;
+
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const FeedbackLabel(text: 'Images'),
+          FeedbackLabel(text: field.label),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
-              _Button(onTap: () async {
-                final image = await _pickedImage();
-                if (image != null) {
-                  onValueChange([...field.value ?? [], image]);
-                }
-              }),
+              if (isAddImageButtonVisible)
+                _Button(onTap: () async {
+                  final permission = await Permission.photos.request();
+                  if (permission.isDenied || permission.isPermanentlyDenied) {
+                    await showPermissionDeniedDialog(context);
+                    return;
+                  }
+                  final image = await _pickedImage();
+                  if (image != null) {
+                    onValueChange([...field.value ?? [], image]);
+                  }
+                }),
               ...(field.value ?? []).map(
                 (img) {
                   final fileType = img.path.split('.').last.toLowerCase();

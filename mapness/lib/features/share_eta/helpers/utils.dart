@@ -1,0 +1,212 @@
+import 'dart:async';
+
+import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/eta.dart';
+import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/app/routes/path_nav.dart';
+import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
+import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
+import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
+import 'package:urbi_analytics/logger.dart';
+
+class EtaUtils {
+  static Future<img.Image> processImage(String imgUrl, int imgSize, {bool isUnavailable = false}) async {
+    // Load the mask image from assets
+    final maskData = await rootBundle.load('packages/mapness/assets/images/marker_eta_mask.png');
+    final maskBytes = maskData.buffer.asUint8List();
+
+    final mask = img.decodeImage(maskBytes)!;
+
+    var mask48x48 = img.copyResize(mask, width: imgSize, height: imgSize, interpolation: img.Interpolation.average);
+
+    if (mask48x48.hasAlpha == false) {
+      mask48x48 = mask48x48.convert(format: mask48x48.format, numChannels: 4);
+    }
+
+    // Load the image from the network
+    final response = await http.get(Uri.parse(imgUrl));
+    var networkImage = img.decodeImage(response.bodyBytes)!;
+    if (networkImage.hasAlpha == false) {
+      networkImage = networkImage.convert(format: networkImage.format, numChannels: 4);
+    }
+
+    if (isUnavailable) {
+      networkImage = img.grayscale(networkImage);
+    }
+
+    networkImage = img.copyCropCircle(
+      networkImage,
+      centerX: networkImage.width ~/ 2,
+      centerY: networkImage.height ~/ 2,
+      radius: networkImage.width ~/ 2,
+    );
+
+    final img24x24 = img.copyResize(
+      networkImage,
+      width: imgSize ~/ 2,
+      height: imgSize ~/ 2,
+      interpolation: img.Interpolation.average,
+    );
+
+    final img48x48 = img.Image(width: imgSize, height: imgSize, numChannels: 4);
+
+    img.compositeImage(img48x48, img24x24, center: true, maskChannel: img.Channel.alpha);
+    img.compositeImage(mask48x48, img48x48, dstX: 0, dstY: 0, maskChannel: img.Channel.alpha);
+
+    return mask48x48;
+  }
+
+  static Future<bool> processShareLink(WidgetRef ref,
+      {required String tokenId, required String streamId, String? type, double? latitude, double? longitude}) async {
+    final Completer<Position?> completer = Completer();
+    ProviderSubscription? _locationListener;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final location = ref.read(locationProvider);
+      if (location != null) {
+        completer.complete(location);
+      } else {
+        _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
+          if (next != null) {
+            _locationListener?.close();
+            completer.complete(next);
+          }
+        });
+      }
+    });
+
+    try {
+      Future.delayed(const Duration(seconds: 10), () {
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      });
+      // Wait for location to be available
+      await completer.future;
+    } catch (e) {
+      log(e.toString());
+    } finally {
+      _locationListener?.close();
+    }
+
+    if (type == 'eta') {
+      try {
+        final uriPath = Uri(path: EtaRoute.path, queryParameters: {
+          EtaRoute.tokenKey: tokenId,
+          EtaRoute.streamKey: streamId,
+          if (latitude != null) EtaRoute.latKey: latitude.toString(),
+          if (longitude != null) EtaRoute.lonKey: longitude.toString(),
+        });
+        if (latitude != null && longitude != null) {
+          await ref.read(cameraPositionProvider.notifier).animateTo(
+                CameraPositionMessage(
+                  point: GeoPointMessage(latitude: latitude, longitude: longitude),
+                  zoom: 17,
+                  tilt: 0,
+                  bearing: 0,
+                ),
+              );
+        }
+        // Get old stream token and stream id
+        final oldToken = EtaStreamStorage().state.streamToken;
+        final oldXStreamData = EtaStreamStorage().state.xStreamData;
+
+        if (oldToken != null && oldXStreamData != null) {
+          await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
+        }
+
+        await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+        unawaited(ref.read(goRouterProvider).push(uriPath.toString()));
+      } catch (e) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showEtaExpired(rootNavigatorKey.currentContext!);
+        });
+      }
+      return true;
+    } else if (type == 'live') {
+      try {
+        // Move to landing page
+        if (rootNavigatorKey.currentContext != null) {
+          final currentRoute = ref.read(currentRouteProvider);
+
+          /// Fix for BSA-1010 - if start route isn't landing, we need to close all pages and go to landing
+          /// Because we need to close navigation, we need to stop navigation and hide routes
+          if (currentRoute?.currentPath == PathNavRoute.path) {
+            ref.read(pathNavMessageProvider.notifier).stopNavigation();
+            await ref.read(dgisControllerProvider).value?.setMapAttributeBool('navigatorOn', value: false);
+            unawaited(ref.read(dgisControllerProvider).value?.stopNavigation());
+            unawaited(ref.read(dgisControllerProvider).valueOrNull?.hideRoutes());
+          }
+          const LandingRoute().go(rootNavigatorKey.currentContext!);
+        }
+        // Get old stream token and stream id
+        final oldToken = EtaStreamStorage().state.streamToken;
+        final oldXStreamData = EtaStreamStorage().state.xStreamData;
+
+        if (oldToken != null && oldXStreamData != null) {
+          await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
+        }
+
+        if (latitude != null && longitude != null) {
+          await ref.read(cameraPositionProvider.notifier).animateTo(
+                CameraPositionMessage(
+                  point: GeoPointMessage(latitude: latitude, longitude: longitude),
+                  zoom: 17,
+                  tilt: 0,
+                  bearing: 0,
+                ),
+              );
+        }
+        await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
+      } catch (e) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showLiveLocationExpired(rootNavigatorKey.currentContext!);
+        });
+      }
+      return true;
+    }
+
+    return false;
+  }
+
+  static void showLiveLocationExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.liveLocation(context),
+    );
+  }
+
+  static void showEtaExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.eta(context),
+    );
+  }
+
+  static void showBroadcastExpired(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EtaShareExpired.broadcastExpired(context),
+    );
+  }
+}

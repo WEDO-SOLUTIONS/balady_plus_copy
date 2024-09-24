@@ -11,6 +11,7 @@ class FeedbackImageInputEntity extends FeedbackBaseEntity<List<XFile>> {
     required this.label,
     required this.maxSize,
     required this.acceptedFormats,
+    required super.isHidden,
     List<XFile>? value,
   }) : super(value: value);
 
@@ -22,5 +23,10 @@ class FeedbackImageInputEntity extends FeedbackBaseEntity<List<XFile>> {
         maxSize: maxSize,
         acceptedFormats: acceptedFormats,
         value: value,
+        isHidden: isHidden,
       );
+
+  @override
+  dynamic valueToJson() => value?.map((e) => base64Encode(File(e.path).readAsBytesSync())).toList();
+  // value?.map((e) => File(e.path).readAsBytesSync()).toList();
 }

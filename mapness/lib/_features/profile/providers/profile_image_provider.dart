@@ -13,6 +13,7 @@ import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,8 +29,11 @@ class ProfileImage extends _$ProfileImage {
 
   bool _isUpdated = false;
 
+  PermissionStatus status = PermissionStatus.denied;
+
   @override
   Future<UserProfileData> build() async {
+    status = await Permission.photos.status;
     if (!_isUpdated) {
       await _updateImageFromBackend();
     }

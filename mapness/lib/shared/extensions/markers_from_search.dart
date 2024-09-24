@@ -104,7 +104,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 strokeColor: 0xD3FFFFFF,
                 strokeWidth: 1.25,
                 textPlacement: MarkerTextPlacementMessage(
-                  placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.topRight,
+                  placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
                 ),
               ),
               position: markerInfo.geoPoint,
@@ -137,6 +137,7 @@ enum MapMarkersType {
   wc,
   dentalCenters,
   schools,
+  shopping,
 }
 
 extension IconPathFromMapMarkersType on MapMarkersType {
@@ -163,6 +164,7 @@ extension IconPathFromMapMarkersType on MapMarkersType {
         MapMarkersType.wc => '$_pathPrefix/ic_wc.svg',
         MapMarkersType.dentalCenters => '$_pathPrefix/ic_tooth.svg',
         MapMarkersType.schools => '$_pathPrefix/ic_school_ltr.svg',
+        MapMarkersType.shopping => '$_pathPrefix/ic_shopping.svg',
       };
 }
 

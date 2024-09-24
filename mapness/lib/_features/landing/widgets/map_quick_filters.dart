@@ -17,8 +17,17 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class MapQuickFilters extends ConsumerStatefulWidget {
+  final List<FilterItem>? customFilters;
+  final void Function(FilterItem)? onCustomTap;
+  final bool forMap;
+  final QuickFilterScreen id;
+  final bool isDashboard;
+  final double? height;
+  final ItemScrollController? itemScrollController;
+
   const MapQuickFilters({
     required this.id,
     super.key,
@@ -26,13 +35,9 @@ class MapQuickFilters extends ConsumerStatefulWidget {
     this.onCustomTap,
     this.forMap = false,
     this.isDashboard = false,
+    this.height,
+    this.itemScrollController,
   });
-
-  final List<FilterItem>? customFilters;
-  final void Function(FilterItem)? onCustomTap;
-  final bool forMap;
-  final QuickFilterScreen id;
-  final bool isDashboard;
 
   @override
   ConsumerState<MapQuickFilters> createState() => _MapQuickFiltersState();
@@ -75,7 +80,9 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
 
     return QuickFilters(
       id: widget.id,
+      height: widget.height,
       isDashboard: widget.isDashboard,
+      itemScrollController: widget.itemScrollController,
       onFavouritesBookmarkTap: () => CommonFunctions.authOrOpen(
         context,
         callback: () {

@@ -166,6 +166,8 @@ class DgisMapPlugin extends FlutterMapApi {
       (event) {
         final map = event as Map<dynamic, dynamic>;
         switch (map['event']) {
+          case MyLocationTapEvent.name:
+            return _objectTapEventHandler.myLocationTapEvent(map);
           case ZoomControlEnabledEvent.zoomInEvent:
             return _zoomEventHandler.zoomInEvent(map);
           case ZoomControlEnabledEvent.zoomOutEvent:
@@ -180,8 +182,7 @@ class DgisMapPlugin extends FlutterMapApi {
             return _indoorEventHandler.activeLevelEvent(map);
           case ObjectTapEvent.name:
             return _objectTapEventHandler.objectTapEvent(map);
-          case MyLocationTapEvent.name:
-            return _objectTapEventHandler.myLocationTapEvent(map);
+
           case RoadEventTapEvent.name:
             return _objectTapEventHandler.roadEventTapEvent(map);
           case MarkerTapEvent.name:
@@ -262,6 +263,12 @@ class DgisMapPlugin extends FlutterMapApi {
 
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) {
     return _api.setCameraPosition(cameraPosition);
+  }
+
+  /// Return the visible area of the screen that user looks at. Return
+  /// coordinates of the rectangle
+  Future<PolygonGeometryMessage> getCameraVisibleArea() {
+    return _api.getCameraVisibleArea();
   }
 
   Future<void> setCameraPositionPoint(CameraPositionPointMessage cameraPosition) {
@@ -646,6 +653,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.overlappedBy(outerRect, innerRect);
   }
 
+  Future<void> moveCameraToActiveRoute(int index) {
+    return _api.moveCameraToActiveRoute(index);
+  }
+
   Future<bool> contains(GeoRectMessage rect, GeoPointMessage point) {
     return _api.contains(rect, point);
   }
@@ -710,8 +721,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.onCompassClicked();
   }
 
-  Future<void> startFreeRoam() {
-    return _api.startFreeRoam();
+  Future<void> startFreeRoam(SpeedRangeZoom speedRangeZoom) {
+    return _api.startFreeRoam(speedRangeZoom);
   }
 
   Future<void> stopFreeRoam() {

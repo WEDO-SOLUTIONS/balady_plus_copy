@@ -67,6 +67,11 @@ class _Location extends _$Location {
         unawaited(perm.Permission.location.request());
         return false;
       } else {
+        if (state == null) {
+          final position = await Geolocator.getLastKnownPosition();
+          state = position;
+        }
+
         return true;
       }
     } else {
@@ -104,5 +109,11 @@ class _Location extends _$Location {
 
     state = null;
     return false;
+  }
+
+  Future<bool> checkLocationStatus() async {
+    final status = await perm.Permission.location.status;
+
+    return status.isGranted;
   }
 }

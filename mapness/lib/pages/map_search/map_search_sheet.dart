@@ -53,7 +53,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   ClusteringMapObjectManager? _clustering;
 
-  MapObjectManager? searchObjectManager;
   final _initialExpansion = Expansion.middle;
 
   @override
@@ -90,7 +89,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     final bottomSafeArea = MediaQuery.of(context).padding.bottom;
     final collapsedHeight = 88 + bottomSafeArea;
 
-    searchObjectManager ??= ref.watch(
+    final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
         named: settings.name,
         layerId: settings.layerId,
@@ -107,7 +106,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     ref.listen(
       searchProvider(SearchScopeEnum.map.value),
       (previous, next) {
-        _drawSearchMarkers(next, previous);
+        _drawSearchMarkers(next, previous, searchObjectManager);
       },
     );
 
@@ -175,7 +174,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     );
   }
 
-  Future<void> _drawSearchMarkers(SearchState searchState, SearchState? prevState) async {
+  Future<void> _drawSearchMarkers(
+    SearchState searchState,
+    SearchState? prevState,
+    MapObjectManager mapObjectManager,
+  ) async {
     if (searchState is SearchStateResults &&
         (prevState is! SearchStateResults || prevState.results != searchState.results)) {
       final markerIconPath = searchState.markerType?.iconPath;
@@ -190,8 +193,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         isRtl: isRtl,
       );
 
-      await searchObjectManager?.removeAllMarkers();
-      await searchObjectManager?.addMarkers(markers);
+      await mapObjectManager.removeAllMarkers();
+      await mapObjectManager.addMarkers(markers);
 
       await computeCameraPosition(
         markers,
@@ -199,7 +202,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         ref.read(cameraPositionProvider.notifier).animateTo,
       );
     } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
-      await searchObjectManager?.removeAllMarkers();
+      await mapObjectManager.removeAllMarkers();
     }
   }
 
@@ -264,10 +267,16 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   }
 
   void _removeAllMarkersAndPop() {
-    searchObjectManager?.removeAllMarkers().then((value) {
-      ref.read(searchInRectProvider.notifier).update();
-      searchObjectManager = null;
-    });
+    ref
+        .read(
+          mapObjectManagerProvider(
+            named: settings.name,
+            layerId: settings.layerId,
+            clustering: widget.withClustering ? _clustering : null,
+          ).notifier,
+        )
+        .removeAllMarkers();
+    ref.read(searchInRectProvider.notifier).update();
     context.pop();
   }
 
@@ -278,6 +287,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
       if (goRouter.isCurrentRoute(SearchRoute.path)) {
         _dgisSheetController.animateTo(Expansion.collapsed);
+        _unfocusOnScroll();
       }
     });
   }
