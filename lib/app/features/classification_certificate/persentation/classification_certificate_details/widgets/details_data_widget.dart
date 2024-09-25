@@ -47,7 +47,7 @@ class DetailsDataWidget extends StatelessWidget {
         const SizedBox(height: 8),
         TitleValueWidget(
           title: "classification_degree",
-          value: classificationCertificateDetails.classificationGrade,
+          value: "ClassificationGrade-${classificationCertificateDetails.classificationGrade}",
         ),
         const SizedBox(height: 8),
         TitleValueWidget(
@@ -70,7 +70,7 @@ class DetailsDataWidget extends StatelessWidget {
           value: classificationCertificateDetails.status.toUpperCase().tr(),
         ),
         ///////////////////////////////////////////////////////////////
-        const SizedBox(height: 18),
+        const SizedBox(height: 8),
         ServicesWidget(
           // 1
           title: 'buildingHousingUnitsTitle'.tr(),
@@ -78,7 +78,7 @@ class DetailsDataWidget extends StatelessWidget {
           minimum: classificationCertificateDetails.buildingHousingUnitsMin,
           maximum: classificationCertificateDetails.buildingHousingUnitsMax,
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 8),
         ServicesWidget(
           // 2
           title: 'limitSupervisionTitle'.tr(),
@@ -86,7 +86,7 @@ class DetailsDataWidget extends StatelessWidget {
           minimum: classificationCertificateDetails.limitSupervisionMin,
           maximum: classificationCertificateDetails.limitSupervisionMax,
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 8),
         ServicesWidget(
           // 3
           title: 'turnkeyTitle'.tr(),
@@ -94,7 +94,7 @@ class DetailsDataWidget extends StatelessWidget {
           minimum: classificationCertificateDetails.turnkeyMin,
           maximum: classificationCertificateDetails.turnkeyMax,
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 8),
         ServicesWidget(
           // 4
           title: 'designContractInfoTitle'.tr(),
@@ -102,7 +102,7 @@ class DetailsDataWidget extends StatelessWidget {
           minimum: classificationCertificateDetails.designContractInfoMin,
           maximum: classificationCertificateDetails.designContractInfoMax,
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 8),
         ServicesWidget(
           // 5
           title: 'surveyingServicesTitle'.tr(),
