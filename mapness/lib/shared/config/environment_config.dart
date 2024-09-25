@@ -54,7 +54,7 @@ class EnvironmentConfig {
         jobsApi: 'https://apiservicesstg.balady.gov.sa/v1/recruitment-services',
         twinsApi: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://sa1.ops.2gis.dev/balady-geo-urbi',
+        shareEtaApi: 'https://urbi-lifestyle-stg.momrah.gov.sa',
         feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/',
       );
 

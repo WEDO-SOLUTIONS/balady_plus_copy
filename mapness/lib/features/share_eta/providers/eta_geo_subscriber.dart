@@ -27,6 +27,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:urbi_analytics/logger.dart';
 
 part 'eta_geo_subscriber.g.dart';
 
@@ -103,7 +104,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         await _createUserRoute();
       }
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
     }
   }
 
@@ -113,7 +114,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       EtaWebsocket().clearInfoListeners();
       await EtaWebsocket().stop();
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
     } finally {
       _lastActiveRoute = null;
 
@@ -278,7 +279,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
               ),
             );
       } catch (e) {
-        debugPrint(e.toString());
+        log(e.toString());
       }
     });
   }

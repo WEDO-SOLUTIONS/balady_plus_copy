@@ -14,6 +14,7 @@ import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_inprog
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:urbi_analytics/logger.dart';
 
 class EtaTimerControl extends ConsumerWidget {
   const EtaTimerControl({super.key});
@@ -113,7 +114,7 @@ class EtaTimerControl extends ConsumerWidget {
     try {
       await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, streamData);
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
     } finally {
       etaStore.clear();
     }

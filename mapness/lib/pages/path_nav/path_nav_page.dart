@@ -39,6 +39,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
+import 'package:urbi_analytics/logger.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 /// We don't show black background under the opened sheet. The meaning of this is that the user have to control the map even if he opened the sheet.
@@ -343,7 +344,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     try {
       await _stopActiveSharing();
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
     }
 
     if (_navigationState.value != PathNavState.finished) {
