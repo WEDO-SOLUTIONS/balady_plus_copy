@@ -76,9 +76,8 @@ class LandingRoute extends GoRouteData {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
       TransculentPage(child: Consumer(builder: (context, ref, _) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          ref.read(iwishDeeplinkHandlerProvider.notifier).handleDeeplink(state.uri);
-        });
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => ref.read(iwishDeeplinkHandlerProvider.notifier).handleDeeplink(state.uri));
         return const LandingPage();
       }));
 }
