@@ -6,6 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../core/utils/constants/remote_config.dart';
 import '../../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ServiceCalculatorRepository {
   final String _citiesListUrl = "Calculator.svc/GetCities";
@@ -74,7 +76,14 @@ class ServiceCalculatorRepository {
           List<IsicActivity> regions = List<IsicActivity>.from(
               jsonResult.map((x) => IsicActivity.fromJson(x)));
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           // return [];
           throw error;
         }
@@ -98,7 +107,14 @@ class ServiceCalculatorRepository {
               List<Item>.from(jsonResult.map((x) => Item.fromJson(x)));
 
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           return [];
         }
       }
@@ -120,7 +136,14 @@ class ServiceCalculatorRepository {
           List<Procedure> regions = List<Procedure>.from(
               jsonResult.map((x) => Procedure.fromJson(x)));
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           //return [];
           throw error;
         }
@@ -144,7 +167,14 @@ class ServiceCalculatorRepository {
           List<Item> regions =
               List<Item>.from(jsonResult.map((x) => Item.fromJson(x)));
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           //return [];
           throw error;
         }
@@ -168,7 +198,14 @@ class ServiceCalculatorRepository {
           DetailedActivity regions = DetailedActivity.fromJson(jsonResult);
 
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           //return new Future.value(null);
           throw error;
         }
@@ -190,7 +227,14 @@ class ServiceCalculatorRepository {
           List<Item> regions =
               List<Item>.from(jsonResult.map((x) => Item.fromJson(x)));
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           //return [];
           throw error;
         }
@@ -212,7 +256,14 @@ class ServiceCalculatorRepository {
           List<Item> regions =
               List<Item>.from(jsonResult.map((x) => Item.fromJson(x)));
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           //return [];
           throw error;
         }
@@ -235,7 +286,14 @@ class ServiceCalculatorRepository {
               jsonResult.map((x) => Municipality.fromJson(x)));
 
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           // return [];
           throw error;
         }
@@ -259,7 +317,14 @@ class ServiceCalculatorRepository {
           final jsonResult = json.decode(data['data']);
           regions = CalculateCostV03Response.fromJson(jsonResult);
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           //return null;
           throw error;
         }
@@ -287,7 +352,14 @@ class ServiceCalculatorRepository {
                   jsonResult["resultItem"]?.map((x) => SubActivity.fromJson(x)))
               : [];
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           throw error;
         }
       }
@@ -310,7 +382,14 @@ class ServiceCalculatorRepository {
           final jsonResult = json.decode(data['data']);
           regions = CalculateCostResponse.fromJson(jsonResult);
           return new Future.value(regions);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           throw error;
         }
       }
@@ -334,7 +413,14 @@ class ServiceCalculatorRepository {
           return jsonResult["resultItem"] != null
               ? new Future.value(jsonResult["resultItem"])
               : new Future.value(0);
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           return 0;
         }
       }
@@ -358,7 +444,14 @@ class ServiceCalculatorRepository {
           final jsonResult = json.decode(data['data']);
           regions = CalculateDiggingResponse.fromJson(jsonResult);
           return regions;
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           throw error;
         }
       }
@@ -382,7 +475,14 @@ class ServiceCalculatorRepository {
           final jsonResult = json.decode(data['data']);
           regions = CalculateDiggingResponse.fromJson(jsonResult);
           return regions;
-        } catch (error) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           throw error;
         }
       }
@@ -404,7 +504,14 @@ class ServiceCalculatorRepository {
     if (state == true) {
       try {
         item = GisLocationResult.fromJson(json.decode(body['data']));
-      } catch (error) {
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
         throw error;
       }
       if (item != null && (item.sub_Municipalityguid == null)) {}

@@ -17,6 +17,7 @@ import '../../models/list_response.dart';
 import '../../models/submit_new_request_response.dart';
 import '../../models/validate_health_certificate_response.dart';
 import '../repository/health_license_repository.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class HealthLicenseViewModel extends BaseViewModel {
   final _rpository = locator<HealthLicenseRepository>();
@@ -146,8 +147,15 @@ class HealthLicenseViewModel extends BaseViewModel {
       }
 
       return response.item3;
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
     }
   }
 

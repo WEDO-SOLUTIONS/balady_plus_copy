@@ -136,7 +136,15 @@ class _IncidentTypeWithSearchDialog extends State<LookupWithSearchDialog> {
     //     _scrollController.animateTo(rowHeight * index,
     //         duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn)
     //   });
-    // } catch (ex) {}
+    // } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 }
 */

@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
 import '../../../../../core/errors/errors_exports.dart';
 import '../../../../../core/services/local/navigation_services.dart';
@@ -10,6 +11,7 @@ import '../../../../objectable_transactions/domain/use_cases/validate_objectable
 import '../../../../vd/vd_exports.dart';
 import '../../domain/entities/violation_details_params.dart';
 import '../../violations_exports.dart';
+
 part 'violation_details_event.dart';
 
 part 'violation_details_state.dart';
@@ -21,12 +23,14 @@ class ViolationDetailsBloc
 
   final ValidateObjectableTransaction validateObjectableTransaction;
 
-  ViolationDetailsBloc()
+  ViolationDetailsBloc({required ViolationsEntity? violationDetails})
       : _getViolationDetails = GetViolationDetails(repository: sl()),
         _getGisData = GetGISData(repository: sl()),
         validateObjectableTransaction =
             ValidateObjectableTransaction(repository: sl()),
-        super(const ViolationDetailsState()) {
+        super(ViolationDetailsState(
+          violationsEntity: violationDetails,
+        )) {
     on<ViolationDetailsEvent>((event, emit) {});
 
     on<GetViolationDetailsEvent>(_getViolationDetailsHandler);
@@ -74,7 +78,8 @@ class ViolationDetailsBloc
     await failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
         status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
+        errorMessage:
+            failure is ServerFailure ? (failure).errorMessage : "noData".tr(),
       ));
     }, (success) async {
       emitter(state.copyWith(

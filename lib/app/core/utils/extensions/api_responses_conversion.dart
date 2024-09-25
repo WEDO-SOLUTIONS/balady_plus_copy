@@ -5,6 +5,8 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import '../../../features/_shared_feature_/data/models/apigee_response_model.dart';
 import '../utils_exports.dart' show ApiResponse, Log, ResponseDataInMapFormat;
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 extension APIResponsesConversion on ApiResponse {
   String getErrorMessage([Response? response]) {
     final serverErrorMessage = _handleServerErrorMessage(response);
@@ -42,7 +44,14 @@ extension APIResponsesConversion on ApiResponse {
       ApigeeResponseModel? m;
       try {
         m = ApigeeResponseModel.fromMap(response.data);
-      } catch (_) {}
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );}
       message =
           m?.data?.getRefResponseMessage() ?? ("errors_server_error_1").tr();
     }

@@ -20,11 +20,11 @@ class ServerException implements Exception {
       this.response,
       this.errorCode,
       this.exception}) {
-    CommonFunctions.sendEvent(
-        dioError: dioError,
-        response: response,
-        ex: exception,
-        errorMessage: errorMessage);
+    // CommonFunctions.sendEvent(
+    //     dioError: dioError,
+    //     response: response,
+    //     ex: exception,
+    //     errorMessage: errorMessage);
   }
 }
 

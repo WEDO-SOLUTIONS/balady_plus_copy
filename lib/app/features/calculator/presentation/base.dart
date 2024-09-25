@@ -1,6 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class BasePresenter<V extends BaseView> {
   V? view;
@@ -97,7 +98,15 @@ abstract class BaseState<T extends StatefulWidget, P extends BasePresenter<V>,
               fontSize: 16.0),
           hideCloseButton: true,
           duration: const Duration(seconds: 3));
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   @override

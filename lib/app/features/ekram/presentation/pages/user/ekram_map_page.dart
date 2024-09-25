@@ -24,6 +24,11 @@ class EkramMapPage extends StatelessWidget {
               zoomControlsEnabled: true,
               // myLocationEnabled: true,
               // myLocationButtonEnabled: true,
+              onMapCreated: (GoogleMapController controller) {
+                controller.setMapStyle(
+                  """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                );
+              },
               markers: {
                 Marker(
                     markerId: MarkerId("1"),

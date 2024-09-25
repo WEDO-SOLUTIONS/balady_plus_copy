@@ -28,6 +28,7 @@ import '../../models/health_request_details.dart';
 import '../../models/submit_new_request_response.dart';
 import '../repository/health_license_repository.dart';
 import 'new_health_license_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class HealthRequestDetailsViewModel extends BaseViewModel {
   final dataModel = locator<HealthLicenseViewModel>();
@@ -50,17 +51,21 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
       requestDetails = await model.getHealthRequestDetails(
         int.parse(requestNumber),
       );
-    } on Exception catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
-        response: null,
-        ex: exception,
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: null,
-        ex: Exception(exception.toString()),
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
       );
     }
     isLoading = false;
@@ -204,7 +209,15 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
       } else {
         openFile(bytes, contentType: contentType);
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   void openFile(Uint8List bytes, {String? contentType}) async {
@@ -219,7 +232,15 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
 
         OpenFile.open(filetemp.path).then((value) {});
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   bool showExamanationData() {

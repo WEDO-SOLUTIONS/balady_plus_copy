@@ -21,6 +21,7 @@ import '../../domain/entities/validate_additional_activities_params.dart';
 import '../../domain/use_cases/get_civil_defense_conditions.dart';
 import '../../domain/use_cases/validate_addetional_activites.dart';
 import '../../municipal_advisor_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'municipal_advisor_event.dart';
 
@@ -1265,8 +1266,14 @@ class MunicipalAdvisorBloc
               );
             },
           );
-        }catch(e){
-          print(e);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
         }
       },
     );

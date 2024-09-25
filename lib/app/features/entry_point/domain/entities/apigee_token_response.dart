@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ApigeeTokenResponse extends Equatable {
   ApigeeTokenResponse({
@@ -40,7 +41,14 @@ class ApigeeTokenResponse extends Equatable {
           DateTime.now().add(Duration(seconds: durationInSeconds));
 
       return expiresInDate;
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       DateTime expiresInDate = DateTime.now().add(Duration(hours: 1));
       return expiresInDate;
     }

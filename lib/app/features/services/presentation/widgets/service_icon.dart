@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/commercial_model/features/posters/presentation/widgets/license_widgets/bottom_sheet_list.dart';
+import 'package:balady_plus/app/commercial_model/features/posters/presentation/widgets/types_dialog/commercial_permits_dialog.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/etmam_app/core/utils/enums/app_font_weight.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_text_widget.dart';
@@ -18,9 +20,6 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetWithActions, DrawIconBasedTypeWidget;
 import '../../../daem/presentation/dialogs/daem_types_dialog.dart';
 import '../../../new_appointment/presentation/core/services/view_models/new_appointment_view_model.dart';
-import '../../../new_appointment/presentation/dialogs/new_appointment_dialog.dart';
-import '../../../posters/presentation/widgets/license_widgets/bottom_sheet_list.dart';
-import '../../../posters/presentation/widgets/types_dialog/commercial_permits_dialog.dart';
 import '../../../public_services_features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import '../../../transaction_inquiry/presentation/dialogs/general_inquiries_types_dialog.dart';
 import '../../../transaction_inquiry/presentation/dialogs/new_request_types_dialog.dart';
@@ -28,6 +27,8 @@ import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
 import '../../../vd/presentation/dialogs/vd_all_types_dialog.dart';
 import '../../services_exports.dart';
+
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ServiceIcon extends StatelessWidget {
   final ServiceEntity service;
@@ -288,8 +289,15 @@ class ServiceIcon extends StatelessWidget {
                     .honoringTheDeadServices,
                 service.title.tr()
               ));
-            } catch (ex) {
-              print(ex);
+            } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+              print(error);
             }
           }
         },

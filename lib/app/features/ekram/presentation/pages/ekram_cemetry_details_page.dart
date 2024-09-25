@@ -86,7 +86,7 @@ class _EkramCemetryDetailsPageState extends State<EkramCemetryDetailsPage> {
                         width: 24,
                         height: 24,
                       ),
-                      CustomHorizontalSpace(width: 8),
+                      const CustomHorizontalSpace(width: 8),
                       CustomTextWidget(
                         params.requestDate ?? "",
                         fontColor: AppColor.blackModern500Light,
@@ -121,9 +121,13 @@ class _EkramCemetryDetailsPageState extends State<EkramCemetryDetailsPage> {
                 deathCityName: params.deathCityName,
                 deathCountryName: params.deathCountryName,
                 id: params.deceasedIdentityNumber,
-                burialCity: params.burialCityName,
+                burialCityName: params.burialCityName,
                 dobHijri: params.deceasedBirthdateHijri,
                 dobGorgian: params.deceasedBirthdate,
+                graveTypeName: params.graveTypeName,
+                graveSizeName: params.graveSizeName,
+                pandemic: params.pandemic,
+                deceasedIdentityTypeName: params.deceasedIdentityTypeName,
               ),
 
               //CemetryInfo(name: params.cemeteryName),
@@ -206,16 +210,20 @@ class DeceasedInfo extends StatelessWidget {
   final String? time;
   final String? isEpidamic;
   final String? cemetryName;
+  final String? graveTypeName;
+  final String? graveSizeName;
+  final bool? pandemic;
 
   final String? apologyReason;
   final String? deathCityName;
 
   final String? deathCountryName;
-  final String? burialCity;
+  final String? burialCityName;
   final String? dobHijri;
   final String? dobGorgian;
 
   final String? id;
+  final String? deceasedIdentityTypeName;
   const DeceasedInfo(
       {Key? key,
       this.gender,
@@ -231,10 +239,14 @@ class DeceasedInfo extends StatelessWidget {
       this.apologyReason,
       this.deathCountryName,
       this.deathCityName,
-      this.burialCity,
+      this.burialCityName,
       this.dobHijri,
       this.dobGorgian,
-      this.id})
+      this.id,
+      this.graveTypeName,
+      this.graveSizeName,
+      this.pandemic,
+      this.deceasedIdentityTypeName})
       : super(key: key);
 
   @override
@@ -247,7 +259,13 @@ class DeceasedInfo extends StatelessWidget {
           const CustomVerticalSpace(
             height: 16,
           ),
-
+          FieldData(
+            title: Helpers.translatingWord("cemetry_national_type"),
+            subTitle: deceasedIdentityTypeName,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
           FieldData(
             title: Helpers.translatingWord("ekram_deceased_id"),
             subTitle: id,
@@ -334,7 +352,7 @@ class DeceasedInfo extends StatelessWidget {
 
           FieldData(
             title: Helpers.translatingWord("burial_city"),
-            subTitle: burialCity,
+            subTitle: burialCityName,
           ),
           const CustomVerticalSpace(
             height: 16,
@@ -363,6 +381,24 @@ class DeceasedInfo extends StatelessWidget {
               height: 16,
             ),
           ],
+          FieldData(
+            title: Helpers.translatingWord("cemetry_type"),
+            subTitle: graveTypeName,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: Helpers.translatingWord("cemetry_size"),
+            subTitle: graveSizeName,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: Helpers.translatingWord("cemetry_deceassed_epidamic"),
+            subTitle: pandemic! ? 'yes'.tr() : 'no'.tr(),
+          ),
         ])
       ],
     );

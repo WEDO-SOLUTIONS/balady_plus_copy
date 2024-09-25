@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/profile_features/delegators/delegators_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,7 +71,15 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                         delegatorsCubit: sl<DelegatorsCubit>(),
                       ),
                     );
-                  } catch (ex) {}
+                  } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
                 },
                 child: CircleIcon(
                   icon: IconPath.switchProfileIcon,

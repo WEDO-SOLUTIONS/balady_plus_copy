@@ -5,6 +5,7 @@ import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
 import '../../domain/repository/weather_alerts_repository.dart';
 import '../datasource/weather_alerts_remote_data_source.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class WeatherAlertsRepositoryImplementation implements WeatherAlertsRepository {
   final WeatherAlertsRemoteDataSource remoteDataSource;
@@ -20,7 +21,14 @@ class WeatherAlertsRepositoryImplementation implements WeatherAlertsRepository {
       final data =
           await remoteDataSource.sendLocationToGetWeatherAlerts(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }

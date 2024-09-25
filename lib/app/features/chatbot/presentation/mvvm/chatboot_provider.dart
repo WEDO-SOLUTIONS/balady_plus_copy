@@ -10,6 +10,9 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 class ChatBotProvider extends BaseViewModel {
   final SendQuestionMessageChatBot repository;
   final int sectionId;
@@ -60,15 +63,17 @@ class ChatBotProvider extends BaseViewModel {
         }*/
       });
       return chatBotMessage;
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: null,
-        ex: Exception(exception.toString()),
-      );
+    } catch (error, stackTrace) {
+  LogsViewModel().sendEventFromModel(
+    event: ErrorExceptionModel(
+      nameEvent: EventsName.handledException,
+      message: error.toString(),
+      stackTrace: stackTrace.toString(),
+    ),
+  );
       // setMessage(
       //   ChatBotMessageModel(
-      //     message: exception.toString(),
+      //     message: error.toString(),
       //     isResponse: true,
       //     haveError: true,
       //   ),
@@ -99,13 +104,15 @@ class ChatBotProvider extends BaseViewModel {
         },
       );
       return;
-    } catch (exception) {
-      CommonFunctions.sendEvent(
-        dioError: null,
-        response: null,
-        ex: Exception(exception.toString()),
-      );
-      errorMessage = exception.toString();
+    } catch (error, stackTrace) {
+  LogsViewModel().sendEventFromModel(
+    event: ErrorExceptionModel(
+      nameEvent: EventsName.handledException,
+      message: error.toString(),
+      stackTrace: stackTrace.toString(),
+    ),
+  );
+      errorMessage = error.toString();
     }
     isLoadingEnabled = false;
     notifyListeners();

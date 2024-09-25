@@ -34,6 +34,7 @@ import '../../../../domain/entities/car_model.dart';
 import '../../../../domain/entities/car_type.dart';
 import '../../../widgets/create_dc_request/details_widgets/location_photo_section.dart';
 import '../../../widgets/create_dc_request/summery_widgets/summury_section.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'create_dc_event.dart';
 
@@ -344,12 +345,27 @@ class CreateDCBloc extends Bloc<CreateDCEvent, CreateDCState> {
             timeLimit: Duration(seconds: 6)));
         if (pos == null) pos = (await Geolocator.getLastKnownPosition());
         emitter(state.copyWith(status: BlocStatus.success));
-      } catch (ex) {
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
         emitter(state.copyWith(status: BlocStatus.success));
         if (pos == null)
           try {
             pos = (await Geolocator.getLastKnownPosition());
-          } catch (ex) {}
+          } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
       if (pos != null)
         currentLocation = GISParams(x: pos.longitude, y: pos.latitude);

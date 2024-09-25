@@ -44,13 +44,29 @@ class _AppointmentAttachmentSectionState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // attachments
-        if (model.attachmentsList.isEmpty || model.attachmentsList.length < 3)
-          BookAppointmentAttachmentsWidgetNew(
-            saveFile: (String filePath, String fileName, Uint8List base64) {
-              model.saveAttachment(filePath, fileName, base64);
-              // setState(() {});
+        if (model.lstAttachmentConfig != null && model.lstAttachmentConfig!.isNotEmpty )
+
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: model.lstAttachmentConfig!.length,
+            itemBuilder: (ctx, index) {
+              return  BookAppointmentAttachmentsWidgetNew(attachmentName: model.lstAttachmentConfig?[index].name,isMandatory:model.lstAttachmentConfig?[index].mandatory,
+                saveFile: (String filePath, String fileName, Uint8List base64) {
+                  model.saveAttachment(filePath, fileName, base64,model.lstAttachmentConfig?[index].id);
+                  // setState(() {});
+                },
+              );
             },
           ),
+
+
+          // BookAppointmentAttachmentsWidgetNew(
+          //   saveFile: (String filePath, String fileName, Uint8List base64) {
+          //     model.saveAttachment(filePath, fileName, base64);
+          //     // setState(() {});
+          //   },
+          // ),
         const CustomVerticalSpace(height: 16),
         if (model.attachmentsList.isNotEmpty) ...[
           ListView.builder(
@@ -62,6 +78,7 @@ class _AppointmentAttachmentSectionState
                 showDelete: model.attachmentsList[index].updatable == true,
                 onDelete: () {
                   model.deleteAttachment(index);
+                  model.validateForm();
                   setState(() {});
                 },
                 fileName: model.attachmentsList[index].attachmentFileName ?? "",
@@ -77,27 +94,32 @@ class _AppointmentAttachmentSectionState
 }
 
 class BookAppointmentAttachmentsWidgetNew extends StatelessWidget {
-  //final String? path;
+  final String? attachmentName;
+  final bool? isMandatory;
   //final String? fileName;
   final Function(String filePath, String fileName, Uint8List stream) saveFile;
 
   // final Function deleteFile;
 
   const BookAppointmentAttachmentsWidgetNew({
-    // this.path,
-    // this.fileName,
+     this.attachmentName,
+    required this.isMandatory,
     required this.saveFile,
-    //  required this.deleteFile,
   });
 
   @override
   Widget build(BuildContext context) {
+    NewAppointmentFirstStepViewModel model =
+    Provider.of<NewAppointmentFirstStepViewModel>(context, listen: true);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // if (path == null || (path != null && path.toString().isEmpty))
 
         ElevatedIconButtonWidget.upload(
+          name: attachmentName,
+          isMandatory:isMandatory,
+          model:model,
           onPressed: () async {
             FileDataItem? file = await CommonFunctions.pickFile(context);
             if (file != null) {
@@ -106,54 +128,9 @@ class BookAppointmentAttachmentsWidgetNew extends StatelessWidget {
             }
           },
         ),
+        SizedBox(height: 15,)
 
-        /* CustomElevatedButtonWithIconWidget(
-          btnPressed: () async {
-            FocusScope.of(context).unfocus();
-            await CustomPopUpsWidgets.showBottomSheet(
-                NavigationService.navigatorKey.currentContext!,
-                child: ChooseFileDialog(onSelectImg: () async {
-                  bool isCameraAllowed =
-                      await CommonFunctions.checkCameraSettings(context);
-                  if (isCameraAllowed) {
-                    openFilePicker(FileType.image, context);
-                  }
-                }, onSelectFile: () async {
-                  openFilePicker(FileType.custom, context);
-                }, onSelectCamera: () async {
-                  final ImagePicker _picker = ImagePicker();
 
-                  final XFile? image =
-                      await _picker.pickImage(source: ImageSource.camera);
-
-                  if (image != null) {
-                    int imageSize = await image.length();
-                  
-                    if (imageSize >= 5210000) {
-                      print(('file_size_error').tr());
-                    } else {
-                      String path = image.path;
-                      String fileName = path.isNotEmpty
-                          ? path.split('/').last
-                          : ('attachment_name').tr();
-                      final fileBytes = await File(path).readAsBytes();
-                      //String base64File = base64Encode(fileBytes);
-                      saveFile(path, fileName, fileBytes);
-                    }
-                  }
-                }),
-                isFullHeight: false);
-          },
-          btnText: ("bookNewAppointmentAttachmentFileButtonWord").tr(),
-          btnTextColor: AppColor.primary900Light,
-          btnTextSize: 16,
-          btnBorderColor: AppColor.primary900Light,
-          btnColor: AppColor.white2,
-          btnBorderWidth: 2,
-          btnRadius: 4,
-          icon: const Icon(Icons.add, color: AppColor.primary900Light),
-          buttonIconPosition: BUTTON_ICON_POSITION.right,
-        )*/
       ],
     );
   }

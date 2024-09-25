@@ -18,6 +18,7 @@ import '../../../profile_features/incidents/domain/entities/download_file_params
 import '../../../transaction_inquiry/presentation/core/models/download_file_result.dart';
 import '../../../transaction_inquiry/presentation/widgets/request_service/attachment_list.dart';
 import '../../domain/use_cases/download_file.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'investment_details_event.dart';
 part 'investment_details_state.dart';
@@ -58,9 +59,25 @@ class InvestmentDetailsBloc
           File filetemp = File("$dir/" + (file.attachName ?? ""));
           await filetemp.writeAsBytes(bytes);
           OpenFile.open(filetemp.path);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   Future<void> _downloadFileHandler(
@@ -99,7 +116,14 @@ class InvestmentDetailsBloc
           }
         }
       });
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       emitter(state.copyWith(
           crmRequestsStatus: BlocRequestStatus.submissionGetFailure,
           errorMessage: ("errors_server_error_1").tr()));

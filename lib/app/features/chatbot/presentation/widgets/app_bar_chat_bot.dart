@@ -69,16 +69,16 @@ class AppBarChatBot extends StatelessWidget {
                           Text(
                             'chat_bot'.tr(),
                             style: AppStyle.countTextAthkarStyle.copyWith(),
-                          ),
-                          const SizedBox(
+                          )/*
+                           const SizedBox(
                             width: 10,
                           ),
                           Text(
                             "(${"beta".tr()})",
                             style: AppStyle.countTextAthkarStyle
                                 .copyWith(color: AppColor.redBrown),
-                          ),
-                        ],
+                          ),*/
+                        ]
                       ),
                       listMessages.isEmpty
                           ? Card(

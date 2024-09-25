@@ -1,10 +1,7 @@
 import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
-import 'package:balady_plus/app/features/commercial_license_inquery/persentation/commercial_license_query_Details/socail_contact_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_inquery/persentation/commercial_license_query_Details/working_hours_details_update.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/no_data_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -191,6 +188,12 @@ class _SurveyReportInqueryDetailsState
                                                 licenceQueryDetails.x!),
                                           ),
                                           zoom: 16),
+                                      onMapCreated:
+                                          (GoogleMapController controller) {
+                                        controller.setMapStyle(
+                                          """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                                        );
+                                      },
                                       markers: {
                                         Marker(
                                           markerId: const MarkerId('position'),

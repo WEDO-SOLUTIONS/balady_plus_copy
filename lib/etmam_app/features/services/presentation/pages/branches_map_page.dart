@@ -59,6 +59,12 @@ class _BranchesMapPageState extends State<BranchesMapPage> {
                     // myLocationEnabled: true,
                     // myLocationButtonEnabled: true,
                     markers: context.read<BranchMapBloc>().getMarkers(),
+                    onMapCreated:
+                        (GoogleMapController controller) {
+                      controller.setMapStyle(
+                        """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                      );
+                    },
                     initialCameraPosition: CameraPosition(
                         target: branches.firstOrNull?.getLatLng() ??
                             CommonProperties.defaultLocation,

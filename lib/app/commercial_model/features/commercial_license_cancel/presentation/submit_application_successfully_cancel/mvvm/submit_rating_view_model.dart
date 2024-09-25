@@ -1,0 +1,67 @@
+import 'dart:async';
+
+import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/data/models/submit_response.dart';
+import 'package:dio/dio.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
+
+class SubmitRatingViewModel extends BaseViewModel {
+  final WebService webService;
+  final SubmitResponse submitResponse;
+  int? responseRating;
+  final bool showDetails;
+
+  SubmitRatingViewModel(
+      {required this.webService,
+      required this.submitResponse,
+      this.showDetails = true});
+
+  Future<int?> addCommercialLicenseCancelSubmitRating(
+      int value, String remarks) async {
+    Response? response;
+    try {
+      isLoading = true;
+      notifyListeners();
+      response = await webService.dio.post(
+        CommercialModelEndPoints.commercialLicenseCancelSubmitRating,
+        data: {
+          "engOfficeId": null,
+          "origin": "BENIFICIARY",
+          "remarks": remarks,
+          "requestId": submitResponse.requestId,
+          "value": value
+        },
+      );
+      final data = response.data;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      responseRating = result;
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      showError(error.toString());
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      showError(error.toString());
+    }
+    isLoading = false;
+    notifyListeners();
+    return null;
+  }
+}

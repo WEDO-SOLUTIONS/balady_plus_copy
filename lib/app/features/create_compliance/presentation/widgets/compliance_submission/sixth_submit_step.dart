@@ -29,6 +29,7 @@ import '../../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../../objectable_transactions/presentation/widgets/objection_feedback_details_dialog.dart';
 import '../../../../transaction_inquiry/customer_voice_exports.dart';
 import '../../../domain/entities/comliance_request_details.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SixthComplianceSubmitStep extends StatelessWidget {
   const SixthComplianceSubmitStep({super.key});
@@ -180,11 +181,25 @@ class AttachmentListWidget extends StatelessWidget {
           } else {
             OpenFile.open(fileDownloaded.path);
           }
-        } catch (ex) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           EasyLoading.dismiss();
         }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       EasyLoading.dismiss();
     }
   }

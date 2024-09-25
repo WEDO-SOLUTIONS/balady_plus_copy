@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:dartz/dartz.dart' show Either;
 
 import '../../../../core/errors/failures.dart';
@@ -11,7 +12,6 @@ import '../repositories/ekram_repository.dart';
 import 'package:dartz/dartz.dart' show Either;
 
 import '../../../_shared_feature_/data/models/response_body_model.dart';
-import '../../data/model/user_info_response_model.dart';
 import '../entities/user_info_request_params.dart';
 
 class CheckUserinfo extends UseCase<ResponseBodyModel<UserInfoResponseModel>,

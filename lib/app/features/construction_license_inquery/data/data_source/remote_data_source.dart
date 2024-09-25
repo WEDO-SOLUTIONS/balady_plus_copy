@@ -5,12 +5,12 @@ import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:dio/dio.dart' show DioError;
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import '../model/construction_license_inquery_data_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class ConstructionLicenseInqueryRemoteDataSource {
   Future<ResponseBodyModel<ConstructionLicenseDataModel>> getLicenseData(
@@ -46,7 +46,14 @@ class ConstructionLicenseInqueryRemoteDataSourceImplementation
       // final result = ResponseBodyModel.fromMap(data).data?.result;
       // CommercialLicenseDataModel commercialLicencedata = CommercialLicenseDataModel.fromJson(result!);
       // return  commercialLicencedata;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -56,16 +63,23 @@ class ConstructionLicenseInqueryRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      // "Catched $ex".errorLog();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // "Catched $error".errorLog();
 
-      if (ex is ServerException) {
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );

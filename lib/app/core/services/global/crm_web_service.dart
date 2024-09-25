@@ -1,10 +1,14 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/events_logs/controller/logs_controller.dart';
+import 'package:balady_plus/app/events_logs/events_names.dart';
+import 'package:balady_plus/app/events_logs/models/request_api_model.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http_certificate_pinning/http_certificate_pinning.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -12,34 +16,26 @@ import 'package:sentry_dio/sentry_dio.dart';
 
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import '../../../features/_shared_feature_/shared_feature_exports.dart'
-    show AuthData, AuthDataModel;
 import '../../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../errors/errors_exports.dart'
     show
         BadRequestException,
         ConflictException,
         DeadlineExceededException,
-        FailedToGenerateTokenException,
         InternalServerErrorException,
         MethodNotAllowedException,
         NoDataFoundException,
         NoInternetConnectionException,
         RequestNotFoundException,
-        TokenHasExpiredException,
-        TokenNotFoundException,
         UnAuthorizedException;
 import '../../utils/utils_exports.dart'
     show
         ApiHeader,
         ApiPOST,
-        ApiParam,
         CommonFunctions,
         CommonProperties,
-        EnvType,
-        Log,
-        WithDelay;
-import '../services_exports.dart' show AppCertificatePinningInterceptor, NavigationService, NetworkConnection;
+        Log;
+import '../services_exports.dart' show NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
 class CRMWebService {
@@ -130,6 +126,12 @@ class AppInterceptors extends Interceptor {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
 
+    sendAPIEvents(
+      nameEvent: EventsName.requestAPISuccessful,
+      responseData:  err.response?.data?.toString() ?? "",
+      requestOptions: err.requestOptions,
+    );
+
     switch (err.type) {
       case DioErrorType.connectionTimeout:
       case DioErrorType.sendTimeout:
@@ -177,6 +179,20 @@ class AppInterceptors extends Interceptor {
     throw BadRequestException(err.requestOptions, err.response);
 
     return handler.next(err);
+  }
+
+
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      sendAPIEvents(
+        nameEvent: EventsName.requestAPISuccessful,
+        requestOptions: response.requestOptions,
+        responseData:  response.data?.toString() ?? "",
+      );
+    }
+    return handler.next(response);
   }
 
   String get languageCode => translator.activeLanguageCode;

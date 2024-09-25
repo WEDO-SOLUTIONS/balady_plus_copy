@@ -27,6 +27,7 @@ import '../../domain/use_cases/download_file.dart';
 import '../../domain/use_cases/get_inc_details.dart';
 import '../../domain/use_cases/get_inq_details.dart';
 import '../../domain/use_cases/get_msr_details.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'crm_details_event.dart';
 part 'crm_details_state.dart';
@@ -148,9 +149,25 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
           File filetemp = File("$dir/" + file.attachName);
           await filetemp.writeAsBytes(bytes);
           OpenFile.open(filetemp.path);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   Future<void> _downloadFileHandler(
@@ -203,7 +220,14 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
           }
         }
       });
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       emitter(state.copyWith(
           crmRequestsStatus: BlocRequestStatus.submissionGetFailure,
           errorMessage: ("errors_server_error_1").tr()));

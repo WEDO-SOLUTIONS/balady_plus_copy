@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show runApp;
+import 'package:flutter/material.dart' ;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
 import 'package:mapness/entry_point.dart';
@@ -9,8 +9,12 @@ import './app/app.dart';
 import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
 void main() async {
-  await runMapnessApp(() async {
+  unhandledExceptionBaladyLogs( () async {
+    await runMapnessApp(() async {
     await AppEnv.setupEnv(EnvType.pre);
     await setupMapness(EnvType.pre);
 
@@ -32,5 +36,6 @@ void main() async {
       appRunner: () =>
           runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
     );
+  });
   });
 }

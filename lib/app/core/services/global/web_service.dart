@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/events_logs/controller/logs_controller.dart';
+import 'package:balady_plus/app/events_logs/events_names.dart';
+import 'package:balady_plus/app/events_logs/models/error_exception_model.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -15,32 +18,22 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
 import 'package:sentry_dio/sentry_dio.dart';
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
+import '../../../events_logs/balady_logs.dart';
+import '../../../events_logs/models/request_api_model.dart';
 import '../../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../errors/errors_exports.dart'
     show
         BadRequestException,
         ConflictException,
         DeadlineExceededException,
-        FailedToGenerateTokenException,
         InternalServerErrorException,
         MethodNotAllowedException,
         NoDataFoundException,
         NoInternetConnectionException,
-        RequestNotFoundException,
-        TokenHasExpiredException,
-        TokenNotFoundException,
-        UnAuthorizedException;
+        RequestNotFoundException;
 import '../../utils/utils_exports.dart'
-    show
-        ApiHeader,
-        ApiPOST,
-        ApiParam,
-        CommonFunctions,
-        CommonProperties,
-        EnvType,
-        Log,
-        WithDelay;
-import '../services_exports.dart' show NavigationService, NetworkConnection;
+    show ApiHeader, ApiPOST, CommonFunctions, CommonProperties, EnvType, Log;
+import '../services_exports.dart' show NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
 class WebService {
@@ -67,10 +60,9 @@ class WebService {
     );
 
     dio.interceptors.add(AppInterceptors());
-    dio.interceptors.add(
-        AppCertificatePinningInterceptor(allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,callFollowingErrorInterceptor: true)
-    );
-
+    dio.interceptors.add(AppCertificatePinningInterceptor(
+        allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,
+        callFollowingErrorInterceptor: true));
   }
 
   WebService.newDio({
@@ -89,23 +81,23 @@ class AppCertificatePinningInterceptor extends Interceptor {
     int timeout = 0,
     this.callFollowingErrorInterceptor = false,
   })  : _allowedSHAFingerprints = allowedSHAFingerprints != null
-      ? allowedSHAFingerprints
-      : <String>[],
+            ? allowedSHAFingerprints
+            : <String>[],
         _timeout = timeout;
-
 
   @override
   Future onRequest(
-      RequestOptions options,
-      RequestInterceptorHandler handler,
-      ) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     try {
       // iOS bug: Alamofire is failing to return parallel requests for certificate validation
       if (Platform.isIOS && secure != null) {
         await secure;
       }
 
-      if(options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) == true) {
+      if (options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) ==
+          true) {
         var baseUrl = options.baseUrl;
 
         if (options.path.contains('http') || options.baseUrl.isEmpty) {
@@ -130,31 +122,34 @@ class AppCertificatePinningInterceptor extends Interceptor {
             DioException(
                 requestOptions: options,
                 error: CertificateNotVerifiedException(),
-                type: DioExceptionType.badCertificate
-            ),
+                type: DioExceptionType.badCertificate),
             callFollowingErrorInterceptor,
           );
         }
-      }
-      else
-        {
-          return super.onRequest(options, handler);
-        }
-    } on Exception catch (e) {
-      dynamic error;
-
-      if (e is PlatformException && e.code == 'CONNECTION_NOT_SECURE') {
-        error = const CertificateNotVerifiedException();
       } else {
-        error = CertificateCouldNotBeVerifiedException(e);
+        return super.onRequest(options, handler);
+      }
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      dynamic error2;
+
+      if (error is PlatformException && error.code == 'CONNECTION_NOT_SECURE') {
+        error2 = const CertificateNotVerifiedException();
+      } else {
+        error2 = CertificateCouldNotBeVerifiedException(error);
       }
 
       handler.reject(
         DioException(
-          requestOptions: options,
-          error: error,
-          type: DioExceptionType.badCertificate
-        ),
+            requestOptions: options,
+            error: error2,
+            type: DioExceptionType.badCertificate),
         callFollowingErrorInterceptor,
       );
     }
@@ -218,18 +213,23 @@ class AppInterceptors extends Interceptor {
         options.uri.toString().toLowerCase().contains("license/permits") ||
         options.uri.toString().toLowerCase().contains("send-to-new-owner") ||
         options.uri.toString().toLowerCase().contains("selected/permits") ||
-        options.uri.toString().toLowerCase().contains("selected-permits/by-new-owner") ||
+        options.uri
+            .toString()
+            .toLowerCase()
+            .contains("selected-permits/by-new-owner") ||
         options.uri.toString().toLowerCase().contains("transfer/shop-info") ||
-        options.uri.toString().toLowerCase().contains("transfer/shop-ownership-info")||
-       options.uri.toString().toLowerCase().contains("transfer/attachments")||
-        options.uri.toString().toLowerCase().contains("submit/by-new-owner")||
-        options.uri.toString().toLowerCase().contains("accept/by-new-owner")||
-        options.uri.toString().toLowerCase().contains("reject/by-new-owner")||
-        options.uri.toString().toLowerCase().contains("transfer/upload-attachment")
-
-
-
-    ) {
+        options.uri
+            .toString()
+            .toLowerCase()
+            .contains("transfer/shop-ownership-info") ||
+        options.uri.toString().toLowerCase().contains("transfer/attachments") ||
+        options.uri.toString().toLowerCase().contains("submit/by-new-owner") ||
+        options.uri.toString().toLowerCase().contains("accept/by-new-owner") ||
+        options.uri.toString().toLowerCase().contains("reject/by-new-owner") ||
+        options.uri
+            .toString()
+            .toLowerCase()
+            .contains("transfer/upload-attachment")) {
       options.headers.putIfAbsent(ApiHeaders.xSubmitterRelation,
           () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
     }
@@ -270,7 +270,6 @@ class AppInterceptors extends Interceptor {
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
 
-
     options.headers.removeWhere((key, value) => key == "requiresToken");
     //if (options.headers['Authorization'] == null) {
 
@@ -279,10 +278,13 @@ class AppInterceptors extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    print(err.type);
-    print(err);
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
+    sendAPIEvents(
+      nameEvent: EventsName.requestAPISuccessful,
+      responseData:  err.response?.data?.toString() ?? "",
+      requestOptions: err.requestOptions,
+    );
 
     switch (err.type) {
       case DioErrorType.connectionTimeout:
@@ -335,7 +337,6 @@ class AppInterceptors extends Interceptor {
         throw NoInternetConnectionException(err.requestOptions);
         break;
       case DioErrorType.unknown:
-
         throw BadRequestException(err.requestOptions, err.response);
 
       default:
@@ -346,11 +347,30 @@ class AppInterceptors extends Interceptor {
     return handler.next(err);
   }
 
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      sendAPIEvents(
+        nameEvent: EventsName.requestAPISuccessful,
+        requestOptions: response.requestOptions,
+        responseData:  response.data?.toString() ?? "",
+      );
+    }
+    return handler.next(response);
+  }
+
   String get languageCode => translator.activeLanguageCode;
 
   bool get mounted => true;
 }
 
+// need Add next Headers
+/*
+x-fe-client-ip
+"x-platform-id": "balady",
+"x-channel-id": "mobile",
+
+ */
 class ApiHeaders {
   static const authorization = "authorization";
 
@@ -362,4 +382,35 @@ class ApiHeaders {
   static const xUserProfileId = "x-user-profile-id";
   static const xCorrelationId = "x-correlation-id";
   static const xSubmitterRelation = "x-submitter-relation";
+}
+
+void sendAPIEvents({
+  required String nameEvent,
+  required String responseData,
+  required RequestOptions requestOptions,
+}) {
+  try {
+    String requestData = requestOptions.data?.toString() ?? "";
+    LogsViewModel().sendEventFromModel(
+      event: RequestApiModel(
+        nameEvent: EventsName.requestAPISuccessful,
+        message: responseData.length > 1024
+            ? responseData.substring(0, 1024)
+            : responseData,
+        url: requestOptions.baseUrl + requestOptions.path,
+        body: requestData.length > 1024
+            ? requestData.substring(0, 1024)
+            : requestData,
+        verifyingKEY: requestOptions.headers["verifyingKEY"] ?? "",
+      ),
+    );
+  } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 }

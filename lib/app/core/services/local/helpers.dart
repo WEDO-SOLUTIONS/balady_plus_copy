@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/services/services_exports.dart'
     show NavigationService;
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -119,14 +120,29 @@ class Helpers {
       //    EasyLoading.dismiss();
 
       return LatLng(position.latitude, position.longitude);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       //    EasyLoading.dismiss();
       geoLocator.Position? position;
       try {
         position = await geoLocator.Geolocator.getLastKnownPosition();
         if (position?.latitude != null && position?.longitude != null)
           return LatLng(position!.latitude, position.longitude);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return null;
   }
@@ -142,14 +158,29 @@ class Helpers {
       //    EasyLoading.dismiss();
 
       return LatLng(position.latitude, position.longitude);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       //    EasyLoading.dismiss();
       geoLocator.Position? position;
       try {
         position = await geoLocator.Geolocator.getLastKnownPosition();
         if (position?.latitude != null && position?.longitude != null)
           return LatLng(position!.latitude, position.longitude);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return null;
   }
@@ -299,7 +330,15 @@ class Helpers {
           String error = ("ola_request_error").tr();
 
           CommonFunctions.showError(error);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
 
         return true;
       } else {
@@ -373,7 +412,15 @@ class Helpers {
           });
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   static String? getDaemValue(String? value) {
@@ -384,7 +431,15 @@ class Helpers {
   /*static void sendEventToAnalytics(String event) {
     try {
       fbAnalytics.logEvent(name: event);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }*/
 
   /*static void sendSuccessEvent(PAGE_TYPE type) {
@@ -424,7 +479,15 @@ class Helpers {
           break;
         default:
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }*/
 
   /* static openFile(Uint8List bytes, {String? contentType}) async {
@@ -440,8 +503,15 @@ class Helpers {
         // OpenFile.open(filetemp.path);
         Share.shareFiles([filetemp.path]);
       }
-    } catch (ex) {
-   
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+
     }
   }
 
@@ -455,15 +525,30 @@ class Helpers {
         File filetemp = File("$dir/" +
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
-        
+
         OpenFile.open(filetemp.path);
       }
-    } catch (ex) {
-  
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+
       try {
         sendLog(
-            url: "OpenLoocalFile", data: ex.toString(), body: ex.toString());
-      } catch (ex) {}
+            url: "OpenLoocalFile", data: error.toString(), body: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
   }
 
@@ -496,11 +581,26 @@ class Helpers {
             //print(filetemp.path);
             OpenFile.open(filetemp.path);
           }
-        } catch (ex) {
-    
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   static String getCRMDateStr(String? value) {
@@ -538,7 +638,15 @@ class Helpers {
         OpenFile.open(filetemp.path);
         //  Share.shareFiles([filetemp.path]);
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   static void backToHome() {
@@ -551,6 +659,14 @@ class Helpers {
         }
         return false;
       });
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 }
