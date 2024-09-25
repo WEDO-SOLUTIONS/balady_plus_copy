@@ -17,6 +17,10 @@ import '../../../domain/entities/gis/gis_response.dart';
 import '../../../domain/entities/map/map_screen_params.dart';
 import '../../../domain/use_cases/get_gis_data.dart';
 
+
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
 part 'map_event.dart';
 part 'map_state.dart';
 
@@ -83,11 +87,26 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           location: GISParams(x: position.longitude, y: position.latitude),
           userLocation:
               GISParams(x: position.longitude, y: position.latitude)));
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       Position? position;
       try {
         position = await Geolocator.getLastKnownPosition();
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       if (position != null) {
         emitter(state.copyWith(
             status: BlocStatus.success,
@@ -147,11 +166,26 @@ class MapBloc extends Bloc<MapEvent, MapState> {
             location: GISParams(x: position.longitude, y: position.latitude),
             userLocation:
                 GISParams(x: position.longitude, y: position.latitude)));
-      } catch (ex) {
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
         Position? position;
         try {
           position = await Geolocator.getLastKnownPosition();
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         if (position != null) {
           emitter(state.copyWith(
               status: BlocStatus.success,
@@ -182,7 +216,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
         ),
       );
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2) {

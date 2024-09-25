@@ -10,6 +10,7 @@ import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_mo
 import 'package:dio/dio.dart' show Options, ResponseType, Response, DioError;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class ChatBotDataSources {
   Future<Stream> sendQuestionMessageSSE({required String question});
@@ -32,7 +33,14 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return result['isEnabled'];
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -41,14 +49,21 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
@@ -89,7 +104,14 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         question: question,
         sectionId: 1000000000000,
       );
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -98,14 +120,21 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
@@ -173,7 +202,14 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
           .transform(const LineSplitter())
           .transform(stringTransformer);
       return stream;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -182,14 +218,21 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );

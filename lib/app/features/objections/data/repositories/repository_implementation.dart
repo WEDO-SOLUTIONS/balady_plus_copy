@@ -18,6 +18,7 @@ import '../../objections_exports.dart'
         RequestSubTypeParamsModel,
         RequestTypeEntity,
         ObjectionsRequestsPrams;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class RequestsRepositoryImplementation implements RequestsRepository {
   final RequestsRemoteDataSource remoteDataSource;
@@ -35,7 +36,14 @@ class RequestsRepositoryImplementation implements RequestsRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -48,7 +56,14 @@ class RequestsRepositoryImplementation implements RequestsRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -60,7 +75,14 @@ class RequestsRepositoryImplementation implements RequestsRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -74,7 +96,14 @@ class RequestsRepositoryImplementation implements RequestsRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -85,7 +114,14 @@ class RequestsRepositoryImplementation implements RequestsRepository {
     try {
       final data = await remoteDataSource.getObjectionDetails(id);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -96,7 +132,14 @@ class RequestsRepositoryImplementation implements RequestsRepository {
     try {
       final data = await remoteDataSource.cancelObjection(id);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -107,7 +150,14 @@ class RequestsRepositoryImplementation implements RequestsRepository {
     try {
       final data = await remoteDataSource.getPermitURL(id);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

@@ -17,6 +17,7 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
 import 'package:dartz/dartz.dart' show Either, Left, Right;
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final HomeRemoteDataSource remoteDataSource;
@@ -35,7 +36,14 @@ class HomeRepositoryImpl implements HomeRepository {
       final data = await remoteDataSource.getMainServices(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -50,7 +58,14 @@ class HomeRepositoryImpl implements HomeRepository {
           await remoteDataSource.getTopOrderedSubServices(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -63,7 +78,14 @@ class HomeRepositoryImpl implements HomeRepository {
       final data = await remoteDataSource.getTopRatedProviders(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
@@ -76,7 +98,14 @@ class HomeRepositoryImpl implements HomeRepository {
       final data = await remoteDataSource.getSubServices(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -88,7 +117,14 @@ class HomeRepositoryImpl implements HomeRepository {
       final data = await remoteDataSource.getAds();
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

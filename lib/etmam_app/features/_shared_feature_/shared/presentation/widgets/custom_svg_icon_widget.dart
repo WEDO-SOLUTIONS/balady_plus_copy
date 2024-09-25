@@ -148,7 +148,14 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
     try {
       parser.parse(widget.imagePath, warningsAsErrors: true);
       return true;
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return false;
     }
   }

@@ -552,7 +552,7 @@ class EkramAddDeceasedBloc
 
       final failureOrSuccess = await _checkUserInfo(UserInfoRequestParams(
           dob: state.data.deceassedDOBHijri ?? "",
-          nationalId: state.data.deceassedId ?? ""));
+          nationalId: state.data.deceassedId ?? "", identityType: state.data.identityType ?? 0));
 
       failureOrSuccess.fold((failure) {
         emitter(state.copyWith(
@@ -560,32 +560,28 @@ class EkramAddDeceasedBloc
           errorMessage: (failure as ServerFailure).errorMessage,
         ));
       }, (success) {
-        String firstName = success.data?.result?.firstName ?? "";
-        String secondName = success.data?.result?.secondName ?? "";
-        String thirdName = success.data?.result?.thirdName ?? "";
-        String fourthName = success.data?.result?.familyName ?? "";
-        int? gender = success.data?.result?.genderCode;
-        bool? isMuslim = success.data?.result?.genderCode == 1
-            ? true
-            : (success.data?.result?.genderCode != null)
-                ? false
-                : null;
+        String firstName = success.data?.result?.deceasedInfo?.firstName ?? "";
+        String secondName = success.data?.result?.deceasedInfo?.secondName ?? "";
+        String thirdName = success.data?.result?.deceasedInfo?.thirdName ?? "";
+        String fourthName = success.data?.result?.deceasedInfo?.fourthName ?? "";
+        // int? gender = success.data?.result?.genderCode;
+        bool? isMuslim = success.data?.result?.deceasedInfo?.isMuslim ;
 
         LookUpItem? nationality = state.nationalities?.firstWhereOrNull(
-            (element) => element.id == success.data?.result?.nationalityCode);
+            (element) => element.id == success.data?.result?.deceasedInfo?.nationalityId);
         emitter(state.copyWith(
             status: BlocStatus.success,
             cemetries: [],
             errorMessage: "",
             data: state.data.copyWith(
-                userInfoResponse: Nullable(success.data?.result),
+                // userInfoResponse: Nullable(success.data?.result),
                 selectedCemetry: Nullable(null),
                 baqieApproval: Nullable(null),
                 firstName: Nullable(firstName),
                 secondName: Nullable(secondName),
                 thirdName: Nullable(thirdName),
                 fourthName: Nullable(fourthName),
-                gender: Nullable(gender),
+                // gender: Nullable(gender),
                 nationalityId: Nullable(nationality),
                 isMuslim: Nullable(isMuslim))));
 

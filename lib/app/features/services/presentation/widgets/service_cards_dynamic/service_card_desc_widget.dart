@@ -18,8 +18,8 @@ import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
 
-class ServiceCardDescWidget extends StatelessWidget {
-  const ServiceCardDescWidget({super.key});
+class ServiceCardDescDynamicWidget extends StatelessWidget {
+  const ServiceCardDescDynamicWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

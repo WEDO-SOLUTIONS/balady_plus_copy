@@ -7,6 +7,7 @@ import 'package:balady_plus/etmam_app/features/etmam_entry_point/domain/entities
 
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure, AuthNotFoundedFailure;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class EtmamEntryPointRepositoryImpl implements EtmamEntryPointRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -21,7 +22,14 @@ class EtmamEntryPointRepositoryImpl implements EtmamEntryPointRepository {
       final data = await remoteDataSource.getProfile();
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -32,7 +40,14 @@ class EtmamEntryPointRepositoryImpl implements EtmamEntryPointRepository {
     try {
       final data = await localDataSource.checkProfile();
       return Right(data);
-    } on Exception catch (error) {
+    } on Exception catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(AuthNotFoundedFailure());
     }
   }
@@ -42,7 +57,14 @@ class EtmamEntryPointRepositoryImpl implements EtmamEntryPointRepository {
     try {
       final data = await localDataSource.saveProfile(params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -54,7 +76,14 @@ class EtmamEntryPointRepositoryImpl implements EtmamEntryPointRepository {
     try {
       final data = await remoteDataSource.createProfile();
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -66,7 +95,14 @@ class EtmamEntryPointRepositoryImpl implements EtmamEntryPointRepository {
     try {
       final data = await remoteDataSource.updateProfile(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -78,7 +114,14 @@ class EtmamEntryPointRepositoryImpl implements EtmamEntryPointRepository {
     try {
       final data = await remoteDataSource.addDeviceToken(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -90,7 +133,14 @@ class EtmamEntryPointRepositoryImpl implements EtmamEntryPointRepository {
     try {
       final data = await remoteDataSource.updateDeviceToken(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -102,7 +152,14 @@ class EtmamEntryPointRepositoryImpl implements EtmamEntryPointRepository {
     try {
       final data = await remoteDataSource.getForceVersion(params: params);
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

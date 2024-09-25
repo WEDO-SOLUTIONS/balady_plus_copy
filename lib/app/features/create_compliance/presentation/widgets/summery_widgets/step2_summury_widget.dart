@@ -24,7 +24,7 @@ class Step2SummeryWidget extends StatelessWidget {
           children: [
             FieldData(
               title: ("vd_full_name").tr(),
-              subTitle: fullName,
+              subTitle:  state.requestDetails?.submitterDto?.submitterName,
             ),
             CustomVerticalSpace(height: 8),
             FieldData(
@@ -40,7 +40,7 @@ class Step2SummeryWidget extends StatelessWidget {
             CustomVerticalSpace(height: 8),
             FieldData(
               title: ("vd_mobile_number").tr(),
-              subTitle: state.contactMobileNumber ?? "",
+              subTitle: state.requestDetails?.submitterDto?.mobile ?? "",
             ),
           ],
         );

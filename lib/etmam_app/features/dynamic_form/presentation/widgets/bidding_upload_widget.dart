@@ -16,6 +16,7 @@ import '../../../../../app/features/_shared_feature_/presentation/buttons/elevat
 import '../../../../../app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../../app/features/objectable_transactions/presentation/widgets/create_objection_page/objection_reason_attachment.dart';
 import '../blocs/bidding_form/bidding_form_bloc.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class BidddingUploadWidget extends StatelessWidget {
   const BidddingUploadWidget({super.key});
@@ -89,7 +90,14 @@ class BidddingUploadWidget extends StatelessWidget {
           }
         }
       }
-    } on PlatformException catch (_) {
+    } on PlatformException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // debugPrint("Unsupported operation" + e.toString());
     }
     return Future.value(null);

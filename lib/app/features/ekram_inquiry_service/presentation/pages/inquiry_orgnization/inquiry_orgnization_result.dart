@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/features/ekram_inquiry_service/presentation/bloc/inquiry_cemetry_bloc/ekram_inquiry_cemetry_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,18 +6,13 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
-import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
-import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
-import '../../bloc/inquiry_cemetry_bloc/ekram_inquiry_cemetry_bloc.dart';
 import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_orgnization_state.dart';
 import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_orgnization_bloc.dart';
 import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_orgnization_event.dart';
-import '../../widgets/inquiry_cemetry/cemetry_details_item_widget.dart';
 import '../../widgets/inquiry_orgnization/orgnization_details_item_widget.dart';
 
 class InquiryOrgnizationResultsPage extends StatefulWidget {

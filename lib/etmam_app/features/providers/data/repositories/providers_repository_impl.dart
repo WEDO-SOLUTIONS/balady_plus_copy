@@ -13,6 +13,7 @@ import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart'
         ProvidersCacheDataSource;
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ProvidersRepositoryImpl implements ProvidersRepository {
   final ProvidersRemoteDataSource remoteDataSource;
@@ -31,7 +32,14 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
       final data = await remoteDataSource.getProviders(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -44,7 +52,14 @@ class ProvidersRepositoryImpl implements ProvidersRepository {
       final data = await remoteDataSource.getProviderDetails(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

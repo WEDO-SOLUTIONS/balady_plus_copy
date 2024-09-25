@@ -96,7 +96,15 @@ class _FacilityIncidentScreenState extends State<FacilityIncidentScreen> {
     //         _descriptionController.text.isNotEmpty)
     //       _describtionFormKey.currentState.validate();
     //   });
-    // } catch (ex) {}
+    // } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   void setStoredGuestInfo() {

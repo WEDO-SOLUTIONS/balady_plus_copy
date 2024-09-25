@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:formz/formz.dart';
 
 import 'package:equatable/equatable.dart';
@@ -130,7 +131,15 @@ class UpdatePhotoCertificateCubit extends Cubit<UpdatePhotoCertificateState> {
         });
         smsUserConsent?.requestSms();
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     emit(state.copyWith(status: BlocStatus.success));
   }
 

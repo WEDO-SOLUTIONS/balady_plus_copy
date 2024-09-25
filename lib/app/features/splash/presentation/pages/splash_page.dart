@@ -1,23 +1,17 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
-import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_screen_animator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiMode, SystemUiOverlay;
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import '../../../../core/services/services_exports.dart' show EntryPointBridge;
 import '../../../../core/utils/app_analytics_events.dart';
-import '../../../_shared_feature_/shared_feature_exports.dart'
-    show BridgeParams;
 
 import '../../../force_update/presentation/core/force_update_view_model.dart';
-import '../../../location/presentation/pages/acquire_location_page.dart';
-import '../../splash_exports.dart' show SplashAnimator;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -58,9 +52,9 @@ class _SplashPageState extends State<SplashPage>
         // );
         // final entryPointBridge = sl<EntryPointBridge>();
         // entryPointBridge(params);
-
-        sl<EntryPointCubit>().hideSplash();
-
+        if (!CommonFunctions.changeSpalsh()) {
+          sl<EntryPointCubit>().hideSplash();
+        }
         //   CommonFunctions.sendUrbiMapLogs();
         //  }
         checkVersionInfo();
@@ -71,7 +65,15 @@ class _SplashPageState extends State<SplashPage>
   void checkVersionInfo() {
     try {
       locator<ForceUpdateViewModel>().getVersionInfo();
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   @override

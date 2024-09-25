@@ -13,14 +13,16 @@ class CemetryNationalDobGorgian extends StatelessWidget {
     return BlocBuilder<EkramBookCemetryBloc, EkramBookCemetryState>(
         builder: (context, state) {
       return GorgianCalendarDateWidget(
+        isDisabled: state.isdeceasedInfoReadOnly,
         currentVlaue: state.deceassedDOBGorgian,
-        fieldName: Helpers.translatingWord("cemetry_dob_gorgian"),
+        fieldName: "${Helpers.translatingWord("cemetry_dob_gorgian")} *",
         isMandatory: true,
         onChanged: (String? date) {
           context
               .read<EkramBookCemetryBloc>()
               .add(ChangeNationalIdDob(gorgianDate: date));
         },
+        maxValue: DateTime.now(),
       );
     });
   }

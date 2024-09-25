@@ -17,6 +17,8 @@ import '../../../../../../core/services/services_exports.dart';
 import '../../../../../_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../../../../objections/domain/entities/objection_details.dart';
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 class ObjectionAttachmentItem extends StatefulWidget {
   ReasonAttachment file;
 
@@ -125,11 +127,25 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
           } else {
             OpenFile.open(fileDownloaded.path);
           }
-        } catch (ex) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           EasyLoading.dismiss();
         }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       EasyLoading.dismiss();
     }
   }

@@ -10,6 +10,7 @@ import '../../domain/entities/vehicle_response.dart';
 import '../../domain/repositories/dc_repository.dart';
 import '../data_sources/dc_remote_data_source.dart';
 import '../model/create_retrive_car_request.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class DCRetriveRepositoryImpl implements DCRetriveRepository {
   final DCRetriveRemoteDataSource remoteDataSource;
@@ -23,7 +24,14 @@ class DCRetriveRepositoryImpl implements DCRetriveRepository {
       final data = await remoteDataSource.getMyVehicles(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
@@ -36,7 +44,14 @@ class DCRetriveRepositoryImpl implements DCRetriveRepository {
       final data = await remoteDataSource.createRetriveCar(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));
     }

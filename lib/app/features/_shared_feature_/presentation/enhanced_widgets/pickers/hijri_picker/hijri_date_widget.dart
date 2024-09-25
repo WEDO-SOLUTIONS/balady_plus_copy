@@ -7,6 +7,7 @@ import '../../../../../../core/utils/constants/app_colors.dart';
 import '../../../widgets/buttons/custom_buttons_widgets.dart';
 import '../../../widgets/widget_label.dart';
 import 'hijri_picker.dart' as hijri_picker;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class HijriCalendarDateWidget extends StatelessWidget {
   final String fieldName;
@@ -106,7 +107,14 @@ class HijriCalendarDateWidget extends StatelessWidget {
 
         return hijriCalender;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return HijriCalendar.now();
     }
     return HijriCalendar.now();

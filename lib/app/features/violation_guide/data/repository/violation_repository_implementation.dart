@@ -18,6 +18,7 @@ import '../../../../core/errors/errors_exports.dart'
         ServerFailure;
 import '../../domain/repository/violation_repository.dart';
 import '../datasource/violation_remote_data_source.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ViolationGuideRepositoryImplementation
     implements ViolationGuideRepository {
@@ -35,7 +36,14 @@ class ViolationGuideRepositoryImplementation
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -48,7 +56,14 @@ class ViolationGuideRepositoryImplementation
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -61,7 +76,14 @@ class ViolationGuideRepositoryImplementation
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -73,7 +95,14 @@ class ViolationGuideRepositoryImplementation
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -86,7 +115,14 @@ class ViolationGuideRepositoryImplementation
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }

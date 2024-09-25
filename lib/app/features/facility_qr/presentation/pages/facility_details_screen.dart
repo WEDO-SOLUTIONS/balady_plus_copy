@@ -497,6 +497,11 @@ class MapSection extends StatelessWidget {
                     Container(
                       height: 160,
                       child: GoogleMap(
+                          onMapCreated: (GoogleMapController controller) {
+                            controller.setMapStyle(
+                              """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                            );
+                          },
                           markers: {
                             /* Marker(
                                 visible: MapUtils.locationMarker != null,

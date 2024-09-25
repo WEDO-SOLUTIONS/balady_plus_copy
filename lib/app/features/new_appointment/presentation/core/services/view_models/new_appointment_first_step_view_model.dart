@@ -17,6 +17,7 @@ import '../../models/service_config_reseponse.dart';
 import '../../models/sub_class_response.dart';
 import '../../models/sub_municipalitiy_model.dart';
 import 'new_appointment_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NewAppointmentFirstStepViewModel extends BaseViewModel {
   bool withPreviousTransaction = false;
@@ -25,6 +26,8 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
 
   NewAppointmentFirstStepViewModel(
       {required this.withPreviousTransaction, required this.isDraft}) {
+    dataModel.attachmentConfigList = [];
+
     locator<NewAppointmentViewModel>().withPreviousTransaction =
         withPreviousTransaction;
     if (isDraft == false) locator<NewAppointmentViewModel>().init();
@@ -58,6 +61,8 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
   String get getServiceName => dataModel.serviceName ?? "";
 
   VisitType? get appointmentTypeItem => dataModel.appointmentTypeItem;
+
+  List<AttachmentsConfig>? get lstAttachmentConfig => dataModel.attachmentConfigList;
 
   LookUpItem? get specialConditionItem => dataModel.specialConditionItem;
 
@@ -343,12 +348,48 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         }*/
       }
 
+      var value =checkAttachmentValidation();
+      if(value != null && isValid==true) {
+        isValid = value;
+      }
+
+
       if (isFormValid != isValid) {
         isFormValid = isValid;
         notifyListeners();
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     notifyListeners();
+  }
+
+
+  bool? checkAttachmentValidation(){
+    bool? isValide=true;
+    if(lstAttachmentConfig != null) {
+      for (var index = 0; index < lstAttachmentConfig!.length; index++) {
+        if (lstAttachmentConfig![index].mandatory == true) {
+          var lst = attachmentsList.where((attachment) =>
+          attachment.attachmentId == lstAttachmentConfig![index].id);
+          if (lst.isEmpty) {
+            isValide = false;
+          }
+        }
+      }
+    }
+    else
+      {
+        isValide=null;
+      }
+
+   return isValide;
   }
 
   void init() {
@@ -421,12 +462,15 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
     }
   }
 
-  void deleteAttachment(int index) {
+  void deleteAttachment(int index) async{
+
     dataModel.atttachmentItems.removeAt(index);
-    /*attachmentFileName = null;
-    attachmentPath = null;
-    attachmentBase64 = null;
-    attachmentUuid = null;*/
+   // bool isSuccess = await dataModel.deleteAttachment( dataModel.atttachmentItems[index].attachmentUuid!);
+   // if(isSuccess == true) {
+   //
+   //   notifyListeners();
+   // }
+
   }
 
   void checkRealStateRequest() async {
@@ -436,22 +480,13 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
   }
 
   void saveAttachment(
-      String filePath, String fileName, Uint8List base64) async {
-    /* attachmentFileName = null;
-    attachmentPath = null;
-    attachmentBase64 = null;
-    attachmentUuid = null;
-*/
+      String filePath, String fileName, Uint8List base64,int? attachmentId) async {
+
     bool isSuccess = false;
 
-    isSuccess = await dataModel.uploadFile(base64, fileName, filePath);
-
-    /* if (isSuccess) {
-      attachmentFileName = fileName;
-      attachmentPath = filePath;
-      attachmentBase64 = base64;
-    }*/
+    isSuccess = await dataModel.uploadFile(base64, fileName, filePath,attachmentId);
+    validateForm();
     notifyListeners();
-    // return isSuccess;
+
   }
 }

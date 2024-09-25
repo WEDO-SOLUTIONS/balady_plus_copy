@@ -10,6 +10,7 @@ import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class HijriCalendarDateWidget extends StatelessWidget {
   final String fieldName;
@@ -105,7 +106,14 @@ class HijriCalendarDateWidget extends StatelessWidget {
 
         return hijriCalender;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return HijriCalendar.now();
     }
     return HijriCalendar.now();

@@ -104,6 +104,8 @@ import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
 var carPlateLettersList = [
@@ -243,7 +245,15 @@ class CommonFunctions {
   static void sendEventToAnalytics(String event) {
     try {
       fbAnalytics.logEvent(name: event);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   static Future<String> fileToBase64(
@@ -323,7 +333,15 @@ class CommonFunctions {
       dayName = DateFormat('EEEE', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
           .format(tempDate)
           .toString();
-    } catch (e) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return dayName;
   }
 
@@ -336,7 +354,15 @@ class CommonFunctions {
           DateFormat('dd', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
               .format(tempDate)
               .toString();
-    } catch (e) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return replaceArabicNumberWithEnglish(formattedDate);
   }
 
@@ -360,7 +386,15 @@ class CommonFunctions {
           DateFormat('MMMM', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
               .format(tempDate)
               .toString();
-    } catch (e) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return monthName;
   }
 
@@ -371,7 +405,15 @@ class CommonFunctions {
       DateTime tempDate = DateFormat("yyyy/MM/dd").parse(bidEndDate);
       final date = DateTime.now();
       difference = tempDate.difference(date).inDays;
-    } catch (e) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return difference;
   }
 
@@ -387,8 +429,15 @@ class CommonFunctions {
           .format(tempTime)
           .toString();
       formattedTime = time;
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
     }
     return replaceArabicNumberWithEnglish(formattedTime);
   }
@@ -401,8 +450,15 @@ class CommonFunctions {
       DateTime tempTime = DateFormat("yyyy/M/dd H:mm").parse(biddingEndingTime);
       String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
       formattedTime = time;
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
     }
     return replaceArabicNumberWithEnglish(formattedTime);
   }
@@ -416,8 +472,15 @@ class CommonFunctions {
           DateFormat("yyyy/m/dd H:mm:ss").parse(biddingEndingTime);
       String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
       formattedTime = time;
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
     }
     return replaceArabicNumberWithEnglish(formattedTime);
   }
@@ -507,7 +570,14 @@ class CommonFunctions {
       } else {
         return DateTime.now().millisecondsSinceEpoch.toString();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return DateTime.now().millisecondsSinceEpoch.toString();
     }
   }
@@ -588,7 +658,14 @@ class CommonFunctions {
         return v1UUID.replaceAll("-", "");
       else
         return DateTime.now().millisecondsSinceEpoch.toString();
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return DateTime.now().millisecondsSinceEpoch.toString();
     }
   }
@@ -766,7 +843,15 @@ class CommonFunctions {
       try {
         String error = ("ola_incident_error").tr(); //MMTr;
         showError(error);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       return true;
     } else {*/
@@ -794,7 +879,15 @@ class CommonFunctions {
                 fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
   }
 
@@ -832,7 +925,15 @@ class CommonFunctions {
                   fontSize: 16.0),
               hideCloseButton: true,
               duration: const Duration(seconds: 3));
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
     }
   }
@@ -1020,7 +1121,15 @@ class CommonFunctions {
         time = time.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
       }
       formattedTime = time;
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return replaceArabicNumberWithEnglish(formattedTime);
   }
 
@@ -1032,7 +1141,15 @@ class CommonFunctions {
       formattedDate = DateFormat.yMMMMd(isAppAR ? 'ar_SA' : 'en_US')
           .format(tempDate)
           .toString();
-    } catch (e) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return replaceArabicNumberWithEnglish(formattedDate);
   }
 
@@ -1198,8 +1315,15 @@ class CommonFunctions {
           });
         }
       }
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
     }
   }
 
@@ -1237,7 +1361,15 @@ class CommonFunctions {
           },
         ).then((value) {});
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   static void showApigeeFile(String fileUrl, String fileName,
@@ -1274,13 +1406,27 @@ class CommonFunctions {
           } else {*/
           OpenFile.open(fileDownloaded.path);
           //  }
-        } catch (ex) {
+        } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
           EasyLoading.dismiss();
 
-          print(ex);
+          print(error);
         }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       EasyLoading.dismiss();
     }
   }
@@ -1397,14 +1543,30 @@ class CommonFunctions {
   static void sendUXCamEvent(String event) {
     try {
       FlutterUxcam.logEvent(event);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   static void sendUXCamEventWithProperties(
       String event, Map<String, dynamic> data) {
     try {
       FlutterUxcam.logEventWithProperties(event, data);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   static showBackGroundLocationConsent() async {
@@ -1454,8 +1616,8 @@ class CommonFunctions {
     int todayDay = today.day;
     int todayMonth = today.month;
     int todayYear = today.year;
-    var allowedDays = [13, 14, 15, 16, 17, 18, 19, 20];
-    if (allowedDays.contains(todayDay) && todayMonth == 6 && todayYear == 2024)
+    var allowedDays = [22, 23, 24, 25];
+    if (allowedDays.contains(todayDay) && todayMonth == 9 && todayYear == 2024)
       return true;
     return false;
   }

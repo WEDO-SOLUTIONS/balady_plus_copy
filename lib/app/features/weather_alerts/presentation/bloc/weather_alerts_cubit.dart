@@ -5,6 +5,7 @@ import 'package:background_location/background_location.dart';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -159,6 +160,14 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
       Sentry.captureEvent(event, withScope: (p) {
         //  p.addAttachment(attachment)
       });
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 }

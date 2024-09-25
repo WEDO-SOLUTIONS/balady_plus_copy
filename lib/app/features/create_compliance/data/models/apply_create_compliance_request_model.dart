@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 
 class ApplyCreateComplianceRequest extends Equatable {
+  int? requestId;
   String? certificateType;
   String? contactMobile;
   int? licenseNumber;
@@ -22,6 +23,7 @@ class ApplyCreateComplianceRequest extends Equatable {
   ApplyCreateComplianceRequest(
       {this.certificateType,
       this.contactMobile,
+      this.requestId,
       this.licenseNumber,
       this.submitterThrough,
       this.ownershipDocumentDate,

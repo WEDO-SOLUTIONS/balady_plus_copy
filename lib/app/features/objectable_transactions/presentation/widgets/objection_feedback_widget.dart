@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/violation_guide/presentation/pages/map/widgets/map_widgets/warning_message.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -9,7 +10,6 @@ import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
-import '../../../commercial_license/presentation/step3/widgets/map_widgets/warning_message.dart';
 import '../../../objections/domain/entities/objection_details.dart';
 import 'objection_feedback_details_dialog.dart';
 import 'objection_feedback_reply_details_dialog.dart';

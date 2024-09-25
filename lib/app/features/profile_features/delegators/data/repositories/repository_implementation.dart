@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/profile_features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/features/profile_features/delegators/domain/entities/delegator_entity.dart';
 import 'package:dartz/dartz.dart';
@@ -19,7 +20,14 @@ class DelegatorsRepositoryImplementation implements DelegatorsRepository {
     try {
       final data = await remoteDataSource.getDelegators();
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, errorCode: error.errorCode));
     }
@@ -30,7 +38,14 @@ class DelegatorsRepositoryImplementation implements DelegatorsRepository {
     try {
       final data = await remoteDataSource.getAgents();
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, errorCode: error.errorCode));
     }

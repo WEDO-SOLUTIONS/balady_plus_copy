@@ -213,7 +213,14 @@ class AuditList {
 
         dateTime = DateTime.parse(dateWithT).toLocal();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       String dateWithT =
           sortDateTime!.substring(0, 8); //+ 'T' + date.substring(8);
       dateTime = DateTime.parse(dateWithT);
@@ -340,7 +347,15 @@ class AuditList {
 
         dateTime = DateTime.parse(dateWithT);
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return dateTime != null
         ? (Helpers.translatingWord("future_compleation_date") +
             ": " +

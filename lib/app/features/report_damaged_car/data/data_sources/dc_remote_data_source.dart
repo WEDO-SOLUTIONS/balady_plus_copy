@@ -15,6 +15,7 @@ import '../../damaged_cars_exports.dart'
         CarModelModel,
         CarTypeModel,
         VehicleResponseModel;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class DCRemoteDataSource {
   Future<ResponseBodyModel<CreateIncidentResponseModel>>
@@ -49,7 +50,14 @@ class DCRemoteDataSourceImpl extends DCRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       var errorCode;
       try {
         final decodedResponse =
@@ -57,7 +65,15 @@ class DCRemoteDataSourceImpl extends DCRemoteDataSource {
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       throw ServerException(
         error.toString(),
@@ -65,16 +81,31 @@ class DCRemoteDataSourceImpl extends DCRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -101,7 +132,14 @@ class DCRemoteDataSourceImpl extends DCRemoteDataSource {
           .map<CarModelModel>(
               (e) => CarModelModel.fromJson(e as Map<String, dynamic>))
           .toList();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -111,14 +149,21 @@ class DCRemoteDataSourceImpl extends DCRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -142,7 +187,14 @@ class DCRemoteDataSourceImpl extends DCRemoteDataSource {
           .map<CarTypeModel>(
               (e) => CarTypeModel.fromJson(e as Map<String, dynamic>))
           .toList();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -152,14 +204,21 @@ class DCRemoteDataSourceImpl extends DCRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -179,22 +238,33 @@ class DCRemoteDataSourceImpl extends DCRemoteDataSource {
           ResponseBodyModel<bool>.fromMap(response.data, parsedResult: true);
 
       return decodedResponse.data!.result!.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
-        try {
-          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
