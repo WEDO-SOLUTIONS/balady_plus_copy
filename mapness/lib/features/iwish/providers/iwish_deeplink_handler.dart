@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'iwish_deeplink_handler.g.dart';
 
-enum LangingFocusMaker { iwish, mosques }
+enum LangingFocusMaker { iwish }
 
 @riverpod
 class IwishDeeplinkHandler extends _$IwishDeeplinkHandler {
@@ -21,8 +21,6 @@ class IwishDeeplinkHandler extends _$IwishDeeplinkHandler {
     if (state != null) {
       if (state == LangingFocusMaker.iwish) {
         _handleIwish();
-      } else if (state == LangingFocusMaker.mosques) {
-        _handleMosques();
       }
     }
   }
@@ -31,9 +29,5 @@ class IwishDeeplinkHandler extends _$IwishDeeplinkHandler {
     if (ref.read(layersControlsProvider).selectedType != LayerType.joy) {
       ref.read(layersControlsProvider.notifier).handleTap(LayerType.joy);
     }
-  }
-
-  void _handleMosques() {
-    // TODO: implement _handleMosques
   }
 }
