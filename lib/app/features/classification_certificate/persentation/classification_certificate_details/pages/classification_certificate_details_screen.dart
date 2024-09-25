@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/extensions/json_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_details/bloc/classification_certificate_details_state.dart';
@@ -8,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../data/model/details/details_request_model.dart';
 import '../bloc/classification_certificate_details_cubit.dart';
 import '../widgets/details_data_widget.dart';
-import '../widgets/title_value_widget.dart';
 
 class ClassificationCertificateDetailsScreen extends StatelessWidget {
   const ClassificationCertificateDetailsScreen({super.key});
@@ -69,14 +68,20 @@ class ClassificationCertificateDetailsScreen extends StatelessWidget {
                             ),
                           ),
 
-                          AttachedButtonWidget(state:state),
+                          AttachedButtonWidget(state: state),
                           ////////////////////////////////////////////////////
                           const SizedBox(height: 16),
                           state.classificationCertificateDetails
                                       .classificationType ==
                                   "Classification of Engineer"
                               ? ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    launchUrl(
+                                      Uri.parse(
+                                        "https://contracts.saudieng.sa/",
+                                      ),
+                                    );
+                                  },
                                   child: Text("request_contract".tr()),
                                 )
                               : const SizedBox.shrink(),

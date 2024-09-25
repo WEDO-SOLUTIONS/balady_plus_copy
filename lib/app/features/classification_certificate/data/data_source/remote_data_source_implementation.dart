@@ -303,7 +303,7 @@ class ClassificationCertificateRemoteDataSource
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
-        errorCode: error.response?.data?['data'] != null
+        errorCode: error.response?.statusCode != 500
             ? error.response!.data['data']['responseCode'].toString()
             : "-1",
       );

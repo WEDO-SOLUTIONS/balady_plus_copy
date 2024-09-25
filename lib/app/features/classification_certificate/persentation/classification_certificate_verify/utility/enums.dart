@@ -55,7 +55,7 @@ enum NormalSearchByType {
     title: "the_contractor_engineering_office",
     hintText: "enter_the_contractor_office_name",
     validatorMessage: "the_contractor_engineering_office_validator",
-    regex: r"[a-zA-Z\u0621-\u064A]{2,20}",
+    regex: r"[a-zA-Z\u0621-\u064A]{2,100}",
     keyboardType: TextInputType.text,
   ),
   byCRLICNumber(
