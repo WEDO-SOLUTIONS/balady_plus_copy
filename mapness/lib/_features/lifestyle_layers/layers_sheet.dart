@@ -20,6 +20,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   static const _duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
 
+  /// // Another one to check if the panel is shown and we don't pop it on small size of the sheet
   bool _isShown = false;
   static const _curve = Curves.easeIn;
 
