@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,11 +37,11 @@ class FeedbackImages extends StatelessWidget {
             children: [
               if (isAddImageButtonVisible)
                 _Button(onTap: () async {
-                  final permission = await Permission.photos.request();
-                  if (permission.isDenied || permission.isPermanentlyDenied) {
+                  if (await _isGalleryPermissionDenied()) {
                     await showPermissionDeniedDialog(context);
                     return;
                   }
+
                   final image = await _pickedImage();
                   if (image != null) {
                     onValueChange([...field.value ?? [], image]);
@@ -67,6 +68,22 @@ class FeedbackImages extends StatelessWidget {
   Future<XFile?> _pickedImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     return image;
+  }
+
+  Future<bool> _isGalleryPermissionDenied() async {
+    Permission? permission;
+
+    /// if why question, check [Permission.photos] docs
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt <= 32) {
+        permission = Permission.storage;
+      }
+    }
+    permission ??= Permission.photos;
+
+    final permissionStatus = await permission.request();
+    return permissionStatus.isDenied || permissionStatus.isPermanentlyDenied;
   }
 }
 
