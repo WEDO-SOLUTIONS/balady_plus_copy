@@ -18,10 +18,9 @@ class IwishDeeplinkHandler extends _$IwishDeeplinkHandler {
     state = LangingFocusMaker.values.firstWhereOrNull(
       (element) => element.name == uri.queryParameters[focusMarkerKey],
     );
-    if (state != null) {
-      if (state == LangingFocusMaker.iwish) {
-        _handleIwish();
-      }
+
+    if (state == LangingFocusMaker.iwish) {
+      _handleIwish();
     }
   }
 
