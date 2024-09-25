@@ -356,7 +356,7 @@ class ShareEta extends _$ShareEta {
       return;
     }
 
-    final baseUri = BaldayDeeplink.basePoiUri;
+    final baseUri = BaldayDeeplink.baseGeoSharingUri;
     query[BaldayDeeplink.tokenId] = tokenId;
 
     query[BaldayDeeplink.streamId] = streamId;
@@ -383,7 +383,7 @@ class ShareEta extends _$ShareEta {
       return;
     }
 
-    final baseUri = BaldayDeeplink.basePoiUri;
+    final baseUri = BaldayDeeplink.baseGeoSharingUri;
     query[BaldayDeeplink.tokenId] = tokenId;
 
     query[BaldayDeeplink.streamId] = streamId;
