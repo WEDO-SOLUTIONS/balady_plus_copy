@@ -18,9 +18,9 @@ class _SliderSpeedState extends ConsumerState<SliderSpeed> {
 
     return Slider(
       value: speed,
-      min: 30,
+      min: 5,
       max: 230,
-      divisions: 10,
+      divisions: 25,
       label: speed.toString(),
       onChanged: (val) {
         setState(() {
