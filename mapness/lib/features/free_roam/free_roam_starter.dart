@@ -90,6 +90,11 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
     _isShown = true;
     _subscription?.close();
   }
+
+  void reset() {
+    _isShown = false;
+    ref.invalidateSelf();
+  }
 }
 
 final freeRoamStarterProvider = _freeRoamStarterProvider;
