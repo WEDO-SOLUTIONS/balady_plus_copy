@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
@@ -31,6 +30,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:urbi_analytics/logger.dart';
 
 part 'share_eta_provider.g.dart';
 
@@ -124,7 +124,7 @@ class ShareEta extends _$ShareEta {
                 ),
               );
             } catch (e) {
-              debugPrint(e.toString());
+              log(e.toString());
             }
           } else {
             // If location lost, set error status to 4002
@@ -267,7 +267,7 @@ class ShareEta extends _$ShareEta {
       EtaStreamStorage().setDurationInMinutes(durationInMinutes);
       await etaService.startEtaStream(payload);
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.share);
     }
@@ -290,7 +290,7 @@ class ShareEta extends _$ShareEta {
 
       await etaService.startEtaStream(payload);
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.share);
     }
@@ -324,7 +324,7 @@ class ShareEta extends _$ShareEta {
       await EtaWebsocket().stop();
       await etaService.stopEtaStream(tokenId, xStreamData);
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
     } finally {
       EtaWebsocket().removeConnectionLostListener(_onErrorStatus);
     }
@@ -343,7 +343,7 @@ class ShareEta extends _$ShareEta {
       );
       ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.share);
     }

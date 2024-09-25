@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
+import 'package:urbi_analytics/logger.dart' as analitics;
 
 typedef ConnectionStatus = void Function({bool status});
 typedef EtaInfoCallback<T> = void Function(EtaInfoModel<T> etaInfo);
@@ -141,7 +141,7 @@ class EtaWebsocket {
         await _reconnect();
         return;
       } catch (e) {
-        debugPrint('Reconnecting attempt $i failed. Error: $e');
+        analitics.log('Reconnecting attempt $i failed. Error: $e');
       }
       if (i == _reconnectingAttempts - 1) {
         throw Exception('Failed to reconnect');
@@ -244,13 +244,13 @@ class EtaWebsocket {
               return;
             }
           } catch (e) {
-            debugPrint(e.toString());
+            analitics.log(e.toString());
           }
         },
 
         // First iteration we don't need to handle errors
         onError: (error) {
-          debugPrint(error.toString());
+          analitics.log(e.toString());
           return _stop();
         },
       );
@@ -266,7 +266,7 @@ class EtaWebsocket {
       await _subscription?.cancel();
       await _ws?.close();
     } catch (e) {
-      debugPrint(e.toString());
+      analitics.log(e.toString());
     } finally {
       _ws = null;
       _subscription = null;
