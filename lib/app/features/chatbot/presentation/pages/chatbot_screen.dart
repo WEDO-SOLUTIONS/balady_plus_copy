@@ -10,8 +10,12 @@ import 'package:balady_plus/app/features/chatbot/presentation/widgets/app_bar_ch
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/chat_bot_list.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/send_mseeage_card_chat_bot.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../widgets/chat_history.dart';
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({Key? key}) : super(key: key);
@@ -39,6 +43,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     return ChangeNotifierProvider(
       create: (context) => provider,
       child: Scaffold(
+        drawer: ChatHistory(),
         body: Column(
           children: [
             const AppBarChatBot(),
@@ -49,10 +54,11 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                   return isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : provider.isEnabled
-                          ? const Column(
+                          ?  Column(
                               children: [
                                 ChatBotList(),
                                 SendMessageCardChatBot(),
+                                
                               ],
                             )
                           : Padding(

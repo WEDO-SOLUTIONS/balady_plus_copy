@@ -447,6 +447,9 @@ class IconPath {
   static const chat_bot_like_icon = '${_svgIconPath}chat-bot-like$_svg';
   static const chat_bot_dislike_icon = '${_svgIconPath}chat-bot-dislike$_svg';
   static const chat_bot_copy_icon = '${_svgIconPath}chat-bot-copy$_svg';
+  static const chat_bot_side_menu_icon = '${_svgIconPath}sidemenu$_svg';
+
+
 
 
 

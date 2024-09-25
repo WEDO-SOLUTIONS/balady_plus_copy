@@ -151,9 +151,6 @@ class MessageChatBotProvider extends BaseViewModel {
     }
   }
 
-
-
-
   Future sendFeedBack(String messID,bool like) async {
     isLoading = true;
 
@@ -201,4 +198,7 @@ class MessageChatBotProvider extends BaseViewModel {
     notifyListeners();
 
   }
+
+
+
 }

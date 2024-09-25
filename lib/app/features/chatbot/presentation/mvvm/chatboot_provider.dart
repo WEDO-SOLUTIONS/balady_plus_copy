@@ -13,6 +13,8 @@ import 'package:uuid/uuid.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../../data/models/session_data.dart';
+
 class ChatBotProvider extends BaseViewModel {
   final SendQuestionMessageChatBot repository;
   final int sectionId;
@@ -22,6 +24,7 @@ class ChatBotProvider extends BaseViewModel {
   ValueNotifier<List<MessageChatBotProvider>> chatBotMessage =
   ValueNotifier<List<MessageChatBotProvider>>([]);
 
+  List<SessionData> lstOldSession=[];
   bool isEnabled = false;
   bool isLoadingEnabled = false;
 
@@ -119,5 +122,79 @@ class ChatBotProvider extends BaseViewModel {
     return;
   }
 
+  Future getSesionHistory(String id) async {
+    if(id.isEmpty)
+      return;
+    isLoading = true;
+    //notifyListeners();
+    try {
+
+      Either<Failure, dynamic> response;
+      response = await repository.repository.getSesionHistory(id: id);
+      response.fold(
+            (error) {
+          isLoading = false;
+          notifyListeners();
+        },
+            (res) {
+
+          isLoading = false;
+          lstOldSession = res;
+        //  lstOldSession += res;
+          notifyListeners();
+
+        },
+      );
+
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+
+    }
+    isLoading = false;
+    notifyListeners();
+
+  }
+
+
+  Future getSesionDetails(String id) async {
+    isLoading = true;
+
+    try {
+
+      Either<Failure, dynamic> response;
+      response = await repository.repository.getSessionDetails(id: id);
+      response.fold(
+            (error) {
+          isLoading = false;
+          notifyListeners();
+        },
+            (res) {
+
+          isLoading = false;
+          notifyListeners();
+
+        },
+      );
+
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+
+    }
+    isLoading = false;
+    notifyListeners();
+
+  }
 
 }

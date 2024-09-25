@@ -4385,5 +4385,6 @@
   "error_biometrics":"Sorry, there is an issue with face or fingerprint registration. Please try again later. You can log in using the quick PIN or username and password.",
   "smart_advisor": "Smart Advisor",
   "auth_pacakge_end": "end",
-  "answer_copy_to_Clipboard": "Copied Successfully"
+  "answer_copy_to_Clipboard": "Copied Successfully",
+  "history": "Chat History"
 }

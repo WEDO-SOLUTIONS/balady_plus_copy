@@ -618,6 +618,12 @@ class ApiUrl {
 
 
   static const sendMessagechatBotFeedback = '/v1/chatbot-services/assign-feedback';
+  static const getChatgptOldSession = '/v1/chatbot-services/old-sessions';
+  static const getChatgptSessionDetails = '/v1/chatbot-services/view-session';
+
+
+
+
 
 
 }

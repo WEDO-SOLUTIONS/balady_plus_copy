@@ -8,6 +8,9 @@ import 'package:balady_plus/app/features/chatbot/domain/repositories/chat_bot_re
 import 'package:dartz/dartz.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../models/session_data.dart';
+import '../models/session_details.dart';
+
 ///////////////////////////////////////////////////
 
 class ChatBotRepositoryImplementation implements ChatBotRepository {
@@ -111,16 +114,45 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
     }
   }
 
+  @override
+  Future<Either<Failure,  List<SessionData>>> getSesionHistory({required String id}) async {
+
+    try {
+      final data = await remoteDataSource.getSessionHistory( id:id );
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+
+  @override
+  Future<Either<Failure, SessionDetails>> getSessionDetails(
+      {required String id}) async {
+
+    try {
+      final data = await remoteDataSource.getSessionDetails( id:id );
+      return Right(data!);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 
 
 
 
-// void _sendEvent(DateTime dateSendData,Map<String,dynamic> dataEvent) {
-//   Duration duration = DateTime.now().difference(dateSendData);
-//   dataEvent["Answer_End_Duration"] = duration.inMilliseconds;
-//   CommonFunctions.sendUXCamEventWithProperties(
-//     UXCamEvents.sendQuestionChatBot,
-//     dataEvent,
-//   );
-// }
 }
