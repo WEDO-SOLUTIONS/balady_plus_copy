@@ -40,8 +40,18 @@ class FeedbackTextEntity extends FeedbackBaseEntity<String> {
   }
 
   @override
-  bool get isValid =>
-      (!isRequired && (value == null || value?.isEmpty == true)) || (value != null && isStringValid(value!));
+  bool get isValid {
+    final valueEmptyOrNull = value == null || value!.isEmpty;
+
+    if (!isRequired && valueEmptyOrNull) {
+      return true;
+    }
+    if (valueEmptyOrNull) {
+      return false;
+    }
+
+    return isStringValid(value!);
+  }
 
   @override
   FeedbackTextEntity updatedValue(String? value) => FeedbackTextEntity(
