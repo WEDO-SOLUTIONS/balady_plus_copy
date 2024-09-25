@@ -1,9 +1,9 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/widgets/lifestyle_layers/layers_sheet_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_details_content.dart';
 
@@ -16,6 +16,7 @@ class LayersSheet extends ConsumerStatefulWidget {
 
 class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
   static const _layersPanelMaxHeight = .5;
+  static const _layersHiddenHeight = 0.05;
   static const _parkingPanelMaxHeight = .35;
   static const duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
@@ -25,11 +26,15 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   late final DraggableScrollableController _layersController;
   late final DraggableScrollableController _parkingLotsController;
 
+  // Another one to check if the panel is shown and we don't pop it on small size of the sheet
+  bool _isShown = false;
+
   @override
   void initState() {
     super.initState();
 
     _layersController = DraggableScrollableController();
+    _layersController.addListener(_layersControllerListener);
     _parkingLotsController = DraggableScrollableController();
     WidgetsBinding.instance.addPostFrameCallback((_) => _showBottomSheet());
   }
@@ -153,13 +158,22 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   }
 
   void _hideLayersPanel() {
-    _layersController
-        .animateTo(
-          .0,
-          duration: _showHideDuration,
-          curve: curve,
-        )
-        .then((_) => context.pop());
+    _layersController.animateTo(
+      .0,
+      duration: _showHideDuration,
+      curve: curve,
+    );
+  }
+
+  // If the main layer [_layersController] is in hidden position then close the panel and make pop
+  void _layersControllerListener() {
+    if (_isShown && _layersController.size <= _layersHiddenHeight) {
+      final goRoute = ref.read(goRouterProvider);
+
+      if (goRoute.canPop()) {
+        goRoute.pop();
+      }
+    }
   }
 
   void _showLayersPanel() {
@@ -203,10 +217,14 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   void _showBottomSheet() {
     ref.read(layersControlsProvider.notifier).initialize();
 
-    _layersController.animateTo(
+    _layersController
+        .animateTo(
       _layersPanelMaxHeight,
       duration: _showHideDuration,
       curve: curve,
-    );
+    )
+        .then((_) {
+      _isShown = true;
+    });
   }
 }
