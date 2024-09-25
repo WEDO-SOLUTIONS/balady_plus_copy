@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../mvvm/chatboot_provider.dart';
@@ -20,16 +21,14 @@ class ChatHistoryBody extends  State<ChatHistory>  {
 
   @override
   void initState() {
-    // provider.getSesionHistory("1123456789");
-    //provider.getSesionDetails("9001d2c1-522b-4eb8-b1c3-4040b1291ab4");
    Provider.of<ChatBotProvider>(context, listen: false).getSesionHistory( CommonProperties.userInfo?.idNo??"");
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext cont) {
 
-    ChatBotProvider model =
+    ChatBotProvider provider =
     Provider.of<ChatBotProvider>(context, listen: true);
 
     return Drawer(
@@ -97,7 +96,7 @@ class ChatHistoryBody extends  State<ChatHistory>  {
           Expanded(
             child: ListView.separated(
                 padding: EdgeInsets.only(bottom: 50),
-                itemCount: model.lstOldSession.length,
+                itemCount: provider.lstOldSession.length,
                 shrinkWrap: true,
             
                 separatorBuilder: (context, index)
@@ -111,11 +110,13 @@ class ChatHistoryBody extends  State<ChatHistory>  {
                 itemBuilder: (ctx, index) {
             
                     return  ListTile(
-                      title: Text(model.lstOldSession[index].summary??"",maxLines: 1,),
+                      title: Text(provider.lstOldSession[index].summary??"",maxLines: 1,),
                       onTap: () => {
-            
-            
-                        Navigator.of(context).pop()
+
+                        provider.getSesionDetails(provider.lstOldSession[index].sessionId!),
+                      //  Navigator.of(context).pop(),
+
+
             
             
                       },

@@ -23,7 +23,9 @@ class MessageChatBotProvider extends BaseViewModel {
     required this.message,
     required this.scrollController,
   }) {
-    sendQuestion(message.value.question);
+    if(message.value.answer.isEmpty) {
+      sendQuestion(message.value.question);
+    }
   }
 
   Future sendQuestion(String question) async {

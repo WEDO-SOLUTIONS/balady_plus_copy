@@ -15,6 +15,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../data/models/session_details.dart';
 import '../widgets/chat_history.dart';
 
 class ChatBotScreen extends StatefulWidget {
@@ -25,12 +26,7 @@ class ChatBotScreen extends StatefulWidget {
 }
 
 class _ChatBotScreenState extends State<ChatBotScreen> {
-  ChatBotProvider provider = ChatBotProvider(
-    sl(),
-    // Make The Section id to send with all question in the Section and send to
-    // rating API switch the request id
-    sectionId: DateTime.now().millisecondsSinceEpoch,
-  );
+  ChatBotProvider provider = ChatBotProvider(sl(), sectionId: DateTime.now().millisecondsSinceEpoch,);
 
   @override
   void initState() {
@@ -40,6 +36,13 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
+    SessionDetails? intailData = ModalRoute.of(context)!.settings.arguments != null? ModalRoute.of(context)!.settings.arguments as SessionDetails:null;
+    if(intailData != null) {
+      provider.intaiteChat(intailData);
+    }
+
     return ChangeNotifierProvider(
       create: (context) => provider,
       child: Scaffold(

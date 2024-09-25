@@ -57,35 +57,6 @@ class MessageBotBubble extends StatelessWidget {
                         body: Wrap(
                           alignment: WrapAlignment.end,
                           children: [
-                            // ValueListenableBuilder<ChatBotMessageEntities>(
-                            //   valueListenable: messageProvide.message,
-                            //   builder: (_, listMessages, child) {
-                            //     return Wrap(
-                            //       children: messageProvide.message.value.answer
-                            //           .map((message) => AnimatedTextKit(
-                            //                 // key: Key(message),
-                            //                 animatedTexts: [
-                            //                   TypewriterAnimatedText(
-                            //                     message,
-                            //                     textStyle: AppStyle
-                            //                         .textFieldTitleTextStyle
-                            //                         .copyWith(
-                            //                       color: AppColor.blackModern700Light,
-                            //                       fontFamily: GeneralKey.appFontType,
-                            //                     ),
-                            //                     speed:
-                            //                         const Duration(milliseconds: 50),
-                            //                   ),
-                            //                 ],
-                            //                 pause: const Duration(milliseconds: 100),
-                            //                 repeatForever: false,
-                            //                 isRepeatingAnimation: false,
-                            //                 totalRepeatCount: 2,
-                            //               ))
-                            //           .toList(),
-                            //     );
-                            //   },
-                            // ),
                             ValueListenableBuilder<
                                 ChatBotMessageEntities>(
                               valueListenable: messageProvide.message,

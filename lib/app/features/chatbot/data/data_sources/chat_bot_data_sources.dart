@@ -13,6 +13,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../models/chat_refresh_session.dart';
 import '../models/session_data.dart';
 import '../models/session_details.dart';
 
@@ -26,6 +27,7 @@ abstract class ChatBotDataSources {
 
   Future<dynamic> getSessionHistory({required String id});
   Future< SessionDetails?> getSessionDetails({required String id});
+  Future< ChatRefreshSession?> refreshSession({required String id});
 
 }
 
@@ -381,6 +383,62 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         );
       }
     }
+  }
+
+  @override
+  Future<ChatRefreshSession?> refreshSession({required String id}) async {
+
+    Response? response;
+    try {
+      response = await webService.dio.get("${ApiUrl.refreshChatSession}/${id}");
+
+
+      var data = response.data["data"];
+
+      ChatRefreshSession? parsedResult = data != null
+          ?  ChatRefreshSession.fromJson(data)
+          : null;
+
+
+
+      return parsedResult ;
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+
   }
 
 

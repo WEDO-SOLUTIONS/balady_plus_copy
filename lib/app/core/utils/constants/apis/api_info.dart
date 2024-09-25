@@ -621,6 +621,11 @@ class ApiUrl {
   static const getChatgptOldSession = '/v1/chatbot-services/old-sessions';
   static const getChatgptSessionDetails = '/v1/chatbot-services/view-session';
 
+  static const refreshChatSession = '/v1/chatbot-services/load-session';
+
+
+
+
 
 
 

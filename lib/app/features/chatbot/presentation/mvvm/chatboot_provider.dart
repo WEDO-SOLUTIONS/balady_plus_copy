@@ -13,7 +13,11 @@ import 'package:uuid/uuid.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/route_names.dart';
+import '../../data/models/chat_refresh_session.dart';
 import '../../data/models/session_data.dart';
+import '../../data/models/session_details.dart';
 
 class ChatBotProvider extends BaseViewModel {
   final SendQuestionMessageChatBot repository;
@@ -25,66 +29,63 @@ class ChatBotProvider extends BaseViewModel {
   ValueNotifier<List<MessageChatBotProvider>>([]);
 
   List<SessionData> lstOldSession=[];
+
+  List<History> lstHistory =[];
   bool isEnabled = false;
   bool isLoadingEnabled = false;
 
+  bool isOpenedFromHistory = false;
+
+  String? selectedOldSession;
   ChatBotProvider(this.repository, {required this.sectionId}) {
     chatBotIsEnabled();
   }
 
   Future sendQuestion(String question) async {
-    isLoading = true;
-    notifyListeners();
-    try {
-      MessageChatBotProvider provider = MessageChatBotProvider(
-        repository: repository,
-        message: ValueNotifier<ChatBotMessageEntities>(
-          ChatBotMessageEntities(
-            question: question,
-            answer: '',
-            haveError: false,
-            sectionId: sectionId,
+
+    if(isOpenedFromHistory==true && selectedOldSession != null)
+      {
+        refershSesion(selectedOldSession!,question);
+      }
+
+    else {
+      isLoading = true;
+      notifyListeners();
+      try {
+        MessageChatBotProvider provider = MessageChatBotProvider(
+          repository: repository,
+          message: ValueNotifier<ChatBotMessageEntities>(
+            ChatBotMessageEntities(
+              question: question,
+              answer: '',
+              haveError: false,
+              sectionId: sectionId,
+            ),
           ),
-        ),
-        scrollController: scrollController,
-      );
+          scrollController: scrollController,
+        );
 
-      chatBotMessage.value.add(provider);
-      provider.addListener(() {
-        if (!provider.isLoading) {
-          isLoading = false;
-          notifyListeners();
-        }
-
-        /* if (scrollController.position.maxScrollExtent >
-            scrollController.offset) {
-          scrollController.animateTo(
-            scrollController.position.maxScrollExtent + 100,
-            curve: Curves.linear,
-            duration: const Duration(milliseconds: 600),
-          );
-        }*/
-      });
+        chatBotMessage.value.add(provider);
+        provider.addListener(() {
+          if (!provider.isLoading) {
+            isLoading = false;
+            notifyListeners();
+          }
+        });
+        return chatBotMessage;
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+      isLoading = false;
+      notifyListeners();
       return chatBotMessage;
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      // setMessage(
-      //   ChatBotMessageModel(
-      //     message: error.toString(),
-      //     isResponse: true,
-      //     haveError: true,
-      //   ),
-      // );
     }
-    isLoading = false;
-    notifyListeners();
-    return chatBotMessage;
   }
 
   Future chatBotIsEnabled() async {
@@ -122,6 +123,55 @@ class ChatBotProvider extends BaseViewModel {
     return;
   }
 
+  Future refershSesion(String id,String question) async {
+    if(id.isEmpty)
+      return;
+    isLoading = true;
+    notifyListeners();
+    try {
+
+      Either<Failure, dynamic> response;
+      response = await repository.repository.refreshSession(id: id);
+      response.fold(
+            (error) {
+          isLoading = false;
+          isOpenedFromHistory = false;
+          notifyListeners();
+        },
+            (res) {
+
+              if((res as ChatRefreshSession).responseId != null &&  res.responseId!.isNotEmpty)
+                {
+                  isOpenedFromHistory = false;
+                  sharedPrefs.setChatbotSessionId(res.responseId!);
+                  isLoading = false;
+                  notifyListeners();
+
+                  sendQuestion(question);
+                }
+
+
+
+        },
+      );
+
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+
+    }
+    isLoading = false;
+    notifyListeners();
+
+  }
+
+
+
   Future getSesionHistory(String id) async {
     if(id.isEmpty)
       return;
@@ -134,6 +184,7 @@ class ChatBotProvider extends BaseViewModel {
       response.fold(
             (error) {
           isLoading = false;
+          isOpenedFromHistory = false;
           notifyListeners();
         },
             (res) {
@@ -162,13 +213,15 @@ class ChatBotProvider extends BaseViewModel {
   }
 
 
-  Future getSesionDetails(String id) async {
+  Future getSesionDetails(String selectedSessionID) async {
+    if(selectedSessionID == null)
+      return;
     isLoading = true;
-
+    notifyListeners();
     try {
 
       Either<Failure, dynamic> response;
-      response = await repository.repository.getSessionDetails(id: id);
+      response = await repository.repository.getSessionDetails(id: selectedSessionID!);
       response.fold(
             (error) {
           isLoading = false;
@@ -176,8 +229,14 @@ class ChatBotProvider extends BaseViewModel {
         },
             (res) {
 
-          isLoading = false;
-          notifyListeners();
+              isLoading = false;
+              notifyListeners();
+              if(res != null)
+                {
+                  NavigationService.navigatorKey.currentState?.pushReplacementNamed(RouteName.chatbot,arguments: res);
+
+                }
+
 
         },
       );
@@ -194,6 +253,48 @@ class ChatBotProvider extends BaseViewModel {
     }
     isLoading = false;
     notifyListeners();
+
+  }
+
+
+  void intaiteChat(SessionDetails? res)
+  {
+
+    isOpenedFromHistory = true;
+    if(res != null && (res ).history != null)
+    {
+      selectedOldSession = res.sessionId;
+
+      chatBotMessage.value.clear();
+      lstHistory = (res as SessionDetails).history!;
+
+      double leng = lstHistory.length / 2;
+
+      for (var index = 0; index < leng;) {
+
+        String question =lstHistory[index].content!;
+        String answer = lstHistory[index+1].content!.replaceAll("\\n", "\n");
+        MessageChatBotProvider provider = MessageChatBotProvider(
+          repository: repository,
+          message: ValueNotifier<ChatBotMessageEntities>(
+            ChatBotMessageEntities(
+              question:question ,
+              answer: answer,
+              haveError: false,
+              sectionId: sectionId,
+
+            ),
+          ),
+          scrollController: scrollController,
+        );
+
+        chatBotMessage.value.add(provider);
+        index= index+2;
+
+      }
+
+
+    }
 
   }
 
