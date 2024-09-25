@@ -12,9 +12,11 @@ import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_bottom_sheet_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_sheet_sizes.dart';
+import 'package:mapness/_features/poi_card/domain/poi_card_state_mapper.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
+import 'package:mapness/_features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/_features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
@@ -22,14 +24,15 @@ import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.da
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/poi_card_footer.dart';
-import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/info_widget.dart';
-import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
+import 'package:mapness/_features/poi_card/widgets/photos_header/poi_photos_header.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_background.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_card_header/header.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls_v2.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_loading_sheet.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
-import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
@@ -37,15 +40,14 @@ import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
-import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
-import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 
@@ -98,16 +100,22 @@ class _Content extends ConsumerStatefulWidget {
 }
 
 class _ContentState extends ConsumerState<_Content> with SingleTickerProviderStateMixin {
-  final _expansion = ValueNotifier(Expansion.middle);
+  final _paddingHeightWhenPhotosShown = 100.0;
+
+  late final _bottomSheetAspectRatio = ValueNotifier<double>(0.0);
+  late final _bottomSheetHeight = ValueNotifier<double>(0.0);
+  late final _hideControls = ValueNotifier<bool>(true);
 
   late final TabController _tabController;
   late final ValueNotifier<PoiTabsType> _tabType;
 
-  late final DgisBottomSheetController _bottomSheetController;
-
-  ScrollController? _scrollController;
-
-  Expansion? _lastUsedExpansion;
+  late final _bottomSheetController = StatefulBottomSheetController(
+    behavior: AspectRatioSnappingBehavior(
+      aspectRatios: PoiBottomSheetConfig.aspectRatios,
+    ),
+    stateMapper: const PoiCardStateMapper(),
+    initialState: PoiCardBottomSheetState.halfOpen,
+  );
 
   @override
   void didUpdateWidget(covariant _Content oldWidget) {
@@ -119,6 +127,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
   @override
   void initState() {
     super.initState();
+
     _tabController = TabController(
       length: 3,
       vsync: this,
@@ -128,45 +137,40 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     _tabController.addListener(
       () {
         if (_tabController.indexIsChanging) {
-          if (_scrollController?.hasClients == true) {
-            _scrollController?.jumpTo(0);
-          }
-
           switch (_tabController.index) {
             case 0:
               _tabType.value = PoiTabsType.info;
-              if (_lastUsedExpansion != null) {
-                _expansion.value = _lastUsedExpansion!;
-              }
             case 1:
               _tabType.value = PoiTabsType.photos;
-
-              _expansion.value = Expansion.fullHidePhoto;
+              _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
             case 2:
               _tabType.value = PoiTabsType.inBuilding;
-
-              _expansion.value = Expansion.fullHidePhoto;
+              _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen);
           }
         }
       },
     );
 
-    _bottomSheetController = DgisBottomSheetController();
+    _bottomSheetController.addListener(() {
+      _bottomSheetHeight.value = _bottomSheetController.sheetHeight;
+      _bottomSheetAspectRatio.value = _bottomSheetController.aspectRatio;
+      _hideControls.value = _bottomSheetAspectRatio.value < .35;
+    });
+
+    Future.delayed(const Duration(milliseconds: 250), () {
+      ref.read(cameraPaddingProvider.notifier).resetPadding();
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     _tabType.dispose();
-    _bottomSheetController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final sizeOfScreen = MediaQuery.of(context).size;
-    final sheetSizes = PoiSheetSizes.poiCard(sizeOfScreen: sizeOfScreen);
-
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
       cameraConfig: widget.cameraConfig,
@@ -186,15 +190,9 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     /// loading progress indicator
     if (state.isLoading) {
-      return Align(
+      return const Align(
         alignment: Alignment.bottomCenter,
-        child: PoiLoadingSheet(
-          onClose: () {
-            ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-            ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-            context.pop();
-          },
-        ),
+        child: PoiLoadingSheet(),
       );
     }
 
@@ -232,123 +230,136 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     }
 
     /// has value
+    ref.listen(
+      poiPhotoProvider(objectId),
+      (previous, next) {
+        if (next.hasValue == true && next.value?.items.isNotEmpty == true) {
+          return;
+        }
+      },
+    );
+
     final name = data.buildingInfo.buildingName;
     if (name != null) {
       data.title = name;
     }
-
-    final language = ref.watch(appLanguageProvider);
-    final photos = ref.watch(poiPhotoProvider(objectId));
     final poiActions = ref.read(poiCardActionsProvider.notifier);
-    final address = data.address;
 
-    return BackdropFilter(
-      filter: switch (_expansion.value) {
-        Expansion.expanded || Expansion.fullHidePhoto => ColorFilter.mode(Colors.black.withAlpha(90), BlendMode.screen),
-        _ => const ColorFilter.mode(Colors.transparent, BlendMode.screen),
-      },
-      child: Directionality(
-        textDirection: switch (language) {
-          Language.arabic => TextDirection.rtl,
-          Language.english => TextDirection.ltr,
-        },
-        child: DgisBottomSheet(
-          key: const Key('POI CARD SHEET KEY'),
-          showBarrier: false,
-          availableExpansions: const {
-            Expansion.collapsed,
-            Expansion.expanded,
-            Expansion.hidden,
-          },
-          initialExpansion: Expansion.collapsed,
-          collapsedHeight:
-              sheetSizes.collapsedHeight + (address != null ? 20 : 0) + (photos.hasValue == true ? 100.0 : .0),
-          hiddenHeight: sheetSizes.hiddenHeight,
-          controller: _bottomSheetController,
-          mapControlsBuilder: (context, bottomSheetSize, biggestHeight, smallestHeight) => PoiCardMapControls(
-            bottomSheetSize: bottomSheetSize,
-            biggestHeight: biggestHeight,
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: PoiBackground(
+            bottomSheetAspectRatio: _bottomSheetAspectRatio,
           ),
-          onExpansionChanged: (expansion, {byUser = false}) => setState(() {
-            _expansion.value = expansion;
-            _lastUsedExpansion = expansion;
-          }),
-          scrollHeader: PoiPhotosHeader(
-            objectId: objectId,
-            expansion: _expansion,
-          ),
-          actions: ValueListenableBuilder(
-            valueListenable: _expansion,
-            builder: (_, expansion, child) => expansion != Expansion.hidden ? child! : const SizedBox.shrink(),
-            child: PoiCardFooter(
-              data: data,
-              share: () {
-                Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
-                    group: MetricsConstants.poiTag,
-                    action: MetricAction.tap.toString(),
-                    props: {
-                      'object_id': data.id?.objectId,
-                      'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
-                    });
-
-                poiActions.share(
-                  objectId: objectId,
-                  markerCoords: widget.closestPoint,
-                );
-              },
-              callPhone: () {
-                Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
-                    group: MetricsConstants.poiTag,
-                    action: MetricAction.tap.toString(),
-                    props: {
-                      'objectId': objectId,
-                    });
-
-                final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
-                      (element) => element.type == ContactsInfoType.phone,
+        ),
+        Positioned(
+          ///Retrieve padding for map controls when photo is shown
+          ///also map controls has own padding that calculates from bottomSheetHeight
+          child: Consumer(
+            builder: (context, ref, child) {
+              final photos = ref.watch(poiPhotoProvider(objectId));
+              final hasPhotos = photos.hasValue && photos.requireValue.items.isNotEmpty;
+              var padding = hasPhotos ? _paddingHeightWhenPhotosShown : 0.0;
+              return ValueListenableBuilder(
+                  valueListenable: _bottomSheetAspectRatio,
+                  builder: (_, aspectRatio, __) {
+                    final roundedRatio = aspectRatio.roundDecimal(1);
+                    if (roundedRatio < PoiBottomSheetConfig.lowerAspectRatio) {
+                      padding = 0.0;
+                    }
+                    if (roundedRatio >= PoiBottomSheetConfig.lowerAspectRatio && hasPhotos) {
+                      padding = _paddingHeightWhenPhotosShown;
+                    }
+                    return AnimatedPadding(
+                      duration: const Duration(milliseconds: 150),
+                      padding: EdgeInsets.only(
+                        bottom: padding,
+                        // bottom: 0.0,
+                      ),
+                      child: child,
                     );
-                if (phoneNumber?.value != null) {
-                  poiActions.callPhone(phoneNumber!.value!);
-                }
-              },
-              onEntranceTap: () => poiActions.toggleEntrances(
-                data,
-                () => _bottomSheetController.animateTo(Expansion.collapsed),
-                widget.closestPoint,
-              ),
-              onTapCar: () {
-                final mapSetting = MapObjectManagerSettings.search();
-                ref
-                    .read(
-                      mapObjectManagerProvider(
-                        named: mapSetting.name,
-                        layerId: mapSetting.layerId,
-                      ).notifier,
-                    )
-                    .setMapObjectManagerIsVisible(isVisible: false);
-
-                _openRoutingRoutes(
-                  context,
-                  ref,
-                  data,
-                  RouteSearchPoint(
-                    coordinates: data.markerPosition!.toGeoPointMessage(),
-                    dgisObjectId: data.id!,
-                  ),
-                );
-              },
-              onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
+                  });
+            },
+            child: PoiCardMapControlsV2(
+              bottomSheetHeight: _bottomSheetHeight,
+              hideControls: _hideControls,
             ),
           ),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
-          scrollableBody: (context, controller) {
-            _scrollController = controller;
-            return DgisBottomSheetScrollableContent(
-              controller: _scrollController,
+        ),
+        Directionality(
+          textDirection: Directionality.of(context),
+          child: SafeArea(
+            bottom: false,
+            child: StatefulBottomSheet(
+              animateOpening: false,
+              key: const Key('POI CARD SHEET KEY'),
+              scrollController: _bottomSheetController,
+              topHeader: PoiPhotosHeader(
+                objectId: objectId,
+                aspectRatio: _bottomSheetAspectRatio,
+              ),
+              footer: PoiCardFooter(
+                data: data,
+                share: () {
+                  Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
+                      group: MetricsConstants.poiTag,
+                      action: MetricAction.tap.toString(),
+                      props: {
+                        'object_id': data.id?.objectId,
+                        'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                      });
+
+                  poiActions.share(
+                    objectId: objectId,
+                    markerCoords: widget.closestPoint,
+                  );
+                },
+                callPhone: () {
+                  Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
+                      group: MetricsConstants.poiTag,
+                      action: MetricAction.tap.toString(),
+                      props: {
+                        'objectId': objectId,
+                      });
+
+                  final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
+                        (element) => element.type == ContactsInfoType.phone,
+                      );
+                  if (phoneNumber?.value != null) {
+                    poiActions.callPhone(phoneNumber!.value!);
+                  }
+                },
+                onEntranceTap: () => poiActions.toggleEntrances(
+                  data,
+                  () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                  widget.closestPoint,
+                ),
+                onTapCar: () {
+                  final mapSetting = MapObjectManagerSettings.search();
+                  ref
+                      .read(
+                        mapObjectManagerProvider(
+                          named: mapSetting.name,
+                          layerId: mapSetting.layerId,
+                        ).notifier,
+                      )
+                      .setMapObjectManagerIsVisible(isVisible: false);
+
+                  _openRoutingRoutes(
+                    context,
+                    ref,
+                    data,
+                    RouteSearchPoint(
+                      coordinates: data.markerPosition!.toGeoPointMessage(),
+                      dgisObjectId: data.id!,
+                    ),
+                  );
+                },
+                onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
+              ),
               header: PoiHeader(
                 poiCardState: poiCardState,
                 tabController: _tabController,
-                expansionState: _expansion,
                 data: data,
                 onTapClose: () {
                   Metrics.logEventAdvanced(
@@ -362,8 +373,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                   context.pop();
                 },
               ),
-              bodyPadding: const EdgeInsets.all(Spacing.$4x),
-              body: [
+              content: [
                 ValueListenableBuilder(
                   valueListenable: _tabType,
                   builder: (context, tabType, _) => AnimatedSwitcher(
@@ -374,7 +384,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                           qrTradeLicense: poiCardState?.qrTradeLicense,
                           onEntrancesTap: () => poiActions.toggleEntrances(
                             data,
-                            () => _bottomSheetController.animateTo(Expansion.collapsed),
+                            () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
                             widget.closestPoint,
                           ),
                         ),
@@ -388,10 +398,10 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
                   ),
                 ),
               ],
-            );
-          },
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
