@@ -91,7 +91,19 @@ class StoriesRoute extends GoRouteData {
       extra: args,
     );
     if (index != null && context.mounted) {
-      StatefulNavigationShell.maybeOf(context)?.goBranch(index);
+      /// TODO(scroollocker): We need to rewrite this logic of handling bottom bar navigation
+      /// goBranch is not working properly if route was not opened earlier
+      const bottomBarLocations = <int, String>{
+        0: '/explore',
+        1: '/routing',
+        2: '/services',
+        3: '/profile',
+      };
+
+      if (bottomBarLocations.containsKey(index)) {
+        context.go(bottomBarLocations[index]!);
+        return;
+      }
     }
   }
 
