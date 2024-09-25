@@ -329,7 +329,6 @@ class AdvancedSearchWidget extends StatelessWidget {
                 ),
               ),
             ),
-            validator: (text) => (text?.isNotEmpty ?? true) ? "" : null,
           ),
         ),
         const SizedBox(height: 12),
