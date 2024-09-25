@@ -101,6 +101,12 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
               _showBroadcastExpired(rootNavigatorKey.currentContext!);
             });
           });
+        } else if (code == null) {
+          if (_etaExpiredTimer != null) {
+            _etaExpiredTimer?.cancel();
+            _etaExpiredTimer = null;
+            ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
+          }
         }
       });
 
