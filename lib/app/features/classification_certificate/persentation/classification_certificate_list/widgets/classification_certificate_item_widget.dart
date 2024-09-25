@@ -27,6 +27,8 @@ class ClassificationCertificateItemWidget extends StatelessWidget {
       'dd/MM/yyyy',
       "locale".tr(),
     ).format(parsedDate);
+    Color color = getColorByClassificationGrade(
+        classificationCertificate.classificationGrade);
     return InkWell(
       onTap: () {
         Navigator.of(context).pushNamed(
@@ -46,26 +48,25 @@ class ClassificationCertificateItemWidget extends StatelessWidget {
               Row(
                 children: [
                   SvgPicture.asset(IconPath.newOfficeIcon),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   Flexible(
                     fit: FlexFit.tight,
                     child: Text(classificationCertificate.facilityName),
                   ),
+                  const SizedBox(width: 4),
                   Chip(
                     padding: EdgeInsets.zero,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      side: BorderSide(
-                        width: 1,
-                        color: Colors.blueAccent,
-                      ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      side: BorderSide(width: 1, color: color),
                     ),
-                    backgroundColor: Colors.blueAccent.withAlpha(70),
+                    backgroundColor: color.withAlpha(70),
                     label: Text(
-                      'التصنيف A',
+                      "ClassificationGrade-${classificationCertificate.classificationGrade}".tr(),
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             fontWeight: FontWeight.w700,
-                            color: Colors.blueAccent,
+                            color: color,
+                            fontSize: 10,
                           ),
                     ),
                   ),
@@ -91,5 +92,23 @@ class ClassificationCertificateItemWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color getColorByClassificationGrade(String grade) {
+    switch (grade) {
+      case "1":
+        return const Color(0xff17A2B8);
+      case "2":
+        return const Color(0xff3B3A99);
+      case "3":
+        return const Color(0xff7B56B9);
+      case "4":
+        return const Color(0xffCE9B00);
+      case "5":
+        return Colors.grey.shade600;
+      case "6":
+        return Colors.green.shade700;
+    }
+    return Colors.cyan.shade600;
   }
 }
