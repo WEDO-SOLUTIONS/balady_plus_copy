@@ -1,11 +1,11 @@
 
 class CityLookupsModel  {
   final String cityCode;
-  final String city;
+  final String text;
 
   CityLookupsModel({
     required this.cityCode,
-    required this.city,
+    required this.text,
   });
 
   CityLookupsModel copyWith({
@@ -14,17 +14,22 @@ class CityLookupsModel  {
   }) =>
       CityLookupsModel(
         cityCode: cityCode ?? this.cityCode,
-        city: city ?? this.city,
+        text: city ?? this.text,
       );
 
   factory CityLookupsModel.fromJson(Map<String, dynamic> json) => CityLookupsModel(
     cityCode: json["CityCode"],
-    city: json["City"],
+    text: json["City"],
   );
 
   Map<String, dynamic> toJson() => {
     "CityCode": cityCode,
-    "City": city,
+    "City": text,
   };
+
+  @override
+  String toString() {
+    return text;
+  }
 }
 

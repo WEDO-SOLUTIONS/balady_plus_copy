@@ -1,5 +1,7 @@
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_verify/bloc/classification_certificate_verify_bloc.dart';
 import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_verify/widgets/title_with_widget.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../core/classification_certificate_routes/classification_certificate_route_names.dart';
+import '../../../core/classification_certificate_routes/classification_certificate_routes.dart';
 import '../../../data/model/lookups/activity_lookups_model.dart';
 import '../../../data/model/lookups/city_lookups_model.dart';
 import '../../../data/model/lookups/classification_certificate_lookup_model.dart';
@@ -113,49 +117,91 @@ class AdvancedSearchWidget extends StatelessWidget {
         TitleWithWidget(
           title: 'city',
           isRequired: true,
-          widget: DropdownButtonFormField<CityLookupsModel>(
-            hint: Text("city_select".tr()),
-            value: state.searchRequestModel.city,
-            icon: Image.asset(IconPath.arrowCircleDown, width: 24, height: 24),
-            validator: (value) => value == null ? 'field required'.tr() : null,
-            onChanged: (CityLookupsModel? menu) {
-              // Cull Action Update States
-              if (state.searchRequestModel.city != menu) {
-                bloc.add(
-                  UpdateRequestModelAdvancedSearchState(
-                    searchRequestModel: state.searchRequestModel.copyWith(
-                      city: menu,
-                    ),
-                  ),
-                );
-              }
+          widget: TextFormField(
+            keyboardType: TextInputType.text,
+            readOnly: true,
+            controller: TextEditingController(
+              text: state.searchRequestModel.city?.text,
+            ),
+            onTap: () async {
+              BottomSheetDialog.showDraggableSheet<CityLookupsModel>(
+                context,
+                currentRouteName: ClassificationCertificateRouteName.classificationCertificateVerifyOverviewScreen,
+                child: GenericBottomSheetList<CityLookupsModel>(
+                  title: "city_select".tr(),
+                  items: state.cities,
+                  selectedValue: null,
+                  onTap: (item) {
+                    // Cull Action Update States الريض
+                    if (state.searchRequestModel.city != item) {
+                      bloc.add(//
+                        UpdateRequestModelAdvancedSearchState(
+                          searchRequestModel: state.searchRequestModel.copyWith(
+                            city: item,
+                          ),
+                        ),
+                      );
+                    }
+                    Navigator.of(context).pop();
+                  },
+                ),
+              );
             },
-            items: state.cities.map<DropdownMenuItem<CityLookupsModel>>(
-              (CityLookupsModel item) {
-                return DropdownMenuItem<CityLookupsModel>(
-                  value: item,
-                  child: Text(item.city),
-                );
-              },
-            ).toList(),
+            decoration: InputDecoration(
+              hintText: "city_select".tr(),
+              suffixIcon: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  IconPath.arrowCircleDown,
+                  width: 24,
+                  height: 24, // العقيق
+                ),
+              ),
+            ),
+            validator: (text) => (text?.isEmpty ?? true) ? "field required" : null,
           ),
+
+          // DropdownButtonFormField<CityLookupsModel>(
+          //   hint: Text("city_select".tr()),
+          //   value: ,
+          //   icon: Image.asset(IconPath.arrowCircleDown, width: 24, height: 24),
+          //   validator: (value) => value == null ? 'field required'.tr() : null,
+          //   onChanged: (CityLookupsModel? menu) {
+          //     // Cull Action Update States
+          //     if (state.searchRequestModel.city != menu) {
+          //       bloc.add(
+          //         UpdateRequestModelAdvancedSearchState(
+          //           searchRequestModel: state.searchRequestModel.copyWith(
+          //             city: menu,
+          //           ),
+          //         ),
+          //       );
+          //     }
+          //   },
+          //   items: state.cities.map<DropdownMenuItem<CityLookupsModel>>(
+          //     (CityLookupsModel item) {
+          //       return DropdownMenuItem<CityLookupsModel>(
+          //         value: item,
+          //         child: Text(item.city),
+          //       );
+          //     },
+          //   ).toList(),
+          // ),
         ),
         const SizedBox(height: 12),
         if (state is AdvancedMethodBySectorsState)
           TitleWithWidget(
             title: 'activity',
-            widget: DropdownMenu<ActivityLookupsModel>(
-              width: double.maxFinite,
-              expandedInsets: EdgeInsets.zero,
-              hintText: "select_activity".tr(),
-              requestFocusOnTap: true,
-              enableFilter: true,
-              trailingIcon: Image.asset(
+            widget: DropdownButtonFormField<ActivityLookupsModel>(
+              hint: Text("select_activity".tr()),
+              value: state.searchRequestModel.activity,
+              isExpanded: true,
+              icon: Image.asset(
                 IconPath.arrowCircleDown,
                 width: 24,
                 height: 24,
               ),
-              onSelected: (ActivityLookupsModel? activity) {
+              onChanged: (ActivityLookupsModel? activity) {
                 // Cull Action Request model
                 if (activity != null &&
                     state.searchRequestModel.activity != activity) {
@@ -168,13 +214,16 @@ class AdvancedSearchWidget extends StatelessWidget {
                   );
                 }
               },
-              dropdownMenuEntries: (state as AdvancedMethodBySectorsState)
+              items: (state as AdvancedMethodBySectorsState)
                   .activity
-                  .map<DropdownMenuEntry<ActivityLookupsModel>>(
+                  .map<DropdownMenuItem<ActivityLookupsModel>>(
                 (ActivityLookupsModel service) {
-                  return DropdownMenuEntry<ActivityLookupsModel>(
+                  return DropdownMenuItem<ActivityLookupsModel>(
                     value: service,
-                    label: service.activityValue,
+                    child: Text(
+                      service.activityValue,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   );
                 },
               ).toList(),
@@ -183,18 +232,15 @@ class AdvancedSearchWidget extends StatelessWidget {
         const SizedBox(height: 12),
         TitleWithWidget(
           title: 'certificate_degree',
-          widget: DropdownMenu<ClassificationCertificateLookupModel>(
-            width: double.maxFinite,
-            expandedInsets: EdgeInsets.zero,
-            hintText: "select_degree".tr(),
-            requestFocusOnTap: true,
-            enableFilter: true,
-            trailingIcon: Image.asset(
+          widget: DropdownButtonFormField<ClassificationCertificateLookupModel>(
+            hint: Text("select_degree".tr()),
+            icon: Image.asset(
               IconPath.arrowCircleDown,
               width: 24,
               height: 24,
             ),
-            onSelected: (ClassificationCertificateLookupModel? grade) {
+            value: state.searchRequestModel.classificationGrade,
+            onChanged: (ClassificationCertificateLookupModel? grade) {
               // Cull Action Request model
               if (grade != null &&
                   state.searchRequestModel.classificationGrade != grade) {
@@ -207,13 +253,14 @@ class AdvancedSearchWidget extends StatelessWidget {
                 );
               }
             },
-            dropdownMenuEntries: state.degrees
-                .map<DropdownMenuEntry<ClassificationCertificateLookupModel>>(
+            items: state.degrees
+                .map<DropdownMenuItem<ClassificationCertificateLookupModel>>(
               (ClassificationCertificateLookupModel service) {
-                return DropdownMenuEntry<ClassificationCertificateLookupModel>(
+                return DropdownMenuItem<ClassificationCertificateLookupModel>(
                   value: service,
-                  label:
-                      "locale".tr() == "ar" ? service.valueAr : service.valueEn,
+                  child: Text(
+                    "locale".tr() == "ar" ? service.valueAr : service.valueEn,
+                  ),
                 );
               },
             ).toList(),
@@ -342,20 +389,16 @@ class AdvancedSearchWidget extends StatelessWidget {
         if (state is AdvancedSearchByClassificationTypeState)
           TitleWithWidget(
             title: 'service',
-            widget: DropdownMenu<ClassificationCertificateLookupModel>(
-              //initialSelection: menuItems.first,
-              // controller: menuController,
-              width: double.maxFinite,
-              expandedInsets: EdgeInsets.zero,
-              hintText: "select_service".tr(),
-              requestFocusOnTap: true,
-              enableFilter: true,
-              trailingIcon: Image.asset(
+            widget:
+                DropdownButtonFormField<ClassificationCertificateLookupModel>(
+              hint: Text("select_service".tr()),
+              icon: Image.asset(
                 IconPath.arrowCircleDown,
                 width: 24,
                 height: 24,
               ),
-              onSelected: (ClassificationCertificateLookupModel? service) {
+              value: state.searchRequestModel.service,
+              onChanged: (ClassificationCertificateLookupModel? service) {
                 // Cull Action Request model
                 if (service != null &&
                     state.searchRequestModel.service != service) {
@@ -368,17 +411,15 @@ class AdvancedSearchWidget extends StatelessWidget {
                   );
                 }
               },
-              dropdownMenuEntries: (state
-                      as AdvancedSearchByClassificationTypeState)
+              items: (state as AdvancedSearchByClassificationTypeState)
                   .services
-                  .map<DropdownMenuEntry<ClassificationCertificateLookupModel>>(
+                  .map<DropdownMenuItem<ClassificationCertificateLookupModel>>(
                 (ClassificationCertificateLookupModel service) {
-                  return DropdownMenuEntry<
-                      ClassificationCertificateLookupModel>(
+                  return DropdownMenuItem<ClassificationCertificateLookupModel>(
                     value: service,
-                    label: "locale".tr() == "ar"
-                        ? service.valueAr
-                        : service.valueEn,
+                    child: Text(
+                      "locale".tr() == "ar" ? service.valueAr : service.valueEn,
+                    ),
                   );
                 },
               ).toList(),

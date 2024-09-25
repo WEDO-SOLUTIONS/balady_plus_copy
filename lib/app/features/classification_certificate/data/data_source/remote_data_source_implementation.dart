@@ -99,6 +99,7 @@ class ClassificationCertificateRemoteDataSource
           (x) => ActivityLookupsModel.fromJson(x),
         ),
       );
+
       return list;
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

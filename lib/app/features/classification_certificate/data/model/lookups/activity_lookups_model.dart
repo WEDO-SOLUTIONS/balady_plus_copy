@@ -14,7 +14,7 @@ class ActivityLookupsModel  {
       );
 
   factory ActivityLookupsModel.fromJson(Map<String, dynamic> json) => ActivityLookupsModel(
-    activityValue: json["activityValue"],
+    activityValue: json["ActivityValue"],
   );
 
   Map<String, dynamic> toJson() => {

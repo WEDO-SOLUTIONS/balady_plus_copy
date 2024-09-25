@@ -125,7 +125,7 @@ class AppWidgetState extends State<AppWidget> {
                 ),
                 errorStyle: const TextStyle(color: AppColor.error),
                 contentPadding: const EdgeInsets.symmetric(
-                  vertical: 16,
+                  vertical: 12,
                   horizontal: 16,
                 ),
                 enabledBorder: OutlineInputBorder(
