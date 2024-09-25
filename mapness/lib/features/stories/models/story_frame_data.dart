@@ -22,9 +22,6 @@ class StoryFrameData {
   /// Indicates whether the image should be displayed in fullscreen mode.
   final bool fullscreenImage;
 
-  /// Indicates whether the frame has been watched by the user.
-  final bool isWatched;
-
   /// Represent the button action for the frame.
   /// Can be a next action, a navigation action, or a network link action.
   final StoryFrameAction? action;
@@ -51,7 +48,6 @@ class StoryFrameData {
     this.action,
     this.duration = 10,
     this.fullscreenImage = true,
-    this.isWatched = false,
     this.isAssetImage = false,
     this.networkTheme,
     this.networkTexts,
@@ -64,7 +60,6 @@ class StoryFrameData {
     String? imageUrl,
     String? arabicImageUrl,
     bool? fullscreenImage,
-    bool? isWatched,
     StoryFrameAction? action,
     int? duration,
     bool? isAssetImage,
@@ -77,7 +72,6 @@ class StoryFrameData {
         imageUrl: imageUrl ?? this.imageUrl,
         arabicImageUrl: arabicImageUrl ?? this.arabicImageUrl,
         fullscreenImage: fullscreenImage ?? this.fullscreenImage,
-        isWatched: isWatched ?? this.isWatched,
         action: action ?? this.action,
         duration: duration ?? this.duration,
         isAssetImage: isAssetImage ?? this.isAssetImage,

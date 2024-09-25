@@ -7,6 +7,7 @@ class StoryData {
   const StoryData({
     required this.storyId,
     required this.frames,
+    this.isWatched = false,
     this.thumbnail,
   });
 
@@ -19,18 +20,20 @@ class StoryData {
   /// The thumbnail of the story.
   final StoryThumbnailData? thumbnail;
 
-  /// Returns whether the story has been viewed.
-  bool get isViewed => frames.last.isWatched;
+  /// Indicates whether the frame has been watched by the user.
+  final bool isWatched;
 
   /// Creates a copy of this [StoryData] object with the specified attributes.
   StoryData copyWith({
     List<StoryFrameData>? frames,
     String? storyId,
     StoryThumbnailData? thumbnail,
+    bool? isWatched,
   }) =>
       StoryData(
         frames: frames ?? this.frames,
         storyId: storyId ?? this.storyId,
         thumbnail: thumbnail ?? this.thumbnail,
+        isWatched: isWatched ?? this.isWatched,
       );
 }
