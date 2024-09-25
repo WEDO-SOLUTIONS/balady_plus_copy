@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/features/classification_certificate/data/model/classification_certificate_list.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/model/details/details_request_model.dart';
 
@@ -19,4 +21,5 @@ abstract class ClassificationCertificateLookupsRemoteDataSource {
 
 abstract class ClassificationCertificateDetailsRemoteDataSource {
   Future<ClassificationCertificateDetails> getDetailsClassificationCertificate(DetailsRequestModel params);
+  Future<File> getAttachedClassificationCertificate(String attachUrl, String fileName);
 }

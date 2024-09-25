@@ -47,7 +47,7 @@ class DetailsDataWidget extends StatelessWidget {
         const SizedBox(height: 8),
         TitleValueWidget(
           title: "classification_degree",
-          value: "ClassificationGrade-${classificationCertificateDetails.classificationGrade}",
+          value: "ClassificationGrade-${classificationCertificateDetails.classificationGrade}".tr(),
         ),
         const SizedBox(height: 8),
         TitleValueWidget(

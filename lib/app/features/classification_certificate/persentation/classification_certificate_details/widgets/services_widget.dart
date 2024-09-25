@@ -58,6 +58,7 @@ class ServicesWidget extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 MinimumMaximumWidget(title: 'minimum', value: minimum),
                 const SizedBox(height: 2),

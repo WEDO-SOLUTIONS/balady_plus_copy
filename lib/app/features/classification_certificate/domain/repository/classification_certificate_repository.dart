@@ -1,4 +1,5 @@
-import 'package:balady_plus/app/features/classification_certificate/data/model/classification_certificate_list.dart';
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
@@ -17,11 +18,17 @@ abstract class ClassificationCertificateSearchRepository {
 }
 
 abstract class ClassificationCertificateLookupsRepository {
-  Future<Either<Failure, ClassificationCertificateLookupsModel>> getLookups(LookupsRequestModel params);
-  Future<Either<Failure, List<ActivityLookupsModel>>> getActivitiesBySectors(ActivitiesRequestModel params);
+  Future<Either<Failure, ClassificationCertificateLookupsModel>> getLookups(
+      LookupsRequestModel params);
+
+  Future<Either<Failure, List<ActivityLookupsModel>>> getActivitiesBySectors(
+      ActivitiesRequestModel params);
 }
 
 abstract class DetailsClassificationCertificateRepository {
   Future<Either<Failure, ClassificationCertificateDetailsEentity>>
       getDetailsClassificationCertificate(DetailsRequestModel params);
+
+  Future<Either<Failure, File>> getAttachedClassificationCertificate(
+      String url, String fileName);
 }

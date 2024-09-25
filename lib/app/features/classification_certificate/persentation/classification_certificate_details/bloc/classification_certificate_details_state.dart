@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/features/classification_certificate/domain/entity/classification_certificate_details_entity.dart';
 import 'package:equatable/equatable.dart';
 
@@ -40,6 +42,27 @@ class SuccessDetailsClassificationCertificateState
 
   @override
   List<Object?> get props {
-    return [classificationCertificateDetails, classificationCertificateDetails];
+    return [classificationCertificateDetails];
   }
+}
+
+class LoadingAttachedCertificateState
+    extends SuccessDetailsClassificationCertificateState {
+  const LoadingAttachedCertificateState({
+    required super.classificationCertificateDetails,
+    required super.formatCertificateExpiryDate,
+    required super.formatCertificateStartDate,
+  });
+}
+
+class SuccessAttachedCertificateState
+    extends SuccessDetailsClassificationCertificateState {
+  final File file;
+
+  const SuccessAttachedCertificateState({
+    required this.file,
+    required super.classificationCertificateDetails,
+    required super.formatCertificateExpiryDate,
+    required super.formatCertificateStartDate,
+  });
 }

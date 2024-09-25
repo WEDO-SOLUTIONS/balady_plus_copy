@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/utils/extensions/json_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_details/bloc/classification_certificate_details_state.dart';
+import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_details/widgets/attach_button_widgt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -67,15 +68,9 @@ class ClassificationCertificateDetailsScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          state.classificationCertificateDetails.attachLink
-                                  .isNotEmpty
-                              ? OutlinedButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    "download_certificate_classification".tr(),
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
+
+                          AttachedButtonWidget(state:state),
+                          ////////////////////////////////////////////////////
                           const SizedBox(height: 16),
                           state.classificationCertificateDetails
                                       .classificationType ==

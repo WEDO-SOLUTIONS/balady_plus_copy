@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/features/classification_certificate/data/model/classification_certificate_list.dart';
 import 'package:balady_plus/app/features/classification_certificate/domain/repository/classification_certificate_repository.dart';
 import 'package:dartz/dartz.dart' show Either;
@@ -64,5 +66,16 @@ class GetDetailsClassificationCertificateUseCases extends UseCase<
   Future<Either<Failure, ClassificationCertificateDetailsEentity>> call(
       DetailsRequestModel params) async {
     return await repository.getDetailsClassificationCertificate(params);
+  }
+}
+
+class GetAttachedClassificationCertificateUseCases extends UseCase<File, (String url, String fileName)> {
+  final DetailsClassificationCertificateRepository repository;
+
+  GetAttachedClassificationCertificateUseCases({required this.repository});
+
+  @override
+  Future<Either<Failure, File>> call(params) async {
+    return await repository.getAttachedClassificationCertificate(params.$1,params.$2);
   }
 }

@@ -50,5 +50,12 @@ class ClassificationCertificateInjectionContainer {
             as DetailsClassificationCertificateRepository,
       ),
     );
+
+    sl.registerLazySingleton<GetAttachedClassificationCertificateUseCases>(
+      () => GetAttachedClassificationCertificateUseCases(
+        repository: sl<ClassificationCertificateRepositoryImplementation>()
+            as DetailsClassificationCertificateRepository,
+      ),
+    );
   }
 }

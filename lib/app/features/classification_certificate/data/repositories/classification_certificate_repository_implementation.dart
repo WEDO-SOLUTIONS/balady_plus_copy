@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/data_source/remote_data_source_implementation.dart';
@@ -93,6 +95,22 @@ class ClassificationCertificateRepositoryImplementation
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error, stackTrace) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, File>> getAttachedClassificationCertificate(String url, String fileName) async {
+    try {
+      final data =
+          await remoteDataSource.getAttachedClassificationCertificate(url,fileName);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error, stackTrace) {
+      if(error.errorCode == "204") {
+        return Left(NoDataFoundFailure());
+      }
       return Left(ServerFailure(error.errorMessage));
     }
   }

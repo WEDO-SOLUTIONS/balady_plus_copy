@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/model/details/classification_certificate_details_model.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/model/lookups/classification_certificate_lookups_model.dart';
-import 'package:dio/dio.dart' show DioError;
+import 'package:dio/dio.dart' show DioException, Options, ResponseType;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../core/endpoints.dart';
 import '../model/classification_certificate_list.dart';
@@ -39,7 +42,7 @@ class ClassificationCertificateRemoteDataSource
       var result = data["data"]["result"] as Map<String, dynamic>;
       var parsedResult = ClassificationCertificateLookupsModel.fromJson(result);
       return parsedResult;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -97,7 +100,7 @@ class ClassificationCertificateRemoteDataSource
         ),
       );
       return list;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -158,7 +161,7 @@ class ClassificationCertificateRemoteDataSource
         parsedResult: parsedResult,
       );
       return decodedResponse.data!.result!;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -223,7 +226,7 @@ class ClassificationCertificateRemoteDataSource
         parsedResult: parsedResult,
       );
       return decodedResponse.data!.result!;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -239,6 +242,70 @@ class ClassificationCertificateRemoteDataSource
         statusCode: error.response?.statusCode,
         dioError: error,
         errorCode: error.response?.data['data']?['responseCode'] ?? -1,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(errorMessage: error.toString()),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<File> getAttachedClassificationCertificate(
+      String attachUrl, String fileName) async {
+    var response;
+    try {
+      response = await webService.dio.get(
+        attachUrl,
+        // onReceiveProgress: showDownloadProgress,
+        //Received data with List<int>
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      // print(response.headers);
+      var tempDir = await getTemporaryDirectory();
+      File file = File("$tempDir/$fileName");
+      var raf = file.openSync(mode: FileMode.write);
+      // response.data is List<int> type
+      raf.writeFromSync(response.data);
+      await raf.close();
+      return file;
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+        errorCode: error.response?.data?['data'] != null
+            ? error.response!.data['data']['responseCode'].toString()
+            : "-1",
       );
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
