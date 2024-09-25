@@ -18,6 +18,7 @@ import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../dialogs/success_rating.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class FacilityRatingViewModel extends BaseViewModel {
   FacilityRatingViewModel() {
@@ -46,7 +47,15 @@ class FacilityRatingViewModel extends BaseViewModel {
 
     try {
       showLoading();
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     try {
       final LatestUserRatingResponse? response =
@@ -61,7 +70,15 @@ class FacilityRatingViewModel extends BaseViewModel {
         // show Error
         //showError("error3");
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     hideLoading();
   }
 
@@ -86,7 +103,14 @@ class FacilityRatingViewModel extends BaseViewModel {
         showError(response.item2 ?? "");
         return false;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       hideLoading();
       return false;
     }

@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/map_utils.dart';
+import 'package:balady_plus/app/features/profile_features/dashboard/dashboard_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -256,6 +257,12 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                                   position: LatLng(
                                       state.details!.lat!, state.details!.lon!))
                             },
+                            onMapCreated:
+                                (GoogleMapController controller) {
+                              controller.setMapStyle(
+                                """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                              );
+                            },
                             myLocationEnabled: false,
                             myLocationButtonEnabled: false,
                             zoomControlsEnabled: false,
@@ -286,6 +293,8 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                 ),
               ]),
             );
+          } else if (state.status.isSubmissionFailure) {
+            return const Center(child: NoDataWidget());
           }
           return Container();
         },

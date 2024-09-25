@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'dart:io';
@@ -191,8 +192,15 @@ class _ScanImageWidget extends StatelessWidget {
       final rest = await Scan.parse(image.path);
       scanResult = rest ?? "";
       checkBarcode(context);
-    } catch (e) {
-      e.toString();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      error.toString();
     }
   }
 }

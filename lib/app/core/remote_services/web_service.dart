@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:crypto/crypto.dart';
@@ -69,7 +70,15 @@ class WebService {
               qeuryParms: queryString,
               data: utf8.decode(response.bodyBytes).toString(),
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         if (autoLogout) sl<EntryPointCubit>().autoLogout();
       } else {
         result.putIfAbsent("state", () => false);
@@ -83,9 +92,24 @@ class WebService {
               qeuryParms: queryString,
               data: response.body,
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -97,9 +121,17 @@ class WebService {
         Helpers.sendLog(
             url: baseURL + url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return result;
   }
@@ -154,7 +186,15 @@ class WebService {
               qeuryParms: queryString,
               data: utf8.decode(response.bodyBytes).toString(),
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         if (autoLogout) sl<EntryPointCubit>().autoLogout();
       } else {
         result.putIfAbsent("state", () => false);
@@ -168,9 +208,24 @@ class WebService {
               qeuryParms: queryString,
               data: response.body,
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -182,9 +237,17 @@ class WebService {
         Helpers.sendLog(
             url: baseURL + url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return result;
   }
@@ -257,7 +320,15 @@ class WebService {
                 qeuryParms: queryString,
                 data: utf8.decode(response.bodyBytes).toString(),
                 statusCode: response.statusCode);
-          } catch (ex) {}
+          } catch (error, stackTrace) {
+            LogsViewModel().sendEventFromModel(
+              event: ErrorExceptionModel(
+                nameEvent: EventsName.handledException,
+                message: error.toString(),
+                stackTrace: stackTrace.toString(),
+              ),
+            );
+          }
           if (autoLogout) sl<EntryPointCubit>().autoLogout();
         } else {
           result.putIfAbsent("state", () => false);
@@ -271,9 +342,24 @@ class WebService {
                 qeuryParms: queryString,
                 data: response.body,
                 statusCode: response.statusCode);
-          } catch (ex) {}
+          } catch (error, stackTrace) {
+            LogsViewModel().sendEventFromModel(
+              event: ErrorExceptionModel(
+                nameEvent: EventsName.handledException,
+                message: error.toString(),
+                stackTrace: stackTrace.toString(),
+              ),
+            );
+          }
         }
-      } catch (ex) {
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
         result.putIfAbsent("state", () => false);
         result.putIfAbsent("error", () => ('errors_server_error_2').tr());
         var connectivityResult = await (Connectivity().checkConnectivity());
@@ -285,16 +371,32 @@ class WebService {
           Helpers.sendLog(
               url: baseURL + url,
               qeuryParms: queryString,
-              data: ex.toString(),
+              data: error.toString(),
               statusCode: 0);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
       return result;
     } else {
       try {
         Helpers.sendLog(
             url: baseURL + url, qeuryParms: queryString, statusCode: 1);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
@@ -366,7 +468,15 @@ class WebService {
               qeuryParms: queryString,
               data: utf8.decode(response.bodyBytes).toString(),
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
 
         //  locator<AuthService>().autoLogout();
       } else {
@@ -382,9 +492,24 @@ class WebService {
               data: utf8.decode(response.bodyBytes).toString(),
               body: data,
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -396,9 +521,17 @@ class WebService {
         Helpers.sendLog(
             url: baseURL + url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
 
     return result;
@@ -497,9 +630,24 @@ class WebService {
               data: respStr,
               body: data,
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -511,10 +659,18 @@ class WebService {
         Helpers.sendLog(
             url: baseURL + url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             body: data,
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
 
     return result;
@@ -598,10 +754,25 @@ class WebService {
               data: respStr,
               body: data,
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -611,8 +782,19 @@ class WebService {
 
       try {
         Helpers.sendLog(
-            url: baseURL + url, data: ex.toString(), body: data, statusCode: 0);
-      } catch (ex) {}
+            url: baseURL + url,
+            data: error.toString(),
+            body: data,
+            statusCode: 0);
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
 
     return result;
@@ -682,7 +864,15 @@ class WebService {
               qeuryParms: queryString,
               data: response.body,
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
 
         sl<EntryPointCubit>().autoLogout();
       } else {
@@ -697,9 +887,24 @@ class WebService {
               qeuryParms: queryString,
               data: response.body,
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -711,9 +916,17 @@ class WebService {
         Helpers.sendLog(
             url: pegaBaseURL + url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return result;
   }
@@ -770,7 +983,15 @@ class WebService {
               qeuryParms: queryString,
               data: response.body.toString(),
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
 
         sl<EntryPointCubit>().autoLogout();
       } else {
@@ -785,9 +1006,24 @@ class WebService {
               data: response.body.toString(),
               body: data,
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -799,10 +1035,18 @@ class WebService {
         Helpers.sendLog(
             url: pegaBaseURL + url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             body: data,
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
 
     return result;
@@ -851,9 +1095,24 @@ class WebService {
               qeuryParms: queryString,
               data: response.body.toString(),
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -865,9 +1124,17 @@ class WebService {
         Helpers.sendLog(
             url: url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return result;
   }
@@ -931,9 +1198,24 @@ class WebService {
               data: response.body.toString(),
               body: data,
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -945,10 +1227,18 @@ class WebService {
         Helpers.sendLog(
             url: url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             body: data,
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return result;
   }
@@ -1009,10 +1299,25 @@ class WebService {
               qeuryParms: queryString,
               data: response.body.toString(),
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
-      //print("exception: " + ex.toString());
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      //print("exception: " + error.toString());
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -1024,9 +1329,17 @@ class WebService {
         Helpers.sendLog(
             url: baseURL + url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return result;
   }
@@ -1079,10 +1392,25 @@ class WebService {
               qeuryParms: queryString,
               data: response.body.toString(),
               statusCode: response.statusCode);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
-    } catch (ex) {
-      //print("exception: " + ex.toString());
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      //print("exception: " + error.toString());
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -1094,9 +1422,17 @@ class WebService {
         Helpers.sendLog(
             url: baseURL + url,
             qeuryParms: queryString,
-            data: ex.toString(),
+            data: error.toString(),
             statusCode: 0);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return result;
   }

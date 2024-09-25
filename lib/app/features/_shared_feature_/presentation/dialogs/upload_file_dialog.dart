@@ -10,6 +10,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../data/entities/file_data_item.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/draw_line_widget.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class UploadFileDialog extends StatelessWidget {
   final Function(FileDataItem file) onConfirm;
@@ -152,7 +153,14 @@ class UploadFileDialog extends StatelessWidget {
           }
         }
       }
-    } on PlatformException catch (_) {
+    } on PlatformException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // debugPrint("Unsupported operation" + e.toString());
     }
   }

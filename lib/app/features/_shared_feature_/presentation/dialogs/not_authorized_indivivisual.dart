@@ -12,6 +12,7 @@ import '../buttons/elevated_button_widgets.dart';
 import '../widgets/custom_svg_icon_widget.dart';
 import '../widgets/draw_line_widget.dart';
 import 'bottom_sheet_dialogs.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NotAuthorizedIndivisualDialog extends StatelessWidget {
   const NotAuthorizedIndivisualDialog({super.key});
@@ -102,7 +103,15 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
                     ),
                   );
                   Navigator.of(context).pop();
-                } catch (ex) {}
+                } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
               },
               text: "switch_to_entity".tr()),
           SizedBox(

@@ -17,6 +17,7 @@ import '../models/classification.dart';
 import '../models/create_incident_result.dart';
 import '../models/gis_location_result.dart';
 import '../models/upload_file_result.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CustomerVoiceRepository {
   final webServices = locator<WebService>();
@@ -40,15 +41,30 @@ class CustomerVoiceRepository {
       } else {
         CommonFunctions.showError(error);
       }
-    } catch (ex) {
-      CommonFunctions.showError(error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      CommonFunctions.showError(error.toString());
       try {
         Helpers.sendLog(
             url: RemoteConfig.gis + ApiConstants.GisGetLocation,
             data: data,
             qeuryParms: query,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       return null;
     }
   }
@@ -77,8 +93,15 @@ class CustomerVoiceRepository {
         CommonFunctions.showError(
             Helpers.translatingWord("errors_server_error_2"));
       }
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       CommonFunctions.showError(("errors_server_error_1").tr());
     }
     return null;
@@ -96,15 +119,30 @@ class CustomerVoiceRepository {
       } else {
         CommonFunctions.showError(error);
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       CommonFunctions.showError(error);
       try {
         Helpers.sendLog(
             url: RemoteConfig.gis + ApiConstants.GisGetLocation,
             data: data,
             qeuryParms: query,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       return null;
     }*/
   }
@@ -143,7 +181,14 @@ class CustomerVoiceRepository {
       if (response.splClassificationList?.isEmpty ?? false) {
         error = ("no_spl_classification_error").tr();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -151,8 +196,16 @@ class CustomerVoiceRepository {
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, SpecializedClassification?>(
         state, error, result);
@@ -188,7 +241,14 @@ class CustomerVoiceRepository {
       if (response.splClassificationList?.isEmpty ?? false) {
         error = ("no_spl_classification_error").tr();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -196,8 +256,16 @@ class CustomerVoiceRepository {
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, SpecializedClassification?>(
         state, error, result);
@@ -229,7 +297,14 @@ class CustomerVoiceRepository {
           SubMainClassification.fromMap(json.decode(data));
 
       return response;
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -239,8 +314,16 @@ class CustomerVoiceRepository {
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       return null;
     }
   }
@@ -268,7 +351,14 @@ class CustomerVoiceRepository {
       SubMainClassification response =
           SubMainClassification.fromMap(json.decode(data));
       return response;
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -277,8 +367,16 @@ class CustomerVoiceRepository {
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       return null;
     }
   }
@@ -341,15 +439,30 @@ class CustomerVoiceRepository {
       if (response != null &&
           response.errors != null &&
           response.errors!.isNotEmpty) state = false;
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         //MM
         Helpers.sendLog(
             url: url,
             data: data,
             body: json.encode(body),
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, UploadFileResult?>(state, error, response);
   }
@@ -366,12 +479,27 @@ class CustomerVoiceRepository {
     CreateIncidentResult? response;
     try {
       response = CreateIncidentResult.fromJson(json.decode(data));
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       //MM
       try {
         Helpers.sendLog(
-            url: url, data: data, body: body, errorMsg: ex.toString());
-      } catch (ex) {}
+            url: url, data: data, body: body, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, CreateIncidentResult?>(
         state, error, response);
@@ -389,12 +517,27 @@ class CustomerVoiceRepository {
     CreateIncidentResult? response;
     try {
       response = CreateIncidentResult.fromJson(json.decode(data));
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         //MM
         Helpers.sendLog(
-            url: url, data: data, body: body, errorMsg: ex.toString());
-      } catch (ex) {}
+            url: url, data: data, body: body, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, CreateIncidentResult?>(
         state, error, response);

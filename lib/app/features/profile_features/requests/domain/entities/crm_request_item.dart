@@ -5,6 +5,9 @@ import 'package:intl/intl.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/enums/enums.dart';
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
 class CRMRequestItem extends Equatable {
   final String? subClassificationName;
   final String? newClassificationName;
@@ -205,7 +208,14 @@ class CRMRequestItem extends Equatable {
 
         dateTime = DateTime.parse(dateWithT).toLocal();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       String? dateWithT =
           date?.substring(0, 8) ?? ""; //+ 'T' + date.substring(8);
       dateTime = DateTime.parse(dateWithT);

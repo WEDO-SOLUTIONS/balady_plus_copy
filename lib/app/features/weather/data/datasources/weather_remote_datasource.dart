@@ -19,6 +19,7 @@ import '../../weather_exports.dart'
         HourModel,
         LocationModel,
         WeatherParams;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class WeatherRemoteDataSource {
   Future<AllWeatherInfoModel> getAllWeatherInfoForLocation(
@@ -106,20 +107,42 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
       );
 
       return allWeatherData;
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
-        try {} catch (ex) {}
+        try {} catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show ApigeeResponse;
 import 'package:dartz/dartz.dart' show Either, Left, Right;
@@ -26,7 +27,14 @@ class SubmitRequestRepositoryImpl implements SubmitRequestRepository {
       final data = await remoteDataSource.submitRequest(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

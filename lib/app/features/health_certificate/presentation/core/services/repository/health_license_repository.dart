@@ -28,6 +28,7 @@ import '../../models/update_photo_response.dart';
 import '../../models/validate_health_certificate_response.dart';
 import '../../models/verify_otp_certificate.dart';
 import '../../../../../../core/services/global/web_service.dart' as web;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class HealthLicenseRepository {
   final webServices = locator<WebService>();
@@ -45,7 +46,14 @@ class HealthLicenseRepository {
       GisLocationResult response = GisLocationResult.fromJson(x);
       print("DONEE");
       return Tuple3<bool?, String?, GisLocationResult?>(true, "", response);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Tuple3<bool?, String?, GisLocationResult?>(
           false, ("errors_server_error_1").tr(), null);
     }
@@ -60,15 +68,30 @@ class HealthLicenseRepository {
       GisLocationResult response =
           GisLocationResult.fromJson(json.decode(data));
       result = response;
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         //MM
         Helpers.sendLog(
             url: RemoteConfig.gis + ApiConstants.GisGetLocation,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }*/
     //  return Tuple3<bool?, String?, GisLocationResult?>(state, error, result);
   }
@@ -105,14 +128,29 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
           url: url,
           data: data,
-          errorMsg: ex.toString(),
+          errorMsg: error.toString(),
         );
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, ValidateHealthCertificateResponse?>(
         state, error, result);
@@ -150,15 +188,30 @@ class HealthLicenseRepository {
       print(json.decode(data)["data"]?["result"]);
       if (json.decode(data)["data"]?["result"] != null)
         result = List<String>.from(json.decode(data)["data"]["result"]);
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       try {
         Helpers.sendLog(
           url: url,
           data: data,
-          errorMsg: ex.toString(),
+          errorMsg: error.toString(),
         );
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, List<String>?>(state, error, result);
   }
@@ -216,10 +269,25 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
-        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, ApplyNewHealthRequest?>(state, error, result);
   }
@@ -252,13 +320,28 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.CancelHelathCertificatesRequest,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, CancelHealthCertificateResponse?>(
         state, error, result);
@@ -285,14 +368,29 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: url,
             data: data,
             qeuryParms: requestId.toString(),
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, SubmitNewRequestResponse?>(
         state, error, result);
@@ -317,14 +415,29 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.CrInfoService,
             data: data,
             qeuryParms: query,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, CrInformationResponse?>(state, error, result);
   }
@@ -350,14 +463,29 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       try {
         Helpers.sendLog(
             url: ApiConstants.LicenseInfoService(licenseType, licenseId),
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, LicenseForHealthInformationResponse?>(
         state, error, result);
@@ -383,7 +511,15 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, HealthRequestDetails?>(state, error, result);
   }
 
@@ -406,7 +542,15 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, DeleteRequestResponse?>(state, error, result);
   }
 
@@ -432,7 +576,15 @@ class HealthLicenseRepository {
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }
@@ -457,7 +609,15 @@ class HealthLicenseRepository {
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }
@@ -482,7 +642,15 @@ class HealthLicenseRepository {
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }
@@ -509,7 +677,15 @@ class HealthLicenseRepository {
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }
@@ -533,7 +709,15 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, RatingInfoResponse?>(state, error, result);
   }
 
@@ -560,7 +744,15 @@ class HealthLicenseRepository {
       if (result.data?.responseCode == "2") {
         error = "لا توجد مدن مفعله للخدمة في الموقع الذي قمت باختياره";
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, ListResponse?>(state, error, result);
   }
 
@@ -584,7 +776,15 @@ class HealthLicenseRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, ListResponse?>(state, error, result);
   }
 
@@ -606,7 +806,15 @@ class HealthLicenseRepository {
       if (!state) {
         error = response.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, CheckUpdateClientPhoto?>(
         state, error, result);
   }
@@ -629,7 +837,15 @@ class HealthLicenseRepository {
       if (!state) {
         error = response.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, SendOtpCertificateResult?>(
         state, error, result);
   }
@@ -654,7 +870,15 @@ class HealthLicenseRepository {
       if (!state) {
         error = response.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, bool?>(state, error, result);
   }
 
@@ -683,7 +907,15 @@ class HealthLicenseRepository {
       if (!state) {
         error = response.data?.responseMessage ?? error;
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return Tuple3<bool?, String?, UpdatePhotoResponse?>(state, error, result);
   }
 }

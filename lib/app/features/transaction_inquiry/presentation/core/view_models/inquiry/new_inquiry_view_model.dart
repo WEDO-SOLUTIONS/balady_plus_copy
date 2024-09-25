@@ -16,6 +16,7 @@ import '../../models/classification_response_model.dart';
 import '../../models/create_incident_result.dart';
 import '../../services/inquiry_repository.dart';
 import 'inquiry_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NewInquiryViewModel extends BaseViewModel {
   final dataModel = locator<InquiryViewModel>();
@@ -91,7 +92,15 @@ class NewInquiryViewModel extends BaseViewModel {
         isFormValid = isvalid;
         notifyListeners();
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   Future createRequest() async {
@@ -200,9 +209,16 @@ class NewInquiryViewModel extends BaseViewModel {
         }
         return Future.value(false);
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       hideLoading();
-      showError(error);
+      showError(error.toString());
       return Future.value(false);
     }
   }

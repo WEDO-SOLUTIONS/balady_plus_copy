@@ -22,6 +22,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../app/core/dependency_injection/injection_container.dart';
 import '../../../../../app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class HomeRemoteDataSource {
   Future<ApigeeResponse<MainServicesResponseModel>> getMainServices(
@@ -74,22 +75,44 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
         throw ServerException(errorMessage, statusCode: response.statusCode);
       }
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -127,22 +150,44 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -182,7 +227,14 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
       }
 
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       var errorCode;
       try {
         final decodedResponse =
@@ -190,7 +242,15 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       throw ServerException(
         error.toString(),
@@ -198,16 +258,31 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -243,7 +318,14 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
         throw ServerException(errorMessage, statusCode: response.statusCode);
       }
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       final decodedResponse =
           ApigeeResponseModel<SubServicesResponseModel>.fromMap(
               error.response?.data,
@@ -257,16 +339,31 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -300,22 +397,44 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
         throw ServerException(errorMessage, statusCode: response.statusCode);
       }
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }

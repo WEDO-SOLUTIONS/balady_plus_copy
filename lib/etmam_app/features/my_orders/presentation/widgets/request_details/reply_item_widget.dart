@@ -19,6 +19,7 @@ import '../../../../../../app/features/_shared_feature_/presentation/widgets/cus
 import '../../../../../../app/features/_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../../../../app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../../core/utils/constants/api_url.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ReplyItemWidget extends StatelessWidget {
   final String name;
@@ -147,12 +148,26 @@ class ReplyItemWidget extends StatelessWidget {
           } else {*/
         OpenFile.open(fileDownloaded.path);
         //  }
-      } catch (ex) {
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
         EasyLoading.dismiss();
 
-        print(ex);
+        print(error);
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       EasyLoading.dismiss();
     }
   }

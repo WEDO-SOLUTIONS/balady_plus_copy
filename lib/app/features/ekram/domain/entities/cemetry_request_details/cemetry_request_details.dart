@@ -30,7 +30,11 @@ class CemetryRequestDetails {
       this.deathCityId,
       this.deathCountryName,
       this.deathCountryId,
-      this.burialCityName});
+      this.burialCityName,
+      this.graveTypeName,
+      this.graveSizeName,
+      this.pandemic,
+      this.deceasedIdentityTypeName});
 
   dynamic entryModeId;
   int? cemeteryId;
@@ -66,7 +70,10 @@ class CemetryRequestDetails {
   int? deathCountryId;
 
   String? get burialTime => prayId == 30976 ? prayOther : prayName;
-
+  String? graveTypeName;
+  String? graveSizeName;
+  bool? pandemic;
+  String? deceasedIdentityTypeName;
   @override
   List<Object?> get props => [];
 }

@@ -18,6 +18,11 @@ class HomeMap extends StatelessWidget {
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
                   target: CommonProperties.defaultLocation, zoom: 6),
+              onMapCreated: (GoogleMapController controller) {
+                controller.setMapStyle(
+                  """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                );
+              },
             ),
           ),
           const Padding(

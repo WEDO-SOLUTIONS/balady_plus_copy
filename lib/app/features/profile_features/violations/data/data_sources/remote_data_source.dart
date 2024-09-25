@@ -17,6 +17,7 @@ import '../../violations_exports.dart'
         ViolationsModel,
         ViolationsParamsModel,
         ViolationsStatusModel;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class ViolationsRemoteDataSource {
   Future<List<ViolationsModel>> getViolations(
@@ -48,7 +49,14 @@ class ViolationsRemoteDataSourceImplementation
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return ViolationDetailsModel.fromJson(result);
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -58,15 +66,22 @@ class ViolationsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      print(ex);
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -93,7 +108,14 @@ class ViolationsRemoteDataSourceImplementation
           .map<ViolationsModel>(
               (e) => ViolationsModel.fromJson(e as Map<String, dynamic>))
           .toList();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -103,14 +125,21 @@ class ViolationsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -134,7 +163,14 @@ class ViolationsRemoteDataSourceImplementation
           .map<ViolationsStatusModel>(
               (e) => ViolationsStatusModel.fromMap(e as Map<String, dynamic>))
           .toList();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -144,14 +180,21 @@ class ViolationsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -175,7 +218,14 @@ class ViolationsRemoteDataSourceImplementation
           .map<InvoiceStatusesModel>(
               (e) => InvoiceStatusesModel.fromMap(e as Map<String, dynamic>))
           .toList();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -185,14 +235,21 @@ class ViolationsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }

@@ -37,7 +37,14 @@ class FacilityIncidentRepository {
       SpecializedClassification response =
           SpecializedClassification.fromMap(json.decode(data));
       return response;
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
    
 
       return null;

@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
 import 'map_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class PointViewModel extends BaseViewModel {
   final WebService webService;
@@ -30,7 +31,14 @@ class PointViewModel extends BaseViewModel {
       isLoadingData.notifyListeners();
       try {
         dataPoint.value = await controller.searchByObjectId(point);
-      } catch (ex) {
+      } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
         isLoadingData.value = false;
         isLoadingData.notifyListeners();
         MapViewModel mapViewModel = Provider.of<MapViewModel>(
@@ -49,7 +57,14 @@ class PointViewModel extends BaseViewModel {
       isLoadingData.value = false;
       isLoadingData.notifyListeners();
       // dataPoint.value = await controller.(point);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       ///
     }
   }

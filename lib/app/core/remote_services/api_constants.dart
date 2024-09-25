@@ -180,8 +180,8 @@ class ApiConstants {
   static String AppointmentUpdate(int id) =>
       '/v1/appointments-mobile-services/appoinments/$id';
 
-  static const String AppointmentUploadFile =
-      '$AppointmentURL/appointment-upload-attachment/1091';
+  static  String AppointmentUploadFile(int typeId) =>
+      '$AppointmentURL/appointment-upload-attachment/$typeId';
 
   static const String coSubmit = '/v1/social-inspectors/crm/push-info';
   static const String forceUpdate = '/v1/force-update-apps/version';

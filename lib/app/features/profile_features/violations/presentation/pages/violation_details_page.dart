@@ -28,11 +28,14 @@ class _ViolationsDetailsPageState extends State<ViolationsDetailsPage> {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
 
     return BlocProvider(
-      create: (context) => ViolationDetailsBloc()
+      create: (context) => ViolationDetailsBloc(
+          violationDetails: data['violationDetails']
+      )
         ..add(
           GetViolationDetailsEvent(
-              id: data['hashingViolationNumber']?.toString() ?? '',
-              applicationId: data['applicationId']?.toString() ?? ''),
+            id: data['hashingViolationNumber']?.toString() ?? '',
+            applicationId: data['applicationId']?.toString() ?? '',
+          ),
         ),
       child: Scaffold(
         appBar: DefaultAppBarWidget(

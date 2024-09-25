@@ -13,6 +13,9 @@ import '../../../../../core/utils/constants/app_style.dart';
 import '../../services/services.dart';
 import '../shared/circle_icon.dart';
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
 class OpportunityMapCard extends StatelessWidget {
   final String type;
   final String? documentValue;
@@ -289,7 +292,15 @@ String getBidEndDate(String bidEndDate) {
   String date = "";
   try {
     date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(DateTime.parse(bidEndDate));
-  } catch (ex) {}
+  } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   if (CommonFunctions.isAppAR) {
     date = CommonFunctions.replaceArabicNumberWithEnglish(date);
   }

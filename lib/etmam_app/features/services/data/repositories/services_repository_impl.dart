@@ -15,6 +15,7 @@ import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
         RelationResponse;
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ServicesRepositoryImpl implements ServicesRepository {
   final ServicesRemoteDataSource remoteDataSource;
@@ -33,7 +34,14 @@ class ServicesRepositoryImpl implements ServicesRepository {
       final data = await remoteDataSource.getServices(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
@@ -46,7 +54,14 @@ class ServicesRepositoryImpl implements ServicesRepository {
       final data = await remoteDataSource.getServiceDetails(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -59,7 +74,14 @@ class ServicesRepositoryImpl implements ServicesRepository {
       final data = await remoteDataSource.getRelations(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

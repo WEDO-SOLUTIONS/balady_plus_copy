@@ -12,6 +12,8 @@ import 'package:balady_plus/etmam_app/features/otp/otp_exports.dart'
         SendOTPResponse;
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 
 class OTPRepositoryImpl implements OTPRepository {
   final OTPRemoteDataSource remoteDataSource;
@@ -27,7 +29,14 @@ class OTPRepositoryImpl implements OTPRepository {
       final data = await remoteDataSource.sendOTP(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
@@ -40,7 +49,14 @@ class OTPRepositoryImpl implements OTPRepository {
       final data = await remoteDataSource.verifyOTP(params: params);
 
       return Right(data);
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }

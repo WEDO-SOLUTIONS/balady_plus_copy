@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/balady_calender/domain/entities/events_
 import 'package:balady_plus/app/features/balady_calender/domain/repositories/balady_calendar_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class BaladyCalendarRepositoryImpl implements BaladyCalendarRepository {
   final BaladyCalendarRemoteDataSource remoteDataSource;
@@ -21,7 +22,14 @@ class BaladyCalendarRepositoryImpl implements BaladyCalendarRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(
         error.errorMessage,
         statusCode: error.statusCode,
@@ -37,7 +45,14 @@ class BaladyCalendarRepositoryImpl implements BaladyCalendarRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(
         error.errorMessage,
         statusCode: error.statusCode,
@@ -54,7 +69,14 @@ class BaladyCalendarRepositoryImpl implements BaladyCalendarRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(
         error.errorMessage,
         statusCode: error.statusCode,
@@ -70,7 +92,14 @@ class BaladyCalendarRepositoryImpl implements BaladyCalendarRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(
         error.errorMessage,
         statusCode: error.statusCode,

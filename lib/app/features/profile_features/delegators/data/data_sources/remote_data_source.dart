@@ -8,6 +8,8 @@ import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../delegators_exports.dart' show DelegatorModel, AgentModel;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 
 abstract class DelegatorsRemoteDataSource {
   Future<List<DelegatorModel>> getDelegators();
@@ -35,7 +37,14 @@ class DelegatorsRemoteDataSourceImplementation
           .map<DelegatorModel>(
               (e) => DelegatorModel.fromMap(e as Map<String, dynamic>))
           .toList();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -46,7 +55,15 @@ class DelegatorsRemoteDataSourceImplementation
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       throw ServerException(
         error.toString(),
@@ -54,14 +71,21 @@ class DelegatorsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }
@@ -82,7 +106,14 @@ class DelegatorsRemoteDataSourceImplementation
       return result
           .map<AgentModel>((e) => AgentModel.fromMap(e as Map<String, dynamic>))
           .toList();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       "DioError $error".errorLog();
 
       var errorCode;
@@ -91,7 +122,15 @@ class DelegatorsRemoteDataSourceImplementation
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       throw ServerException(
         error.toString(),
@@ -99,14 +138,21 @@ class DelegatorsRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      "Catched $ex".errorLog();
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }

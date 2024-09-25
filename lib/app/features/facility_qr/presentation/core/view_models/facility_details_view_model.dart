@@ -13,6 +13,7 @@ import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../data/qr_photo.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class FacilityQRDetailsViewModel extends BaseViewModel {
   QrDetailsResponse? facilityRespoonse;
@@ -477,7 +478,15 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
       //print(url);
       try {
         await launch(url);
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
   }
 
@@ -562,7 +571,15 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
   void launchURL(String url) async {
     try {
       await launch(url);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   String getWhatsUpNumber() {
@@ -579,7 +596,15 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
           number = n;
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     return number;
   }
@@ -591,7 +616,15 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
               ?.data?.result?.enterpriseInfo?.contactInfo?.enterpriseUniqueCode
               ?.toString() ??
           "";
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     return number;
   }
@@ -621,7 +654,15 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
               ?.data?.result?.comLicenseInfo?.locationInfo?.regionName ??
           "";
       return shopName + "، " + streetName + "، " + regionName;
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return address;
   }
 

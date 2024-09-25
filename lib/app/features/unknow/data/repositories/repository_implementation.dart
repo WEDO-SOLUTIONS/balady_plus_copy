@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/download_file_result.dart';
 import 'package:dartz/dartz.dart';
 
@@ -22,7 +23,14 @@ class InvestmentRepositoryImplementation implements InvestmentRepository {
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Left(ServerFailure(error.errorMessage));
     }
   }

@@ -18,6 +18,7 @@ import '../../../data/models/daem_issue_type_response.dart';
 import '../../../data/models/daem_municipality_response.dart';
 import '../../../data/models/daem_sub_category_type_response.dart';
 import '../../../data/models/daem_submuncipality.response.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class DaemRepository {
   final webServices = locator<WebService>();
@@ -51,10 +52,25 @@ class DaemRepository {
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
-        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, DaemCategoryTypeResponse?>(
         state, error, result);
@@ -89,10 +105,25 @@ class DaemRepository {
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
-        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, DaemSubCategoryTypeResponse?>(
         state, error, result);
@@ -128,10 +159,25 @@ class DaemRepository {
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
-        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, DaemAreaTypeResponse?>(state, error, result);
   }
@@ -169,10 +215,25 @@ class DaemRepository {
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
-        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, DaemIssueTypeResponse?>(state, error, result);
   }
@@ -204,10 +265,25 @@ class DaemRepository {
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
-        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, DaemMunicipalityResponse?>(
         state, error, result);
@@ -242,10 +318,25 @@ class DaemRepository {
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
-        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, DaemSubMunicipalityResponse?>(
         state, error, result);
@@ -302,10 +393,25 @@ class DaemRepository {
           error = ("daem_duplicate_error").tr();
         }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
-        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, DaemCreateTicket?>(state, error, result);
   }
@@ -377,17 +483,40 @@ class DaemRepository {
               data: data,
               body: json.encode(body),
               errorMsg: response.errors![0].message);
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       //MM
       try {
         Helpers.sendLog(
             url: url,
             data: data,
             body: json.encode(body),
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, UploadFileResult?>(state, error, response);
   }
@@ -415,7 +544,14 @@ class DaemRepository {
 
     try {
       result = DownloadFileResult.fromJson(json.decode(data));
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -423,8 +559,16 @@ class DaemRepository {
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
 
     return result;

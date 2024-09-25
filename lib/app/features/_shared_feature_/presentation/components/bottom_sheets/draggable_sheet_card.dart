@@ -24,7 +24,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, CommonProperties, IconPath, WeathherConditions;
-import '../../../../home_page/home_exports.dart';
+import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import '../../../shared_feature_exports.dart'
     show
         CustomTextFieldWidget,

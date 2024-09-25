@@ -13,6 +13,7 @@ import '../../../services_exports.dart'
     show IslamicServices, HelpServices, BusinessLicenseServices, ServiceEntity;
 
 import 'package:dio/dio.dart' show Response;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'services_state.dart';
 
@@ -53,7 +54,14 @@ class ServicesCubit extends Cubit<ServicesState> {
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return result['isEnabled'];
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return true;
     }
   }
@@ -66,7 +74,14 @@ class ServicesCubit extends Cubit<ServicesState> {
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return result['isEnabled'];
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return true;
     }
   }
