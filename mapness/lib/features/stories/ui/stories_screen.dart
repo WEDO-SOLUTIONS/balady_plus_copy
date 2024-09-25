@@ -35,26 +35,28 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
 
   void _onClose([int? index]) {
     widget.onClose?.call();
-    _reportCloseMetricaEvent();
     ref.read(storyServiceProvider.notifier).resumeUpdate();
     context.pop<int?>(index);
   }
 
   @override
+  void dispose() {
+    _reportCloseMetricaEvent();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final storyData = StoryTypedData.fromType(widget.type);
-
     return StoryArgsProvider(
       type: widget.type,
       onClose: _onClose,
-      child: Material(
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.light,
-            child: StoriesFullscreen(
-              initialStoryId: widget.initialStoryId ?? storyData.stories.first.storyId,
-            ),
+      child: Directionality(
+        textDirection: Directionality.of(context),
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: StoriesFullscreen(
+            initialStoryId: widget.initialStoryId ?? storyData.stories.first.storyId,
           ),
         ),
       ),
