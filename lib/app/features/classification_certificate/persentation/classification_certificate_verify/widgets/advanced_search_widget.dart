@@ -50,7 +50,8 @@ class AdvancedSearchWidget extends StatelessWidget {
             hint: Text("select".tr()),
             value: state.searchRequestModel.classificationType,
             icon: Image.asset(IconPath.arrowCircleDown, width: 24, height: 24),
-            validator: (value) => value == null ? 'field required'.tr() : null,
+            validator: (value) =>
+                value == null ? 'most_selected_field'.tr() : null,
             onChanged: (ClassificationCertificateLookupModel? menu) {
               // Cull Action Update States
               if (menu != null &&
@@ -89,7 +90,7 @@ class AdvancedSearchWidget extends StatelessWidget {
                 height: 24,
               ),
               validator: (value) =>
-                  value == null ? 'field required'.tr() : null,
+                  value == null ? 'most_selected_field'.tr().tr() : null,
               onChanged: (ClassificationCertificateLookupModel? menu) {
                 // Cull Action Update States
                 if (menu != null && state.searchRequestModel.sector != menu) {
@@ -126,7 +127,8 @@ class AdvancedSearchWidget extends StatelessWidget {
             onTap: () async {
               BottomSheetDialog.showDraggableSheet<CityLookupsModel>(
                 context,
-                currentRouteName: ClassificationCertificateRouteName.classificationCertificateVerifyOverviewScreen,
+                currentRouteName: ClassificationCertificateRouteName
+                    .classificationCertificateVerifyOverviewScreen,
                 child: GenericBottomSheetList<CityLookupsModel>(
                   title: "city_select".tr(),
                   items: state.cities,
@@ -134,7 +136,8 @@ class AdvancedSearchWidget extends StatelessWidget {
                   onTap: (item) {
                     // Cull Action Update States الريض
                     if (state.searchRequestModel.city != item) {
-                      bloc.add(//
+                      bloc.add(
+                        //
                         UpdateRequestModelAdvancedSearchState(
                           searchRequestModel: state.searchRequestModel.copyWith(
                             city: item,
@@ -158,35 +161,9 @@ class AdvancedSearchWidget extends StatelessWidget {
                 ),
               ),
             ),
-            validator: (text) => (text?.isEmpty ?? true) ? "field required" : null,
+            validator: (text) =>
+                (text?.isEmpty ?? true) ? 'most_selected_field'.tr() : null,
           ),
-
-          // DropdownButtonFormField<CityLookupsModel>(
-          //   hint: Text("city_select".tr()),
-          //   value: ,
-          //   icon: Image.asset(IconPath.arrowCircleDown, width: 24, height: 24),
-          //   validator: (value) => value == null ? 'field required'.tr() : null,
-          //   onChanged: (CityLookupsModel? menu) {
-          //     // Cull Action Update States
-          //     if (state.searchRequestModel.city != menu) {
-          //       bloc.add(
-          //         UpdateRequestModelAdvancedSearchState(
-          //           searchRequestModel: state.searchRequestModel.copyWith(
-          //             city: menu,
-          //           ),
-          //         ),
-          //       );
-          //     }
-          //   },
-          //   items: state.cities.map<DropdownMenuItem<CityLookupsModel>>(
-          //     (CityLookupsModel item) {
-          //       return DropdownMenuItem<CityLookupsModel>(
-          //         value: item,
-          //         child: Text(item.city),
-          //       );
-          //     },
-          //   ).toList(),
-          // ),
         ),
         const SizedBox(height: 12),
         if (state is AdvancedMethodBySectorsState)

@@ -4114,6 +4114,7 @@
   "serial_number": "رقم التسلسي",
   "classification_type": "نوع التصنيف",
   "mobile_number": "رقم الهاتف",
+  "most_selected_field": "هذا الحقل إجباري، يجب الاختيار منه.",
   "certificate_status": "حالة الشهادة",
   "request_contract": "طلب تعاقد مع المكتب",
   "download_certificate_classification": "تنزيل الشهادة",

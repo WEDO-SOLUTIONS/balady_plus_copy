@@ -4371,6 +4371,7 @@
   "serial_number": "Serial Number",
   "classification_type": "Classification Type",
   "mobile_number": "Mobile number",
+  "most_selected_field": "This field is required, a selection must be made.",
   "certificate_status": "Certificate status",
   "request_contract": "Request to contract",
   "download_certificate_classification": "Download Certificate",
