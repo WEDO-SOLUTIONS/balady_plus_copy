@@ -41,6 +41,8 @@ class _FreeRoamManager extends _$FreeRoamManager {
     await dgisController.followNavigation();
     await dgisController.setMapAttributeBool(_navigatorOn, value: true);
 
+    /// For some reason this map attribute doesn't sets sometimes on IOS devices
+    /// This is needed to make sure that user car marker will be shown
     if (Platform.isIOS) {
       Future.delayed(const Duration(milliseconds: 500), () {
         dgisController.setMapAttributeBool(_navigatorOn, value: true);
