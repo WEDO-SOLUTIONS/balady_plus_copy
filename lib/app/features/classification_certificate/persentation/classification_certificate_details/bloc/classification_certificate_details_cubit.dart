@@ -3,6 +3,8 @@ import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/model/details/details_request_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../domain/use_cases/classification_certificate_use_cases.dart';
 import 'classification_certificate_details_state.dart';
@@ -37,9 +39,27 @@ class ClassificationCertificateDetailsCubit
           );
         },
         (data) {
+
+          DateTime? end = DateTime.tryParse(data.certificateExpiryDate.substring(0,8));
+          DateTime? start = DateTime.tryParse(data.certificateStartDate.substring(0,8));
+          String? certificateExpiryDate = '', certificateStartDate = '';
+          if (end != null) {
+            certificateExpiryDate = DateFormat(
+              'dd/MM/yyyy',
+              'locale'.tr(),
+            ).format(end);
+          }
+          if (start != null) {
+            certificateStartDate = DateFormat(
+              'dd/MM/yyyy',
+              'locale'.tr(),
+            ).format(start);
+          }
           emit(
             SuccessDetailsClassificationCertificateState(
               classificationCertificateDetails: data,
+              formatCertificateExpiryDate: certificateExpiryDate,
+              formatCertificateStartDate: certificateStartDate,
             ),
           );
         },

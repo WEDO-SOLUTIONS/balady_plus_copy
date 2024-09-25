@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/errors/exceptions.dart';
+import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/model/search_request/search_request_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,12 +36,16 @@ class ClassificationCertificateListCubit
       var response = await searchUseCases(searchRequestModel);
       response.fold(
         (filer) {
-          emit(
-            FieldListClassificationCertificateState(
-              errorMessage: filer.toString(),
-              searchRequestModel: searchRequestModel,
-            ),
-          );
+          if(filer is NoDataFoundFailure) {
+            emit(const NoListClassificationCertificateDebtState());
+          } else {
+            emit(
+              FieldListClassificationCertificateState(
+                errorMessage: filer.toString(),
+                searchRequestModel: searchRequestModel,
+              ),
+            );
+          }
         },
         (data) {
           List<ClassificationCertificateItemEntity> type = [];

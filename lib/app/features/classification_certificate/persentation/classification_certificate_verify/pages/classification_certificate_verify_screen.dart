@@ -94,29 +94,26 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
                         );
                       }
                       if (state is AdvancedSearchLoadingState) {
-                        return const Padding(
-                          padding: EdgeInsets.all(24.0),
+                        return  Padding(
+                          padding: const EdgeInsets.all(24.0),
                           child: Column(
                             children: [
-                              Center(child: CircularProgressIndicator()),
-                              SizedBox(height: 16),
-                              Text(
-                                "loading....",
-                              ),
+                              const Center(child: CircularProgressIndicator()),
+                              const SizedBox(height: 16),
+                              Text("please_wait".tr()),
                             ],
                           ),
                         );
                       }
                       if (state is AdvancedMethodNotWorkingState) {
-                        return const Column(
+                        return  Column(
                           children: [
                             Text(
-                              "the_advanced_search_not_working_tray_agin_later",
+                              "the_advanced_search_not_working_try_again_later".tr(),
                             ),
                           ],
                         );
                       }
-
                       return Form(
                         key: contextBloc
                             .read<ClassificationCertificateVerifyBloc>()

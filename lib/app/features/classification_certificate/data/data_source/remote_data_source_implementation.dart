@@ -55,6 +55,7 @@ class ClassificationCertificateRemoteDataSource
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
+        errorCode: error.response?.data['data']?['responseCode'] ?? -1,
       );
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -112,6 +113,7 @@ class ClassificationCertificateRemoteDataSource
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
+        errorCode: error.response?.data['data']?['responseCode'] ?? -1,
       );
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -172,6 +174,7 @@ class ClassificationCertificateRemoteDataSource
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
+        errorCode: error.response?.data['data']?['responseCode'] ?? -1,
       );
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -235,6 +238,7 @@ class ClassificationCertificateRemoteDataSource
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
+        errorCode: error.response?.data['data']?['responseCode'] ?? -1,
       );
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -249,9 +253,7 @@ class ClassificationCertificateRemoteDataSource
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }

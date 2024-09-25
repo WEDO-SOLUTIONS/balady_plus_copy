@@ -14,11 +14,11 @@ abstract class ClassificationCertificateDetailsEentity {
   final String turnkeyMin;
   final String cRorLicNumber;
   final String certificateStartDate;
+  final String certificateExpiryDate;
   final String city;
   final String surveyingServicesMin;
   final String classificationType;
   final String emailAddress;
-  final String certificateExpiryDate;
   final String serialNumber;
   final String designContractInfoMax;
   final String surveyingServicesMax;

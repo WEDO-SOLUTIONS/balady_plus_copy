@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/extensions/json_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/classification_certificate/persentation/classification_certificate_details/bloc/classification_certificate_details_state.dart';
@@ -9,6 +10,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../data/model/details/details_request_model.dart';
 import '../bloc/classification_certificate_details_cubit.dart';
+import '../widgets/details_data_widget.dart';
+import '../widgets/title_value_widget.dart';
 
 class ClassificationCertificateDetailsScreen extends StatelessWidget {
   const ClassificationCertificateDetailsScreen({super.key});
@@ -25,7 +28,7 @@ class ClassificationCertificateDetailsScreen extends StatelessWidget {
         resizeToAvoidBottomInset: true,
         appBar: DefaultAppBarWidget(),
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 16),
           child: Column(
             children: [
               SvgPicture.asset(IconPath.documentCopy),
@@ -42,6 +45,7 @@ class ClassificationCertificateDetailsScreen extends StatelessWidget {
                     }
                     if (state is FieldDetailsClassificationCertificateState) {
                       return ReloadWidget(
+                        errorMessage: state.errorMessage,
                         onTab: () {
                           ClassificationCertificateDetailsCubit cubit =
                               contextCubit.read<
@@ -53,10 +57,34 @@ class ClassificationCertificateDetailsScreen extends StatelessWidget {
                       );
                     }
                     if (state is SuccessDetailsClassificationCertificateState) {
-                      return const Column(
+                      return Column(
                         children: [
-                          SizedBox(width: double.maxFinite),
-                          Text("details"),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: DetailsDataWidget(
+                                classificationCertificateDetails:
+                                    state.classificationCertificateDetails,
+                              ),
+                            ),
+                          ),
+                          state.classificationCertificateDetails.attachLink
+                                  .isNotEmpty
+                              ? OutlinedButton(
+                                  onPressed: () {},
+                                  child: Text(
+                                    "download_certificate_classification".tr(),
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                          const SizedBox(height: 16),
+                          state.classificationCertificateDetails
+                                      .classificationType ==
+                                  "Classification of Engineer"
+                              ? ElevatedButton(
+                                  onPressed: () {},
+                                  child: Text("request_contract".tr()),
+                                )
+                              : const SizedBox.shrink(),
                         ],
                       );
                     }

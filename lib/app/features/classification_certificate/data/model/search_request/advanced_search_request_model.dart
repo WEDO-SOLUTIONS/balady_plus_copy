@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/classification_certificate/data/model/search_request/search_request_model.dart';
+import 'package:intl/intl.dart';
 
 import '../lookups/activity_lookups_model.dart';
 import '../lookups/city_lookups_model.dart';
@@ -14,11 +15,12 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
   ClassificationCertificateLookupModel? classificationType;
   ClassificationCertificateLookupModel? sector;
   CityLookupsModel? city;
+
   //////////////////////////////////////////////////
   ActivityLookupsModel? activity;
   ClassificationCertificateLookupModel? classificationGrade;
-  String? expiryDateFrom;
-  String? expiryDateTo;
+  DateTime? expiryDateFrom;
+  DateTime? expiryDateTo;
   String? phoneNumber;
   ClassificationCertificateLookupModel? service;
 
@@ -49,8 +51,8 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
     ////////////////////////////////////////////////////
     ActivityLookupsModel? activity,
     ClassificationCertificateLookupModel? classificationGrade,
-    String? expiryDateFrom,
-    String? expiryDateTo,
+    DateTime? expiryDateFrom,
+    DateTime? expiryDateTo,
     String? phoneNumber,
     ClassificationCertificateLookupModel? service,
   }) =>
@@ -94,10 +96,16 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
       data['classification-grade'] = classificationGrade!.code;
     }
     if (expiryDateFrom != null) {
-      data['expiry-date-from'] = expiryDateFrom;
+      data['expiry-date-from'] = DateFormat(
+        'yyyyMMdd',
+        "en",
+      ).format(expiryDateFrom!);
     }
     if (expiryDateTo != null) {
-      data['expiry-date-to'] = expiryDateTo;
+      data['expiry-date-to'] = DateFormat(
+        'yyyyMMdd',
+        "en",
+      ).format(expiryDateTo!);
     }
     if (phoneNumber != null) {
       data['phone-number'] = phoneNumber;

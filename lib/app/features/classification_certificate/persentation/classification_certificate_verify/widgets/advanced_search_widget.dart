@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/classification_certificate/persentation
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../data/model/lookups/activity_lookups_model.dart';
@@ -226,7 +227,30 @@ class AdvancedSearchWidget extends StatelessWidget {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
             readOnly: true,
-            onTap: () {},
+            controller: state.searchRequestModel.expiryDateFrom != null
+                ? TextEditingController(
+                    text: DateFormat(
+                      'dd/MM/yyyy',
+                      "locale".tr(),
+                    ).format(state.searchRequestModel.expiryDateFrom!),
+                  )
+                : null,
+            onTap: () async {
+              DateTime? date = await showDatePicker(
+                context: context,
+                firstDate: DateTime(1900), //
+                lastDate: DateTime.now(), //
+              );
+              if (date != null) {
+                bloc.add(
+                  UpdateRequestModelAdvancedSearchState(
+                    searchRequestModel: state.searchRequestModel.copyWith(
+                      expiryDateFrom: date,
+                    ),
+                  ),
+                );
+              }
+            },
             decoration: InputDecoration(
               hintText: "select_date".tr(),
               suffixIcon: Padding(
@@ -246,7 +270,32 @@ class AdvancedSearchWidget extends StatelessWidget {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
             readOnly: true,
-            onTap: () {},
+            controller: state.searchRequestModel.expiryDateTo != null
+                ? TextEditingController(
+                    text: DateFormat(
+                      'dd/MM/yyyy',
+                      "locale".tr(),
+                    ).format(state.searchRequestModel.expiryDateTo!),
+                  )
+                : null,
+            onTap: () async {
+              DateTime? date = await showDatePicker(
+                context: context,
+                firstDate: DateTime.now(),
+                lastDate: DateTime.now().add(
+                  const Duration(days: 365 * 4),
+                ),
+              );
+              if (date != null) {
+                bloc.add(
+                  UpdateRequestModelAdvancedSearchState(
+                    searchRequestModel: state.searchRequestModel.copyWith(
+                      expiryDateTo: date,
+                    ),
+                  ),
+                );
+              }
+            },
             decoration: InputDecoration(
               hintText: "select_date".tr(),
               suffixIcon: Padding(
@@ -265,14 +314,26 @@ class AdvancedSearchWidget extends StatelessWidget {
           widget: TextFormField(
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
+            controller: TextEditingController(
+                text: state.searchRequestModel.phoneNumber),
             decoration: InputDecoration(
               hintText: "phoneNumberFieldHint".tr(),
             ),
-            validator: (text) {
-              if (text == null || text.isEmpty) {
+            validator: (phoneNumber) {
+              if (phoneNumber == null || phoneNumber.isEmpty) {
                 return null;
               }
-              return Helpers.validateMobile(text);
+              String? error = Helpers.validateMobile(phoneNumber);
+              if (error != null) {
+                bloc.add(
+                  UpdateRequestModelAdvancedSearchState(
+                    searchRequestModel: state.searchRequestModel.copyWith(
+                      phoneNumber: phoneNumber,
+                    ),
+                  ),
+                );
+              }
+              return error;
             },
           ),
         ),

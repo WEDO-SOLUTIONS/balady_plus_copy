@@ -76,13 +76,9 @@ class ClassificationCertificateRepositoryImplementation
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+      if(error.errorCode == "204") {
+        return Left(NoDataFoundFailure());
+      }
       return Left(ServerFailure(error.errorMessage));
     }
   }
@@ -97,13 +93,6 @@ class ClassificationCertificateRepositoryImplementation
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
       return Left(ServerFailure(error.errorMessage));
     }
   }

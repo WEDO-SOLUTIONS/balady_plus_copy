@@ -25,13 +25,20 @@ class ClassificationCertificateListWidget extends StatelessWidget {
         }
         if (state is NoListClassificationCertificateDebtState) {
           return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(IconPath.noEvents),
-                const SizedBox(height: 10),
-                Text('no_data'.tr())
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(IconPath.noEvents),
+                  const SizedBox(height: 20),
+                  Text('noSearchFounded'.tr()),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('back_to_search'.tr()),
+                  ),
+                ],
+              ),
             ),
           );
         }

@@ -8,12 +8,15 @@ class ClassificationCertificateDetailsState extends Equatable {
   List<Object?> get props => throw UnimplementedError();
 }
 
-class LoadingDetailsClassificationCertificateState extends ClassificationCertificateDetailsState {
+class LoadingDetailsClassificationCertificateState
+    extends ClassificationCertificateDetailsState {
   const LoadingDetailsClassificationCertificateState();
 }
 
-class FieldDetailsClassificationCertificateState extends ClassificationCertificateDetailsState {
+class FieldDetailsClassificationCertificateState
+    extends ClassificationCertificateDetailsState {
   final String errorMessage;
+
   const FieldDetailsClassificationCertificateState({
     required this.errorMessage,
   });
@@ -22,12 +25,21 @@ class FieldDetailsClassificationCertificateState extends ClassificationCertifica
   List<Object?> get props => [errorMessage];
 }
 
-class SuccessDetailsClassificationCertificateState extends ClassificationCertificateDetailsState {
-  final ClassificationCertificateDetailsEentity classificationCertificateDetails;
-  const SuccessDetailsClassificationCertificateState({required this.classificationCertificateDetails});
+class SuccessDetailsClassificationCertificateState
+    extends ClassificationCertificateDetailsState {
+  final ClassificationCertificateDetailsEentity
+      classificationCertificateDetails;
+  final String formatCertificateExpiryDate;
+  final String formatCertificateStartDate;
+
+  const SuccessDetailsClassificationCertificateState({
+    required this.classificationCertificateDetails,
+    required this.formatCertificateExpiryDate,
+    required this.formatCertificateStartDate,
+  });
+
   @override
   List<Object?> get props {
-    return [classificationCertificateDetails,classificationCertificateDetails];
+    return [classificationCertificateDetails, classificationCertificateDetails];
   }
 }
-
