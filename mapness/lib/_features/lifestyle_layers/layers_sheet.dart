@@ -21,21 +21,20 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   static const _duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
 
+  bool _isShown = false;
   static const _curve = Curves.easeIn;
 
   late final DraggableScrollableController _layersController;
   late final DraggableScrollableController _parkingLotsController;
-
-  // Another one to check if the panel is shown and we don't pop it on small size of the sheet
-  bool _isShown = false;
 
   @override
   void initState() {
     super.initState();
 
     _layersController = DraggableScrollableController();
-    _layersController.addListener(_layersControllerListener);
     _parkingLotsController = DraggableScrollableController();
+    _layersController.addListener(_closeOnScroll);
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _showBottomSheet());
   }
 
@@ -157,22 +156,21 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
     }
   }
 
-  void _hideLayersPanel() {
-    _layersController.animateTo(
-      .0,
-      duration: _showHideDuration,
-      curve: _curve,
-    );
+  void _closeOnScroll() {
+    if (_isShown && _layersController.size < .01) {
+      context.pop();
+    }
   }
 
-  // If the main layer [_layersController] is in hidden position then close the panel and make pop
-  void _layersControllerListener() {
-    if (_isShown && _layersController.size <= _layersHiddenHeight) {
-      final goRoute = ref.read(goRouterProvider);
-
-      if (goRoute.canPop()) {
-        goRoute.pop();
-      }
+  void _hideLayersPanel() {
+    if (_isShown) {
+      _layersController
+          .animateTo(
+            .0,
+            duration: _showHideDuration,
+            curve: _curve,
+          )
+          .then((_) => _isShown = false);
     }
   }
 
@@ -203,6 +201,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
       duration: _duration,
       curve: _curve,
     );
+
     _parkingLotsController
         .animateTo(
       _parkingPanelMaxHeight,
@@ -219,12 +218,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
 
     _layersController
         .animateTo(
-      _layersPanelMaxHeight,
-      duration: _showHideDuration,
-      curve: _curve,
-    )
-        .then((_) {
-      _isShown = true;
-    });
+          _layersPanelMaxHeight,
+          duration: _showHideDuration,
+          curve: _curve,
+        )
+        .then((_) => _isShown = true);
   }
 }
