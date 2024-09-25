@@ -6,6 +6,7 @@ import 'package:mapness/_features/debug_overlay/widgets/better_route_settings_wi
 import 'package:mapness/_features/debug_overlay/widgets/colorscheme_toggler.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_controll.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
+import 'package:mapness/_features/debug_overlay/widgets/link_checker.dart';
 import 'package:mapness/_features/debug_overlay/widgets/onboarding_button.dart';
 import 'package:mapness/_features/debug_overlay/widgets/sso_credential_view.dart';
 import 'package:mapness/_features/debug_overlay/widgets/voice_picker.dart';
@@ -194,6 +195,11 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const DebugNavigationControll(),
                   const ColorschemeToggler(),
                   const ShowOnboardingButton(),
+                  const SizedBox(height: 12),
+                  const LinkChecker(),
+                  SizedBox(
+                    height: MediaQuery.of(context).viewInsets.bottom,
+                  ),
                 ],
               ),
             ),
