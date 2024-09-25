@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/trip_details.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/trip_location_response.dart';
@@ -13,7 +14,6 @@ import '../../data/model/baqie_approval_response.dart';
 import '../../data/model/ekram_attachment_response.dart';
 import '../../data/model/look_up_item_location_model.dart';
 import '../../data/model/upload_letter_params.dart';
-import '../../data/model/user_info_response_model.dart';
 import '../../ekram_exports.dart';
 import '../entities/active_grave_request_params.dart';
 import '../entities/book_cemetry_params.dart';

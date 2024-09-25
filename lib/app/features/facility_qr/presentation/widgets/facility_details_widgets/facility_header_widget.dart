@@ -264,8 +264,15 @@ class FacilityCardWidget extends StatelessWidget {
       } else {
         address = street + " . " + city;
       }
-    } catch (ex) {
-      ex.toString();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      error.toString();
     }
     return address;
   }

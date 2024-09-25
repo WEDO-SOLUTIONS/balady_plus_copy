@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SsoUserInfo extends Equatable {
   const SsoUserInfo({
@@ -81,7 +82,14 @@ class SsoUserInfo extends Equatable {
       List<String> names = sname?.split(',') ?? [""];
 
       return names.elementAt(1);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return " ";
     }
   }
@@ -92,7 +100,14 @@ class SsoUserInfo extends Equatable {
       if (names.length >= 4) {
         return names.elementAt(2);
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return " ";
     }
     return " ";
@@ -163,7 +178,14 @@ class SsoUserInfo extends Equatable {
         String day = dateDivided[0].toString().length == 1 ? "0${dateDivided[0]}" : dateDivided[0].toString();
         return "$year/$month/$day";
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return applicantDob;
     }
   }

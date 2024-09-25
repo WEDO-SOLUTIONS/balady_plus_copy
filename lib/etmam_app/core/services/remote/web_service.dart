@@ -74,8 +74,15 @@ class AppInterceptors extends Interceptor {
           url: err.requestOptions.path,
           statusCode: err.response?.statusCode,
           headers: err.requestOptions.headers);
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
     }
     switch (err.type) {
       case DioErrorType.connectTimeout:

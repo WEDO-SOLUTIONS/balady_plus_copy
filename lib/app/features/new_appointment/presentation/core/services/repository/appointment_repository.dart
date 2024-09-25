@@ -31,6 +31,7 @@ import '../../models/service_config_reseponse.dart';
 import '../../models/sub_class_response.dart';
 import '../../models/sub_municipalitiy_model.dart';
 import '../../models/upload_file_resepnse.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class AppointmentRepository {
   final webServices = locator<WebService>();
@@ -50,14 +51,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentLookUpList,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, LookUpList?>(state, error, result);
   }
@@ -71,7 +87,14 @@ class AppointmentRepository {
 
       return const Tuple3<bool?, String?, RequeestRealStateResponseModel?>(
           true, "", null);
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       print("ERRRRO ${error.toString()}");
       ServerException(
         error.toString(),
@@ -80,9 +103,16 @@ class AppointmentRepository {
       );
       return Tuple3<bool?, String?, RequeestRealStateResponseModel?>(
           false, error.toString(), null);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Tuple3<bool?, String?, RequeestRealStateResponseModel?>(
-          false, ex.toString(), null);
+          false, error.toString(), null);
     }
   }
 
@@ -99,14 +129,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       //MM
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentMunicipalities,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, Municipality?>(state, error, result);
   }
@@ -127,14 +172,29 @@ class AppointmentRepository {
       if (!state || result.data?.responseCode == "2") {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentSubMunicipalities,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, SubMunicipality?>(state, error, result);
   }
@@ -155,14 +215,29 @@ class AppointmentRepository {
       if (!state || result.data?.responseCode == "2") {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentDepartments,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, DepartmentList?>(state, error, result);
   }
@@ -184,14 +259,29 @@ class AppointmentRepository {
       if (!state || result.data?.responseCode == "2") {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentMainClasssifications,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, MainClassResponse?>(state, error, result);
   }
@@ -212,14 +302,29 @@ class AppointmentRepository {
       if (!state || result.data?.responseCode == "2") {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentSubClasssifications,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, SubClassResponse?>(state, error, result);
   }
@@ -241,14 +346,29 @@ class AppointmentRepository {
       if (!state || result.data?.responseCode == "2") {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentServiceConfig,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, ServiceConfigResponse?>(state, error, result);
   }
@@ -272,14 +392,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentAvailableDates,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, AvailableDatesResponse?>(
         state, error, result);
@@ -302,14 +437,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentAvailableTimes,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, AvailableTimesResponse?>(
         state, error, result);
@@ -340,14 +490,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.MyAppointments,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, MyAppointmentsResponse?>(
         state, error, result);
@@ -366,7 +531,14 @@ class AppointmentRepository {
       AppointmentDetails response = AppointmentDetails.fromJson(res.data);
 
       return Tuple3<bool?, String?, AppointmentDetails?>(true, "", response);
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -374,9 +546,16 @@ class AppointmentRepository {
       );
       return Tuple3<bool?, String?, AppointmentDetails?>(
           false, error.toString(), null);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Tuple3<bool?, String?, AppointmentDetails?>(
-          false, ex.toString(), null);
+          false, error.toString(), null);
     }
   }
 
@@ -395,14 +574,29 @@ class AppointmentRepository {
 
     try {
       result = data;
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.PrintAppointmentDetails,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
@@ -436,14 +630,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.CancelAppointment,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, CancelAppointmentResponse?>(
         state, error, result);
@@ -468,14 +677,29 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
             url: ApiConstants.ConfirmAppointment,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
         state, error, result);
@@ -492,7 +716,14 @@ class AppointmentRepository {
 
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
           true, "", SaveAppointmentResponse());
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -500,9 +731,16 @@ class AppointmentRepository {
       );
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
           false, error.toString(), null);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, ex.toString(), null);
+          false, error.toString(), null);
     }
 
     try {
@@ -512,7 +750,14 @@ class AppointmentRepository {
 
       return Tuple3<bool?, String?, SaveAppointmentResponse>(
           true, "", SaveAppointmentResponse());
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       print(error);
 
       try {
@@ -521,13 +766,28 @@ class AppointmentRepository {
             body: reqBody,
             data: error,
             errorMsg: error.toString());
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
           false, error.toString(), null);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, ex.toString(), null);
+          false, error.toString(), null);
     }
   }
 
@@ -545,7 +805,14 @@ class AppointmentRepository {
 
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
           true, "", response);
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -553,45 +820,27 @@ class AppointmentRepository {
       );
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
           false, error.toString(), null);
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, ex.toString(), null);
+          false, error.toString(), null);
     }
-
-    final body = await webServices
-        .postApigeeRequest(ApiConstants.AppointmentSave, body: reqBody);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    SaveAppointmentResponse? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
-
-    try {
-      SaveAppointmentResponse response =
-          SaveAppointmentResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
-    } catch (ex) {
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentSave,
-            body: reqBody,
-            data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
-    }
-    return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-        state, error, result);
   }
 
   Future<Tuple3<bool?, String?, UploadFileResponse?>> uploadFile(
       Uint8List? base64,
       String? fileName,
       String? filePath,
-      String? mimeType) async {
+      String? mimeType,
+      int typeID) async {
     final body = await webServices.uploadApigeeFile(
-        ApiConstants.AppointmentUploadFile,
+        ApiConstants.AppointmentUploadFile(typeID),
         base64: base64,
         fileName: fileName,
         mimeType: mimeType);
@@ -607,46 +856,72 @@ class AppointmentRepository {
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       try {
         Helpers.sendLog(
-            url: ApiConstants.AppointmentUploadFile,
+            url: ApiConstants.AppointmentUploadFile(typeID),
             qeuryParms: filePath,
             data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     }
     return Tuple3<bool?, String?, UploadFileResponse?>(state, error, result);
   }
 
-  /*Future<Tuple3<bool?, String?, RatingInfoResponse?>> getRatingInfo(
-      String serviceId) async {
-    String query = "$serviceId";
 
-    final body = await webServices.getApigeeRequest(ApiConstants.RatingInfo,
-        relativePath: query, autoLogout: false);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    RatingInfoResponse? result;
-    String error =
-        body['error'] ?? ("errors_server_error_1").tr();
-
+  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> deleteAttachment(String udid,) async {
+    var res;
     try {
-      RatingInfoResponse response =
-          RatingInfoResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
-    } catch (ex) {
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.RatingInfo,
-            qeuryParms: query,
-            data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+      res = await sl<web.WebService>()
+          .dio
+          .post(ApiUrl.deleteAppointment(udid));
+
+      SaveAppointmentResponse response =
+      SaveAppointmentResponse.fromJson(res.data);
+
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          true, "", response);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, error.toString(), null);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, error.toString(), null);
     }
-    return Tuple3<bool?, String?, RatingInfoResponse?>(state, error, result);
-  }*/
+  }
+
 }

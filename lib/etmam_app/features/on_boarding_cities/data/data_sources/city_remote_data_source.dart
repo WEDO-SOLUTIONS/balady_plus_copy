@@ -12,6 +12,7 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../domain/entities/city_params.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class CityRemoteDataSource {
   Future<ApigeeResponse<CityResponseModel>> getCities(CityParams params);
@@ -39,15 +40,29 @@ class CityRemoteDataSourceImpl extends CityRemoteDataSource {
           response.data,
           parsedResult: parsedResult);
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         String? errorCode = "";
         try {
@@ -55,13 +70,21 @@ class CityRemoteDataSourceImpl extends CityRemoteDataSource {
               ApigeeResponseModel<CityResponseModel>.fromMap(response.data,
                   parsedResult: null);
           errorCode = decodedResponse.data?.responseCode;
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
         throw ServerException("errors_server_error_2".tr(),
             errorCode: errorCode,
             exception: APIException(
-              errorMessage: ex.toString(),
+              errorMessage: error.toString(),
             ),
             response: response);
       }

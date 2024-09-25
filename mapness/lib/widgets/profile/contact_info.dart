@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 
-const momrahEmail = 'infoCS@momrah.gov.sa';
+const momrahEmail = 'infoCS@momah.gov.sa';
 const momrahPoneNumber = '199040';
 const momrahTwitter = r'Balady_CS';
 

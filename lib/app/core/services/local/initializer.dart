@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -49,7 +50,15 @@ class Initializer {
         deviceId = info.identifierForVendor ?? "2"; //UUID for iOS
         deviceOs = "iOS";
       }
-    } on PlatformException catch (_) {}
+    } on PlatformException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
 
     final details = sl<DeviceDetails>().copyWith(
       deviceName: deviceName,

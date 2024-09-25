@@ -21,6 +21,7 @@ import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'ekram_add_trip_event.dart';
 part 'ekram_add_trip_state.dart';
@@ -317,6 +318,14 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
                 x: location.longitude,
                 y: location.latitude));
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 }

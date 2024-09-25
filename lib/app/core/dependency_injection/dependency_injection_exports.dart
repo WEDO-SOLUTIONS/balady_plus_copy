@@ -22,4 +22,3 @@ export 'features/profile/invoices_injection.dart';
 export 'features/profile/licenses_injection.dart';
 export 'features/profile/violations_injection.dart';
 export 'features/vd_injection.dart';
-export 'features/cr_injection.dart';

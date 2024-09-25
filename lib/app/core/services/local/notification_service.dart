@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'navigation_services.dart';
 
@@ -114,7 +116,15 @@ class NotificationService {
   static void configure() async {
     try {
       await Firebase.initializeApp();
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
 
     // Set the background messaging handler early on, as a named top-level function
@@ -143,11 +153,36 @@ class NotificationService {
         });
       }
     });
+
+    Future<void> launchURL(String strUrl) async {
+      final Uri url = Uri.parse(strUrl);
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    }
+    void handleMessage(RemoteMessage message) {
+      print("open notication clciked");
+      if (message.data.containsKey('url')) {
+        final url = message.data['url'];
+        launchURL(url);
+        return;
+      }
+      Future.delayed(const Duration(seconds: 2), () {
+        NavigationService.pushNamed(routeName: RouteName.notificationsListScreen);
+      });
+
+    }
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) {
-      if (message != null) {}
+      if (message != null) {
+       // Future.delayed(const Duration(seconds: 2), () {
+          handleMessage(message);
+       // });
+      }
     });
 
     // showNotification(Map<String, dynamic> msg) {
@@ -179,7 +214,7 @@ class NotificationService {
                 channelDescription: "Notification",
 
                 playSound: true,
-                timeoutAfter: 3000,
+
 
                 // TODO add a proper drawable resource to android, for now using
                 //      one that already exists in example app.
@@ -189,11 +224,9 @@ class NotificationService {
       }
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      NavigationService.pushNamed(routeName: RouteName.notificationsListScreen);
 
-      print("open notication clciked");
-      //print('A new onMessageOpenedApp event was published!');
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        handleMessage(message);
     });
   }
 }

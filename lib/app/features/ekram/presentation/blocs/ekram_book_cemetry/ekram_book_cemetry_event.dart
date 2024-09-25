@@ -131,7 +131,7 @@ class ChangeIsFetus extends EkramBookCemetryEvent {
 }
 
 class ChangeGenderEvent extends EkramBookCemetryEvent {
-  final int? value;
+  final String? value;
   ChangeGenderEvent({this.value});
 }
 

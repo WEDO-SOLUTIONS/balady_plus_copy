@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/calculator/presentation/pages/presenter
 import 'package:http/http.dart' as http;
 
 import '../../core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class WebServiceConnections {
   final String API_URL = RemoteConfig.baladyBaseUrl + '/apis/v1.0/Lookup/';
@@ -51,16 +52,39 @@ class WebServiceConnections {
               errorMsg: (response != null && response.body != null)
                   ? response.body.toString()
                   : "");
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
         return m;
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       //print(error);
       if (error != null) {
         try {
           Helpers.sendLog(url: url, errorMsg: error.toString());
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw APIException(apiPath: url, fullPath: url, exception: error);
       }
     }
@@ -108,15 +132,38 @@ class WebServiceConnections {
               errorMsg: (response != null && response.body != null)
                   ? response.body.toString()
                   : "");
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         return m;
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error != null) {
         try {
           Helpers.sendLog(
               url: url, data: body.toString(), errorMsg: error.toString());
-        } catch (ex) {}
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw APIException(apiPath: url, fullPath: url, exception: error);
       }
     }

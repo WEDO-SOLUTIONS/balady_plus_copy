@@ -4,6 +4,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 
 import '../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, IconPath;
+import '../../../new_appointment/presentation/core/services/view_models/new_appointment_first_step_view_model.dart';
 import '../../shared_feature_exports.dart'
     show CustomElevatedIconButtonWidget, CustomSvgIconWidget;
 
@@ -17,18 +18,21 @@ abstract class _ElevatedIconButton extends StatelessWidget {
   }
 }
 
+
 class ElevatedIconButtonWidget extends _ElevatedIconButton {
   ///
-  ElevatedIconButtonWidget.upload({required VoidCallback onPressed})
+  ElevatedIconButtonWidget.upload({String? name,NewAppointmentFirstStepViewModel? model ,bool? isMandatory,required VoidCallback onPressed})
       : super(CustomElevatedIconButtonWidget(
-          text: "compliance_image_upload".tr(),
+          text:  name != null ? isMandatory ==true? "$name  *": name  :"compliance_image_upload".tr(),
           btnColor: Colors.transparent,
-          btnBorderColor: AppColor.primary800Light,
+
+          btnBorderColor:model?.isFormValid==false &&isMandatory==true ? AppColor.error:AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.primary800Light,
             fontWeight: FontWeight.w700,
             fontSize: 16,
           ),
+
           icon: const CustomSvgIconWidget(IconPath.add, iconSize: 18.0),
           onPressed: onPressed,
         ));

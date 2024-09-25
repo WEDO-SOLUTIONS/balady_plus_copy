@@ -43,7 +43,7 @@ class EkramBookingCardWidget extends StatelessWidget {
             Row(
               children: [
                 const DrawIconBasedTypeWidget(icon: IconPath.requests),
-                CustomHorizontalSpace(
+                const CustomHorizontalSpace(
                   width: 4,
                 ),
                 Expanded(
@@ -84,7 +84,7 @@ class EkramBookingCardWidget extends StatelessWidget {
                     value: item.burialDate ?? "",
                   ),
                   RequestParameter(
-                    title: 'burialTime'.tr(),
+                    title: 'cemetry_deceassed_burial_time'.tr(),
                     value: item.burialTime ?? "",
                   ),
                 ],

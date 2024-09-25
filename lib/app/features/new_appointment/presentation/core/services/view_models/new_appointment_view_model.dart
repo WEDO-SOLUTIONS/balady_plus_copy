@@ -36,6 +36,7 @@ import '../../models/upload_file_resepnse.dart';
 import '../repository/appointment_repository.dart';
 import 'new_appointment_first_step_view_model.dart';
 import 'new_appointment_view_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NewAppointmentViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();
@@ -129,6 +130,7 @@ class NewAppointmentViewModel extends BaseViewModel {
   LookUpList? specialConditionTypeList;
   List<VisitType>? appointmentTypeList;
 
+  List<AttachmentsConfig>? attachmentConfigList = [];
   String? realEstateSurveyId;
   String? realEstateId;
   String? realEstateRequestId;
@@ -548,8 +550,15 @@ class NewAppointmentViewModel extends BaseViewModel {
         showError(response.item2 ?? "");
       }
       return null;
-    } catch (ex) {
-      print(ex);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
       hideLoading();
     }
   }
@@ -568,6 +577,27 @@ class NewAppointmentViewModel extends BaseViewModel {
       if (appointmentTypeList?.length == 1) {
         appointmentTypeItem = appointmentTypeList?[0];
       }
+      attachmentConfigList = serviceConfigResponse?.data?.result?[0].attachmentsConfig;
+
+
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+
+  Future<bool> deleteAttachment(String udid) async {
+
+    showLoading();
+    Tuple3<bool?, String?, SaveAppointmentResponse?> response =
+    await _repository.deleteAttachment(udid);
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result?.uuid != null) {
+      var attachmentUuid = response.item3?.data?.result?.uuid;
 
       return true;
     } else {
@@ -577,22 +607,44 @@ class NewAppointmentViewModel extends BaseViewModel {
   }
 
   Future<bool> uploadFile(Uint8List? attachmentBase64,
-      String? attachmentFileName, String? attachmentPath) async {
+      String? attachmentFileName, String? attachmentPath,int? attachmentId) async {
     final mimeType = lookupMimeType(attachmentPath ?? ""); // 'image/jpeg'
 
     showLoading();
     Tuple3<bool?, String?, UploadFileResponse?> response =
         await _repository.uploadFile(
-            attachmentBase64, attachmentFileName, attachmentPath, mimeType);
+            attachmentBase64, attachmentFileName, attachmentPath, mimeType,attachmentId!);
     hideLoading();
     if (response.item1 != null &&
         response.item1! &&
         response.item3?.data?.result?.uuid != null) {
       var attachmentUuid = response.item3?.data?.result?.uuid;
-      atttachmentItems.add(AttachmentItemModel(
-          attachmentUuid: attachmentUuid,
-          attachmentFileName: attachmentFileName,
-          attachmentPath: attachmentPath));
+
+
+
+      if(attachmentId != null) {
+
+        int index =atttachmentItems.indexWhere((element) => element.attachmentId ==attachmentId);
+
+        if(index == -1) {
+          atttachmentItems.add(AttachmentItemModel(
+              attachmentId:attachmentId,
+              attachmentUuid: attachmentUuid,
+              attachmentFileName: attachmentFileName,
+              attachmentPath: attachmentPath,
+              updatable: true));
+        }
+        else
+          {
+            atttachmentItems.removeAt(index);
+            atttachmentItems.insert(index,AttachmentItemModel(
+                attachmentId:attachmentId,
+                attachmentUuid: attachmentUuid,
+                attachmentFileName: attachmentFileName,
+                attachmentPath: attachmentPath,
+                updatable: true));
+          }
+      }
       return true;
     } else {
       showError(response.item2 ?? "");
@@ -707,7 +759,15 @@ class NewAppointmentViewModel extends BaseViewModel {
           }
         }
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     isUserOld = isOld;
     return isOld;
   }

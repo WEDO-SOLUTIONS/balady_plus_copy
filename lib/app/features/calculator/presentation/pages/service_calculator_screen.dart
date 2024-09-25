@@ -55,6 +55,7 @@ import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../data/model/calculator_results_page_params.dart';
 import 'add_board_screen.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 enum ActivityIsicListDetailType { Normal, Current, New }
 
@@ -4687,7 +4688,15 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           _userLocation = locationData;
         }
       });
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   // _getCurrentAddress(LatLng locationData) async {
@@ -4902,7 +4911,15 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       try {
         _userAddress = setAddress(_gisLocation!);
         setState(() {});
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     } else {
       showError(Helpers.translatingWord("gis_error_1"));
 

@@ -14,6 +14,8 @@ import '../../../events/domain/usecase/get_search_events.dart';
 import '../../../map_page/data/model/investment_details_response.dart';
 import '../../../map_page/data/model/rental_details_response.dart';
 import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class BaladyServices {
   final WebService webService;
@@ -41,7 +43,15 @@ class BaladyServices {
 
       investmentDetailsResponse =
           InvestmentDetailsResponse.fromJson(response.data);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     EasyLoading.dismiss();
 
@@ -69,7 +79,15 @@ class BaladyServices {
 
       investmentDetailsResponse =
           InvestmentDetailsResponse.fromJson(response.data);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     EasyLoading.dismiss();
 
@@ -101,7 +119,15 @@ class BaladyServices {
       );
 
       investmentDetailsResponse = RentalDetailsResponse.fromJson(response.data);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     EasyLoading.dismiss();
     if (investmentDetailsResponse != null) {
       NavigationService.navigatorKey.currentState!.pushNamed(
@@ -164,7 +190,15 @@ class BaladyServices {
       int? day = int.tryParse(dd[0]);
 
       return "$year/${month.toString().padLeft(2, "0")}/${day.toString().padLeft(2, "0")}";
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     return null;
   }
@@ -187,7 +221,15 @@ class BaladyServices {
       int? day = int.tryParse(dd[0]);
 
       return "$year/${month.toString().padLeft(2, "0")}/${day.toString().padLeft(2, "0")}";
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
     return null;
   }

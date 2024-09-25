@@ -19,6 +19,7 @@ import '../../../shared_feature_exports.dart'
         MessageDialog,
         PickImageComponent,
         WidgetLabel;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CustomFilePickerWidget extends StatelessWidget {
   final bool isRequired;
@@ -226,7 +227,14 @@ class CustomFilePickerWidget extends StatelessWidget {
           onLimitExceeded != null ? onLimitExceeded!() : _showExceedsMsg();
         }
       }
-    } on PlatformException catch (_) {}
+    } on PlatformException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );}
   }
 
   bool _checkFileSize(int size) => size <= allowedLimit;

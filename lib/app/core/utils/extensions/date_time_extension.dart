@@ -6,6 +6,8 @@ import '../../../features/_shared_feature_/balady_features/services/services.dar
 import '../../dependency_injection/injection_container.dart';
 import '../utils_exports.dart' show CommonFunctions, DateForm;
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 extension DateTimeExtension on DateTime {
   String toFormattedDate() {
     return "$year/$month/$day";
@@ -33,7 +35,14 @@ extension DateTimeExtension on DateTime {
       String day = HijriCalendar.fromDate(this).hDay.toString().padLeft(2, '0');
 
       return "$year/$month/$day";
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       String formattedDate = DateFormat("dd/MM/yyyy").format(this);
 
       date = await (BaladyServices(webService: sl())

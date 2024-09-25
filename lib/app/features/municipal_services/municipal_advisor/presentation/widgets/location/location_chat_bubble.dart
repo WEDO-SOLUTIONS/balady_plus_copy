@@ -40,6 +40,9 @@ class _LocationChatBubbleState extends State<LocationChatBubble> {
               zoom: 15,
             ),
             onMapCreated: (GoogleMapController controller) {
+              controller.setMapStyle(
+                """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+              );
               if (_controller.isCompleted) return;
               _controller.complete(controller);
             },

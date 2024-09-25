@@ -11,7 +11,7 @@ class GetViolationDetailsEvent extends ViolationDetailsEvent {
   final String id;
   final String applicationId;
   const GetViolationDetailsEvent(
-      {required this.id, required this.applicationId});
+      {required this.id, required this.applicationId,});
 }
 
 class GetObjectionDetailsEvent extends ViolationDetailsEvent {

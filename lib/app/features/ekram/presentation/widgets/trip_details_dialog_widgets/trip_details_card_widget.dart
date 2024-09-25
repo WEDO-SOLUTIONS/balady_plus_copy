@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/features/posters/presentation/widgets/steps/step2/field_data.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
@@ -13,7 +14,6 @@ import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget
 import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
-import '../../../../posters/presentation/widgets/steps/step2/field_data.dart';
 import '../../../domain/entities/trip_details.dart';
 
 class TripDetailsDialogCard extends StatelessWidget {

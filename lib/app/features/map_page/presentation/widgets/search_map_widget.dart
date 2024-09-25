@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SearchMapViewModel extends BaseViewModel {
   TextEditingController searchController = TextEditingController();
@@ -28,7 +29,15 @@ class SearchMapViewModel extends BaseViewModel {
           ),
         );
       }
-    } catch (e) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   List<DistanceRequestMessage> _mapToDistanceRequest(

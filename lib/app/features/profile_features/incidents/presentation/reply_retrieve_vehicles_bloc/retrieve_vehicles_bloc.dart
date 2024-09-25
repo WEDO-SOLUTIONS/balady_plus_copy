@@ -17,6 +17,7 @@ import '../../../../vd/domain/entities/upload/upload_file_params.dart';
 import '../../../../vd/domain/use_cases/upload_file.dart';
 import '../../domain/entities/reply_retrive_car_params.dart';
 import '../../domain/use_cases/reply_retrive_car.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'retrieve_vehicles_event.dart';
 
@@ -105,7 +106,15 @@ class ReplyRetrieveVehiclesBloc
           status: BlocStatus.success1,
         ));
       });
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   Future<void> _uploadFileHandler(UploadFileEvent e, Emitter emitter) async {

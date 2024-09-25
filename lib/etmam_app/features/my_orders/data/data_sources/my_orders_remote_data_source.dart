@@ -28,6 +28,7 @@ import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
 
 import '../../../../../app/core/dependency_injection/injection_container.dart';
 import '../../../../../app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class MyOrdersRemoteDataSource {
   Future<ApigeeResponse<RequestResponseModel>> getMyRequests(
@@ -82,7 +83,14 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
           response.data,
           parsedResult: parsedResult);
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // Temp Code to handle only the empty list in my orders
       var errorCode;
       try {
@@ -91,19 +99,42 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode,
           errorCode: errorCode,
           dioError: error);
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -141,16 +172,38 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
           ApigeeResponseModel<CancelOrderResponseModel>.fromMap(response.data,
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -177,16 +230,38 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
           ApigeeResponseModel<List<RatingItemModel>>.fromMap(response.data,
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -214,16 +289,38 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
           ApigeeResponseModel<OrderDetailsResponseModel>.fromMap(response.data,
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -254,16 +351,38 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
         response.data,
       );
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -296,7 +415,14 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
           response.data,
           parsedResult: parsedResult);
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       // Temp Code to handle only the empty list in my orders
       var errorCode;
       try {
@@ -305,20 +431,43 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
-      } catch (ex) {}
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode,
           errorCode: errorCode,
           dioError: error);
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -348,16 +497,38 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
               response.data,
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
+          CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
         throw ServerException(trans("errors_server_error_2"));
       }
     }
@@ -386,7 +557,14 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
           ApigeeResponseModel<MainServicesResponseModel>.fromMap(response.data,
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
-    } on DioError catch (error) {
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       
       
 

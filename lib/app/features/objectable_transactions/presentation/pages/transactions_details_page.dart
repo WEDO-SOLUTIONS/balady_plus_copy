@@ -262,6 +262,11 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                                       position: LatLng(state.details!.lat!,
                                           state.details!.lon!))
                                 },
+                                onMapCreated: (GoogleMapController controller) {
+                                  controller.setMapStyle(
+                                    """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                                  );
+                                },
                                 myLocationEnabled: false,
                                 myLocationButtonEnabled: false,
                                 zoomControlsEnabled: false,

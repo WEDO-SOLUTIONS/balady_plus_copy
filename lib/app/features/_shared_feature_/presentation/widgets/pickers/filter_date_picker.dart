@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/date_form_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker_plus/flutter_picker_plus.dart';
@@ -84,7 +85,15 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
       minValue = widget.startDate == null
           ? HijriCalendar.fromDate((DateTime(1937, 3, 14)))
           : HijriCalendar.fromDate(widget.startDate!);
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     final maxValue =
         widget.endDate == null ? null : HijriCalendar.fromDate(widget.endDate!);
     final date =

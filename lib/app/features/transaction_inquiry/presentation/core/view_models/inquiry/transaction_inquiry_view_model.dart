@@ -12,6 +12,8 @@ import '../../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../models/inquiry_transaction_response.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
 
 class TransactionInquiryViewModel extends BaseViewModel {
   bool isFormValid = false;
@@ -118,7 +120,14 @@ class TransactionInquiryViewModel extends BaseViewModel {
           showError(("server_error_1").tr());
         return Future.value(false);
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       hideLoader();
       String msg = ("server_error_1").tr();
       if (body != null && body["error"] != null)
@@ -130,8 +139,16 @@ class TransactionInquiryViewModel extends BaseViewModel {
         Helpers.sendLog(
             url: "/v1/cts/document-details",
             data: body["data"],
-            errorMsg: ex.toString());
-      } catch (ex) {}
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
 
       return Future.value(false);
     }

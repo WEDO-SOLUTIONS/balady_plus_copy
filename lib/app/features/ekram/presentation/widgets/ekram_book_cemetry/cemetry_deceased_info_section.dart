@@ -1,5 +1,8 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/notes_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/services/local/helpers.dart';
@@ -39,16 +42,22 @@ class _CemetryDeceasedInfoSectionState
   @override
   void initState() {
     super.initState();
+
+    // var bloc = context.watch<EkramBookCemetryBloc>();
+    // if (bloc.state.burialDateGorgian == null) {
+    //   bloc.add(
+    //     ChangeBurialDateEvent(
+    //       gorgianDate: DateFormat('yyyy/MM/dd').format(
+    //         DateTime.now(),
+    //       ),
+    //     ),
+    //   );
+    // }
   }
 
   @override
   void dispose() {
     super.dispose();
-    //  deathLocationTextEditController.dispose();
-    //  deathLocationShipFocusNode.dispose();
-
-    // otherHospitalTextEditController.dispose();
-    // otherHospitalShipFocusNode.dispose();
   }
 
   @override
@@ -61,7 +70,7 @@ class _CemetryDeceasedInfoSectionState
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  margin: EdgeInsets.only(top: 24, left: 16, right: 16),
+                  margin: const EdgeInsets.only(top: 24, left: 16, right: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -69,7 +78,7 @@ class _CemetryDeceasedInfoSectionState
                         header:
                             Helpers.translatingWord("cemetry_deceassed_info"),
                       ),
-                      DeadFetusWidget(),
+                      const DeadFetusWidget(),
                       if (state.isFetus == false)
                         CustomLookUpLongDialog(
                           items: state.nationalTypes ?? [],
@@ -88,14 +97,14 @@ class _CemetryDeceasedInfoSectionState
                             }
                           },
                           label:
-                              Helpers.translatingWord("cemetry_national_type"),
+                              "${Helpers.translatingWord("cemetry_national_type")} *",
                           hint:
                               Helpers.translatingWord("cemetry_national_type"),
                         ),
                       if (state.isFetus == false)
                         CustomTextFieldWidget(
                             label:
-                                Helpers.translatingWord("cemetry_national_id"),
+                                "${Helpers.translatingWord("cemetry_national_id")} *",
                             hintText:
                                 Helpers.translatingWord("cemetry_national_id"),
                             initialValue: state.deceassedId,
@@ -109,40 +118,48 @@ class _CemetryDeceasedInfoSectionState
                                   .read<EkramBookCemetryBloc>()
                                   .add(ChangeNationalId(text: text));
                             },
-                            onValidate: (String? value) {}),
-                      CustomVerticalSpace(
+                            onValidate: (String? value) {
+                              return context
+                                  .read<EkramBookCemetryBloc>()
+                                  .validateNationalId(value);
+                            }),
+                      const CustomVerticalSpace(
                         height: 16,
                       ),
                       if (state.isFetus == false) ...[
-                        CemetryNationalDobHijri(),
-                        CemetryNationalDobGorgian(),
-                        if (state.selectedNationalType?.fillInfo == false)
-                          ElevatedButtonWidget.verify(
-                              text: (state.userInfoResponse != null)
-                                  ? "done_check".tr()
-                                  : "verify".tr(),
-                              onPressed: () {
-                                context
-                                    .read<EkramBookCemetryBloc>()
-                                    .add(CheckUserInfoEvent());
-                              }),
+                        const CemetryNationalDobHijri(),
+                        const CemetryNationalDobGorgian(),
+                        // if (state.selectedNationalType?.fillInfo == false)
+                        ElevatedButtonWidget.verify(
+                            text: (state.userInfoResponse != null)
+                                ? "done_check".tr()
+                                : "verify".tr(),
+                            onPressed: () {
+                              context
+                                  .read<EkramBookCemetryBloc>()
+                                  .add(const CheckUserInfoEvent());
+                            }),
                         const CustomVerticalSpace(height: 16),
                       ],
                       ...[
                         CustomTextFieldWidget(
-                            label: Helpers.translatingWord("ekram_first_name"),
+                            label:
+                                "${Helpers.translatingWord("ekram_first_name")} *",
                             hintText:
                                 Helpers.translatingWord("ekram_first_name"),
                             controller: context
                                 .read<EkramBookCemetryBloc>()
                                 .firstNameController,
-                            enabled: state.allowFillData(),
+                            enabled: state.allowFillData() &&
+                                !state.isdeceasedInfoReadOnly,
                             onChanged: (String? text) {
                               context
                                   .read<EkramBookCemetryBloc>()
                                   .add(ChangeNameEvent(firstName: text));
                             },
-                            onValidate: (String? value) {}),
+                            onValidate: (String? value) {
+                              return null;
+                            }),
                         const CustomVerticalSpace(height: 16),
                         CustomTextFieldWidget(
                             label: Helpers.translatingWord("ekram_second_name"),
@@ -151,13 +168,16 @@ class _CemetryDeceasedInfoSectionState
                             controller: context
                                 .read<EkramBookCemetryBloc>()
                                 .secondNameController,
-                            enabled: state.allowFillData(),
+                            enabled: state.allowFillData() &&
+                                !state.isdeceasedInfoReadOnly,
                             onChanged: (String? text) {
                               context
                                   .read<EkramBookCemetryBloc>()
                                   .add(ChangeNameEvent(secondName: text));
                             },
-                            onValidate: (String? value) {}),
+                            onValidate: (String? value) {
+                              return null;
+                            }),
                         const CustomVerticalSpace(height: 16),
                         CustomTextFieldWidget(
                             label: Helpers.translatingWord("ekram_third_name"),
@@ -166,19 +186,24 @@ class _CemetryDeceasedInfoSectionState
                             controller: context
                                 .read<EkramBookCemetryBloc>()
                                 .thirdNameController,
-                            enabled: state.allowFillData(),
+                            enabled: state.allowFillData() &&
+                                !state.isdeceasedInfoReadOnly,
                             onChanged: (String? text) {
                               context
                                   .read<EkramBookCemetryBloc>()
                                   .add(ChangeNameEvent(thirdName: text));
                             },
-                            onValidate: (String? value) {}),
+                            onValidate: (String? value) {
+                              return null;
+                            }),
                         const CustomVerticalSpace(height: 16),
                         CustomTextFieldWidget(
-                            label: Helpers.translatingWord("ekram_fourth_name"),
+                            label:
+                                "${Helpers.translatingWord("ekram_fourth_name")} *",
                             hintText:
                                 Helpers.translatingWord("ekram_fourth_name"),
-                            enabled: state.allowFillData(),
+                            enabled: state.allowFillData() &&
+                                !state.isdeceasedInfoReadOnly,
                             controller: context
                                 .read<EkramBookCemetryBloc>()
                                 .fourthNameController,
@@ -187,7 +212,9 @@ class _CemetryDeceasedInfoSectionState
                                   .read<EkramBookCemetryBloc>()
                                   .add(ChangeNameEvent(fourthName: text));
                             },
-                            onValidate: (String? value) {}),
+                            onValidate: (String? value) {
+                              return null;
+                            }),
                       ],
                       /*if (state.userInfoResponse != null)
                         DeceassedInfoWidget(
@@ -199,6 +226,7 @@ class _CemetryDeceasedInfoSectionState
                         ),*/
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
+                        isDisbaled: state.isdeceasedInfoReadOnly,
                         items: state.nationalities ?? [],
                         value: state.selectedNationality,
                         onEmptyList: () async {
@@ -213,7 +241,7 @@ class _CemetryDeceasedInfoSectionState
                                 .add(GetNationalityEvent(item: item));
                           }
                         },
-                        label: ("nationality").tr(),
+                        label: "${("nationality").tr()} *",
                         hint: ("nationality").tr(),
                       ),
                       const CustomVerticalSpace(height: 16),
@@ -222,6 +250,7 @@ class _CemetryDeceasedInfoSectionState
                       const DeadGenderWidget(),
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
+                        isDisbaled: state.deceasedInfoModel?.deceasedDataSource == 'SEHA' ,
                         items: state.countries ?? [],
                         value: state.selectedCountry,
                         onEmptyList: () async {
@@ -237,11 +266,13 @@ class _CemetryDeceasedInfoSectionState
                                 .add(ChangeCountryEvent(item: item));
                           }
                         },
-                        label: Helpers.translatingWord("ekram_death_country"),
+                        label:
+                            "${Helpers.translatingWord("ekram_death_country")} *",
                         hint: Helpers.translatingWord("ekram_death_country"),
                       ),
                       if (state.selectedCountry?.localCountry == true)
                         CustomLookUpLongDialog(
+                          isDisbaled: state.deceasedInfoModel?.deceasedDataSource == 'SEHA' ,
                           items: state.deathCities ?? [],
                           value: state.selectedDeathCity,
                           onEmptyList: () async {
@@ -257,12 +288,19 @@ class _CemetryDeceasedInfoSectionState
                                   .add(ChangeDeathCityEvent(item: item));
                             }
                           },
-                          label: Helpers.translatingWord("ekram_death_city"),
+                          label:
+                              "${Helpers.translatingWord("ekram_death_city")} *",
                           hint: Helpers.translatingWord("ekram_death_city"),
                         ),
                       if (state.selectedCountry?.localCountry == false)
                         CustomTextFieldWidget(
-                            label: Helpers.translatingWord("ekram_death_city"),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r"[a-zA-Z\u0621-\u064A]")),
+                            ],
+                            keyboardType: TextInputType.name,
+                            label:
+                                "${Helpers.translatingWord("ekram_death_city")} *",
                             hintText:
                                 Helpers.translatingWord("ekram_death_city"),
                             initialValue: state.otherDeathCity,
@@ -272,7 +310,9 @@ class _CemetryDeceasedInfoSectionState
                                   .read<EkramBookCemetryBloc>()
                                   .add(ChangeOtherCityEvent(text: text));
                             },
-                            onValidate: (String? value) {}),
+                            onValidate: (String? value) {
+                              return null;
+                            }),
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
                         items: state.cities ?? [],
@@ -290,13 +330,13 @@ class _CemetryDeceasedInfoSectionState
                                 .add(ChangeBurialCityEvent(item: item));
                           }
                         },
-                        label: Helpers.translatingWord(
-                            "cemetry_deceassed_burial_city"),
+                        label:
+                            "${Helpers.translatingWord("cemetry_deceassed_burial_city")} *",
                         hint: Helpers.translatingWord(
                             "cemetry_deceassed_burial_city"),
                       ),
-                      CemetryBurialDateHijri(),
-                      CemetryBurialDateGorgian(),
+                      const CemetryBurialDateHijri(),
+                      const CemetryBurialDateGorgian(),
                       CustomLookUpLongDialog(
                         items: state.burialTimeItems ?? [],
                         value: state.selectedTime,
@@ -312,8 +352,8 @@ class _CemetryDeceasedInfoSectionState
                                 .add(ChangeBurialTimevent(item: item));
                           }
                         },
-                        label: Helpers.translatingWord(
-                            "cemetry_deceassed_burial_time"),
+                        label:
+                            "${Helpers.translatingWord("cemetry_deceassed_burial_time")} *",
                         hint: Helpers.translatingWord(
                             "cemetry_deceassed_burial_time"),
                       ),
@@ -330,7 +370,7 @@ class _CemetryDeceasedInfoSectionState
                                   .read<EkramBookCemetryBloc>()
                                   .add(ChangeBurialTimeOtherNameEvent());
                             }),
-                      CemetryIsEpidamicWidget(),
+                      const CemetryIsEpidamicWidget(),
                       CustomLookUpLongDialog(
                         items: state.cemetryTypeItems ?? [],
                         value: state.selectedCemetryType,
@@ -346,9 +386,10 @@ class _CemetryDeceasedInfoSectionState
                                 .add(ChangeCemetryTypeEvent(item: item));
                           }
                         },
-                        label: ("cemetry_type").tr(),
+                        label: "${("cemetry_type").tr()} *",
                         hint: ("cemetry_type").tr(),
                       ),
+                      NotesWidget(notes: ["cemeteries_displayed".tr()]),
                       CustomLookUpLongDialog(
                         items: state.cemetries ?? [],
                         value: state.selectedCemetry,
@@ -364,7 +405,7 @@ class _CemetryDeceasedInfoSectionState
                                 .add(ChangeCemetryEvent(item: item));
                           }
                         },
-                        label: Helpers.translatingWord("cemetry_name"),
+                        label: "${Helpers.translatingWord("cemetry_name")} *",
                         hint: Helpers.translatingWord("cemetry_name"),
                       ),
                     ],

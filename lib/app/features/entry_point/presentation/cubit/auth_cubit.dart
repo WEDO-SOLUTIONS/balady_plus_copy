@@ -22,6 +22,7 @@ import '../../../profile_features/delegators/delegators_exports.dart';
 import '../../data/models/get_permission_params_model.dart';
 import '../../domain/use_cases/get_ekram_permission.dart';
 import '../../entry_point_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'auth_state.dart';
 
@@ -195,8 +196,18 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         }
         getEkramPermissions();
         try {
-          BlocProvider.of<DashboardBloc>(NavigationService.navigatorKey.currentContext!).add(DashboardEventInitial());
-        } catch (ex) {}
+          BlocProvider.of<DashboardBloc>(
+                  NavigationService.navigatorKey.currentContext!)
+              .add(DashboardEventInitial());
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
       }
     });
 
@@ -343,7 +354,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           ));
         }
       });
-    } catch (_) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
   }
 
   Future<void> checkVersion() async {
@@ -439,8 +458,17 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           CommonProperties.showEkramDriver = false;
         }
       });
-    } catch (ex) {}
-    CommonProperties.showEkramDriver = sharedPrefs.isEkramDriver() ?? CommonProperties.showEkramDriver;
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+    CommonProperties.showEkramDriver =
+        sharedPrefs.isEkramDriver() ?? CommonProperties.showEkramDriver;
     if (allowTracking) {
       if (CommonProperties.showEkramDriver) {
         //  sl<EkramLocationService>().startTracking = true;

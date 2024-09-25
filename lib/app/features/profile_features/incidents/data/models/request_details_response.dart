@@ -7,6 +7,9 @@ import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../domain/entities/request_details_response.dart';
 
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
 class RequestDetailsResponse {
   String? pyId;
   IncidentInformation? incidentInformation;
@@ -225,7 +228,14 @@ class AuditList {
 
         dateTime = DateTime.parse(dateWithT).toLocal();
       }
-    } catch (ex) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       String dateWithT =
           sortDateTime!.substring(0, 8); //+ 'T' + date.substring(8);
       dateTime = DateTime.parse(dateWithT);
@@ -352,7 +362,15 @@ class AuditList {
 
         dateTime = DateTime.parse(dateWithT);
       }
-    } catch (ex) {}
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
     return dateTime != null
         ? (Helpers.translatingWord("future_compleation_date") +
             ": " +

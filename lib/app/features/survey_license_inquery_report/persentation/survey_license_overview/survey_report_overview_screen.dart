@@ -1,17 +1,10 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/data/models/cancellation_rquest_response.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/apply_cancel/mvvm/apply_cancel_view_model.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
 import 'package:balady_plus/app/features/services/presentation/mvvm/service_data_view_model.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
-import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/dialogs/custom_pop_up.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
@@ -53,7 +46,7 @@ class _SurveyReportOverviewScreenState
       child: Scaffold(
         body: Column(
           children: [
-            const Expanded(child: ServiceCardDescWidget()),
+            const Expanded(child: ServiceCardDescDynamicWidget()),
             Container(
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(

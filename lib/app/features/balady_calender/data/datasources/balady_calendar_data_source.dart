@@ -11,6 +11,7 @@ import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class BaladyCalendarRemoteDataSource {
   Future<Filter> getFilteredEvents();
@@ -50,7 +51,14 @@ class CalendarBaladyRemoteDataSourceImpl
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return Filter.fromJson(result);
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -60,14 +68,21 @@ class CalendarBaladyRemoteDataSourceImpl
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
@@ -95,7 +110,14 @@ class CalendarBaladyRemoteDataSourceImpl
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return EventsCountInYears.fromJson(result);
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -105,14 +127,21 @@ class CalendarBaladyRemoteDataSourceImpl
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
@@ -140,7 +169,14 @@ class CalendarBaladyRemoteDataSourceImpl
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return monthsListFromMap(result);
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -150,14 +186,21 @@ class CalendarBaladyRemoteDataSourceImpl
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
@@ -180,7 +223,14 @@ class CalendarBaladyRemoteDataSourceImpl
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return EventsDetails.fromJson(result);
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
       if (error is NoDataFoundException) {
         rethrow;
       }
@@ -190,14 +240,21 @@ class CalendarBaladyRemoteDataSourceImpl
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-    } catch (ex) {
-      if (ex is ServerException) {
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
         rethrow;
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
-            errorMessage: ex.toString(),
+            errorMessage: error.toString(),
           ),
           response: response,
         );
