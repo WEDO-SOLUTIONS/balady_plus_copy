@@ -71,16 +71,18 @@ class FeedbackImages extends StatelessWidget {
   }
 
   Future<bool> _isGalleryPermissionDenied() async {
-    Permission? permission;
+    final Permission permission;
 
-    /// if why question, check [Permission.photos] docs
     if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
       if (androidInfo.version.sdkInt <= 32) {
         permission = Permission.storage;
+      } else {
+        permission = Permission.photos;
       }
+    } else {
+      permission = Permission.photos;
     }
-    permission ??= Permission.photos;
 
     final permissionStatus = await permission.request();
     return permissionStatus.isDenied || permissionStatus.isPermanentlyDenied;
