@@ -54,7 +54,7 @@ class EnvironmentConfig {
         jobsApi: 'https://apiservicesstg.balady.gov.sa/v1/recruitment-services',
         twinsApi: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://urbi-lifestyle-stg.momrah.gov.sa',
+        shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
         feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/',
       );
 
@@ -65,7 +65,7 @@ class EnvironmentConfig {
         jobsApi: 'https://apiservices.balady.gov.sa/v1/recruitment-services',
         twinsApi: 'https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://urbi-lifestyle.momrah.gov.sa',
+        shareEtaApi: 'https://geostream-urbi-lifestyle.momrah.gov.sa',
         feedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/',
       );
 
