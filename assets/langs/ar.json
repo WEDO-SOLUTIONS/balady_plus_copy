@@ -500,7 +500,9 @@
   "phoneNumber": "رقم الهاتف",
   "email": "البريد الإلكتروني",
   "password": "كلمة السر",
+  "password2":"كلمة المرور",
   "confirmPassword": "تأكيد كلمة السر",
+  "confirmPassword2":"تأكيد كلمة المرور",
   "signIn": "تسجيل الدخول",
   "signUp": "تسجيل جديد",
   "signOut": "تسجيل الخروج",
@@ -1002,7 +1004,7 @@
   "usernameFieldHint": "أدخل اسم المستخدم",
   "phoneNumberFieldHint": "أدخل رقم الهاتف",
   "emailFieldHint": "أدخل البريد الإلكتروني",
-  "passwordFieldHint": "أدخل كلمة السر",
+  "passwordFieldHint": "أدخل كلمة المرور",
   "yourMessageFieldHint": "أكتب رسالتك",
   "attachFileFieldHint": "إرفاق ملف",
   "_fieldsValidationsComment": "أي شيء يخص التحقق من صحة الحقول",
@@ -4178,5 +4180,9 @@
   "auth_pacakge_end": "end",
   "answer_copy_to_Clipboard": "تم النسخ بنجاح",
   "history": "سجل المحادثات",
-  "cannotdothisaction": "فشل لم يتم الإجراء"
+  "cannotdothisaction": "فشل لم يتم الإجراء",
+  "error_pin":"رمز الدخول السريع غير متطابق",
+  "password_not_identical":"يوجد عدم تطابق بين كلمة المرور وتأكيد كلمة المرور",
+  "quick_access_not_activated":"لا يوجد سمات حيوية مسجلة، نأمل تسجيل الدخول بإستخدام أحد الطرق الأخرى وحفظ السمات الحيوية",
+  "auth_pacakge_end": "end"
 }

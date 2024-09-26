@@ -118,10 +118,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "704a72c58aa197e19edd971ad47044b0fe7839fc"
+      resolved-ref: "6e5ebd05b3fc03706e984c2d307232945178c0ca"
       url: "https://tfs.momra.gov.sa/tfs/MOMRACollection/Mobile%20Apps/_git/Balady%20Authorization"
     source: git
-    version: "0.0.13"
+    version: "0.0.16"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -2655,18 +2655,26 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: "877411504a07c874970c361762c447081e6e13219a6bea6fc88fbb31c2aff4a4"
+      sha256: "6e67726b85812afc7105725a23620b876ab7f6b04b8410e211330ffb8c2cdbe8"
       url: "https://pub.dev"
     source: hosted
-    version: "26.2.13"
+    version: "26.2.14"
   syncfusion_flutter_datepicker:
     dependency: transitive
     description:
       name: syncfusion_flutter_datepicker
-      sha256: "7989608f897edb61ea156d743ca31024eba688679a85f633f8203d17eafab83c"
+      sha256: "9d0e1db2f49cef3fde28c5a42c7ef9b64fc9a49c52557eb6961cd41af3cf8adc"
       url: "https://pub.dev"
     source: hosted
-    version: "26.2.13"
+    version: "26.2.14"
+  syncfusion_localizations:
+    dependency: "direct main"
+    description:
+      name: syncfusion_localizations
+      sha256: "99c3586b2502d2bc4b4c8286c83061b8bf2b5c9e4617433b7576f3d1409d099e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
   synchronized:
     dependency: transitive
     description:

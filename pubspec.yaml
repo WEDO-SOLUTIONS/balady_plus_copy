@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-#version: 3.30.1+25
-version: 3.11.10+223
+version: 3.30.1+18
+#version: 3.11.7+220
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
@@ -179,7 +179,7 @@ dependencies:
 
   app_settings: ^5.0.0
   dotted_border: ^2.0.0+3
-  sentry_dio: ^8.3.0
+  sentry_dio: 8.3.0
   linkable: ^3.0.0
 
   # Map urbi SDK
@@ -230,6 +230,9 @@ dependencies:
 #      ref: master
 #      path: packages/firebase_messaging/firebase_messaging
 ############################################################
+
+  syncfusion_localizations:
+
 
 dependency_overrides:
   geolocator_android: ^4.2.2
@@ -341,15 +344,4 @@ flutter:
         - asset: assets/fonts/inter/Inter-Regular.ttf
           weight: 400
         - asset: assets/fonts/inter/Inter-SemiBold.ttf
-          weight: 600
-
-    - family: SomarSans
-      fonts:
-        - asset: assets/fonts/SomarSans/SomarSans-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/SomarSans/SomarSans-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/SomarSans/SomarSans-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/SomarSans/SomarSans-SemiBold.ttf
           weight: 600
