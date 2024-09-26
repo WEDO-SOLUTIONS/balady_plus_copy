@@ -689,6 +689,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.startNavigationSimulation(speedRangeZoom);
   }
 
+  Future<void> simulationSpeed(double speed) {
+    return _api.simulationSpeed(speed);
+  }
+
   Future<Uint8List> saveNavigationState() {
     return _api.saveNavigationState();
   }

@@ -1416,6 +1416,8 @@ abstract class MapApi {
   @async
   void startNavigationSimulation(SpeedRangeZoom speedRangeZoom);
 
+  void simulationSpeed(double speed);
+
   @async
   void stopNavigation();
 

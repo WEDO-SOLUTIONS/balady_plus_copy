@@ -19,10 +19,7 @@ import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CalloutVisualizationMode
 import ru.dgis.sdk.map.CameraBehaviour
-import ru.dgis.sdk.map.GraphicsPreset
 import ru.dgis.sdk.map.Map
-import ru.dgis.sdk.map.MyLocationControllerSettings
-import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.RouteMapObjectDisplayFlag
@@ -34,7 +31,6 @@ import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.routing.TrafficRoute
-import java.util.EnumSet
 import ru.dgis.sdk.Context as SdkContext
 
 class NavigationHandler(
@@ -73,6 +69,7 @@ class NavigationHandler(
     )
 
     init {
+        navigationManager.mapManager.addMap(map)
         navigationView.visibility = View.INVISIBLE
 
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
@@ -201,10 +198,6 @@ class NavigationHandler(
             return
         }
 
-        if (navigationView.navigationManager == null) {
-            navigationView.navigationManager = navigationManager
-        }
-
         setupCamera(speedRangeZoom = speedRangeZoom)
         navigationManager.start(
             routeBuildOptions = RouteBuildOptions(
@@ -218,6 +211,10 @@ class NavigationHandler(
         result?.success(null)
     }
 
+    fun simulationSettings(speed: Double) {
+        navigationManager.simulationSettings.speedMode = SimulationSpeedMode(speed =  SimulationConstantSpeed(speed))
+    }
+
     fun startSimulation(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
@@ -228,10 +225,6 @@ class NavigationHandler(
         if (finishPoint == null || options == null || route == null) {
             result?.error(Exception("Not enough data to start navigation. Check RouteHandler documentation"))
             return
-        }
-
-        if (navigationView.navigationManager == null) {
-            navigationView.navigationManager = navigationManager
         }
 
         setupCamera(speedRangeZoom = speedRangeZoom)
@@ -248,10 +241,6 @@ class NavigationHandler(
     }
 
     fun stopNavigation() {
-        if (navigationView.navigationManager != null) {
-            navigationView.navigationManager = null
-        }
-
         navigationManager.stop()
         resetCamera()
         navigationView.visibility = View.INVISIBLE

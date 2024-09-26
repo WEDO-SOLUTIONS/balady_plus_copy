@@ -12,6 +12,7 @@ import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn_action.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:urbi_analytics/logger.dart';
 
 class ShareEtaBtn extends HookConsumerWidget {
   final int durationMinutes;
@@ -57,7 +58,7 @@ class ShareEtaBtn extends HookConsumerWidget {
             try {
               await _stopSharingPrevious(ref);
             } catch (e) {
-              debugPrint(e.toString());
+              log(e.toString());
             } finally {
               await ref.read(shareEtaProvider.notifier).startSharingEta();
             }

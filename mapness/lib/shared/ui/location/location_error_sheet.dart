@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -8,7 +11,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as perm;
 
 class LocationErrorSheet extends ConsumerStatefulWidget {
   final String? routeOnClose;
@@ -74,12 +77,19 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheet> with Wi
                 assetImage: 'assets/images_svg/lost_location.svg',
                 package: PackageConfig.packageName,
                 onRetry: () async {
-                  final permissionStatus = await Permission.location.status;
+                  final permissionStatus = await perm.Permission.location.status;
+                  final serviceStatus = await perm.Permission.location.serviceStatus;
+
+                  ///On android, you can turn off GPS, but on ios, you can only restrict the application's access to GPS
+                  /// So here we firstly check - Has app permissions? And if it doesn't - we redirect user to app settings
+                  /// On android, if user turn off a gps service - we redirect him to service settings page
 
                   if (permissionStatus.isPermanentlyDenied) {
-                    await openAppSettings();
+                    await perm.openAppSettings();
                   } else if (!permissionStatus.isGranted) {
-                    await Permission.location.request();
+                    await perm.Permission.location.request();
+                  } else if (serviceStatus == perm.ServiceStatus.disabled) {
+                    await Geolocator.openLocationSettings();
                   }
                 },
               ),

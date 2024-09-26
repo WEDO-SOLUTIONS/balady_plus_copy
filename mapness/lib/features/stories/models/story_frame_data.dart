@@ -22,9 +22,6 @@ class StoryFrameData {
   /// Indicates whether the image should be displayed in fullscreen mode.
   final bool fullscreenImage;
 
-  /// Indicates whether the frame has been watched by the user.
-  final bool isWatched;
-
   /// Represent the button action for the frame.
   /// Can be a next action, a navigation action, or a network link action.
   final StoryFrameAction? action;
@@ -51,7 +48,6 @@ class StoryFrameData {
     this.action,
     this.duration = 10,
     this.fullscreenImage = true,
-    this.isWatched = false,
     this.isAssetImage = false,
     this.networkTheme,
     this.networkTexts,
@@ -59,25 +55,27 @@ class StoryFrameData {
   });
 
   /// Creates a copy of this [StoryFrameData] object with the given fields replaced with the new values.
-  StoryFrameData copyWith(
-          {String? storyId,
-          String? imageUrl,
-          bool? isWatched,
-          StoryFrameAction? action,
-          int? duration,
-          bool? fullscreenImage,
-          bool? isAssetImage,
-          Color? closeButtonColor,
-          StoryFrameTexts? networkTexts,
-          bool? isButtonEnabled}) =>
+  StoryFrameData copyWith({
+    String? storyId,
+    String? imageUrl,
+    String? arabicImageUrl,
+    bool? fullscreenImage,
+    StoryFrameAction? action,
+    int? duration,
+    bool? isAssetImage,
+    NetworkStoryThemeData? networkTheme,
+    StoryFrameTexts? networkTexts,
+    bool? isButtonEnabled,
+  }) =>
       StoryFrameData(
-        isAssetImage: isAssetImage ?? this.isAssetImage,
         storyId: storyId ?? this.storyId,
         imageUrl: imageUrl ?? this.imageUrl,
-        isWatched: isWatched ?? this.isWatched,
+        arabicImageUrl: arabicImageUrl ?? this.arabicImageUrl,
         fullscreenImage: fullscreenImage ?? this.fullscreenImage,
         action: action ?? this.action,
         duration: duration ?? this.duration,
+        isAssetImage: isAssetImage ?? this.isAssetImage,
+        networkTheme: networkTheme ?? this.networkTheme,
         networkTexts: networkTexts ?? this.networkTexts,
         isButtonEnabled: isButtonEnabled ?? this.isButtonEnabled,
       );

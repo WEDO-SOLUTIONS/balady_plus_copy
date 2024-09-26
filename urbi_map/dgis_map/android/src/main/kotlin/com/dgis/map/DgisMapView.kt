@@ -22,7 +22,6 @@ import ru.dgis.sdk.directory.SearchManager
 import ru.dgis.sdk.geometry.PolygonGeometry
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.platform.Locale
-import ru.dgis.sdk.platform.LocaleManager
 import ru.dgis.sdk.platform.getLocaleManager
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.RouteSearchPoint
@@ -749,6 +748,10 @@ class DgisMapView(
             speedRangeZoom = speedRangeZoom,
             result = result
         )
+    }
+
+    override fun simulationSpeed(speed: Double) {
+        navigationHandler.simulationSettings(speed)
     }
 
     override fun saveNavigationState(result: Messages.Result<ByteArray>?) {

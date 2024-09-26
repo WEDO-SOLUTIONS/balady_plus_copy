@@ -85,6 +85,12 @@ class _EtaUserControlState extends ConsumerState<EtaUserControl> {
               _showBroadcastExpired(rootNavigatorKey.currentContext!);
             });
           });
+        } else if (code == null) {
+          if (_etaExpiredTimer != null) {
+            _etaExpiredTimer?.cancel();
+            _etaExpiredTimer = null;
+            ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
+          }
         }
       });
 

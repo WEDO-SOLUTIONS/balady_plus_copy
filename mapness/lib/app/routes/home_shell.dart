@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/landing_page.dart';
 import 'package:mapness/_features/profile/pages/profile_page.dart';
+import 'package:mapness/features/iwish/providers/iwish_deeplink_handler.dart';
 import 'package:mapness/pages/routing/routing_points.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/routing/scaffold_with_nested_navigation.dart';
@@ -73,7 +74,12 @@ class LandingRoute extends GoRouteData {
   const LandingRoute();
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(child: LandingPage());
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(child: Consumer(builder: (context, ref, _) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => ref.read(iwishDeeplinkHandlerProvider.notifier).handleDeeplink(state.uri));
+        return const LandingPage();
+      }));
 }
 
 class RoutingBranch extends StatefulShellBranchData {

@@ -31,6 +31,7 @@ class BaldayDeeplink {
 
   // POI
   static String get basePoiUri => '$baseAuthorityWithScheme/#/poi-map';
+  static String get baseGeoSharingUri => '$baseAuthorityWithScheme/#/geo-sharing';
 
   // Helper
   static String urlWithQuery(String baseUrl, Map<String, dynamic> map) {
