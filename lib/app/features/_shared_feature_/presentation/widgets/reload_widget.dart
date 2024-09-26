@@ -39,12 +39,16 @@ class ReloadWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CustomTextWidget(
-            errorMessage ?? ('data_not_retrieved').tr(),
-            fontSize: 14,
-            fontColor: AppColor.primary900Light,
-            fontWeight: AppFontWeight.regular,
-            textAlign: TextAlign.center,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CustomTextWidget(
+              errorMessage ?? ('data_not_retrieved').tr(),
+              fontSize: 14,
+              fontColor: AppColor.primary900Light,
+              fontWeight: AppFontWeight.regular,
+              textAlign: TextAlign.center,
+              maxLines: 3,
+            ),
           ),
           const CustomVerticalSpace(height: 16),
           CustomTextButtonWidget(

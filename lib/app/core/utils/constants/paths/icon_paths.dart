@@ -440,9 +440,15 @@ class IconPath {
   static const chat_bot_icon = '${_svgIconPath}chat-bot$_svg';
   static const arrowCircleDown = '${_pngIconPath}arrow-circle-down$_png';
 
-    // Auth
+  // Auth
   static const biometric = '${_authPath}biometric$_svg';
   static const quick_access = '${_authPath}quick_access$_svg';
+
+
+
+  // Classification Certificate
+  static const newOfficeIcon = '${_svgIconPath}new_office$_svg';
+
 
 }
 
