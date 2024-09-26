@@ -229,6 +229,7 @@ dependencies:
 #      path: packages/firebase_messaging/firebase_messaging
   ############################################################
 
+  syncfusion_localizations:
 
 
 dependency_overrides:
