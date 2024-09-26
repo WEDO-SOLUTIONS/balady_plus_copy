@@ -4383,5 +4383,7 @@
   "message_active_biometrics":"Please allow biometrics to get verified",
   "is_biometrics_not_active":"Sorry, the device does not support biometric features. You can log in using the quick PIN or username and password.",
   "error_biometrics":"Sorry, there is an issue with face or fingerprint registration. Please try again later. You can log in using the quick PIN or username and password.",
+  "error_pin":"Pin number is not identical",
+  "password_not_identical":"A mismatch between the password and confirm password fields",
   "auth_pacakge_end": "end"
 }
