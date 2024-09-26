@@ -39,6 +39,10 @@ class MessageChatText extends StatelessWidget {
               if( provider.message.value.messID != null) {
                 provider.sendFeedBack(provider.message.value.messID!, true);
               }
+              else
+                {
+                  CommonFunctions.showSuccess("cannotdothisaction".tr());
+                }
 
             },
               icon: SvgPicture.asset(
@@ -53,6 +57,11 @@ class MessageChatText extends StatelessWidget {
               if( provider.message.value.messID != null) {
                 provider.sendFeedBack(provider.message.value.messID!, false);
               }
+              else
+
+                {
+                  CommonFunctions.showSuccess("cannotdothisaction".tr());
+                }
 
             },
 

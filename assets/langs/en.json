@@ -4386,5 +4386,6 @@
   "smart_advisor": "Smart Advisor",
   "auth_pacakge_end": "end",
   "answer_copy_to_Clipboard": "Copied Successfully",
-  "history": "Chat History"
+  "history": "Chat History",
+  "cannotdothisaction": "Action Failed"
 }

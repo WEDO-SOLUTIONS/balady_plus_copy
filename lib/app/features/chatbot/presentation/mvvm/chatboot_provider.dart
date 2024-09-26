@@ -140,10 +140,11 @@ class ChatBotProvider extends BaseViewModel {
         },
             (res) {
 
-              if((res as ChatRefreshSession).responseId != null &&  res.responseId!.isNotEmpty)
+
+              if((res as ChatRefreshSession).result?.sessionId != null &&  res.result!.sessionId!.isNotEmpty)
                 {
                   isOpenedFromHistory = false;
-                  sharedPrefs.setChatbotSessionId(res.responseId!);
+                  sharedPrefs.setChatbotSessionId(res.result!.sessionId!);
                   isLoading = false;
                   notifyListeners();
 
@@ -180,6 +181,7 @@ class ChatBotProvider extends BaseViewModel {
     try {
 
       Either<Failure, dynamic> response;
+
       response = await repository.repository.getSesionHistory(id: id);
       response.fold(
             (error) {
@@ -191,7 +193,6 @@ class ChatBotProvider extends BaseViewModel {
 
           isLoading = false;
           lstOldSession = res;
-        //  lstOldSession += res;
           notifyListeners();
 
         },
@@ -281,7 +282,9 @@ class ChatBotProvider extends BaseViewModel {
               question:question ,
               answer: answer,
               haveError: false,
-              sectionId: sectionId,
+              messID: lstHistory[index+1].messageID != null ?"${lstHistory[index+1].messageID}":null,
+                isLiked:lstHistory[index+1].messageFeedBack != null ?lstHistory[index+1].messageFeedBack==1?true:false:null,
+                sectionId: sectionId
 
             ),
           ),

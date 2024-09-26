@@ -4126,5 +4126,6 @@
   "smart_advisor": "المساعد الذكي",
   "auth_pacakge_end": "end",
   "answer_copy_to_Clipboard": "تم النسخ بنجاح",
-  "history": "سجل المحادثات"
+  "history": "سجل المحادثات",
+  "cannotdothisaction": "لم تتم الاجراء بنجاح"
 }

@@ -15,34 +15,36 @@ class SessionDetails {
   String? sessionId;
   List<History>? history;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['session_id'] = sessionId;
-    if (history != null) {
-      map['history'] = history?.map((v) => v.toJson()).toList();
-    }
-    return map;
-  }
+
 
 }
 
 class History {
+
+  String? role;
+  String? content;
+  int? messageID;
+  String? messageTime;
+  int? messageFeedBack;
+
+
   History({
       this.role, 
-      this.content,});
+      this.content,
+    this.messageID,
+    this.messageTime,
+    this.messageFeedBack,
+
+  });
+
 
   History.fromJson(dynamic json) {
     role = json['role'];
     content = json['content'];
+    messageID = json['message_id'];
+    messageTime = json['message_time'];
+    messageFeedBack = json['response_feedback'];
   }
-  String? role;
-  String? content;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['role'] = role;
-    map['content'] = content;
-    return map;
-  }
 
 }

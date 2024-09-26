@@ -14,6 +14,7 @@ import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import '../models/chat_refresh_session.dart';
+import '../models/chat_refresh_session.dart';
 import '../models/session_data.dart';
 import '../models/session_details.dart';
 
@@ -164,7 +165,7 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
           headers: {
             "Accept": "*/*",
             "sessionId":sharedPrefs.getChatbotSessionId(),
-            "identifier":CommonProperties.userInfo?.idNo??""
+            "userIdentifier":CommonProperties.userInfo?.idNo??""
             //"001c44b8-2eee-415a-912d-601616e724be"
           },
           responseType: ResponseType.stream,
