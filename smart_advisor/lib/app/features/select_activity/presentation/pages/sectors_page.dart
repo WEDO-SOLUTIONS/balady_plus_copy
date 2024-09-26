@@ -1,6 +1,11 @@
+import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/shimmer_card%20copy.dart';
+import 'package:smart_advisor/app/features/shared_features/widgets/custom_text_component.dart';
+
 import '../../../_shared_feature_/domain/entities/lookUp_response.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_background_header.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/shimmer_card.dart';
+import '../../../home_page/presentation/widgets/sector_header.dart';
 import '/app/core/services/services_exports.dart';
 import '/app/core/utils/utils_exports.dart';
 import '/app/features/_shared_feature_/presentation/models/grideViewModel.dart';
@@ -44,64 +49,111 @@ class _SectorsPageState extends State<SectorsPage> {
             return Directionality(
               textDirection: TextDirection.rtl,
               child: Scaffold(
-                backgroundColor: AppColor.white,
-                appBar: CustomAppBar(
-                  title: "entities".tr(),
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Textfield(
-                          onChanged: (String? str) {
-                            setState(() {
-                              query = str ?? "";
-                            });
-                          },
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        if (state.sectorStatus == BlocStatus.failure)
-                          ReloadWidget(
-                            onTab: () {
-                              context
-                                  .read<SectorBloc>()
-                                  .add(const GetSectorEvent());
-                            },
-                          ),
-                        if (state.sectorStatus == BlocStatus.loading)
-                          const ShimmerVerticalList(),
-                        MediaQuery.removePadding(
-                          removeTop: true,
-                          context: context,
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: items.length ?? 0,
-                            itemBuilder: (context, index) {
-                              return HomeSectorCardItem(
-                                item: GrideViewModel(
-                                    icon:
-                                        "packages/smart_advisor/smart_advisor_assets/icons/svg/${items?[index].id}.svg",
-                                    sector: items?[index].name ?? "",
-                                    category: ""),
-                                onPress: () {
-                                  NavigationService.navigatorKey.currentState!
-                                      .pushNamed(
-                                    RouteName.categoriesPage,
-                                    arguments: CategoriesPageParams(
-                                        sector: items![index]),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                backgroundColor: const Color(0xFFF4F6FB),
+                body: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SectorHeader(),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          if (state.sectorStatus == BlocStatus.failure)
+                            ReloadWidget(
+                              onTab: () {
+                                context
+                                    .read<SectorBloc>()
+                                    .add(const GetSectorEvent());
+                              },
+                            ),
+                          if (state.sectorStatus == BlocStatus.loading)
+                            const Shimmer2VerticalList(),
+                          if (state.sectorStatus == BlocStatus.success)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16, right: 16),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    Text(
+                                      "اختر نوع المحل",
+                                      style: AppStyle.heading2BoldStyle,
+                                    ),
+                                    const SizedBox(
+                                      height: 0,
+                                    ),
+                                    MediaQuery.removePadding(
+                                      removeTop: true,
+                                      context: context,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        padding: const EdgeInsets.only(top: 10),
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: items.length,
+                                        itemBuilder: (context, index) {
+                                          return HomeSectorCardItem(
+                                            animation: 0,
+                                            item: GrideViewModel(
+                                                icon:
+                                                    "packages/smart_advisor/smart_advisor_assets/icons/svg/${items?[index].id}.svg",
+                                                sector:
+                                                    items?[index].name ?? "",
+                                                category: ""),
+                                            onPress: () {
+                                              NavigationService
+                                                  .navigatorKey.currentState!
+                                                  .pushNamed(
+                                                RouteName.categoriesPage,
+                                                arguments: CategoriesPageParams(
+                                                    sector: items![index]),
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          if (items.isEmpty &&
+                              state.sectorStatus != BlocStatus.loading) ...[
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "packages/smart_advisor/smart_advisor_assets/images/searchimg.png",
+                                    height: 122,
+                                    width: 150,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    'نتائج البحث',
+                                    style: AppStyle.calloutBoldStyle.copyWith(
+                                        color: AppColor.textPrimaryColor),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    "لا يوجد",
+                                    textAlign: TextAlign.center,
+                                    style: AppStyle.textRegularRomanStyle
+                                        .copyWith(
+                                            color: const Color(0xFF566069)),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
             );

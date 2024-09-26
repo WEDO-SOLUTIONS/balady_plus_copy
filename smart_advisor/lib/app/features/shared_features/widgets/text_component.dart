@@ -16,8 +16,7 @@ class TextComponent extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xFFF5F7FA)),
+              borderRadius: BorderRadius.circular(10), color: AppColor.white),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -29,7 +28,7 @@ class TextComponent extends StatelessWidget {
               Text(
                 Subtitle,
                 style: AppStyle.textRegularRomanStyle
-                    .copyWith(color: AppColor.textSecondaryColor),
+                    .copyWith(color: AppColor.textSecondaryColor, fontSize: 14),
               ),
             ],
           )),

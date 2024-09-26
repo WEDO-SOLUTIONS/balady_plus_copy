@@ -80,7 +80,7 @@ dependency_overrides:
   archive: ^3.6.1
   dio: ^5.0.0
   json_serializable: ^6.7.1
-  curl_logger_dio_interceptor: ^1.0.0
+  # curl_logger_dio_interceptor: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -106,6 +106,8 @@ flutter:
     - smart_advisor_assets/maps/icons/card_icon/
     - smart_advisor_assets/maps/icons/gis_layers_icons/
     - smart_advisor_assets/files/
+    - smart_advisor_assets/files/qa/
+    - smart_advisor_assets/files/compliance_pdf/text/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -123,7 +125,16 @@ flutter:
           weight: 700
         - asset: smart_advisor_assets/fonts/FrutigerLTArabic55Roman.ttf
           weight: 500
-
+    - family: SomarSans
+      fonts:
+        - asset: smart_advisor_assets/fonts/SomarSans-Bold.ttf
+          weight: 700
+        - asset: smart_advisor_assets/fonts/SomarSans-Medium.ttf
+          weight: 500
+        - asset: smart_advisor_assets/fonts/SomarSans-Regular.ttf
+          weight: 400
+        - asset: smart_advisor_assets/fonts/SomarSans-SemiBold.ttf
+          weight: 600
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

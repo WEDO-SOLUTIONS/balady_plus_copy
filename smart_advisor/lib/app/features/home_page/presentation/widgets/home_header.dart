@@ -24,9 +24,9 @@ class HomeHeader extends StatelessWidget {
           );
         },
         child: Container(
-          height: 281,
+          height: 270,
           decoration: BoxDecoration(
-              color: AppColor.statusAccentColor,
+              // color: AppColor.statusAccentColor,
               image: const DecorationImage(
                   image: AssetImage(
                     "packages/smart_advisor/smart_advisor_assets/images/header_background.png",
@@ -38,7 +38,8 @@ class HomeHeader extends StatelessWidget {
         ),
       ),
       Padding(
-        padding: const EdgeInsetsDirectional.only(top: 50, end: 16, start: 16),
+        padding: EdgeInsetsDirectional.only(
+            top: MediaQuery.of(context).padding.top, end: 16, start: 16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -46,13 +47,13 @@ class HomeHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomButtonIcon(
-                  icon: IconPath.homeIcon,
+                  icon: IconPath.homeIcon2,
                   onPress: () {
                     Navigator.pop(context);
                   },
                 ),
                 CustomButtonIcon(
-                  icon: IconPath.barcodeIcon,
+                  icon: IconPath.QRCode,
                   onPress: () {
                     NavigationService.navigatorKey.currentState!
                         .pushNamed(RouteName.qrDetails);
@@ -60,30 +61,38 @@ class HomeHeader extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(
+              height: 20,
+            ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  ("interactive_guide").tr(),
-                  style:
-                      AppStyle.accentBoldStyle.copyWith(color: AppColor.white),
+                  ("فتح محل تجاري"),
+                  style: AppStyle.heading1BoldStyle
+                      .copyWith(color: AppColor.white),
                 ),
                 const SizedBox(
                   height: 5,
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    "تعرف على كافة الاشتراطات والمعلومات المتعلقة بالمنشأة ",
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: AppStyle.textRegularRomanStyle
-                        .copyWith(color: AppColor.white),
+                Padding(
+                  padding: const EdgeInsets.only(left: 130),
+                  child: Container(
+                    //  margin: const EdgeInsets.symmetric(horizontal: 40),
+                    child: Text(
+                      "اعرف كافة الاشتراطات والمعلومات المتعلقة بالمنشأة ",
+                      textAlign: TextAlign.start,
+                      maxLines: 2,
+                      style: AppStyle.textRegularRomanStyle
+                          .copyWith(color: AppColor.white),
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(
-              height: 60,
+              height: 40,
             ),
             GestureDetector(
                 onTap: () {
@@ -92,7 +101,7 @@ class HomeHeader extends StatelessWidget {
                 },
                 child: const Textfield(
                   isEnabled: false,
-                  title: "ابحث عن منشأة",
+                  title: "ابحث عن منشاه ...",
                 )),
           ],
         ),

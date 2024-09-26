@@ -1,6 +1,10 @@
 import 'package:smart_advisor/app/core/utils/constants/language.dart';
+import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
+import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/shimmer_card.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../_shared_feature_/presentation/widgets/shimmer_card copy.dart';
+import '../widgets/detaIils_app_bar.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';
 import '/app/core/utils/utils_exports.dart';
@@ -14,10 +18,8 @@ import '/app/features/select_activity/domain/entities/activity_details_page_para
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '/app/core/utils/constants/paths/icon_paths.dart';
 import '../widgets/inspectionitems.dart';
 import '../widgets/violation_view.dart';
-import '../widgets/visual_distortion_report.dart';
 
 class EntityDetails extends StatefulWidget {
   final ActivityDetailsPageParams args;
@@ -28,15 +30,8 @@ class EntityDetails extends StatefulWidget {
 }
 
 class _EntityDetailsState extends State<EntityDetails> {
-  int _selectedIndexBasic = 0;
   int _selectedIndexDetail = 0;
-  // bool isViewDetail = false;
-
-  void _onSegmentBasic(int index) {
-    setState(() {
-      _selectedIndexBasic = index;
-    });
-  }
+  int _selectedIndexBasic = 0;
 
   void _onSegmentDetail(int index) {
     setState(() {
@@ -56,532 +51,332 @@ class _EntityDetailsState extends State<EntityDetails> {
             //     CommonFunctions.showError(state.regulationErrorMsg ?? "");
           }
         },
-        child: Scaffold(
-          backgroundColor: const Color(0xFFFFFFFF),
-          body: Column(
-            children: [
-              Stack(
+        child: BlocBuilder<DetailsBloc, DetailsState>(
+          builder: (context, state) {
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Column(
                 children: [
-                  Container(
-                    height: 300,
-                    child: Image.asset(
-                      "packages/smart_advisor/smart_advisor_assets/images/details_bg.png",
-                      width: double.infinity,
-                      fit: BoxFit.fill,
-                    ),
+                  DetailsAppBar(
+                    onSegmentBasic: (int index) {
+                      setState(() {
+                        _selectedIndexBasic = index;
+                      });
+                    },
                   ),
-                  Column(
-                    children: [
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          NavigationService.navigatorKey.currentState!
-                              .pop(context);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              right: 16, left: 16, top: 35),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SvgPicture.asset(IconPath
-                                  .arrowCornerRightL), // Fixed SvgPicture asset usage
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          widget.args.activityId?.name ?? "",
-                          style: AppStyle.accentBoldStyle
-                              .copyWith(color: AppColor.white),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        widget.args.entityActivityDetailsResponse?.sector
-                                ?.name ??
-                            "",
-                        style: AppStyle.calloutBoldStyle
-                            .copyWith(color: AppColor.white),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Container(
-                height: 72,
-                width: MediaQuery.of(context).size.width,
-                decoration: const BoxDecoration(color: Color(0xFFF5F7FA)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: <Widget>[
-                      BlocBuilder<DetailsBloc, DetailsState>(
-                        buildWhen: (previous, current) =>
-                            previous.entityActivityDetailsStatus !=
-                            current.entityActivityDetailsStatus,
-                        builder: (context, state) {
-                          return GestureDetector(
-                            onTap: () {
-                              context
-                                  .read<DetailsBloc>()
-                                  .add(GetEntityActivityDetailsEvent());
+                  if (state.entityActivityDetailsStatus == BlocStatus.loading)
+                    const Shimmer2VerticalList(),
+                  if (state.entityActivityDetailsStatus == BlocStatus.failure)
+                    ReloadWidget(onTab: () {
+                      context
+                          .read<DetailsBloc>()
+                          .add(GetEntityActivityDetailsEvent());
+                    }),
+                  if (state.entityActivityDetailsStatus ==
+                      BlocStatus.success) ...[
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.only(top: 20),
+                        child: Column(
+                          children: [
+                            //add visibility
 
-                              _onSegmentBasic(0);
-                            },
-                            child: Container(
-                              margin: EdgeInsetsDirectional.only(end: 5),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 14),
-                              decoration: BoxDecoration(
-                                  color: _selectedIndexBasic == 0
-                                      ? AppColor.statusAccentColor
-                                      : AppColor.surfaceTertairyColor,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10.0))),
-                              child: Text(("activity_info").tr(),
-                                  style: AppStyle.footNoteBoldStyle.copyWith(
-                                      color: _selectedIndexBasic == 0
-                                          ? AppColor.white
-                                          : AppColor.textSecondaryColor)),
-                            ),
-                          );
-                        },
-                      ),
-                      BlocBuilder<DetailsBloc, DetailsState>(
-                        buildWhen: (previous, current) =>
-                            previous.regulationStatus !=
-                            current.regulationStatus,
-                        builder: (context, state) {
-                          return GestureDetector(
-                              onTap: () {
-                                context
-                                    .read<DetailsBloc>()
-                                    .add(GetRegulationsEvent());
-                                _onSegmentBasic(1);
-                              },
-                              child: Container(
-                                  margin: EdgeInsetsDirectional.only(end: 5),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 14),
-                                  decoration: BoxDecoration(
-                                      color: _selectedIndexBasic == 1
-                                          ? AppColor.statusAccentColor
-                                          : AppColor.surfaceTertairyColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  child: Text(
-                                    ("requirements").tr(),
-                                    style: AppStyle.footNoteBoldStyle.copyWith(
-                                      color: _selectedIndexBasic == 1
-                                          ? AppColor.white
-                                          : AppColor.textSecondaryColor,
-                                    ),
-                                  )));
-                        },
-                      ),
-                      /*  GestureDetector(
-                        onTap: () => _onSegmentBasic(2),
-                        child: Container(
-                          margin: const EdgeInsetsDirectional.only(end: 5),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 14),
-                          decoration: BoxDecoration(
-                              color: _selectedIndexBasic == 2
-                                  ? AppColor.statusAccentColor
-                                  : AppColor.surfaceTertairyColor,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(10.0))),
-                          child: Text(
-                            ("self_evaluation").tr(),
-                            style: AppStyle.footNoteBoldStyle.copyWith(
-                              color: _selectedIndexBasic == 2
-                                  ? AppColor.white
-                                  : AppColor.textSecondaryColor,
-                            ),
-                          ),
-                        ),
-                      ),*/
-                      BlocBuilder<DetailsBloc, DetailsState>(
-                        builder: (context, state) {
-                          return GestureDetector(
-                              onTap: () {
-                                context
-                                    .read<DetailsBloc>()
-                                    .add(GetViolationsListEvent());
+                            Visibility(
+                                visible: _selectedIndexBasic == 0,
+                                child: GeneralInfoPage()),
 
-                                _onSegmentBasic(2);
-                              },
-                              child: Container(
-                                  margin:
-                                      const EdgeInsetsDirectional.only(end: 5),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 14),
-                                  decoration: BoxDecoration(
-                                      color: _selectedIndexBasic == 2
-                                          ? AppColor.statusAccentColor
-                                          : AppColor.surfaceTertairyColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  child: Text(
-                                    ('violations').tr(),
-                                    style: AppStyle.footNoteBoldStyle.copyWith(
-                                      color: _selectedIndexBasic == 2
-                                          ? AppColor.white
-                                          : AppColor.textSecondaryColor,
+                            Visibility(
+                                visible: _selectedIndexBasic == 1,
+                                child: ConditionView()),
+                            /*  Visibility(
+                                  visible: _selectedIndexBasic == 2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  ("checklist").tr(),
+                                                  style: AppStyle.heading2BoldStyle
+                                                      .copyWith(
+                                                          color: AppColor
+                                                              .textPrimaryColor),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            //here
+                                            const SelfEvaluation(),
+                                          ]),
                                     ),
-                                  )));
-                        },
-                      ),
-                      BlocBuilder<DetailsBloc, DetailsState>(
-                        builder: (context, state) {
-                          return GestureDetector(
-                              onTap: () {
-                                print("JJJ");
-                                _onSegmentBasic(3);
-                                try {
-                                  context
-                                      .read<DetailsBloc>()
-                                      .add(GetViolationVD());
-                                } catch (ex) {
-                                  print(ex);
-                                }
-                              },
-                              child: Container(
-                                  margin:
-                                      const EdgeInsetsDirectional.only(end: 5),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 14),
-                                  decoration: BoxDecoration(
-                                      color: _selectedIndexBasic == 3
-                                          ? AppColor.statusAccentColor
-                                          : AppColor.surfaceTertairyColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  child: Text(
-                                    ("visual_distortion_report").tr(),
-                                    style: AppStyle.footNoteBoldStyle.copyWith(
-                                      color: _selectedIndexBasic == 3
-                                          ? AppColor.white
-                                          : AppColor.textSecondaryColor,
-                                    ),
-                                  )));
-                        },
-                      ),
-                      /* GestureDetector(
-                        onTap: () => _onSegmentBasic(5),
-                        child: Container(
-                          margin: const EdgeInsetsDirectional.only(end: 5),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 14),
-                          decoration: BoxDecoration(
-                              color: _selectedIndexBasic == 5
-                                  ? AppColor.statusAccentColor
-                                  : AppColor.surfaceTertairyColor,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(10.0))),
-                          child: Text(
-                            ("opportunities").tr(),
-                            style: AppStyle.footNoteBoldStyle.copyWith(
-                              color: _selectedIndexBasic == 5
-                                  ? AppColor.white
-                                  : AppColor.textSecondaryColor,
-                            ),
-                          ),
-                        ),
-                      ),*/
-                    ]),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      //add visibility
+                                  )),*/
 
-                      Visibility(
-                          visible: _selectedIndexBasic == 0,
-                          child: GeneralInfoPage()),
-
-                      Visibility(
-                          visible: _selectedIndexBasic == 1,
-                          child: ConditionView()),
-                      /*  Visibility(
-                          visible: _selectedIndexBasic == 2,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          ("checklist").tr(),
-                                          style: AppStyle.heading2BoldStyle
-                                              .copyWith(
-                                                  color: AppColor
-                                                      .textPrimaryColor),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    //here
-                                    const SelfEvaluation(),
-                                  ]),
-                            ),
-                          )),*/
-
-                      Visibility(
-                          visible: _selectedIndexBasic == 2,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        // Text(
-                                        //   ("general_violations").tr(),
-                                        //   style: GoogleFonts.cairo(
-                                        //       fontWeight: FontWeight.bold,
-                                        //       fontSize: 18),
-                                        // ),
-                                        // SvgPicture.asset(IconPath.arrowGray)
-                                      ],
-                                    ),
-                                    //here
-                                    const ViolationsView(),
-                                  ]),
-                            ),
-                          )),
-
-                      Visibility(
-                        visible: _selectedIndexBasic == 3,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Column(
-                              children: [
-                                /* Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    // IconButton(
-                                    //     onPressed: () {
-                                    //       setState(() {
-                                    //         isViewDetail = !isViewDetail;
-                                    //       });
-                                    //     },
-                                    //     icon: isViewDetail
-                                    //         ? Icon(Icons.keyboard_arrow_up_sharp)
-                                    //         : Icon(
-                                    //             Icons.keyboard_arrow_down_sharp)),
-                                    RichText(
-                                      text: TextSpan(
-                                        text: ("visual_distortion").tr(),
-                                        style: AppStyle.heading2BoldStyle
-                                            .copyWith(
-                                                color:
-                                                    AppColor.textPrimaryColor),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: 'حي العليا',
-                                            style: AppStyle.heading2BoldStyle
-                                                .copyWith(
-                                                    color: AppColor
-                                                        .statusAccentColor),
+                            Visibility(
+                                visible: _selectedIndexBasic == 2,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              // Text(
+                                              //   ("general_violations").tr(),
+                                              //   style: GoogleFonts.cairo(
+                                              //       fontWeight: FontWeight.bold,
+                                              //       fontSize: 18),
+                                              // ),
+                                              // SvgPicture.asset(IconPath.arrowGray)
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    SvgPicture.asset(IconPath.arraowDawn),
-                                  ],
-                                ),
-                                const SizedBox(height: 10.0),*/
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    //add page here
-                                    //   const VisualView(),
+                                          //here
+                                          const ViolationsView(),
+                                        ]),
+                                  ),
+                                )),
 
-                                    Container(
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        color: AppColor.surfaceSecondaryColor,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 5,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: GestureDetector(
-                                                onTap: () =>
-                                                    _onSegmentDetail(0),
-                                                child: Container(
-                                                  height: 32,
-                                                  alignment: Alignment.center,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      vertical: 5,
-                                                      horizontal: 8),
-                                                  decoration: BoxDecoration(
-                                                    color: _selectedIndexDetail ==
-                                                            0
-                                                        ? AppColor
-                                                            .statusAccentColor
-                                                        : AppColor
-                                                            .surfaceSecondaryColor,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                      Radius.circular(10.0),
-                                                    ),
-                                                  ),
-                                                  child: Text(
-                                                    ('violations').tr(),
-                                                    //style: AppStyle.heading2BoldStyle .copyWith(color: AppColor.textPrimaryColor),
-                                                    style: AppStyle
-                                                        .footNoteRomanStyle
+                            Visibility(
+                              visible: _selectedIndexBasic == 3,
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Column(
+                                    children: [
+                                      /* Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            // IconButton(
+                                            //     onPressed: () {
+                                            //       setState(() {
+                                            //         isViewDetail = !isViewDetail;
+                                            //       });
+                                            //     },
+                                            //     icon: isViewDetail
+                                            //         ? Icon(Icons.keyboard_arrow_up_sharp)
+                                            //         : Icon(
+                                            //             Icons.keyboard_arrow_down_sharp)),
+                                            RichText(
+                                              text: TextSpan(
+                                                text: ("visual_distortion").tr(),
+                                                style: AppStyle.heading2BoldStyle
+                                                    .copyWith(
+                                                        color:
+                                                            AppColor.textPrimaryColor),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text: 'حي العليا',
+                                                    style: AppStyle.heading2BoldStyle
                                                         .copyWith(
-                                                      color: _selectedIndexDetail ==
-                                                              0
-                                                          ? Colors.white
-                                                          : AppColor
-                                                              .textSecondaryColor,
-                                                    ),
+                                                            color: AppColor
+                                                                .statusAccentColor),
                                                   ),
-                                                ),
+                                                ],
                                               ),
                                             ),
-                                            Expanded(
-                                              child: GestureDetector(
-                                                onTap: () =>
-                                                    _onSegmentDetail(1),
-                                                child: Container(
-                                                  height: 32,
-                                                  alignment: Alignment.center,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      vertical: 5,
-                                                      horizontal: 8),
-                                                  decoration: BoxDecoration(
-                                                      color: _selectedIndexDetail ==
-                                                              1
-                                                          ? AppColor
-                                                              .statusAccentColor
-                                                          : AppColor
-                                                              .surfaceSecondaryColor,
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                              Radius.circular(
-                                                                  10.0))),
-                                                  child: Text(
-                                                    ("inspection_items").tr(),
-                                                    maxLines: 1,
-                                                    // overflow:
-                                                    //     TextOverflow.ellipsis,
-                                                    style: AppStyle
-                                                        .footNoteRomanStyle
-                                                        .copyWith(
-                                                      color: _selectedIndexDetail ==
-                                                              0
-                                                          ? AppColor
-                                                              .textSecondaryColor
-                                                          : Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                            const SizedBox(width: 5),
+                                            SvgPicture.asset(IconPath.arraowDawn),
                                           ],
                                         ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 20),
-                                    //
-
-                                    Visibility(
-                                      visible: _selectedIndexDetail == 0,
-                                      child: const Column(
+                                        const SizedBox(height: 10.0),*/
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          ViolatonView(),
+                                          //add page here
+                                          //   const VisualView(),
+
+                                          Container(
+                                            height: 48,
+                                            decoration: BoxDecoration(
+                                              color: AppColor
+                                                  .surfaceSecondaryColor,
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                Radius.circular(10),
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 5,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    child: GestureDetector(
+                                                      onTap: () =>
+                                                          _onSegmentDetail(0),
+                                                      child: Container(
+                                                        height: 40,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 5,
+                                                                horizontal: 8),
+                                                        decoration: BoxDecoration(
+                                                            color: _selectedIndexDetail ==
+                                                                    0
+                                                                ? AppColor
+                                                                    .statusAccentColor
+                                                                : AppColor
+                                                                    .white,
+                                                            borderRadius: const BorderRadius
+                                                                .only(
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                bottomRight: Radius
+                                                                    .circular(
+                                                                        10))),
+                                                        child: Text(
+                                                          ("inspection_items")
+                                                              .tr(),
+                                                          maxLines: 1,
+                                                          // overflow:
+                                                          //     TextOverflow.ellipsis,
+                                                          style: AppStyle
+                                                              .footNoteRomanStyle
+                                                              .copyWith(
+                                                                  color: _selectedIndexDetail ==
+                                                                          0
+                                                                      ? Colors
+                                                                          .white
+                                                                      : AppColor
+                                                                          .textSecondaryColor),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: GestureDetector(
+                                                      onTap: () =>
+                                                          _onSegmentDetail(1),
+                                                      child: Container(
+                                                        height: 40,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 5,
+                                                                horizontal: 8),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: _selectedIndexDetail ==
+                                                                  1
+                                                              ? AppColor
+                                                                  .statusAccentColor
+                                                              : AppColor.white,
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          10)),
+                                                        ),
+                                                        child: Text(
+                                                          ('violations').tr(),
+                                                          //style: AppStyle.heading2BoldStyle .copyWith(color: AppColor.textPrimaryColor),
+                                                          style: AppStyle
+                                                              .footNoteRomanStyle
+                                                              .copyWith(
+                                                            color: _selectedIndexDetail ==
+                                                                    1
+                                                                ? Colors.white
+                                                                : AppColor
+                                                                    .textSecondaryColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 20),
+                                          //
+
+                                          Visibility(
+                                            visible: _selectedIndexDetail == 0,
+                                            child: const Column(
+                                              children: [
+                                                const InspectionItemList(),
+                                              ],
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible: _selectedIndexDetail == 1,
+                                            child: ViolatonView(),
+                                          )
                                         ],
                                       ),
-                                    ),
-                                    Visibility(
-                                      visible: _selectedIndexDetail == 1,
-                                      child: const InspectionItemList(),
-                                    )
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+
+                            /*  Visibility(
+                                  visible: _selectedIndexBasic == 5,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              ("opportunitiesـcity").tr(),
+                                              style: GoogleFonts.cairo(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            const InvesmentCard(),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            const InvesmentCard(),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            const InvesmentCard(),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            const InvesmentCard(),
+                                          ]),
+                                    ),
+                                  )),*/
+                          ],
                         ),
                       ),
-
-                      /*  Visibility(
-                          visible: _selectedIndexBasic == 5,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      ("opportunitiesـcity").tr(),
-                                      style: GoogleFonts.cairo(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    const InvesmentCard(),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    const InvesmentCard(),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    const InvesmentCard(),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    const InvesmentCard(),
-                                  ]),
-                            ),
-                          )),*/
-                    ],
-                  ),
-                ),
+                    ),
+                  ]
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

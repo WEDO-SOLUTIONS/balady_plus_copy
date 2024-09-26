@@ -30,19 +30,24 @@ class DetailsItemWidget extends StatelessWidget {
             padding: const EdgeInsets.only(top: 14),
             decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(12)),
+              borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
             child: Column(
+              /*DetailsItem(
+                  title: "about".tr(),
+                  subTitle: state.entityActivityDetailsResponse?.about ?? "",
+                ),*/
               children: [
                 DetailsItem(
                   title: "about".tr(),
                   subTitle: state.entityActivityDetailsResponse?.about ?? "",
                 ),
+                /*
                 DetailsItem(
                   title: "sector".tr(),
                   subTitle:
                       state.entityActivityDetailsResponse?.sector?.name ?? "",
-                ),
+                ),*/
                 DetailsItem(
                   title: "isicActivity".tr(),
                   subTitle: state.entityActivityDetailsResponse?.isicName
@@ -56,6 +61,11 @@ class DetailsItemWidget extends StatelessWidget {
                           .toString() ??
                       "",
                 ),
+
+                /*DetailsItem(
+                  title: "about".tr(),
+                  subTitle: state.entityActivityDetailsResponse?.about ?? "",
+                ),*/
                 DetailsItem(
                   title: "isFawery".tr(),
                   subTitle:
@@ -63,11 +73,8 @@ class DetailsItemWidget extends StatelessWidget {
                               "IMMEDIATE"
                           ? "yes".tr()
                           : "no".tr(),
+                  showDivider: false,
                 ),
-
-ApprovalsWidget(),
-
-
                 const CustomDivider(),
               ],
             ));
@@ -79,14 +86,19 @@ ApprovalsWidget(),
 class DetailsItem extends StatelessWidget {
   final String title;
   final String subTitle;
-  const DetailsItem({super.key, required this.subTitle, required this.title});
+  final bool showDivider;
+  const DetailsItem(
+      {super.key,
+      required this.subTitle,
+      required this.title,
+      this.showDivider = true});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(right: 14, left: 14, top: 8, bottom: 8),
       decoration: BoxDecoration(
-          color: AppColor.surfaceSecondaryColor,
+          color: AppColor.white,
           borderRadius: const BorderRadius.all(Radius.circular(12))),
       margin: const EdgeInsets.only(bottom: 8),
       child: Column(
@@ -97,19 +109,28 @@ class DetailsItem extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.start,
-                style: AppStyle.textRegularRomanStyle
+                style: AppStyle.footNoteMediumStyle
                     .copyWith(color: AppColor.textPrimaryColor),
               ),
             ],
           ),
+          const SizedBox(
+            height: 4,
+          ),
           Text(
             subTitle,
-            style: AppStyle.footNoteRomanStyle
-                .copyWith(color: AppColor.textTertiaryColor),
+            style: AppStyle.footNoteMediumStyle
+                .copyWith(color: AppColor.textTertiaryColor, fontSize: 16),
           ),
           const SizedBox(
             height: 10,
           ),
+          if (showDivider)
+            Divider(
+              color: Color(0xffF5F5F5),
+              height: 1,
+              thickness: 1,
+            ),
         ],
       ),
     );

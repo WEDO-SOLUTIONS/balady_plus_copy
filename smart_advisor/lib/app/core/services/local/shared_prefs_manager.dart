@@ -10,7 +10,7 @@ import '../../utils/utils_exports.dart' show LocalStorageKey;
 class SharedPrefs {
   static SharedPreferences? _sharedPreferences;
 
-  init() async {
+  static init() async {
     _sharedPreferences ??= await SharedPreferences.getInstance();
   }
 

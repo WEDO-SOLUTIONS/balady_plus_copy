@@ -15,11 +15,11 @@ class StartPageItemCard extends StatelessWidget {
       padding: const EdgeInsets.only(
         right: 16,
         left: 16,
-        top: 10,
+        top: 12,
       ),
       child: Container(
         //padding: EdgeInsets.all(16),
-        height: 150,
+        height: 132,
         //width: 353,
 
         decoration: BoxDecoration(
@@ -39,24 +39,24 @@ class StartPageItemCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 10,
-              ),
-
               Text(
                 item.title!,
                 textAlign: TextAlign.start,
                 style:
-                    AppStyle.heading1BoldStyle.copyWith(color: AppColor.white),
+                    AppStyle.heading2BoldStyle.copyWith(color: AppColor.white),
               ),
               //the point from media Q to force the text takes 60% from size of contaiuner
+
+              SizedBox(
+                height: 6,
+              ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.60,
                 child: Text(
                   item.subtitle!,
                   maxLines: 2,
-                  style: AppStyle.textRegularRomanStyle
-                      .copyWith(color: AppColor.white),
+                  style:
+                      AppStyle.textRegularStyle.copyWith(color: AppColor.white),
                 ),
               ),
             ],

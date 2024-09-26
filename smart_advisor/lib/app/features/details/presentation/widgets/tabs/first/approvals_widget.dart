@@ -14,59 +14,60 @@ class ApprovalsWidget extends StatelessWidget {
     return BlocBuilder<DetailsBloc, DetailsState>(
       builder: (context, state) {
         return Container(
-          padding:
-              const EdgeInsets.only(right: 14, left: 14, top: 8, bottom: 8),
-          decoration: BoxDecoration(
-              color: AppColor.surfaceSecondaryColor,
-              borderRadius: const BorderRadius.all(Radius.circular(12))),
           margin: const EdgeInsets.only(bottom: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "الموافقات",
-                textAlign: TextAlign.start,
-                style: AppStyle.footNoteRomanStyle
-                    .copyWith(color: AppColor.statusAccentColor),
+                style: AppStyle.heading2BoldStyle,
               ),
               const SizedBox(
                 height: 8,
               ),
               MediaQuery.removePadding(
                 removeTop: true,
+                removeBottom: true,
                 context: context,
                 child: ListView.builder(
                     shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: state
                             .entityActivityDetailsResponse?.approvals?.length ??
                         0,
                     itemBuilder: (ctx, index) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            state
-                                    .entityActivityDetailsResponse
-                                    ?.approvals?[index]
-                                    .supervisingAuthorityName ??
-                                "",
-                            textAlign: TextAlign.start,
-                            style: AppStyle.textRegularRomanStyle
-                                .copyWith(color: AppColor.textPrimaryColor),
-                          ),
-                          Text(
-                            state.entityActivityDetailsResponse
-                                    ?.approvals?[index].approvalType?.name ??
-                                "",
-                            style: AppStyle.footNoteRomanStyle
-                                .copyWith(color: AppColor.textTertiaryColor),
-                          ),
-                        ],
+                      return Container(
+                        padding: const EdgeInsets.only(
+                            right: 14, left: 14, top: 8, bottom: 8),
+                        decoration: BoxDecoration(
+                            color: AppColor.surfaceTertairyColor,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12))),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              state
+                                      .entityActivityDetailsResponse
+                                      ?.approvals?[index]
+                                      .supervisingAuthorityName ??
+                                  "",
+                              textAlign: TextAlign.start,
+                              style: AppStyle.textRegularRomanStyle
+                                  .copyWith(color: AppColor.textPrimaryColor),
+                            ),
+                            Text(
+                              state.entityActivityDetailsResponse
+                                      ?.approvals?[index].approvalType?.name ??
+                                  "",
+                              style: AppStyle.footNoteMediumStyle
+                                  .copyWith(color: AppColor.textSecondaryColor),
+                            ),
+                          ],
+                        ),
                       );
                     }),
-              ),
-              const SizedBox(
-                height: 10,
               ),
             ],
           ),

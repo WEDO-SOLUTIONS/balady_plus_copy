@@ -2,6 +2,7 @@ import 'package:smart_advisor/app/features/shared_features/widgets/custom_button
 
 import '../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
+import '../../../../../_shared_feature_/presentation/widgets/shimmer_card copy.dart';
 import '../../../../../_shared_feature_/presentation/widgets/shimmer_card.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';
@@ -12,7 +13,7 @@ import '/app/features/home2/widgets/objection_card.dart';
 import '/app/features/home2/widgets/violating_commercial_activities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
+//import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 import '../../../../data/models/entity_violation_activity_model.dart';
 
@@ -24,11 +25,6 @@ class ViolationsView extends StatefulWidget {
 }
 
 class _ViolationsViewState extends State<ViolationsView> {
-  List<EntityViolationActivityModel> list = [
-    EntityViolationActivityModel(),
-    EntityViolationActivityModel(),
-    EntityViolationActivityModel(),
-  ];
   int currentExpandedItem = -1;
 
   @override
@@ -41,7 +37,7 @@ class _ViolationsViewState extends State<ViolationsView> {
         return Stack(
           children: [
             if (state.violationStatus == BlocStatus.loading)
-              const ShimmerVerticalList(
+              const Shimmer2VerticalList(
                 height: 50,
               ),
             if (state.violationStatus == BlocStatus.failure)
@@ -52,31 +48,23 @@ class _ViolationsViewState extends State<ViolationsView> {
               ),
             if (state.violationStatus == BlocStatus.success)
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(
-                  " انواع المخالفات",
-                  style: AppStyle.heading2BoldStyle
-                      .copyWith(color: AppColor.textPrimaryColor),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
                 MediaQuery.removePadding(
                   removeTop: true,
                   removeBottom: true,
                   context: context,
                   child: ListView.builder(
-                    itemCount: violations.length,
+                    itemCount: violations.length ?? 0,
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (ctx, index) {
                       return Column(
                         children: [
-                          ExpandableItem(
+                          NonExpandableItem(
                             dataModel:
-                                violations[violations.keys.elementAt(index)]!,
+                                violations[violations.keys.elementAt(index)] ??
+                                    [],
                             title: violations.keys.elementAt(index),
-                            onChangedExpansion: () {
-                              print(index);
+                            /*  onChangedExpansion: () {
                               if (currentExpandedItem == index) {
                                 currentExpandedItem = -1;
                               } else {
@@ -84,7 +72,7 @@ class _ViolationsViewState extends State<ViolationsView> {
                               }
                               setState(() {});
                             },
-                            currentExpandedItem: currentExpandedItem,
+                            currentExpandedItem: currentExpandedItem,*/
                             currentIndex: index,
                           )
                         ],
@@ -106,7 +94,7 @@ class _ViolationsViewState extends State<ViolationsView> {
                   height: 5,
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "الاعتراضات",
                     style: AppStyle.heading2BoldStyle
@@ -116,13 +104,48 @@ class _ViolationsViewState extends State<ViolationsView> {
                 const SizedBox(
                   height: 5,
                 ),
-                CustomButton(
+                InkWell(
+                  onTap: () {
+                    //   BaladyServices.openObjections();
+                  },
+                  child: Container(
+                    height: 116,
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                        color: AppColor.white,
+                        borderRadius: BorderRadius.circular(6)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "التقديم علي اعتراض",
+                          style: AppStyle.textRegularStyle
+                              .copyWith(color: const Color(0xff18182D)),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          "لمعرفة التقديم على الإعتراضات الخاصة بالمخالفات",
+                          style: AppStyle.textRegularStyle
+                              .copyWith(color: AppColor.textSecondaryColor),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 32,
+                ),
+                /* CustomButton(
                     btnColor: AppColor.surfaceAccentSecondaryColor,
                     textColor: AppColor.statusAccentColor,
                     onPress: () {
-                      BaladyServices.openObjections();
+                      //    BaladyServices.openObjections();
                     },
-                    text: "التقديم على اعتراض"),
+                    text: "التقديم على اعتراض"),*/
                 /*const ObjectionCard(
             title: "التقديم على أعتراض",
             details: "",
@@ -204,7 +227,7 @@ class _ExpandableItemState extends State<ExpandableItem> {
               ListView.builder(
                 itemCount: widget.dataModel.length,
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (ctx, i) {
                   return GestureDetector(
                     onTap: () {
@@ -217,6 +240,70 @@ class _ExpandableItemState extends State<ExpandableItem> {
                   );
                 },
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class NonExpandableItem extends StatefulWidget {
+  final List<EntityViolationActivityModel> dataModel;
+  final String title;
+  final int currentIndex;
+  const NonExpandableItem(
+      {super.key,
+      required this.title,
+      required this.dataModel,
+      required this.currentIndex});
+
+  @override
+  State<NonExpandableItem> createState() => _NonExpandableItemState();
+}
+
+class _NonExpandableItemState extends State<NonExpandableItem> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        //   widget.onChangedExpansion();
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+            color: AppColor.surfaceSecondaryColor,
+            borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  widget.title,
+                  style: AppStyle.textRegularRomanStyle,
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ListView.builder(
+              itemCount: widget.dataModel.length ?? 0,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (ctx, i) {
+                return GestureDetector(
+                  onTap: () {
+                    context.read<DetailsBloc>().add(
+                        GetViolationDetailsEvent(item: widget.dataModel[i]));
+                  },
+                  child: ViolatingCommercialActivities(
+                    dataModel: widget.dataModel[i],
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),

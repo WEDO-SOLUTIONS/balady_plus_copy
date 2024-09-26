@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -234,7 +235,7 @@ class BaladyServices {
     return null;
   }
 
-    static void openIssueLicense() {
+  static void openIssueLicense() {
     NavigationService.navigatorKey.currentState
         ?.pushNamed(RouteName.commercialLicensePage);
   }
@@ -246,5 +247,9 @@ class BaladyServices {
   static void openObjections() {
     NavigationService.navigatorKey.currentState
         ?.pushNamed(RouteName.objectableTransactions);
+  }
+
+  static Future<bool> checkLocationSettings(BuildContext context) {
+    return CommonFunctions.checkLocationSettings(context);
   }
 }

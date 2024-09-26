@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 class SanctionCalc extends StatefulWidget {
   final String price;
   final int index;
+  final bool isCritical;
   final Function onChangeOccurence;
 
   const SanctionCalc(
       {super.key,
       required this.price,
       required this.onChangeOccurence,
+      required this.isCritical,
       required this.index});
 
   @override
@@ -77,7 +79,7 @@ class _SanctionCalcState extends State<SanctionCalc> {
               color: AppColor.surfaceSecondaryColor),
           child: ListTile(
               title: Text(
-                "رسوم الغرامة",
+                "قيمة الغرامة",
                 style: AppStyle.textRegularRomanStyle
                     .copyWith(color: AppColor.textSecondaryColor),
               ),
@@ -85,14 +87,17 @@ class _SanctionCalcState extends State<SanctionCalc> {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: widget.price,
+                      text: widget.price == "0" && widget.isCritical == false
+                          ? "إنذار"
+                          : widget.price,
                       style: AppStyle.calloutBoldStyle,
                     ),
-                    TextSpan(
-                      text: ' ريال / للرخصة',
-                      style: AppStyle.captionRomanStyle
-                          .copyWith(color: AppColor.textPrimaryColor),
-                    ),
+                    if (widget.price != "0" && widget.isCritical != false)
+                      TextSpan(
+                        text: ' ريال / للرخصة',
+                        style: AppStyle.captionRomanStyle
+                            .copyWith(color: AppColor.textPrimaryColor),
+                      ),
                   ],
                 ),
               )),

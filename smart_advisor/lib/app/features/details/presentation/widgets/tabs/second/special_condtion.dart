@@ -34,7 +34,7 @@ class SpecialCondtion extends StatelessWidget {
                   );
                 }),
           ),
-          CustomButton(
+          /*  CustomButton(
             btnColor: AppColor.surfaceAccentSecondaryColor,
             textColor: AppColor.statusAccentColor,
             onPress: () {
@@ -48,7 +48,7 @@ class SpecialCondtion extends StatelessWidget {
               );
             },
             text: ("all_requirements").tr(),
-          ),
+          ),*/
         ],
       );
     });

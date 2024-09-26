@@ -20,11 +20,11 @@ class ShimmerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width ?? MediaQuery.of(context).size.width,
+      width: width ?? MediaQuery.of(context).size.width - 16,
       height: height,
       child: Shimmer.fromColors(
-        baseColor: AppColor.surfaceSecondaryColor,
-        highlightColor: AppColor.surfacePrimaryColor,
+        baseColor: AppColor.textTertiaryColor.withAlpha(20),
+        highlightColor: AppColor.white,
         period: const Duration(milliseconds: 1000),
         child: Card(
           shape: RoundedRectangleBorder(

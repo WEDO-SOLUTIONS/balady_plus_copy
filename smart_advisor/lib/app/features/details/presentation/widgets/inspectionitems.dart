@@ -1,17 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/shimmer_card%20copy.dart';
 import 'package:smart_advisor/app/features/details/presentation/bloc/details_bloc.dart';
 import 'package:smart_advisor/app/features/details/presentation/bloc/details_state.dart';
 
+import '../../../../core/utils/enums/bloc_status.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';
 import '/app/core/utils/constants/paths/icon_paths.dart';
 import '/app/core/utils/constants/language.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '/app/features/details/presentation/widgets/inspec_d.dart';
 
 class InspectionItemList extends StatefulWidget {
   const InspectionItemList({super.key});
@@ -31,6 +30,7 @@ class _InspectionItemListState extends State<InspectionItemList> {
             Column(
               children: [
                 Container(
+                  color: Colors.transparent,
                   // width: MediaQuery.of(context).size.width,
 
                   child: Column(
@@ -45,11 +45,11 @@ class _InspectionItemListState extends State<InspectionItemList> {
                             itemCount: clauses.length,
                             itemBuilder: (ctx, index) {
                               return Container(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(16.0),
                                 margin: EdgeInsets.only(bottom: 8),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    color: AppColor.surfaceSecondaryColor),
+                                    color: AppColor.surfaceTertairyColor),
                                 child: Column(
                                   children: [
                                     Row(
@@ -82,10 +82,8 @@ class _InspectionItemListState extends State<InspectionItemList> {
                                     SizedBox(height: 4),
                                     Text(
                                       clauses[index],
-                                      style: AppStyle.footNoteRomanStyle
-                                          .copyWith(
-                                              color:
-                                                  AppColor.textSecondaryColor),
+                                      style: AppStyle.textRegularStyle.copyWith(
+                                          color: AppColor.textSecondaryColor),
                                     ),
                                     SizedBox(height: 20),
                                   ],
@@ -93,7 +91,8 @@ class _InspectionItemListState extends State<InspectionItemList> {
                               );
                             }),
                       ),
-
+                      if (state.vdViolationStatus == BlocStatus.loading)
+                        Shimmer2VerticalList()
                       /*  Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

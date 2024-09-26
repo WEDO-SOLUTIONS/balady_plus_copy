@@ -1,7 +1,10 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:smart_advisor/app/core/services/services_exports.dart';
 import 'package:smart_advisor/app/core/utils/utils_exports.dart';
 
+import '../pages/area_page.dart';
 import '/app/core/dependency_injection/injection_container.dart';
 import '/app/core/errors/failures.dart';
 import '/app/core/utils/enums/bloc_status.dart';
@@ -39,6 +42,16 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<GetZonesEvent>(getZonesHandler);
     on<ValidatePointEvent>(validatePointHandler);
     on<GetGISDataEvent>(getGISDataHandler);
+    on<ClearGISDataEvent>(clearGISDataHandler);
+  }
+
+  void clearGISDataHandler(ClearGISDataEvent event, Emitter emit) async {
+    emit(state.copyWith(gisDataStatus: BlocStatus.loading));
+
+    emit(state.copyWith(
+      gisDataStatus: BlocStatus.initial,
+      clearGISData: true,
+    ));
   }
 
   void getZonesHandler(GetZonesEvent event, Emitter emit) async {

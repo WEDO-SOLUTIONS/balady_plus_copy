@@ -12,15 +12,15 @@ class CustomButtonIcon extends StatelessWidget {
     return GestureDetector(
       onTap: () => onPress(),
       child: Container(
-        height: 57,
-        width: 57,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
-            color: const Color(0x1aFFFFFF)),
+        height: 32,
+        width: 32,
+        //  decoration: BoxDecoration(
+        //     borderRadius: BorderRadius.circular(28),
+        //     color: const Color(0x1aFFFFFF)),
         child: SvgPicture.asset(
           icon,
-          width: 20,
-          height: 20,
+          width: 32,
+          height: 32,
           fit: BoxFit.scaleDown,
         ),
       ),

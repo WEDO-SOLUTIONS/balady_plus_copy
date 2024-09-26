@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_advisor/app/core/utils/enums/bloc_status.dart';
 import 'package:smart_advisor/app/features/home_page/presentation/search_bloc/search_bloc.dart';
 import 'package:smart_advisor/app/features/home_page/presentation/search_bloc/search_state.dart';
 import 'package:smart_advisor/app/features/shared_features/widgets/app_bar.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../_shared_feature_/domain/entities/lookUp_response.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_widgets/customTextField.dart';
@@ -59,38 +62,83 @@ class _SearchPageState extends State<SearchPage> {
                       const SizedBox(
                         height: 16,
                       ),
-                      MediaQuery.removePadding(
-                        removeTop: true,
-                        context: context,
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: state.sectors?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            return ActivityItemCard(
-                              id: state.sectors?[index].id.toString() ?? "",
-                              name:
-                                  state.sectors?[index].isicNameAr.toString() ??
-                                      "",
-                              index: index,
-                              onPress: () {
-                                NavigationService.navigatorKey.currentState!
-                                    .pushNamed(RouteName.activitesPage,
-                                        arguments: ActivitesPageParams(
-                                            isic: LookUpItem(
-                                                id: int.tryParse(state
-                                                            .sectors![index]
-                                                            .isicCode ??
-                                                        "") ??
-                                                    0,
-                                                name: state.sectors![index]
-                                                        .isicNameAr ??
-                                                    "")));
-                              },
-                            );
-                          },
-                        ),
-                      ),
+                      Stack(
+                        children: [
+                          if (state.sectors?.isNotEmpty ?? false)
+                            MediaQuery.removePadding(
+                              removeTop: true,
+                              context: context,
+                              child: ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: state.sectors?.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  return ActivityItemCard(
+                                    id: state.sectors?[index].id.toString() ??
+                                        "",
+                                    name: state.sectors?[index].isicNameAr
+                                            .toString() ??
+                                        "",
+                                    index: index,
+                                    onPress: () {
+                                      NavigationService
+                                          .navigatorKey.currentState!
+                                          .pushNamed(RouteName.activitesPage,
+                                              arguments: ActivitesPageParams(
+                                                  sector: LookUpItem(
+                                                      id: 1, name: ""),
+                                                  isic: LookUpItem(
+                                                      id: int.tryParse(state
+                                                                  .sectors![
+                                                                      index]
+                                                                  .isicCode ??
+                                                              "") ??
+                                                          0,
+                                                      name: state
+                                                              .sectors![index]
+                                                              .isicNameAr ??
+                                                          "")));
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          if (state.sectors?.isEmpty ?? true) ...[
+                            Column(
+                              children: [
+                                const SizedBox(
+                                  height: 120,
+                                ),
+                                Image.asset(
+                                  "packages/smart_advisor/smart_advisor_assets/images/searchimg.png",
+                                  height: 122,
+                                  width: 150,
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'نتائج البحث',
+                                  style: AppStyle.calloutBoldStyle.copyWith(
+                                      color: AppColor.textPrimaryColor),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'ابحث عن كل المنشآت التي ترغب في الاستعلام عنها',
+                                  textAlign: TextAlign.center,
+                                  style: AppStyle.textRegularRomanStyle
+                                      .copyWith(color: const Color(0xFF566069)),
+                                ),
+                              ],
+                            )
+                          ],
+                          if (state.sectorStatus == BlocStatus.loading)
+                            Align(
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator(
+                                color: AppColor.statusAccentColor,
+                              ),
+                            ),
+                        ],
+                      )
                     ],
                   ),
                 ),

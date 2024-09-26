@@ -28,14 +28,9 @@ class DocumentHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(children: [
       Container(
-        height: 281,
+        height: 240,
         decoration: BoxDecoration(
             color: AppColor.statusAccentColor,
-            image: const DecorationImage(
-                image: AssetImage(
-                  "packages/smart_advisor/smart_advisor_assets/images/header_background.png",
-                ),
-                fit: BoxFit.cover),
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
@@ -70,8 +65,9 @@ class DocumentHeader extends StatelessWidget {
                 ),
                 Text(
                   title,
-                  style:
-                      AppStyle.accentBoldStyle.copyWith(color: AppColor.white),
+                  style: AppStyle.heading2BoldStyle
+                      .copyWith(color: AppColor.white),
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(
                   height: 5,
@@ -79,7 +75,7 @@ class DocumentHeader extends StatelessWidget {
               ],
             ),
             const SizedBox(
-              height: 80,
+              height: 50,
             ),
             Textfield(
               onSubmit: onSubmit,

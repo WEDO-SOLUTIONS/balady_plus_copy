@@ -151,7 +151,7 @@ class _CommercialConditionRegulationState
       body: Column(
         children: [
           DocumentHeader(
-            title: 'متطلبات موافقه التراخيص العامه',
+            title: "files_title_1".tr(),
             onSubmit: (value) => searchAndScroll(value),
             onChanged: (String t) {
               setState(() {
@@ -182,13 +182,13 @@ class _CommercialConditionRegulationState
                     children: [
                       Column(
                         children: [
-                          Text("files_title_1".tr(),
+                          /* Text("files_title_1".tr(),
                               style: AppStyle.calloutBoldStyle.copyWith(
                                 color: AppColor.primary,
                               )),
                           const SizedBox(
                             height: 4,
-                          ),
+                          ),*/
                           Text("files_title_2".tr(),
                               style: AppStyle.footNoteRomanStyle.copyWith(
                                 color: AppColor.textSecondaryColor,

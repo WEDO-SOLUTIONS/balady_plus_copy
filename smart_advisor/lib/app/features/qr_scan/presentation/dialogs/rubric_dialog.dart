@@ -127,6 +127,7 @@ class _RubricDialogState extends State<RubricDialog> {
                       NavigationService.navigatorKey.currentState!.pushNamed(
                         RouteName.isicsPage,
                         arguments: IsicsPageParams(
+                            sector: widget.args.sector,
                             rubric: state.rubrics![selectedIndex],
                             category: widget.args.category),
                       );

@@ -1,3 +1,6 @@
+import 'package:smart_advisor/app/core/utils/constants/language.dart';
+import 'package:smart_advisor/app/features/shared_features/widgets/custom_button.dart';
+
 import '/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 
@@ -13,27 +16,35 @@ class ReloadWidget extends StatelessWidget {
     return InkWell(
       onTap: onTab,
       child: Container(
-        width: double.infinity,
-        height: widgetHeight,
-        margin: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-            color: AppColor.white,
-            borderRadius: BorderRadius.circular(12.0),
-            border: Border.all(color: AppColor.white, width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xff000000).withOpacity(0.08),
-                spreadRadius: 0,
-                blurRadius: 20,
-                offset: const Offset(0, 4), // changes position of shadow
-              )
-            ]),
-        child: Center(
-          child: Text(
-            trans('reload'),
-            style: AppStyle.mainTextStyle
-                .copyWith(color: AppColor.statusAccentColor),
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              "packages/smart_advisor/smart_advisor_assets/images/error_placeholder.png",
+              width: 141,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Text(
+              "لا يوجد نتائج",
+              style: AppStyle.calloutBoldStyle
+                  .copyWith(color: AppColor.textPrimaryColor),
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Center(
+              child: CustomButton(
+                btnWidth: 194,
+                text: "reload".tr(),
+                onPress: () {
+                  onTab();
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -16,6 +16,16 @@ class BoardDialog extends StatefulWidget {
 class _BoardDialogState extends State<BoardDialog> {
   String? area;
   LookUpItem? board;
+  List<LookUpItem> boardsItems = [
+    LookUpItem(
+      id: 1,
+      name: "لوحة ارشادية",
+    ),
+    LookUpItem(
+      id: 2,
+      name: "لوحة إعلانية",
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +48,7 @@ class _BoardDialogState extends State<BoardDialog> {
               onSelect: (LookUpItem item) {
                 board = item;
               },
-              list: [
-                LookUpItem(
-                  id: 1,
-                  name: "لوحة ارشادية",
-                ),
-                LookUpItem(
-                  id: 2,
-                  name: "لوحة إعلانية",
-                )
-              ],
+              list: boardsItems,
             ),
             const SizedBox(
               height: 16,

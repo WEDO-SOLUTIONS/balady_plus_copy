@@ -22,10 +22,10 @@ class ActivityItemCard extends StatelessWidget {
     return InkWell(
       onTap: () => onPress(),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
+        margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColor.surfaceSecondaryColor,
+          color: AppColor.surfaceTertairyColor,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
         child: Row(
@@ -35,9 +35,12 @@ class ActivityItemCard extends StatelessWidget {
             Flexible(
               child: Text(
                 name,
-                style: AppStyle.textRegularRomanStyle
+                style: AppStyle.textRegularStyle
                     .copyWith(color: AppColor.textPrimaryColor),
               ),
+            ),
+            const SizedBox(
+              width: 16,
             ),
             SvgPicture.asset(IconPath.arrowLeftSide)
           ],

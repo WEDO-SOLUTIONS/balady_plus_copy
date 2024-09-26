@@ -17,7 +17,8 @@ class SecpageOnb extends StatelessWidget {
         ),
         //try later the svg extention..
         Image.asset(
-            "packages/smart_advisor/smart_advisor_assets/images/mockuptow.png"),
+          "packages/smart_advisor/smart_advisor_assets/images/mockuptow.png",
+        ),
         const SizedBox(
           height: 40,
         ),
@@ -27,17 +28,21 @@ class SecpageOnb extends StatelessWidget {
           children: [
             Text(
               " دليل تفاعلي ",
-              style: AppStyle.accentBoldStyle.copyWith(color: AppColor.black),
+              style: AppStyle.accentBoldStyle
+                  .copyWith(color: AppColor.textPrimaryColor),
             ),
             const SizedBox(
-              height: 15,
+              height: 12,
             ),
-            Text(
-              "  تعرف على كافة الاشتراطات والمعلومات المتعلقة بالمنشأة والمخالفات  ",
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              style: AppStyle.textRegularRomanStyle
-                  .copyWith(color: AppColor.textSecondaryColor),
+            Padding(
+              padding: const EdgeInsets.only(right: 40, left: 40),
+              child: Text(
+                "  تعرف على كافة الاشتراطات والمعلومات المتعلقة بالمنشآت والمخالفات  ",
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: AppStyle.textRegularStyle
+                    .copyWith(color: AppColor.textSecondaryColor),
+              ),
             ),
           ],
         ),

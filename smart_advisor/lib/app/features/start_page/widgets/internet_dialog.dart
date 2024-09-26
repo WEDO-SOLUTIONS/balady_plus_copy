@@ -1,3 +1,5 @@
+import 'package:smart_advisor/smart_advisor.dart';
+
 import '../../../core/services/local/navigation_services.dart';
 import '/app/core/utils/utils_exports.dart';
 import '/app/features/home_page/presentation/pages/homePage.dart';
@@ -14,7 +16,7 @@ class InternetDialog extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
-        height: 210,
+        height: 415,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -24,23 +26,18 @@ class InternetDialog extends StatelessWidget {
         ),
         child: Padding(
           padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 20),
+              const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
           child: Column(
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: 4,
-                width: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(9),
-                  color: AppColor.surfaceMidContrast,
-                ),
+              SizedBox(
+                height: 20,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'اختر',
+                    'عزيزي المستثمر',
                     style: AppStyle.heading2BoldStyle,
                   ),
                   GestureDetector(
@@ -55,50 +52,40 @@ class InternetDialog extends StatelessWidget {
               const SizedBox(
                 height: 8,
               ),
-              Row(
+              Column(
                 children: [
+                  Image.asset(
+                    'packages/smart_advisor/smart_advisor_assets/images/laptop.png',
+                    height: 147,
+                  ),
                   Text(
-                    'هل سيكون العمل الجديد عبر الانترنت بشكل كامل',
-                    style: AppStyle.textRegularRomanStyle,
-                    textAlign: TextAlign.start,
+                    'اذا كان العمل الجديد عبر الانترنت بشكل كامل',
+                    style: AppStyle.textRegularStyle
+                        .copyWith(color: AppColor.textPrimaryColor),
                   ),
+                  Text(
+                    ' فلا يوجد اي اشتراطات بلديه للعمل عبر الانترنت ',
+                    style: AppStyle.calloutBoldStyle
+                        .copyWith(color: AppColor.textPrimaryColor),
+                  )
                 ],
               ),
-              const SizedBox(
-                height: 30,
+              SizedBox(
+                height: 25,
               ),
-              Row(
-                children: [
-                  CustomButton(
-                      btnHeight: 40,
-                      btnWidth: 170,
-                      btnColor: AppColor.surfaceAccentSecondaryColor,
-                      textColor: AppColor.statusAccentColor,
-                      onPress: () {
-                        showModalBottomSheet(
-                          backgroundColor: const Color(0xff000000),
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (BuildContext context) =>
-                              const HappyNewsDialog(),
-                        );
-                      },
-                      text: 'نعم'),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  CustomButton(
-                      btnHeight: 40,
-                      btnWidth: 170,
-                      btnColor: AppColor.statusAccentColor,
-                      onPress: () {
-                        NavigationService.navigatorKey.currentState!.push(
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        );
-                      },
-                      text: 'لا'),
-                ],
-              )
+              CustomButton(
+                  btnHeight: 52,
+                  //  btnWidth: 170,
+                  btnColor: AppColor.primary,
+                  textColor: AppColor.white,
+                  onPress: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                    );
+                  },
+                  text: 'حسناً فهمت'),
             ],
           ),
         ),

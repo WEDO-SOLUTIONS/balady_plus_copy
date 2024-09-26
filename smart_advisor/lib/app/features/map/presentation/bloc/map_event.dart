@@ -26,3 +26,7 @@ class ValidatePointEvent extends MapEvent {
   final double lon;
   const ValidatePointEvent({required this.lat, required this.lon});
 }
+
+class ClearGISDataEvent extends MapEvent {
+  const ClearGISDataEvent();
+}

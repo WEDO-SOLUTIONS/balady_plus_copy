@@ -13,7 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 114,
+      height: 120,
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.only(
@@ -21,24 +21,35 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           bottom: 12,
           left: 12,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
-            IconButton(
-              onPressed: () {
-                NavigationService.navigatorKey.currentState!.pop(context);
-              },
-              icon: SvgPicture.asset(
-                IconPath.backIcon,
-                width: 12,
-                color: AppColor.statusAccentColor,
-              ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: AppColor.gray),
             ),
-            Flexible(
-              child: Text(title, maxLines: 1, style: AppStyle.calloutBoldStyle),
-            ),
-            const SizedBox(
-              width: 40,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    NavigationService.navigatorKey.currentState!.pop(context);
+                  },
+                  icon: SvgPicture.asset(
+                    IconPath.backIcon,
+                    width: 12,
+                    color: AppColor.black, //statusAccentColor,
+                  ),
+                ),
+                Flexible(
+                  child: Text(title,
+                      maxLines: 1, style: AppStyle.calloutBoldStyle),
+                ),
+                const SizedBox(
+                  width: 40,
+                ),
+              ],
             ),
           ],
         ),
@@ -47,5 +58,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(114);
+  Size get preferredSize => const Size.fromHeight(120);
 }

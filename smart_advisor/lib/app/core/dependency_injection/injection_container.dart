@@ -22,6 +22,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
     show HomeInjection;
 import '../services/services_exports.dart'
     show
+        SharedPrefs,
         SmartAdvisorNetworkConnection,
         SmartAdvisorNetworkConnectionImplementation,
         SmartAdvisorWebService;
@@ -32,6 +33,9 @@ final sl = GetIt.instance;
 void initialize() {
   //! Features
   //? home
+
+  SharedPrefs.init();
+
   if (!sl.isRegistered<SmartAdvisorHomeRepository>()) HomeInjection.init();
 
   //? Activities

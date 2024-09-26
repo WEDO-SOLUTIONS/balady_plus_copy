@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
+
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../shared_features/widgets/webview_page.dart';
 import '/app/core/utils/constants/app_colors.dart';
@@ -37,7 +39,7 @@ class DetailsUserGuide extends StatelessWidget {
                 Container(
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColor.surfaceSecondaryColor,
+                    color: AppColor.white,
                     borderRadius: const BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Padding(
@@ -46,8 +48,9 @@ class DetailsUserGuide extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('target_audince'.tr(),
-                            style: AppStyle.textRegularRomanStyle
-                              ..copyWith(color: AppColor.textPrimaryColor)),
+                            style: AppStyle.textRegularRomanStyle.copyWith(
+                                color: AppColor.textPrimaryColor,
+                                fontSize: 14)),
                         Text(
                             state.entityActivityDetailsResponse?.guide
                                     ?.firstOrNull?.fieldTargetCategories ??
@@ -64,7 +67,7 @@ class DetailsUserGuide extends StatelessWidget {
                 Container(
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColor.surfaceSecondaryColor,
+                    color: AppColor.white,
                     borderRadius: const BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Padding(
@@ -73,13 +76,15 @@ class DetailsUserGuide extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("apply_channels".tr(),
-                            style: AppStyle.textRegularRomanStyle
-                              ..copyWith(color: AppColor.textPrimaryColor)),
+                            style: AppStyle.textRegularRomanStyle.copyWith(
+                                color: AppColor.textPrimaryColor,
+                                fontSize: 14)),
                         Wrap(
                           children: state.entityActivityDetailsResponse?.guide
                                   ?.firstOrNull?.fieldServiceChanelsExport
                                   ?.map(
                                     (e) => SvgPicture.asset(
+                                      color: AppColor.statusAccentColor,
                                       e.id == 10110
                                           ? IconPath.mobileEmpty
                                           : IconPath.monitorIcon,
@@ -98,7 +103,7 @@ class DetailsUserGuide extends StatelessWidget {
                 Container(
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColor.surfaceSecondaryColor,
+                    color: AppColor.white,
                     borderRadius: const BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Padding(
@@ -108,8 +113,9 @@ class DetailsUserGuide extends StatelessWidget {
                       children: [
                         // const SizedBox(width: 8,),
                         Text("payment_methods".tr(),
-                            style: AppStyle.textRegularRomanStyle
-                              ..copyWith(color: AppColor.textPrimaryColor)),
+                            style: AppStyle.textRegularRomanStyle.copyWith(
+                                color: AppColor.textPrimaryColor,
+                                fontSize: 14)),
                         Image.asset(
                           'packages/smart_advisor/smart_advisor_assets/images/payment.png',
                         ),
@@ -123,7 +129,7 @@ class DetailsUserGuide extends StatelessWidget {
                 Container(
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColor.surfaceSecondaryColor,
+                    color: AppColor.white,
                     borderRadius: const BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Padding(
@@ -133,8 +139,9 @@ class DetailsUserGuide extends StatelessWidget {
                       children: [
                         // const SizedBox(width: 8,),
                         Text("cost".tr(),
-                            style: AppStyle.textRegularRomanStyle
-                              ..copyWith(color: AppColor.textPrimaryColor)),
+                            style: AppStyle.textRegularRomanStyle.copyWith(
+                                color: AppColor.textPrimaryColor,
+                                fontSize: 14)),
                         InkWell(
                           onTap: () {
                             NavigationService.navigatorKey.currentState!
@@ -145,8 +152,8 @@ class DetailsUserGuide extends StatelessWidget {
                             }));
                           },
                           child: Text(("fee_calculator").tr(),
-                              style: AppStyle.calloutBoldStyle
-                                ..copyWith(color: AppColor.statusAccentColor)),
+                              style: AppStyle.footNoteRomanStyle
+                                  .copyWith(color: AppColor.statusAccentColor)),
                         ),
                       ],
                     ),
@@ -157,14 +164,19 @@ class DetailsUserGuide extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    launchUrl(Uri.parse(state.entityActivityDetailsResponse
-                            ?.guide?.firstOrNull?.fieldUserGuide ??
-                        ""));
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx) {
+                      return WebViewPage(
+                        url: state.entityActivityDetailsResponse?.guide
+                                ?.firstOrNull?.fieldUserGuide ??
+                            "",
+                        title: "details".tr(),
+                      );
+                    }));
                   },
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColor.surfaceSecondaryColor,
+                      color: AppColor.white,
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
@@ -173,8 +185,9 @@ class DetailsUserGuide extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("user_guide".tr(),
-                              style: AppStyle.textRegularRomanStyle
-                                ..copyWith(color: AppColor.textPrimaryColor)),
+                              style: AppStyle.textRegularRomanStyle.copyWith(
+                                  color: AppColor.textPrimaryColor,
+                                  fontSize: 14)),
                           SvgPicture.asset(IconPath.download)
                         ],
                       ),
@@ -201,7 +214,7 @@ class DetailsUserGuide extends StatelessWidget {
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColor.surfaceSecondaryColor,
+                      color: AppColor.white,
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
@@ -210,8 +223,9 @@ class DetailsUserGuide extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("apply_methods".tr(),
-                              style: AppStyle.textRegularRomanStyle
-                                ..copyWith(color: AppColor.textPrimaryColor)),
+                              style: AppStyle.textRegularRomanStyle.copyWith(
+                                  color: AppColor.textPrimaryColor,
+                                  fontSize: 14)),
                           SvgPicture.asset(IconPath.arrowR)
                         ],
                       ),
@@ -238,7 +252,7 @@ class DetailsUserGuide extends StatelessWidget {
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColor.surfaceSecondaryColor,
+                      color: AppColor.white,
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
@@ -247,8 +261,9 @@ class DetailsUserGuide extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('requirements_1'.tr(),
-                              style: AppStyle.textRegularRomanStyle
-                                  .copyWith(color: AppColor.textPrimaryColor)),
+                              style: AppStyle.textRegularRomanStyle.copyWith(
+                                  color: AppColor.textPrimaryColor,
+                                  fontSize: 14)),
                           SvgPicture.asset(IconPath.arrowR)
                         ],
                       ),
@@ -273,7 +288,7 @@ class DetailsUserGuide extends StatelessWidget {
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColor.surfaceSecondaryColor,
+                      color: AppColor.white,
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
@@ -282,8 +297,9 @@ class DetailsUserGuide extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("fines_and_conditions".tr(),
-                              style: AppStyle.textRegularRomanStyle
-                                ..copyWith(color: AppColor.textPrimaryColor)),
+                              style: AppStyle.textRegularRomanStyle.copyWith(
+                                  color: AppColor.textPrimaryColor,
+                                  fontSize: 14)),
                           SvgPicture.asset(IconPath.arrowR)
                         ],
                       ),
@@ -315,7 +331,7 @@ class DetailsUserGuide extends StatelessWidget {
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColor.surfaceSecondaryColor,
+                      color: AppColor.white,
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
@@ -324,8 +340,9 @@ class DetailsUserGuide extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('الشروط الفنية لانظمة وزارة الداخلية ',
-                              style: AppStyle.textRegularRomanStyle
-                                ..copyWith(color: AppColor.textPrimaryColor)),
+                              style: AppStyle.textRegularRomanStyle.copyWith(
+                                  color: AppColor.textPrimaryColor,
+                                  fontSize: 14)),
                           SvgPicture.asset(IconPath.arrowR)
                         ],
                       ),
@@ -336,8 +353,8 @@ class DetailsUserGuide extends StatelessWidget {
                   height: 30,
                 ),
                 CustomButton(
-                  btnColor: AppColor.surfaceAccentSecondaryColor,
-                  textColor: AppColor.statusAccentColor,
+                  btnColor: AppColor.statusAccentColor,
+                  textColor: AppColor.white,
                   onPress: () {
                     //    BaladyServices.openIssueLicense();
                   },

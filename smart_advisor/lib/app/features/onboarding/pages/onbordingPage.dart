@@ -70,14 +70,15 @@ class _OnbordingpageState extends State<Onbordingpage> {
 
             CustomButton(
               btnHeight: 48,
-              btnColor: AppColor.statusAccentColor,
+              btnColor: AppColor.textPrimaryColor,
+              textColor: AppColor.white,
               onPress: () {
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (ctx) {
                   return Startpage();
                 }));
               },
-              btnMargin: const EdgeInsets.symmetric(horizontal: 32),
+              btnMargin: const EdgeInsets.symmetric(horizontal: 16),
               text: ("continue").tr(),
             )
           ],
@@ -97,7 +98,9 @@ class _OnbordingpageState extends State<Onbordingpage> {
           margin: const EdgeInsets.symmetric(horizontal: 4.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _currentPage == i ? Colors.blue : Colors.grey[400],
+            color: _currentPage == i
+                ? AppColor.textSecondaryColor
+                : Colors.grey[400],
           ),
         ),
       );

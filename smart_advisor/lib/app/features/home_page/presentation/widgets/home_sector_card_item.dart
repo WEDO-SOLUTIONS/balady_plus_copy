@@ -8,19 +8,24 @@ import 'package:flutter_svg/svg.dart';
 class HomeSectorCardItem extends StatelessWidget {
   final GrideViewModel item;
   final Function onPress;
+  final animation;
 
   const HomeSectorCardItem(
-      {super.key, required this.item, required this.onPress});
+      {super.key,
+      required this.item,
+      required this.onPress,
+      required this.animation});
 
   @override
   Widget build(BuildContext context) {
+    print("animation ${animation}");
     return InkWell(
       onTap: () => onPress(),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          color: AppColor.surfaceSecondaryColor,
+          color: AppColor.surfaceTertairyColor,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
         child: Row(
@@ -32,7 +37,9 @@ class HomeSectorCardItem extends StatelessWidget {
                 Container(
                     width: 38,
                     height: 38,
-                    color: AppColor.white,
+                    decoration: BoxDecoration(
+                        color: Color(0xFFF3F9F5),
+                        borderRadius: BorderRadius.circular(8)),
                     child: SvgPicture.asset(
                       item.icon ?? "",
                       height: 16,
@@ -62,11 +69,72 @@ class HomeSectorCardItem extends StatelessWidget {
                 ),
               ],
             ),
-            SvgPicture.asset(IconPath.arrowLeftSide)
+            SvgPicture.asset(IconPath.arrowLSide),
           ],
         ),
       ),
     );
+
+    return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(-1, 0),
+          end: Offset(0, 0),
+        ).animate(animation),
+        child: InkWell(
+          onTap: () => onPress(),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColor.surfaceTertairyColor,
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                        width: 38,
+                        height: 38,
+                        decoration: BoxDecoration(
+                            color: Color(0xFFF3F9F5),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: SvgPicture.asset(
+                          item.icon ?? "",
+                          height: 16,
+                          width: 16,
+                          fit: BoxFit.scaleDown,
+                        )),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.sector ?? "",
+                          style: AppStyle.textRegularRomanStyle
+                              .copyWith(color: AppColor.textPrimaryColor),
+                        ),
+                        /*  const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      item.category ?? "",
+                      style: AppStyle.footNoteRomanStyle
+                          .copyWith(color: AppColor.textTertiaryColor),
+                    ),*/
+                      ],
+                    ),
+                  ],
+                ),
+                SvgPicture.asset(IconPath.arrowLSide),
+              ],
+            ),
+          ),
+        ));
 
     /* return InkWell(
       onTap: () {

@@ -9,14 +9,15 @@ class AppColor {
   static const error = Color(0xFF9a1111);
   static const warning = Colors.yellow;
   static const success = Color(0xFF09B56D);
+  static const grey1 = Color(0xffF2F5FB);
 
-  static Color primary = const Color(0xff2E7998);
+  static Color primary = const Color(0xff568F64);
 
   static Color textPrimaryColor = const Color(0xff1E2A36);
   static Color textSecondaryColor = const Color(0xA31E2A36);
   static Color textTertiaryColor = const Color(0x5C1E2A36);
 
-  static Color statusAccentColor = const Color(0xff1E928F);
+  static Color statusAccentColor = const Color(0xff568F64);
 
   static Color statusPositiveColor = const Color(0xff359748);
   static Color statusAttentionColor = const Color(0xffBE890E);

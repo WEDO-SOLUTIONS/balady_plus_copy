@@ -130,11 +130,11 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => QrScanPage());
 
       case RouteName.AppendixNo1:
-        return MaterialPageRoute(builder: (_) => AppendixNo1());
+        return MaterialPageRoute(builder: (_) => const AppendixNo1());
 
       case RouteName.CommercialConditionRegulation:
         return MaterialPageRoute(
-            builder: (_) => CommercialConditionRegulation());
+            builder: (_) => const CommercialConditionRegulation());
 
       // error page
       default:
@@ -233,10 +233,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => QrScanPage());
 */
       case RouteName.AppendixNo1:
-        return (context) => AppendixNo1();
+        return (context) => const AppendixNo1();
 
       case RouteName.CommercialConditionRegulation:
-        return (context) => CommercialConditionRegulation();
+        return (context) => const CommercialConditionRegulation();
 
       // error page
       default:

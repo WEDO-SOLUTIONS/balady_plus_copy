@@ -62,4 +62,11 @@ class IconPath {
       "packages/smart_advisor/smart_advisor_assets/icons/svg/downloadSimple.svg";
   static const arrowOut =
       "packages/smart_advisor/smart_advisor_assets/icons/svg/arrowout.svg";
+  static const homeIcon2 =
+      "packages/smart_advisor/smart_advisor_assets/images/svg_icon/homeicone2.svg";
+  static const QRCode =
+      "packages/smart_advisor/smart_advisor_assets/images/svg_icon/QRcoe.svg";
+
+  static const arrowLSide =
+      "packages/smart_advisor/smart_advisor_assets/images/svg_icon/arrowLS.svg";
 }

@@ -14,11 +14,10 @@ class CustomTextComponent extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: const Color(0xFFF5F7FA)),
+          borderRadius: BorderRadius.circular(10), color: Colors.white),
       child: Text(
         text,
-        style: AppStyle.textRegularRomanStyle
+        style: AppStyle.textRegularStyle
             .copyWith(color: AppColor.textPrimaryColor),
       ),
     );

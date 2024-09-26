@@ -14,6 +14,7 @@ class ActivityDetailsPageParams {
   double? area;
   GisDataResponse? gisData;
   LookUpItem? activityId;
+  LookUpItem? sector;
   GISDataRequest? gisRequest;
   List<AddetionalActivityItem>? addetionalActivites;
   List<PermitItem>? permits;
@@ -27,7 +28,8 @@ class ActivityDetailsPageParams {
       this.addetionalActivites,
       this.gisRequest,
       this.permits,
-      this.entityActivityDetailsResponse});
+      this.entityActivityDetailsResponse,
+      this.sector});
 
   // copyWith method
   ActivityDetailsPageParams copyWith(
@@ -37,8 +39,10 @@ class ActivityDetailsPageParams {
       List<AddetionalActivityItem>? addetionalActivites,
       GISDataRequest? gisRequest,
       List<PermitItem>? permits,
-      EntityActivityDetailsResponse? entityActivityDetailsResponse}) {
+      EntityActivityDetailsResponse? entityActivityDetailsResponse,
+      LookUpItem? sector}) {
     return ActivityDetailsPageParams(
+        sector: sector ?? this.sector,
         permits: permits ?? this.permits,
         area: area ?? this.area,
         gisRequest: gisRequest ?? this.gisRequest,

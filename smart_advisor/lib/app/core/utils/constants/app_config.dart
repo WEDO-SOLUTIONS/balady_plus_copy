@@ -12,8 +12,8 @@ class AppConfig {
 
   static String getCurrentLanguageCode() => translator.activeLanguageCode;
 
-  static const String frutigerFontType = 'Frutiger';
-  static const String appFontType = frutigerFontType;
+  static const String somarFontType = 'SomarSans';
+  static const String appFontType = somarFontType;
 
   static Future changeLang(BuildContext context) {
     return translator.setNewLanguage(

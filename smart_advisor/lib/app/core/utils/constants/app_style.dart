@@ -12,63 +12,83 @@ class AppStyle {
   static final mainTextStyle = TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w700,
-    color: AppColor.black,
+    color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
 
   static final accentBoldStyle = TextStyle(
     fontSize: 28.0,
     fontWeight: FontWeight.w700,
-    color: AppColor.black,
+    color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
 
   static final heading1BoldStyle = TextStyle(
     fontSize: 22.0,
     fontWeight: FontWeight.w700,
-    color: AppColor.black,
+    color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
 
   static final heading2BoldStyle = TextStyle(
     fontSize: 18.0,
-    fontWeight: FontWeight.w700,
-    color: AppColor.black,
+    fontWeight: FontWeight.w600,
+    color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
 
   static final calloutBoldStyle = TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w700,
-    color: AppColor.black,
+    color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
 
   static final textRegularRomanStyle = TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w500,
-    color: AppColor.black,
+    color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
 
   static final footNoteRomanStyle = TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeight.w500,
-    color: AppColor.black,
+    color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
 
+  static final footNoteMediumStyle = TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.w400,
+    color: AppColor.textPrimaryColor,
+    fontFamily: fontFamily,
+  );
   static final footNoteBoldStyle = TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeight.w700,
-    color: AppColor.black,
+    color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
 
   static final captionRomanStyle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: FontWeight.w500,
-    color: AppColor.black,
+    color: AppColor.textPrimaryColor,
+    fontFamily: fontFamily,
+  );
+
+  static final textRegularStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
+    color: AppColor.textPrimaryColor,
+    fontFamily: fontFamily,
+  );
+
+  static final textlargeRegularStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
+    color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
 }

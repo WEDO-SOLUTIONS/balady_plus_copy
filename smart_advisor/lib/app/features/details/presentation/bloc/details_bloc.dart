@@ -47,8 +47,6 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
     on<GetViolationDetailsEvent>(_getViolationDetailsHanlder);
     on<GetViolationVD>(_getVDViolation);
     add(GetEntityActivityDetailsEvent());
-
-    sharedPrefs.saveRecentlyOpened(args);
   }
 
   void _getViolationDetailsHanlder(
@@ -62,8 +60,9 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
         linkId: event.item.linkId ?? "",
       ),
     );
+
     return;
-    /* emit(state.copyWith(violationDetailsStatus: BlocStatus.loading));
+    emit(state.copyWith(violationDetailsStatus: BlocStatus.loading));
     final result = await _getViolationDetails(
         EntityViolationActivityDetailsRequestParams(
             activityID: args.activityId?.id ?? 0,
@@ -90,9 +89,10 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
         context: NavigationService.navigatorKey.currentContext!,
         builder: (BuildContext context) => ViolationDetails(
           args: args,
+          linkId: event.item.linkId ?? "",
         ),
       );
-    });*/
+    });
   }
 
   void _getViolationsList(GetViolationsListEvent event, Emitter emit) async {
@@ -120,7 +120,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   }
 
   void _getRegulations(GetRegulationsEvent event, Emitter emit) async {
-    //  if (state.regulationStatus == BlocStatus.success) return;
+    if (state.regulationStatus == BlocStatus.success) return;
     emit(state.copyWith(regulationStatus: BlocStatus.loading));
     final result = await _getRegulationsUc(RegulationRequestParams(
         activityId: args.activityId?.id ?? 0,
@@ -142,7 +142,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   void _getEntityActivityDetails(
       GetEntityActivityDetailsEvent event, Emitter emit) async {
     try {
-      // if (state.entityActivityDetailsStatus == BlocStatus.success) return;
+      if (state.entityActivityDetailsStatus == BlocStatus.success) return;
       emit(state.copyWith(entityActivityDetailsStatus: BlocStatus.loading));
       final result = await _getEntityActivityDetailssUc(
           EntityActivityDetailRequestParams(
@@ -162,12 +162,13 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
         emit(state.copyWith(
             entityActivityDetailsStatus: BlocStatus.success,
             entityActivityDetailsResponse: success));
+
+        sharedPrefs.saveRecentlyOpened(args);
       });
     } catch (ex) {}
   }
 
   void _getVDViolation(GetViolationVD event, Emitter emit) async {
-    print("HEREE");
     emit(state.copyWith(vdViolationStatus: BlocStatus.loading));
     final result = await _getViolationVD(ViolationDetailsVdRequestParams(
         activityId: args.activityId?.id ?? 0,

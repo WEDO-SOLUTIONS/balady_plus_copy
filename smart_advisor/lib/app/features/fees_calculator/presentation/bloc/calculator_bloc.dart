@@ -45,6 +45,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
 
     on<ChangePermitDaysEvent>(changePermitDays);
     on<ChangePermitNoOfVeichlesEvent>(changePermitNoOfVeichles);
+    on<DeleteBoardItemEvent>(DeleteBoardItemHandler);
 
     print("GGGDDF ${args.area.toString()}");
   }
@@ -87,6 +88,15 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
         double.tryParse(event.data);
     emit(state.copyWith(
         status: BlocStatus.success, permits: addetionalActivitesResponse));
+  }
+
+  void DeleteBoardItemHandler(DeleteBoardItemEvent event, Emitter emit) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    List<LookUpItem> addetionalActivitesResponse = state.boards ?? [];
+    addetionalActivitesResponse.removeAt(event.index);
+    emit(state.copyWith(
+        status: BlocStatus.success, boards: addetionalActivitesResponse));
   }
 
   void DeletePermitItemHandler(

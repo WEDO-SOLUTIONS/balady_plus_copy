@@ -16,7 +16,7 @@ import '../../errors/errors_exports.dart'
         UnAuthorizedException;
 import '../../utils/utils_exports.dart' show EnvType, Log;
 import '../services_exports.dart' show SmartAdvisorNetworkConnection;
-import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
+//import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 
 // Please using any technique to create singleton WebService (GetIt)
 class SmartAdvisorWebService {
@@ -28,12 +28,12 @@ class SmartAdvisorWebService {
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {"Accept-Language": "ar"};
-    dio.options.headers = {"lang": "ar"};
+    //dio.options.headers = {"lang": "ar"};
     dio.interceptors.add(AppInterceptors());
 
     // avoid using it in production or do it at your own risks!
     if (!kReleaseMode) {
-      dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
+      //   dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
     }
   }
 }

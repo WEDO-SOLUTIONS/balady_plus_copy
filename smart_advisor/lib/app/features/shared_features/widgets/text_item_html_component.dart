@@ -21,7 +21,7 @@ class TextItemHtmlComponent extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: const Color.fromARGB(134, 223, 231, 235),
+        color: Colors.white,
       ),
       child: Html(
         data: description, // Your HTML data
@@ -38,16 +38,17 @@ class TextItemHtmlComponent extends StatelessWidget {
                 title: "details".tr(),
               );
             }));
+            /* ;*/
           }
         },
         style: {
           // Apply style to the body tag
           "body": Style(
-            fontFamily: AppStyle.textRegularRomanStyle.fontFamily,
+            fontFamily: AppStyle.textRegularStyle.fontFamily,
             fontSize: FontSize(
-                AppStyle.textRegularRomanStyle.fontSize ?? 14), // Set font size
+                AppStyle.textRegularStyle.fontSize ?? 14), // Set font size
             color: AppColor.textPrimaryColor, // Set color
-            fontWeight: AppStyle.textRegularRomanStyle.fontWeight,
+            fontWeight: AppStyle.textRegularStyle.fontWeight,
           ),
         },
       ),

@@ -1,3 +1,4 @@
+import '../../../select_activity/domain/entities/activity_details_page_params.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';
 import '/app/core/utils/constants/paths/icon_paths.dart';
@@ -7,36 +8,46 @@ import 'package:google_fonts/google_fonts.dart';
 
 class HomeRecentCard extends StatelessWidget {
   final Function onPress;
-  const HomeRecentCard({super.key, required this.onPress});
+  final ActivityDetailsPageParams item;
+  final animation;
+  const HomeRecentCard(
+      {super.key,
+      required this.onPress,
+      required this.item,
+      required this.animation});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => onPress(),
       child: Container(
-        margin: const EdgeInsetsDirectional.only(bottom: 8, end: 16),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsetsDirectional.only(bottom: 0, end: 16),
+        padding: const EdgeInsets.only(left: 12, right: 21, top: 12, bottom: 0),
         width: MediaQuery.of(context).size.width * 0.75,
         decoration: BoxDecoration(
-          color: AppColor.surfaceSecondaryColor,
+          color: AppColor.white,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               child: Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "محطه وقود",
-                      style: AppStyle.textRegularRomanStyle
-                          .copyWith(color: AppColor.textPrimaryColor),
+                    Flexible(
+                      child: Text(
+                        item.activityId?.name ?? "",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppStyle.footNoteBoldStyle
+                            .copyWith(color: Color(0xff1E2A36)),
+                      ),
                     ),
                     const SizedBox(
-                      height: 4,
+                      height: 8,
                     ),
                     Flexible(
                       child: Text(
@@ -49,7 +60,11 @@ class HomeRecentCard extends StatelessWidget {
                 ),
               ),
             ),
-            SvgPicture.asset(IconPath.arrowLeftSide)
+            Icon(
+              Icons.arrow_forward,
+              color: AppColor.textPrimaryColor,
+            )
+            //  SvgPicture.asset(IconPath.arrowLeftSide)
           ],
         ),
       ),

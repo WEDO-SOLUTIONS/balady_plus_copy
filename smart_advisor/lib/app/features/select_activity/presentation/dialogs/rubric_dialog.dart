@@ -1,4 +1,5 @@
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../_shared_feature_/presentation/widgets/shimmer_card copy.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';
 import '/app/core/utils/constants/route_names.dart';
@@ -37,7 +38,6 @@ class _RubricDialogState extends State<RubricDialog> {
         },
         builder: (context, state) {
           return Container(
-            height: 500,
             decoration: const BoxDecoration(
                 color: AppColor.white,
                 borderRadius: BorderRadius.only(
@@ -47,6 +47,7 @@ class _RubricDialogState extends State<RubricDialog> {
             padding:
                 const EdgeInsets.only(left: 25, right: 25, top: 8, bottom: 20),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // Top indicator
                 Container(
@@ -65,7 +66,7 @@ class _RubricDialogState extends State<RubricDialog> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'اختر',
+                      'اختر من التفاصيل',
                       style: AppStyle.heading2BoldStyle
                           .copyWith(color: AppColor.textPrimaryColor),
                     ),
@@ -78,27 +79,25 @@ class _RubricDialogState extends State<RubricDialog> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 40.0),
+                const SizedBox(height: 16.0),
 
                 if (state.rubricsStatus == BlocStatus.success)
-                  Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: state.rubrics?.length ?? 0,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        LookUpItem item = state.rubrics![index];
-                        return RubricItem(
-                          title: item.name,
-                          isSelected: selectedIndex == index,
-                          onPressed: () {
-                            setState(() {
-                              selectedIndex = index;
-                            });
-                          },
-                        );
-                      },
-                    ),
+                  ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: state.rubrics?.length ?? 0,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      LookUpItem item = state.rubrics![index];
+                      return RubricItem(
+                        title: item.name,
+                        isSelected: selectedIndex == index,
+                        onPressed: () {
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
+                      );
+                    },
                   ),
                 if (state.rubricsStatus == BlocStatus.failure)
                   ReloadWidget(
@@ -107,16 +106,14 @@ class _RubricDialogState extends State<RubricDialog> {
                     },
                   ),
                 if (state.rubricsStatus == BlocStatus.loading)
-                  const ShimmerVerticalList(
+                  const Shimmer2VerticalList(
                     height: 60,
+                    count: 2,
                   ),
 
-                const SizedBox(
-                  height: 30,
-                ),
                 CustomButton(
                     btnColor: selectedIndex != -1
-                        ? AppColor.statusAccentColor
+                        ? AppColor.primary
                         : AppColor.surfaceLowContrast,
                     textColor: selectedIndex != -1
                         ? AppColor.white
@@ -128,6 +125,7 @@ class _RubricDialogState extends State<RubricDialog> {
                         arguments: IsicsPageParams(
                           rubric: state.rubrics![selectedIndex],
                           category: widget.args.category,
+                          sector: widget.args.sector,
                         ),
                       );
                     },

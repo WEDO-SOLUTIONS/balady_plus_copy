@@ -46,167 +46,243 @@ class _FeesCalculatorPageState extends State<FeesCalculatorPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CalculatorBloc(args: widget.args),
-      child: BlocBuilder<CalculatorBloc, CalculatorState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: const CustomAppBar(
-              title: "حاسبة الرسوم",
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    sectionTitle('أدخل البيانات الآتيه'),
-                    const SizedBox(height: 16),
-                    CalculatorDropdown(
-                      title: "عدد سنوات الترخيص",
-                      list: licenseYears,
-                      onSelect: (LookUpItem item) {
-                        context
-                            .read<CalculatorBloc>()
-                            .add(ChangeLicenseYears(item: item));
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    /*CalculatorCustomTextField(
-                      title: 'المساحه المتوقعه للنشاط الرئيسي للمحل',
-                      suffix: 'متر مربع',
-                      onChanged: (String text) {
-
-
-                      },
-                    ),
-                    const SizedBox(height: 16),*/
-                    CustomTextDisplay(
-                      title: 'المساحه الكليه للمنشاه',
-                      value: state.getTotalArea().toString(),
-                      unit: 'متر مربع',
-                    ),
-                    if (state.addetionalActivitesResponse?.isNotEmpty ?? false)
-                      const SizedBox(height: 16),
-                    if (state.addetionalActivitesResponse?.isNotEmpty ?? false)
-                      sectionTitle('الأنشطة الإضافية'),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: state.addetionalActivitesResponse?.length ?? 0,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (ctx, index) {
-                        return AddetionalActivityItem(
-                          onDelete: () {
-                            context.read<CalculatorBloc>().add(
-                                DeleteAddetionalActivityItemEvent(
-                                    index: index));
-                          },
-                          label: state.addetionalActivitesResponse?[index]
-                                  .activityName ??
-                              "",
-                          onChanged: (String? t) {
-                            context.read<CalculatorBloc>().add(
-                                ChangeAddetionalActivityEvent(
-                                    area: t ?? "", index: index));
-                          },
-                        );
-                      },
-                    ),
-                    if (state.permits?.isNotEmpty ?? false)
-                      const SizedBox(height: 16),
-                    if (state.permits?.isNotEmpty ?? false)
-                      sectionTitle('التصاريح'),
-                    if (state.permits?.isNotEmpty ?? false)
-                      ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: state.permits?.length ?? 0,
-                        itemBuilder: (ctx, index) {
-                          return PermitItem(
-                            permitType: state.permits![index].permitTypeId!,
-                            onDelete: () {
-                              context.read<CalculatorBloc>().add(
-                                  DeleteAddetionalActivityItemEvent(
-                                      index: index));
-                            },
-                            label: state.permits?[index].name ?? "",
-                            onDaysChanged: (String? t) {
-                              context.read<CalculatorBloc>().add(
-                                  ChangePermitDaysEvent(
-                                      data: t ?? "", index: index));
-                            },
-                            onHeightChanged: (String? data) {
-                              context.read<CalculatorBloc>().add(
-                                  ChangePermitHeightEvent(
-                                      data: data ?? "", index: index));
-                            },
-                            onNoOfVeichleChanged: (String? data) {
-                              context.read<CalculatorBloc>().add(
-                                  ChangePermitNoOfVeichlesEvent(
-                                      data: data ?? "", index: index));
-                            },
-                            onWidthChanged: (String? data) {
-                              context.read<CalculatorBloc>().add(
-                                  ChangePermitWidthEvent(
-                                      data: data ?? "", index: index));
-                            },
-                          );
-                        },
-                      ),
-                    // SizedBox(height: 16),
-                    sectionTitle('خيارات النظافه'),
-                    CalculatorDropdown(
-                      title: "خيارات النظافة",
-                      list: cleanOptions,
-                      onSelect: (LookUpItem item) {
-                        context
-                            .read<CalculatorBloc>()
-                            .add(ChangeCleanOptionEvent(item: item));
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    sectionTitle('معلومات اللوحات'),
-                    CustomButton(
-                        onPress: () {
-                          showModalBottomSheet(
-                            backgroundColor: const Color(0xff000000),
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (BuildContext c) =>
-                                BoardDialog(onAdd: (item) {
-                              print(item.$1);
-                              context.read<CalculatorBloc>().add(
-                                  AddBoardnEvent(item: item.$1, area: item.$2));
-                            }),
-                          );
-                        },
-                        text: "إضافة لوحة"),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: state.boards?.length ?? 0,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (ctx, index) {
-                        return PlateInfoWidget(
-                          item: state.boards![index],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    CustomButton(
-                        onPress: () {
-                          context.read<CalculatorBloc>().add(CalculateEvent());
-
-                          /* Navigator.push(context,
-                              MaterialPageRoute(builder: (ctx) {
-                            return const ResultPage();
-                          }));*/
-                        },
-                        text: 'احسب'),
-                  ],
-                ),
-              ),
-            ),
-          );
+      child: BlocListener<CalculatorBloc, CalculatorState>(
+        listener: (context, state) {
+          if (state.status == BlocStatus.failure)
+            CommonFunctions.showError(state.errorMessage ?? "");
         },
+        child: BlocBuilder<CalculatorBloc, CalculatorState>(
+          builder: (context, state) {
+            return Stack(
+              children: [
+                Scaffold(
+                  appBar: const CustomAppBar(
+                    title: "حاسبة الرسوم",
+                  ),
+                  body: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        sectionTitle('أدخل البيانات الآتيه'),
+                        const SizedBox(
+                          height: 0,
+                        ),
+
+                        Container(
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: AppColor.white,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                          ),
+                          child: Column(
+                            children: [
+                              CalculatorDropdown(
+                                title: "عدد سنوات الترخيص",
+                                list: licenseYears,
+                                onSelect: (LookUpItem item) {
+                                  context
+                                      .read<CalculatorBloc>()
+                                      .add(ChangeLicenseYears(item: item));
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              /*CalculatorCustomTextField(
+                                title: 'المساحه المتوقعه للنشاط الرئيسي للمحل',
+                                suffix: 'متر مربع',
+                                onChanged: (String text) {
+                              
+                              
+                                },
+                              ),
+                              const SizedBox(height: 16),*/
+                              CustomTextDisplay(
+                                title: 'المساحه الكليه للمنشاه',
+                                value: state.getTotalArea().toString(),
+                                unit: 'متر مربع',
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        if (state.addetionalActivitesResponse?.isNotEmpty ??
+                            false)
+                          const SizedBox(height: 16),
+                        if (state.addetionalActivitesResponse?.isNotEmpty ??
+                            false)
+                          sectionTitle('الأنشطة الإضافية'),
+                        if (state.addetionalActivitesResponse?.isNotEmpty ??
+                            false)
+                          Container(
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppColor.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(12)),
+                            ),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount:
+                                  state.addetionalActivitesResponse?.length ??
+                                      0,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (ctx, index) {
+                                return AddetionalActivityItem(
+                                  onDelete: () {
+                                    context.read<CalculatorBloc>().add(
+                                        DeleteAddetionalActivityItemEvent(
+                                            index: index));
+                                  },
+                                  label: state
+                                          .addetionalActivitesResponse?[index]
+                                          .activityName ??
+                                      "",
+                                  onChanged: (String? t) {
+                                    context.read<CalculatorBloc>().add(
+                                        ChangeAddetionalActivityEvent(
+                                            area: t ?? "", index: index));
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        if (state.permits?.isNotEmpty ?? false)
+                          const SizedBox(height: 16),
+                        if (state.permits?.isNotEmpty ?? false)
+                          sectionTitle('التصاريح'),
+                        if (state.permits?.isNotEmpty ?? false)
+                          Container(
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppColor.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(12)),
+                            ),
+                            child: ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: state.permits?.length ?? 0,
+                              itemBuilder: (ctx, index) {
+                                return PermitItem(
+                                  permitType:
+                                      state.permits![index].permitTypeId!,
+                                  onDelete: () {
+                                    context.read<CalculatorBloc>().add(
+                                        DeleteAddetionalActivityItemEvent(
+                                            index: index));
+                                  },
+                                  label: state.permits?[index].name ?? "",
+                                  onDaysChanged: (String? t) {
+                                    context.read<CalculatorBloc>().add(
+                                        ChangePermitDaysEvent(
+                                            data: t ?? "", index: index));
+                                  },
+                                  onHeightChanged: (String? data) {
+                                    context.read<CalculatorBloc>().add(
+                                        ChangePermitHeightEvent(
+                                            data: data ?? "", index: index));
+                                  },
+                                  onNoOfVeichleChanged: (String? data) {
+                                    context.read<CalculatorBloc>().add(
+                                        ChangePermitNoOfVeichlesEvent(
+                                            data: data ?? "", index: index));
+                                  },
+                                  onWidthChanged: (String? data) {
+                                    context.read<CalculatorBloc>().add(
+                                        ChangePermitWidthEvent(
+                                            data: data ?? "", index: index));
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        // SizedBox(height: 16),
+                        sectionTitle('خيارات النظافه'),
+                        Container(
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: AppColor.white,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                          ),
+                          child: CalculatorDropdown(
+                            title: "خيارات النظافة",
+                            list: cleanOptions,
+                            onSelect: (LookUpItem item) {
+                              context
+                                  .read<CalculatorBloc>()
+                                  .add(ChangeCleanOptionEvent(item: item));
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        sectionTitle('معلومات اللوحات'),
+                        CustomButton(
+                            btnBorderColor: AppColor.statusAccentColor,
+                            btnColor: Colors.transparent,
+                            textColor: AppColor.statusAccentColor,
+                            onPress: () {
+                              showModalBottomSheet(
+                                backgroundColor: const Color(0xff000000),
+                                isScrollControlled: true,
+                                context: context,
+                                builder: (BuildContext c) =>
+                                    BoardDialog(onAdd: (item) {
+                                  print(item.$1);
+                                  context.read<CalculatorBloc>().add(
+                                      AddBoardnEvent(
+                                          item: item.$1, area: item.$2));
+                                }),
+                              );
+                            },
+                            text: "إضافة لوحة"),
+
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: state.boards?.length ?? 0,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (ctx, index) {
+                            return PlateInfoWidget(
+                              item: state.boards![index],
+                              onDelete: () {
+                                context
+                                    .read<CalculatorBloc>()
+                                    .add(DeleteBoardItemEvent(index: index));
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        CustomButton(
+                            onPress: () {
+                              context
+                                  .read<CalculatorBloc>()
+                                  .add(CalculateEvent());
+
+                              /* Navigator.push(context,
+                                      MaterialPageRoute(builder: (ctx) {
+                                    return const ResultPage();
+                                  }));*/
+                            },
+                            text: 'احسب'),
+                      ],
+                    ),
+                  ),
+                ),
+                if (state.status == BlocStatus.loading)
+                  Center(
+                    child: CircularProgressIndicator(
+                      color: AppColor.statusAccentColor,
+                    ),
+                  )
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -397,20 +473,34 @@ class PermitItem extends StatelessWidget {
 
 class PlateInfoWidget extends StatelessWidget {
   final LookUpItem item;
-  const PlateInfoWidget({super.key, required this.item});
+  final Function onDelete;
+  const PlateInfoWidget(
+      {super.key, required this.item, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColor.surfaceSecondaryColor,
-        borderRadius: BorderRadius.circular(8),
+        color: AppColor.white,
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(item.name, style: TextStyle(fontSize: 16)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(item.name, style: TextStyle(fontSize: 16)),
+              InkWell(
+                onTap: () => onDelete(),
+                child: Icon(
+                  Icons.close,
+                  color: AppColor.primary,
+                ),
+              )
+            ],
+          ),
           Text(item.area ?? "", style: TextStyle(fontSize: 16)),
         ],
       ),

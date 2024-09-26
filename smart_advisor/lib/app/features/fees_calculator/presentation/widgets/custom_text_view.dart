@@ -26,7 +26,7 @@ class CustomTextDisplay extends StatelessWidget {
           height: 48,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.teal, width: 1.5),
+            //   border: Border.all(color: Colors.teal, width: 1.5),
             color: const Color(0xFFF7F9FC), // Light background color
           ),
           child: Row(

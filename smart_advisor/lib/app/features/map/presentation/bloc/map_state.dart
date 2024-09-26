@@ -9,17 +9,18 @@ class MapState extends Equatable {
   final GisDataResponse? gisDataResponse;
   final GISDataRequest? gisDataRequest;
   final String? errorMessage;
+  final bool? clearGISData;
 
-  const MapState({
-    this.zonesStatus = BlocStatus.initial,
-    this.gisDataStatus = BlocStatus.initial,
-    this.validatePointStatus = BlocStatus.initial,
-    this.zones,
-    this.gisDataResponse,
-    this.valiadtePoints,
-    this.errorMessage,
-    this.gisDataRequest,
-  });
+  const MapState(
+      {this.zonesStatus = BlocStatus.initial,
+      this.gisDataStatus = BlocStatus.initial,
+      this.validatePointStatus = BlocStatus.initial,
+      this.zones,
+      this.gisDataResponse,
+      this.valiadtePoints,
+      this.errorMessage,
+      this.gisDataRequest,
+      this.clearGISData});
 
   @override
   List<Object?> get props => [
@@ -30,19 +31,20 @@ class MapState extends Equatable {
         valiadtePoints,
         gisDataResponse,
         errorMessage,
-        gisDataRequest
+        gisDataRequest,
+        clearGISData
       ];
 
-  MapState copyWith({
-    BlocStatus? zonesStatus,
-    BlocStatus? gisDataStatus,
-    BlocStatus? validatePointStatus,
-    List<ZoneItem>? zones,
-    List<ValidatePointResponse>? valiadtePoints,
-    GisDataResponse? gisDataResponse,
-    GISDataRequest? gisDataRequest,
-    String? errorMessage,
-  }) {
+  MapState copyWith(
+      {BlocStatus? zonesStatus,
+      BlocStatus? gisDataStatus,
+      BlocStatus? validatePointStatus,
+      List<ZoneItem>? zones,
+      List<ValidatePointResponse>? valiadtePoints,
+      GisDataResponse? gisDataResponse,
+      GISDataRequest? gisDataRequest,
+      String? errorMessage,
+      bool? clearGISData}) {
     return MapState(
         zonesStatus: zonesStatus ?? this.zonesStatus,
         gisDataStatus: gisDataStatus ?? this.gisDataStatus,
@@ -51,6 +53,8 @@ class MapState extends Equatable {
         valiadtePoints: valiadtePoints ?? this.valiadtePoints,
         gisDataResponse: gisDataResponse ?? this.gisDataResponse,
         errorMessage: errorMessage ?? this.errorMessage,
-        gisDataRequest: gisDataRequest ?? this.gisDataRequest);
+        gisDataRequest: gisDataRequest ?? this.gisDataRequest,
+        clearGISData:
+            clearGISData == true ? null : clearGISData ?? this.clearGISData);
   }
 }

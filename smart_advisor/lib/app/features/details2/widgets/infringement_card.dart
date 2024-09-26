@@ -33,23 +33,9 @@ class _InfringementCardState extends State<InfringementCard> {
               children: [
                 Expanded(
                   child: Text(
-                    widget.title,
-                    style: AppStyle.heading2BoldStyle
-                        .copyWith(color: AppColor.textPrimaryColor),
-                  ),
-                ),
-                Container(
-                  height: 24,
-                  width: 66,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      color: const Color(0XFFF2DEE1)),
-                  child: Center(
-                    child: Text(
-                      widget.isCritical ? "جسيمة" : "غير جسيمة",
-                      style: AppStyle.footNoteRomanStyle
-                          .copyWith(color: AppColor.statusNegativeColor),
-                    ),
+                    widget.isCritical ? "مخالفة جسيمة" : "مخالفة غير جسيمة",
+                    style: AppStyle.textRegularRomanStyle
+                        .copyWith(color: const Color(0xffE0373D)),
                   ),
                 ),
               ],

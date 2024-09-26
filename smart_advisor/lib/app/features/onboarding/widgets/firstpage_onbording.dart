@@ -18,7 +18,8 @@ class FirstpageOnbording extends StatelessWidget {
         ),
         //try later the svg extention..
         Image.asset(
-            "packages/smart_advisor/smart_advisor_assets/images/Mockup.png"),
+          "packages/smart_advisor/smart_advisor_assets/images/Mockup.png",
+        ),
         const SizedBox(
           height: 40,
         ),
@@ -28,17 +29,21 @@ class FirstpageOnbording extends StatelessWidget {
           children: [
             Text(
               ("comprehensive_interactive_guide").tr(),
-              style: AppStyle.accentBoldStyle.copyWith(color: AppColor.black),
+              style: AppStyle.accentBoldStyle
+                  .copyWith(color: AppColor.textPrimaryColor),
             ),
             const SizedBox(
-              height: 15,
+              height: 12,
             ),
-            Text(
-              "مكتبة موحدة توفر المعلومات والاشتراطات التي تحتاجها لتلبية متطلباتك البلدية",
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              style: AppStyle.textRegularRomanStyle
-                  .copyWith(color: AppColor.textSecondaryColor),
+            Padding(
+              padding: const EdgeInsets.only(right: 45, left: 45),
+              child: Text(
+                "مكتبة موحدة توفر المعلومات والاشتراطات التي تحتاجها لتلبية متطلباتك البلدية",
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: AppStyle.textRegularStyle
+                    .copyWith(color: AppColor.textSecondaryColor),
+              ),
             ),
           ],
         ),

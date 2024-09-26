@@ -20,6 +20,7 @@ class GeneralConditionsWidget extends StatelessWidget {
         MediaQuery.removePadding(
           context: context,
           removeTop: true,
+          removeBottom: true,
           child: ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -28,7 +29,7 @@ class GeneralConditionsWidget extends StatelessWidget {
                 return CustomTextComponent(text: items[index]);
               }),
         ),
-        CustomButton(
+        /* CustomButton(
           btnColor: AppColor.surfaceAccentSecondaryColor,
           textColor: AppColor.statusAccentColor,
           onPress: () {
@@ -43,7 +44,7 @@ class GeneralConditionsWidget extends StatelessWidget {
             );
           },
           text: ("all_requirements").tr(),
-        ),
+        ),*/
       ],
     );
 

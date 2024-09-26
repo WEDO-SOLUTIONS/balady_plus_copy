@@ -20,6 +20,7 @@ class EntityViolationActivityDetailsRequestParams {
       required this.isVillage});
 
   toMap() => {
+        "activityId": activityID,
         "violationID": violationID,
         "latitude": latitude,
         "longitude": longitude,

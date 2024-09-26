@@ -1,3 +1,5 @@
+import 'package:smart_advisor/app/core/utils/utils_exports.dart';
+
 import '/app/core/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,7 +32,7 @@ class CustomButton extends StatefulWidget {
       this.textColor,
       this.btnHeight = 55.0,
       this.btnWidth,
-      this.btnRadius = 8.0,
+      this.btnRadius = 10.0,
       this.btnBorderColor,
       this.btnBorderWidth = 1.0,
       this.btnElevation = 2.0,
@@ -52,18 +54,18 @@ class _CustomButtonState extends State<CustomButton> {
           onPressed: () => widget.onPress(),
           style: ElevatedButton.styleFrom(
             foregroundColor: widget.isDisabled
-                ? const Color.fromRGBO(202, 211, 218, 1)
+                ? const Color(0xffD8DCE4)
                 : widget.btnEffectColor ??
                     widget.btnColor ??
                     AppColor.statusAccentColor,
             padding: widget.btnPadding ?? EdgeInsets.zero,
             backgroundColor: widget.isDisabled
-                ? const Color.fromRGBO(202, 211, 218, 1)
+                ? const Color(0xffD8DCE4)
                 : widget.btnColor ?? AppColor.statusAccentColor,
             // shadowColor: Colors.pink,
             shadowColor: widget.btnShadowColor ?? widget.btnColor,
             alignment: widget.btnAlignment ?? Alignment.center,
-            elevation: widget.btnElevation,
+            elevation: 0,
             minimumSize:
                 Size(widget.btnWidth ?? double.infinity, widget.btnHeight),
             shape: RoundedRectangleBorder(
@@ -76,10 +78,9 @@ class _CustomButtonState extends State<CustomButton> {
           ),
           child: Text(
             widget.text,
-            style: GoogleFonts.cairo(
-                color: widget.textColor ?? Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 15),
+            style: AppStyle.heading2BoldStyle
+                .copyWith(fontSize: 16)
+                .copyWith(color: widget.textColor ?? AppColor.white),
           )),
     );
   }

@@ -22,37 +22,50 @@ class PermitItemCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColor.surfaceSecondaryColor,
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
+      decoration: const BoxDecoration(
+        color: AppColor.white,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Checkbox(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6)),
+                side: BorderSide(
+                    color: AppColor.gray.withOpacity(0.50), width: 1),
                 value: currentValue,
                 onChanged: onSelect,
                 checkColor: AppColor.white,
-                activeColor: AppColor.statusAccentColor,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                activeColor: AppColor.primary,
               ),
               const SizedBox(
                 width: 8,
               ),
               Flexible(
-                child: Text(
-                  title,
-                  style: AppStyle.textRegularRomanStyle
-                      .copyWith(color: AppColor.textPrimaryColor),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppStyle.textRegularStyle
+                          .copyWith(color: AppColor.textPrimaryColor),
+                    ),
+                    Text(
+                      isFreeOfCharge ? "برسوم" : "بدون رسوم",
+                      style: AppStyle.textRegularStyle
+                          .copyWith(color: AppColor.textSecondaryColor),
+                    ),
+                  ],
                 ),
               ),
             ],
-          ),
-          Text(
-            isFreeOfCharge ? "برسوم" : "بدون رسوم",
-            style: AppStyle.textRegularRomanStyle
-                .copyWith(color: AppColor.textSecondaryColor),
           ),
         ],
       ),
