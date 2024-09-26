@@ -73,21 +73,20 @@ class _RoadClosurePageState extends ConsumerState<RoadClosurePage> {
           const Expanded(child: ClosureControls()),
           ClosureCard(
             // TODO(@alexstrnik) switch back to widget.title after SDK fix
-          title: context.l10n.roadBlocking,
-          description: widget.description,
-          workDuration: _formatSchedule(widget.startTime, widget.finishTime),
-        ),
-      ],
-    );
+            title: context.l10n.roadBlocking,
+            description: widget.description,
+            workDuration: _formatSchedule(widget.startTime, widget.finishTime),
+          ),
+        ],
+      );
 
   String? _formatSchedule(DateTime? from, DateTime? to) {
     if (from == null) {
       return null;
     }
 
-    var schedule = from.hour > 10
-        ? RoadClosurePage._dateFormat.format(from)
-        : RoadClosurePage._dateFormatShort.format(from);
+    var schedule =
+        from.hour > 10 ? RoadClosurePage._dateFormat.format(from) : RoadClosurePage._dateFormatShort.format(from);
     if (to != null) {
       schedule +=
           ' – ${to.hour > 10 ? RoadClosurePage._dateFormat.format(to) : RoadClosurePage._dateFormatShort.format(to)}';
