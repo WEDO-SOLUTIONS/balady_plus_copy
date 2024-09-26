@@ -59,7 +59,7 @@ extension ColorMapper on NetowrkColor {
 
 extension NetworkStoryPageActionMapper on NetworkStoryPageAction {
   StoryFrameAction? toDomain() {
-    const navLinkPattern = 'balady:/';
+    const navLinkPattern = 'com.balady:/';
     if (link.url.startsWith(navLinkPattern)) {
       return NavigationFrameAction(
         location: link.url.replaceFirst(navLinkPattern, ''),

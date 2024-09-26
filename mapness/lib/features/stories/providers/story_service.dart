@@ -33,19 +33,12 @@ class StoryService extends _$StoryService {
 
     final updatedStories = stories.map(
       (story) {
-        final watchedFrames = watchStored[story.storyId] ?? -1;
+        final watchedFrames = watchStored[story.storyId];
+        if (watchedFrames != null) {
+          return story.copyWith(isWatched: true);
+        }
 
-        final updatedFrames = story.frames.indexed.map(
-          (indexedFrame) {
-            final (index, frame) = indexedFrame;
-            if (index <= watchedFrames) {
-              return frame.copyWith(isWatched: true);
-            }
-            return frame;
-          },
-        ).toList();
-
-        return story.copyWith(frames: updatedFrames);
+        return story;
       },
     ).toList();
 
@@ -67,11 +60,7 @@ class StoryService extends _$StoryService {
 
     _viewedStories = await ref.watch(hiveProvider('storiesBox').future);
 
-    final stories = syncronizeWatcheness(networkStories);
-
-    return [
-      ...stories.where((element) => !element.isViewed),
-      ...stories.where((element) => element.isViewed),
-    ].toList();
+    final stories = syncronizeWatcheness(networkStories)..sort((a, b) => a.isWatched ? 1 : -1);
+    return stories;
   }
 }

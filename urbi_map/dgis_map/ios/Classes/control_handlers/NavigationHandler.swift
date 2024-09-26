@@ -269,6 +269,10 @@ class NavigationHandler {
         completion(nil)
     }
     
+    func simulationSpeed(speed: Double) {
+        self.navigationManager.simulationSettings.speedMode = SimulationSpeedMode.speed(SimulationConstantSpeed(speed: speed))
+    }
+    
     func startSimulation(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,

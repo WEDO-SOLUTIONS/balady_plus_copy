@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:urbi_analytics/logger.dart';
 
 part 'eta_service_provider.g.dart';
 
@@ -141,7 +141,8 @@ class EtaService extends _$EtaService {
         throw Exception('Failed to update ETA stream');
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      log('Error: $e');
+
       rethrow;
     }
   }

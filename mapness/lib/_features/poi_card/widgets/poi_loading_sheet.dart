@@ -5,9 +5,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class PoiLoadingSheet extends StatelessWidget {
-  final Function() onClose;
-
-  const PoiLoadingSheet({required this.onClose, super.key});
+  const PoiLoadingSheet({super.key});
 
   @override
   Widget build(BuildContext context) => Material(
@@ -25,10 +23,10 @@ class PoiLoadingSheet extends StatelessWidget {
                   child: SheetDragger(),
                 ),
               ),
-              Positioned(
+              const Positioned(
                 right: 16,
                 top: 16,
-                child: CustomCloseButton(onClose: onClose),
+                child: CustomCloseButton(),
               ),
               Center(
                 child: Loading.medium(title: context.l10n.loading),

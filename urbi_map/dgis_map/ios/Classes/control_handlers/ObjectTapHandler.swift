@@ -225,8 +225,8 @@ class ObjectTapHandler {
         }
 
         let assetKey = registrar.lookupKey(forAsset: assetPath)
-        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
-            let url = URL(string: "file://\(assetPath)"),
+        guard let path = Bundle.main.path(forResource: assetKey, ofType: nil),
+            let url = URL(string: "file://\(path)"),
             let data = try? Data(contentsOf: url) else {
             completion(
                 FlutterError(

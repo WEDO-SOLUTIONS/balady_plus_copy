@@ -25,7 +25,7 @@ class LayersSheetContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(layersControlsProvider);
-    final layersControlsProviderNotifier = ref.watch(layersControlsProvider.notifier);
+    // final layersControlsProviderNotifier = ref.watch(layersControlsProvider.notifier);
 
     return CustomScrollView(
       controller: scrollController,
@@ -61,25 +61,26 @@ class LayersSheetContent extends ConsumerWidget {
             ],
           ),
         ),
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
-              TabsRow.v2(
-                initialIndex: state.layersType.index,
-                tabsContent: [
-                  TabsRowV2Content(title: context.l10n.lifestyle),
-                  TabsRowV2Content(title: context.l10n.business),
-                ],
-                onIndexChanged: (index) {
-                  layersControlsProviderNotifier.update(
-                    layersType: LayersType.values[index ?? 0],
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-            ],
-          ),
-        ),
+        // TODO(Ayat): BSA(1069) For now we hide the switches and present only the Lifestyle logic, we will come back to this later
+        // SliverToBoxAdapter(
+        //   child: Column(
+        //     children: [
+        //       TabsRow.v2(
+        //         initialIndex: state.layersType.index,
+        //         tabsContent: [
+        //           TabsRowV2Content(title: context.l10n.lifestyle),
+        //           TabsRowV2Content(title: context.l10n.business),
+        //         ],
+        //         onIndexChanged: (index) {
+        //           layersControlsProviderNotifier.update(
+        //             layersType: LayersType.values[index ?? 0],
+        //           );
+        //         },
+        //       ),
+        //       const SizedBox(height: 12),
+        //     ],
+        //   ),
+        // ),
         LayerSliverList(
           tapOnParkingLotsMenu: tapOnParkingLotsMenu,
           layerType: switch (state.layersType) {

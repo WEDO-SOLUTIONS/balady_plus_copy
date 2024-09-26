@@ -78,7 +78,9 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     ref.listen(freeRoamStarterProvider, (_, state) {
       if (state.canStart && state.isAutorun) {
         widget.controller.setState(ThreeStateBottomSheet.hidden);
-        quickScrollController.scrollTo(index: 0, duration: const Duration(milliseconds: 150), alignment: 1);
+        setState(() {
+          quickScrollController.scrollTo(index: 0, duration: const Duration(milliseconds: 150), alignment: 0.05);
+        });
       }
     });
 
@@ -169,7 +171,8 @@ class _FreeRoamQuickAction extends ConsumerStatefulWidget {
   ConsumerState<_FreeRoamQuickAction> createState() => _FreeRoamState();
 }
 
-class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction> with TickerProviderStateMixin, FreeRoamAnimationMixin {
+class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
+    with TickerProviderStateMixin, FreeRoamAnimationMixin, AutomaticKeepAliveClientMixin {
   late final AnimationController launchingController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 666),
@@ -206,6 +209,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction> with TickerProv
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     listerForStart();
     final color = context.color;
     final colorsV2 = context.colorsV2;
@@ -312,4 +316,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction> with TickerProv
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => widget.isLaunching;
 }

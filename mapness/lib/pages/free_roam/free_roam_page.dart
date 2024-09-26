@@ -65,10 +65,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
 
   void startControlsDisapearTimer() {
     timer = Timer(const Duration(seconds: 15), () {
-      setState(() {
-        isControlsActive = false;
-        wasSetActive = false;
-      });
+      if (mounted) {
+        setState(() {
+          isControlsActive = false;
+          wasSetActive = false;
+        });
+      }
     });
   }
 
