@@ -39,7 +39,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
   static const imgSize = 48;
   static const streamBreakTimeout = 30;
-  static const stramBreakTimerInterval = 5;
+  static const streamBreakTimerInterval = 5;
   static const routeZoomTimerInterval = 10;
 
   EtaInfoModel<EtaRoutePayload?>? _metaInfo;
@@ -176,7 +176,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       });
 
       _lastActiveMessageReceiverTimer?.cancel();
-      _lastActiveMessageReceiverTimer = Timer.periodic(const Duration(seconds: stramBreakTimerInterval), (_) async {
+      _lastActiveMessageReceiverTimer = Timer.periodic(const Duration(seconds: streamBreakTimerInterval), (_) async {
         final lastActiveMessageTime = _lastActiveMessageTime;
         if (lastActiveMessageTime == null) {
           return;
