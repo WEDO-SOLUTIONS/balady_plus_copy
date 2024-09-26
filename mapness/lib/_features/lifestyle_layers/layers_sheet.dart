@@ -20,20 +20,21 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   static const _duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
 
-  /// // Another one to check if the panel is shown and we don't pop it on small size of the sheet
-  bool _isShown = false;
   static const _curve = Curves.easeIn;
 
   late final DraggableScrollableController _layersController;
   late final DraggableScrollableController _parkingLotsController;
+
+  // Another one to check if the panel is shown and we don't pop it on small size of the sheet
+  bool _isShown = false;
 
   @override
   void initState() {
     super.initState();
 
     _layersController = DraggableScrollableController();
+    _layersController.addListener(_layersControllerListener);
     _parkingLotsController = DraggableScrollableController();
-    _layersController.addListener(_closeOnScroll);
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _showBottomSheet());
   }
@@ -156,12 +157,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
     }
   }
 
-  void _closeOnScroll() {
-    if (_isShown && _layersController.size < .01) {
-      context.pop();
-    }
-  }
-
   void _hideLayersPanel() {
     if (_isShown) {
       _layersController
@@ -171,6 +166,13 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
             curve: _curve,
           )
           .then((_) => _isShown = false);
+    }
+  }
+
+  // If the main layer [_layersController] is in hidden position then close the panel and make pop
+  void _layersControllerListener() {
+    if (_isShown && _layersController.size < .01) {
+      context.pop();
     }
   }
 
@@ -201,7 +203,6 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
       duration: _duration,
       curve: _curve,
     );
-
     _parkingLotsController
         .animateTo(
       _parkingPanelMaxHeight,
