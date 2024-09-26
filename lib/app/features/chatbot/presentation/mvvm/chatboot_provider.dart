@@ -282,8 +282,8 @@ class ChatBotProvider extends BaseViewModel {
               question:question ,
               answer: answer,
               haveError: false,
-              messID: lstHistory[index+1].messageID != null ?"${lstHistory[index+1].messageID}":null,
-                isLiked:lstHistory[index+1].messageFeedBack != null ?lstHistory[index+1].messageFeedBack==1?true:false:null,
+              messID: lstHistory[index+1].messageID,
+                isLiked:lstHistory[index+1].messageFeedBack ,
                 sectionId: sectionId
 
             ),

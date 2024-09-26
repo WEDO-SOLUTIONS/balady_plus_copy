@@ -23,9 +23,9 @@ class History {
 
   String? role;
   String? content;
-  int? messageID;
+  String? messageID;
   String? messageTime;
-  int? messageFeedBack;
+  bool? messageFeedBack;
 
 
   History({

@@ -141,7 +141,6 @@ class MessageChatBotProvider extends BaseViewModel {
     isClose = true;
     notifyListeners();
   }
-
   void scrollControllerAction() {
     if (scrollController.position.maxScrollExtent - 80 >
         scrollController.offset) {
@@ -152,7 +151,6 @@ class MessageChatBotProvider extends BaseViewModel {
       );
     }
   }
-
   Future sendFeedBack(String messID,bool like) async {
 
     isLoading = true;
