@@ -14,6 +14,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:mapness/entry_point.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
@@ -23,7 +24,6 @@ import 'core/utils/routes.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
-
 
 // import 'baldy';
 
@@ -106,12 +106,8 @@ class AppWidgetState extends State<AppWidget> {
                 backgroundColor: AppColor.blue,
               ),
               dropdownMenuTheme: const DropdownMenuThemeData(
-                inputDecorationTheme: InputDecorationTheme(
-
-                ),
-                menuStyle: MenuStyle(
-
-                ),
+                inputDecorationTheme: InputDecorationTheme(),
+                menuStyle: MenuStyle(),
               ),
               inputDecorationTheme: InputDecorationTheme(
                 counterStyle: const TextStyle(
@@ -129,19 +125,31 @@ class AppWidgetState extends State<AppWidget> {
                   horizontal: 16,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Color(0xffD4D4D8), width: 1.5,),
+                  borderSide: const BorderSide(
+                    color: Color(0xffD4D4D8),
+                    width: 1.5,
+                  ),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: AppColor.primary800Light, width: 1.5,),
+                  borderSide: const BorderSide(
+                    color: AppColor.primary800Light,
+                    width: 1.5,
+                  ),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: AppColor.error, width: 1.5,),
+                  borderSide: const BorderSide(
+                    color: AppColor.error,
+                    width: 1.5,
+                  ),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: AppColor.error, width: 1.5,),
+                  borderSide: const BorderSide(
+                    color: AppColor.error,
+                    width: 1.5,
+                  ),
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
@@ -187,7 +195,8 @@ class AppWidgetState extends State<AppWidget> {
               MapnessRouteObserver(),
             ],
             localizationsDelegates: translator.delegates.toList()
-              ..add(CountryLocalizations.delegate),
+              ..add(CountryLocalizations.delegate)
+              ..add(SfGlobalLocalizations.delegate),
             // Android + iOS Delegates
             locale: translator.activeLocale,
             // Active locale
