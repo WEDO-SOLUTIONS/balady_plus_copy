@@ -41,7 +41,7 @@ class MessageChatText extends StatelessWidget {
               }
               else
                 {
-                  CommonFunctions.showSuccess("cannotdothisaction".tr());
+                  CommonFunctions.showError("cannotdothisaction".tr());
                 }
 
             },
@@ -60,7 +60,7 @@ class MessageChatText extends StatelessWidget {
               else
 
                 {
-                  CommonFunctions.showSuccess("cannotdothisaction".tr());
+                  CommonFunctions.showError("cannotdothisaction".tr());
                 }
 
             },
