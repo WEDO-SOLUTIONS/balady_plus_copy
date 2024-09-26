@@ -118,10 +118,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "6e5ebd05b3fc03706e984c2d307232945178c0ca"
+      resolved-ref: c15ebbf18b6751796399bb22809663fe2079790c
       url: "https://tfs.momra.gov.sa/tfs/MOMRACollection/Mobile%20Apps/_git/Balady%20Authorization"
     source: git
-    version: "0.0.16"
+    version: "0.0.17"
   balady_uikit:
     dependency: "direct main"
     description:
