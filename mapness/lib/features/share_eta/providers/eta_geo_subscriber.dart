@@ -39,7 +39,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
   static const imgSize = 48;
   static const streamBreakTimeout = 30;
-  static const stramBreakTimerInterval = 10;
+  static const stramBreakTimerInterval = 5;
   static const routeZoomTimerInterval = 10;
 
   EtaInfoModel<EtaRoutePayload?>? _metaInfo;
@@ -183,10 +183,15 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         }
         final currentTime = DateTime.now().toUtc();
         final diff = currentTime.difference(lastActiveMessageTime).inSeconds;
+        // We need to set status only if we have no data in stream
         if (diff > streamBreakTimeout) {
           ref
               .read(websocketErrorHandlerProvider.notifier)
               .setStatus(EtaErrorStatusCodes.noDataInStream, WebsocketReason.noData.toName());
+
+          // Return normal status if we get data after no data status
+        } else if (ref.read(websocketErrorHandlerProvider).$1 == EtaErrorStatusCodes.noDataInStream) {
+          ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
         }
       });
 
