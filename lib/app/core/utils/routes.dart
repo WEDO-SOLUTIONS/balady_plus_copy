@@ -49,6 +49,7 @@ import '../../features/calculator/presentation/pages/service_calculator_result_s
 import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
 import '../../features/chatbot/presentation/pages/chatbot_screen.dart';
+import '../../features/chatbot/presentation/widgets/chat_history_details.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_overview/construction_license_overview_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query_Details/construction_license_inquery_details.dart';
@@ -607,6 +608,9 @@ class Routes {
     RouteName.SpecificServicePage: (context) => const AllServicesPage(),
     RouteName.jodDonationPage: (context) => const JodDonationPage(),
     RouteName.chatbot: (context) => const ChatBotScreen(),
+    RouteName.chatHistoryDetailsRoute: (context) =>
+    const ChatHistoryDetails(),
+
     RouteName.surveyReportInqueryOverView: (context) =>
         const SurveyReportOverviewScreen(),
     RouteName.surveyReportInquery: (context) =>
@@ -623,6 +627,11 @@ class Routes {
         const NotificationsListScreen(),
     RouteName.notificationsDetailsScreen: (context) =>
         const NotificationsDetailsScreen(),
+
+
+
+
+
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {

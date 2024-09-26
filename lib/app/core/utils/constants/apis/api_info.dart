@@ -615,4 +615,20 @@ class ApiUrl {
   // static const String INQSPLClassifications =
   //     '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassifications';
 
+
+
+  static const sendMessagechatBotFeedback = '/v1/chatbot-services/assign-feedback';
+  static const getChatgptOldSession = '/v1/chatbot-services/old-sessions';
+  static const getChatgptSessionDetails = '/v1/chatbot-services/view-session';
+
+  static const refreshChatSession = '/v1/chatbot-services/load-session';
+
+
+
+
+
+
+
+
+
 }
