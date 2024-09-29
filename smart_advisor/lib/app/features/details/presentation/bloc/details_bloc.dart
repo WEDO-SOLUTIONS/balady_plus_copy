@@ -20,6 +20,7 @@ import '../../domain/entities/entity_violation_activity_request_params.dart';
 import '../../domain/use_cases/get_violation_details.dart';
 import '../../domain/use_cases/get_violation_entity_activity_detailes.dart';
 import '../widgets/tabs/third/Details.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   ActivityDetailsPageParams args;
@@ -103,10 +104,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
             activityId: args.activityId?.id ?? 0,
             latitude: args.gisRequest?.lat ?? 0,
             longitude: args.gisRequest?.lon ?? 0,
-            municipalityId:
-                int.tryParse(args.gisData?.municipalityId ?? "") ?? 0,
-            submunicipalityId:
-                int.tryParse(args.gisData?.subMunicipalityId ?? "") ?? 0,
+            municipalityId: args.gisData?.municipalityId ?? "",
+            submunicipalityId: args.gisData?.subMunicipalityId ?? "",
             isVillage: args.gisData?.isVillage ?? false));
 
     result.fold((failure) {
@@ -169,6 +168,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   }
 
   void _getVDViolation(GetViolationVD event, Emitter emit) async {
+    print(
+        "GGGGHHH ${args.gisData?.municipalityId} ${args.gisData?.subMunicipalityId}");
     emit(state.copyWith(vdViolationStatus: BlocStatus.loading));
     final result = await _getViolationVD(ViolationDetailsVdRequestParams(
         activityId: args.activityId?.id ?? 0,
@@ -186,5 +187,11 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
       emit(state.copyWith(
           vdViolationStatus: BlocStatus.success, vdViolationList: success));
     });
+  }
+
+  Future<String?> getComplinaceData(BuildContext context) async {
+    final String? d = await BaladyServices.getBuildingCompliance(
+        context, args.gisRequest!.lat, args.gisRequest!.lon);
+    return d;
   }
 }

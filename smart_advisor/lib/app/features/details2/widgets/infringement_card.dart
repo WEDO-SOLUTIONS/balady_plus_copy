@@ -32,12 +32,14 @@ class _InfringementCardState extends State<InfringementCard> {
             title: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    widget.isCritical ? "مخالفة جسيمة" : "مخالفة غير جسيمة",
-                    style: AppStyle.textRegularRomanStyle
-                        .copyWith(color: const Color(0xffE0373D)),
-                  ),
-                ),
+                    child: Text(
+                        widget.isCritical == "true"
+                            ? "مخالفة جسيمة"
+                            : "مخالفة غير جسيمة",
+                        style: AppStyle.textRegularRomanStyle.copyWith(
+                            color: widget.isCritical == "true"
+                                ? const Color(0xffE0373D)
+                                : const Color(0xffbe890e)))),
               ],
             ),
             subtitle: Text(

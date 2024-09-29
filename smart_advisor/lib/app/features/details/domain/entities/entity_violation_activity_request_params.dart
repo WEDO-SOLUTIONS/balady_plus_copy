@@ -2,8 +2,8 @@ class EntityViolationActivityRequestParams {
   int activityId;
   double latitude;
   double longitude;
-  int municipalityId;
-  int submunicipalityId;
+  String municipalityId;
+  String submunicipalityId;
   bool isVillage;
 
   EntityViolationActivityRequestParams(

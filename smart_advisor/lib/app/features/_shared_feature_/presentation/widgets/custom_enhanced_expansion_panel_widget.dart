@@ -68,7 +68,7 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
               //       vertical: 8.0,
               //     ),
               decoration: BoxDecoration(
-                color: backgroundColor ?? Color(0x7FE6EFEF),
+                color: backgroundColor ?? Colors.white,
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: LayoutBuilder(
@@ -82,7 +82,7 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
                       dense: true,
                       horizontalTitleGap: 0,
                       minLeadingWidth: leadingWidth ?? 25.0,
-                      minVerticalPadding: 0.0,
+                      minVerticalPadding: 10.0,
                       selectedColor: Colors.transparent,
                       selectedTileColor: Colors.transparent,
                       child: ExpansionTile(
@@ -218,7 +218,8 @@ class _ExpansionTitleWidget extends StatelessWidget {
   // double get titleWidth => leading == null
   //     ? width - (25.0 + 10.0)
   //     : width - (25.0 + 10.0 + 10.0 + 25.0);
-  TextStyle get textStyle => AppStyle.heading2BoldStyle;
+  TextStyle get textStyle =>
+      AppStyle.textRegularRomanStyle.copyWith(color: AppColor.textPrimaryColor);
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
@@ -232,13 +233,12 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
     return Container(
       width: 20,
       height: 20,
-      decoration: BoxDecoration(
-        color: arrowBg ?? AppColor.textPrimaryColor,
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
       ),
-      child: Transform.rotate(
-        angle: angle,
-        child: Icon(Icons.arrow_back_ios_new, size: 12, color: iconColor),
+      child: RotatedBox(
+        quarterTurns: 3,
+        child: Icon(Icons.arrow_back_ios, size: 12, color: iconColor),
       ),
     );
   }
@@ -246,5 +246,5 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
   // because original arrow looks at the left,
   // so, if expanded we need to rotate it by 90', otherwise rotate by 270'
   double get angle => expanded ? 90 : 0;
-  Color get iconColor => expanded ? AppColor.white : AppColor.white;
+  Color get iconColor => expanded ? AppColor.gray : AppColor.gray;
 }

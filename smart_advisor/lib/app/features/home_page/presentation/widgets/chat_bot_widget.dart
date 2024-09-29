@@ -27,7 +27,7 @@ class _ChatBotWidgetState extends State<ChatBotWidget> {
         builder: (context, state) {
           return GestureDetector(
             onTap: () {
-              //   BaladyServices.openChatGPT();
+              BaladyServices.openChatGPT();
             },
             child: Container(
               margin: EdgeInsets.all(30),

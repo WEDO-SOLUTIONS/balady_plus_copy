@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../widgets/inspectionitems.dart';
 import '../widgets/violation_view.dart';
+import 'complaince/complaince_page.dart';
 
 class EntityDetails extends StatefulWidget {
   final ActivityDetailsPageParams args;
@@ -76,7 +77,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                       BlocStatus.success) ...[
                     Expanded(
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.only(top: 20),
                         child: Column(
                           children: [
                             //add visibility
@@ -87,7 +88,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
                             Visibility(
                                 visible: _selectedIndexBasic == 1,
-                                child: ConditionView()),
+                                child: const ConditionView()),
                             /*  Visibility(
                                   visible: _selectedIndexBasic == 2,
                                   child: Padding(
@@ -120,8 +121,8 @@ class _EntityDetailsState extends State<EntityDetails> {
 
                             Visibility(
                                 visible: _selectedIndexBasic == 2,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(15.0),
                                   child: SingleChildScrollView(
                                     child: Column(
                                         crossAxisAlignment:
@@ -141,7 +142,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                             ],
                                           ),
                                           //here
-                                          const ViolationsView(),
+                                          ViolationsView(),
                                         ]),
                                   ),
                                 )),
@@ -319,13 +320,13 @@ class _EntityDetailsState extends State<EntityDetails> {
                                             visible: _selectedIndexDetail == 0,
                                             child: const Column(
                                               children: [
-                                                const InspectionItemList(),
+                                                InspectionItemList(),
                                               ],
                                             ),
                                           ),
                                           Visibility(
                                             visible: _selectedIndexDetail == 1,
-                                            child: ViolatonView(),
+                                            child: const ViolatonView(),
                                           )
                                         ],
                                       ),
@@ -334,6 +335,10 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 ),
                               ),
                             ),
+
+                            Visibility(
+                                visible: _selectedIndexBasic == 4,
+                                child: const CompliancePage()),
 
                             /*  Visibility(
                                   visible: _selectedIndexBasic == 5,

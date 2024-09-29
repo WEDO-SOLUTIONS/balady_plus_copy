@@ -38,9 +38,9 @@ class DetailsUserGuide extends StatelessWidget {
               children: [
                 Container(
                   height: 48,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColor.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16, right: 16),
@@ -66,9 +66,9 @@ class DetailsUserGuide extends StatelessWidget {
                 ),
                 Container(
                   height: 48,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColor.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16, right: 16),
@@ -102,9 +102,9 @@ class DetailsUserGuide extends StatelessWidget {
                 ),
                 Container(
                   height: 48,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColor.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -128,9 +128,9 @@ class DetailsUserGuide extends StatelessWidget {
                 ),
                 Container(
                   height: 48,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColor.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -175,9 +175,9 @@ class DetailsUserGuide extends StatelessWidget {
                   },
                   child: Container(
                     height: 48,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColor.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -200,7 +200,7 @@ class DetailsUserGuide extends StatelessWidget {
                 InkWell(
                   onTap: () async {
                     showModalBottomSheet(
-                      backgroundColor: Color(0xff000000),
+                      backgroundColor: const Color(0xff000000),
                       isScrollControlled: true,
                       context: context,
                       builder: (BuildContext context) => GeneralHtmlDialog(
@@ -213,9 +213,9 @@ class DetailsUserGuide extends StatelessWidget {
                   },
                   child: Container(
                     height: 48,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColor.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -238,7 +238,7 @@ class DetailsUserGuide extends StatelessWidget {
                 InkWell(
                   onTap: () async {
                     showModalBottomSheet(
-                      backgroundColor: Color(0xff000000),
+                      backgroundColor: const Color(0xff000000),
                       isScrollControlled: true,
                       context: context,
                       builder: (BuildContext context) => GeneralHtmlDialog(
@@ -251,9 +251,9 @@ class DetailsUserGuide extends StatelessWidget {
                   },
                   child: Container(
                     height: 48,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColor.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -276,7 +276,7 @@ class DetailsUserGuide extends StatelessWidget {
                 InkWell(
                   onTap: () async {
                     showModalBottomSheet(
-                      backgroundColor: Color(0xff000000),
+                      backgroundColor: const Color(0xff000000),
                       isScrollControlled: true,
                       context: context,
                       builder: (BuildContext context) => RequirementsFinesView(
@@ -287,9 +287,9 @@ class DetailsUserGuide extends StatelessWidget {
                   },
                   child: Container(
                     height: 48,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColor.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -330,9 +330,9 @@ class DetailsUserGuide extends StatelessWidget {
                   },
                   child: Container(
                     height: 48,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColor.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -356,7 +356,7 @@ class DetailsUserGuide extends StatelessWidget {
                   btnColor: AppColor.statusAccentColor,
                   textColor: AppColor.white,
                   onPress: () {
-                    //    BaladyServices.openIssueLicense();
+                    BaladyServices.openIssueLicense();
                   },
                   text: ("apply_commercial_license").tr(),
                 ),

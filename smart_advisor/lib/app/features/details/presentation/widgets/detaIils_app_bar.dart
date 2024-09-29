@@ -35,7 +35,7 @@ class _DetailsAppBarState extends State<DetailsAppBar> {
       decoration: BoxDecoration(boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.05), // Black color with 5% opacity
-          offset: Offset(0, 4), // X = 0, Y = 4
+          offset: const Offset(0, 4), // X = 0, Y = 4
           blurRadius: 24, // Blur radius of 24
           spreadRadius: 0, // Spread radius of 0
         ),
@@ -77,7 +77,7 @@ class _DetailsAppBarState extends State<DetailsAppBar> {
                 color: Colors.white,
               ),
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(right: 16),
+                padding: const EdgeInsets.only(right: 16),
                 scrollDirection: Axis.horizontal,
                 child: Row(children: <Widget>[
                   BlocBuilder<DetailsBloc, DetailsState>(
@@ -97,7 +97,7 @@ class _DetailsAppBarState extends State<DetailsAppBar> {
                           width: 140,
                           height: 50,
                           alignment: Alignment.center,
-                          margin: EdgeInsetsDirectional.only(end: 12),
+                          margin: const EdgeInsetsDirectional.only(end: 12),
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 14),
                           decoration: BoxDecoration(
@@ -135,7 +135,7 @@ class _DetailsAppBarState extends State<DetailsAppBar> {
                               width: 140,
                               height: 50,
                               alignment: Alignment.center,
-                              margin: EdgeInsetsDirectional.only(end: 12),
+                              margin: const EdgeInsetsDirectional.only(end: 12),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 14),
                               decoration: BoxDecoration(
@@ -196,7 +196,7 @@ class _DetailsAppBarState extends State<DetailsAppBar> {
                               width: 140,
                               height: 50,
                               alignment: Alignment.center,
-                              margin: EdgeInsetsDirectional.only(end: 12),
+                              margin: const EdgeInsetsDirectional.only(end: 12),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 14),
                               decoration: BoxDecoration(
@@ -237,7 +237,7 @@ class _DetailsAppBarState extends State<DetailsAppBar> {
                               width: 140,
                               height: 50,
                               alignment: Alignment.center,
-                              margin: const EdgeInsetsDirectional.only(end: 5),
+                              margin: const EdgeInsetsDirectional.only(end: 12),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 14),
                               decoration: BoxDecoration(
@@ -256,6 +256,48 @@ class _DetailsAppBarState extends State<DetailsAppBar> {
                                       )
                                     : AppStyle.textRegularRomanStyle.copyWith(
                                         color: _selectedIndexBasic == 3
+                                            ? AppColor.white
+                                            : AppColor.textSecondaryColor,
+                                      ),
+                              )));
+                    },
+                  ),
+                  BlocBuilder<DetailsBloc, DetailsState>(
+                    builder: (context, state) {
+                      return GestureDetector(
+                          onTap: () {
+                            print("JJJ");
+                            _onSegmentBasic(4);
+                            context
+                                .read<DetailsBloc>()
+                                .getComplinaceData(context);
+                            try {} catch (ex) {
+                              print(ex);
+                            }
+                          },
+                          child: Container(
+                              width: 140,
+                              height: 50,
+                              alignment: Alignment.center,
+                              margin: const EdgeInsetsDirectional.only(end: 12),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 14),
+                              decoration: BoxDecoration(
+                                  color: _selectedIndexBasic == 4
+                                      ? AppColor.statusAccentColor
+                                      : AppColor.grey1,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10.0))),
+                              child: Text(
+                                "شهادة الإمتثال",
+                                style: _selectedIndexBasic == 4
+                                    ? AppStyle.footNoteBoldStyle.copyWith(
+                                        color: _selectedIndexBasic == 4
+                                            ? AppColor.white
+                                            : AppColor.textSecondaryColor,
+                                      )
+                                    : AppStyle.textRegularRomanStyle.copyWith(
+                                        color: _selectedIndexBasic == 4
                                             ? AppColor.white
                                             : AppColor.textSecondaryColor,
                                       ),

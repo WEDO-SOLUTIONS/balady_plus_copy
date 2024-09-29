@@ -1,12 +1,14 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/services/global/web_service.dart';
 import '../../../../core/utils/constants/apis/env_types.dart';
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
@@ -14,6 +16,9 @@ import '../../../events/domain/entities/search_events/search_events_params.dart'
 import '../../../events/domain/usecase/get_search_events.dart';
 import '../../../map_page/data/model/investment_details_response.dart';
 import '../../../map_page/data/model/rental_details_response.dart';
+import '../../../municipal_services/municipal_advisor/domain/entities/building_compliance_entity.dart';
+import '../../../municipal_services/municipal_advisor/domain/use_cases/get_building_complince.dart';
+import '../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
@@ -31,7 +36,7 @@ class BaladyServices {
     InvestmentDetailsResponse? investmentDetailsResponse;
     try {
       final response = await webService.dio.get(
-        sl<EnvType>().domain + "v1/ims/investment-details",
+        "${sl<EnvType>().domain}v1/ims/investment-details",
         queryParameters: {
           'Type': type,
           'RFPID': id,
@@ -71,7 +76,7 @@ class BaladyServices {
     InvestmentDetailsResponse? investmentDetailsResponse;
     try {
       final response = await webService.dio.get(
-        sl<EnvType>().domain + "v1/ims/direct-rental-opportunities" + "/$id",
+        "${sl<EnvType>().domain}v1/ims/direct-rental-opportunities/$id",
         options: Options(headers: {
           'Authorization':
               "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
@@ -108,7 +113,7 @@ class BaladyServices {
     RentalDetailsResponse? investmentDetailsResponse;
     try {
       final response = await webService.dio.get(
-        sl<EnvType>().domain + "v1/ims/temp-rental-details",
+        "${sl<EnvType>().domain}v1/ims/temp-rental-details",
         queryParameters: {
           'Type': type,
           'RFPID': id,
@@ -175,7 +180,7 @@ class BaladyServices {
 
   Future<String?> getHijtiDate(String date) async {
     try {
-      var url = sl<EnvType>().domain + "v1/kacst/hijri-date?sDate=$date";
+      var url = "${sl<EnvType>().domain}v1/kacst/hijri-date?sDate=$date";
       final response = await webService.dio.get(
         url,
         options: Options(headers: {
@@ -206,7 +211,7 @@ class BaladyServices {
 
   Future<String?> getGorgianDate(String date) async {
     try {
-      var url = sl<EnvType>().domain + "v1/kacst/gregorian-date?sDate=$date";
+      var url = "${sl<EnvType>().domain}v1/kacst/gregorian-date?sDate=$date";
       final response = await webService.dio.get(
         url,
         options: Options(headers: {
@@ -251,5 +256,16 @@ class BaladyServices {
 
   static Future<bool> checkLocationSettings(BuildContext context) {
     return CommonFunctions.checkLocationSettings(context);
+  }
+
+  static Future<String> getBuildingCompliance(
+      BuildContext context, double lat, double lon) async {
+    try {
+      var r = await GetBuildingCompliance(sl()).call(GISParams(x: lon, y: lat));
+
+      return r.getRight?.first.stageno ?? "";
+    } catch (ex) {
+      return "";
+    }
   }
 }

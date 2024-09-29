@@ -58,7 +58,7 @@ class PermitItemCard extends StatelessWidget {
                           .copyWith(color: AppColor.textPrimaryColor),
                     ),
                     Text(
-                      isFreeOfCharge ? "برسوم" : "بدون رسوم",
+                      isFreeOfCharge != true ? "برسوم" : "بدون رسوم",
                       style: AppStyle.textRegularStyle
                           .copyWith(color: AppColor.textSecondaryColor),
                     ),

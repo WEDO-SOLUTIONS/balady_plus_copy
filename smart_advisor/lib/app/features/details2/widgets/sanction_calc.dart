@@ -92,9 +92,9 @@ class _SanctionCalcState extends State<SanctionCalc> {
                           : widget.price,
                       style: AppStyle.calloutBoldStyle,
                     ),
-                    if (widget.price != "0" && widget.isCritical != false)
+                    if (widget.price != "0")
                       TextSpan(
-                        text: ' ريال / للرخصة',
+                        text: ' ريال / للرخصة ',
                         style: AppStyle.captionRomanStyle
                             .copyWith(color: AppColor.textPrimaryColor),
                       ),

@@ -27,6 +27,15 @@ class ViolatingCommercialActivities extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              dataModel.isCritical == "true"
+                  ? "مخالفة جسيمة"
+                  : "مخالفة غير جسيمة",
+              style: AppStyle.textRegularRomanStyle.copyWith(
+                  color: dataModel.isCritical == "true"
+                      ? const Color(0xffE0373D)
+                      : const Color(0xffbe890e)),
+            ),
             const SizedBox(
               height: 5,
             ),
@@ -39,7 +48,8 @@ class ViolatingCommercialActivities extends StatelessWidget {
               height: 12,
             ),
             Container(
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -62,13 +72,13 @@ class ViolatingCommercialActivities extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 6,
             ),
             Container(
                 height: 40,
                 width: double.infinity,
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                     color: AppColor.surfaceSecondaryColor,
                     borderRadius: BorderRadius.circular(6)),
@@ -84,8 +94,7 @@ class ViolatingCommercialActivities extends StatelessWidget {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                              text:
-                                  (dataModel.fineAmount.toString() ?? "") + " ",
+                              text: "${dataModel.fineAmount.toString() ?? ""} ",
                               style: AppStyle.calloutBoldStyle),
                           TextSpan(
                             text: dataModel.unitType ?? "",

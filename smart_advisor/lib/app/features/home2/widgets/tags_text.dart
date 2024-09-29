@@ -16,7 +16,7 @@ class _RoundedCardWithTextState extends State<RoundedCardWithText> {
     return Container(
       margin: const EdgeInsets.only(left: 2, right: 2),
       decoration: BoxDecoration(
-          color: const Color(0x1C568F64),
+          //   color: const Color(0x1C568F64),
           borderRadius: BorderRadius.circular(6)),
       //margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(4),
