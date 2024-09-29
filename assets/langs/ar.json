@@ -4127,5 +4127,6 @@
   "auth_pacakge_end": "end",
   "answer_copy_to_Clipboard": "تم النسخ بنجاح",
   "history": "سجل المحادثات",
-  "cannotdothisaction": "فشل لم يتم الإجراء"
+  "cannotdothisaction": "فشل لم يتم الإجراء",
+  "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك "
 }

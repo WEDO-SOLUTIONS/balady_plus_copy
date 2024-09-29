@@ -634,6 +634,8 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "smart_advisor", "description": null, "tag": null},
       "en": {"title": "smart_advisor", "description": null, "tag": null}
     },
+
+
     {
       "id": 401,
       "icon": "municipal_advisor",
@@ -646,19 +648,21 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "municipal_advisor", "description": null, "tag": null},
       "en": {"title": "municipal_advisor", "description": null, "tag": null}
     },
-    {
-      "id": 407,
-      "icon": "municipal_advisor",
-      "3d_icon": null,
-      "order": 13,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "beta": false,
-      "action": {"type": "page", "value": RouteName.chatbot},
-      "ar": {"title": "municipal_advisor", "description": null, "tag": null},
-      "en": {"title": "municipal_advisor", "description": null, "tag": null}
-    },
+
+    // fawzi comment to remove gpt icon
+    // {
+    //   "id": 407,
+    //   "icon": "municipal_advisor",
+    //   "3d_icon": null,
+    //   "order": 13,
+    //   "isNew": false,
+    //   "isImportant": false,
+    //   "requireLogin": true,
+    //   "beta": false,
+    //   "action": {"type": "page", "value": RouteName.chatbot},
+    //   "ar": {"title": "municipal_advisor", "description": null, "tag": null},
+    //   "en": {"title": "municipal_advisor", "description": null, "tag": null}
+    // },
     {
       "id": 499,
       "icon": "calender",
