@@ -26,9 +26,11 @@ class AttachedButtonWidget extends StatelessWidget {
         return OutlinedButton(
           onPressed: () {
             // Open File From file path
-            OpenFile.open((state as SuccessAttachedCertificateState).file.path);
+            OpenFile.open(
+              (state as SuccessAttachedCertificateState).file.path,
+            );
           },
-          child: Text("open_file".tr()),
+          child: Text("show_file".tr()),
         );
       } else {
         return OutlinedButton(

@@ -2,14 +2,15 @@ import 'dart:io';
 
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/model/details/classification_certificate_details_model.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/model/lookups/classification_certificate_lookups_model.dart';
-import 'package:dio/dio.dart' show DioException, Options, ResponseType;
+import 'package:dio/dio.dart'
+    show BaseOptions, Dio, DioException, Options, ResponseType;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../core/endpoints.dart';
 import '../model/classification_certificate_list.dart';
@@ -266,13 +267,13 @@ class ClassificationCertificateRemoteDataSource
 
   @override
   Future<File> getAttachedClassificationCertificate(
-      String attachUrl, String fileName) async {
+      String attachUrl, String path) async {
     var response;
     try {
-      response = await webService.dio.get(
+      response = await Dio(
+        BaseOptions(baseUrl: RemoteConfig.apigeeURL),
+      ).get(
         attachUrl,
-        // onReceiveProgress: showDownloadProgress,
-        //Received data with List<int>
         options: Options(
           responseType: ResponseType.bytes,
           followRedirects: false,
@@ -281,11 +282,8 @@ class ClassificationCertificateRemoteDataSource
           },
         ),
       );
-      // print(response.headers);
-      var tempDir = await getTemporaryDirectory();
-      File file = File("$tempDir/$fileName");
+      File file = File(path);
       var raf = file.openSync(mode: FileMode.write);
-      // response.data is List<int> type
       raf.writeFromSync(response.data);
       await raf.close();
       return file;
