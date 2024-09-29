@@ -152,9 +152,9 @@ class ClassificationCertificateVerifyBloc extends Bloc<
               searchRequestModel: typeState.searchRequestModel.copyWith(
                 classificationType: event.classificationType,
                 //  send null to delete if selected old choose
-                sector: null,
-                service: null,
-                activity: null,
+                deleteSector: true,
+                deleteService: true,
+                deleteActivity: true,
               ),
               classificationType: typeState.classificationType,
               degrees: typeState.degrees,
@@ -194,7 +194,7 @@ class ClassificationCertificateVerifyBloc extends Bloc<
                     searchRequestModel: typeState.searchRequestModel.copyWith(
                       sector: event.sector,
                       //  send null to delete if selected old choose
-                      activity: null,
+                      deleteActivity: true,
                     ),
                     activity: activity,
                   ),

@@ -55,21 +55,25 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
     DateTime? expiryDateTo,
     String? phoneNumber,
     ClassificationCertificateLookupModel? service,
+    ////////////////////////////////////////////////////
+    bool deleteSector = false,
+    bool deleteActivity = false,
+    bool deleteService = false,
   }) =>
       AdvancedSearchRequestModel(
         pageSize: pageSize ?? this.pageSize,
         pageNumber: pageSize ?? this.pageNumber,
         ////////////////////////////////////////////////////
         classificationType: classificationType ?? this.classificationType,
-        sector: sector ?? this.sector,
+        sector: deleteSector ? null : sector ?? this.sector,
         city: city ?? this.city,
         ////////////////////////////////////////////////////
-        activity: activity ?? this.activity,
+        activity: deleteActivity ? null : activity ?? this.activity,
         classificationGrade: classificationGrade ?? this.classificationGrade,
         expiryDateFrom: expiryDateFrom ?? this.expiryDateFrom,
         expiryDateTo: expiryDateTo ?? this.expiryDateTo,
         phoneNumber: phoneNumber ?? this.phoneNumber,
-        service: service ?? this.service,
+        service: deleteService ? null :  service ?? this.service,
       );
 
   @override
