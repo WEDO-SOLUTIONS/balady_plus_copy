@@ -46,7 +46,7 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
     int? pageNumber,
     ////////////////////////////////////////////////////
     ClassificationCertificateLookupModel? classificationType,
-    ClassificationCertificateLookupModel? sectors,
+    ClassificationCertificateLookupModel? sector,
     CityLookupsModel? city,
     ////////////////////////////////////////////////////
     ActivityLookupsModel? activity,
@@ -61,7 +61,7 @@ class AdvancedSearchRequestModel implements SearchRequestModel {
         pageNumber: pageSize ?? this.pageNumber,
         ////////////////////////////////////////////////////
         classificationType: classificationType ?? this.classificationType,
-        sector: sectors ?? this.sector,
+        sector: sector ?? this.sector,
         city: city ?? this.city,
         ////////////////////////////////////////////////////
         activity: activity ?? this.activity,
