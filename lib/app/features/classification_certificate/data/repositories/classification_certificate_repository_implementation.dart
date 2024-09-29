@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/classification_certificate/data/model/d
 import 'package:balady_plus/app/features/classification_certificate/domain/entity/classification_certificate_details_entity.dart';
 
 import 'package:dartz/dartz.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../domain/repository/classification_certificate_repository.dart';
 import '../model/lookups/activity_lookups_model.dart';
 import '../model/lookups/classification_certificate_lookups_model.dart';
@@ -19,7 +20,7 @@ class ClassificationCertificateRepositoryImplementation
     implements
         ClassificationCertificateSearchRepository,
         DetailsClassificationCertificateRepository,
-        ClassificationCertificateLookupsRepository{
+        ClassificationCertificateLookupsRepository {
   final ClassificationCertificateRemoteDataSource remoteDataSource;
 
   ClassificationCertificateRepositoryImplementation({
@@ -27,11 +28,10 @@ class ClassificationCertificateRepositoryImplementation
   });
 
   @override
-  Future<Either<Failure, ClassificationCertificateLookupsModel>>
-  getLookups(LookupsRequestModel params) async {
+  Future<Either<Failure, ClassificationCertificateLookupsModel>> getLookups(
+      LookupsRequestModel params) async {
     try {
-      final data =
-      await remoteDataSource.getLookups(params);
+      final data = await remoteDataSource.getLookups(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -48,11 +48,10 @@ class ClassificationCertificateRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, List<ActivityLookupsModel>>>
-  getActivitiesBySectors(ActivitiesRequestModel params) async {
+  Future<Either<Failure, List<ActivityLookupsModel>>> getActivitiesBySectors(
+      ActivitiesRequestModel params) async {
     try {
-      final data =
-      await remoteDataSource.getActivitiesBySectors(params);
+      final data = await remoteDataSource.getActivitiesBySectors(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -78,7 +77,7 @@ class ClassificationCertificateRepositoryImplementation
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error, stackTrace) {
-      if(error.errorCode == "204") {
+      if (error.errorCode == "204") {
         return Left(NoDataFoundFailure());
       }
       return Left(ServerFailure(error.errorMessage));
@@ -87,10 +86,10 @@ class ClassificationCertificateRepositoryImplementation
 
   @override
   Future<Either<Failure, ClassificationCertificateDetailsEentity>>
-  getDetailsClassificationCertificate(DetailsRequestModel params) async {
+      getDetailsClassificationCertificate(DetailsRequestModel params) async {
     try {
       final data =
-      await remoteDataSource.getDetailsClassificationCertificate(params);
+          await remoteDataSource.getDetailsClassificationCertificate(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -100,15 +99,26 @@ class ClassificationCertificateRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, File>> getAttachedClassificationCertificate(String url, String fileName) async {
+  Future<Either<Failure, File>> getAttachedClassificationCertificate(
+      String url, String fileName) async {
     try {
-      final data =
-          await remoteDataSource.getAttachedClassificationCertificate(url,fileName);
-      return Right(data);
+      var tempDir = await getTemporaryDirectory();
+      String path = "${tempDir.path}/$fileName";
+      File file = File(path);
+      bool isExists = await file.exists();
+      if(isExists) {
+        return Right(file);
+      } else {
+        final data = await remoteDataSource.getAttachedClassificationCertificate(
+          url,
+          path,
+        );
+        return Right(data);
+      }
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error, stackTrace) {
-      if(error.errorCode == "204") {
+      if (error.errorCode == "204") {
         return Left(NoDataFoundFailure());
       }
       return Left(ServerFailure(error.errorMessage));

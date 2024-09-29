@@ -21,5 +21,5 @@ abstract class ClassificationCertificateLookupsRemoteDataSource {
 
 abstract class ClassificationCertificateDetailsRemoteDataSource {
   Future<ClassificationCertificateDetails> getDetailsClassificationCertificate(DetailsRequestModel params);
-  Future<File> getAttachedClassificationCertificate(String attachUrl, String fileName);
+  Future<File> getAttachedClassificationCertificate(String attachUrl, String path);
 }

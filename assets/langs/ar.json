@@ -4133,6 +4133,7 @@
   "designContractInfoDescription": "هذه الخدمة هي تصميم هندسي مطابق لاشتراطات كود البناء السعودي شامل المخططات التنفيذية وجدول الكميات (أرض 400 متر مربع حسب ما أفصحت عنه المنشأة).",
   "surveyingServicesTitle": "الرفع المساحي",
   "surveyingServicesDescription": "هذه الاسعار لأرض 400 متر مربع حسب ما أفصحت عنه المنشأة",
+  "show_file": "إستعراض الملف",
   "auth_pacakge_start": "start",
   "biometric": "خدمة Touch ID/Face ID",
   "passcode": "الرمز السريع",
