@@ -5,7 +5,7 @@ version: 2.1.0+7.4
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.3 <4.0.0"
+  sdk: ">=3.5.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -134,7 +134,7 @@ dev_dependencies:
   random_string: ^2.3.1
   flutter_lints: ^2.0.3
   # a tool for running code generators
-  build_runner: 2.4.6
+  build_runner: ^2.4.12
   # the code generator
   riverpod_generator: 2.3.3
   # riverpod_lint makes it easier to work with Riverpod
