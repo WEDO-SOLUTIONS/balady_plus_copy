@@ -208,10 +208,13 @@ class ObjectTapHandler {
     }
     
     private func removeAllObjects<T: DGis.SimpleMapObject>(_ managerId: String?,_ objects: inout Dictionary<String, (T, String?)>, completion: @escaping (FlutterError?) -> Void) {
-        let filtered = objects.filter { $0.value.1 == managerId }
-        objects.removeAll()
-        objects.merge(filtered) { (_, new) in new }
-        
+        // Sync threading memory access
+        self.objectsQueue.sync {
+            let filtered = objects.filter { $0.value.1 == managerId }
+            objects.removeAll()
+            objects.merge(filtered) { (_, new) in new }
+        }
+
         self.objectsQueue.async {
             self.getManager(managerId).removeAll()
             completion(nil)
