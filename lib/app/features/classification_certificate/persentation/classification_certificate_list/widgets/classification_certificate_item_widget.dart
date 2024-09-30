@@ -24,7 +24,7 @@ class ClassificationCertificateItemWidget extends StatelessWidget {
     );
     DateTime parsedDate = DateTime.parse(dataEn);
     String formattedDate = DateFormat(
-      'dd/MM/yyyy',
+      "locale".tr() == "ar" ? 'yyyy/MM/dd' : 'dd/MM/yyyy',
       "locale".tr(),
     ).format(parsedDate);
     Color color = getColorByClassificationGrade(
@@ -62,7 +62,8 @@ class ClassificationCertificateItemWidget extends StatelessWidget {
                     ),
                     backgroundColor: color.withAlpha(70),
                     label: Text(
-                      "ClassificationGrade-${classificationCertificate.classificationGrade}".tr(),
+                      "ClassificationGrade-${classificationCertificate.classificationGrade}"
+                          .tr(),
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             fontWeight: FontWeight.w700,
                             color: color,
