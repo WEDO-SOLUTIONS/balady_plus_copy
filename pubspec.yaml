@@ -133,7 +133,7 @@ dependencies:
 
   version: ^2.0.0
   google_maps_flutter: ^2.5.3
-  share_plus: ^4.5.3
+  share_plus: ^8.0.3
   pinput: ^2.2.31
   pin_code_fields: ^8.0.1
   cached_network_image: ^3.2.2
