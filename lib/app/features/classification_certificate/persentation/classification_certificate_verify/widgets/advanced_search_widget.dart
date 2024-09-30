@@ -30,13 +30,17 @@ class AdvancedSearchWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
-              "please_enter_search_options".tr(),
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+            Flexible(
+              fit: FlexFit.tight,
+              child: Text(
+                "please_enter_search_options".tr(),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+              ),
             ),
-            const Spacer(),
+            const SizedBox(width: 12),
             TextButton(
               onPressed: () {
                 context.read<ClassificationCertificateVerifyBloc>().add(
@@ -49,6 +53,7 @@ class AdvancedSearchWidget extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 12),
         TitleWithWidget(
           title: 'type',
           isRequired: true,
