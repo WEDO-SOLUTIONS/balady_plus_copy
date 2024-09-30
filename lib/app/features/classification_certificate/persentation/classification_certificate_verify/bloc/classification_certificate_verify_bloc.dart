@@ -139,9 +139,8 @@ class ClassificationCertificateVerifyBloc extends Bloc<
           ).toList();
           var services = lookups!.services.where(
             (service) {
-              return (event.classificationType.code == 0 &&
-                      service.code == 0) ||
-                  (event.classificationType.code == 0 && service.code != 0);
+              return (event.classificationType.code == 0 && service.code == 0) ||
+                  (event.classificationType.code == 1 && service.code != 0);
             },
           ).toList();
           emit(
