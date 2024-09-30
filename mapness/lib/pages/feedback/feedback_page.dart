@@ -48,7 +48,8 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
     if (poiData.isLoading || categories.isLoading) {
       return const FeedbackLoadingWidget();
-    } else if (poiData.hasError || categories.hasError) {
+    }
+    if (poiData.hasError || categories.hasError) {
       return FeedbackFailureWidget(
         onRetry: () {
           ref.invalidate(provider);
