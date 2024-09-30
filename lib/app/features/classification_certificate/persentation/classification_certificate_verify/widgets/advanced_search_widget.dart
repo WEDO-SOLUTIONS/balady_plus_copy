@@ -30,6 +30,12 @@ class AdvancedSearchWidget extends StatelessWidget {
       children: [
         Row(
           children: [
+            Text(
+              "please_enter_search_options".tr(),
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
             const Spacer(),
             TextButton(
               onPressed: () {
