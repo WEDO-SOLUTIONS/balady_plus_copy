@@ -52,13 +52,13 @@ class ClassificationCertificateDetailsCubit
           String? certificateExpiryDate = '', certificateStartDate = '';
           if (end != null) {
             certificateExpiryDate = DateFormat(
-              'dd/MM/yyyy',
+              "locale".tr() == "ar" ? 'yyyy/MM/dd' : 'dd/MM/yyyy',
               'locale'.tr(),
             ).format(end);
           }
           if (start != null) {
             certificateStartDate = DateFormat(
-              'dd/MM/yyyy',
+              "locale".tr() == "ar" ? 'yyyy/MM/dd' : 'dd/MM/yyyy',
               'locale'.tr(),
             ).format(start);
           }
@@ -94,7 +94,10 @@ class ClassificationCertificateDetailsCubit
   }
 
   ///////////////////////////////////////////////////////////////////////////
-  void getAttachedFile({required String attachUrl,required String nameFile,}) async {
+  void getAttachedFile({
+    required String attachUrl,
+    required String nameFile,
+  }) async {
     ClassificationCertificateDetailsState typeState = state;
     try {
       if (typeState is SuccessDetailsClassificationCertificateState) {
@@ -118,9 +121,11 @@ class ClassificationCertificateDetailsCubit
               SuccessAttachedCertificateState(
                 file: data,
                 classificationCertificateDetails:
-                typeState.classificationCertificateDetails,
-                formatCertificateExpiryDate: typeState.formatCertificateExpiryDate,
-                formatCertificateStartDate: typeState.formatCertificateStartDate,
+                    typeState.classificationCertificateDetails,
+                formatCertificateExpiryDate:
+                    typeState.formatCertificateExpiryDate,
+                formatCertificateStartDate:
+                    typeState.formatCertificateStartDate,
               ),
             );
           },
