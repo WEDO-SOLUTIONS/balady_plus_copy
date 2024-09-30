@@ -4,12 +4,12 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'navigator_settings.g.dart';
+part 'navigator_speed_cameras_settings.g.dart';
 
 const _prefsKey = 'navigator_settings.speed_cameras';
 
 @Riverpod(keepAlive: true)
-class _NavigatorSettings extends _$NavigatorSettings {
+class _NavigatorSpeedCamerasSettings extends _$NavigatorSpeedCamerasSettings {
   DgisMapController? _dgisController;
 
   @override
@@ -34,4 +34,4 @@ class _NavigatorSettings extends _$NavigatorSettings {
   }
 }
 
-final navigatorSettingsProvider = _navigatorSettingsProvider;
+final navigatorSpeedCamerasSettingsProvider = _navigatorSpeedCamerasSettingsProvider;

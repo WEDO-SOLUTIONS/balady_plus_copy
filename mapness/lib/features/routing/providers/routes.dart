@@ -5,6 +5,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'routes.g.dart';
@@ -19,12 +20,17 @@ class Routes extends _$Routes {
     bool? showOnlyActiveRoute,
   }) async {
     final dgisController = ref.watch(dgisControllerProvider);
+    final searchOptions = ref.watch(navigatorRouteSettingsProvider);
     unawaited(dgisController.value?.hideRoutes());
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
       finishPoint: finishPoint?.pointMessage,
       options: navType,
       showOnlyActiveRoute: showOnlyActiveRoute,
+      searchParams: CarRouteSearchOptionParamsMessage(
+        avoidTollRoads: searchOptions.avoidTollRoads,
+        avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
+      ),
     );
 
     final routesCompleter = Completer<List<RouteInfo>>();
@@ -67,18 +73,29 @@ class ActiveRoute extends _$ActiveRoute {
 
 @riverpod
 class BetterRoute extends _$BetterRoute {
+  StreamSubscription<BetterRouteInfoEvent>? betterRouteSubscription;
+
   @override
   PathNavBetterRoute? build() {
     final dgisController = ref.watch(dgisControllerProvider);
 
-    final betterRouteSubscription = dgisController.value?.betterRouteInfoEvents.listen((event) {
-      state = event.route != null
-          ? PathNavBetterRoute(
-              route: event.route!,
-              durationProfit: event.durationProfit,
-            )
-          : null;
-    });
+    final suggestBetterRoute = ref.watch(navigatorRouteSettingsProvider).suggestRouteBetter;
+
+    if (suggestBetterRoute) {
+      betterRouteSubscription?.resume();
+      betterRouteSubscription ??= dgisController.value?.betterRouteInfoEvents.listen((event) {
+        if (suggestBetterRoute) {
+          state = event.route != null
+              ? PathNavBetterRoute(
+                  route: event.route!,
+                  durationProfit: event.durationProfit,
+                )
+              : null;
+        } else {
+          betterRouteSubscription?.pause();
+        }
+      });
+    }
 
     ref.onDispose(() {
       betterRouteSubscription?.cancel();
