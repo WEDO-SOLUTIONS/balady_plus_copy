@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
@@ -1801,12 +1802,17 @@ class CreateComplianceRemoteDataSourceImpl
     var response;
 
     try {
+
+
+
+      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+      String newFileName = params.fileName.replaceRange(0, params.fileName.indexOf("."), "$timeStamp");
       String contentTyp = lookupMimeType(params.filePath)!;
       final formData = FormData.fromMap(
         {
           "file": await MultipartFile.fromFile(
             params.filePath,
-            filename: params.fileName,
+            filename:  newFileName , //params.fileName,
             contentType: http.MediaType.parse(contentTyp),
           ),
         },
