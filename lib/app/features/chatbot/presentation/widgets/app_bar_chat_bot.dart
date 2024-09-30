@@ -12,6 +12,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/services/local/navigation_services.dart';
+
 class AppBarChatBot extends StatelessWidget {
   const AppBarChatBot({super.key});
 
@@ -19,9 +21,9 @@ class AppBarChatBot extends StatelessWidget {
   Widget build(BuildContext context) {
     ChatBotProvider provider = context.watch<ChatBotProvider>();
     return PopScope(
-      onPopInvoked: (bool didPop) async {
-        closeScreen(context, provider);
-      },
+      // onPopInvoked: (bool didPop) async {
+      //  // closeScreen(context, provider);
+      // },
       // canPop: false,
       child: Container(
         decoration: BoxDecoration(
@@ -171,6 +173,8 @@ class AppBarChatBot extends StatelessWidget {
     ).then((value) {
       if (value == true) {
         // Navigator.of(context).popUntil((route) => route.isFirst);
+
+
         Navigator.of(context).pop();
         if (provider.chatBotMessage.value.isNotEmpty) {
           BottomSheetDialog.showSheet(
@@ -188,6 +192,10 @@ class AppBarChatBot extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.65,
           );
         }
+        // else
+        //   {
+        //     Navigator.of(context).pop();
+        //   }
       }
     });
   }
