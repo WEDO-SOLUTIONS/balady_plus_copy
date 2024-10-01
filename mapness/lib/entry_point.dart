@@ -11,18 +11,19 @@ import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
+import 'package:mapness/app/app_routes.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/poi_map.dart';
@@ -107,11 +108,12 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
 }
 
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
-  // ignore: use_late_for_private_fields_and_variables
-  OverlayEntry? _debugOverlay;
+  late OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
+
+  late final _appRoute = AppRouter();
 
   @override
   void initState() {
@@ -165,7 +167,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    final goRouter = ref.watch(goRouterProvider);
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
 
@@ -199,24 +200,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               final colorScheme = ref.watch(colorSchemeProvider);
 
               return MaterialApp.router(
-                routerConfig: goRouter,
+                routerConfig: _appRoute.config(),
                 theme: ThemeData(
-                  primarySwatch: const MaterialColor(
-                    0xFF4CA5B4,
-                    <int, Color>{
-                      50: Color(0xFF89cfbe),
-                      100: Color(0xFF89cfbe),
-                      200: Color(0xFF89cfbe),
-                      300: Color(0xFF89cfbe),
-                      400: Color(0xFF89cfbe),
-                      500: Color(0xFF89cfbe),
-                      600: Color(0xFF89cfbe),
-                      700: Color(0xFF89cfbe),
-                      800: Color(0xFF89cfbe),
-                      900: Color(0xFF89cfbe),
-                    },
-                  ),
-                  // unselectedWidgetColor: context.color.textAndIconsBasePrimary,
                   scaffoldBackgroundColor: Colors.transparent,
                   dividerColor: Colors.grey[400],
                   useMaterial3: false,
@@ -254,8 +239,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     try {
       await controller.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
-
-      // ignore: avoid_catches_without_on_clauses, avoid_types_as_parameter_names, non_constant_identifier_names
     } catch (ex) {
       debugPrint('Error setting camera position point: $ex');
     }
