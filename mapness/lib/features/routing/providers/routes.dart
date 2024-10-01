@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'routes.g.dart';
@@ -19,12 +21,18 @@ class Routes extends _$Routes {
     bool? showOnlyActiveRoute,
   }) async {
     final dgisController = ref.watch(dgisControllerProvider);
+    final searchOptions = ref.watch(navigatorRouteSettingsProvider);
+
     unawaited(dgisController.value?.hideRoutes());
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
       finishPoint: finishPoint?.pointMessage,
       options: navType,
       showOnlyActiveRoute: showOnlyActiveRoute,
+      searchParams: CarRouteSearchOptionParamsMessage(
+        avoidTollRoads: searchOptions.avoidTollRoads,
+        avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
+      ),
     );
 
     final routesCompleter = Completer<List<RouteInfo>>();
@@ -67,23 +75,52 @@ class ActiveRoute extends _$ActiveRoute {
 
 @riverpod
 class BetterRoute extends _$BetterRoute {
+  StreamSubscription<BetterRouteInfoEvent>? betterRouteSubscription;
+
   @override
   PathNavBetterRoute? build() {
     final dgisController = ref.watch(dgisControllerProvider);
 
-    final betterRouteSubscription = dgisController.value?.betterRouteInfoEvents.listen((event) {
-      state = event.route != null
-          ? PathNavBetterRoute(
-              route: event.route!,
-              durationProfit: event.durationProfit,
-            )
-          : null;
-    });
+    final suggestBetterRoute = ref.watch(betterRouteSuggestionsProvider);
+
+    if (suggestBetterRoute) {
+      betterRouteSubscription ??= dgisController.value?.betterRouteInfoEvents.listen((event) {
+        state = event.route != null
+            ? PathNavBetterRoute(
+                route: event.route!,
+                durationProfit: event.durationProfit,
+              )
+            : null;
+      });
+    } else {
+      betterRouteSubscription?.cancel();
+      betterRouteSubscription = null;
+      state = null;
+    }
 
     ref.onDispose(() {
       betterRouteSubscription?.cancel();
     });
-    return null;
+    return state;
+  }
+}
+
+const String _suggestRouteBetterKey = 'navigator_settings.suggest_route_better';
+
+@riverpod
+class BetterRouteSuggestions extends _$BetterRouteSuggestions {
+  @override
+  bool build() {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+
+    final suggestRouteBetter = sharedPrefs.getBool(_suggestRouteBetterKey) ?? true;
+
+    return suggestRouteBetter;
+  }
+
+  void toggle() {
+    state = !state;
+    ref.read(sharedPrefsProvider).setBool(_suggestRouteBetterKey, state);
   }
 }
 

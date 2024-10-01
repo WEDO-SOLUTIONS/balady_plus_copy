@@ -482,6 +482,7 @@ class RouteEditorRouteParamsMessage {
     this.startPoint,
     this.finishPoint,
     this.options,
+    this.searchParams,
     this.showOnlyActiveRoute,
   );
 
@@ -489,7 +490,18 @@ class RouteEditorRouteParamsMessage {
   final RouteEditorRoutePointMessage? finishPoint;
 
   final RouteSearchOptionsMessage options;
+  final CarRouteSearchOptionParamsMessage? searchParams;
   final bool? showOnlyActiveRoute;
+}
+
+class CarRouteSearchOptionParamsMessage {
+  CarRouteSearchOptionParamsMessage({
+    required this.avoidTollRoads,
+    required this.avoidUnpavedRoads,
+  });
+
+  final bool avoidTollRoads;
+  final bool avoidUnpavedRoads;
 }
 
 enum DesiredAccuracyMessage { low, medium, high }

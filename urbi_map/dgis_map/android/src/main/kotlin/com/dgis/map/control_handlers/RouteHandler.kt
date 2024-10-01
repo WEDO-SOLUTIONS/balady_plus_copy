@@ -31,7 +31,7 @@ class RouteHandler(
         private val locationSource: FusedLocationSource,
         private val navigationHandler: NavigationHandler,
 ) : AutoCloseable {
-    private val closables = mutableListOf<AutoCloseable>()
+    private val closeables = mutableListOf<AutoCloseable>()
 
     private var routeEditorSource: RouteEditorSource
     private var routesEditor: RouteEditor
@@ -57,7 +57,7 @@ class RouteHandler(
         this.trafficRouter = TrafficRouter(sdkContext)
         publicTransportHandler = PublicTransportHandler(eventSink, this)
 
-        closables.add(
+        closeables.add(
                 routesEditor.routesInfoChannel.connect {
                     if (options?.isPublicTransport == true) {
                         publicTransportHandler.onRoutesChanged()
@@ -65,7 +65,7 @@ class RouteHandler(
                     this.onRoutesInfoChanged(it)
                 }
         )
-        closables.add(
+        closeables.add(
                 routesEditor.activeRouteIndexChannel.connect {
                     if (options?.isPublicTransport == true) {
                         publicTransportHandler.onActiveRouteChanged()
@@ -84,8 +84,8 @@ class RouteHandler(
     }
 
     override fun close() {
-        closables.forEach { it.close() }
-        closables.clear()
+        closeables.forEach { it.close() }
+        closeables.clear()
     }
 
     fun setRouteParams(params: RouteEditorRouteParamsMessage) {
@@ -136,14 +136,14 @@ class RouteHandler(
             return
         }
 
-        this.options = getRouteSearchOptions(params.options)
+        this.options = getRouteSearchOptions(params.options, params.searchParams)
         this.finishPoint = finishPoint
 
         val routeEditorParams =
                 RouteEditorRouteParams(startPoint, finishPoint, options!!, mutableListOf())
         routesEditor.setRouteParams(routeEditorParams)
         routeEditorSource.setShowOnlyActiveRoute(
-                params.getShowOnlyActiveRoute()
+                params.showOnlyActiveRoute
                         ?: routeEditorParams.routeSearchOptions.isPublicTransport
         )
     }
@@ -165,22 +165,45 @@ class RouteHandler(
     }
 
     private fun getRouteSearchOptions(
-            opts: Messages.RouteSearchOptionsMessage
+            opts: Messages.RouteSearchOptionsMessage,
+            searchParams: Messages.CarRouteSearchOptionParamsMessage?,
     ): RouteSearchOptions {
         return when (opts) {
-            Messages.RouteSearchOptionsMessage.CAR -> RouteSearchOptions(CarRouteSearchOptions())
+            Messages.RouteSearchOptionsMessage.CAR -> {
+                if (searchParams != null) {
+                    RouteSearchOptions(CarRouteSearchOptions(avoidTollRoads = searchParams.avoidTollRoads, avoidUnpavedRoads = searchParams.avoidUnpavedRoads))
+                } else {
+                    RouteSearchOptions(CarRouteSearchOptions())
+                }
+            }
+
             Messages.RouteSearchOptionsMessage.BICYCLE ->
-                    RouteSearchOptions(BicycleRouteSearchOptions())
+                RouteSearchOptions(BicycleRouteSearchOptions())
+
             Messages.RouteSearchOptionsMessage.PEDESTRIAN ->
-                    RouteSearchOptions(PedestrianRouteSearchOptions())
-            Messages.RouteSearchOptionsMessage.TRUCK ->
+                RouteSearchOptions(PedestrianRouteSearchOptions())
+
+            Messages.RouteSearchOptionsMessage.TRUCK -> {
+                if (searchParams != null) {
+                    RouteSearchOptions(TruckRouteSearchOptions(CarRouteSearchOptions(avoidTollRoads = searchParams.avoidTollRoads, avoidUnpavedRoads = searchParams.avoidUnpavedRoads)))
+                } else {
                     RouteSearchOptions(TruckRouteSearchOptions(CarRouteSearchOptions()))
+                }
+            }
+
             Messages.RouteSearchOptionsMessage.SCOOTER ->
-                    RouteSearchOptions(ScooterRouteSearchOptions())
+                RouteSearchOptions(ScooterRouteSearchOptions())
+
             Messages.RouteSearchOptionsMessage.PUBLIC_TRANSPORT ->
-                    RouteSearchOptions(PublicTransportRouteSearchOptions())
-            Messages.RouteSearchOptionsMessage.TAXI ->
+                RouteSearchOptions(PublicTransportRouteSearchOptions())
+
+            Messages.RouteSearchOptionsMessage.TAXI -> {
+                if (searchParams != null) {
+                    RouteSearchOptions(TaxiRouteSearchOptions(CarRouteSearchOptions(avoidTollRoads = searchParams.avoidTollRoads, avoidUnpavedRoads = searchParams.avoidUnpavedRoads)))
+                } else {
                     RouteSearchOptions(TaxiRouteSearchOptions(CarRouteSearchOptions()))
+                }
+            }
         }
     }
 
@@ -220,12 +243,12 @@ class RouteHandler(
         private fun getPedestrianRouteData(route: Route): Triple<Int, Int, List<Int>> {
             return Triple(
                     first =
-                            route.roadSubtypes.entries
-                                    .filter {
-                                        it.value == RoadSubtype.STAIRWAY_DOWN ||
-                                                it.value == RoadSubtype.STAIRWAY_UP
-                                    }
-                                    .size,
+                    route.roadSubtypes.entries
+                            .filter {
+                                it.value == RoadSubtype.STAIRWAY_DOWN ||
+                                        it.value == RoadSubtype.STAIRWAY_UP
+                            }
+                            .size,
                     second = route.obstacles.entries.size,
                     third = route.altitudes.entries.map { it.value.toInt() }
             )
