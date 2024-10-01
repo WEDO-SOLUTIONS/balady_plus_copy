@@ -155,6 +155,7 @@ mapness/**/*.g.dart
 mapness/**/*.freezed.dart
 mapness/lib/l10n/generated
 mapness/lib/l10n/*.arb
+mapness/lib/app/app_routes.gr.dart
 .sdk-version
 pubspec.lock
 

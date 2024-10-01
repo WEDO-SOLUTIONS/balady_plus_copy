@@ -7,7 +7,6 @@ import 'package:mapness/_features/profile/pages/profile_page.dart';
 import 'package:mapness/features/iwish/providers/iwish_deeplink_handler.dart';
 import 'package:mapness/pages/routing/routing_points.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/routing/scaffold_with_nested_navigation.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 
 part 'home_shell.g.dart';
@@ -58,9 +57,7 @@ class HomeShellRoute extends StatefulShellRouteData {
     StatefulNavigationShell navigationShell,
   ) =>
       TransculentPage(
-        child: ScaffoldWithNestedNavigation(
-          navigationShell: navigationShell,
-        ),
+        child: SizedBox(),
       );
 }
 
