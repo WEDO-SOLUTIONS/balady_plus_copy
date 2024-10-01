@@ -75,53 +75,55 @@ class ClassificationCertificateVerifyScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Expanded(
-                child: SingleChildScrollView(
-                  child: BlocBuilder<ClassificationCertificateVerifyBloc,
-                      ClassificationCertificateVerifyState>(
-                    builder: (contextBloc, state) {
-                      Widget? child;
-                      if (state is NormalSearchClassificationCertificateState) {
-                        child = NormalSearchListWidget(state: state);
-                      }
-                      if (state
-                          is NormalSearchVerifiedByClassificationCertificateState) {
-                        child = NormalSearchVerifiedByWidget(state: state);
-                      }
-                      if (state is AdvancedSearchState) {
-                        child = AdvancedSearchWidget(
-                          key: Key(state.toString()),
-                          state: state,
-                        );
-                      }
-                      if (state is AdvancedSearchLoadingState) {
-                        return  Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            children: [
-                              const Center(child: CircularProgressIndicator()),
-                              const SizedBox(height: 16),
-                              Text("please_wait".tr()),
-                            ],
-                          ),
-                        );
-                      }
-                      if (state is AdvancedMethodNotWorkingState) {
-                        return  Column(
-                          children: [
-                            Text(
-                              "the_advanced_search_not_working_try_again_later".tr(),
+                child: ListView(
+                  children: [
+                    BlocBuilder<ClassificationCertificateVerifyBloc,
+                        ClassificationCertificateVerifyState>(
+                      builder: (contextBloc, state) {
+                        Widget? child;
+                        if (state is NormalSearchClassificationCertificateState) {
+                          child = NormalSearchListWidget(state: state);
+                        }
+                        if (state
+                        is NormalSearchVerifiedByClassificationCertificateState) {
+                          child = NormalSearchVerifiedByWidget(state: state);
+                        }
+                        if (state is AdvancedSearchState) {
+                          child = AdvancedSearchWidget(
+                            key: Key(state.toString()),
+                            state: state,
+                          );
+                        }
+                        if (state is AdvancedSearchLoadingState) {
+                          return  Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              children: [
+                                const Center(child: CircularProgressIndicator()),
+                                const SizedBox(height: 16),
+                                Text("please_wait".tr()),
+                              ],
                             ),
-                          ],
+                          );
+                        }
+                        if (state is AdvancedMethodNotWorkingState) {
+                          return  Column(
+                            children: [
+                              Text(
+                                "the_advanced_search_not_working_try_again_later".tr(),
+                              ),
+                            ],
+                          );
+                        }
+                        return Form(
+                          key: contextBloc
+                              .read<ClassificationCertificateVerifyBloc>()
+                              .formKey,
+                          child: child ?? const SizedBox(),
                         );
-                      }
-                      return Form(
-                        key: contextBloc
-                            .read<ClassificationCertificateVerifyBloc>()
-                            .formKey,
-                        child: child ?? const SizedBox(),
-                      );
-                    },
-                  ),
+                      },
+                    )
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
