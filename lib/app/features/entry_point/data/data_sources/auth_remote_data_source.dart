@@ -212,12 +212,14 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   @override
   Future<EndSessionResponse> endSession() async {
     try {
+      EndSessionRequest endSessionRequest = EndSessionRequest(
+        idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
+        postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
+        serviceConfiguration: _serviceConfiguration,
+
+      );
       EndSessionResponse? response = await _appAuth.endSession(
-        EndSessionRequest(
-          idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
-          postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
-          serviceConfiguration: _serviceConfiguration,
-        ),
+        endSessionRequest,
       );
   
       return response!;

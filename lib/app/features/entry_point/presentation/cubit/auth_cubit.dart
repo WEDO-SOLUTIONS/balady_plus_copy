@@ -304,31 +304,33 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
-
     try {
       sl<AuthenticationBloc>().add(LogoutAuthentication());
+      if (sl<EntryPointCubit>().state.token?.idToken?.isNotEmpty ?? false) {
+        await _clearAuth(NoParams());
+      }
+      await _logout(NoParams());
+      sl<DelegatorsCubit>().clearDelegators();
+      sharedPrefs.setSSOToken(null);
+      clearSSOInfo();
+      emit(
+        const EntryPointState(
+          status: AuthStatus.notAuthenticated,
+          showSplash: false,
+        ),
+      );
+      if (CommonProperties.fcmToken != null &&
+          CommonProperties.fcmToken!.isNotEmpty) {
+        CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+      }
     } catch (e) {
       print("object");
-    }
-    if(sl<EntryPointCubit>().state.token?.idToken?.isNotEmpty ?? false) {
-      final failureOrSuccess = await _clearAuth(NoParams());
-    }
-    await _logout(NoParams());
-    sl<DelegatorsCubit>().clearDelegators();
-    sharedPrefs.setSSOToken(null);
-    clearSSOInfo();
-    emit(const EntryPointState(
-      status: AuthStatus.notAuthenticated,
-      showSplash: false,
-    ));
-    if (CommonProperties.fcmToken != null &&
-        CommonProperties.fcmToken!.isNotEmpty) {
-      CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+      EasyLoading.dismiss();
     }
   }
 
   Future<void> autoLogout() async {
-    if(sl<EntryPointCubit>().state.token?.idToken?.isEmpty ?? false) {
+    if (sl<EntryPointCubit>().state.token?.idToken?.isEmpty ?? false) {
       await _clearAuth(NoParams());
     }
     sharedPrefs.setSSOToken(null);
