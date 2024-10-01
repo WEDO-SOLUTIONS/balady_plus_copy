@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 @RoutePage()
@@ -63,6 +64,7 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
                 ),
                 label: '',
               ),
+              if (appFeatures.naviEnabled)
                 BottomNavigationBarItem(
                   icon: _BottomNavigationBarItem(
                     selected: tabsRouter.activeIndex == 1,
@@ -102,6 +104,9 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
           ),
         ),
     );
+      },
+    );
+  }
 }
 
 class _BottomNavigationBarItem extends StatelessWidget {
