@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -21,6 +22,7 @@ class Routes extends _$Routes {
   }) async {
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
+
     unawaited(dgisController.value?.hideRoutes());
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
@@ -79,28 +81,46 @@ class BetterRoute extends _$BetterRoute {
   PathNavBetterRoute? build() {
     final dgisController = ref.watch(dgisControllerProvider);
 
-    final suggestBetterRoute = ref.watch(navigatorRouteSettingsProvider).suggestRouteBetter;
+    final suggestBetterRoute = ref.watch(betterRouteSuggestionsProvider);
 
     if (suggestBetterRoute) {
-      betterRouteSubscription?.resume();
       betterRouteSubscription ??= dgisController.value?.betterRouteInfoEvents.listen((event) {
-        if (suggestBetterRoute) {
-          state = event.route != null
-              ? PathNavBetterRoute(
-                  route: event.route!,
-                  durationProfit: event.durationProfit,
-                )
-              : null;
-        } else {
-          betterRouteSubscription?.pause();
-        }
+        state = event.route != null
+            ? PathNavBetterRoute(
+                route: event.route!,
+                durationProfit: event.durationProfit,
+              )
+            : null;
       });
+    } else {
+      betterRouteSubscription?.cancel();
+      betterRouteSubscription = null;
+      state = null;
     }
 
     ref.onDispose(() {
       betterRouteSubscription?.cancel();
     });
-    return null;
+    return state;
+  }
+}
+
+const String _suggestRouteBetterKey = 'navigator_settings.suggest_route_better';
+
+@riverpod
+class BetterRouteSuggestions extends _$BetterRouteSuggestions {
+  @override
+  bool build() {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+
+    final suggestRouteBetter = sharedPrefs.getBool(_suggestRouteBetterKey) ?? true;
+
+    return suggestRouteBetter;
+  }
+
+  void toggle() {
+    state = !state;
+    ref.read(sharedPrefsProvider).setBool(_suggestRouteBetterKey, state);
   }
 }
 

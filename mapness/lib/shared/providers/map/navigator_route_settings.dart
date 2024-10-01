@@ -7,7 +7,6 @@ part 'navigator_route_settings.g.dart';
 
 const String _avoidTollRoadsKey = 'navigator_settings.avoid_toll_roads';
 const String _avoidUnpavedRoadsKey = 'navigator_settings.avoid_unpaved_roads';
-const String _suggestRouteBetterKey = 'navigator_settings.suggest_route_better';
 
 @riverpod
 class _NavigatorRouteSettings extends _$NavigatorRouteSettings {
@@ -16,12 +15,10 @@ class _NavigatorRouteSettings extends _$NavigatorRouteSettings {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     final avoidTollRoads = sharedPrefs.getBool(_avoidTollRoadsKey) ?? false;
     final avoidUnpavedRoads = sharedPrefs.getBool(_avoidUnpavedRoadsKey) ?? false;
-    final suggestRouteBetter = sharedPrefs.getBool(_suggestRouteBetterKey) ?? true;
 
     return NavigationParameters(
       avoidTollRoads: avoidTollRoads,
       avoidUnpavedRoads: avoidUnpavedRoads,
-      suggestRouteBetter: suggestRouteBetter,
     );
   }
 
@@ -33,11 +30,6 @@ class _NavigatorRouteSettings extends _$NavigatorRouteSettings {
   void toggleAvoidUnpavedRoads() {
     state = state.copyWith(avoidUnpavedRoads: !state.avoidUnpavedRoads);
     ref.read(sharedPrefsProvider).setBool(_avoidUnpavedRoadsKey, state.avoidUnpavedRoads);
-  }
-
-  void toggleSuggestRouteBetter() {
-    state = state.copyWith(suggestRouteBetter: !state.suggestRouteBetter);
-    ref.read(sharedPrefsProvider).setBool(_suggestRouteBetterKey, state.suggestRouteBetter);
   }
 }
 

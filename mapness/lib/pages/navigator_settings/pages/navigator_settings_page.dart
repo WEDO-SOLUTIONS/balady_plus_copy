@@ -11,6 +11,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/routes/dark_map.dart';
 import 'package:mapness/app/routes/sound_settings.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.dart';
@@ -30,6 +31,8 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
     final navigatorCamerasSettingsNotifier = ref.read(navigatorSpeedCamerasSettingsProvider.notifier);
     final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
     final navigatorRouteSettingsNotifier = ref.read(navigatorRouteSettingsProvider.notifier);
+    final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
+    final betterRouteSettingsNotifier = ref.read(betterRouteSuggestionsProvider.notifier);
     final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
 
     final colorsV2 = context.colorsV2;
@@ -98,14 +101,14 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                                 ),
                               ),
                               ContentRow(
-                                onToggle: (_) => navigatorRouteSettingsNotifier.toggleSuggestRouteBetter(),
+                                onToggle: (_) => betterRouteSettingsNotifier.toggle(),
                                 options: ContentRowOptions(
                                   title: l10n.suggestRouteBetter,
                                   dividerEnabled: true,
                                   titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
                                   actionWidget: ContentRowActionOptions(
                                     enabledToggle: true,
-                                    toggleInitialValue: navigatorRouteSettings.suggestRouteBetter,
+                                    toggleInitialValue: betterRouteSettings,
                                   ),
                                 ),
                               ),
