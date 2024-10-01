@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 @RoutePage()
@@ -41,9 +42,13 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
   }
 
   @override
-  Widget build(BuildContext context) => AutoTabsScaffold(
+  Widget build(BuildContext context) {
+    final appFeatures = ref.watch(appFeaturesProvider);
+
+    return AutoTabsScaffold(
       routes: _buildRoutes,
-      bottomNavigationBuilder: (_, tabsRouter) => DecoratedBox(
+      bottomNavigationBuilder: (_, tabsRouter) {
+        return DecoratedBox(
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -79,6 +84,7 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
                 ),
                 label: '',
               ),
+              if (appFeatures.naviEnabled)
                 BottomNavigationBarItem(
                   icon: _BottomNavigationBarItem(
                     selected: tabsRouter.activeIndex == 1,
@@ -116,8 +122,10 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
             currentIndex: tabsRouter.activeIndex,
             onTap: tabsRouter.setActiveIndex,
           ),
-        ),
+        );
+      },
     );
+  }
 }
 
 class _BottomNavigationBarItem extends StatelessWidget {
