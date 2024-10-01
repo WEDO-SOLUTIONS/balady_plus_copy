@@ -323,6 +323,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           CommonProperties.fcmToken!.isNotEmpty) {
         CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
       }
+      EasyLoading.dismiss();
     } catch (e) {
       print("object");
       EasyLoading.dismiss();
