@@ -97,7 +97,7 @@ class ObjectTapHandler {
         self.ioObjectManager = ioObjectManager
         self.objectsQueue = DispatchQueue(
             label: "com.mapness.markers-queue",
-            qos: .userInteractive
+            qos: .userInitiated // check the performance of search
         )
         self.registrar = registrar
         self.flutterApi = FlutterMapApi(binaryMessenger: registrar.messenger())
