@@ -5,6 +5,7 @@ import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
+import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.dart';
 
 class GlobalScopes extends ConsumerWidget {
   const GlobalScopes({required this.child, super.key});
@@ -19,7 +20,8 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(websocketTypeProvider.select((_) => null))
       ..watch(etaTimerIndicatorProvider.select((_) => null))
       ..watch(shareEtaProvider.select((_) => null))
-      ..watch(etaServiceProvider.select((_) => null));
+      ..watch(etaServiceProvider.select((_) => null))
+      ..watch(navigatorSpeedCamerasSettingsProvider.select((_) => null));
 
     return child;
   }
