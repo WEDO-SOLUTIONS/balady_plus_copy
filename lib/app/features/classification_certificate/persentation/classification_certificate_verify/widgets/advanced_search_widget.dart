@@ -265,7 +265,7 @@ class AdvancedSearchWidget extends StatelessWidget {
             controller: state.searchRequestModel.expiryDateFrom != null
                 ? TextEditingController(
                     text: DateFormat(
-                      'dd/MM/yyyy',
+                      "locale".tr() == "ar" ? 'yyyy/MM/dd' : 'dd/MM/yyyy',
                       "locale".tr(),
                     ).format(state.searchRequestModel.expiryDateFrom!),
                   )
@@ -308,7 +308,7 @@ class AdvancedSearchWidget extends StatelessWidget {
             controller: state.searchRequestModel.expiryDateTo != null
                 ? TextEditingController(
                     text: DateFormat(
-                      'dd/MM/yyyy',
+                      "locale".tr() == "ar" ? 'yyyy/MM/dd' : 'dd/MM/yyyy',
                       "locale".tr(),
                     ).format(state.searchRequestModel.expiryDateTo!),
                   )
