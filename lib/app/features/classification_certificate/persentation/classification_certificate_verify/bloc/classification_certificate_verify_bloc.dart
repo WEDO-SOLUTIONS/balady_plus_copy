@@ -56,6 +56,7 @@ class ClassificationCertificateVerifyBloc extends Bloc<
                   cities: lookups!.cities,
                   degrees: lookups!.degrees,
                   classificationType: lookups!.classificationType,
+                  phoneNumberTextEditingController: TextEditingController(),
                   searchRequestModel: AdvancedSearchRequestModel(),
                 ),
               );
@@ -120,6 +121,7 @@ class ClassificationCertificateVerifyBloc extends Bloc<
                 degrees: lookups!.degrees,
                 classificationType: lookups!.classificationType,
                 searchRequestModel: AdvancedSearchRequestModel(),
+                phoneNumberTextEditingController: TextEditingController(),
               ),
             );
           },
@@ -158,6 +160,7 @@ class ClassificationCertificateVerifyBloc extends Bloc<
               classificationType: typeState.classificationType,
               degrees: typeState.degrees,
               cities: typeState.cities,
+              phoneNumberTextEditingController: typeState.phoneNumberTextEditingController,
             ),
           );
         }
@@ -196,6 +199,7 @@ class ClassificationCertificateVerifyBloc extends Bloc<
                       deleteActivity: true,
                     ),
                     activity: activity,
+                    phoneNumberTextEditingController: typeState.phoneNumberTextEditingController,
                   ),
                 );
               }
