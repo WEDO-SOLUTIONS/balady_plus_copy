@@ -348,8 +348,7 @@ class AdvancedSearchWidget extends StatelessWidget {
           widget: TextFormField(
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
-            controller: TextEditingController(
-                text: state.searchRequestModel.phoneNumber),
+            controller: state.phoneNumberTextEditingController ,
             decoration: InputDecoration(
               hintText: "phoneNumberFieldHint".tr(),
             ),
