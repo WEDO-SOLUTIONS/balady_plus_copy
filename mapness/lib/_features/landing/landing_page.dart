@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
+@RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
   const LandingPage({super.key});
 
@@ -107,6 +109,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
+    print('objectobjectobject');
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
