@@ -47,7 +47,7 @@ codegen:
     set -euo pipefail
     print_style '' 'yellow' '> generate code...'
     cd mapness
-    fvm flutter run build_runner build --delete-conflicting-outputs || true
+    fvm dart run build_runner build --delete-conflicting-outputs || true
     print_style '' 'yellow' '< code generated'
 
 codegen_dir path:
@@ -55,14 +55,14 @@ codegen_dir path:
     set -euo pipefail
     print_style '' 'yellow' '> generate code for: {{path}}'
     cd mapness
-    fvm flutter run build_runner build --build-filter="{{path}}" --delete-conflicting-outputs || true
+    fvm dart run build_runner build --build-filter="{{path}}" --delete-conflicting-outputs || true
     print_style '' 'yellow' '< code generated: {{path}}'
 
 codegen-watch:
     #!/bin/bash
     set -euo pipefail
     cd mapness
-    fvm flutter run build_runner watch --delete-conflicting-outputs || true
+    fvm dart run build_runner watch --delete-conflicting-outputs || true
 
 open_built:
     print_style '' 'yellow' 'Open built folder with:'
@@ -75,15 +75,15 @@ build_pigeon:
 
     cd urbi_map/dgis_map
     fvm flutter pub get
-    fvm flutter run build_runner build --delete-conflicting-outputs || true
+    fvm dart run build_runner build --delete-conflicting-outputs || true
 
     cd ../dgis_map_platform_interface/
     fvm flutter pub get
-    fvm flutter run build_runner build --delete-conflicting-outputs || true
+    fvm dart run build_runner build --delete-conflicting-outputs || true
 
     print_style '' 'yellow' '> build pigeons...'
     mkdir -p mkdir lib/src/pigeons/ ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/
-    fvm flutter pub run pigeon --input pigeons/messages.dart
+    fvm dart pub run pigeon --input pigeons/messages.dart
     print_style '' 'yellow' '< pigeons ready'
 
 run:
@@ -163,7 +163,7 @@ codegen_cached:
     set -euo pipefail
     print_style '' 'yellow' '> generate code...'
     cd mapness
-    fvm flutter run cached_build_runner build || true
+    fvm dart run cached_build_runner build || true
     print_style '' 'yellow' '< code generated'
 
 bump_version:
