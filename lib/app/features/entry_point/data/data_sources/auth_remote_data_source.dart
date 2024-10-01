@@ -213,10 +213,12 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     try {
       EndSessionResponse? response = await _appAuth.endSession(
         EndSessionRequest(
+          idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
+          postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
           serviceConfiguration: _serviceConfiguration,
           additionalParameters: {
             "id_token_hint": sl<EntryPointCubit>().state.token?.idToken ?? '',
-            "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl,
+            "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
           },
         ),
       );
