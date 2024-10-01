@@ -147,7 +147,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       token = SSOToken(
         token: data.accessToken,
         refreshToken: data.refreshToken,
-        idToken: "",
+        idToken: data.idToken,
         expirationTime: data.expiresIn.toString(),
       );
     } else {
@@ -203,6 +203,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           LoginWithNafazAuthentication(
             dataLogin: {
               "access_token": success.accessToken,
+              "idToken": success.idToken,
               "expires_in": success.accessTokenExpirationDateTime != null
                   ? DateTime.now()
                       .difference(success.accessTokenExpirationDateTime!)
@@ -303,32 +304,23 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
+
     try {
       sl<AuthenticationBloc>().add(LogoutAuthentication());
     } catch (e) {
       print("object");
     }
+    if(sl<EntryPointCubit>().state.token?.idToken?.isNotEmpty ?? false) {
+      final failureOrSuccess = await _clearAuth(NoParams());
+    }
     await _logout(NoParams());
     sl<DelegatorsCubit>().clearDelegators();
-    final failureOrSuccess = await _clearAuth(NoParams());
-
-    await failureOrSuccess.fold((l) {
-      sharedPrefs.setSSOToken(null);
-      clearSSOInfo();
-      emit(const EntryPointState(
-        status: AuthStatus.notAuthenticated,
-        showSplash: false,
-      ));
-    }, (r) {
-      sharedPrefs.setSSOToken(null);
-      //MM sharedPrefs.setUserProfile(null);
-      clearSSOInfo();
-      emit(const EntryPointState(
-        status: AuthStatus.notAuthenticated,
-        showSplash: false,
-      ));
-    });
-
+    sharedPrefs.setSSOToken(null);
+    clearSSOInfo();
+    emit(const EntryPointState(
+      status: AuthStatus.notAuthenticated,
+      showSplash: false,
+    ));
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
@@ -336,6 +328,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> autoLogout() async {
+    if(sl<EntryPointCubit>().state.token?.idToken?.isEmpty ?? false) {
+      await _clearAuth(NoParams());
+    }
     sharedPrefs.setSSOToken(null);
     sl<DelegatorsCubit>().clearDelegators();
     try {
