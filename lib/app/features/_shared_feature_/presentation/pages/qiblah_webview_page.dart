@@ -1,18 +1,10 @@
 import 'dart:async';
 
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter/src/webview_cookie_manager.dart';
-import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/services/local/use_case.dart';
-import '../../../../core/utils/utils_exports.dart' show CommonProperties, Log;
-import '../../../entry_point/domain/use_cases/get_cookie.dart';
-import '../../../entry_point/presentation/cubit/auth_cubit.dart';
+import '../../../../core/utils/utils_exports.dart' show Log;
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 
 class QiblahWebViewPage extends StatefulWidget {
@@ -55,13 +47,12 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 },
                 initialUrlRequest: URLRequest(
                   // url: Uri.parse('https://flutter.dev/'),
-                  url: Uri.parse(
-                      "https://qiblafinder.withgoogle.com/intl/ar/finder/ar"),
+                  url: WebUri(
+                    "https://qiblafinder.withgoogle.com/intl/ar/finder/ar",
+                  ),
                 ),
-                androidOnGeolocationPermissionsShowPrompt:
-                    (controller, origin) async {
-                  return GeolocationPermissionShowPromptResponse(
-                      origin: origin, allow: true, retain: true);
+                androidOnGeolocationPermissionsShowPrompt: (controller, origin) async {
+                  return GeolocationPermissionShowPromptResponse(origin: origin, allow: true, retain: true);
                 },
                 initialOptions: InAppWebViewGroupOptions(
                   android: AndroidInAppWebViewOptions(
@@ -83,11 +74,9 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                   if (mounted)
                     Timer(const Duration(seconds: 1), () async {
                       await _controller?.evaluateJavascript(
-                          source:
-                              "document.getElementsByClassName('mat-raised-button')[0].click()");
+                          source: "document.getElementsByClassName('mat-raised-button')[0].click()");
                       await _controller?.evaluateJavascript(
-                          source:
-                              "document.getElementsByClassName('mat-raised-button')[0].click()");
+                          source: "document.getElementsByClassName('mat-raised-button')[0].click()");
 
                       await _controller?.evaluateJavascript(
                           source:
@@ -98,8 +87,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                           isLoading = false;
                         });
                         await _controller?.evaluateJavascript(
-                            source:
-                                "document.getElementsByClassName('mat-raised-button')[0].click()");
+                            source: "document.getElementsByClassName('mat-raised-button')[0].click()");
 
                         await _controller?.evaluateJavascript(
                             source:
@@ -114,12 +102,11 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 },
                 onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
                   "$consoleMessage".warningLog();
-                  "Message coming from Dart side: ${consoleMessage.message}"
-                      .warningLog();
+                  "Message coming from Dart side: ${consoleMessage.message}".warningLog();
                 },
               ),
               if (isLoading)
-                Center(
+                const Center(
                   child: CustomCircularLoadingWidget(),
                 ),
               /*  Align(

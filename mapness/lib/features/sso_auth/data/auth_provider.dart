@@ -20,7 +20,7 @@ class Auth extends _$Auth {
     ref
       ..invalidateSelf()
       ..invalidate(favouriteCacheProvider);
-    mixpanel?.track('Auth: doAuth');
+    await mixpanel?.track('Auth: doAuth');
   }
 
   Future<void> logOut() async {
@@ -28,8 +28,8 @@ class Auth extends _$Auth {
     mixpanel?.timeEvent('Auth: logOut');
     await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();
-    mixpanel?.track('Auth: logOut');
-    mixpanel?.reset();
+    await mixpanel?.track('Auth: logOut');
+    await mixpanel?.reset();
     await FlutterUxcam.setUserIdentity(null);
     ref.read(profileImageProvider.notifier).clear();
   }
@@ -39,7 +39,7 @@ class Auth extends _$Auth {
     mixpanel?.timeEvent('Auth: tokenExpireLogout');
     await sl<EntryPointCubit>().autoLogout();
     ref.invalidateSelf();
-    mixpanel?.track('Auth: logtokenExpireLogoutOut');
+    await mixpanel?.track('Auth: logtokenExpireLogoutOut');
   }
 
   @override
@@ -60,7 +60,7 @@ class Auth extends _$Auth {
     ref.onDispose(authSubscription.cancel);
 
     final userId = CommonProperties.userInfo?.idNo;
-    mixpanel?.identify('$userId');
+    await mixpanel?.identify('$userId');
 
     await FlutterUxcam.setUserIdentity(userId);
     return CommonProperties.userInfo;

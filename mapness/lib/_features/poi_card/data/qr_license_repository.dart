@@ -42,7 +42,7 @@ class QrLicenseRepository extends _$QrLicenseRepository {
     );
 
     if (response == null) return null;
-    mixpanel?.track('Qr License: getLicenseInfo');
+    await mixpanel?.track('Qr License: getLicenseInfo');
 
     return QrLicenseMessage.fromJson(response);
   }

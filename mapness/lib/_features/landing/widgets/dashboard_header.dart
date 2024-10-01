@@ -137,7 +137,8 @@ class DashboardHeader extends ConsumerWidget {
                 readOnly: true,
                 fillColor: context.colorsV2.neutralContainerDefault,
                 hintColor: context.colorsV2.foregroundSoft,
-                textFieldHeight: 40,
+                // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
+                textFieldHeight: 48,
                 textStyle: context.textStyleV3.bodySmallRegular,
               ),
             ),
