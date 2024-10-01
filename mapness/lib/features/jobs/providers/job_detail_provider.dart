@@ -33,7 +33,7 @@ class JobDetail extends _$JobDetail {
     );
 
     final jobDetail = jobResponse.data?.result;
-    mixpanel?.track(_metricEventName);
+    await mixpanel?.track(_metricEventName);
     if (jobResponse.isSuccess) {
       return jobDetail;
     } else {
