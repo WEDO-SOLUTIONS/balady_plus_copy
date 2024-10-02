@@ -106,7 +106,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
-    print('objectobjectobject');
+    print('objectobjectobject ${bottomSheetController.state}');
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
