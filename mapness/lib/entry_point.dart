@@ -113,8 +113,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
 
-  late final _appRoute = AppRouter();
-
   @override
   void initState() {
     super.initState();
@@ -200,7 +198,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               final colorScheme = ref.watch(colorSchemeProvider);
 
               return MaterialApp.router(
-                routerConfig: _appRoute.config(),
+                routerConfig: ref.read(appRouterProvider).config(),
                 theme: ThemeData(
                   scaffoldBackgroundColor: Colors.transparent,
                   dividerColor: Colors.grey[400],
