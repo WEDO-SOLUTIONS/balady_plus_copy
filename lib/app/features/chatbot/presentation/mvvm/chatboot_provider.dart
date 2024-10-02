@@ -269,9 +269,7 @@ class ChatBotProvider extends BaseViewModel {
       chatBotMessage.value.clear();
       lstHistory = (res as SessionDetails).history!;
 
-      double leng = lstHistory.length / 2;
-
-      for (var index = 0; index < leng;) {
+      for (var index = 0; index < lstHistory.length;) {
 
         String question =lstHistory[index].content!;
         String answer = lstHistory[index+1].content!.replaceAll("\\n", "\n");
