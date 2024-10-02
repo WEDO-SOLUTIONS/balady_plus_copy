@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -93,14 +90,20 @@ class SearchItem extends ConsumerWidget {
                         itemBuilder: (context, i) {
                           final photo = photosUrls[i];
                           return ClipRRect(
-                            borderRadius: BorderRadius.circular(RadiusBorder.l),
-                            child: CustomCachedNetworkImage(
+                            borderRadius: BorderRadius.circular(
+                              RadiusBorder.l,
+                            ),
+                            child: Image.network(
                               photo,
-                              imageWidth: 96,
+                              fit: BoxFit.cover,
+                              height: 96,
+                              width: 96,
+                              cacheHeight: 96,
+                              cacheWidth: 96,
                             ),
                           );
                         },
-                        separatorBuilder: (context, index) => Spacing.horizontalGapBetweenChipContent.widthBox,
+                        separatorBuilder: (context, index) => Spacing.$1x.widthBox,
                       ),
                     ),
                   ),
