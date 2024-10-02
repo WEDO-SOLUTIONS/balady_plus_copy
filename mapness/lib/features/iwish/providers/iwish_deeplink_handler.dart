@@ -1,6 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'iwish_deeplink_handler.g.dart';
@@ -25,8 +23,8 @@ class IwishDeeplinkHandler extends _$IwishDeeplinkHandler {
   }
 
   void _handleIwish() {
-    if (ref.read(layersControlsProvider).selectedType != LayerType.joy) {
-      ref.read(layersControlsProvider.notifier).handleTap(LayerType.joy);
-    }
+    // if (ref.read(layersControlsProvider).selectedType != LayerType.joy) {
+    //   ref.read(layersControlsProvider.notifier).handleTap(LayerType.joy);
+    // }
   }
 }

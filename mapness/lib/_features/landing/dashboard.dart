@@ -11,7 +11,6 @@ import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/calendar_slider_card.dart';
 import 'package:mapness/_features/landing/widgets/compliance_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
-import 'package:mapness/_features/landing/widgets/joy_parks_card.dart';
 import 'package:mapness/_features/landing/widgets/place_preview.dart';
 import 'package:mapness/_features/landing/widgets/places_for_card.dart';
 import 'package:mapness/_features/landing/widgets/prayer_card.dart';
@@ -96,8 +95,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
               const SizedBox(height: uikit.Spacing.$4x),
               const StoriesWidget(),
               const SizedBox(height: uikit.Spacing.$8x),
-              JoyParksCardV2(controller: widget.bottomSheetController),
-              const SizedBox(height: uikit.Spacing.$3x),
+              // JoyParksCardV2(controller: widget.bottomSheetController),
+              // const SizedBox(height: uikit.Spacing.$3x),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
                 child: Row(

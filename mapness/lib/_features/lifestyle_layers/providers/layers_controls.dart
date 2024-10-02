@@ -190,8 +190,8 @@ class LayersControls extends _$LayersControls {
         await toggleWhiteLands();
       case LayerType.parkingLots:
         await toggleParking();
-      case LayerType.joy:
-        await toggleIwish();
+      // case LayerType.joy:
+      //   await toggleIwish();
     }
   }
 
@@ -326,26 +326,26 @@ class LayersControls extends _$LayersControls {
     tapSubject.add(value);
   }
 
-  Future<void> toggleIwish() async {
-    final layers = ref.watch(layersControlsProvider.notifier);
-    final currentState = state.selectedType;
-    await _viewPortSubscription?.cancel();
+  // Future<void> toggleIwish() async {
+  //   final layers = ref.watch(layersControlsProvider.notifier);
+  //   final currentState = state.selectedType;
+  //   await _viewPortSubscription?.cancel();
 
-    if (currentState == LayerType.joy) {
-      await ref
-          .read(mapObjectManagerProvider(
-            named: esriMapObjectSettings.name,
-            layerId: esriMapObjectSettings.layerId,
-          ).notifier)
-          .removeAllMarkers();
-      layers
-        ..setSelection()
-        ..update(isLoading: false);
-    } else {
-      setSelection(selectedType: LayerType.joy);
-      await showIwish();
-    }
-  }
+  //   if (currentState == LayerType.joy) {
+  //     await ref
+  //         .read(mapObjectManagerProvider(
+  //           named: esriMapObjectSettings.name,
+  //           layerId: esriMapObjectSettings.layerId,
+  //         ).notifier)
+  //         .removeAllMarkers();
+  //     layers
+  //       ..setSelection()
+  //       ..update(isLoading: false);
+  //   } else {
+  //     setSelection(selectedType: LayerType.joy);
+  //     await showIwish();
+  //   }
+  // }
 
   Future<void> toggleComplianceBuildings() async {
     final currentState = state.selectedType;

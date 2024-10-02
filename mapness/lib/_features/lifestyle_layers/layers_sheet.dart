@@ -15,7 +15,7 @@ class LayersSheet extends ConsumerStatefulWidget {
 }
 
 class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
-  static const _layersPanelMaxHeight = .4;
+  static const _layersPanelMaxHeight = .3;
   static const _parkingPanelMaxHeight = .35;
   static const _duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);
@@ -71,7 +71,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
           DraggableScrollableSheet(
             controller: _layersController,
             minChildSize: .0,
-            initialChildSize: .0,
+            initialChildSize: _layersPanelMaxHeight,
             maxChildSize: _layersPanelMaxHeight,
             snapSizes: const [.0, _layersPanelMaxHeight],
             snap: true,
