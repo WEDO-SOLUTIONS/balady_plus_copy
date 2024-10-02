@@ -172,6 +172,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   // If the main layer [_layersController] is in hidden position then close the panel and make pop
   void _layersControllerListener() {
     if (_isShown && _layersController.size < .01) {
+      _isShown = false;
       context.pop();
     }
   }
