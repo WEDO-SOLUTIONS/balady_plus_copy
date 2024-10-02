@@ -1,0 +1,27 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/app_routes.gr.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
+import 'package:mapness/shared/providers/onboarding.dart';
+
+final class OnboardRouteGuard extends AutoRouteGuard {
+  const OnboardRouteGuard(this.ref);
+
+  final ProviderRef ref;
+
+  @override
+  void onNavigation(NavigationResolver resolver, StackRouter router) {
+    print('ref.read(onboardingProvider) ${ref.read(onboardingProvider)}');
+    if (ref.read(onboardingProvider)) {
+      resolver.next();
+    } else {
+      router.push(StoriesRoute(
+        type: StoryTypes.onboarding,
+        onClose: () {
+          ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
+          resolver.next();
+        },
+      ));
+    }
+  }
+}
