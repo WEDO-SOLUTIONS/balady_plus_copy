@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 @RoutePage()
@@ -25,88 +24,91 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
   ];
 
   @override
-  Widget build(BuildContext context) => AutoTabsScaffold(
-        homeIndex: 0,
-        routes: _buildRoutes,
-        bottomNavigationBuilder: (_, tabsRouter) => DecoratedBox(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: NonThemeColor.color14.withOpacity(0.05),
-                offset: const Offset(0, -2),
-                blurRadius: 8,
-              ),
-            ],
-          ),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            type: BottomNavigationBarType.fixed,
-            selectedLabelStyle: TextStyle(
-              color: context.color.strokeAccent,
-              fontSize: 0,
-              height: 0,
-            ),
-            unselectedLabelStyle: TextStyle(
-              color: context.color.textAndIconsBasePrimary,
-              fontSize: 0,
-              height: 0,
-            ),
-            items: [
-              BottomNavigationBarItem(
-                icon: _BottomNavigationBarItem(
-                  selected: tabsRouter.activeIndex == 0,
-                  iconBuilder: (ctx, isSelected) => _DefaultIcon(
-                    icon: GeneralIcons.pin,
-                    selected: isSelected,
+  Widget build(BuildContext context) =>
+      AutoTabsScaffold(
+        homeIndex: 0,routes: _buildRoutes,
+        bottomNavigationBuilder: (_, tabsRouter) =>
+            DecoratedBox(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: NonThemeColor.color14.withOpacity(0.05),
+                    offset: const Offset(0, -2),
+                    blurRadius: 8,
                   ),
-                  label: context.l10n.nav_general,
-                ),
-                label: '',
+                ],
               ),
-              if (appFeatures.naviEnabled)
-                BottomNavigationBarItem(
-                  icon: _BottomNavigationBarItem(
-                    selected: tabsRouter.activeIndex == 1,
-                    iconBuilder: (ctx, isSelected) => _DefaultIcon(
-                      icon: GeneralIcons.route,
-                      selected: isSelected,
+              child: BottomNavigationBar(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                type: BottomNavigationBarType.fixed,
+                selectedLabelStyle: TextStyle(
+                  color: context.color.strokeAccent,
+                  fontSize: 0,
+                  height: 0,
+                ),
+                unselectedLabelStyle: TextStyle(
+                  color: context.color.textAndIconsBasePrimary,
+                  fontSize: 0,
+                  height: 0,
+                ),
+                items: [
+                  BottomNavigationBarItem(
+                    icon: _BottomNavigationBarItem(
+                      selected: tabsRouter.activeIndex == 0,
+                      iconBuilder: (ctx, isSelected) =>
+                          _DefaultIcon(
+                            icon: GeneralIcons.pin,
+                            selected: isSelected,
+                          ),
+                      label: context.l10n.nav_general,
                     ),
-                    label: context.l10n.nav_route,
+                    label: '',
                   ),
-                  label: '',
-                ),
-              BottomNavigationBarItem(
-                icon: _BottomNavigationBarItem(
-                  selected: tabsRouter.activeIndex == 2,
-                  iconBuilder: (ctx, isSelected) => _DefaultIcon(
-                    icon: GeneralIcons.dashboard,
-                    selected: isSelected,
+                  BottomNavigationBarItem(
+                    icon: _BottomNavigationBarItem(
+                      selected: tabsRouter.activeIndex == 1,
+                      iconBuilder: (ctx, isSelected) =>
+                          _DefaultIcon(
+                            icon: GeneralIcons.route,
+                            selected: isSelected,
+                          ),
+                      label: context.l10n.nav_route,
+                    ),
+                    label: '',
                   ),
-                  label: context.l10n.nav_landing,
-                ),
-                label: '',
+                  BottomNavigationBarItem(
+                    icon: _BottomNavigationBarItem(
+                      selected: tabsRouter.activeIndex == 2,
+                      iconBuilder: (ctx, isSelected) =>
+                          _DefaultIcon(
+                            icon: GeneralIcons.dashboard,
+                            selected: isSelected,
+                          ),
+                      label: context.l10n.nav_landing,
+                    ),
+                    label: '',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: _BottomNavigationBarItem(
+                      selected: tabsRouter.activeIndex == 3,
+                      iconBuilder: (context, selected) =>
+                          ProfileImageWidget(
+                            dimension: 24,
+                            color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
+                          ),
+                      label: context.l10n.nav_profile,
+                    ),
+                    label: '',
+                  ),
+                ],
+                currentIndex: tabsRouter.activeIndex,
+                onTap: tabsRouter.setActiveIndex,
               ),
-              BottomNavigationBarItem(
-                icon: _BottomNavigationBarItem(
-                  selected: tabsRouter.activeIndex == 3,
-                  iconBuilder: (context, selected) => ProfileImageWidget(
-                    dimension: 24,
-                    color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
-                  ),
-                  label: context.l10n.nav_profile,
-                ),
-                label: '',
-              ),
-            ],
-            currentIndex: tabsRouter.activeIndex,
-            onTap: tabsRouter.setActiveIndex,
-          ),
-        ),
-    );
-      },
-    );
-  }
+            ),
+      );
+},
+);
 }
 
 class _BottomNavigationBarItem extends StatelessWidget {
@@ -121,7 +123,8 @@ class _BottomNavigationBarItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context) =>
+      Padding(
         padding: const EdgeInsets.only(top: 2),
         child: Column(
           children: [
@@ -146,7 +149,8 @@ class _DefaultIcon extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Icon(
+  Widget build(BuildContext context) =>
+      Icon(
         icon,
         size: 24,
         color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
@@ -163,7 +167,8 @@ class _DefaultLabel extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Text(
+  Widget build(BuildContext context) =>
+      Text(
         label,
         style: context.textStyleV3.captionSmallMedium.copyWith(
           color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
