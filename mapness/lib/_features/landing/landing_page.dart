@@ -15,7 +15,6 @@ import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
-import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
@@ -39,7 +38,12 @@ class LandingPage extends ConsumerStatefulWidget {
 }
 
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
-  late StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController = StatefulBottomSheetController(
+    initialState: ThreeStateBottomSheet.open,
+    behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
+    stateMapper: const LandingStateMapper(),
+  );
+
   MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
 
@@ -51,12 +55,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
-
-    bottomSheetController = StatefulBottomSheetController(
-      initialState: ThreeStateBottomSheet.open,
-      behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
-      stateMapper: const LandingStateMapper(),
-    );
 
     bottomSheetController.addListener(_calculatePadding);
 
@@ -108,19 +106,13 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
-    print('objectobjectobject');
+    print('objectobjectobject ${bottomSheetController.state}');
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
       ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
-      ..listen(currentRouteProvider, (_, next) {
-        if (next?.currentPath == KiblahRoute.path) {
-          bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-        }
-      })
-
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);

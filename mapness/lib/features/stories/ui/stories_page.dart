@@ -1,7 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/features/stories/models/stories_type_data.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
@@ -10,8 +10,9 @@ import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-class StoriesScreen extends ConsumerStatefulWidget {
-  const StoriesScreen({
+@RoutePage()
+class StoriesPage extends ConsumerStatefulWidget {
+  const StoriesPage({
     required this.type,
     this.onClose,
     this.initialStoryId,
@@ -26,7 +27,7 @@ class StoriesScreen extends ConsumerStatefulWidget {
   _StoriesScreenState createState() => _StoriesScreenState();
 }
 
-class _StoriesScreenState extends ConsumerState<StoriesScreen> {
+class _StoriesScreenState extends ConsumerState<StoriesPage> {
   @override
   void initState() {
     super.initState();
@@ -36,12 +37,15 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
   void _onClose([int? index]) {
     widget.onClose?.call();
     ref.read(storyServiceProvider.notifier).resumeUpdate();
-    context.pop<int?>(index);
+
+    if (context.router.canPop()) {
+      context.router.maybePop<int?>(index);
+    }
   }
 
   @override
   void dispose() {
-    _reportCloseMetricaEvent();
+    _reportCloseMetricsEvent();
     super.dispose();
   }
 
@@ -63,7 +67,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
     );
   }
 
-  void _reportCloseMetricaEvent() {
+  void _reportCloseMetricsEvent() {
     if (widget.type == StoryTypes.network) {
       Metrics.logEventAdvanced(
         MetricsConstants.exploreKeys.storiesClose,
