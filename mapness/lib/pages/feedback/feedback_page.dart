@@ -45,18 +45,6 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     final objectType = poiData.valueOrNull?.types[0]?.type;
     final provider = feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType));
     final categories = ref.watch(provider);
-
-    if (poiData.isLoading || categories.isLoading) {
-      return const FeedbackLoadingWidget();
-    }
-    if (poiData.hasError || categories.hasError) {
-      return FeedbackFailureWidget(
-        onRetry: () {
-          ref.invalidate(provider);
-        },
-      );
-    }
-
     final category = categories.value?.firstWhereOrNull((element) => element.id == widget.categoryId);
 
     if (category == null || category.fields.isEmpty) {

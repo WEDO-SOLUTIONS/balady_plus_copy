@@ -11,6 +11,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 import 'package:mapness/widgets/feedback/feedback_select_options_widget.dart';
 
+part 'feedback_select_options_form_container.dart';
+
 class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
   final int objectId;
   const FeedbackSelectOptionsComponentWidget({
@@ -25,22 +27,27 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
     final provider = feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType));
     final categories = ref.watch(provider);
 
-    Widget formContainer({required Widget child}) => FeedbackFormContainer(
-          title: context.l10n.feedbackWhatsWrong,
-          isSendVisible: false,
-          child: child,
-        );
-
-    final loader = formContainer(
+    final loader = FeedbackSelectOptionsFormContainer(
       child: Center(
         child: Loading.large(),
       ),
     );
+    final hasData = poiData.hasValue && categories.hasValue && categories.valueOrNull!.isNotEmpty;
+
+    if (hasData) {
+      return FeedbackSelectOptionsFormContainer(
+        child: FeedbackSelectOptionsWidget(
+          poiDataValue: poiData.valueOrNull!,
+          categoriesValue: categories.valueOrNull!,
+          onTap: (category, objectId) => _onTap(context, category, objectId),
+        ),
+      );
+    }
 
     return switch ((poiData, categories)) {
       (AsyncValue(value: final poiData), AsyncValue(value: final categories))
           when poiData != null && categories != null && categories.isNotEmpty =>
-        formContainer(
+        FeedbackSelectOptionsFormContainer(
           child: FeedbackSelectOptionsWidget(
             poiDataValue: poiData,
             categoriesValue: categories,
@@ -48,7 +55,8 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
           ),
         ),
       (AsyncLoading(), _) || (_, AsyncLoading()) => loader,
-      (_, AsyncData(isLoading: final isLoading)) when isLoading == true => loader,
+      (_, AsyncData(isLoading: final isLoading)) when isLoading => loader,
+      (AsyncData(isLoading: final isLoading), _) when isLoading => loader,
       _ => FeedbackFailureWidget(
           onRetry: () {
             ref.invalidate(provider);
