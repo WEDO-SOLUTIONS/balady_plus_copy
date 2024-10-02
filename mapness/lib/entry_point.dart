@@ -113,8 +113,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
 
-  late final _appRoute = AppRouter();
-
   @override
   void initState() {
     super.initState();
