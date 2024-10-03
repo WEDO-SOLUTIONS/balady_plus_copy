@@ -362,7 +362,7 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleInvestOpportunities() async {
-    final layersControls = ref.watch(layersControlsProvider.notifier);
+    final layersControls = ref.read(layersControlsProvider.notifier);
     final currentState = state.selectedType;
     if (currentState != (LayerType.invest)) {
       await layersControls._showInvestmentOpportunities(LayerType.invest);
@@ -378,7 +378,7 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleWhiteLands() async {
-    final layersControls = ref.watch(layersControlsProvider.notifier);
+    final layersControls = ref.read(layersControlsProvider.notifier);
     final currentState = state.selectedType;
     if (currentState != (LayerType.fencing)) {
       await layersControls._showWhiteLands();
@@ -395,7 +395,7 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleParking() async {
-    final layers = ref.watch(layersControlsProvider.notifier);
+    final layers = ref.read(layersControlsProvider.notifier);
     final currentState = state.selectedType;
     await _viewPortSubscription?.cancel();
     await _removeAll();

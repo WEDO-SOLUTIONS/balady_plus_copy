@@ -9,7 +9,6 @@ import 'package:mapness/_features/landing/map_hidden_state_controls.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/calendar_slider_card.dart';
-import 'package:mapness/_features/landing/widgets/compliance_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/place_preview.dart';
 import 'package:mapness/_features/landing/widgets/places_for_card.dart';
@@ -136,8 +135,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
               const PlacePreview(),
               const SizedBox(height: uikit.Spacing.$8x),
               const SnapAndSendCard(),
-              const SizedBox(height: uikit.Spacing.$8x),
-              const ComplianceCard(),
+              // const SizedBox(height: uikit.Spacing.$8x),
+              // const ComplianceCard(),
               const SizedBox(height: uikit.Spacing.$8x),
               const PrayerCard(),
               CalendarSliderCard(
