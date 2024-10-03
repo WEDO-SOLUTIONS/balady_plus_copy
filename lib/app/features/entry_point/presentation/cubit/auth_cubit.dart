@@ -331,9 +331,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> autoLogout() async {
-    if (sl<EntryPointCubit>().state.token?.idToken?.isEmpty ?? false) {
-      await _clearAuth(NoParams());
-    }
+    // if (sl<EntryPointCubit>().state.token?.idToken?.isEmpty ?? false) {
+    //   await _clearAuth(NoParams());
+    // }
     sharedPrefs.setSSOToken(null);
     sl<DelegatorsCubit>().clearDelegators();
     try {
