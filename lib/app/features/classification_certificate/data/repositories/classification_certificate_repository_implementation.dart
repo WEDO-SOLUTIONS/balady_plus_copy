@@ -106,15 +106,15 @@ class ClassificationCertificateRepositoryImplementation
       String path = "${tempDir.path}/$fileName";
       File file = File(path);
       bool isExists = await file.exists();
-      if(isExists) {
-        return Right(file);
-      } else {
+      // if(isExists) {
+      //   return Right(file);
+      // } else {
         final data = await remoteDataSource.getAttachedClassificationCertificate(
           url,
           path,
         );
         return Right(data);
-      }
+      // }
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error, stackTrace) {

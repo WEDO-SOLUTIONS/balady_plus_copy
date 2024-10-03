@@ -7,7 +7,7 @@ import 'package:balady_plus/app/features/_shared_feature_/data/models/response_b
 import 'package:balady_plus/app/features/classification_certificate/data/model/details/classification_certificate_details_model.dart';
 import 'package:balady_plus/app/features/classification_certificate/data/model/lookups/classification_certificate_lookups_model.dart';
 import 'package:dio/dio.dart'
-    show BaseOptions, Dio, DioException, Options, ResponseType;
+    show BaseOptions, Dio, DioException, Options,  ResponseType;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
@@ -270,6 +270,7 @@ class ClassificationCertificateRemoteDataSource
       String attachUrl, String path) async {
     var response;
     try {
+      //webService.dio.
       response = await Dio(
         BaseOptions(baseUrl: RemoteConfig.apigeeURL),
       ).get(
@@ -282,11 +283,18 @@ class ClassificationCertificateRemoteDataSource
           },
         ),
       );
-      File file = File(path);
-      var raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
-      return file;
+      if (response.statusCode == 200) {
+        File file = File(path);
+        var raf = file.openSync(mode: FileMode.write);
+        raf.writeFromSync(response!.data);
+        await raf.close();
+        return file;
+      }
+      throw ServerException(
+        "errors_server_error_2",
+        statusCode: response.statusCode ,
+        errorCode: response.statusCode,
+      );
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -320,7 +328,7 @@ class ClassificationCertificateRemoteDataSource
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(errorMessage: error.toString()),
-          response: response,
+          // response: response,
         );
       }
     }
