@@ -359,6 +359,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
     CommonFunctions.showError("session_ended_error".tr());
+    EasyLoading.dismiss();
   }
 
   Future<void> refreshSSOProfile() async {
