@@ -667,7 +667,7 @@ Map<String, dynamic> servicesConfig = {
     },
   ],
   "help_services": [
-    {
+    /*{
       "id": 408,
       "icon": "smart_advisor",
       "3d_icon": null,
@@ -678,7 +678,7 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": ""},
       "ar": {"title": "smart_advisor", "description": null, "tag": null},
       "en": {"title": "smart_advisor", "description": null, "tag": null}
-    },
+    },*/
 
 
     {

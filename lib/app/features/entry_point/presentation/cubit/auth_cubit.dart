@@ -306,9 +306,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> clearAuth() async {
     try {
       sl<AuthenticationBloc>().add(LogoutAuthentication());
-      if (sl<EntryPointCubit>().state.token?.idToken?.isNotEmpty ?? false) {
-        await _clearAuth(NoParams());
-      }
+      // if (sl<EntryPointCubit>().state.token?.idToken?.isNotEmpty ?? false) {
+      //   await _clearAuth(NoParams());
+      // }
       await _logout(NoParams());
       sl<DelegatorsCubit>().clearDelegators();
       sharedPrefs.setSSOToken(null);
@@ -331,9 +331,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> autoLogout() async {
-    if (sl<EntryPointCubit>().state.token?.idToken?.isEmpty ?? false) {
-      await _clearAuth(NoParams());
-    }
+    // if (sl<EntryPointCubit>().state.token?.idToken?.isEmpty ?? false) {
+    //   await _clearAuth(NoParams());
+    // }
     sharedPrefs.setSSOToken(null);
     sl<DelegatorsCubit>().clearDelegators();
     try {
@@ -359,6 +359,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
     CommonFunctions.showError("session_ended_error".tr());
+    EasyLoading.dismiss();
   }
 
   Future<void> refreshSSOProfile() async {
