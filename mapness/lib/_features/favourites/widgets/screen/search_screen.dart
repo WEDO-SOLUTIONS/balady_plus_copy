@@ -33,7 +33,10 @@ class SearchScreen extends ConsumerWidget {
               color: context.color.surfaceBasePrimary,
               padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: MediaQuery.of(context).padding.top + 12),
               child: BaladySearchWithBackButton(
-                onBackButtonPressed: onBackTap,
+                option: SearchTextBackOption(
+                  text: context.l10n.cancel,
+                  onPressed: onBackTap,
+                ),
                 searchInput: BaladyInput.searchV2(
                   autofocus: true,
                   hintText: hintText ?? context.l10n.search,
@@ -47,10 +50,9 @@ class SearchScreen extends ConsumerWidget {
                   fillColor: context.colorsV2.neutralContainerDefault,
                   hintColor: context.colorsV2.foregroundSoft,
                   // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
-                  textFieldHeight: 48,
+                  // textFieldHeight: 48,
                   textStyle: context.textStyleV3.bodySmallRegular,
                 ),
-                backButtonLabel: context.l10n.cancel,
               ),
             ),
             if (itemCount == 0)
