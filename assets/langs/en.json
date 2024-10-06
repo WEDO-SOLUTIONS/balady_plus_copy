@@ -4436,17 +4436,15 @@
   "error_biometrics":"Sorry, there is an issue with face or fingerprint registration. Please try again later. You can log in using the quick PIN or username and password.",
   "smart_advisor": "Smart Advisor",
   "biometrics_failed":"Biometrics check is a failure, please try again or you can login using Passcode or username and password",
-  "auth_pacakge_end": "end",
   "answer_copy_to_Clipboard": "Copied Successfully",
   "history": "Chat History",
   "cannotdothisaction": "Action Failed",
-  "error_pin":"Pin number is not identical",
   "password_not_identical":"A mismatch between the password and confirm password fields",
   "passcode_not_identical":"There is a mismatch between the registered quick PIN and the confirmation of the quick PIN",
   "quick_access_not_activated":"Your biometric data is not registered. Please log in using another method and save your biometric information.",
   "passcode_success": "Passcode has been registered successfully",
   "deactivate":"Deactivate",
-  "error_pin":"Passcode is not matched",
+  "error_pin":"There is a mismatch between the registered quick PIN and the confirmation of the quick PIN",
   "auth_pacakge_end": "end",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك "
 }
