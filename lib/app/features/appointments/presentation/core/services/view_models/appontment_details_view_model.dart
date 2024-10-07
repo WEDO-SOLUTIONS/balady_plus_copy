@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file_plus/open_file_plus.dart';
@@ -19,7 +21,6 @@ import '../../../../../new_appointment/presentation/core/models/confirm_appointm
 import '../../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../../../new_appointment/presentation/core/services/repository/appointment_repository.dart';
 import 'my_appointments_view_model.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class AppointmentDetailsViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();
@@ -102,30 +103,28 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   }
 
   void printAppointmentFunction(int appointmentId) async {
-    if (appointmentId != null) {
-      Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
-      if (res.item1 != null) openFile(res.item1!, contentType: res.item2);
+    Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
+    if (res.item1 != null) openFile(res.item1!, contentType: res.item2);
     }
-  }
 
   void shareAppointmentFunction(int appointmentId) async {
-    if (appointmentId != null) {
-      Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
-      if (res.item1 != null) shareFile(res.item1!, contentType: res.item2);
-    }
+    Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
+    if (res.item1 != null) shareFile(res.item1!, contentType: res.item2);
   }
 
   void shareFile(Uint8List bytes, {String? contentType}) async {
-    String extension =
-        contentType != null ? ("." + contentType.split("/").last) : "";
+    String extension = contentType != null ? ".${contentType.split("/").last}" : "";
+
     try {
       if (extension.isNotEmpty) {
         String dir = (await getTemporaryDirectory()).path;
-        File filetemp = File("$dir/" +
-            "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
-        await filetemp.writeAsBytes(bytes);
+        String filePath = "$dir/${DateTime.now().millisecondsSinceEpoch.toString()}$extension";
 
-        Share.shareFiles([filetemp.path]);
+        File tempFile = File(filePath);
+        await tempFile.writeAsBytes(bytes);
+
+        XFile xFile = XFile(filePath, mimeType: contentType);
+        await Share.shareXFiles([xFile]);
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -140,8 +139,7 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   }
 
   void openFile(Uint8List bytes, {String? contentType}) async {
-    String extension =
-        contentType != null ? ("." + contentType.split("/").last) : "";
+    String extension = contentType != null ? (".${contentType.split("/").last}") : "";
     try {
       if (extension.isNotEmpty) {
         String dir = (await getTemporaryDirectory()).path;

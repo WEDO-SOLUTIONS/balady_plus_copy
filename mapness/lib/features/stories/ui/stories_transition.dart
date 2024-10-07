@@ -1,5 +1,5 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 
 class StoriesTransition extends StatefulWidget {
@@ -50,14 +50,14 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
   Future<void> _dismiss({double? from}) async {
     await _controller.reverse(from: from);
     widget.onClose?.call();
-    context.pop();
+    context.router.back();
   }
 
   double _calculateRatio(double value) => value / MediaQuery.sizeOf(context).height;
 
   @override
   Widget build(BuildContext context) => PopScope(
-        onPopInvoked: (didPop) async {
+        onPopInvokedWithResult: (didPop, _) async {
           if (didPop) {
             await _dismiss();
           }
@@ -107,7 +107,8 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
                         ),
                       ),
                     ],
-                  )),
+            ),
+          ),
         ),
       );
 }
