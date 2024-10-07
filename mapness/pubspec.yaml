@@ -122,6 +122,8 @@ dependencies:
   vector_math: ^2.1.4
   fast_immutable_collections: ^10.2.4
   device_info_plus: ^9.1.2
+  flutter_form_builder: ^9.4.1
+  form_builder_validators: ^11.0.0
 
 dependency_overrides:
   geolocator_android: ^4.2.2

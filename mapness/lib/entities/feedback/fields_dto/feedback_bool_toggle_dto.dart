@@ -10,7 +10,7 @@ class FeedbackBoolToggleDto extends FeedbackBaseDto {
     required super.type,
     required super.isRequired,
     required this.label,
-    required super.isHidden,
+    super.isHidden = false,
   });
 
   @override
