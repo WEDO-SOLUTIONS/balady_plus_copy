@@ -36,7 +36,7 @@ Future<List<FeedbackCategoryDto>> _loadFromBackend(
   FeedbackObjectType objectType,
 ) async {
   try {
-    final response = await dio.get('/api/1.0/discrepancy/${objectType.name}/categories');
+    final response = await dio.get('/discrepancy/${objectType.name}/categories');
     return FeedbackCategoryDto.parseList(response.data);
   } catch (e) {
     log(e.toString());

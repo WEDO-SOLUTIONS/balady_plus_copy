@@ -8,7 +8,7 @@ enum FeedbackTextType {
   url,
 }
 
-class FeedbackTextEntity extends FeedbackBaseEntity<String> {
+class FeedbackTextEntity extends FeedbackBaseEntity {
   final String label;
   final int maxLenght;
   final String hint;
@@ -22,49 +22,5 @@ class FeedbackTextEntity extends FeedbackBaseEntity<String> {
     required this.maxLenght,
     required this.hint,
     required super.isHidden,
-    String? value,
-  }) : super(value: value);
-
-  bool isStringValid(String value) {
-    final regex = switch (type) {
-      FeedbackTextType.email => RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
-      FeedbackTextType.phone => RegExp(r'^\+?[0-9]{10,14}$'),
-      FeedbackTextType.url => RegExp(r'^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'),
-      _ => null,
-    };
-    if (regex == null) {
-      return true;
-    }
-
-    return regex.hasMatch(value);
-  }
-
-  @override
-  bool get isValid {
-    final valueEmptyOrNull = value == null || value!.isEmpty;
-
-    if (!isRequired && valueEmptyOrNull) {
-      return true;
-    }
-    if (valueEmptyOrNull) {
-      return false;
-    }
-
-    return isStringValid(value!);
-  }
-
-  @override
-  FeedbackTextEntity updatedValue(String? value) => FeedbackTextEntity(
-        id: id,
-        isRequired: isRequired,
-        label: label,
-        maxLenght: maxLenght,
-        hint: hint,
-        type: type,
-        value: value,
-        isHidden: isHidden,
-      );
-
-  @override
-  dynamic valueToJson() => value;
+  });
 }

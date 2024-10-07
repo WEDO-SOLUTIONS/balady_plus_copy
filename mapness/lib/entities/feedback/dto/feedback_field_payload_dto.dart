@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mapness/entities/feedback/feedback_field_payload_entity.dart';
 
 part 'feedback_field_payload_dto.g.dart';
 
@@ -18,13 +17,8 @@ class FeedbackFieldPayloadDto {
     this.oldValue,
   });
 
-  Map<String, dynamic> toJson() => _$FeedbackFieldPayloadDtoToJson(this);
+  @override
+  String toString() => 'FFieldPDto(id: $id, value: $value, oldValue: $oldValue)';
 
-  factory FeedbackFieldPayloadDto.fromDomain(
-    FeedbackFieldPayloadEntity entity,
-  ) =>
-      FeedbackFieldPayloadDto(
-        id: entity.fieldId,
-        value: entity.value,
-      );
+  Map<String, dynamic> toJson() => _$FeedbackFieldPayloadDtoToJson(this);
 }
