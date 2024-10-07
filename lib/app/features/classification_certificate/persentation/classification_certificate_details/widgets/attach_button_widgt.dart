@@ -38,9 +38,7 @@ class AttachedButtonWidget extends StatelessWidget {
               );
             }
           },
-          child: Text(state is SuccessAttachedCertificateState
-              ? "show_file".tr()
-              : "download_certificate_classification".tr()),
+          child: Text("download_certificate_classification".tr()),
         );
       }
     }
