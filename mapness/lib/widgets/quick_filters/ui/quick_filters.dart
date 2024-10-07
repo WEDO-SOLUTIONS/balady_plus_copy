@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filter.dart';
-//import 'package:mapness/widgets/quick_filters/ui/quick_filter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class QuickFilters extends ConsumerStatefulWidget {
