@@ -94,6 +94,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
               const SizedBox(height: uikit.Spacing.$4x),
               const StoriesWidget(),
               const SizedBox(height: uikit.Spacing.$8x),
+              // BSA-1108: See the instruction to revert here: https://github.com/urbi-ae/baladi/pull/1164
               // JoyParksCardV2(controller: widget.bottomSheetController),
               // const SizedBox(height: uikit.Spacing.$3x),
               const Padding(
