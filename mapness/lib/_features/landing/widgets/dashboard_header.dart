@@ -111,7 +111,6 @@ class DashboardHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
-        height: 56,
         width: double.infinity,
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -137,8 +136,6 @@ class DashboardHeader extends ConsumerWidget {
                 readOnly: true,
                 fillColor: context.colorsV2.neutralContainerDefault,
                 hintColor: context.colorsV2.foregroundSoft,
-                // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
-                textFieldHeight: 48,
                 textStyle: context.textStyleV3.bodySmallRegular,
               ),
             ),
