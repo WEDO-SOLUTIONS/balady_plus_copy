@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/classification_certificate/data/model/d
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 
 import '../../../domain/use_cases/classification_certificate_use_cases.dart';
 import 'classification_certificate_details_state.dart';
@@ -117,6 +118,8 @@ class ClassificationCertificateDetailsCubit
             CommonFunctions.showError(filer.toString());
           },
           (data) {
+            // Open file after dwonload
+            OpenFile.open(data.path);
             emit(
               SuccessAttachedCertificateState(
                 file: data,

@@ -22,26 +22,25 @@ class AttachedButtonWidget extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           child: Center(child: CircularProgressIndicator()),
         );
-      } else if (state is SuccessAttachedCertificateState) {
-        return OutlinedButton(
-          onPressed: () {
-            // Open File From file path
-            OpenFile.open(
-              (state as SuccessAttachedCertificateState).file.path,
-            );
-          },
-          child: Text("show_file".tr()),
-        );
       } else {
         return OutlinedButton(
           onPressed: () {
-            cubit.getAttachedFile(
-              attachUrl: state.classificationCertificateDetails.attachLink,
-              nameFile:
-                  "${state.classificationCertificateDetails.serialNumber}${state.classificationCertificateDetails.classificationGrade}",
-            );
+            if (state is SuccessAttachedCertificateState) {
+              // Open File From file path
+              OpenFile.open(
+                (state as SuccessAttachedCertificateState).file.path,
+              );
+            } else {
+              cubit.getAttachedFile(
+                attachUrl: state.classificationCertificateDetails.attachLink,
+                nameFile:
+                    "${state.classificationCertificateDetails.serialNumber}${state.classificationCertificateDetails.classificationGrade}",
+              );
+            }
           },
-          child: Text("download_certificate_classification".tr()),
+          child: Text(state is SuccessAttachedCertificateState
+              ? "show_file".tr()
+              : "download_certificate_classification".tr()),
         );
       }
     }
