@@ -20,9 +20,17 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
         CustomRoute(
-          page: StoriesRoute.page,
+          page: OnboardRoute.page,
           transitionsBuilder: (_, __, ___, child) => StoriesTransition(
             type: StoryTypes.onboarding,
+            child: child,
+          ),
+        ),
+        CustomRoute(
+          page: StoriesRoute.page,
+          opaque: false,
+          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+            type: StoryTypes.network,
             child: child,
           ),
         ),
@@ -33,7 +41,12 @@ class AppRouter extends RootStackRouter {
           ],
           initial: true,
           children: [
-            AutoRoute(page: LandingRoute.page),
+            AutoRoute(
+              page: landingShell.page,
+              children: [
+                AutoRoute(page: LandingRoute.page),
+              ],
+            ),
             AutoRoute(page: RoutingPointsRoute.page),
             AutoRoute(page: MapnessServicesRoute.page),
             AutoRoute(page: ProfileRoute.page),
@@ -41,3 +54,5 @@ class AppRouter extends RootStackRouter {
         ),
       ];
 }
+
+const landingShell = EmptyShellRoute('Landing');

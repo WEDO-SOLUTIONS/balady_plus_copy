@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file_plus/open_file_plus.dart';
@@ -19,7 +21,6 @@ import '../../../../../new_appointment/presentation/core/models/confirm_appointm
 import '../../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../../../new_appointment/presentation/core/services/repository/appointment_repository.dart';
 import 'my_appointments_view_model.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class AppointmentDetailsViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();

@@ -24,23 +24,6 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
   ];
 
   @override
-  void initState() {
-    _showOnboarding();
-    super.initState();
-  }
-
-  void _showOnboarding() {
-    // final isOnboardingShown = ref.read(onboardingProvider);
-    //
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (!isOnboardingShown) {
-    //     StoriesRoute.openOnboarding(context);
-    //     ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
-    //   }
-    // });
-  }
-
-  @override
   Widget build(BuildContext context) => AutoTabsScaffold(
       routes: _buildRoutes,
       bottomNavigationBuilder: (_, tabsRouter) => DecoratedBox(
