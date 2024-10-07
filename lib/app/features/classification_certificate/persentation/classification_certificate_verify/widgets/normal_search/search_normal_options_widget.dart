@@ -41,7 +41,7 @@ class SearchNormalOptionsWidget extends StatelessWidget {
                   );
             },
             title: Text(type.title.tr()),
-            subtitle: groupValue != null ? Text(type.description.tr()) : null,
+            // subtitle: groupValue != null ? Text(type.description.tr()) : null,
           ),
         ),
       ),
