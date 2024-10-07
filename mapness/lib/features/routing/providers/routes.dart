@@ -4,7 +4,6 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
-import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -49,7 +48,6 @@ class Routes extends _$Routes {
 
     ref.onDispose(() {
       subscribtion?.cancel();
-      ref.read(cameraPaddingProvider.notifier).resetPadding();
     });
 
     await dgisController.value?.setRouteParams(params);
