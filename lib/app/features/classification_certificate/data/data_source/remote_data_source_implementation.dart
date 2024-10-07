@@ -291,7 +291,7 @@ class ClassificationCertificateRemoteDataSource
         return file;
       }
       throw ServerException(
-        "errors_server_error_2",
+        "errors_server_error_2".tr(),
         statusCode: response.statusCode ,
         errorCode: response.statusCode,
       );
