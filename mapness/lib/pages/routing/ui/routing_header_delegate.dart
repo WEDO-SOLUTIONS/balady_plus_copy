@@ -33,10 +33,10 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
   final void Function(List<RoutePoint>) updatePoints;
 
   @override
-  double get maxExtent => 196;
+  double get maxExtent => 200;
 
   @override
-  double get minExtent => 196;
+  double get minExtent => 200;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;

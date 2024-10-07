@@ -1,12 +1,14 @@
 {
-  "dart.flutterSdkPath": "~/fvm/versions/3.24.3",
+  "dart.flutterSdkPath": ".fvm/versions/3.24.3",
   "explorer.excludeGitIgnore": false,
   "debug.onTaskErrors": "debugAnyway",
   "problems.decorations.enabled": true,
   "dart.promptToRunIfErrors": false,
   "git.allowNoVerifyCommit": true,
   "git.confirmNoVerifyCommit": false,
-  "editor.rulers": [120],
+  "editor.rulers": [
+    120
+  ],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"

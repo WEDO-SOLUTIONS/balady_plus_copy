@@ -1,13 +1,13 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/components.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/app/routes/favourites.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
-import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
+import 'package:urbi_utils/urbi_utils.dart';
 
 class RoutingFavourites extends ConsumerWidget {
   const RoutingFavourites({
@@ -21,85 +21,95 @@ class RoutingFavourites extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favourites = [
-      if (showBookmark)
-        FilterItemConfig(
-          filterType: FilterType.favourites,
-          icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
-          onTap: () async {
-            if (showBookmark) {
-              await CommonFunctions.authOrOpen(
-                context,
-                callback: () async {
-                  final result = await const FavouritesPickerRoute().push(context);
+    final onFavouritesTap = () async {
+      if (showBookmark) {
+        await CommonFunctions.authOrOpen(
+          context,
+          callback: () async {
+            final result = await const FavouritesPickerRoute().push(context);
 
-                  if (result != null) {
-                    onFavouriteTap(result as FavouriteItem);
-                  }
-                  return;
-                },
-              );
+            if (result != null) {
+              onFavouriteTap(result as FavouriteItem);
             }
+            return;
           },
-        ),
-      FilterItemConfig(
-        filterType: FilterType.home,
-        title: context.l10n.home,
-        icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
-        onTap: () async {
-          final favouritesState = await ref.read(favouriteCacheProvider.future);
-          final home = favouritesState.home;
-          if (home == null) {
-            await CommonFunctions.authOrOpen(
-              context,
-              callback: () async {
-                await const FavouritesSearchRoute(
-                  markerType: FavouriteItemMarkerType.home,
-                ).push(context);
+        );
+      }
+    };
+    final onHomeTap = () async {
+      final favouritesState = await ref.read(favouriteCacheProvider.future);
+      final home = favouritesState.home;
+      if (home == null) {
+        await CommonFunctions.authOrOpen(
+          context,
+          callback: () async {
+            await const FavouritesSearchRoute(
+              markerType: FavouriteItemMarkerType.home,
+            ).push(context);
 
-                final favouritesState = await ref.read(favouriteCacheProvider.future);
+            final favouritesState = await ref.read(favouriteCacheProvider.future);
 
-                onFavouriteTap(favouritesState.home!);
-              },
+            onFavouriteTap(favouritesState.home!);
+          },
+        );
+      } else {
+        onFavouriteTap(home);
+      }
+    };
+
+    final onWorkTap = () async {
+      final favouritesState = await ref.read(favouriteCacheProvider.future);
+      final work = favouritesState.work;
+      if (work == null) {
+        await CommonFunctions.authOrOpen(
+          context,
+          callback: () async {
+            await const FavouritesSearchRoute(
+              markerType: FavouriteItemMarkerType.work,
+            ).push(context);
+
+            final favouritesState = await ref.read(favouriteCacheProvider.future);
+
+            onFavouriteTap(
+              favouritesState.work!,
             );
-          } else {
-            onFavouriteTap(home);
-          }
-        },
+          },
+        );
+      } else {
+        onFavouriteTap(work);
+      }
+    };
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Row(
+            children: <Widget>[
+          if (showBookmark)
+            Expanded(
+              child: AppButton(
+                buttonColorScheme: ButtonColorScheme.tertiary,
+                onTap: onFavouritesTap,
+                primaryIcon: SystemIcons.bookmark,
+              ),
+            ),
+          Expanded(
+            child: AppButton(
+              buttonColorScheme: ButtonColorScheme.tertiary,
+              onTap: onHomeTap,
+              primaryIcon: GeneralIcons.home,
+            ),
+          ),
+          Expanded(
+            child: AppButton(
+              buttonColorScheme: ButtonColorScheme.tertiary,
+              onTap: onWorkTap,
+              primaryIcon: GeneralIcons.briefcase,
+            ),
+          ),
+        ].insertBetween(Spacing.$3x.widthBox).toList()),
       ),
-      FilterItemConfig(
-        filterType: FilterType.work,
-        title: context.l10n.work,
-        icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
-        onTap: () async {
-          final favouritesState = await ref.read(favouriteCacheProvider.future);
-          final work = favouritesState.work;
-          if (work == null) {
-            await CommonFunctions.authOrOpen(
-              context,
-              callback: () async {
-                await const FavouritesSearchRoute(
-                  markerType: FavouriteItemMarkerType.work,
-                ).push(context);
-
-                final favouritesState = await ref.read(favouriteCacheProvider.future);
-
-                onFavouriteTap(
-                  favouritesState.work!,
-                );
-              },
-            );
-          } else {
-            onFavouriteTap(work);
-          }
-        },
-      ),
-    ];
-
-    return widgets.QuickFilters(
-      filters: favourites,
-      padding: EdgeInsets.zero,
-      id: QuickFilterScreen.routing,
     );
   }
 }
