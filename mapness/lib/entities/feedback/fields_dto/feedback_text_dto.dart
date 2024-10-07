@@ -10,10 +10,10 @@ class FeedbackTextDto extends FeedbackBaseDto {
     required super.id,
     required super.type,
     required super.isRequired,
-    required super.isHidden,
     required this.label,
     required this.length,
     required this.hint,
+    super.isHidden = false,
   });
 
   factory FeedbackTextDto.fromJson(Map<String, dynamic> json) => _$FeedbackTextDtoFromJson(json);
