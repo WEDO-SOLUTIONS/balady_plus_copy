@@ -71,7 +71,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
           DraggableScrollableSheet(
             controller: _layersController,
             minChildSize: .0,
-            initialChildSize: _layersPanelMaxHeight,
+            initialChildSize: .0,
             maxChildSize: _layersPanelMaxHeight,
             snapSizes: const [.0, _layersPanelMaxHeight],
             snap: true,
