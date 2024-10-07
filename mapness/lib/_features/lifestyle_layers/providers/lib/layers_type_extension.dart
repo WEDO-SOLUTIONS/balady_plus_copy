@@ -10,7 +10,7 @@ extension LayerTypeExt on LayerType {
         LayerType.invest => GISMapLayers.Opportunities,
         LayerType.buildings => GISMapLayers.BSAimtithalBuildingsCertificateL,
         LayerType.fencing => GISMapLayers.BSWhiteParcelS,
-        LayerType.joy => null,
+        // LayerType.joy => null,
         LayerType.parkingLots => null,
       };
 
@@ -19,7 +19,7 @@ extension LayerTypeExt on LayerType {
         LayerType.invest => GeneralIcons.invest,
         LayerType.buildings => GeneralIcons.buildings,
         LayerType.fencing => GeneralIcons.fence,
-        LayerType.joy => GeneralIcons.joy,
+        // LayerType.joy => GeneralIcons.joy,
         LayerType.parkingLots => TransportIcons.parkingEnable,
       };
 
@@ -28,7 +28,7 @@ extension LayerTypeExt on LayerType {
         LayerType.invest => l10n.investmentOpportunities,
         LayerType.buildings => l10n.compilanceBuildings,
         LayerType.fencing => l10n.fencingVacantLands,
-        LayerType.joy => l10n.joyParks,
+        // LayerType.joy => l10n.joyParks,
         LayerType.parkingLots => l10n.parkingLots,
       };
 }
