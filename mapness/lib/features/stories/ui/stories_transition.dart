@@ -50,7 +50,7 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
   Future<void> _dismiss({double? from}) async {
     await _controller.reverse(from: from);
     widget.onClose?.call();
-    context.router.back();
+    await context.router.maybePop();
   }
 
   double _calculateRatio(double value) => value / MediaQuery.sizeOf(context).height;
@@ -62,7 +62,6 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
             await _dismiss();
           }
         },
-        canPop: false,
         child: GestureDetector(
           onVerticalDragUpdate: (details) {
             /// Disable swipe to dismiss for onboarding stories

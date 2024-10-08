@@ -39,7 +39,7 @@ class _StoriesScreenState extends ConsumerState<StoriesPage> {
     ref.read(storyServiceProvider.notifier).resumeUpdate();
 
     if (context.router.canPop()) {
-      context.router.back();
+      context.router.maybePop();
     }
   }
 
@@ -52,18 +52,15 @@ class _StoriesScreenState extends ConsumerState<StoriesPage> {
   @override
   Widget build(BuildContext context) {
     final storyData = StoryTypedData.fromType(widget.type);
-    return PopScope(
-      onPopInvokedWithResult: (val, _) => context.router.back(),
-      child: StoryArgsProvider(
-        type: widget.type,
-        onClose: _onClose,
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.light,
-            child: StoriesFullscreen(
-              initialStoryId: widget.initialStoryId ?? storyData.stories.first.storyId,
-            ),
+    return StoryArgsProvider(
+      type: widget.type,
+      onClose: _onClose,
+      child: Directionality(
+        textDirection: Directionality.of(context),
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: StoriesFullscreen(
+            initialStoryId: widget.initialStoryId ?? storyData.stories.first.storyId,
           ),
         ),
       ),

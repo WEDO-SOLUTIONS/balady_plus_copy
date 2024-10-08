@@ -25,8 +25,9 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
 
   @override
   Widget build(BuildContext context) => AutoTabsScaffold(
-      routes: _buildRoutes,
-      bottomNavigationBuilder: (_, tabsRouter) => DecoratedBox(
+        homeIndex: 0,
+        routes: _buildRoutes,
+        bottomNavigationBuilder: (_, tabsRouter) => DecoratedBox(
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(

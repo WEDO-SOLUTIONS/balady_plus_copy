@@ -11,16 +11,19 @@ final class OnboardRouteGuard extends AutoRouteGuard {
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
+    print('onNavigation onNavigation');
     if (ref.read(onboardingProvider)) {
       resolver.next();
     } else {
-      router.push(OnboardRoute(
-        type: StoryTypes.onboarding,
-        onClose: () {
-          ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
-          resolver.next();
-        },
-      ));
+      resolver.redirect(
+        OnboardRoute(
+          type: StoryTypes.onboarding,
+          onClose: () {
+            ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
+            resolver.next();
+          },
+        ),
+      );
     }
   }
 }
