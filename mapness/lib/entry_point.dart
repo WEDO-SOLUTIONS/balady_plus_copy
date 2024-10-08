@@ -11,7 +11,6 @@ import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
@@ -27,6 +26,7 @@ import 'package:mapness/app/app_routes.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/routes_observer.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
@@ -198,7 +198,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               final colorScheme = ref.watch(colorSchemeProvider);
 
               return MaterialApp.router(
-                routerConfig: ref.read(appRouterProvider).config(),
+                routerConfig: ref.read(appRouterProvider).config(
+                      navigatorObservers: () => [
+                        RoutesObserver(ref: ref),
+                      ],
+                    ),
                 theme: ThemeData(
                   scaffoldBackgroundColor: Colors.transparent,
                   dividerColor: Colors.grey[400],

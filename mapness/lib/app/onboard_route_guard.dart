@@ -11,7 +11,6 @@ final class OnboardRouteGuard extends AutoRouteGuard {
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
-    print('onNavigation onNavigation');
     if (ref.read(onboardingProvider)) {
       resolver.next();
     } else {

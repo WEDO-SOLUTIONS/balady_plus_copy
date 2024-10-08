@@ -34,25 +34,40 @@ class AppRouter extends RootStackRouter {
             child: child,
           ),
         ),
-        AutoRoute(
+        CustomRoute(
+          path: '/kiblah',
+          page: KiblahRoute.page,
+          transitionsBuilder: TransitionsBuilders.noTransition,
+        ),
+        CustomRoute(
+          path: '/',
           page: BottomMenuRoute.page,
           guards: [
             OnboardRouteGuard(ref),
           ],
           initial: true,
           children: [
-            AutoRoute(
-              page: landingShell.page,
-              children: [
-                AutoRoute(page: LandingRoute.page),
-              ],
+            CustomRoute(
+              path: 'explore',
+              page: LandingRoute.page,
+              transitionsBuilder: TransitionsBuilders.noTransition,
             ),
-            AutoRoute(page: RoutingPointsRoute.page),
-            AutoRoute(page: MapnessServicesRoute.page),
-            AutoRoute(page: ProfileRoute.page),
+            CustomRoute(
+              path: 'routing',
+              page: RoutingPointsRoute.page,
+              transitionsBuilder: TransitionsBuilders.noTransition,
+            ),
+            CustomRoute(
+              path: 'services',
+              page: MapnessServicesRoute.page,
+              transitionsBuilder: TransitionsBuilders.noTransition,
+            ),
+            CustomRoute(
+              path: 'profile',
+              page: ProfileRoute.page,
+              transitionsBuilder: TransitionsBuilders.noTransition,
+            ),
           ],
         ),
       ];
 }
-
-const landingShell = EmptyShellRoute('Landing');

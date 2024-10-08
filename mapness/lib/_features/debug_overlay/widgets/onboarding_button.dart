@@ -1,6 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/app/routes/routes.dart';
-import 'package:mapness/app/routes/stories.dart';
+import 'package:mapness/app/app_routes.gr.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class ShowOnboardingButton extends StatelessWidget {
@@ -8,7 +9,7 @@ class ShowOnboardingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LabeledElevatedButton(
-        onPressed: () => StoriesRoute.openOnboarding(rootNavigatorKey.currentContext!),
+        onPressed: () => context.pushRoute(OnboardRoute(type: StoryTypes.onboarding)),
         label: 'Show onboarding',
       );
 }
