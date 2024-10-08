@@ -100,7 +100,7 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
             onTap: tabsRouter.setActiveIndex,
           ),
         ),
-    );
+      );
 }
 
 class _BottomNavigationBarItem extends StatelessWidget {
