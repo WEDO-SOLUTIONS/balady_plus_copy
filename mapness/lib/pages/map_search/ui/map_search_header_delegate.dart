@@ -7,22 +7,25 @@ class MapSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   MapSearchHeaderDelegate({
     required this.requestFocus,
     required this.onClose,
+    required this.backgroundColor,
   });
 
   final bool requestFocus;
   final VoidCallback onClose;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
         requestFocus: requestFocus,
         onClose: onClose,
+        backgroundColor: backgroundColor,
       );
 
   @override
-  double get maxExtent => 84;
+  double get maxExtent => 76;
 
   @override
-  double get minExtent => 84;
+  double get minExtent => 76;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
@@ -32,26 +35,28 @@ class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({
     required this.requestFocus,
     required this.onClose,
+    required this.backgroundColor,
     super.key,
   });
 
   final bool requestFocus;
   final VoidCallback onClose;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: const BorderRadius.only(
             topRight: Radius.circular(16),
             topLeft: Radius.circular(16),
           ),
         ),
         child: Column(
           children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             const Center(child: SheetDragger()),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: MapSearchBar(

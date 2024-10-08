@@ -128,13 +128,10 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         ),
       ),
       suggest: (suggest) => SliverToBoxAdapter(
-        child: Container(
-          color: Colors.white,
-          child: SafeArea(
-            top: false,
-            child: MapSuggestList(
-              suggest: suggest,
-            ),
+        child: SafeArea(
+          top: false,
+          child: MapSuggestList(
+            suggest: suggest,
           ),
         ),
       ),

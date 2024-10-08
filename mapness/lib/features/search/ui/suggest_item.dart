@@ -12,7 +12,6 @@ import 'package:mapness/shared/lib/ar_functions.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
-import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 import 'package:provider/provider.dart';
 
 class SuggestItem extends ConsumerWidget {
@@ -68,30 +67,54 @@ class SuggestItem extends ConsumerWidget {
       }
     }
 
-    return Material(
-      color: Colors.transparent,
-      child: SearchTapHandler(
-        onTap: _onSuggestTap,
-        splashColor: context.color.surfaceBaseSecondary,
-        child: ContentRow(
-          options: ContentRowOptions(
-            leadingIcon: Icon(
-              SystemIcons.search,
-              size: 24,
-              color: context.color.textAndIconsBaseTertiary,
-            ),
-            actionWidget: distanceKm != null
-                ? ContentRowActionOptions(actionText: (distanceKm * 1000).formatDistance(context.l10n))
-                : null,
-            title: suggest.title.text,
-            titleMatchedParts: _getSpans(suggest.title),
-            subtitle: subtitle,
-            subtitleMatchedParts: _getSpans(suggest.subtitle),
-            dividerEnabled: !isLast,
-          ),
+    return ContentRowV2(
+      onTap: _onSuggestTap,
+      isDividerEnabled: !isLast,
+      leading: Icon(
+        SystemIcons.search,
+        size: 24,
+        color: context.color.textAndIconsBaseTertiary,
+      ),
+      text: ContentRowTextOptions(
+        title: suggest.title.text,
+        titleOptions: ContentRowTextOption(
+          matchedParts: _getSpans(suggest.title),
+        ),
+        subtitle: subtitle,
+        subtitleOptions: ContentRowTextOption(
+          matchedParts: _getSpans(suggest.subtitle),
         ),
       ),
+      trailing: distanceKm != null
+          ? ContentRowTextTrailingOptions(
+              text: (distanceKm * 1000).formatDistance(context.l10n),
+            )
+          : null,
     );
+    // return Material(
+    //   color: Colors.transparent,
+    //   child: SearchTapHandler(
+    //     onTap: _onSuggestTap,
+    //     splashColor: context.color.surfaceBaseSecondary,
+    //     child: ContentRow(
+    //       options: ContentRowOptions(
+    //         leadingIcon: Icon(
+    //           SystemIcons.search,
+    //           size: 24,
+    //           color: context.color.textAndIconsBaseTertiary,
+    //         ),
+    //         actionWidget: distanceKm != null
+    //             ? ContentRowActionOptions(actionText: (distanceKm * 1000).formatDistance(context.l10n))
+    //             : null,
+    //         title: suggest.title.text,
+    //         titleMatchedParts: _getSpans(suggest.title),
+    //         subtitle: subtitle,
+    //         subtitleMatchedParts: _getSpans(suggest.subtitle),
+    //         dividerEnabled: !isLast,
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
 

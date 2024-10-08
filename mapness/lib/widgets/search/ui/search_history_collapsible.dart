@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/dismissible/app_dismissible.dart';
-import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 
 class SearchHistoryCollapsible extends ConsumerStatefulWidget {
   const SearchHistoryCollapsible({
@@ -33,82 +32,71 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
   @override
   Widget build(BuildContext context) {
     final hasManyResults = widget.history.length > 10;
-
+    final contentColor = context.colorsV2.backgroundSurface4;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          ListView.builder(
-            primary: false,
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, index) {
-              final isLastItem = index == widget.history.length - 1;
-              final isFirst = index == 0;
-              return AppDismissible(
-                isFirst: isFirst,
-                isLast: isLastItem,
-                onDismiss: () => widget.onDelete(widget.history[index]),
-                elementKey: ValueKey(widget.history[index].hashKey),
-                child: Material(
-                  color: context.color.surfaceBaseSecondary,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(index == 0 ? RadiusBorder.xl : 0),
-                    bottom: Radius.circular(isLastItem && !hasManyResults ? RadiusBorder.xl : 0),
-                  ),
-                  child: SearchTapHandler(
-                    onTap: () => widget.onTap(widget.history[index]),
-                    child: ContentRow(
-                      options: ContentRowOptions(
-                        leadingIcon: AppIcons(
-                          iconData: GeneralIcons.timeQuarter,
-                          color: context.color.textAndIconsBaseSecondary,
-                          size: 24,
+          Material(
+            clipBehavior: Clip.antiAlias,
+            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+            color: contentColor,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+              child: Column(
+                children: [
+                  ListView.builder(
+                    primary: false,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context, index) {
+                      final isLastItem = index == widget.history.length - 1;
+                      final isFirst = index == 0;
+                      return AppDismissible(
+                        isFirst: isFirst,
+                        isLast: isLastItem,
+                        onDismiss: () => widget.onDelete(widget.history[index]),
+                        elementKey: ValueKey(widget.history[index].hashKey),
+                        child: ContentRowV2(
+                          backgroundColor: contentColor,
+                          onTap: () async {
+                            await Future.delayed(const Duration(milliseconds: 300));
+                            widget.onTap(widget.history[index]);
+                          },
+                          leading: AppIcons(
+                            iconData: GeneralIcons.timeQuarter,
+                            color: context.colorsV2.foregroundDefault,
+                            size: 24,
+                          ),
+                          text: ContentRowTextOptions(
+                            title: widget.history[index].title,
+                            subtitle: widget.history[index].address,
+                          ),
+                          isDividerEnabled: !isLastItem || hasManyResults,
                         ),
-                        title: widget.history[index].title,
-                        subtitle: widget.history[index].address,
-                        dividerEnabled: !isLastItem || hasManyResults,
+                      );
+                    },
+                    itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
+                  ),
+                  if (hasManyResults) ...[
+                    ContentRowV2(
+                      onTap: () => setState(() => _collapsed = !_collapsed),
+                      leading: AppIcons(
+                        iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
+                        color: context.colorsV2.foregroundDefault,
+                        size: 24,
+                      ),
+                      text: ContentRowTextOptions(
+                        title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
                       ),
                     ),
-                  ),
-                ),
-              );
-            },
-            itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
+                  ],
+                ],
+              ),
+            ),
           ),
-          if (hasManyResults) ...[
-            Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(start: 56),
-                child: Divider(
-                  thickness: 1,
-                  height: 2,
-                  color: context.color.surfaceBasePrimary,
-                ),
-              ),
-            ),
-            Material(
-              color: context.color.surfaceBaseSecondary,
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(RadiusBorder.xl),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: ContentRow(
-                  onTap: () => setState(() => _collapsed = !_collapsed),
-                  options: ContentRowOptions(
-                    leadingIcon: AppIcons(
-                      iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
-                      color: context.color.textAndIconsBaseSecondary,
-                      size: 24,
-                    ),
-                    title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          if (_collapsed) const SizedBox(height: 16),
           if (!_collapsed)
             Padding(
               padding: const EdgeInsets.symmetric(
