@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -47,7 +46,6 @@ class SearchItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     String subtitle = result.subtitle;
-    double? distanceKm;
     List<String> photosUrls = [];
 
     final objectId = result.id?.objectId ?? 0;
@@ -65,18 +63,9 @@ class SearchItem extends ConsumerWidget {
       };
     }
 
-    if (result.markerPosition != null && myLocation != null) {
-      distanceKm = CommonFunctions.distance(
-        result.markerPosition!.latitude,
-        result.markerPosition!.longitude,
-        myLocation!.latitude,
-        myLocation!.longitude,
-      );
-    }
-
     return Material(
       color: context.color.surfaceBaseSecondary,
-      shape: smoothBorder(CornerRadius.baseContainer),
+      shape: smoothBorder(RadiusBorder.xl),
       child: SearchTapHandler(
         onTap: onTap,
         child: Padding(
@@ -102,15 +91,19 @@ class SearchItem extends ConsumerWidget {
                           final photo = photosUrls[i];
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(
-                              CornerRadius.smallContainer,
+                              RadiusBorder.l,
                             ),
-                            child: CustomCachedNetworkImage(
+                            child: Image.network(
                               photo,
-                              imageWidth: 96,
+                              fit: BoxFit.cover,
+                              height: 96,
+                              width: 96,
+                              cacheHeight: 96,
+                              cacheWidth: 96,
                             ),
                           );
                         },
-                        separatorBuilder: (context, index) => Spacing.horizontalGapBetweenChipContent.widthBox,
+                        separatorBuilder: (context, index) => Spacing.$1x.widthBox,
                       ),
                     ),
                   ),
@@ -124,16 +117,27 @@ class SearchItem extends ConsumerWidget {
                       style: context.textStyle.callout,
                     ),
                   ),
-                  if (distanceKm != null)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(start: 12),
-                      child: Text(
-                        (distanceKm * 1000).formatDistance(context.l10n),
-                        style: context.textStyle.footNoteBold.copyWith(
-                          color: context.color.textAndIconsBaseSecondary,
-                        ),
-                      ),
-                    ),
+                  FutureBuilder<double?>(
+                      future: _calculateDistance(markerPoint: result.markerPosition, myLocationPoint: myLocation),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const SizedBox.shrink();
+                        }
+                        final distanceKm = snapshot.data;
+                        if (distanceKm == null || !context.mounted) {
+                          return const SizedBox.shrink();
+                        }
+
+                        return Padding(
+                          padding: const EdgeInsetsDirectional.only(start: 12),
+                          child: Text(
+                            (distanceKm * 1000).formatDistance(context.l10n),
+                            style: context.textStyle.footNoteBold.copyWith(
+                              color: context.color.textAndIconsBaseSecondary,
+                            ),
+                          ),
+                        );
+                      }),
                 ],
               ),
               const SizedBox(height: 2),
@@ -153,6 +157,23 @@ class SearchItem extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<double?> _calculateDistance({GeoPointWithElevationMessage? markerPoint, GeoPointMessage? myLocationPoint}) {
+    if (markerPoint == null || myLocationPoint == null) {
+      // Return null by default
+      return Future.value();
+    }
+
+    return Future.delayed(
+      Duration.zero,
+      () => CommonFunctions.distance(
+        result.markerPosition!.latitude,
+        result.markerPosition!.longitude,
+        myLocation!.latitude,
+        myLocation!.longitude,
       ),
     );
   }

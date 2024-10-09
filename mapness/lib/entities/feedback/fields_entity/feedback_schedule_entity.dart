@@ -1,41 +1,11 @@
 part of '../feedback_base_entity.dart';
 
-class FeedbackScheduleEntity extends FeedbackBaseEntity<IList<FeedbackScheduleWorkingHoursEntity>> {
+class FeedbackScheduleEntity extends FeedbackBaseEntity {
   const FeedbackScheduleEntity({
     required super.id,
     required super.isRequired,
     required super.isHidden,
-    IList<FeedbackScheduleWorkingHoursEntity>? value,
-  }) : super(value: value);
-
-  @override
-  bool get isValid {
-    if (isRequired) {
-      final days = value?.expand((e) => e.days).toList() ?? List.empty();
-      return days.isNotEmpty && (days.toSet().length == days.length);
-    }
-    return true;
-  }
-
-  @override
-  FeedbackScheduleEntity updatedValue(
-    IList<FeedbackScheduleWorkingHoursEntity> value,
-  ) =>
-      FeedbackScheduleEntity(
-        id: id,
-        isRequired: isRequired,
-        value: value,
-        isHidden: isHidden,
-      );
-
-  @override
-  dynamic valueToJson() {
-    if (value == null) {
-      return null;
-    }
-
-    return FeedbackSchedulePayloadDto.fromDomain(value!);
-  }
+  });
 }
 
 /// represents single day of the week
@@ -50,6 +20,11 @@ class FeedbackScheduleWorkingHoursEntity {
     required this.days,
     this.breaks,
   });
+
+  static const standard = FeedbackScheduleWorkingHoursEntity(
+    workingTime: TimeRange.standard,
+    days: ISet.empty(),
+  );
 
   FeedbackScheduleWorkingHoursEntity copyWith({
     TimeRange? workingTime,
@@ -80,20 +55,22 @@ class FeedbackScheduleWorkingHoursEntity {
 }
 
 /// represents time range interval
-sealed class TimeRange {
-  const TimeRange();
+
+@freezed
+sealed class TimeRange with _$TimeRange {
+  const TimeRange._();
+
+  /// represents time range interval if it's not all day
+  const factory TimeRange.startEnd({
+    required TimeOfDay start,
+    required TimeOfDay end,
+  }) = TimeRangeStartEnd;
+
+  /// represents all day time range
+  const factory TimeRange.allDay() = TimeRangeAllDay;
+
+  static const TimeRangeStartEnd standard = TimeRangeStartEnd(
+    start: TimeOfDay(hour: 9, minute: 0),
+    end: TimeOfDay(hour: 18, minute: 0),
+  );
 }
-
-/// represents time range interval if it's not all day
-class TimeRangeStartEnd extends TimeRange {
-  final TimeOfDay start;
-  final TimeOfDay end;
-
-  const TimeRangeStartEnd({
-    required this.start,
-    required this.end,
-  });
-}
-
-/// represents all day time range
-class TimeRangeAllDay extends TimeRange {}

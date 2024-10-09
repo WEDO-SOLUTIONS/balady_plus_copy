@@ -8,6 +8,7 @@ targets:
         generate_for:
           - "lib/entities/**.dart"
           - "lib/features/**/*.dart"
+          - "lib/shared/**/*.dart"
 
       json_serializable:
         options:

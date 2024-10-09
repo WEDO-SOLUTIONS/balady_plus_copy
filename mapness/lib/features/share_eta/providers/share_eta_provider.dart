@@ -104,13 +104,21 @@ class ShareEta extends _$ShareEta {
               ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
             }
 
+            int heading = location.heading.toInt();
+
+            if (heading < 0) {
+              heading = 0;
+            } else if (heading > 360) {
+              heading = 360;
+            }
+
             try {
               await EtaWebsocket().pushEtaInfo(
                 EtaInfoModel<EtaInfoPayload>(
                   type: EtaType.geolocation,
                   payload: EtaInfoPayload(
                     period: sendLocationIntervalSeconds * 1000, // in ms
-                    direction: location.heading.toInt(),
+                    direction: heading,
                     speed: location.speed,
                     lat: location.latitude,
                     lon: location.longitude,

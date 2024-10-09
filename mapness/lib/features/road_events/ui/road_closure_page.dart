@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_expression_function_bodies
-
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
@@ -10,8 +8,6 @@ import 'package:mapness/features/road_events/ui/widgets/closure_card.dart';
 import 'package:mapness/features/road_events/ui/widgets/closure_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-
-// const _roadClosuresName = 'road-closures';
 
 class RoadClosurePage extends ConsumerStatefulWidget {
   const RoadClosurePage({
@@ -72,30 +68,25 @@ class _RoadClosurePageState extends ConsumerState<RoadClosurePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Expanded(
-          child: ClosureControls(),
-        ),
-        ClosureCard(
-          // TODO(@alexstrnik) switch back to widget.title after SDK fix
-          title: context.l10n.roadBlocking,
-          description: widget.description,
-          workDuration: _formatSchedule(widget.startTime, widget.finishTime),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Column(
+        children: [
+          const Expanded(child: ClosureControls()),
+          ClosureCard(
+            // TODO(@alexstrnik) switch back to widget.title after SDK fix
+            title: context.l10n.roadBlocking,
+            description: widget.description,
+            workDuration: _formatSchedule(widget.startTime, widget.finishTime),
+          ),
+        ],
+      );
 
   String? _formatSchedule(DateTime? from, DateTime? to) {
     if (from == null) {
       return null;
     }
 
-    var schedule = from.hour > 10
-        ? RoadClosurePage._dateFormat.format(from)
-        : RoadClosurePage._dateFormatShort.format(from);
+    var schedule =
+        from.hour > 10 ? RoadClosurePage._dateFormat.format(from) : RoadClosurePage._dateFormatShort.format(from);
     if (to != null) {
       schedule +=
           ' – ${to.hour > 10 ? RoadClosurePage._dateFormat.format(to) : RoadClosurePage._dateFormatShort.format(to)}';

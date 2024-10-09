@@ -13,7 +13,13 @@ class SearchPagination extends _$SearchPagination {
     _currentPage = results.firstPage;
     ref.onDispose(() {
       if (_currentPage != null) {
-        ref.read(dgisControllerProvider).value?.releasePage(_currentPage!);
+        try {
+          ref.read(dgisControllerProvider).value?.releasePage(_currentPage!);
+        } catch (_) {
+          // ignore because page is already released
+        } finally {
+          _currentPage = null;
+        }
       }
     });
 
@@ -34,7 +40,12 @@ class SearchPagination extends _$SearchPagination {
       return false;
     }
 
-    await dgisController.releasePage(_currentPage!);
+    try {
+      await dgisController.releasePage(_currentPage!);
+    } catch (_) {
+      // ignore because page is already released
+    }
+
     _currentPage = page;
     state = [
       ...state,
@@ -43,5 +54,6 @@ class SearchPagination extends _$SearchPagination {
     return true;
   }
 
-  List<DirectoryObjectMessage> _mapPage(PageMessage message) => message.items.whereType<DirectoryObjectMessage>().toList();
+  List<DirectoryObjectMessage> _mapPage(PageMessage message) =>
+      message.items.whereType<DirectoryObjectMessage>().toList();
 }

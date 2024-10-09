@@ -47,7 +47,7 @@ class StoriesRepo extends _$StoriesRepo {
 
     final rawResponse = await dio.get(url, options: defaultCacheOptions);
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data as List<int>);
-    mixpanel?.track('StoriesRepo: _fetch');
+    await mixpanel?.track('StoriesRepo: _fetch');
     return storiesResponse;
   }
 }

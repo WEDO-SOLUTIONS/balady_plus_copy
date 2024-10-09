@@ -54,7 +54,7 @@ class Search extends _$Search {
       object: runtimeType,
       extras: {'value': query},
     );
-    mixpanel?.track('SearchQuery', properties: {'value': query});
+    await mixpanel?.track('SearchQuery', properties: {'value': query});
 
     if (query.isEmpty) {
       clear();
@@ -99,7 +99,7 @@ class Search extends _$Search {
               suggest: result,
               searchText: query,
             );
-      mixpanel?.track('Search: fetchSuggest');
+      await mixpanel?.track('Search: fetchSuggest');
     } on Exception catch (_) {
       state = SearchStateError(searchText: query);
       rethrow;
@@ -147,7 +147,7 @@ class Search extends _$Search {
               searchText: searchQuery,
               markerType: quickSearch.markerType,
             );
-      mixpanel?.track('Search: quickSearch');
+      await mixpanel?.track('Search: quickSearch');
     } on Exception catch (_) {
       state = SearchStateError(searchText: searchQuery);
       rethrow;
@@ -188,7 +188,7 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
-      mixpanel?.track('Search: searchByText');
+      await mixpanel?.track('Search: searchByText');
     } on Exception catch (_) {
       state = SearchStateError(searchText: query);
       rethrow;
@@ -230,7 +230,7 @@ class Search extends _$Search {
               results: results,
               searchText: text,
             );
-      mixpanel?.track('Search: searchByQuery');
+      await mixpanel?.track('Search: searchByQuery');
     } on Exception catch (_) {
       state = SearchStateError(searchText: text);
       rethrow;

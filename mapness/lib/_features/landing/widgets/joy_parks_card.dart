@@ -4,7 +4,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -22,7 +21,7 @@ class JoyParksCardV2 extends ConsumerWidget {
             onTap: () {
               controller.setState(ThreeStateBottomSheet.hidden);
 
-              ref.read(layersControlsProvider.notifier).toggleIwish();
+              // ref.read(layersControlsProvider.notifier).toggleIwish();
             },
             child: SizedBox(
               height: 118,

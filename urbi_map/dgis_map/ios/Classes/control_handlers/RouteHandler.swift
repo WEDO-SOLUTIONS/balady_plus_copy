@@ -51,7 +51,7 @@ class RouteHandler {
         )
         
         self.trafficRouter = TrafficRouter.init(context: context)
-
+        
         self.publicTransportHandler = PublicTransportHandler(eventChannel: eventChannel, routeHandler: self)
         
         cancelable.append(self.routeEditor.routesInfoChannel.sink { [weak self] info in
@@ -66,9 +66,9 @@ class RouteHandler {
             }
             self?.onActiveRouteChanged(index)
         })
-
+        
         self.map.addSource(source: routeEditorSource)
-
+        
     }
     
     func cancel() {
@@ -148,7 +148,7 @@ class RouteHandler {
             return
         }
         
-        let routeSearchOptions = getRouteSearchOptions(opts: params.options)
+        let routeSearchOptions = getRouteSearchOptions(opts: params.options, searchParams: params.searchParams)
         self.options = routeSearchOptions
         
         self.finishPoint = finishPoint
@@ -160,28 +160,42 @@ class RouteHandler {
             intermediatePoints: []
         )
         routeEditor.setRouteParams(routeParams: routeEditorParams)
-
+        
         let showOnlyActiveRoute: Bool
-
+        
         if let showOnlyActive = params.showOnlyActiveRoute?.boolValue {
             showOnlyActiveRoute = showOnlyActive
         } else {
             showOnlyActiveRoute = params.options == .publicTransport
         }
-
+        
         routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: showOnlyActiveRoute)
     }
     
-    private func getRouteSearchOptions(opts: RouteSearchOptionsMessage) -> RouteSearchOptions {
+    private func getRouteSearchOptions(opts: RouteSearchOptionsMessage, searchParams: CarRouteSearchOptionParamsMessage?) -> RouteSearchOptions {
         switch opts {
         case .car:
-            return RouteSearchOptions.car(CarRouteSearchOptions())
+            let carOptions:CarRouteSearchOptions;
+            if (searchParams != nil) {
+                carOptions =
+                CarRouteSearchOptions(avoidTollRoads: searchParams?.avoidTollRoads as! Bool, avoidUnpavedRoads: searchParams?.avoidUnpavedRoads as! Bool)
+            } else {
+                carOptions = CarRouteSearchOptions()
+            }
+            return RouteSearchOptions.car(carOptions)
         case .bicycle:
             return RouteSearchOptions.bicycle(BicycleRouteSearchOptions())
         case .pedestrian:
             return RouteSearchOptions.pedestrian(PedestrianRouteSearchOptions())
         case .truck:
-            return RouteSearchOptions.truck(TruckRouteSearchOptions(car: CarRouteSearchOptions()))
+            let carOptions:CarRouteSearchOptions;
+            if (searchParams != nil) {
+                carOptions =
+                CarRouteSearchOptions(avoidTollRoads: searchParams?.avoidTollRoads as! Bool, avoidUnpavedRoads: searchParams?.avoidUnpavedRoads as! Bool)
+            } else {
+                carOptions = CarRouteSearchOptions()
+            }
+            return RouteSearchOptions.truck(TruckRouteSearchOptions(car: carOptions))
         case .scooter:
             return RouteSearchOptions.scooter(ScooterRouteSearchOptions())
         case .publicTransport:
@@ -189,7 +203,14 @@ class RouteHandler {
                 transportTypes: .init()
             ))
         case .taxi:
-            return RouteSearchOptions.taxi(TaxiRouteSearchOptions(car: CarRouteSearchOptions()))
+            let carOptions:CarRouteSearchOptions;
+            if (searchParams != nil) {
+                carOptions =
+                CarRouteSearchOptions(avoidTollRoads: searchParams?.avoidTollRoads as! Bool, avoidUnpavedRoads: searchParams?.avoidUnpavedRoads as! Bool)
+            } else {
+                carOptions = CarRouteSearchOptions()
+            }
+            return RouteSearchOptions.taxi(TaxiRouteSearchOptions(car: carOptions))
         }
     }
     
@@ -197,7 +218,7 @@ class RouteHandler {
         guard let index else {
             return
         }
-
+        
         eventChannel.success([
             "event": Events.onActiveRouteChanged,
             "index": index.value
@@ -241,7 +262,7 @@ class RouteHandler {
                 PointGeometry(point: entry.value)
             }
         }.flatMap { $0 }
-
+        
         let geometry = ComplexGeometry(geometries: geometries)
         let position = calcPosition(camera: map.camera, geometry: geometry)
         
@@ -257,7 +278,7 @@ class RouteHandler {
             "routes": mappedRoutes
         ])
     }
-
+    
     
     
     func getActivePublicTransportRoute() -> TrafficRoute? {
@@ -273,10 +294,10 @@ class RouteHandler {
             !$0.route.publicTransportTransfers.isEmpty
         }
     }
-
+    
     func moveCameraToActiveRouteIndex(_ index: UInt64) {
-                
-       let route = routeEditor.routesInfo.routes[Int(index)]
+        
+        let route = routeEditor.routesInfo.routes[Int(index)]
         
         let geometries = route.route.geometry.entries.map { entry in
             PointGeometry(point: entry.value)
@@ -284,12 +305,12 @@ class RouteHandler {
         
         let geometry = ComplexGeometry(geometries: geometries)
         let position = calcPosition(camera: map.camera, geometry: geometry)
-
-         // We need to update zoom to make route contain the screen
+        
+        // We need to update zoom to make route contain the screen
         let newZoom = position.zoom.value - 1.0
         
         var updatedPosition = map.camera.position
-
+        
         updatedPosition.zoom = Zoom(value: newZoom)
         
         
@@ -308,7 +329,7 @@ class RouteHandler {
     {
         let startSearchPoint: RouteSearchPoint
         let finishSearchPoint: RouteSearchPoint
-
+        
         if let startPoint {
             startSearchPoint = startPoint
         } else if let lastLocation = self.locationService.lastLocation?.coordinates {
@@ -346,14 +367,14 @@ class RouteHandler {
             )
             return // Возвращаем nil или промежуточное значение в случае ошибки получения стартовой точки
         }
-
+        
         let briefRouteInfoSearchPoints = BriefRouteInfoSearchPoints(startPoint: startSearchPoint, finishPoint: finishSearchPoint)
         
         self.cancelable.append(trafficRouter.findBriefRouteInfos(
             searchPoints: [briefRouteInfoSearchPoints],
             routeSearchOptions: routeSearchOptions
         )
-        .sink(receiveValue: {
+            .sink(receiveValue: {
                 [weak self] response in
                 guard let self = self else {
                     completion(
@@ -365,17 +386,17 @@ class RouteHandler {
                     )
                     return
                 }
-            
-            
-            let briefRouteInfoMessages = response.compactMap{v in
-               let result =  v?.toBriefRouteInfoMessage()
-                return result
-            }
-            
-            completion(briefRouteInfoMessages, nil)
-            
-
-        }, failure: { error in
+                
+                
+                let briefRouteInfoMessages = response.compactMap{v in
+                    let result =  v?.toBriefRouteInfoMessage()
+                    return result
+                }
+                
+                completion(briefRouteInfoMessages, nil)
+                
+                
+            }, failure: { error in
                 completion(
                     nil,
                     FlutterError(

@@ -1,7 +1,10 @@
+// ignore_for_file: prefer_expression_function_bodies
+
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/shared/extensions/time_of_day_extension.dart';
 import 'package:mapness/shared/lib/weekday_entity.dart';
 
 part 'feedback_schedule_payload_dto.g.dart';
@@ -16,6 +19,7 @@ class FeedbackSchedulePayloadDto {
   final _WH? thu;
   final _WH? fri;
   final _WH? sat;
+  @JsonKey(name: 'San')
   final _WH? sun;
 
   const FeedbackSchedulePayloadDto({
@@ -33,15 +37,44 @@ class FeedbackSchedulePayloadDto {
   ) {
     final weekDayMap = Map.fromEntries(
       entities.expand(
-        (wh) => wh.days.map(
-          (day) => MapEntry(
-            day,
-            FeedbackWorkingHoursPayloadDto.fromDomain(
-              wh.workingTime,
-              wh.breaks,
-            ),
-          ),
-        ),
+        (wh) {
+          final range = switch (wh.workingTime) {
+            TimeRangeStartEnd() => wh.workingTime as TimeRangeStartEnd,
+            TimeRangeAllDay() => const TimeRangeStartEnd(
+                start: TimeOfDay(hour: 0, minute: 0),
+                end: TimeOfDay(hour: 23, minute: 59),
+              ),
+          };
+
+          /// working hours segment - breaks segment
+          final breaks = wh.breaks;
+          final List<TimeRangePayloadDto> listOfWorkingHours;
+          if (breaks != null) {
+            listOfWorkingHours = [
+              TimeRangePayloadDto(
+                from: range.start.formatTime(),
+                to: breaks.start.formatTime(),
+              ),
+              TimeRangePayloadDto(
+                from: breaks.end.formatTime(),
+                to: range.end.formatTime(),
+              ),
+            ];
+          } else {
+            listOfWorkingHours = [TimeRangePayloadDto.fromDomain(range)];
+          }
+
+          return wh.days.map(
+            (day) {
+              return MapEntry(
+                day,
+                FeedbackWorkingHoursPayloadDto(
+                  workingHours: listOfWorkingHours,
+                ),
+              );
+            },
+          );
+        },
       ),
     );
 
@@ -60,51 +93,34 @@ class FeedbackSchedulePayloadDto {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createFactory: false)
-class FeedbackWorkingHoursPayloadDto extends FromToHoursPayloadDto {
-  final List<FromToHoursPayloadDto> breaks;
+class FeedbackWorkingHoursPayloadDto {
+  final List<TimeRangePayloadDto> workingHours;
 
   const FeedbackWorkingHoursPayloadDto({
-    required super.from,
-    required super.to,
-    required this.breaks,
+    required this.workingHours,
   });
 
-  factory FeedbackWorkingHoursPayloadDto.fromDomain(TimeRange timeRange, TimeRangeStartEnd? breaks) {
-    final range = switch (timeRange) {
-      TimeRangeStartEnd() => timeRange,
-      TimeRangeAllDay() => const TimeRangeStartEnd(
-          start: TimeOfDay(hour: 0, minute: 0),
-          end: TimeOfDay(hour: 23, minute: 59),
-        ),
-    };
-
-    return FeedbackWorkingHoursPayloadDto(
-      from: range.start.toString(),
-      to: range.end.toString(),
-      breaks: [
-        if (breaks != null) FromToHoursPayloadDto.fromDomain(breaks),
-      ],
-    );
+  factory FeedbackWorkingHoursPayloadDto.fromList(List<TimeRangePayloadDto> hours) {
+    return FeedbackWorkingHoursPayloadDto(workingHours: hours);
   }
 
-  @override
   Map<String, dynamic> toJson() => _$FeedbackWorkingHoursPayloadDtoToJson(this);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createFactory: false)
-class FromToHoursPayloadDto {
+class TimeRangePayloadDto {
   final String from;
   final String to;
 
-  const FromToHoursPayloadDto({
+  const TimeRangePayloadDto({
     required this.from,
     required this.to,
   });
 
-  factory FromToHoursPayloadDto.fromDomain(TimeRangeStartEnd timeRange) => FromToHoursPayloadDto(
-        from: timeRange.start.toString(),
-        to: timeRange.end.toString(),
+  factory TimeRangePayloadDto.fromDomain(TimeRangeStartEnd timeRange) => TimeRangePayloadDto(
+        from: timeRange.start.formatTime(),
+        to: timeRange.end.formatTime(),
       );
 
-  Map<String, dynamic> toJson() => _$FromToHoursPayloadDtoToJson(this);
+  Map<String, dynamic> toJson() => _$TimeRangePayloadDtoToJson(this);
 }
