@@ -30,7 +30,10 @@ class FeedbackImages extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FeedbackLabel(text: field.label),
+          FeedbackLabel(
+            text: field.label,
+            isRequired: field.isRequired,
+          ),
           FormBuilderField<IList<FileUpload>>(
             name: field.id,
             valueTransformer: (value) => value
