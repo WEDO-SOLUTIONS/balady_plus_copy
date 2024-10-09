@@ -17,9 +17,7 @@ import 'package:mapness/_features/landing/widgets/qibla_card.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/landing/widgets/weather_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/app_routes.gr.dart';
-import 'package:mapness/app/routes/photo_viewer.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -110,7 +108,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                     child: PlacesForCart(
                       title: context.l10n.placesForShopping,
                       icon: General32Icons.shoppingLRTL,
-                      onTap: () => _openSearch(QuickFilter.shopping),
+                      onTap: () => _openSearch(context, QuickFilter.shopping),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -118,7 +116,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                     child: PlacesForCart(
                       title: context.l10n.placesForEatingOut,
                       icon: General32Icons.restourantLRTL,
-                      onTap: () => _openSearch(QuickFilter.eatOut),
+                      onTap: () => _openSearch(context, QuickFilter.eatOut),
                     ),
                   ),
                 ],

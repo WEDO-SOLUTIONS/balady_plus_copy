@@ -7,7 +7,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
-import 'package:mapness/app/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -282,9 +282,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   Future<void> _setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen((_) {
-      final router = AutoRouter.of(context);
-
-      if (router.isRouteActive(SearchRoute.name)) {
+      if (context.router.isRouteActive(SearchRoute.name)) {
         _dgisSheetController.animateTo(Expansion.collapsed);
         _unfocusOnScroll();
       }
