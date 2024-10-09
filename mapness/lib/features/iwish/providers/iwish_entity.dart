@@ -23,13 +23,11 @@ class _IwishEntity extends _$IwishEntity {
   }
 
   Future<bool> submitFeedback(IwishFeedbackEntity feedback) async {
-    Metrics.logEvent('IwishFeedbackEntity/submitFeedback',
-        object: runtimeType,
-        extras: {
-          'feedback': feedback.mood.toString(),
-          'tags': feedback.tags.toString(),
-          'comment': feedback.comment,
-        });
+    Metrics.logEvent('IwishFeedbackEntity/submitFeedback', object: runtimeType, extras: {
+      'feedback': feedback.mood.toString(),
+      'tags': feedback.tags.toString(),
+      'comment': feedback.comment,
+    });
     mixpanel?.timeEvent('IwishFeedbackEntity: submitFeedback');
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = pb.IWishFeedbackRequest(
@@ -48,12 +46,11 @@ class _IwishEntity extends _$IwishEntity {
       return true;
     } on DioException catch (e) {
       if (kDebugMode) {
-        final error =
-            pb.ErrorResponse.fromBuffer(e.response?.data as List<int>);
+        final error = pb.ErrorResponse.fromBuffer(e.response?.data as List<int>);
         print(error.toDebugString());
       }
     }
-    mixpanel?.track('IwishFeedbackEntity: submitFeedback');
+    await mixpanel?.track('IwishFeedbackEntity: submitFeedback');
     return false;
   }
 
@@ -63,8 +60,7 @@ class _IwishEntity extends _$IwishEntity {
 
     final raw = await dio.get('iwish/$iwishId');
 
-    final response =
-        pb.IWishItemResponse.fromBuffer(raw.data as List<int>).object;
+    final response = pb.IWishItemResponse.fromBuffer(raw.data as List<int>).object;
     final point = response.location.point;
     debugPrint('${response.toProto3Json()}');
 

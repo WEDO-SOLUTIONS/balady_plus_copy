@@ -72,14 +72,15 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     for (final frame in widget.story.frames) {
-      if (frame.isAssetImage == true) {
-        continue;
-      }
       if (!context.mounted) {
         return;
       }
       final imageUrl = frame.imageUrlForLocale(Directionality.of(context));
       if (imageUrl != null) {
+        if (frame.isAssetImage == true) {
+          precacheImage(AssetImage(imageUrl), context);
+          continue;
+        }
         // Preload images for better performance
         CachedNetworkImageProvider(imageUrl).resolve(ImageConfiguration.empty);
       }

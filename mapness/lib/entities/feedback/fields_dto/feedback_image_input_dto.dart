@@ -13,7 +13,7 @@ class FeedbackImageInputDto extends FeedbackBaseDto {
     required this.label,
     required this.size,
     required this.format,
-    required super.isHidden,
+    super.isHidden = false,
   });
 
   @override

@@ -1,6 +1,6 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mapness/entities/feedback/feedback_field_payload_entity.dart';
+import 'package:mapness/entities/feedback/dto/feedback_field_payload_dto.dart';
 
 part 'feedback_form_payload_entity.freezed.dart';
 
@@ -9,6 +9,6 @@ class FeedbackFormPayloadEntity with _$FeedbackFormPayloadEntity {
   const factory FeedbackFormPayloadEntity({
     required String category,
     required int objectId,
-    required IList<FeedbackFieldPayloadEntity> fields,
+    required IList<FeedbackFieldPayloadDto> fields,
   }) = _FeedbackFormPayloadEntity;
 }

@@ -13,13 +13,11 @@ part 'happiness_repository.g.dart';
 class _HappinessRepository extends _$HappinessRepository {
   // returns should close or not
   Future<void> submitFeedback(HappinessState feedback) async {
-    Metrics.logEvent(MetricsConstants.exploreKeys.happinessMapSubmitFeedback,
-        object: runtimeType,
-        extras: {
-          'feedback': feedback.feedback.toString(),
-          'tags': feedback.tags.toString(),
-          'coordinates': feedback.coordinates.toString(),
-        });
+    Metrics.logEvent(MetricsConstants.exploreKeys.happinessMapSubmitFeedback, object: runtimeType, extras: {
+      'feedback': feedback.feedback.toString(),
+      'tags': feedback.tags.toString(),
+      'coordinates': feedback.coordinates.toString(),
+    });
     mixpanel?.timeEvent('Happiness map: submitFeedback');
     final dio = await ref.read(dGisNetworkProvider.future);
     state = const AsyncLoading();
@@ -40,7 +38,7 @@ class _HappinessRepository extends _$HappinessRepository {
       );
       state = const AsyncData(true);
 
-      mixpanel?.track('Happiness map: submitFeedback');
+      await mixpanel?.track('Happiness map: submitFeedback');
     } on DioException {
       state = AsyncError(
         'Dio error',

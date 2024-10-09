@@ -5,22 +5,21 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SsoUserInfo extends Equatable {
-  const SsoUserInfo({
-    this.name,
-    this.phone,
-    this.mail,
-    this.arName,
-    this.enName,
-    this.idNo,
-    this.nid,
-    this.idType,
-    this.sex,
-    this.dob,
-    this.sname,
-    this.sub,
-    this.nationality,
-    this.tnm,
-  });
+  const SsoUserInfo(
+      {this.name,
+      this.phone,
+      this.mail,
+      this.arName,
+      this.enName,
+      this.idNo,
+      this.nid,
+      this.idType,
+      this.sex,
+      this.dob,
+      this.sname,
+      this.sub,
+      this.nationality,
+      this.tnm});
 
   final String? name;
   final String? phone;
@@ -115,9 +114,9 @@ class SsoUserInfo extends Equatable {
 
   String getFirstAndLastName() {
     if (CommonFunctions.isAppAR) {
-      return "${getFirstName()} ${getLastName()}";
+      return getFirstName() + " " + getLastName();
     } else {
-      return "${getFirstNameEn()} ${getLastNameEn()}";
+      return getFirstNameEn() + " " + getLastNameEn();
     }
   }
 
@@ -201,12 +200,15 @@ class SsoUserInfo extends Equatable {
   }
 
   String getEmail() {
-    String email = mail?.replaceAll("\u200e", '').replaceAll("\u200f", '').trim() ?? "";
+    String email =
+         mail?.replaceAll("\u200e", '').replaceAll("\u200f", '').trim() ?? "";
     return email;
   }
 
   String getPhone() {
-    return phone != null ? (!phone!.startsWith("0") ? "0${phone!}" : phone!) : "";
+    return phone != null
+         ? (!phone!.startsWith("0") ? "0" + phone! : phone!)
+         : "";
   }
 
   String getGender() {

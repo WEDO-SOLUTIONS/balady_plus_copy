@@ -34,7 +34,7 @@ class JobStatistic extends _$JobStatistic {
     );
 
     final jobStatistic = jobResponse.data?.result;
-    mixpanel?.track(_metricEventName);
+    await mixpanel?.track(_metricEventName);
     if (jobResponse.isSuccess) {
       return jobStatistic;
     } else {

@@ -58,13 +58,26 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       }
     }
 
-    final size = ref.read(mediaQueryInfoProvider)?.size;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => setCameraPadding(),
+    );
+  }
+
+  void setCameraPadding() {
+    final mediaQuery = ref.read(mediaQueryInfoProvider);
+    final devicePixelRatio = mediaQuery?.devicePixelRatio ?? 0;
+    final size = mediaQuery?.size;
+    final height = size?.height ?? 0;
+    final width = size?.width ?? 0;
+    final physicalPixelsHeight = height * devicePixelRatio;
+    final physicalPixelsWidth = width * devicePixelRatio;
+
     ref.read(cameraPositionProvider.notifier).setPadding(
           CameraSetPaddingMessage(
-            leftPadding: 60,
-            topPadding: 120,
-            rightPadding: 240,
-            bottomPadding: (size?.height ?? 0 / 3).ceil(),
+            leftPadding: (physicalPixelsWidth / 8).ceil(),
+            topPadding: (physicalPixelsHeight / 5).ceil(),
+            rightPadding: (physicalPixelsWidth / 5).ceil(),
+            bottomPadding: (physicalPixelsHeight / 3).ceil(),
           ),
         );
   }

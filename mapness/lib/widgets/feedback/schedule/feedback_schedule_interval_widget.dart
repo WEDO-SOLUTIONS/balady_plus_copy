@@ -12,15 +12,16 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
   final void Function()? onDelete;
   final FeedbackScheduleWorkingHoursEntity workingHours;
   final void Function() onDaysChange;
-  final void Function(FeedbackScheduleWorkingHoursEntity) onWorkingHoursChange;
+  final void Function() onWorkingHoursChange;
+  final void Function() onBreaksChange;
 
-  const FeedbackScheduleIntervalWidget({
-    required this.onDelete,
-    required this.onDaysChange,
-    required this.onWorkingHoursChange,
-    required this.workingHours,
-    Key? key,
-  }) : super(key: key);
+  const FeedbackScheduleIntervalWidget(
+      {required this.onDelete,
+      required this.onDaysChange,
+      required this.onWorkingHoursChange,
+      required this.workingHours,
+      required this.onBreaksChange,
+      super.key});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -37,12 +38,12 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
               children: [
                 InputDropDownList(
                   label: workingHours.workingTime.formatTimeRange(),
-                  onTap: () {},
+                  onTap: onWorkingHoursChange,
                 ),
                 const SizedBox(width: 6),
                 InputDropDownList(
                   label: _formatBreaks(context.l10n, workingHours.breaks),
-                  onTap: () {},
+                  onTap: onBreaksChange,
                 ),
                 const SizedBox(width: 6),
                 if (onDelete != null)

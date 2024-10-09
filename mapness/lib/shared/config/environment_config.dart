@@ -43,8 +43,8 @@ class EnvironmentConfig {
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
 
-        /// swagger: https://momrah-balady-dev-discrepancy.on-premise.2gis.dev/docs/
-        feedbackApi: 'https://momrah-balady-dev-discrepancy.on-premise.2gis.dev/',
+        /// swagger: https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/docs/
+        feedbackApi: 'https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/api/2.0/',
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -55,7 +55,7 @@ class EnvironmentConfig {
         twinsApi: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
-        feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/',
+        feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/2.0/',
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -66,7 +66,7 @@ class EnvironmentConfig {
         twinsApi: 'https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1',
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://geostream-urbi-lifestyle.momrah.gov.sa',
-        feedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/',
+        feedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/api/2.0/',
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -79,7 +79,7 @@ class EnvironmentConfig {
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
 
-        /// swagger: https://momrah-balady-discrepancy.on-premise.2gis.dev/docs/
-        feedbackApi: 'https://momrah-balady-discrepancy.on-premise.2gis.dev/',
+        /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
+        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae/api/2.0/',
       );
 }

@@ -41,6 +41,10 @@ class MapSearchResults extends ConsumerWidget {
         myLocation:
             myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
         onTap: () {
+          if (item.id == null) {
+            return;
+          }
+
           Metrics.logEventAdvanced(
             MetricsConstants.searchKeys.searchResult,
             group: MetricsConstants.searchTag,

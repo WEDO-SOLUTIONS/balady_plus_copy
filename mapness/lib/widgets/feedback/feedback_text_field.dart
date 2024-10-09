@@ -1,16 +1,16 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
 
 class FeedbackInput extends StatelessWidget {
-  final void Function(String) onValueChange;
   final FeedbackTextEntity field;
 
   const FeedbackInput({
-    required this.onValueChange,
     required this.field,
     super.key,
   });
@@ -24,36 +24,42 @@ class FeedbackInput extends StatelessWidget {
       FeedbackTextType.text => TextInputType.text,
       FeedbackTextType.email => TextInputType.emailAddress,
     };
-
     final allowedInputPattern = switch (field.type) {
       FeedbackTextType.email => RegExp(r'[a-zA-Z0-9\._+\-@]'),
-      FeedbackTextType.phone => RegExp(r'[0-9]'),
       FeedbackTextType.url => RegExp(r'[a-zA-Z0-9./:?_\-]'),
       _ => null,
     };
 
-    return BaladyInput(
-      labelText: field.label,
-      hintText: field.hint,
-      labelStyle: context.textStyleV3.captionMediumRegular,
-      initialValue: field.value,
-      fillColor: context.colorsV2.backgroundSurface1,
-      onValidate: (value) => _maybeValidationError(context.l10n, value),
-      allowedInputPattern: allowedInputPattern,
-      isRequired: field.isRequired,
-      maxLength: field.maxLenght,
-      keyboardType: keyboardType,
-      maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
-      onChanged: (value) {
-        onValueChange(value);
-      },
-    );
-  }
+    final isRequired = field.isRequired;
 
-  String? _maybeValidationError(AppLocalizations l10n, String? value) {
-    if (field.updatedValue(value).isValid) {
-      return null;
-    }
-    return l10n.feedbackTextFieldWrongFormat;
+    return FormBuilderField<String>(
+      name: field.id,
+      validator: FormBuilderValidators.compose([
+        switch (field.type) {
+          FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: isRequired),
+          FeedbackTextType.phone => FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
+          FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: isRequired),
+          _ when isRequired => FormBuilderValidators.required(),
+          _ => (_) => null,
+        },
+      ]),
+      builder: (fieldState) => BaladyInput(
+        labelText: field.label,
+        hintText: field.hint,
+        labelStyle: context.textStyleV3.captionMediumRegular,
+        fillColor: context.colorsV2.backgroundSurface1,
+        onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
+        allowedInputPattern: allowedInputPattern,
+        isRequired: field.isRequired,
+        maxLength: field.maxLenght,
+        keyboardType: keyboardType,
+        maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
+        onChanged: fieldState.didChange,
+        inputFormatters: [
+          if (field.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
+        ],
+      ),
+      // validator: ,
+    );
   }
 }
