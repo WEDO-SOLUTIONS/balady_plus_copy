@@ -22,7 +22,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
-import 'package:mapness/app/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/poi_map.dart';
@@ -46,7 +46,6 @@ import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
-import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -186,52 +185,43 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     return Directionality(
       textDirection: direction,
-      child: Stack(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: const MapPage(),
-          ),
-          Consumer(
-            builder: (context, ref, child) {
-              final colorScheme = ref.watch(colorSchemeProvider);
+      child: Consumer(
+        builder: (context, ref, child) {
+          final colorScheme = ref.watch(colorSchemeProvider);
 
-              return MaterialApp.router(
-                routerConfig: ref.read(appRouterProvider).config(
-                      navigatorObservers: () => [
-                        RoutesObserver(ref: ref),
-                      ],
-                    ),
-                theme: ThemeData(
-                  scaffoldBackgroundColor: Colors.transparent,
-                  dividerColor: Colors.grey[400],
-                  useMaterial3: false,
-                  extensions: <ThemeExtension<dynamic>>[
-                    if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
-                    if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
-                    AppColorsThemeExt.palette(colorScheme, isDark: false),
-                    AppColorsThemeV2.palette(isDark: false),
-                    AppStaticColorsThemeExt.palette(colorScheme)
+          return MaterialApp.router(
+            routerConfig: ref.read(appRouterProvider).config(
+                  navigatorObservers: () => [
+                    RoutesObserver(ref: ref),
                   ],
                 ),
-                builder: (context, child) => child != null
-                    ? LoadingOverlay(
-                        child: ToastOverlay(
-                          child: GlobalScopes(
-                            child: child,
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-                locale: language.locale,
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                supportedLocales: AppLocalizations.supportedLocales,
-                debugShowCheckedModeBanner: false,
-              );
-            },
-          ),
-        ],
+            theme: ThemeData(
+              scaffoldBackgroundColor: Colors.transparent,
+              dividerColor: Colors.grey[400],
+              useMaterial3: false,
+              extensions: <ThemeExtension<dynamic>>[
+                if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
+                if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
+                AppColorsThemeExt.palette(colorScheme, isDark: false),
+                AppColorsThemeV2.palette(isDark: false),
+                AppStaticColorsThemeExt.palette(colorScheme)
+              ],
+            ),
+            builder: (context, child) => child != null
+                ? LoadingOverlay(
+                    child: ToastOverlay(
+                      child: GlobalScopes(
+                        child: child,
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+            locale: language.locale,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
     );
   }

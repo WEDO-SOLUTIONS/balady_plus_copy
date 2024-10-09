@@ -1,10 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/others/transparent_pointer.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/providers/map/selected_marker.dart';
 
+@RoutePage()
 class MapPage extends ConsumerStatefulWidget {
   const MapPage({super.key});
 
@@ -35,16 +37,8 @@ class _MapPageState extends ConsumerState<MapPage>
     if (_needRefresh && state == AppLifecycleState.resumed) {
       setState(() {
         _needRefresh = false;
-        // _keyIndex += 1;
       });
     }
-
-    // if (state == AppLifecycleState.paused) {
-    //   MapViewModel mapViewModel =
-    //       Provider.of<MapViewModel>(context, listen: false);
-
-    //   mapViewModel.saveMapState();
-    // }
   }
 
   @override
@@ -60,7 +54,6 @@ class _MapPageState extends ConsumerState<MapPage>
     super.build(context);
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
-    ref.watch(selectedMarkerProvider);
     final settings = MapObjectManagerSettings.selectedMarker();
     ref.watch(
       mapObjectManagerProvider(
@@ -69,12 +62,18 @@ class _MapPageState extends ConsumerState<MapPage>
       ).notifier,
     );
 
-    return DgisMap(
-      key: ValueKey(_keyIndex),
-      androidUseExpensive: true,
-      onMapCreated: (controller) async {
-        await dgisController.onMapCreated(controller);
-      },
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        DgisMap(
+          key: ValueKey(_keyIndex),
+          androidUseExpensive: true,
+          onMapCreated: (controller) async {
+            await dgisController.onMapCreated(controller);
+          },
+        ),
+        const TransparentPointer(child: AutoRouter()),
+      ],
     );
   }
 

@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/dashboard.dart';
 import 'package:mapness/_features/landing/landing_state_mapper.dart';
+import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
@@ -131,17 +132,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   }
 
                   return GestureDetector(
-                    onTapDown: (_) {
-                      if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-                        bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
-                    onTapUp: (_) {
-                      if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-                        bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
-                    onTap: () {
+                    behavior: HitTestBehavior.translucent,
+                    onPanDown: (details) {
                       if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
                         bottomSheetController.setState(ThreeStateBottomSheet.hidden);
                       }
@@ -149,7 +141,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   );
                 },
               ),
-              // MapDashboardControls(bottomSheetController, key: const ValueKey('MapDashboardControls')),
+              MapDashboardControls(bottomSheetController, key: const ValueKey('MapDashboardControls')),
               Dashboard(bottomSheetController: bottomSheetController),
             ],
           ),
@@ -159,7 +151,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _objectTapListener(TapEvent event) {
-    print('_objectTapListener $event');
     final currentRoute = ref.watch(currentRouteProvider);
 
     const routingRoutePath = RoutingRoutesRoute.path;
