@@ -1,20 +1,21 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/widgets/lifestyle_layers/layers_sheet_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_details_content.dart';
 
-class LayersSheet extends ConsumerStatefulWidget {
-  const LayersSheet({super.key});
+@RoutePage()
+class LayersSheetPage extends ConsumerStatefulWidget {
+  const LayersSheetPage({super.key});
 
   @override
-  ConsumerState<LayersSheet> createState() => LayersSheetState();
+  ConsumerState<LayersSheetPage> createState() => LayersSheetPageState();
 }
 
-class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProviderStateMixin {
+class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTickerProviderStateMixin {
   static const _layersPanelMaxHeight = .3;
   static const _parkingPanelMaxHeight = .35;
   static const _duration = Duration(milliseconds: 250);
@@ -173,7 +174,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> with SingleTickerProvi
   void _layersControllerListener() {
     if (_isShown && _layersController.size < .01) {
       _isShown = false;
-      context.pop();
+      context.router.back();
     }
   }
 

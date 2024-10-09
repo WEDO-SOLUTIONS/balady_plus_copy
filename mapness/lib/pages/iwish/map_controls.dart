@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,7 +15,7 @@ import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/weather/widgets/weather_control.dart';
-import 'package:mapness/app/routes/kiblah.dart';
+import 'package:mapness/app/app_routes.gr.dart';
 import 'package:mapness/app/routes/weather.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -75,7 +76,7 @@ class MapControls extends ConsumerWidget {
 
                             await location.checkLocationPermission().then((allowed) {
                               if (allowed) {
-                                const KiblahRoute().push(context);
+                                context.router.push(const KiblahRoute());
                               }
                             });
                           },

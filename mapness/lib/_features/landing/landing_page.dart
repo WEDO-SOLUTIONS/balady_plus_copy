@@ -17,7 +17,6 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
-import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
@@ -112,6 +111,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
+
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
@@ -162,9 +162,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       return;
     } else if (goRouter.isCurrentRoute(RoutingRoutesRoute.path)) {
       return;
-    } else if (goRouter.isCurrentRoute(SearchRoute.path)) {
-      return;
     }
+
     if (event is ObjectTapEvent) {
       Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
           group: MetricsConstants.poiTag,

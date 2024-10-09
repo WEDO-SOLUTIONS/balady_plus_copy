@@ -3,8 +3,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/app/app_routes.gr.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -70,7 +69,7 @@ class KiblahPage extends ConsumerWidget {
                   primaryIcon: GeneralIcons.mosq,
                   primaryLabel: context.l10n.mosquesNearYou,
                   buttonColorScheme: ButtonColorScheme.primary,
-                  onTap: () => _onMosquesNearTap(ref),
+                  onTap: () => _onMosquesNearTap(context, ref),
                 ),
               ),
             ),
@@ -80,8 +79,8 @@ class KiblahPage extends ConsumerWidget {
     );
   }
 
-  void _onMosquesNearTap(WidgetRef ref) {
-    ref.read(goRouterProvider).replace(const SearchRoute(requestFocus: false).location);
+  void _onMosquesNearTap(BuildContext context, WidgetRef ref) {
+    context.router.replace(SearchRoute(requestFocus: false));
     // TODO(Sergei): research and understand why searchProvider keep alive only after first search is performed, then refactor this
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(QuickFilter.mosques);

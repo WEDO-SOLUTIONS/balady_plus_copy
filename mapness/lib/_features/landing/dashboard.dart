@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/icons/general_32_icons.dart';
@@ -17,7 +18,8 @@ import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/landing/widgets/weather_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/app/app_routes.gr.dart';
+import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -144,8 +146,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     );
   }
 
-  void _openSearch(QuickFilter quickFilter) {
-    ref.read(goRouterProvider).push(const SearchRoute(requestFocus: false).location);
+  void _openSearch(BuildContext context, QuickFilter quickFilter) {
+    context.router.push(SearchRoute(requestFocus: false));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
     });
