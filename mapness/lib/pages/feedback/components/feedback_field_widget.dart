@@ -7,6 +7,7 @@ import 'package:mapness/widgets/feedback/feedback_chips.dart';
 import 'package:mapness/widgets/feedback/feedback_images.dart';
 import 'package:mapness/widgets/feedback/feedback_schedule_widget.dart';
 import 'package:mapness/widgets/feedback/feedback_text_field.dart';
+import 'package:mapness/widgets/feedback/feedback_text_list.dart';
 
 /// please note that all widgets shoud be inside [FormBuilder] since it manages state.
 /// Dont forget to implement [valueTransformer] for fields with some custom type
@@ -26,6 +27,9 @@ class FeedbackFieldWidget extends StatelessWidget {
     return switch (field) {
       /// various string inputs like phone, etc
       FeedbackTextEntity() => FeedbackInput(field: field as FeedbackTextEntity),
+
+      /// various string inputs like phone, etc
+      FeedbackTextListEntity() => FeedbackTextListField(field: field as FeedbackTextListEntity),
 
       /// bool
       FeedbackBoolToggleEntity() => FeedbackBoolToggle(field: field as FeedbackBoolToggleEntity),

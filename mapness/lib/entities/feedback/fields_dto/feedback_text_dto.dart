@@ -26,12 +26,21 @@ class FeedbackTextDto extends FeedbackBaseDto {
         label: label,
         maxLenght: length,
         hint: hint,
-        type: switch (type) {
-          'email' => FeedbackTextType.email,
-          'multiline' => FeedbackTextType.multilineText,
-          'phone' => FeedbackTextType.phone,
-          'url' => FeedbackTextType.url,
-          'singleline' || _ => FeedbackTextType.text
-        },
+        type: resolveType(),
       );
+
+  FeedbackTextType resolveType() {
+    if (id == 'phone') {
+      return FeedbackTextType.phone;
+    }
+    if (id == 'website_url') {
+      return FeedbackTextType.url;
+    }
+
+    return switch (type) {
+      'email' => FeedbackTextType.email,
+      'multiline' => FeedbackTextType.multilineText,
+      _ => FeedbackTextType.text
+    };
+  }
 }

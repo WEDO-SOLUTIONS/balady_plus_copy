@@ -4,14 +4,24 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
 
 class FeedbackInput extends StatelessWidget {
   final FeedbackTextEntity field;
 
+  /// Is it first input inside list
+  ///
+  /// For signline fields the value always true
+  final bool isFirst;
+
+  final VoidCallback? onDelete;
+
   const FeedbackInput({
     required this.field,
+    this.isFirst = true,
+    this.onDelete,
     super.key,
   });
 
@@ -44,7 +54,7 @@ class FeedbackInput extends StatelessWidget {
         },
       ]),
       builder: (fieldState) => BaladyInput(
-        labelText: field.label,
+        labelText: isFirst ? field.label : null,
         hintText: field.hint,
         labelStyle: context.textStyleV3.captionMediumRegular,
         fillColor: context.colorsV2.backgroundSurface1,

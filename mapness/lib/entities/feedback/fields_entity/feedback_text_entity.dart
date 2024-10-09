@@ -1,13 +1,5 @@
 part of '../feedback_base_entity.dart';
 
-enum FeedbackTextType {
-  text,
-  multilineText,
-  email,
-  phone,
-  url,
-}
-
 class FeedbackTextEntity extends FeedbackBaseEntity {
   final String label;
   final int maxLenght;

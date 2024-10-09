@@ -2,6 +2,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 
 part 'feedback_base_dto.g.dart';
 
@@ -12,6 +13,7 @@ part '../fields_dto/feedback_unknown_dto.dart';
 part '../fields_dto/feedback_chips_dto.dart';
 part '../fields_dto/feedback_schedule_dto.dart';
 part '../fields_dto/feedback_chips_item_dto.dart';
+part '../fields_dto/feedback_list_text_dto.dart';
 
 sealed class FeedbackBaseDto {
   final String id;
@@ -31,7 +33,13 @@ sealed class FeedbackBaseDto {
     try {
       return switch (json['type']) {
         'boolean' => FeedbackBoolToggleDto.fromJson(json),
-        'email' || 'multiline' || 'phone' || 'url' || 'singleline' => FeedbackTextDto.fromJson(json),
+        'email' ||
+        'multiline' ||
+        'phone' ||
+        'url' ||
+        'singleline' ||
+        'list_singleline' =>
+          FeedbackTextDto.fromJson(json),
         'image' => FeedbackImageInputDto.fromJson(json),
         'schedule' => FeedbackScheduleDto.fromJson(json),
         'dropdown' => FeedbackChipsDto.fromJson(json),
