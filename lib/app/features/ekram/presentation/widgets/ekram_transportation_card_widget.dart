@@ -41,7 +41,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
             Row(
               children: [
                 const DrawIconBasedTypeWidget(icon: IconPath.requests),
-                CustomHorizontalSpace(
+                const CustomHorizontalSpace(
                   width: 4,
                 ),
                 Expanded(

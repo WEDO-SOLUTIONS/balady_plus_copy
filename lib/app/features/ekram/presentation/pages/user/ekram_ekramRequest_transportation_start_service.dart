@@ -49,7 +49,7 @@ class _EkramRequestTransportationStartServiceState
               Expanded(
                 child: Column(
                   children: [
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Container(
                       margin: const EdgeInsets.all(16),
                       padding: const EdgeInsets.all(16),
@@ -68,7 +68,7 @@ class _EkramRequestTransportationStartServiceState
                         children: [
                           Row(
                             children: [
-                              DrawIconBasedTypeWidget(
+                              const DrawIconBasedTypeWidget(
                                 icon: IconPath.msgBoxIcon,
                               ),
                               const SizedBox(width: 4),
@@ -84,6 +84,51 @@ class _EkramRequestTransportationStartServiceState
                             children: [
                               CustomTextWidget(
                                 "ekram_condolence_msg".tr(),
+                                textStyle:
+                                    AppStyle.serviceCardDescriptionTextStyle,
+                                maxLines: 6,
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColor.darkSlateBlue6,
+                            offset: Offset(0, -4),
+                            blurRadius: 32,
+                          )
+                        ],
+                        color: AppColor.blackModern50Light,
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              const DrawIconBasedTypeWidget(
+                                icon: IconPath.msgBoxIcon,
+                              ),
+                              const SizedBox(width: 4),
+                              CustomTextWidget(
+                                "service_describtion".tr(),
+                                textStyle: AppStyle.cardTitleTextStle,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomTextWidget(
+                                //TODO: To be fetched from api
+                                'TODO: To be fetched from api',
                                 textStyle:
                                     AppStyle.serviceCardDescriptionTextStyle,
                                 maxLines: 6,
