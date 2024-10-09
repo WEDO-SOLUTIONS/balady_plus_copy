@@ -43,6 +43,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
       bool? isObjections
     });
 
+   String url = args.url.replaceAll("\n", "");
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: "back".tr(),
@@ -55,7 +56,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
             },
             initialUrlRequest: URLRequest(
               // url: Uri.parse('https://flutter.dev/'),
-              url: Uri.parse(args.url),
+              url: Uri.parse(url),
             ),
             initialOptions: InAppWebViewGroupOptions(
               android: AndroidInAppWebViewOptions(

@@ -419,11 +419,11 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
 
                                           CostumeListTile(
                                             onTap: () {
-                                              if(openFromCompliance==true)
-                                                {
-                                                  CommonFunctions.openComplianceTerms();
-                                                }
-                                                else {
+                                              // if(openFromCompliance==true)
+                                              //   {
+                                              //     CommonFunctions.openComplianceTerms();
+                                              //   }
+                                              //   else {
                                                 BottomSheetDialog
                                                     .showDraggableSheet(
                                                   context,
@@ -587,7 +587,7 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                                       .height *
                                                       0.5,
                                                 );
-                                              }
+                                             // }
                                             },
                                             leading: SvgPicture.asset(
                                                 IconPath.flag2Icon),
@@ -605,10 +605,11 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
 
 
 
-                                          openFromCompliance==true? CostumeListTile(
+                                        CostumeListTile(
                                             onTap: () {
 
-                                                CommonFunctions.openComplianceFaq();
+
+                                                CommonFunctions.openComplianceFaq("${viewModel.serviceId}");
 
                                             },
                                             leading: Icon(
@@ -625,7 +626,7 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                               size: 16,
                                             ),
                                             showDivider: false,
-                                          ):Container(),
+                                          ),
 
                                         ],
                                       ),

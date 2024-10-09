@@ -10,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/ux_cam_events.dart';
@@ -21,7 +22,8 @@ import '../widgets/qa_ask_more.dart';
 import '../widgets/qa_page_header.dart';
 
 class QAPage extends StatefulWidget {
-  const QAPage({super.key});
+
+   const QAPage({super.key});
 
   @override
   State<QAPage> createState() => _QAPageState();
@@ -38,8 +40,13 @@ class _QAPageState extends State<QAPage> {
 
   @override
   Widget build(BuildContext context) {
+
+
+    final String serviceId =
+    ModalRoute.of(context)!.settings.arguments as String;
+
     return BlocProvider(
-      create: (context) => QABloc(),
+      create: (context) => QABloc(serviceId),
       child: BlocConsumer<QABloc, QAState>(
         listener: (context, state) {
           // TODO: implement listener
@@ -85,11 +92,11 @@ class _QAPageState extends State<QAPage> {
                                   children: [
                                     CustomEnhancedExpansionPanelWidget(
                                       title:
-                                          state.filtered?[index].question ?? "",
+                                          state.filtered?[index].title ?? "",
                                       leadingWidth: 0,
                                       leading: null,
                                       children: [
-                                        if (state.filtered?[index].answer ==
+                                        if (state.filtered?[index].fieldFaqAnswer ==
                                             "1")
                                           RichText(
                                             text: TextSpan(
@@ -134,16 +141,26 @@ class _QAPageState extends State<QAPage> {
                                               ],
                                             ),
                                           ),
-                                        if (state.filtered?[index].answer !=
+                                        if (state.filtered?[index].fieldFaqAnswer !=
                                             "1")
-                                          CustomTextWidget(
-                                            state.filtered?[index].answer ?? "",
-                                            fontColor: Color(0xFF52525B),
-                                            fontWeight: AppFontWeight.bold,
-                                            fontSize: 12,
-                                            height: 1.6,
-                                            maxLines: 100,
-                                          )
+
+                                          Linkify(
+                                            onOpen: (link) => CommonFunctions.openBaladyWebView(link.url),
+                                            text: state.filtered?[index].fieldFaqAnswer ?? "",
+                                            softWrap: true,
+                                            textAlign: TextAlign.start,
+                                            style: AppStyle.textFieldTitleTextStyle.copyWith(
+                                              color: AppColor.blackModern700Light,
+                                            ),
+                                          ),
+                                          // Linkify(
+                                          //   state.filtered?[index].fieldFaqAnswer ?? "",
+                                          //   fontColor: Color(0xFF52525B),
+                                          //   fontWeight: AppFontWeight.bold,
+                                          //   fontSize: 12,
+                                          //   height: 1.6,
+                                          //   maxLines: 100,
+                                          // )
                                       ],
                                     ),
                                     CustomVerticalSpace(height: 16)
