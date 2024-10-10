@@ -8,18 +8,29 @@ import 'package:balady_plus/app/features/services/presentation/mvvm/service_data
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/costume_list_tile.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/reload_widget.dart';
+import 'package:balady_uikit/core/icons/general_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../../events_logs/controller/logs_controller.dart';
+import '../../../../../events_logs/events_names.dart';
+import '../../../../../events_logs/models/error_exception_model.dart';
+import '../../../../_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
+import '../../../../profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
+import '../../../../profile_features/delegators/presentation/widgets/delegator_list.dart';
 
 class ServiceCardDescDynamicWidget extends StatelessWidget {
-  const ServiceCardDescDynamicWidget({super.key});
+    final bool? showDelagator;
+    final bool? openFromCompliance;
+   const ServiceCardDescDynamicWidget({super.key,this.showDelagator,this.openFromCompliance});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +50,7 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
             selector: (_, provider) => provider.isLoading,
             builder: (context, isLoading, child) {
               return isLoading
-                  ? const CustomLoadingWidget()
+                  ?  CustomLoadingWidget()
                   : viewModel.servicesCardsDetails != null
                       ? SizedBox.expand(
                           child: Column(
@@ -53,9 +64,43 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                           .viewPadding
                                           .top,
                                     ),
-                                    const Row(
+                                     Row(
+                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        BackButton(color: Colors.white)
+                                        BackButton(color: Colors.white),
+
+                                        showDelagator==true?
+                                        InkWell(
+                                          onTap: () async {
+                                            try {
+                                              sl<DelegatorsCubit>().getDelegators();
+                                              sl<DelegatorsCubit>().getAgents();
+                                              await BottomSheetDialog.showDraggableSheet(
+                                                context,
+                                                dialogKeyName: DialogName.delegatorsDialog,
+                                                currentRouteName: RouteName.createCompliancePage,
+                                                child: DelegatorList(
+                                                  fromService: true,
+                                                  delegatorsCubit: sl<DelegatorsCubit>(),
+                                                ),
+                                              );
+                                            } catch (error, stackTrace) {
+                                              LogsViewModel().sendEventFromModel(
+                                                event: ErrorExceptionModel(
+                                                  nameEvent: EventsName.handledException,
+                                                  message: error.toString(),
+                                                  stackTrace: stackTrace.toString(),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: CircleIcon(
+                                            icon: IconPath.switchProfileIcon,
+                                            iconColor: AppColor.primary600Light,
+                                            backgroundColor: AppColor.white,
+                                            iconSize: 18,
+                                          ),
+                                        ):Container()
                                       ],
                                     ),
                                     Text(
@@ -374,153 +419,175 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
 
                                           CostumeListTile(
                                             onTap: () {
-                                              BottomSheetDialog.showDraggableSheet(
-                                                context,
-                                                dialogKeyName: DialogName.requirementsFinesSheetDialog,
-                                                child: BottomSheetWithActions(
-                                                  title: "requirements_fines".tr(),
-                                                  body: (viewModel.servicesCardsDetails?.fieldServiceRequirements?.isEmpty ?? true) &&
-                                                          (viewModel.servicesCardsDetails?.fieldViolationsAndFines?.isEmpty ?? true)
-                                                      ? Text("nothing".tr())
-                                                      : Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            const SizedBox(
-                                                                height: 14),
-                                                            Text(
-                                                              "government_requirements_approvals"
-                                                                  .tr(),
-                                                            ),
-                                                            Card(
-                                                              color: AppColor
-                                                                  .primary200Light,
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            8.0),
-                                                              ),
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      top: 12),
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        16.0),
-                                                                child: InkWell(
-                                                                  onTap: () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pushNamed(
-                                                                      RouteName
-                                                                          .inappWebview,
-                                                                      arguments: (
-                                                                        requestNum:
-                                                                            'fines_penalties'.tr(),
-                                                                        url: viewModel
-                                                                            .servicesCardsDetails
-                                                                            ?.fieldServiceRequirements,
-                                                                        isObjections:
-                                                                            false
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Flexible(
-                                                                        fit: FlexFit
-                                                                            .tight,
-                                                                        child:
-                                                                            Text(
-                                                                          "service_requirements_conditions"
-                                                                              .tr(),
-                                                                        ),
-                                                                      ),
-                                                                      SvgPicture.asset(
-                                                                          IconPath
-                                                                              .downloadButton)
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            //////////////////////////////
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            //////////////////////////////
-                                                            Text(
-                                                              "fines_penalties_title"
-                                                                  .tr(),
-                                                            ),
-                                                            Card(
-                                                              color: AppColor
-                                                                  .primary200Light,
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            8.0),
-                                                              ),
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      top: 12),
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        16.0),
-                                                                child: InkWell(
-                                                                  onTap: () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pushNamed(
-                                                                      RouteName
-                                                                          .inappWebview,
-                                                                      arguments: (
-                                                                        requestNum:
-                                                                            'list_penalties_municipal_violations'.tr(),
-                                                                        url: viewModel
-                                                                            .servicesCardsDetails
-                                                                            ?.fieldViolationsAndFines,
-                                                                        isObjections:
-                                                                            false
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Flexible(
-                                                                        fit: FlexFit
-                                                                            .tight,
-                                                                        child:
-                                                                            Text(
-                                                                          "list_penalties_municipal_violations"
-                                                                              .tr(),
-                                                                        ),
-                                                                      ),
-                                                                      SvgPicture.asset(
-                                                                          IconPath
-                                                                              .linkSquare2)
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
+                                              // if(openFromCompliance==true)
+                                              //   {
+                                              //     CommonFunctions.openComplianceTerms();
+                                              //   }
+                                              //   else {
+                                                BottomSheetDialog
+                                                    .showDraggableSheet(
+                                                  context,
+                                                  dialogKeyName: DialogName
+                                                      .requirementsFinesSheetDialog,
+                                                  child: BottomSheetWithActions(
+                                                    title: "requirements_fines"
+                                                        .tr(),
+                                                    body: (viewModel
+                                                        .servicesCardsDetails
+                                                        ?.fieldServiceRequirements
+                                                        ?.isEmpty ?? true) &&
+                                                        (viewModel
+                                                            .servicesCardsDetails
+                                                            ?.fieldViolationsAndFines
+                                                            ?.isEmpty ?? true)
+                                                        ? Text("nothing".tr())
+                                                        : Column(
+                                                      mainAxisAlignment: MainAxisAlignment
+                                                          .start,
+                                                      crossAxisAlignment: CrossAxisAlignment
+                                                          .start,
+                                                      children: [
+                                                        const SizedBox(
+                                                            height: 14),
+                                                        Text(
+                                                          "government_requirements_approvals"
+                                                              .tr(),
                                                         ),
-                                                ),
-                                                isFullHeight: false,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.5,
-                                              );
+                                                        Card(
+                                                          color: AppColor
+                                                              .primary200Light,
+                                                          shape:
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                8.0),
+                                                          ),
+                                                          margin:
+                                                          const EdgeInsets
+                                                              .only(
+                                                              top: 12),
+                                                          child: Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .all(
+                                                                16.0),
+                                                            child: InkWell(
+                                                              onTap: () {
+                                                                Navigator.of(
+                                                                    context)
+                                                                    .pushNamed(
+                                                                  RouteName
+                                                                      .inappWebview,
+                                                                  arguments: (
+                                                                  requestNum:
+                                                                  'fines_penalties'
+                                                                      .tr(),
+                                                                  url: viewModel
+                                                                      .servicesCardsDetails
+                                                                      ?.fieldServiceRequirements,
+                                                                  isObjections:
+                                                                  false
+                                                                  ),
+                                                                );
+                                                              },
+                                                              child: Row(
+                                                                children: [
+                                                                  Flexible(
+                                                                    fit: FlexFit
+                                                                        .tight,
+                                                                    child:
+                                                                    Text(
+                                                                      "service_requirements_conditions"
+                                                                          .tr(),
+                                                                    ),
+                                                                  ),
+                                                                  SvgPicture
+                                                                      .asset(
+                                                                      IconPath
+                                                                          .downloadButton)
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        //////////////////////////////
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        //////////////////////////////
+                                                        Text(
+                                                          "fines_penalties_title"
+                                                              .tr(),
+                                                        ),
+                                                        Card(
+                                                          color: AppColor
+                                                              .primary200Light,
+                                                          shape:
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                8.0),
+                                                          ),
+                                                          margin:
+                                                          const EdgeInsets
+                                                              .only(
+                                                              top: 12),
+                                                          child: Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .all(
+                                                                16.0),
+                                                            child: InkWell(
+                                                              onTap: () {
+                                                                Navigator.of(
+                                                                    context)
+                                                                    .pushNamed(
+                                                                  RouteName
+                                                                      .inappWebview,
+                                                                  arguments: (
+                                                                  requestNum:
+                                                                  'list_penalties_municipal_violations'
+                                                                      .tr(),
+                                                                  url: viewModel
+                                                                      .servicesCardsDetails
+                                                                      ?.fieldViolationsAndFines,
+                                                                  isObjections:
+                                                                  false
+                                                                  ),
+                                                                );
+                                                              },
+                                                              child: Row(
+                                                                children: [
+                                                                  Flexible(
+                                                                    fit: FlexFit
+                                                                        .tight,
+                                                                    child:
+                                                                    Text(
+                                                                      "list_penalties_municipal_violations"
+                                                                          .tr(),
+                                                                    ),
+                                                                  ),
+                                                                  SvgPicture
+                                                                      .asset(
+                                                                      IconPath
+                                                                          .linkSquare2)
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  isFullHeight: false,
+                                                  height: MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .height *
+                                                      0.5,
+                                                );
+                                             // }
                                             },
                                             leading: SvgPicture.asset(
                                                 IconPath.flag2Icon),
@@ -535,6 +602,32 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                             ),
                                             showDivider: false,
                                           ),
+
+
+
+                                        CostumeListTile(
+                                            onTap: () {
+
+
+                                                CommonFunctions.openComplianceFaq("${viewModel.serviceId}");
+
+                                            },
+                                            leading: Icon(
+                                              Icons.question_mark,
+                                              color: AppColor.greenOpacity,
+                                            ),
+                                            title: Text(
+                                              'complianceFAQ'.tr(),
+                                              style: AppStyle
+                                                  .complianceSubtitleLicenseStyle,
+                                            ),
+                                            trailing: const Icon(
+                                              Icons.arrow_forward_ios,
+                                              size: 16,
+                                            ),
+                                            showDivider: false,
+                                          ),
+
                                         ],
                                       ),
                                     ),
