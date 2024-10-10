@@ -10,7 +10,7 @@ class FeedbackTextListDto extends FeedbackBaseDto {
   @JsonKey(defaultValue: [])
   final List<String> oldValues;
 
-  FeedbackTextListDto({
+  const FeedbackTextListDto({
     required this.values,
     required this.oldValues,
     required this.label,

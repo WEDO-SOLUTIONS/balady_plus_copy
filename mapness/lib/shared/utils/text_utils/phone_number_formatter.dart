@@ -37,7 +37,7 @@ class PhoneNumberFormatter extends TextInputFormatter {
   /// Formats the given [text] by removing any non-digit characters.
   ///
   /// TODO(ilyasov): extract to a separate utility class.
-  static String formatPure(String text) => text.replaceAll(RegExp('[()+ -]'), '');
+  static String formatPure(String text) => text.replaceAll(RegExp(r'\D'), '');
 
   @override
   TextEditingValue formatEditUpdate(
