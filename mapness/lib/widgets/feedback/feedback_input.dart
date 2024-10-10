@@ -37,26 +37,30 @@ class FeedbackTextInput extends StatelessWidget {
   final FormFieldValidator<String>? onValidate;
 
   @override
-  Widget build(BuildContext context) => BaladyInput(
-        labelText: labelText,
-        hintText: hintText,
-        labelStyle: context.textStyleV3.captionMediumRegular,
-        fillColor: context.colorsV2.backgroundSurface1,
-        onValidate: onValidate,
-        allowedInputPattern: allowedInputPattern,
-        isRequired: isRequired,
-        maxLength: maxLength,
-        maxLines: maxLines,
-        keyboardType: keyboardType,
-        onChanged: (value) {
-          var formattedValue = value;
-          if (type == FeedbackTextType.phone) {
-            formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
-          }
-          onChanged?.call(value);
-        },
-        inputFormatters: [
-          if (type == FeedbackTextType.phone) const PhoneNumberFormatter(),
-        ],
+  Widget build(BuildContext context) => Directionality(
+        textDirection: type == FeedbackTextType.phone ? TextDirection.ltr : Directionality.of(context),
+        child: BaladyInput(
+          labelText: labelText,
+          hintText: hintText,
+          labelStyle: context.textStyleV3.captionMediumRegular,
+          fillColor: context.colorsV2.backgroundSurface1,
+          onValidate: onValidate,
+          allowedInputPattern: allowedInputPattern,
+          isRequired: isRequired,
+          maxLength: maxLength,
+          maxLines: maxLines,
+          keyboardType: keyboardType,
+          suffixIcon: type == FeedbackTextType.phone ? const SizedBox.shrink() : null,
+          onChanged: (value) {
+            var formattedValue = value;
+            if (type == FeedbackTextType.phone) {
+              formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
+            }
+            onChanged?.call(value);
+          },
+          inputFormatters: [
+            if (type == FeedbackTextType.phone) const PhoneNumberFormatter(),
+          ],
+        ),
       );
 }
