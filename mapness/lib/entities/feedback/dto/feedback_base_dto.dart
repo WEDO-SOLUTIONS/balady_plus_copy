@@ -20,10 +20,12 @@ sealed class FeedbackBaseDto {
   final String type;
   final bool isRequired;
   final bool isHidden;
+  final bool? setOnMap;
 
-  FeedbackBaseDto({
+  const FeedbackBaseDto({
     required this.id,
     required this.type,
+    required this.setOnMap,
     required this.isRequired,
     required this.isHidden,
   });
@@ -33,13 +35,8 @@ sealed class FeedbackBaseDto {
     try {
       return switch (json['type']) {
         'boolean' => FeedbackBoolToggleDto.fromJson(json),
-        'email' ||
-        'multiline' ||
-        'phone' ||
-        'url' ||
-        'singleline' ||
-        'list_singleline' =>
-          FeedbackTextDto.fromJson(json),
+        'list_singleline' => FeedbackTextListDto.fromJson(json),
+        'email' || 'multiline' || 'phone' || 'url' || 'singleline' => FeedbackTextDto.fromJson(json),
         'image' => FeedbackImageInputDto.fromJson(json),
         'schedule' => FeedbackScheduleDto.fromJson(json),
         'dropdown' => FeedbackChipsDto.fromJson(json),

@@ -6,13 +6,14 @@ class FeedbackTextDto extends FeedbackBaseDto {
   final int length;
   final String hint;
 
-  FeedbackTextDto({
-    required super.id,
-    required super.type,
-    required super.isRequired,
+  const FeedbackTextDto({
     required this.label,
     required this.length,
     required this.hint,
+    required super.id,
+    required super.type,
+    required super.isRequired,
+    required super.setOnMap,
     super.isHidden = false,
   });
 
@@ -24,7 +25,7 @@ class FeedbackTextDto extends FeedbackBaseDto {
         isRequired: isRequired,
         isHidden: isHidden,
         label: label,
-        maxLenght: length,
+        maxLength: length,
         hint: hint,
         type: resolveType(),
       );

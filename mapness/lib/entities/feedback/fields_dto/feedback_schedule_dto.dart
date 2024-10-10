@@ -10,6 +10,7 @@ class FeedbackScheduleDto extends FeedbackBaseDto {
     required super.isRequired,
     required this.label,
     super.isHidden = false,
+    super.setOnMap = false,
   });
 
   @override
