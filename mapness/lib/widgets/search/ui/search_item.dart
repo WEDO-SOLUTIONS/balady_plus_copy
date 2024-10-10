@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -6,6 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
+import 'package:mapness/_features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -47,12 +49,13 @@ class SearchItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     String subtitle = result.subtitle;
     List<String> photosUrls = [];
+    List<Item> photoItems = [];
 
     final objectId = result.id?.objectId ?? 0;
     final photos = ref.watch(poiPhotoProvider(objectId));
 
     if (photos.hasValue) {
-      final photoItems = photos.requireValue.items;
+      photoItems = photos.requireValue.items;
       photosUrls = photoItems.map((e) => e.url).toList();
     }
 
@@ -88,19 +91,23 @@ class SearchItem extends ConsumerWidget {
                         scrollDirection: Axis.horizontal,
                         itemCount: photosUrls.length,
                         itemBuilder: (context, i) {
-                          final photo = photosUrls[i];
+                          final photo = photoItems[i].previewUrls?.smallByWidth ?? photosUrls[i];
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(
                               RadiusBorder.l,
                             ),
-                            child: Image.network(
+                            child: CustomCachedNetworkImage(
                               photo,
-                              fit: BoxFit.cover,
-                              height: 96,
-                              width: 96,
-                              cacheHeight: 96,
-                              cacheWidth: 96,
+                              imageWidth: 96,
                             ),
+                            // child: Image.network(
+                            //   photo,
+                            //   fit: BoxFit.cover,
+                            //   height: 96,
+                            //   width: 96,
+                            //   cacheHeight: 96,
+                            //   cacheWidth: 96,
+                            // ),
                           );
                         },
                         separatorBuilder: (context, index) => Spacing.$1x.widthBox,

@@ -146,7 +146,7 @@ class PoiPhotoCard extends ConsumerWidget {
         (context, index) => ClipRRect(
           borderRadius: BorderRadius.circular(RadiusBorder.xs),
           child: LoadingShimmerImage(
-            imageUrl: photoItems[index].url,
+            imageUrl: photoItems[index].previewUrls?.smallByWidth ?? photosUrls[index],
             fit: BoxFit.cover,
             onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photosUrls),
           ),
