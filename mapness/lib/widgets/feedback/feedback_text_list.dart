@@ -1,5 +1,4 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -8,6 +7,7 @@ import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
+import 'package:mapness/widgets/feedback/feedback_input.dart';
 
 class FeedbackTextListField extends StatefulWidget {
   final FeedbackTextListEntity field;
@@ -89,11 +89,9 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
         builder: (fieldState) => Column(
               children: [
                 for (var i = 0; i < _inputs.length; i++) ...[
-                  BaladyInput(
+                  FeedbackTextInput(
                     labelText: i == 0 ? widget.field.label : null,
                     hintText: widget.field.hint,
-                    labelStyle: context.textStyleV3.captionMediumRegular,
-                    fillColor: context.colorsV2.backgroundSurface1,
                     onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
                     allowedInputPattern: allowedInputPattern,
                     isRequired: widget.field.isRequired,
@@ -103,9 +101,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                       _updateInput(i, value);
                       fieldState.didChange(_inputs);
                     },
-                    inputFormatters: [
-                      if (widget.field.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
-                    ],
+                    type: widget.field.type,
                   ),
                   Spacing.$2x.heightBox,
                 ],

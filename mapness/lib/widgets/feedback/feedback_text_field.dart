@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -10,7 +9,7 @@ import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
+import 'package:mapness/widgets/feedback/feedback_input.dart';
 
 class FeedbackInput extends StatelessWidget {
   final FeedbackTextEntity field;
@@ -48,20 +47,12 @@ class FeedbackInput extends StatelessWidget {
           _ => (_) => null,
         },
       ]),
-      valueTransformer: (value) {
-        var formattedValue = value;
-        if (value != null && field.type == FeedbackTextType.phone) {
-          formattedValue = PhoneNumberFormatter.formatPure(value);
-        }
-        return formattedValue;
-      },
+
       builder: (fieldState) => Column(
         children: [
-          BaladyInput(
+          FeedbackTextInput(
             labelText: field.label,
             hintText: field.hint,
-            labelStyle: context.textStyleV3.captionMediumRegular,
-            fillColor: context.colorsV2.backgroundSurface1,
             onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
             allowedInputPattern: allowedInputPattern,
             isRequired: field.isRequired,
@@ -69,9 +60,7 @@ class FeedbackInput extends StatelessWidget {
             keyboardType: keyboardType,
             maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
             onChanged: fieldState.didChange,
-            inputFormatters: [
-              if (field.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
-            ],
+            type: field.type,
           ),
           if (field.setOnMap) ...[
             Spacing.$2x.heightBox,
