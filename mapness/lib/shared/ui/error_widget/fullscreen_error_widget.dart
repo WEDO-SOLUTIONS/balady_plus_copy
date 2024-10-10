@@ -1,14 +1,17 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 
-class FullscreenErrorIndicator extends StatelessWidget {
-  const FullscreenErrorIndicator({
+class FullscreenErrorWidget extends StatelessWidget {
+  const FullscreenErrorWidget({
     required this.onRetry,
-    super.key,
+    this.withRetryButton = true,
     this.buttonLabel,
     this.errorLabel,
+    this.errorTitle,
     this.onClose,
+    super.key,
   });
 
   /// action how to recover state
@@ -20,19 +23,27 @@ class FullscreenErrorIndicator extends StatelessWidget {
   /// button label (localized default: reload)
   final String? buttonLabel;
 
-  /// error label (localized default: somethingWentWrong)
+  /// error label (localized default: pleaseTryAgainLater)
   final String? errorLabel;
+
+  /// error title (localized default: somethingWentWrong)
+  final String? errorTitle;
+
+  /// error label (localized default: somethingWentWrong)
+  final bool withRetryButton;
 
   @override
   Widget build(BuildContext context) => Material(
-        color: Colors.transparent,
+        color: Colors.white,
         type: MaterialType.transparency,
         child: Center(
           child: BaseErrorWidget(
             onRetry: onRetry,
             buttonLabel: buttonLabel,
-            errorLabel: errorLabel,
+            errorLabel: errorLabel ?? context.l10n.pleaseTryAgainLater,
+            errorTitle: errorTitle ?? context.l10n.somethingWentWrong,
             buttonColorScheme: ButtonColorScheme.primary,
+            withRetryButton: withRetryButton,
           ),
         ),
       );

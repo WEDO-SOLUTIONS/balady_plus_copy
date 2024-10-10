@@ -39,7 +39,7 @@ class FeedbackChips extends StatelessWidget {
                               iconUrl: variant.iconUrl!,
                             ),
                       onTap: () => fieldState.didChange(fieldState.value == variant.id ? null : variant.id),
-                      style: ChipsStyle.whiteBackground,
+                      style: ChipsStyle.colorfulBackground,
                     ),
                   )
                   .toList(),

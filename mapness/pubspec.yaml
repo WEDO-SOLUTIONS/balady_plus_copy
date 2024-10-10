@@ -125,6 +125,9 @@ dependencies:
   flutter_form_builder: ^9.4.1
   form_builder_validators: ^11.0.0
 
+  # for text inputs
+  mask_text_input_formatter: 2.9.0
+
 dependency_overrides:
   geolocator_android: ^4.2.2
   # for dio_http_cache
