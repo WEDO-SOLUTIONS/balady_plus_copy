@@ -1,11 +1,6 @@
-import 'dart:developer';
-
-import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -48,37 +43,17 @@ class FeedbackInput extends StatelessWidget {
         },
       ]),
 
-      builder: (fieldState) => Column(
-        children: [
-          FeedbackTextInput(
-            labelText: field.label,
-            hintText: field.hint,
-            onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
-            allowedInputPattern: allowedInputPattern,
-            isRequired: field.isRequired,
-            maxLength: field.maxLength,
-            keyboardType: keyboardType,
-            maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
-            onChanged: fieldState.didChange,
-            type: field.type,
-          ),
-          if (field.setOnMap) ...[
-            Spacing.$2x.heightBox,
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                buttonColorScheme: ButtonColorScheme.secondary,
-                primaryLabel: context.l10n.layersOnTheMap,
-                primaryIcon: GeneralIcons.pin,
-                onTap: () async {
-                  // ignore: unused_local_variable
-                  final result = await const RoutingMapRoute().push(context);
-                  debugger();
-                },
-              ),
-            ),
-          ]
-        ],
+      builder: (fieldState) => FeedbackTextInput(
+        labelText: field.label,
+        hintText: field.hint,
+        onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
+        allowedInputPattern: allowedInputPattern,
+        isRequired: field.isRequired,
+        maxLength: field.maxLength,
+        keyboardType: keyboardType,
+        maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
+        onChanged: fieldState.didChange,
+        type: field.type,
       ),
       // validator: ,
     );
