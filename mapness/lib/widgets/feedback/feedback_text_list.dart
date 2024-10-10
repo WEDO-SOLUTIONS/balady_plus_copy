@@ -41,8 +41,12 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
   }
 
   void _updateInput(int i, String text) {
+    var formattedValue = text;
+    if (widget.field.type == FeedbackTextType.phone) {
+      formattedValue = PhoneNumberFormatter.formatPure(text);
+    }
     setState(() {
-      _inputs[i] = text;
+      _inputs[i] = formattedValue;
     });
   }
 

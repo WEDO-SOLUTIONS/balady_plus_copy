@@ -48,6 +48,13 @@ class FeedbackInput extends StatelessWidget {
           _ => (_) => null,
         },
       ]),
+      valueTransformer: (value) {
+        var formattedValue = value;
+        if (value != null && field.type == FeedbackTextType.phone) {
+          formattedValue = PhoneNumberFormatter.formatPure(value);
+        }
+        return formattedValue;
+      },
       builder: (fieldState) => Column(
         children: [
           BaladyInput(
