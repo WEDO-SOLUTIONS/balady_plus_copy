@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:developer';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
@@ -44,11 +46,11 @@ sealed class FeedbackBaseDto {
       };
     } catch (e) {
       // TODO(Demezy): remove this when fully update to v2.0 endpoints
-      print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-      print(e);
-      print('+++++++++++++++++++++++++++++++++++++++++++++++++++++');
-      print(json);
-      print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+      log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+      log(e.toString());
+      log('+++++++++++++++++++++++++++++++++++++++++++++++++++++');
+      log(json.toString());
+      log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
       return FeedbackUnknownDto.fromJson(json);
     }
   }
