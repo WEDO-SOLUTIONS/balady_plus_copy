@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/widget_label.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -37,30 +38,48 @@ class FeedbackTextInput extends StatelessWidget {
   final FormFieldValidator<String>? onValidate;
 
   @override
-  Widget build(BuildContext context) => Directionality(
-        textDirection: type == FeedbackTextType.phone ? TextDirection.ltr : Directionality.of(context),
-        child: BaladyInput(
-          labelText: labelText,
-          hintText: hintText,
-          labelStyle: context.textStyleV3.captionMediumRegular,
-          fillColor: context.colorsV2.backgroundSurface1,
-          onValidate: onValidate,
-          allowedInputPattern: allowedInputPattern,
-          isRequired: isRequired,
-          maxLength: maxLength,
-          maxLines: maxLines,
-          keyboardType: keyboardType,
-          suffixIcon: type == FeedbackTextType.phone ? const SizedBox.shrink() : null,
-          onChanged: (value) {
-            var formattedValue = value;
-            if (type == FeedbackTextType.phone) {
-              formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
-            }
-            onChanged?.call(value);
-          },
-          inputFormatters: [
-            if (type == FeedbackTextType.phone) const PhoneNumberFormatter(),
+  Widget build(BuildContext context) {
+    final direction = type == FeedbackTextType.phone ? TextDirection.ltr : Directionality.of(context);
+    return Column(
+      children: [
+        Row(
+          children: [
+            Flexible(
+              child: WidgetLabel(
+                isRequired: isRequired,
+                label: labelText,
+                labelStyle: context.textStyleV3.captionMediumRegular.copyWith(
+                  color: context.colorsV2.foregroundDefault,
+                ),
+              ),
+            ),
           ],
         ),
-      );
+        Directionality(
+          textDirection: direction,
+          child: BaladyInput(
+            hintText: hintText,
+            fillColor: context.colorsV2.backgroundSurface1,
+            onValidate: onValidate,
+            allowedInputPattern: allowedInputPattern,
+            isRequired: isRequired,
+            maxLength: maxLength,
+            maxLines: maxLines,
+            keyboardType: keyboardType,
+            suffixIcon: type == FeedbackTextType.phone ? const SizedBox.shrink() : null,
+            onChanged: (value) {
+              var formattedValue = value;
+              if (type == FeedbackTextType.phone) {
+                formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
+              }
+              onChanged?.call(value);
+            },
+            inputFormatters: [
+              if (type == FeedbackTextType.phone) const PhoneNumberFormatter(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
