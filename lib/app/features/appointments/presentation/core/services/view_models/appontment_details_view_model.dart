@@ -35,10 +35,7 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   String? cancelReason;
 
   AppointmentDetailsViewModel(
-      {this.appointmentID,
-      this.appointmentDetailsVariable,
-      this.isCancelable,
-      this.isPrintable});
+      {this.appointmentID, this.appointmentDetailsVariable, this.isCancelable, this.isPrintable});
 
   AppointmentDetails? appointmentDetailsResponse;
 
@@ -47,11 +44,8 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   Future<bool> getAppointmentDetailsResponse(int appointmentId) async {
     isLoading = true;
     notifyListeners();
-    Tuple3<bool?, String?, AppointmentDetails?> response =
-        await _repository.getAppointmentDetails(appointmentId);
-    if (response.item1 != null &&
-        response.item1! &&
-        response.item3?.data?.result != null) {
+    Tuple3<bool?, String?, AppointmentDetails?> response = await _repository.getAppointmentDetails(appointmentId);
+    if (response.item1 != null && response.item1! && response.item3?.data?.result != null) {
       appointmentDetailsResponse = response.item3;
       isLoading = false;
       notifyListeners();
@@ -86,12 +80,10 @@ class AppointmentDetailsViewModel extends BaseViewModel {
     }
   }
 
-  Future<Tuple2<Uint8List?, String?>> printAppointment(
-      int appointmentId) async {
+  Future<Tuple2<Uint8List?, String?>> printAppointment(int appointmentId) async {
     showLoading();
 
-    Tuple4<bool?, String?, Uint8List?, String?> response =
-        await _repository.printAppointment(appointmentId);
+    Tuple4<bool?, String?, Uint8List?, String?> response = await _repository.printAppointment(appointmentId);
     hideLoading();
     if (response.item3 != null && response.item1 != null && response.item1!) {
       return Tuple2<Uint8List?, String?>(response.item3, response.item4);
@@ -102,30 +94,20 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   }
 
   void printAppointmentFunction(int appointmentId) async {
-    if (appointmentId != null) {
-      Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
-      if (res.item1 != null) openFile(res.item1!, contentType: res.item2);
-    }
+    Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
+    if (res.item1 != null) openFile(res.item1!, contentType: res.item2);
   }
 
   void shareAppointmentFunction(int appointmentId) async {
-    if (appointmentId != null) {
-      Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
-      if (res.item1 != null) shareFile(res.item1!, contentType: res.item2);
-    }
+    Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
+    if (res.item1 != null) shareFile(res.item1!, contentType: res.item2);
   }
 
   void shareFile(Uint8List bytes, {String? contentType}) async {
-    String extension =
-        contentType != null ? ("." + contentType.split("/").last) : "";
+    String extension = contentType != null ? (".${contentType.split("/").last}") : "";
     try {
       if (extension.isNotEmpty) {
-        String dir = (await getTemporaryDirectory()).path;
-        File filetemp = File("$dir/" +
-            "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
-        await filetemp.writeAsBytes(bytes);
-
-        Share.shareFiles([filetemp.path]);
+        Share.shareXFiles([XFile.fromData(bytes)]);
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -140,20 +122,17 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   }
 
   void openFile(Uint8List bytes, {String? contentType}) async {
-    String extension =
-        contentType != null ? ("." + contentType.split("/").last) : "";
+    String extension = contentType != null ? (".${contentType.split("/").last}") : "";
     try {
       if (extension.isNotEmpty) {
         String dir = (await getTemporaryDirectory()).path;
 
-        File filetemp = File("$dir/" +
-            "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
+        File filetemp = File("$dir/" "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
 
         OpenFile.open(filetemp.path).then(
           (value) => CommonFunctions.sendEvent(
-            dioError: DioException(
-                requestOptions: RequestOptions(baseUrl: "OpenFile")),
+            dioError: DioException(requestOptions: RequestOptions(baseUrl: "OpenFile")),
             ex: Exception(value),
           ),
         );
@@ -171,53 +150,39 @@ class AppointmentDetailsViewModel extends BaseViewModel {
 
   Future<CancelAppointmentResponse?> cancelAppointment() async {
     CancelAppointmentResponse? result = await cancelAppointmentApi(
-        appointmentDetailsResponse?.data?.result?.id ?? 0,
-        [selectedCancelReasonItem!],
-        cancelReason);
-    if (result != null &&
-        result.data?.result != null &&
-        result.data?.result == true) {
+        appointmentDetailsResponse?.data?.result?.id ?? 0, [selectedCancelReasonItem!], cancelReason);
+    if (result != null && result.data?.result != null && result.data?.result == true) {
       locator<MyAppointmentsViewModel>().getMyAppointments();
-      locator<MyAppointmentsViewModel>()
-          .getMyPreviousAppointments(pageIndex: 0);
+      locator<MyAppointmentsViewModel>().getMyPreviousAppointments(pageIndex: 0);
 
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-          RouteName.successRoute,
-          ModalRoute.withName(RouteName.AppointmentsListScreen),
-          arguments: SuccessScreenArgs(
-              type: PAGE_TYPE.cancelAppointment, fromHomePage: false));
+          RouteName.successRoute, ModalRoute.withName(RouteName.AppointmentsListScreen),
+          arguments: SuccessScreenArgs(type: PAGE_TYPE.cancelAppointment, fromHomePage: false));
     }
     return result;
   }
 
   Future<ConfirmAppointmentResponse?> confirmAppointment() async {
-    ConfirmAppointmentResponse? result = await confirmAppointmentApi(
-        appointmentDetailsResponse?.data?.result?.uuid ?? "");
+    ConfirmAppointmentResponse? result =
+        await confirmAppointmentApi(appointmentDetailsResponse?.data?.result?.uuid ?? "");
     if (result != null && result.data?.result != null) {
       locator<MyAppointmentsViewModel>().getMyAppointments();
-      locator<MyAppointmentsViewModel>()
-          .getMyPreviousAppointments(pageIndex: 0);
+      locator<MyAppointmentsViewModel>().getMyPreviousAppointments(pageIndex: 0);
 
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-          RouteName.successRoute,
-          ModalRoute.withName(RouteName.AppointmentsListScreen),
-          arguments: SuccessScreenArgs(
-              type: PAGE_TYPE.confirmAppointment, fromHomePage: false));
+          RouteName.successRoute, ModalRoute.withName(RouteName.AppointmentsListScreen),
+          arguments: SuccessScreenArgs(type: PAGE_TYPE.confirmAppointment, fromHomePage: false));
     }
     return result;
   }
 
-  Future<CancelAppointmentResponse?> cancelAppointmentApi(int requestNumber,
-      List<LookUpItem> cancelReasons, String? otherReason) async {
+  Future<CancelAppointmentResponse?> cancelAppointmentApi(
+      int requestNumber, List<LookUpItem> cancelReasons, String? otherReason) async {
     showLoading();
     Tuple3<bool?, String?, CancelAppointmentResponse?> response =
-        await _repository.cancelAppointment(
-            requestNumber, cancelReasons, otherReason);
+        await _repository.cancelAppointment(requestNumber, cancelReasons, otherReason);
     hideLoading();
-    if (response.item3 != null &&
-        response.item3?.data != null &&
-        response.item1 != null &&
-        response.item1!) {
+    if (response.item3 != null && response.item3?.data != null && response.item1 != null && response.item1!) {
       return response.item3;
     } else {
       showError(response.item2 ?? "");
@@ -225,16 +190,11 @@ class AppointmentDetailsViewModel extends BaseViewModel {
     return null;
   }
 
-  Future<ConfirmAppointmentResponse?> confirmAppointmentApi(
-      String requestNumber) async {
+  Future<ConfirmAppointmentResponse?> confirmAppointmentApi(String requestNumber) async {
     showLoading();
-    Tuple3<bool?, String?, ConfirmAppointmentResponse?> response =
-        await _repository.confirmAppointment(requestNumber);
+    Tuple3<bool?, String?, ConfirmAppointmentResponse?> response = await _repository.confirmAppointment(requestNumber);
     hideLoading();
-    if (response.item3 != null &&
-        response.item3?.data != null &&
-        response.item1 != null &&
-        response.item1!) {
+    if (response.item3 != null && response.item3?.data != null && response.item1 != null && response.item1!) {
       return response.item3;
     } else {
       showError(response.item2 ?? "");
@@ -244,12 +204,9 @@ class AppointmentDetailsViewModel extends BaseViewModel {
 
   Future<bool> getLookUpList() async {
     showLoading();
-    Tuple3<bool?, String?, LookUpList?> response =
-        await _repository.getLookupList("CANCEL_REASONS");
+    Tuple3<bool?, String?, LookUpList?> response = await _repository.getLookupList("CANCEL_REASONS");
     hideLoading();
-    if (response.item1 != null &&
-        response.item1! &&
-        response.item3?.data?.result != null) {
+    if (response.item1 != null && response.item1! && response.item3?.data?.result != null) {
       setCancelReasons(response.item3);
 
       return true;
@@ -262,8 +219,7 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   void setCancelReasons(LookUpList? data) {
     cancelReasonsList = data;
     cancelList = cancelReasonsList!.data!.result!
-        .map<DropDownItem>(
-            (e) => DropDownItem(id: e.id.toString(), name: e.name ?? ""))
+        .map<DropDownItem>((e) => DropDownItem(id: e.id.toString(), name: e.name ?? ""))
         .toList();
   }
 

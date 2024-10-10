@@ -109,7 +109,7 @@ class ProfileImage extends _$ProfileImage {
       );
 
       final result = proto.Profile_Photo.fromBuffer(response.data as List<int>);
-      mixpanel?.track('Profile Image Upload');
+      await mixpanel?.track('Profile Image Upload');
       return result.image.url;
     } catch (error, trace) {
       _log(error, trace);

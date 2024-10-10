@@ -11,8 +11,10 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/routes/dark_map.dart';
 import 'package:mapness/app/routes/sound_settings.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/map/navigator_settings.dart';
+import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
+import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class NavigatorSettingsPage extends ConsumerStatefulWidget {
@@ -25,8 +27,12 @@ class NavigatorSettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
   @override
   Widget build(BuildContext context) {
-    final navigatorSettings = ref.watch(navigatorSettingsProvider);
-    final navigatorSettingsNotifier = ref.read(navigatorSettingsProvider.notifier);
+    final navigatorCamerasSettings = ref.watch(navigatorSpeedCamerasSettingsProvider);
+    final navigatorCamerasSettingsNotifier = ref.read(navigatorSpeedCamerasSettingsProvider.notifier);
+    final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
+    final navigatorRouteSettingsNotifier = ref.read(navigatorRouteSettingsProvider.notifier);
+    final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
+    final betterRouteSettingsNotifier = ref.read(betterRouteSuggestionsProvider.notifier);
     final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
 
     final colorsV2 = context.colorsV2;
@@ -70,6 +76,42 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                           ),
                           child: Column(
                             children: [
+                              ContentRow(
+                                onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidTollRoads(),
+                                options: ContentRowOptions(
+                                  title: l10n.avoidTollRoads,
+                                  dividerEnabled: true,
+                                  titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                  actionWidget: ContentRowActionOptions(
+                                    enabledToggle: true,
+                                    toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
+                                  ),
+                                ),
+                              ),
+                              ContentRow(
+                                onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidUnpavedRoads(),
+                                options: ContentRowOptions(
+                                  title: l10n.avoidUnpavedRoads,
+                                  dividerEnabled: true,
+                                  titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                  actionWidget: ContentRowActionOptions(
+                                    enabledToggle: true,
+                                    toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
+                                  ),
+                                ),
+                              ),
+                              ContentRow(
+                                onToggle: (_) => betterRouteSettingsNotifier.toggle(),
+                                options: ContentRowOptions(
+                                  title: l10n.suggestRouteBetter,
+                                  dividerEnabled: true,
+                                  titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                  actionWidget: ContentRowActionOptions(
+                                    enabledToggle: true,
+                                    toggleInitialValue: betterRouteSettings,
+                                  ),
+                                ),
+                              ),
                               ContentRow(
                                 onToggle: (_) {
                                   ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart();
@@ -147,10 +189,10 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                             titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
                             actionWidget: ContentRowActionOptions(
                               enabledToggle: true,
-                              toggleInitialValue: navigatorSettings,
+                              toggleInitialValue: navigatorCamerasSettings,
                             ),
                           ),
-                          onToggle: (val) => navigatorSettingsNotifier.toggle(),
+                          onToggle: (val) => navigatorCamerasSettingsNotifier.toggle(),
                         ),
                       ],
                     ),

@@ -12,4 +12,7 @@ class FeedbackCategoryEntity {
     required this.fields,
     required this.iconUrl,
   });
+
+  @override
+  String toString() => 'FeedbackCategoryEntity(id: $id, name: $name, fields: $fields, iconUrl: $iconUrl)';
 }

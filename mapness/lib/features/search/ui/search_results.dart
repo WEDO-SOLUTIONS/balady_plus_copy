@@ -60,7 +60,6 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
 
     return ListView.separated(
       shrinkWrap: true,
-      cacheExtent: 50,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {

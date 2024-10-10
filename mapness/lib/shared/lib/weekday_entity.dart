@@ -22,12 +22,12 @@ extension WeekDayExt on WeekDay {
       };
 
   String localizedName(AppLocalizations l10n) => switch (this) {
-        WeekDay.monday => l10n.monday,
-        WeekDay.tuesday => l10n.tuesday,
-        WeekDay.wednesday => l10n.wednesday,
-        WeekDay.thursday => l10n.thursday,
-        WeekDay.friday => l10n.friday,
-        WeekDay.saturday => l10n.saturday,
-        WeekDay.sunday => l10n.sunday,
+        WeekDay.monday => l10n.weekdayNameMonday,
+        WeekDay.tuesday => l10n.weekdayNameTuesday,
+        WeekDay.wednesday => l10n.weekdayNameWednesday,
+        WeekDay.thursday => l10n.weekdayNameThursday,
+        WeekDay.friday => l10n.weekdayNameFriday,
+        WeekDay.saturday => l10n.weekdayNameSaturday,
+        WeekDay.sunday => l10n.weekdayNameSunday,
       };
 }

@@ -45,6 +45,7 @@ import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/notifications/data/data_source/notifications_remote_data_source.dart';
 import '../../features/notifications/data/repositories/notification_repository_implementation.dart';
 import '../../features/notifications/manager/notification_manager.dart';
+import '../../features/qa/datasource/remote_data_source.dart';
 import '../../features/unknow/data/repositories/repository_implementation.dart';
 import '../../features/unknow/domain/repositories/repository.dart';
 import '../../features/weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
@@ -243,6 +244,10 @@ void initialize() {
       () => NotificationRepositoryImplementation(remoteDataSource: sl()));
   sl.registerLazySingleton<NotificationManager>(
       () => NotificationManager(repository: sl()));
+
+  sl.registerLazySingleton<QuestionRemoteDataSourceImplementation>(() => QuestionRemoteDataSourceImplementation(webService: sl()));
+
+
   /////////////// End
 
   ///////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
@@ -88,8 +88,7 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
                   FilterItemConfig() => QuickFilter(
                       item: item,
                       selected: item.selected,
-                      background:
-                          widget.isDashboard ? context.color.surfaceBaseSecondary : context.color.surfaceBasePrimary,
+                      chipsType: widget.isDashboard ? ChipsType.neutral : ChipsType.map,
                     ),
                   FilterItemBuilder() => item.builder(
                       context,
