@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/deceased_verification_section.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 
 import 'package:bloc/bloc.dart';
@@ -29,10 +30,11 @@ class EkramRequestTransportationBloc extends Bloc<
   PageController controller = PageController();
   EkramRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
-    ApplicantInfoSection(),
-    DeceasedInfoSection(),
-    DeathAndBurialInfoSection(),
-    AgreementSection()
+    const DeceasedVerificationSection(),
+    const ApplicantInfoSection(),
+    const DeceasedInfoSection(),
+    const DeathAndBurialInfoSection(),
+    const AgreementSection()
   ];
 
   final GetCities _getCities;

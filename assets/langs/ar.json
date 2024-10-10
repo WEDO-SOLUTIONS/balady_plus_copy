@@ -2371,6 +2371,7 @@
   "transportationDestination": "محطة النقل الحالية",
   "trafficTracking": "تتبع حركة النقل",
   "ekramService": "خدمة إكرام الموتى",
+  "deceased_verification":"اثبات المتوفي",
   "ekramServiceDesc": "تشارككم وزارة البلديات والإسكان أحزانكم في وفاة فقيدكم، وتتقدم بخالص التعازي والمواساة لأسرته الكريمة، راجيين لكم الصبر والسلوان",
   "ekramStartService": "ابدأ الخدمة",
   "ekramNewOrder": "طلب جديد",
