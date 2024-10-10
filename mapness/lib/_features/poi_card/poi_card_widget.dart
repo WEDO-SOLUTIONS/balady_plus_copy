@@ -292,7 +292,8 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             bottom: false,
             child: StatefulBottomSheet(
               animateOpening: false,
-              key: const Key('POI CARD SHEET KEY'),
+              
+              key: UniqueKey(),
               scrollController: _bottomSheetController,
               topHeader: PoiPhotosHeader(
                 objectId: objectId,
