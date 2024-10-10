@@ -59,7 +59,6 @@ class FeedbackInput extends StatelessWidget {
           if (field.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
         ],
       ),
-      // validator: ,
     );
   }
 }
