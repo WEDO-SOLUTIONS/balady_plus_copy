@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -96,18 +95,14 @@ class SearchItem extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(
                               RadiusBorder.l,
                             ),
-                            child: CustomCachedNetworkImage(
+                            child: Image.network(
                               photo,
-                              imageWidth: 96,
+                              fit: BoxFit.cover,
+                              height: 96,
+                              width: 96,
+                              cacheHeight: 96,
+                              cacheWidth: 96,
                             ),
-                            // child: Image.network(
-                            //   photo,
-                            //   fit: BoxFit.cover,
-                            //   height: 96,
-                            //   width: 96,
-                            //   cacheHeight: 96,
-                            //   cacheWidth: 96,
-                            // ),
                           );
                         },
                         separatorBuilder: (context, index) => Spacing.$1x.widthBox,
