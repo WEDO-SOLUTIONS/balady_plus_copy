@@ -36,10 +36,16 @@ class AppRouter extends RootStackRouter {
             child: child,
           ),
         ),
-        AutoRoute(page: MapRoute.page, path: '/', children: [
-          CustomRoute(
-            path: 'kiblah',
-            page: KiblahRoute.page,
+        AutoRoute(
+          page: MapRoute.page,
+          path: '/',
+          guards: [
+            OnboardRouteGuard(ref),
+          ],
+          children: [
+            CustomRoute(
+              path: 'kiblah',
+              page: KiblahRoute.page,
             fullscreenDialog: true,
             transitionsBuilder: TransitionsBuilders.fadeIn,
           ),
@@ -58,9 +64,6 @@ class AppRouter extends RootStackRouter {
           ),
           CustomRoute(
             page: BottomMenuRoute.page,
-            guards: [
-              OnboardRouteGuard(ref),
-            ],
             initial: true,
             children: [
               CustomRoute(
@@ -85,7 +88,8 @@ class AppRouter extends RootStackRouter {
               ),
             ],
           ),
-        ]),
+          ],
+        ),
       ];
 
   Route<T> modalSheetBuilder<T>(BuildContext context, Widget child, AutoRoutePage<T> page) => ModalBottomSheetRoute(

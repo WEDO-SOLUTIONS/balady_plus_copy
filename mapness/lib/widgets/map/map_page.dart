@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/others/transparent_pointer.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/object_manager.dart';
 
 @RoutePage()
 class MapPage extends ConsumerStatefulWidget {
@@ -14,8 +13,7 @@ class MapPage extends ConsumerStatefulWidget {
   ConsumerState<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends ConsumerState<MapPage>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   final int _keyIndex = 0;
   bool _needRefresh = false;
 
@@ -54,13 +52,6 @@ class _MapPageState extends ConsumerState<MapPage>
     super.build(context);
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
-    final settings = MapObjectManagerSettings.selectedMarker();
-    ref.watch(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
-    );
 
     return Stack(
       fit: StackFit.expand,

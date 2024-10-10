@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
@@ -23,10 +22,10 @@ import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/app/routes_observer.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
@@ -75,13 +74,11 @@ class MapnessProviderScope extends StatelessWidget {
         child: EagerInitWidget(
           child: Consumer(
             builder: (context, ref, child) {
-              final goRouter = ref.watch(goRouterProvider);
               final language = ref.watch(appLanguageProvider);
               final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
 
               return provider.MultiProvider(
                 providers: [
-                  provider.Provider<GoRouter>.value(value: goRouter),
                   provider.Provider<AppLocalizations>.value(
                     value: localizations,
                   ),

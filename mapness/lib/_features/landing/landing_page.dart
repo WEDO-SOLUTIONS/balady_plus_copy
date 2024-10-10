@@ -37,7 +37,8 @@ class LandingPage extends ConsumerStatefulWidget {
 }
 
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController = StatefulBottomSheetController(
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController =
+      StatefulBottomSheetController(
     initialState: ThreeStateBottomSheet.open,
     behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
     stateMapper: const LandingStateMapper(),
@@ -55,12 +56,12 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
 
-    bottomSheetController.addListener(_calculatePadding);
+    _bottomSheetController.addListener(_calculatePadding);
 
-    setupTapListener();
+    _setupTapListener();
   }
 
-  Future<void> setupTapListener() async {
+  Future<void> _setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
 
@@ -73,14 +74,14 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
             rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
             topPadding: _mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: bottomSheetController.sheetHeight.toInt(),
+            bottomPadding: _bottomSheetController.sheetHeight.toInt(),
           ),
         );
   }
 
   @override
   void dispose() {
-    bottomSheetController.removeListener(_calculatePadding);
+    _bottomSheetController.removeListener(_calculatePadding);
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -125,24 +126,24 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           child: Stack(
             children: [
               ListenableBuilder(
-                listenable: bottomSheetController,
+                listenable: _bottomSheetController,
                 builder: (_, __) {
-                  if (bottomSheetController.state == ThreeStateBottomSheet.hidden) {
+                  if (_bottomSheetController.state == ThreeStateBottomSheet.hidden) {
                     return const SizedBox.shrink();
                   }
 
                   return GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onPanDown: (details) {
-                      if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-                        bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+                      if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+                        _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
                       }
                     },
                   );
                 },
               ),
-              MapDashboardControls(bottomSheetController, key: const ValueKey('MapDashboardControls')),
-              Dashboard(bottomSheetController: bottomSheetController),
+              MapDashboardControls(_bottomSheetController, key: const ValueKey('MapDashboardControls')),
+              Dashboard(bottomSheetController: _bottomSheetController),
             ],
           ),
         ),
