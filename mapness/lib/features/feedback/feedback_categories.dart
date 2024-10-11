@@ -38,8 +38,11 @@ Future<List<FeedbackCategoryDto>> _loadFromBackend(
   try {
     final response = await dio.get('/discrepancy/${objectType.name}/categories');
     return FeedbackCategoryDto.parseList(response.data);
-  } catch (e) {
-    log(e.toString());
+  } catch (e, stackTrace) {
+    log(
+      e.toString(),
+      stackTrace: stackTrace,
+    );
   }
   return [];
 }

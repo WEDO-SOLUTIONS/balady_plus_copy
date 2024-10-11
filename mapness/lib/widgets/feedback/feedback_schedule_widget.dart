@@ -162,7 +162,7 @@ class FeedbackScheduleWidget extends StatelessWidget {
         },
         startDrumTitle: context.l10n.feedbackWorkingHoursSheetStartOfWork,
         endDrumTitle: context.l10n.feedbackWorkingHoursSheetEndOfWork,
-        toggleTitle: context.l10n.feedbackWorkingHoursSheetAllDay,
+        toggleTitle: context.l10n.feedbackNoBreaks,
       ),
     );
   }

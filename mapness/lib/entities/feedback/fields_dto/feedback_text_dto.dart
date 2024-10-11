@@ -6,13 +6,14 @@ class FeedbackTextDto extends FeedbackBaseDto {
   final int length;
   final String hint;
 
-  FeedbackTextDto({
-    required super.id,
-    required super.type,
-    required super.isRequired,
+  const FeedbackTextDto({
     required this.label,
     required this.length,
     required this.hint,
+    required super.id,
+    required super.type,
+    required super.isRequired,
+    required super.setOnMap,
     super.isHidden = false,
   });
 
@@ -24,14 +25,23 @@ class FeedbackTextDto extends FeedbackBaseDto {
         isRequired: isRequired,
         isHidden: isHidden,
         label: label,
-        maxLenght: length,
+        maxLength: length,
         hint: hint,
-        type: switch (type) {
-          'email' => FeedbackTextType.email,
-          'multiline' => FeedbackTextType.multilineText,
-          'phone' => FeedbackTextType.phone,
-          'url' => FeedbackTextType.url,
-          'singleline' || _ => FeedbackTextType.text
-        },
+        type: resolveType(),
       );
+
+  FeedbackTextType resolveType() {
+    if (id == 'phone') {
+      return FeedbackTextType.phone;
+    }
+    if (id == 'website_url') {
+      return FeedbackTextType.url;
+    }
+
+    return switch (type) {
+      'email' => FeedbackTextType.email,
+      'multiline' => FeedbackTextType.multilineText,
+      _ => FeedbackTextType.text
+    };
+  }
 }

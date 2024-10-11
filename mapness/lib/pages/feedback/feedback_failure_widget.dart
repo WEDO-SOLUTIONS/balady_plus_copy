@@ -23,7 +23,8 @@ class FeedbackFailureWidget extends StatelessWidget {
       onRetry: () {
         onRetry?.call();
       },
-      errorLabel: context.l10n.somethingDidntGoAsPlannedDescription,
+      errorLabel:
+          onRetry != null ? context.l10n.somethingDidntGoAsPlannedDescription : context.l10n.somethingDidntGoAsPlanned,
       errorTitle: context.l10n.failedToLoadData,
       withRetryButton: onRetry != null,
     );
