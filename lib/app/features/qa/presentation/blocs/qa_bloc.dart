@@ -13,53 +13,32 @@ import '../../../../core/errors/errors_exports.dart'
 import '../../../../core/services/services_exports.dart'
     show NavigationService, NoParams;
 import '../../../../core/utils/enums/bloc_status.dart';
-import '../../datasource/remote_data_source.dart';
 
 part 'qa_event.dart';
 part 'qa_state.dart';
 
 class QABloc extends Bloc<QADataEvent, QAState> {
-
-  String? serviceId;
-  QABloc(this.serviceId) : super(const QAState()) {
+  QABloc() : super(const QAState()) {
     on<GetQADataEvent>(_getQaDataHandler);
     on<GetQADatSearchedaEvent>(_getQaDataSearchedHandler);
 
-
     add(const GetQADataEvent());
-
   }
 
   Future<void> _getQaDataHandler(GetQADataEvent e, Emitter emitter) async {
-    if(serviceId == null)
-      return;
-
+    String qa = "";
+    if (CommonFunctions.isAppAR) {
+      qa = await rootBundle.loadString("assets/qa.json");
+    } else {
+      qa = await rootBundle.loadString("assets/qa_en.json");
+    }
+    var r = json.decode(qa);
     try {
+      List<QAModel>? d = r != null
+          ? List<QAModel>.from(r.map((x) => QAModel.fromJson(x)))
+          : null;
 
-      //
-      // if(serviceId == "11429")
-      //   {
-      //     String qa = "";
-      //     if (CommonFunctions.isAppAR) {
-      //       qa = await rootBundle.loadString("assets/qa.json");
-      //     } else {
-      //       qa = await rootBundle.loadString("assets/qa_en.json");
-      //     }
-      //     var r = json.decode(qa);
-      //
-      //       List<QAModel>? d = r != null
-      //           ? List<QAModel>.from(r.map((x) => QAModel.fromJson(x)))
-      //           : null;
-      //     emitter(state.copyWith(list: d, filtered: d));
-      //   }
-      // else {
-        QuestionRemoteDataSourceImplementation obj = sl();
-        List<QAModel>? d = (await obj.getQuestionList(serviceId!))?.cast<
-            QAModel>();
-        emitter(state.copyWith(list: d, filtered: d));
-     // }
-
-
+      emitter(state.copyWith(list: d, filtered: d));
     } catch (error, stackTrace) {
     LogsViewModel().sendEventFromModel(
       event: ErrorExceptionModel(
@@ -69,7 +48,6 @@ class QABloc extends Bloc<QADataEvent, QAState> {
       ),
     );
   }
-
   }
 
   Future<void> _getQaDataSearchedHandler(
@@ -79,8 +57,8 @@ class QABloc extends Bloc<QADataEvent, QAState> {
 
       List<QAModel>? d = (state.list ?? [])
               .where((element) =>
-                  (element.title ?? "").contains(e.text ?? "") ||
-                  (element.fieldFaqAnswer ?? "").contains(e.text ?? ""))
+                  (element.question ?? "").contains(e.text ?? "") ||
+                  (element.answer ?? "").contains(e.text ?? ""))
               .toList() ??
           [];
 
@@ -95,5 +73,4 @@ class QABloc extends Bloc<QADataEvent, QAState> {
     );
   }
   }
-
 }

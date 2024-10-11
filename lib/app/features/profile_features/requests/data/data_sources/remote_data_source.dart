@@ -396,15 +396,12 @@ class RequestsRemoteDataSourceImplementation
   Future<CRMRequestModel> getCRMRequests(CRMRequestsParamsModel params) async {
     var response;
     try {
+      response = await crmWebService.dio
+          .get(ApiUrl.crmRequestsList, queryParameters: params.toMap());
+      final data = response.data;
+      data.toString().successLog();
 
-   // , queryParameters: params.toMap()
-
-      // fawzi change api tp apigee
-      response = await webService.dio
-          .get(ApiUrl.crmRequestsList);
-
-
-       final result = CRMRequestModel.fromJson(response.data["data"]["result"]);
+      final result = CRMRequestModel.fromJson(response.data);
 
       return result;
     } on DioError catch (error, stackTrace) {

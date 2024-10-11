@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
-import 'package:balady_plus/app/core/remote_services/pega_web_service.dart' as web;
+import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -475,7 +475,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
   Future<bool> saveAttachment({required CrAttachmentRequest params}) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
-    final body = await locator<web.PegaWebService>().uploadFileSSO(
+    final body = await locator<web.WebService>().uploadFileSSO(
       CommercialModelEndPoints.crAttachment(
           params.requestId!, params.data!.id!),
       base64: base64Decode(params.data?.base64 ?? ""),

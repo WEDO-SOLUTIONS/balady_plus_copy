@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dartz/dartz.dart' hide Tuple3;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,8 +10,7 @@ import '../../../../../core/services/global/web_service.dart' as web;
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/remote_services/api_constants.dart';
-import '../../../../../core/remote_services/pega_web_service.dart';
-import '../../../../../core/services/global/web_service.dart';
+import '../../../../../core/remote_services/web_service.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/constants/remote_config.dart';
 import '../models/classification.dart';
@@ -22,14 +20,13 @@ import '../models/upload_file_result.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CustomerVoiceRepository {
-  final pegawebServices = locator<PegaWebService>();
-  final webServices = sl<WebService>();
+  final webServices = locator<WebService>();
 
   Future<GisLocationResult?> getGisLocation(LatLng location) async {
     String query =
         "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
 
-    final body = await pegawebServices.getRequest(
+    final body = await webServices.getRequest(
         RemoteConfig.gis + ApiConstants.GisGetLocation,
         relativePath: query);
     bool state = body['state'];
@@ -149,102 +146,37 @@ class CustomerVoiceRepository {
       return null;
     }*/
   }
-  ////////////// comment
-  // Future<Tuple3<bool?, String?, SpecializedClassification?>> getSPlList(
-  //     String municipality,
-  //     {String? category}) async {
-  //   Map<String, dynamic> queryParms = {};
-  //
-  //   queryParms = {
-  //     if (CommonProperties.userInfo?.idNo != null &&
-  //         CommonProperties.userInfo!.idNo!.startsWith("1"))
-  //       "NationalID": "${CommonProperties.userInfo!.idNo}"
-  //     else if (CommonProperties.userInfo?.idNo != null)
-  //       "IqamaID": "${CommonProperties.userInfo!.idNo}",
-  //     "ID": municipality,
-  //     "action": "SplClsList",
-  //     "ChannelType": "Mobile",
-  //     "Type": category == "REGA" ? "REGA" : "CRM",
-  //     if (category != null && category.isNotEmpty)
-  //       "SpecialClassificationType": category
-  //   };
-  //
-  //   String url = ApiUrl.IncidentRetrieveData;
-  //
-  //   final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-  //   bool state = body['state'];
-  //   dynamic data = body['data'];
-  //   String? error = body['error'] ?? ("errors_server_error_1").tr();
-  //   SpecializedClassification? result;
-  //
-  //   try {
-  //     SpecializedClassification response =
-  //         SpecializedClassification.fromMap(json.decode(data));
-  //     result = response;
-  //     if (response.splClassificationList?.isEmpty ?? false) {
-  //       error = ("no_spl_classification_error").tr();
-  //     }
-  //   } catch (error, stackTrace) {
-  //     LogsViewModel().sendEventFromModel(
-  //       event: ErrorExceptionModel(
-  //         nameEvent: EventsName.handledException,
-  //         message: error.toString(),
-  //         stackTrace: stackTrace.toString(),
-  //       ),
-  //     );
-  //     try {
-  //       String queryString = "?" + Uri(queryParameters: queryParms).query;
-  //
-  //       Helpers.sendLog(
-  //           url: url,
-  //           data: data,
-  //           qeuryParms: queryString,
-  //           errorMsg: error.toString());
-  //     } catch (error, stackTrace) {
-  //   LogsViewModel().sendEventFromModel(
-  //     event: ErrorExceptionModel(
-  //       nameEvent: EventsName.handledException,
-  //       message: error.toString(),
-  //       stackTrace: stackTrace.toString(),
-  //     ),
-  //   );
-  // }
-  //   }
-  //   return Tuple3<bool?, String?, SpecializedClassification?>(
-  //       state, error, result);
-  // }
 
-  Future<Tuple3<bool?, String?, SpecializedClassification?>> getMSRSPlList(
+  Future<Tuple3<bool?, String?, SpecializedClassification?>> getSPlList(
       String municipality,
       {String? category}) async {
     Map<String, dynamic> queryParms = {};
-    if (CommonProperties.userInfo?.idNo != null) {
-      queryParms = {
-        if (CommonProperties.userInfo!.idNo!.startsWith("1"))
-          "NationalID": "${CommonProperties.userInfo!.idNo}"
-        else
-          "IqamaID": "${CommonProperties.userInfo!.idNo}",
-        "ID": municipality,
-        "Action": "SplClsList",
-        if (category != null) "Category": category
-      };
-    }
 
-    String url = ApiUrl.MSRRetrieveMSRData;
+    queryParms = {
+      if (CommonProperties.userInfo?.idNo != null &&
+          CommonProperties.userInfo!.idNo!.startsWith("1"))
+        "NationalID": "${CommonProperties.userInfo!.idNo}"
+      else if (CommonProperties.userInfo?.idNo != null)
+        "IqamaID": "${CommonProperties.userInfo!.idNo}",
+      "ID": municipality,
+      "action": "SplClsList",
+      "ChannelType": "Mobile",
+      "Type": category == "REGA" ? "REGA" : "CRM",
+      if (category != null && category.isNotEmpty)
+        "SpecialClassificationType": category
+    };
 
-    final res = await webServices.dio.get(url, queryParameters: queryParms);
-    bool state = false;
+    String url = ApiUrl.IncidentRetrieveData;
 
-
-    if(res.statusCode == HttpStatus.ok ) {
-      state = true ;
-    }
-    dynamic data = res.data["data"]["result"];
-    String error = res.statusMessage ?? ("errors_server_error_1").tr();
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String? error = body['error'] ?? ("errors_server_error_1").tr();
     SpecializedClassification? result;
+
     try {
       SpecializedClassification response =
-          SpecializedClassification.fromMap(data);
+          SpecializedClassification.fromMap(json.decode(data));
       result = response;
       if (response.splClassificationList?.isEmpty ?? false) {
         error = ("no_spl_classification_error").tr();
@@ -278,63 +210,123 @@ class CustomerVoiceRepository {
     return Tuple3<bool?, String?, SpecializedClassification?>(
         state, error, result);
   }
-  //////////////  comment by fawzi not used in app
-  // Future<SubMainClassification?> getSPlDetails(String splId,
-  //     {String? category}) async {
-  //   Map<String, dynamic> queryParms = {};
-  //
-  //   queryParms = {
-  //     if (CommonProperties.userInfo?.idNo != null &&
-  //         CommonProperties.userInfo!.idNo!.startsWith("1"))
-  //       "NationalID": "${CommonProperties.userInfo!.idNo}"
-  //     else if (CommonProperties.userInfo?.idNo != null)
-  //       "IqamaID": "${CommonProperties.userInfo!.idNo}",
-  //     "ID": splId,
-  //     "action": "MainSublClsList",
-  //     "Type": category == "REGA" ? "REGA" : "CRM",
-  //   };
-  //
-  //   String url = ApiUrl.IncidentRetrieveData;
-  //
-  //   final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-  //   bool state = body['state'];
-  //   dynamic data = body['data'];
-  //
-  //   try {
-  //     SubMainClassification response =
-  //         SubMainClassification.fromMap(json.decode(data));
-  //
-  //     return response;
-  //   } catch (error, stackTrace) {
-  //     LogsViewModel().sendEventFromModel(
-  //       event: ErrorExceptionModel(
-  //         nameEvent: EventsName.handledException,
-  //         message: error.toString(),
-  //         stackTrace: stackTrace.toString(),
-  //       ),
-  //     );
-  //     try {
-  //       String queryString = "?" + Uri(queryParameters: queryParms).query;
-  //
-  //       //MM
-  //
-  //       Helpers.sendLog(
-  //           url: url,
-  //           data: data,
-  //           qeuryParms: queryString,
-  //           errorMsg: error.toString());
-  //     } catch (error, stackTrace) {
-  //   LogsViewModel().sendEventFromModel(
-  //     event: ErrorExceptionModel(
-  //       nameEvent: EventsName.handledException,
-  //       message: error.toString(),
-  //       stackTrace: stackTrace.toString(),
-  //     ),
-  //   );
-  // }
-  //     return null;
-  //   }
-  // }
+
+  Future<Tuple3<bool?, String?, SpecializedClassification?>> getMSRSPlList(
+      String municipality,
+      {String? category}) async {
+    Map<String, dynamic> queryParms = {};
+    if (CommonProperties.userInfo?.idNo != null) {
+      queryParms = {
+        if (CommonProperties.userInfo!.idNo!.startsWith("1"))
+          "NationalID": "${CommonProperties.userInfo!.idNo}"
+        else
+          "IqamaID": "${CommonProperties.userInfo!.idNo}",
+        "ID": municipality,
+        "Action": "SplClsList",
+        if (category != null) "Category": category
+      };
+    }
+
+    String url = ApiUrl.MSRRetrieveMSRData;
+
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String? error = body['error'] ?? ("errors_server_error_1").tr();
+    SpecializedClassification? result;
+    try {
+      SpecializedClassification response =
+          SpecializedClassification.fromMap(json.decode(data));
+      result = response;
+      if (response.splClassificationList?.isEmpty ?? false) {
+        error = ("no_spl_classification_error").tr();
+      }
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      try {
+        String queryString = "?" + Uri(queryParameters: queryParms).query;
+
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            qeuryParms: queryString,
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+    }
+    return Tuple3<bool?, String?, SpecializedClassification?>(
+        state, error, result);
+  }
+
+  Future<SubMainClassification?> getSPlDetails(String splId,
+      {String? category}) async {
+    Map<String, dynamic> queryParms = {};
+
+    queryParms = {
+      if (CommonProperties.userInfo?.idNo != null &&
+          CommonProperties.userInfo!.idNo!.startsWith("1"))
+        "NationalID": "${CommonProperties.userInfo!.idNo}"
+      else if (CommonProperties.userInfo?.idNo != null)
+        "IqamaID": "${CommonProperties.userInfo!.idNo}",
+      "ID": splId,
+      "action": "MainSublClsList",
+      "Type": category == "REGA" ? "REGA" : "CRM",
+    };
+
+    String url = ApiUrl.IncidentRetrieveData;
+
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+
+    try {
+      SubMainClassification response =
+          SubMainClassification.fromMap(json.decode(data));
+
+      return response;
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      try {
+        String queryString = "?" + Uri(queryParameters: queryParms).query;
+
+        //MM
+
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            qeuryParms: queryString,
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+      return null;
+    }
+  }
 
   Future<SubMainClassification?> getMSRSPlDetails(String splId) async {
     Map<String, dynamic> queryParms = {};
@@ -351,14 +343,13 @@ class CustomerVoiceRepository {
 
     String url = ApiUrl.MSRRetrieveMSRData;
 
-    final res = await webServices.dio.get(url, queryParameters: queryParms);
-
-    dynamic data = res.data["data"]["result"];
-
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
 
     try {
       SubMainClassification response =
-          SubMainClassification.fromMap(data);
+          SubMainClassification.fromMap(json.decode(data));
       return response;
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -437,22 +428,14 @@ class CustomerVoiceRepository {
         if (pyDescription != null) "pyDescription": pyDescription,
       };
     }
-    String url = ApiUrl.IncidentDaemUploadFile;
-    final res = await webServices.dio.post(url, data: body);
-
-    bool state = false;
-
-
-    if(res.statusCode == HttpStatus.ok ) {
-      state = true ;
-    }
-    dynamic data = res.data["data"]["result"];
-    String error = res.statusMessage ?? ("errors_server_error_1").tr();
-
-
+    String url = ApiUrl.IncidentUploadFile;
+    final res = await webServices.postPegaRequest(url, body: body);
+    bool? state = res['state'];
+    dynamic data = res['data'];
+    String? error = res['error'];
     UploadFileResult? response;
     try {
-      response = UploadFileResult.fromJson(data);
+      response = UploadFileResult.fromJson(json.decode(data));
       if (response != null &&
           response.errors != null &&
           response.errors!.isNotEmpty) state = false;
@@ -484,62 +467,56 @@ class CustomerVoiceRepository {
     return Tuple3<bool?, String?, UploadFileResult?>(state, error, response);
   }
 
-  /////////////  comment by fawzi not used in app
-  // Future<Tuple3<bool?, String?, CreateIncidentResult?>> createRequest(
-  //   var body,
-  // ) async {
-  //   String url = ApiUrl.IncidentCreate;
-  //
-  //   final res = await webServices.postPegaRequest(url, body: body);
-  //   bool? state = res['state'];
-  //   dynamic data = res['data'];
-  //   String? error = res['error'];
-  //   CreateIncidentResult? response;
-  //   try {
-  //     response = CreateIncidentResult.fromJson(json.decode(data));
-  //   } catch (error, stackTrace) {
-  //     LogsViewModel().sendEventFromModel(
-  //       event: ErrorExceptionModel(
-  //         nameEvent: EventsName.handledException,
-  //         message: error.toString(),
-  //         stackTrace: stackTrace.toString(),
-  //       ),
-  //     );
-  //     //MM
-  //     try {
-  //       Helpers.sendLog(
-  //           url: url, data: data, body: body, errorMsg: error.toString());
-  //     } catch (error, stackTrace) {
-  //   LogsViewModel().sendEventFromModel(
-  //     event: ErrorExceptionModel(
-  //       nameEvent: EventsName.handledException,
-  //       message: error.toString(),
-  //       stackTrace: stackTrace.toString(),
-  //     ),
-  //   );
-  // }
-  //   }
-  //   return Tuple3<bool?, String?, CreateIncidentResult?>(
-  //       state, error, response);
-  // }
+  Future<Tuple3<bool?, String?, CreateIncidentResult?>> createRequest(
+    var body,
+  ) async {
+    String url = ApiUrl.IncidentCreate;
+
+    final res = await webServices.postPegaRequest(url, body: body);
+    bool? state = res['state'];
+    dynamic data = res['data'];
+    String? error = res['error'];
+    CreateIncidentResult? response;
+    try {
+      response = CreateIncidentResult.fromJson(json.decode(data));
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      //MM
+      try {
+        Helpers.sendLog(
+            url: url, data: data, body: body, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+    }
+    return Tuple3<bool?, String?, CreateIncidentResult?>(
+        state, error, response);
+  }
 
   Future<Tuple3<bool?, String?, CreateIncidentResult?>> createMSRRequest(
     var body,
   ) async {
     String url = ApiUrl.MSRCreate;
 
-    final res = await webServices.dio.post(url, data: body);
-    bool state = false;
-    if(res.statusCode == HttpStatus.ok ) {
-      state = true ;
-    }
-    dynamic data = res.data["data"]["result"];
-    String error = res.statusMessage ?? ("errors_server_error_1").tr();
-
-
+    final res = await webServices.postPegaRequest(url, body: body);
+    bool? state = res['state'];
+    dynamic data = res['data'];
+    String? error = res['error'];
     CreateIncidentResult? response;
     try {
-      response = CreateIncidentResult.fromJson(data);
+      response = CreateIncidentResult.fromJson(json.decode(data));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

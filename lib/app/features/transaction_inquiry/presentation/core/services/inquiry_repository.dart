@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -7,10 +6,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../core/base/base_view_model.dart';
-import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/remote_services/api_constants.dart';
-import '../../../../../core/remote_services/pega_web_service.dart';
-import '../../../../../core/services/global/web_service.dart';
+import '../../../../../core/remote_services/web_service.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/constants/remote_config.dart';
 import '../models/classification.dart';
@@ -20,13 +17,13 @@ import '../models/gis_location_result.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class InquiryRepository {
-  final pegaWebServices = locator<PegaWebService>();
-  final webServices = sl<WebService>();
+  final webServices = locator<WebService>();
+
   Future<GisLocationResult?> getGisLocation(LatLng location) async {
     String query =
         "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
 
-    final body = await pegaWebServices.getRequest(
+    final body = await webServices.getRequest(
         RemoteConfig.gis + ApiConstants.GisGetLocation,
         relativePath: query);
     bool state = body['state'];
@@ -85,23 +82,15 @@ class InquiryRepository {
 
     String url = ApiUrl.INQAllSPLClassifications;
 
-    final res = await webServices.dio.get(url, queryParameters: queryParms);
-
-    bool state = false;
-
-
-    if(res.statusCode == HttpStatus.ok ) {
-      state = true ;
-    }
-    dynamic data = res.data["data"]["result"];
-    String error = res.statusMessage ?? ("errors_server_error_1").tr();
-
-
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String? error = body['error'];
     ClassificationResponse? result;
 
     try {
       ClassificationResponse response =
-          ClassificationResponse.fromJson(data);
+          ClassificationResponse.fromJson(json.decode(data));
       result = response;
       if (response.data.isEmpty) {
         error = ("spl_classification_error").tr();
@@ -132,132 +121,126 @@ class InquiryRepository {
         state, error, result);
   }
 
-  ///////////////////////fawzi comment this fun not used
-//   Future<Tuple3<bool?, String?, ClassificationResponse?>>
-//       getMainClassificationsLsit(String municipality,
-//           {String? category}) async {
-//     Map<String, dynamic> queryParms = {};
-//
-//     queryParms = {
-//       if (CommonProperties.userInfo?.idNo != null &&
-//           CommonProperties.userInfo!.idNo!.startsWith("1"))
-//         "NationalID": "${CommonProperties.userInfo!.idNo}"
-//       else if (CommonProperties.userInfo?.idNo != null)
-//         "IqamaID": "${CommonProperties.userInfo!.idNo}",
-//       "type": "INQ",
-//     };
-//
-//     String url = ApiUrl.INQMainClassifications;
-//
-//     final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-//     bool state = body['state'];
-//     dynamic data = body['data'];
-//     String error = body['error'] ?? ("errors_server_error_1").tr();
-//     ClassificationResponse? result;
-//
-//     try {
-//       ClassificationResponse response =
-//           ClassificationResponse.fromJson(json.decode(data));
-//       result = response;
-//       if (response.data.isEmpty) {
-//         error = ("main_classification_error").tr();
-//       }
-//     } catch (error, stackTrace) {
-//       LogsViewModel().sendEventFromModel(
-//         event: ErrorExceptionModel(
-//           nameEvent: EventsName.handledException,
-//           message: error.toString(),
-//           stackTrace: stackTrace.toString(),
-//         ),
-//       );
-//       try {
-//         String queryString = "?" + Uri(queryParameters: queryParms).query;
-//
-// //
-//         Helpers.sendLog(
-//             url: url,
-//             data: data,
-//             qeuryParms: queryString,
-//             errorMsg: error.toString());
-//       } catch (error, stackTrace) {
-//     LogsViewModel().sendEventFromModel(
-//       event: ErrorExceptionModel(
-//         nameEvent: EventsName.handledException,
-//         message: error.toString(),
-//         stackTrace: stackTrace.toString(),
-//       ),
-//     );
-//   }
-//     }
-//     return Tuple3<bool?, String?, ClassificationResponse?>(
-//         state, error, result);
-//   }
+  Future<Tuple3<bool?, String?, ClassificationResponse?>>
+      getMainClassificationsLsit(String municipality,
+          {String? category}) async {
+    Map<String, dynamic> queryParms = {};
 
+    queryParms = {
+      if (CommonProperties.userInfo?.idNo != null &&
+          CommonProperties.userInfo!.idNo!.startsWith("1"))
+        "NationalID": "${CommonProperties.userInfo!.idNo}"
+      else if (CommonProperties.userInfo?.idNo != null)
+        "IqamaID": "${CommonProperties.userInfo!.idNo}",
+      "type": "INQ",
+    };
 
-  ///////////////////////fawzi comment this fun not used
+    String url = ApiUrl.INQMainClassifications;
 
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    ClassificationResponse? result;
 
+    try {
+      ClassificationResponse response =
+          ClassificationResponse.fromJson(json.decode(data));
+      result = response;
+      if (response.data.isEmpty) {
+        error = ("main_classification_error").tr();
+      }
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      try {
+        String queryString = "?" + Uri(queryParameters: queryParms).query;
 
-//   Future<Tuple3<bool?, String?, ClassificationResponse?>>
-//       getMainClassificationsList() async {
-//     Map<String, dynamic> queryParms = {};
 //
-//     queryParms = {
-//       if (CommonProperties.userInfo?.idNo != null &&
-//           CommonProperties.userInfo!.idNo!.startsWith("1"))
-//         "NationalID": "${CommonProperties.userInfo!.idNo}"
-//       else if (CommonProperties.userInfo?.idNo != null)
-//         "IqamaID": "${CommonProperties.userInfo!.idNo}",
-//       "type": "INQ",
-//     };
-//
-//     String url = ApiUrl.INQMainClassifications;
-//
-//     final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-//     bool state = body['state'];
-//     dynamic data = body['data'];
-//     String error = body['error'] ?? ("errors_server_error_1").tr();
-//     ClassificationResponse? result;
-//
-//     try {
-//       ClassificationResponse response =
-//           ClassificationResponse.fromJson(json.decode(data));
-//       result = response;
-//       if (response.data.isEmpty) {
-//         error = ("main_classification_error").tr();
-//       }
-//     } catch (error, stackTrace) {
-//       LogsViewModel().sendEventFromModel(
-//         event: ErrorExceptionModel(
-//           nameEvent: EventsName.handledException,
-//           message: error.toString(),
-//           stackTrace: stackTrace.toString(),
-//         ),
-//       );
-//       // error = error ?? Helpers.translatingWord("errors_server_error_1");
-//
-//       try {
-//         String queryString = "?" + Uri(queryParameters: queryParms).query;
-//
-// //MM
-//         Helpers.sendLog(
-//             url: url,
-//             data: data,
-//             qeuryParms: queryString,
-//             errorMsg: error.toString());
-//       } catch (error, stackTrace) {
-//     LogsViewModel().sendEventFromModel(
-//       event: ErrorExceptionModel(
-//         nameEvent: EventsName.handledException,
-//         message: error.toString(),
-//         stackTrace: stackTrace.toString(),
-//       ),
-//     );
-//   }
-//     }
-//     return Tuple3<bool?, String?, ClassificationResponse?>(
-//         state, error, result);
-//   }
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            qeuryParms: queryString,
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+    }
+    return Tuple3<bool?, String?, ClassificationResponse?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, ClassificationResponse?>>
+      getMainClassificationsList() async {
+    Map<String, dynamic> queryParms = {};
+
+    queryParms = {
+      if (CommonProperties.userInfo?.idNo != null &&
+          CommonProperties.userInfo!.idNo!.startsWith("1"))
+        "NationalID": "${CommonProperties.userInfo!.idNo}"
+      else if (CommonProperties.userInfo?.idNo != null)
+        "IqamaID": "${CommonProperties.userInfo!.idNo}",
+      "type": "INQ",
+    };
+
+    String url = ApiUrl.INQMainClassifications;
+
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    ClassificationResponse? result;
+
+    try {
+      ClassificationResponse response =
+          ClassificationResponse.fromJson(json.decode(data));
+      result = response;
+      if (response.data.isEmpty) {
+        error = ("main_classification_error").tr();
+      }
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      // error = error ?? Helpers.translatingWord("errors_server_error_1");
+
+      try {
+        String queryString = "?" + Uri(queryParameters: queryParms).query;
+
+//MM
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            qeuryParms: queryString,
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+    }
+    return Tuple3<bool?, String?, ClassificationResponse?>(
+        state, error, result);
+  }
 
   Future<Tuple3<bool?, String?, SubMainClassification?>>
       getMainAndSubClassficiation(String splClassID) async {
@@ -274,22 +257,15 @@ class InquiryRepository {
 
     String url = ApiUrl.INQMainAndSubClassifications;
 
-    final res = await webServices.dio.get(url, queryParameters: queryParms);
-
-    bool state = false;
-    if(res.statusCode == HttpStatus.ok ) {
-      state = true ;
-    }
-    dynamic data = res.data["data"]["result"];
-    String error = res.statusMessage ?? ("errors_server_error_1").tr();
-
-
-
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String? error = body['error'];
     SubMainClassification? result;
 
     try {
       SubMainClassification response =
-          SubMainClassification.fromMap(data);
+          SubMainClassification.fromMap(json.decode(data));
       result = response;
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -317,132 +293,119 @@ class InquiryRepository {
     return Tuple3<bool?, String?, SubMainClassification?>(state, error, result);
   }
 
-  /////////////////////// fawzi comment this fun not used
+  Future<Tuple3<bool?, String?, ClassificationResponse?>>
+      getSubClassificationsList(String mainClassId) async {
+    Map<String, dynamic> queryParms = {};
 
-  // Future<Tuple3<bool?, String?, ClassificationResponse?>>
-  //     getSubClassificationsList(String mainClassId) async {
-  //   Map<String, dynamic> queryParms = {};
-  //
-  //   queryParms = {
-  //     if (CommonProperties.userInfo?.idNo != null &&
-  //         CommonProperties.userInfo!.idNo!.startsWith("1"))
-  //       "NationalID": "${CommonProperties.userInfo!.idNo}"
-  //     else if (CommonProperties.userInfo?.idNo != null)
-  //       "IqamaID": "${CommonProperties.userInfo!.idNo}",
-  //     "mainClassificationID": mainClassId,
-  //   };
-  //
-  //   String url = ApiUrl.INQSubClassifications;
-  //
-  //   final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-  //   bool state = body['state'];
-  //   dynamic data = body['data'];
-  //   String error = body['error'] ?? ("errors_server_error_1").tr();
-  //   ClassificationResponse? result;
-  //
-  //   try {
-  //     ClassificationResponse response =
-  //         ClassificationResponse.fromJson(json.decode(data));
-  //     result = response;
-  //     if (response.data.isEmpty) {
-  //       error = ("sub_classification_error").tr();
-  //     }
-  //   } catch (error, stackTrace) {
-  //     LogsViewModel().sendEventFromModel(
-  //       event: ErrorExceptionModel(
-  //         nameEvent: EventsName.handledException,
-  //         message: error.toString(),
-  //         stackTrace: stackTrace.toString(),
-  //       ),
-  //     );
-  //     try {
-  //       String queryString = "?" + Uri(queryParameters: queryParms).query;
-  //
-  //       Helpers.sendLog(
-  //           url: url,
-  //           data: data,
-  //           qeuryParms: queryString,
-  //           errorMsg: error.toString());
-  //     } catch (error, stackTrace) {
-  //   LogsViewModel().sendEventFromModel(
-  //     event: ErrorExceptionModel(
-  //       nameEvent: EventsName.handledException,
-  //       message: error.toString(),
-  //       stackTrace: stackTrace.toString(),
-  //     ),
-  //   );
-  // }
-  //   }
-  //   return Tuple3<bool?, String?, ClassificationResponse?>(
-  //       state, error, result);
-  // }
+    queryParms = {
+      if (CommonProperties.userInfo?.idNo != null &&
+          CommonProperties.userInfo!.idNo!.startsWith("1"))
+        "NationalID": "${CommonProperties.userInfo!.idNo}"
+      else if (CommonProperties.userInfo?.idNo != null)
+        "IqamaID": "${CommonProperties.userInfo!.idNo}",
+      "mainClassificationID": mainClassId,
+    };
 
+    String url = ApiUrl.INQSubClassifications;
 
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    ClassificationResponse? result;
 
-  /////////////////////// fawzi comment this fun not used
+    try {
+      ClassificationResponse response =
+          ClassificationResponse.fromJson(json.decode(data));
+      result = response;
+      if (response.data.isEmpty) {
+        error = ("sub_classification_error").tr();
+      }
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      try {
+        String queryString = "?" + Uri(queryParameters: queryParms).query;
 
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            qeuryParms: queryString,
+            errorMsg: error.toString());
+      } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+    }
+    return Tuple3<bool?, String?, ClassificationResponse?>(
+        state, error, result);
+  }
 
-  // Future<Tuple3<bool?, String?, ClassificationResponse?>>
-  //     getSplClassificationsList(String subId) async {
-  //   Map<String, dynamic> queryParms = {};
-  //
-  //   queryParms = {
-  //     if (CommonProperties.userInfo?.idNo != null &&
-  //         CommonProperties.userInfo!.idNo!.startsWith("1"))
-  //       "NationalID": "${CommonProperties.userInfo!.idNo}"
-  //     else if (CommonProperties.userInfo?.idNo != null)
-  //       "IqamaID": "${CommonProperties.userInfo!.idNo}",
-  //     "subClassificationID": subId,
-  //   };
-  //
-  //   String url = ApiUrl.INQSPLClassifications;
-  //
-  //   final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-  //   bool state = body['state'];
-  //   dynamic data = body['data'];
-  //   String error = body['error'] ?? ("errors_server_error_1").tr();
-  //   ClassificationResponse? result;
-  //
-  //   try {
-  //     ClassificationResponse response =
-  //         ClassificationResponse.fromJson(json.decode(data));
-  //     result = response;
-  //     if (response.data.isEmpty) {
-  //       error = ("spl_classification_error").tr();
-  //     }
-  //   } catch (error, stackTrace) {
-  //   LogsViewModel().sendEventFromModel(
-  //     event: ErrorExceptionModel(
-  //       nameEvent: EventsName.handledException,
-  //       message: error.toString(),
-  //       stackTrace: stackTrace.toString(),
-  //     ),
-  //   );
-  // }
-  //   return Tuple3<bool?, String?, ClassificationResponse?>(
-  //       state, error, result);
-  // }
+  Future<Tuple3<bool?, String?, ClassificationResponse?>>
+      getSplClassificationsList(String subId) async {
+    Map<String, dynamic> queryParms = {};
+
+    queryParms = {
+      if (CommonProperties.userInfo?.idNo != null &&
+          CommonProperties.userInfo!.idNo!.startsWith("1"))
+        "NationalID": "${CommonProperties.userInfo!.idNo}"
+      else if (CommonProperties.userInfo?.idNo != null)
+        "IqamaID": "${CommonProperties.userInfo!.idNo}",
+      "subClassificationID": subId,
+    };
+
+    String url = ApiUrl.INQSPLClassifications;
+
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    ClassificationResponse? result;
+
+    try {
+      ClassificationResponse response =
+          ClassificationResponse.fromJson(json.decode(data));
+      result = response;
+      if (response.data.isEmpty) {
+        error = ("spl_classification_error").tr();
+      }
+    } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+    return Tuple3<bool?, String?, ClassificationResponse?>(
+        state, error, result);
+  }
 
   Future<Tuple3<bool?, String?, CreateIncidentResult?>> createINQRequest(
     var body,
   ) async {
     String url = ApiUrl.INQCreate;
     print(body);
-    final res = await webServices.dio.post(url, data: body);
+    final res = await webServices.postPegaRequest(url, body: body);
 
-    bool state = false;
-
-
-    if(res.statusCode == HttpStatus.ok ) {
-      state = true ;
-    }
-    dynamic data = res.data["data"]["result"];
-    String error = res.statusMessage ?? ("errors_server_error_1").tr();
-
-
+    bool? state = res['state'];
+    dynamic data = res['data'];
+    print(data);
+    String? error = res['error'];
     CreateIncidentResult? response;
     try {
-      response = CreateIncidentResult.fromJson(data);
+      response = CreateIncidentResult.fromJson(json.decode(data));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

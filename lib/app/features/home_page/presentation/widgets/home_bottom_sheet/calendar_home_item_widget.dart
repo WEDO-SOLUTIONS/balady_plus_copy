@@ -102,7 +102,7 @@ class CalendarHomeItemWidget extends StatelessWidget {
                       ),
                       child: Stack(
                         children: [
-                          SizedBox(
+                          Container(
                             width: MediaQuery.of(context).size.width * 0.75,
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +199,7 @@ class CalendarTag extends StatelessWidget {
       height: 24,
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
       decoration: ShapeDecoration(
-        color: const Color(0x11145E75),
+        color: Color(0x11145E75),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
       child: CustomTextWidget(
@@ -224,7 +224,7 @@ class RemainingDaysWidget extends StatelessWidget {
       child: Container(
         width: 65,
         height: 76,
-        padding: const EdgeInsets.all(9),
+        padding: EdgeInsets.all(9),
         decoration: ShapeDecoration(
             color: AppColor.secondary900Light,
             shape: RoundedRectangleBorder(

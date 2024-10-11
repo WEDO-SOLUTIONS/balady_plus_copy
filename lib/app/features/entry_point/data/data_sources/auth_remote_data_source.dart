@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
@@ -212,29 +211,25 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   @override
   Future<EndSessionResponse> endSession() async {
     try {
-      EndSessionRequest endSessionRequest = EndSessionRequest(
-        idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
-        postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
-        serviceConfiguration: _serviceConfiguration,
-        additionalParameters: {
-          "id_token_hint": sl<EntryPointCubit>().state.token?.idToken ?? '',
-          "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
-        },
-      );
       EndSessionResponse? response = await _appAuth.endSession(
-        endSessionRequest,
-      );
-
-      return response!;
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
+        EndSessionRequest(
+          idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
+          postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
+          serviceConfiguration: _serviceConfiguration,
+          additionalParameters: {
+            "id_token_hint": sl<EntryPointCubit>().state.token?.idToken ?? '',
+            "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
+          },
         ),
       );
-      throw ServerException("", errorCode: error.toString());
+
+      if (response == null) {
+        throw ServerException('Response of [endSession] is null. Please check the response.');
+      }
+
+      return response;
+    } catch (error) {
+      throw ServerException(error.toString(), errorCode: error.toString());
     }
   }
 

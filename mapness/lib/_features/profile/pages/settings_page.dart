@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/features/_shared_features/auth_quick_access_biometric_widget/widgets/auth_quick_access_biometric_widget.dart';
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -61,14 +60,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           NotificationsSettingCell(),
                         ],
                       ),
-                      const SizedBox(height: Spacing.$4x),
-                      ContentWrapper(
-                        color: context.color.surfaceBaseSecondary,
-                        children: const [
-                          AuthQuickAccessBiometricWidget(),
-                        ],
-                      ),
-                      const SizedBox(height: Spacing.$4x),
+                      Spacing.$4x.heightBox,
                       Consumer(
                         builder: (context, ref, child) {
                           final language = ref.watch(appLanguageProvider);
@@ -82,8 +74,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                   leadingIcon: leadingIcon(language),
                                 ),
                                 content: const LanguagePicker(),
-                                expandIconColor:
-                                    context.color.textAndIconsBaseSecondary,
+                                expandIconColor: context.color.textAndIconsBaseSecondary,
                               ),
                             ],
                           );

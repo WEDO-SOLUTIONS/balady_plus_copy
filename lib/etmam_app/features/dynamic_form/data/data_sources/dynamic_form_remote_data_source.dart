@@ -17,7 +17,7 @@ import 'package:balady_plus/etmam_app/features/dynamic_form/dynamic_forms_export
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../app/core/services/local/helpers.dart';
-import 'package:balady_plus/app/core/remote_services/pega_web_service.dart' as web;
+import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
 
 import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';

@@ -9,7 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/base/base_view_model.dart';
 import '../../../core/remote_services/api_constants.dart';
-import '../../../core/remote_services/pega_web_service.dart';
+import '../../../core/remote_services/web_service.dart';
 import '../../../core/services/local/helpers.dart';
 import '../../../core/utils/constants/remote_config.dart';
 import '../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
@@ -17,7 +17,7 @@ import '../../transaction_inquiry/presentation/core/models/selected_location.dar
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CalculatorLocationViewModel extends BaseViewModel {
-  final webServices = locator<PegaWebService>();
+  final webServices = locator<WebService>();
   GisLocationResult? gisLocation;
   SelectedLocation selectedLocation = SelectedLocation();
 

@@ -74,6 +74,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
     try {
       // final data = await localDataSource.clearAuth();
       final data = await remoteDataSource.endSession();
+
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

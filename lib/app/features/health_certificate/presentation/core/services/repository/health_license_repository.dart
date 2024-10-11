@@ -7,7 +7,7 @@ import 'package:tuple/tuple.dart';
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../../core/remote_services/api_constants.dart';
-import '../../../../../../core/remote_services/pega_web_service.dart';
+import '../../../../../../core/remote_services/web_service.dart';
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/utils/common_functions.dart';
 import '../../../../../../core/utils/constants/apis/api_info.dart';
@@ -31,7 +31,7 @@ import '../../../../../../core/services/global/web_service.dart' as web;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class HealthLicenseRepository {
-  final webServices = locator<PegaWebService>();
+  final webServices = locator<WebService>();
   Future<Tuple3<bool?, String?, GisLocationResult?>> getGisLocation(
       LatLng location) async {
     var res = await sl<web.WebService>().dio.get(ApiUrl.gis,

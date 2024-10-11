@@ -365,8 +365,6 @@ class ObjectionReaason extends StatelessWidget {
                               topLeft: Radius.circular(8),
                               topRight: Radius.circular(8)),
                         ),
-
-
                         FieldData(
                           title: "attachment_text".tr(),
                           radius: BorderRadius.zero,
@@ -383,19 +381,12 @@ class ObjectionReaason extends StatelessWidget {
                                     ?.length ??
                                 0,
                             itemBuilder: (ctx, i) {
-                              if( state
-                                  .details!
-                                  .objectionReasonsList![index]
-                                  .reasonAttachment![i].contentLocation != null) {
-                                return ObjectionAttachmentItem(
+                              return ObjectionAttachmentItem(
                                   file: state
                                       .details!
                                       .objectionReasonsList![index]
                                       .reasonAttachment![i], sessionId:state
                                       .details!.sessionID ,);
-                              } else {
-                                return Container();
-                              }
                             },
                           ),
                         ),
