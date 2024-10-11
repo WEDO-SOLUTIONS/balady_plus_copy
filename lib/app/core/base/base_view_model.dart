@@ -7,7 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_it/get_it.dart';
 
 import '../remote_services/api_service.dart';
-import '../remote_services/web_service.dart';
+import '../remote_services/pega_web_service.dart';
 import '../services/local/navigation_services.dart';
 
 GetIt locator = GetIt.instance;

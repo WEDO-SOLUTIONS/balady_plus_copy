@@ -19,14 +19,14 @@ class NeedLoginWidget extends StatefulWidget {
   final bool withMargin;
   final Function(bool isSuccess)? onSuccessLogin;
 
-  const NeedLoginWidget(
-      {Key? key,
-      this.desc,
-      this.img,
-      this.title,
-      this.onSuccessLogin,
-      this.withMargin = true})
-      : super(key: key);
+  const NeedLoginWidget({
+    Key? key,
+    this.desc,
+    this.img,
+    this.title,
+    this.onSuccessLogin,
+    this.withMargin = true,
+  }) : super(key: key);
 
   @override
   _NeedLoginWidgetState createState() => _NeedLoginWidgetState();
@@ -38,7 +38,9 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
     return BlocConsumer<EntryPointCubit, EntryPointState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) {
-          if (widget.onSuccessLogin != null) widget.onSuccessLogin!(true);
+          if (widget.onSuccessLogin != null) {
+            widget.onSuccessLogin!(true);
+          }
         }
       },
       builder: (context, state) {
@@ -77,14 +79,14 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                   ),
                   const CustomVerticalSpace(height: 24),
                   CustomPrimaryButton(
-                      btnWidth: 176,
-                      onPressed: () {
-                        context
-                            .read<EntryPointCubit>()
-                            .onLogin(isFromEtmam: true)
-                            .then((value) {});
-                      },
-                      btnText: trans("signIn")),
+                    btnWidth: 176,
+                    onPressed: () {
+                      context
+                          .read<EntryPointCubit>()
+                          .onLogin(isFromEtmam: true);
+                    },
+                    btnText: trans("signIn"),
+                  ),
                 ],
               ),
             ),

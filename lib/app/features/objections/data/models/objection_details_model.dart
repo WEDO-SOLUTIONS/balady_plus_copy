@@ -121,8 +121,9 @@ class DecisionPdfModel extends DecisionPdf {
   });
 
   factory DecisionPdfModel.fromJson(Map<String, dynamic> json) =>
+
       DecisionPdfModel(
-        contentLocation: json["ContentLocation"],
+        contentLocation: json["ContentLocation"] != null && json["ContentLocation"] != "null"? json["ContentLocation"]:null,
         fileName: json["FileName"],
       );
 
@@ -187,7 +188,7 @@ class ReasonAttachmentModel extends ReasonAttachment {
 
   factory ReasonAttachmentModel.fromJson(Map<String, dynamic> json) =>
       ReasonAttachmentModel(
-        contentLocation: json["ContentLocation"],
+        contentLocation: json["ContentLocation"] != null && json["ContentLocation"] != "null"? json["ContentLocation"]:null,
         fileName: json["FileName"],
       );
 }

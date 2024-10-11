@@ -38,12 +38,14 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+import '../../features/classification_certificate/core/dependency_injection/classification_certificate_injection.dart';
 import '../../features/force_update/presentation/core/force_update_view_model.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/notifications/data/data_source/notifications_remote_data_source.dart';
 import '../../features/notifications/data/repositories/notification_repository_implementation.dart';
 import '../../features/notifications/manager/notification_manager.dart';
+import '../../features/qa/datasource/remote_data_source.dart';
 import '../../features/unknow/data/repositories/repository_implementation.dart';
 import '../../features/unknow/domain/repositories/repository.dart';
 import '../../features/weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
@@ -80,13 +82,13 @@ import 'features/retrive_dc_injection.dart';
 import 'features/violation_guide_injection.dart';
 import 'features/weather_alerts_injection.dart';
 
+
+import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+
 /// sl -> Service Locator
 final sl = GetIt.instance;
 
 void initialize() {
-
-
-
 
 
   OLDInjection.init();
@@ -229,13 +231,13 @@ void initialize() {
       () => ChatBotRepositoryImplementation(sl()));
   sl.registerLazySingleton(() => SendQuestionMessageChatBot(sl()));
 
-  //Balady Calendar
+  //  Balady Calendar
   sl.registerLazySingleton<BaladyCalendarRemoteDataSource>(
       () => CalendarBaladyRemoteDataSourceImpl(webService: sl()));
   sl.registerLazySingleton<BaladyCalendarRepository>(
       () => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
-
-  //noification
+  /////////////// End
+  //  Noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
       () => NotificationRemoteDataSourceImplementation(webService: sl()));
   sl.registerLazySingleton<NotificationRepositoryImplementation>(
@@ -243,10 +245,22 @@ void initialize() {
   sl.registerLazySingleton<NotificationManager>(
       () => NotificationManager(repository: sl()));
 
+  sl.registerLazySingleton<QuestionRemoteDataSourceImplementation>(() => QuestionRemoteDataSourceImplementation(webService: sl()));
 
 
+  /////////////// End
 
+  ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
   /////////////// get All Commercial Injection Container
   CommercialInjectionContainer.init();
   /////////////// End
+  /////////////// get All Authentication Model Injection Container
+  AuthenticationInjection.initialize();
+  /////////////// End
+  /////////////// get All Classification Certificate Injection Container
+  ClassificationCertificateInjectionContainer.init();
+  /////////////// End
+
+
 }

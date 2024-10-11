@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:bot_toast/bot_toast.dart'
@@ -13,6 +14,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:mapness/entry_point.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
@@ -22,6 +24,8 @@ import 'core/utils/routes.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
+
+// import 'baldy';
 
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
 
@@ -54,9 +58,11 @@ class App extends StatelessWidget {
         ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
-        value: sl<EntryPointCubit>()..onLoadingApp(),
-        child: AppWidget(
-          key: materialAppKey,
+        value: sl<EntryPointCubit>(),
+        child: BaladyAuthorizationBloc(
+          child: AppWidget(
+            key: materialAppKey,
+          ),
         ),
       ),
     );
@@ -99,6 +105,54 @@ class AppWidgetState extends State<AppWidget> {
               appBarTheme: const AppBarTheme(
                 backgroundColor: AppColor.blue,
               ),
+              dropdownMenuTheme: const DropdownMenuThemeData(
+                inputDecorationTheme: InputDecorationTheme(),
+                menuStyle: MenuStyle(),
+              ),
+              inputDecorationTheme: InputDecorationTheme(
+                counterStyle: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+                hintStyle: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xff71717A),
+                  fontWeight: FontWeight.normal,
+                ),
+                errorStyle: const TextStyle(color: AppColor.error),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Color(0xffD4D4D8),
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: AppColor.primary800Light,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: AppColor.error,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: AppColor.error,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColor.primary800Light,
@@ -112,22 +166,26 @@ class AppWidgetState extends State<AppWidget> {
                   ),
                 ),
               ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColor.primary900Light,
+                ),
+              ),
               outlinedButtonTheme: OutlinedButtonThemeData(
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColor.primary900Light,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  minimumSize: const Size(double.infinity, 34),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  side: const BorderSide(
-                    width: .8,
-                    color: AppColor.primary900Light,
-                  )
-                ),
+                    foregroundColor: AppColor.primary900Light,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    minimumSize: const Size(double.infinity, 34),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    side: const BorderSide(
+                      width: .8,
+                      color: AppColor.primary900Light,
+                    )),
               ),
             ),
             builder: EasyLoading.init(builder: BotToastInit()),
@@ -137,7 +195,8 @@ class AppWidgetState extends State<AppWidget> {
               MapnessRouteObserver(),
             ],
             localizationsDelegates: translator.delegates.toList()
-              ..add(CountryLocalizations.delegate),
+              ..add(CountryLocalizations.delegate)
+              ..add(SfGlobalLocalizations.delegate),
             // Android + iOS Delegates
             locale: translator.activeLocale,
             // Active locale
