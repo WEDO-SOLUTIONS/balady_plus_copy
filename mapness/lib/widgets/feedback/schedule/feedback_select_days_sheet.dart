@@ -102,7 +102,7 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
                     state:
                         workingHours.days.contains(day) ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked,
                     disable: lockedDays.contains(day),
-                    dayName: day.localizedShortName(context.l10n),
+                    dayName: day.localizedName(context.l10n),
                     onTap: () => _handleOnDayTap(day),
                   ),
               ],

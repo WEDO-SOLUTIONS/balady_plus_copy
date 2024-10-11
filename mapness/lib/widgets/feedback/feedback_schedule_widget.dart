@@ -82,11 +82,14 @@ class FeedbackScheduleWidget extends StatelessWidget {
                 ),
 
               if (_isAddModeIntervalsShown(intervals))
-                uikit.AppButton(
-                  size: ButtonSize.small,
-                  buttonColorScheme: ButtonColorScheme.secondary,
-                  primaryLabel: context.l10n.feedbackScheduleAddMoreDays,
-                  onTap: () => _onIntervalAdd(fieldState),
+                SizedBox(
+                  width: double.infinity,
+                  child: uikit.AppButton(
+                    size: ButtonSize.small,
+                    buttonColorScheme: ButtonColorScheme.secondary,
+                    primaryLabel: context.l10n.feedbackScheduleAddMoreDays,
+                    onTap: () => _onIntervalAdd(fieldState),
+                  ),
                 ),
             ],
           );
@@ -159,7 +162,7 @@ class FeedbackScheduleWidget extends StatelessWidget {
         },
         startDrumTitle: context.l10n.feedbackWorkingHoursSheetStartOfWork,
         endDrumTitle: context.l10n.feedbackWorkingHoursSheetEndOfWork,
-        toggleTitle: context.l10n.feedbackWorkingHoursSheetAllDay,
+        toggleTitle: context.l10n.feedbackNoBreaks,
       ),
     );
   }

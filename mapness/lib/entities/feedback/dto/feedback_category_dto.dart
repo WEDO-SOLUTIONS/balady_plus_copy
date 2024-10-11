@@ -9,7 +9,6 @@ class FeedbackCategoryDto {
   final String type;
   final String name;
   final String? icon;
-
   final List<FeedbackBaseDto> fields;
 
   FeedbackCategoryDto({

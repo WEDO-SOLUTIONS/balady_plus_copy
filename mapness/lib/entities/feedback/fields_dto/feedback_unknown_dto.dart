@@ -7,6 +7,7 @@ class FeedbackUnknownDto extends FeedbackBaseDto {
     required super.type,
     required super.isRequired,
     super.isHidden = false,
+    super.setOnMap = false,
   });
 
   @override
