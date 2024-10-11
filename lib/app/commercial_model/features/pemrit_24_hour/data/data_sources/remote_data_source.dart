@@ -6,7 +6,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
-import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
+import 'package:balady_plus/app/core/remote_services/pega_web_service.dart' as web;
 
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';

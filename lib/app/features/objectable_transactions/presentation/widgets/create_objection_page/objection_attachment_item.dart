@@ -70,9 +70,10 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
                     
                     widget.sessionId !=null ?( widget.file.getV2Url(widget.sessionId!) ?? "")  :  widget.file.getUrl() ?? "",
                       imageWidth: 24,
-                   
+                   addHeader: true,
                       imageHeight: 28,
                          sso: widget.sessionId!=null ?  true : false,
+
                     ),
               CustomHorizontalSpace(width: 8),
               Flexible(

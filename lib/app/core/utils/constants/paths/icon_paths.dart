@@ -11,6 +11,7 @@ const _svgVDIconPath = 'assets/icons/svg/vd/';
 const _svgAthkarIconPath = 'assets/icons/svg/athkar/';
 const _boardingLogoPath = 'assets/icons/svg/boarding/';
 const _eventsPath = 'assets/icons/svg/home_events/';
+const _authPath = 'assets/icons/svg/auth/';
 
 const _inqPath = 'assets/icons/inq/';
 const _msrPath = 'assets/icons/msr/';
@@ -437,6 +438,28 @@ class IconPath {
   static const check = '${_svgIconPath}check$_svg';
 
   static const chat_bot_icon = '${_svgIconPath}chat-bot$_svg';
+  static const arrowCircleDown = '${_pngIconPath}arrow-circle-down$_png';
+
+  // Auth
+  static const biometric = '${_authPath}biometric$_svg';
+  static const quick_access = '${_authPath}quick_access$_svg';
+
+
+
+  // Classification Certificate
+  static const newOfficeIcon = '${_svgIconPath}new_office$_svg';
+
+
+  static const chat_bot_like_icon = '${_svgIconPath}chat-bot-like$_svg';
+  static const chat_bot_dislike_icon = '${_svgIconPath}chat-bot-dislike$_svg';
+  static const chat_bot_copy_icon = '${_svgIconPath}chat-bot-copy$_svg';
+  static const chat_bot_side_menu_icon = '${_svgIconPath}sidemenu$_svg';
+  static const chat_gpt_bot_icon = '${_svgIconPath}chat_gpt$_svg';
+
+
+
+
+
 
 }
 

@@ -27,7 +27,7 @@ import '../models/cr_attachment_response_model.dart';
 import '../models/cr_submit_response_model.dart';
 import '../models/qr/qr_lookup.dart';
 import '../models/save_com_submitter_and_owner_request_model.dart';
-import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
+import 'package:balady_plus/app/core/remote_services/pega_web_service.dart' as web;
 import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 import '../models/qr/addetional_qr_data_request.dart';
 import '../models/qr/qr_details_model.dart';
@@ -1116,7 +1116,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   Future<bool> saveAttachment({required CrAttachmentRequest params}) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
-    final body = await locator<web.WebService>().uploadFileSSO(
+    final body = await locator<web.PegaWebService>().uploadFileSSO(
       CommercialModelEndPoints.crAttachment(params.requestId!, params.data!.id!),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
@@ -1730,7 +1730,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   Future<bool>? uploadCredence({required CrAttachmentRequest params}) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
-    final body = await locator<web.WebService>().uploadFileSSO(
+    final body = await locator<web.PegaWebService>().uploadFileSSO(
       CommercialModelEndPoints.uploadCredences(params.requestId!, params.data!.id),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
@@ -2592,7 +2592,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   Future<bool> uploadQrAttachment({required CrAttachmentRequest params}) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
-    final body = await locator<web.WebService>().uploadFileSSO(
+    final body = await locator<web.PegaWebService>().uploadFileSSO(
       CommercialModelEndPoints.qrUploadAttachments(params.requestId!, params.data!.id!),
       base64: base64Decode(params.data?.base64 ?? ""),
       fileName: params.data?.fileName,
