@@ -10,6 +10,7 @@ import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
+import 'package:mapness/shared/providers/map/bearing_state.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapDashboardControls extends ConsumerStatefulWidget {
@@ -61,6 +62,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(bearingStateProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
     final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
