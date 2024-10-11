@@ -24,7 +24,11 @@ class MapSuggestList extends ConsumerWidget {
     final myLocation = ref.watch(locationProvider);
     final contentColor = context.colorsV2.backgroundSurface4;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      padding: const EdgeInsets.only(
+        left: Spacing.$4x,
+        right: Spacing.$4x,
+        bottom: Spacing.$4x,
+      ),
       child: Material(
         clipBehavior: Clip.antiAlias,
         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
@@ -34,6 +38,7 @@ class MapSuggestList extends ConsumerWidget {
           child: ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             itemBuilder: (context, index) => SuggestItem(
               suggest: suggests[index],
               myLocation: myLocation == null

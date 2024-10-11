@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
@@ -58,7 +59,7 @@ class DashboardHeader extends ConsumerWidget {
             const Center(child: SheetDragger()),
             const SizedBox(height: 6),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               child: MapSearchBar(
                 requestFocus: requestFocus,
                 onClose: onClose,

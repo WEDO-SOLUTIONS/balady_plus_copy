@@ -120,24 +120,25 @@ class SearchItem extends ConsumerWidget {
                 ),
               ),
               trailing: ContentRowCustomTrailingOptions(
-                  builder: (context) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                        child: FutureBuilder<double?>(
-                            future: _calculateDistance(markerPoint: result.markerPosition, myLocationPoint: myLocation),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return const SizedBox.shrink();
-                              }
-                              final distanceKm = snapshot.data;
-                              if (distanceKm == null || !context.mounted) {
-                                return const SizedBox.shrink();
-                              }
-                              return ContentRowTrailingText(
-                                options: ContentRowTextTrailingOptions(
-                                    text: (distanceKm * 1000).formatDistance(context.l10n)),
-                              );
-                            }),
-                      )),
+                builder: (context) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
+                  child: FutureBuilder<double?>(
+                    future: _calculateDistance(markerPoint: result.markerPosition, myLocationPoint: myLocation),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const SizedBox.shrink();
+                      }
+                      final distanceKm = snapshot.data;
+                      if (distanceKm == null || !context.mounted) {
+                        return const SizedBox.shrink();
+                      }
+                      return ContentRowTrailingText(
+                        options: ContentRowTextTrailingOptions(text: (distanceKm * 1000).formatDistance(context.l10n)),
+                      );
+                    },
+                  ),
+                ),
+              ),
             ),
           ],
         ),

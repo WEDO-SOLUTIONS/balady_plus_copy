@@ -131,8 +131,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: cd7e4e06ff935d17ad4410c4e5e16fecf622400a
-      resolved-ref: cd7e4e06ff935d17ad4410c4e5e16fecf622400a
+      ref: bb31bb1320bcea1242be81c5d97e266f758923ea
+      resolved-ref: bb31bb1320bcea1242be81c5d97e266f758923ea
       url: "https://github.com/urbi-ae/balady_uikit.git"
     source: git
     version: "2.0.22"

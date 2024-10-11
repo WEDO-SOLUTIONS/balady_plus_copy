@@ -11,31 +11,35 @@ class SearchScreen extends ConsumerWidget {
   const SearchScreen({
     required this.itemBuilder,
     required this.itemCount,
-    required this.onBackTap,
+    required this.onClose,
     this.hintText,
     super.key,
     this.onHistoryItemTap,
   });
 
-  final VoidCallback onBackTap;
+  final VoidCallback onClose;
   final int itemCount;
   final String? hintText;
   final Widget Function(BuildContext context, int index) itemBuilder;
   final void Function(SearchHistoryItem? item)? onHistoryItemTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: context.color.surfaceBasePrimary,
-        body: Column(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final contentColor = context.colorsV2.backgroundSurface4;
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: context.colorsV2.backgroundSurface1,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
           children: [
             Container(
               color: context.color.surfaceBasePrimary,
-              padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: MediaQuery.of(context).padding.top + 12),
+              padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 12),
               child: BaladySearchWithBackButton(
                 option: SearchTextBackOption(
                   text: context.l10n.cancel,
-                  onPressed: onBackTap,
+                  onPressed: onClose,
                 ),
                 searchInput: BaladyInput.searchV2(
                   autofocus: true,
@@ -60,15 +64,32 @@ class SearchScreen extends ConsumerWidget {
                 },
               ),
             if (itemCount > 0)
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  itemCount: itemCount,
-                  separatorBuilder: (_, __) => const Divider(),
-                  itemBuilder: itemBuilder,
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: Spacing.$4x,
+                  right: Spacing.$4x,
+                  bottom: Spacing.$4x,
+                ),
+                child: Material(
+                  clipBehavior: Clip.antiAlias,
+                  borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                  color: contentColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+                    child: ListView.builder(
+                      //physics: const NeverScrollableScrollPhysics(),
+                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: itemCount,
+                      itemBuilder: itemBuilder,
+                    ),
+                  ),
                 ),
               ),
           ],
         ),
-      );
+      ),
+    );
+  }
 }

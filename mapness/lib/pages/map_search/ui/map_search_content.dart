@@ -117,8 +117,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         hasScrollBody: false,
         child: SafeArea(
           top: false,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 196),
+          child: Center(
             child: Loading(
               orientation: Axis.vertical,
               size: LoaderSize.large,

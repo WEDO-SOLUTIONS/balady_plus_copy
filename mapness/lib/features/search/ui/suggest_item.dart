@@ -68,12 +68,13 @@ class SuggestItem extends ConsumerWidget {
     }
 
     return ContentRowV2(
+      crossAxisAlignment: CrossAxisAlignment.start,
       onTap: _onSuggestTap,
       isDividerEnabled: !isLast,
       leading: Icon(
         SystemIcons.search,
         size: 24,
-        color: context.color.textAndIconsBaseTertiary,
+        color: context.colorsV2.foregroundDefault,
       ),
       text: ContentRowTextOptions(
         title: suggest.title.text,

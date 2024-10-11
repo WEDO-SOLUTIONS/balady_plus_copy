@@ -4,12 +4,12 @@ import 'package:provider/provider.dart';
 
 enum SearchScopeEnum {
   map('MapSearch'),
+  favourites('FavouritesSearch'),
   routes('RoutingSearch');
 
   final String value;
   const SearchScopeEnum(this.value);
 }
-
 
 class SearchScope extends StatelessWidget {
   const SearchScope({required this.child, required this.named, super.key});
