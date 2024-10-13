@@ -24,6 +24,7 @@ import 'core/utils/routes.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import '../app/core/utils/utils_exports.dart' show EnvType;
 
 // import 'baldy';
 
@@ -60,6 +61,7 @@ class App extends StatelessWidget {
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>(),
         child: BaladyAuthorizationBloc(
+          env: sl<EnvType>().name,
           child: AppWidget(
             key: materialAppKey,
           ),
