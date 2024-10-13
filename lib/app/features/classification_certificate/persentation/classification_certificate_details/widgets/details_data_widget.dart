@@ -52,7 +52,9 @@ class DetailsDataWidget extends StatelessWidget {
         const SizedBox(height: 8),
         TitleValueWidget(
           title: "classification_degree",
-          value: "ClassificationGrade-${classificationCertificateDetails.classificationGrade}".tr(),
+          value:
+              "ClassificationGrade-${classificationCertificateDetails.classificationGrade}"
+                  .tr(),
         ),
         const SizedBox(height: 8),
         TitleValueWidget(
@@ -75,46 +77,69 @@ class DetailsDataWidget extends StatelessWidget {
           value: classificationCertificateDetails.status.toUpperCase().tr(),
         ),
         ///////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////
         const SizedBox(height: 8),
-        ServicesWidget(
-          // 1
-          title: 'buildingHousingUnitsTitle'.tr(),
-          description: 'buildingHousingUnitsDescription'.tr(),
-          minimum: classificationCertificateDetails.buildingHousingUnitsMin,
-          maximum: classificationCertificateDetails.buildingHousingUnitsMax,
-        ),
+        state.classificationCertificateDetails.classificationType ==
+                "Classification of Engineer"
+            ? const SizedBox()
+            : ServicesWidget(
+                // 1
+                title: 'buildingHousingUnitsTitle'.tr(),
+                description: 'buildingHousingUnitsDescription'.tr(),
+                minimum:
+                    classificationCertificateDetails.buildingHousingUnitsMin,
+                maximum:
+                    classificationCertificateDetails.buildingHousingUnitsMax,
+              ),
         const SizedBox(height: 8),
-        ServicesWidget(
-          // 2
-          title: 'limitSupervisionTitle'.tr(),
-          description: 'limitSupervisionDescription'.tr(),
-          minimum: classificationCertificateDetails.limitSupervisionMin,
-          maximum: classificationCertificateDetails.limitSupervisionMax,
-        ),
+        state.classificationCertificateDetails.classificationType ==
+                "Classification of Engineer"
+            ? ServicesWidget(
+                // 2
+                title: 'limitSupervisionTitle'.tr(),
+                description: 'limitSupervisionDescription'.tr(),
+                minimum: classificationCertificateDetails.limitSupervisionMin,
+                maximum: classificationCertificateDetails.limitSupervisionMax,
+              )
+            : const SizedBox(),
+        /////////////////////////////////////////////////////////////////
         const SizedBox(height: 8),
-        ServicesWidget(
-          // 3
-          title: 'turnkeyTitle'.tr(),
-          description: 'turnkeyDescription'.tr(),
-          minimum: classificationCertificateDetails.turnkeyMin,
-          maximum: classificationCertificateDetails.turnkeyMax,
-        ),
+        state.classificationCertificateDetails.classificationType ==
+                "Classification of Engineer"
+            ? ServicesWidget(
+                // 3
+                title: 'turnkeyTitle'.tr(),
+                description: 'turnkeyDescription'.tr(),
+                minimum: classificationCertificateDetails.turnkeyMin,
+                maximum: classificationCertificateDetails.turnkeyMax,
+              )//
+            : const SizedBox(),
+        /////////////////////////////////////////////////////////////////
         const SizedBox(height: 8),
-        ServicesWidget(
-          // 4
-          title: 'designContractInfoTitle'.tr(),
-          description: 'designContractInfoDescription'.tr(),
-          minimum: classificationCertificateDetails.designContractInfoMin,
-          maximum: classificationCertificateDetails.designContractInfoMax,
-        ),
+        state.classificationCertificateDetails.classificationType ==
+                "Classification of Engineer"
+            ? ServicesWidget(
+                // 4
+                title: 'designContractInfoTitle'.tr(),
+                description: 'designContractInfoDescription'.tr(),
+                minimum: classificationCertificateDetails.designContractInfoMin,
+                maximum: classificationCertificateDetails.designContractInfoMax,
+              )
+            : const SizedBox(),
+        /////////////////////////////////////////////////////////////////
         const SizedBox(height: 8),
-        ServicesWidget(
-          // 5
-          title: 'surveyingServicesTitle'.tr(),
-          description: 'surveyingServicesDescription'.tr(),
-          minimum: classificationCertificateDetails.surveyingServicesMin,
-          maximum: classificationCertificateDetails.surveyingServicesMax,
-        ),
+        state.classificationCertificateDetails.classificationType ==
+                "Classification of Engineer"
+            ? ServicesWidget(
+                // 5
+                title: 'surveyingServicesTitle'.tr(),
+                description: 'surveyingServicesDescription'.tr(),
+                minimum: classificationCertificateDetails.surveyingServicesMin,
+                maximum: classificationCertificateDetails.surveyingServicesMax,
+              )
+            : const SizedBox(),
         const SizedBox(height: 18),
       ],
     );

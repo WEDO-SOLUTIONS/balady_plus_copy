@@ -35,13 +35,13 @@ class SearchNormalOptionsWidget extends StatelessWidget {
             groupValue: groupValue,
             onChanged: (val) {
               context.read<ClassificationCertificateVerifyBloc>().add(
-                SelectNormalSearchTypeClassificationCertificateState(
-                  normalSearchType: type,
-                ),
-              );
+                    SelectNormalSearchTypeClassificationCertificateState(
+                      normalSearchType: type,
+                    ),
+                  );
             },
             title: Text(type.title.tr()),
-            subtitle: Text(type.description.tr()),
+            // subtitle: groupValue != null ? Text(type.description.tr()) : null,
           ),
         ),
       ),
