@@ -1,7 +1,9 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/new_appointment/presentation/core/models/lookup_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -43,6 +45,9 @@ class DeceasedVerificationSection extends StatelessWidget {
                             Row(
                               children: [
                                 SvgPicture.asset(IconPath.editIcon),
+                                const SizedBox(
+                                  width: 5,
+                                ),
                                 Text(
                                   'deceased_verification'.tr(),
                                   style: const TextStyle(
@@ -53,14 +58,29 @@ class DeceasedVerificationSection extends StatelessWidget {
                                 )
                               ],
                             ),
-                            Text(
-                              'ekram_decesssed_identity_type'.tr(),
-                              style: const TextStyle(
-                                color: AppColor.black,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
+                            CustomLookUpLongDialog(
+                              items: const [],
+                              value: LookUpItem(),
+                              isDisbaled: false,
+                              onEmptyList: () async {},
+                              onChangeType: (LookUpItem? item) {},
+                              label: "ekram_decesssed_identity_type".tr(),
+                              hint: "National_ID".tr(),
+                            ),
+                            CustomLookUpLongDialog(
+                              items: const [],
+                              value: LookUpItem(),
+                              isDisbaled: false,
+                              onEmptyList: () async {},
+                              onChangeType: (LookUpItem? item) {},
+                              label: "dc_dead_person_field".tr(),
+                              hint: "10541XXXXX".tr(),
+                            ),
+                            CustomHeaderAndDescOnTapWidget(
+                              label: "date_of_birth".tr(),
+                              onTap: () {},
+                              icon: SvgPicture.asset(IconPath.calendar),
+                            ),
                           ],
                         ),
                       ),
