@@ -44,34 +44,41 @@ class FeedbackUploadImage extends _$FeedbackUploadImage {
     print('requiest: $filePath');
     state = FileUpload.progress(srcPath: filePath, progress: 0);
 
-    final response = await dio.post(
-      '/upload/image',
+    try {
+      final response = await dio.post(
+        '/upload/image',
 
-      /// api is used for some extra purposes, we only upload images
-      queryParameters: {'type': 'discrepancy_images'},
-      data: Stream.fromIterable(fileBytes.map((e) => [e])),
-      options: Options(
-        headers: {
-          ...dio.options.headers,
-          'Content-Type': 'application/octet-stream',
-          'Accept': 'application/json',
-        },
-        contentType: 'application/octet-stream',
-      ),
-      cancelToken: cancelToken,
-      onReceiveProgress: _receiveProgress,
-    );
+        /// api is used for some extra purposes, we only upload images
+        queryParameters: {'type': 'discrepancy_images'},
+        data: Stream.fromIterable(fileBytes.map((e) => [e])),
+        options: Options(
+          headers: {
+            ...dio.options.headers,
+            'Content-Type': 'application/octet-stream',
+            'Accept': 'application/json',
+          },
+          contentType: 'application/octet-stream',
+        ),
+        cancelToken: cancelToken,
+        onReceiveProgress: _receiveProgress,
+      );
 
-    final url = (response.data as Map<String, dynamic>)['url'] as String?;
-    if (url == null) {
+      final url = (response.data as Map<String, dynamic>)['url'] as String?;
+      if (url == null) {
+        state = FileUpload.unknownError(
+          srcPath: filePath,
+          message: 'server returned no url',
+        );
+        return;
+      }
+      state = FileUploadSuccess(serverUrl: url, srcPath: filePath);
+    } on DioException catch (_) {
+      cancelToken.cancel();
       state = FileUpload.unknownError(
         srcPath: filePath,
-        message: 'server returned no url',
+        message: 'Server returned bad response',
       );
-      return;
     }
-
-    state = FileUploadSuccess(serverUrl: url, srcPath: filePath);
   }
 
   void _receiveProgress(int sent, int total) {
