@@ -18,9 +18,6 @@ class ServerFailure extends Failure {
   dynamic errorCode;
   ServerFailure(this.errorMessage, {this.statusCode, this.errorCode})
       : super([errorMessage, statusCode, errorCode]);
-
-  @override
-  String toString() => errorMessage;
 }
 
 class CacheFailure extends Failure {}

@@ -19,7 +19,7 @@ import '../models/request_permits_model/request_permits_model.dart';
 import '../models/submit_approvel_model.dart';
 import '../models/transfer_attachment_response/request_attachments_response.dart';
 
-import 'package:balady_plus/app/core/remote_services/pega_web_service.dart' as web;
+import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 
@@ -352,7 +352,7 @@ class RequestPermitsRemoteDataSourceImplementation
   Future<bool>? uploadAttachments({required CrAttachmentRequest params}) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
-    final body = await locator<web.PegaWebService>().uploadFileSSO(
+    final body = await locator<web.WebService>().uploadFileSSO(
       CommercialModelEndPoints.uploadCredences(
           params.requestId!, params.data!.id),
       base64: base64Decode(params.data?.base64 ?? ""),
@@ -397,7 +397,7 @@ class RequestPermitsRemoteDataSourceImplementation
   Future<bool> saveAttachment(CrAttachmentRequest params) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
-    final body = await locator<web.PegaWebService>().uploadFileSSO(
+    final body = await locator<web.WebService>().uploadFileSSO(
       CommercialModelEndPoints.crAttachment(
           params.requestId!, params.data!.id!),
       base64: base64Decode(params.data?.base64 ?? ""),
@@ -441,7 +441,7 @@ class RequestPermitsRemoteDataSourceImplementation
   Future<bool>? uploadCredence(CrAttachmentRequest params) async {
     final mimeType = lookupMimeType(params.data?.filePath ?? "");
 
-    final body = await locator<web.PegaWebService>().uploadFileSSO(
+    final body = await locator<web.WebService>().uploadFileSSO(
       CommercialModelEndPoints.uploadCredences(
           params.requestId!, params.data!.id),
       base64: base64Decode(params.data?.base64 ?? ""),

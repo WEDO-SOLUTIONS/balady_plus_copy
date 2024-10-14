@@ -111,21 +111,21 @@ class AppCertificatePinningInterceptor extends Interceptor {
           allowedSHAFingerprints: _allowedSHAFingerprints,
           timeout: _timeout,
         );
-        final secureString = await secure ?? '';
+
         secure?.whenComplete(() => secure = null);
+        final secureString = await secure ?? '';
 
-          if (secureString.contains('CONNECTION_SECURE')) {
-            return super.onRequest(options, handler);
-          } else {
-            handler.reject(
-              DioException(
-                  requestOptions: options,
-                  error: CertificateNotVerifiedException(),
-                  type: DioExceptionType.badCertificate),
-              callFollowingErrorInterceptor,
-            );
-          }
-
+        if (secureString.contains('CONNECTION_SECURE')) {
+          return super.onRequest(options, handler);
+        } else {
+          handler.reject(
+            DioException(
+                requestOptions: options,
+                error: CertificateNotVerifiedException(),
+                type: DioExceptionType.badCertificate),
+            callFollowingErrorInterceptor,
+          );
+        }
       } else {
         return super.onRequest(options, handler);
       }
@@ -183,8 +183,7 @@ class AppInterceptors extends Interceptor {
     if (options.uri.toString().toLowerCase().contains("etmamplus-services") ||
         options.uri.toString().toLowerCase().contains("dashboard-services") ||
         options.uri.toString().toLowerCase().contains("mobile-dynamic-forms") ||
-        options.uri.toString().toLowerCase().contains("biddings-services")||
-        options.uri.toString().toLowerCase().contains("etmamplus-archiving-services/attachments")) {
+        options.uri.toString().toLowerCase().contains("biddings-services")) {
       var headers = {
         ApiHeaders.xFeappId: EtmamCommonProperties.CommonProperties.appName,
         ApiHeaders.xFeAppVersion:

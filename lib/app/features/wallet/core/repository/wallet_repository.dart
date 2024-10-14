@@ -5,13 +5,13 @@ import 'package:tuple/tuple.dart';
 
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/remote_services/api_constants.dart';
-import '../../../../core/remote_services/pega_web_service.dart';
+import '../../../../core/remote_services/web_service.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../models/wallet_response.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class WalletRepository {
-  final webServices = locator<PegaWebService>();
+  final webServices = locator<WebService>();
 
   Future<Tuple3<bool?, String?, WalletResponse?>> getWalletItems() async {
     Map<String, dynamic> queryParms = {};

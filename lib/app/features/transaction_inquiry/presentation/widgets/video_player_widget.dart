@@ -1,4 +1,4 @@
-/*import 'package:balady_plus/app/core/remote_services/pega_web_service.dart';
+/*import 'package:balady_plus/app/core/remote_services/web_service.dart';
 import 'package:balady_plus/app/core/shared_local_services/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';

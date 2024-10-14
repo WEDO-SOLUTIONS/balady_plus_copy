@@ -8,11 +8,8 @@ import 'package:balady_plus/app/features/_shared_features/rating_feature/widgets
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/close_chat_bot_popup.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
-
-import '../../../../core/services/local/navigation_services.dart';
 
 class AppBarChatBot extends StatelessWidget {
   const AppBarChatBot({super.key});
@@ -21,9 +18,9 @@ class AppBarChatBot extends StatelessWidget {
   Widget build(BuildContext context) {
     ChatBotProvider provider = context.watch<ChatBotProvider>();
     return PopScope(
-      // onPopInvoked: (bool didPop) async {
-      //  // closeScreen(context, provider);
-      // },
+      onPopInvoked: (bool didPop) async {
+        closeScreen(context, provider);
+      },
       // canPop: false,
       child: Container(
         decoration: BoxDecoration(
@@ -52,7 +49,7 @@ class AppBarChatBot extends StatelessWidget {
                   valueListenable: provider.chatBotMessage,
                   builder: (_, listMessages, child) {
                     List<Widget> list = [
-                    SizedBox(
+                      SizedBox(
                         width: listMessages.isEmpty ? 85 : 45,
                         height: listMessages.isEmpty ? 85 : 45,
                         child: CircleAvatar(
@@ -110,7 +107,6 @@ class AppBarChatBot extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(
                             top: listMessages.isEmpty ? 14 : 6,
-                            right: listMessages.isEmpty ? 0 : 40,
                           ),
                           child: listMessages.isEmpty
                               ? Column(
@@ -124,36 +120,10 @@ class AppBarChatBot extends StatelessWidget {
                                   children: list,
                                 ),
                         ),
-
-
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-
-                              IconButton(onPressed: () {
-                               Scaffold.of(context).openDrawer();
-
-                              },
-                                icon: SvgPicture.asset(
-                                  IconPath.chat_bot_side_menu_icon,
-                                  ),
-                                iconSize: 40 ,
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),),
-
-
-
-                              IconButton(
-                                onPressed: () => closeScreen(context, provider),
-                                icon: const Icon(Icons.close),
-                              ),
-                            ],
-                          ),
+                        IconButton(
+                          onPressed: () => closeScreen(context, provider),
+                          icon: const Icon(Icons.close),
                         ),
-
                       ],
                     );
                   },
@@ -173,8 +143,6 @@ class AppBarChatBot extends StatelessWidget {
     ).then((value) {
       if (value == true) {
         // Navigator.of(context).popUntil((route) => route.isFirst);
-
-
         Navigator.of(context).pop();
         if (provider.chatBotMessage.value.isNotEmpty) {
           BottomSheetDialog.showSheet(
@@ -192,10 +160,6 @@ class AppBarChatBot extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.65,
           );
         }
-        // else
-        //   {
-        //     Navigator.of(context).pop();
-        //   }
       }
     });
   }

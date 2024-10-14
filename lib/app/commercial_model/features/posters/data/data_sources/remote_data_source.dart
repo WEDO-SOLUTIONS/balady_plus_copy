@@ -8,7 +8,7 @@ import 'package:balady_plus/app/commercial_model/features/posters/data/models/po
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
-import 'package:balady_plus/app/core/remote_services/pega_web_service.dart' as web;
+import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/errors/exceptions.dart';
@@ -372,7 +372,7 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
     print("uploadPosterFile");
     final mimeType = lookupMimeType(params.filePath ?? "");
 
-    final body = await locator<web.PegaWebService>().uploadFileSSO(
+    final body = await locator<web.WebService>().uploadFileSSO(
         CommercialModelEndPoints.permitUploadAttachment(params.requestId!, params.id!),
         base64: base64Decode(params.base64 ?? ""),
         fileName: params.fileName,

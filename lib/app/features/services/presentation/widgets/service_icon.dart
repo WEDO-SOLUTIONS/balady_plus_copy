@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/commercial_model/features/posters/presentation/widgets/license_widgets/bottom_sheet_list.dart';
 import 'package:balady_plus/app/commercial_model/features/posters/presentation/widgets/types_dialog/commercial_permits_dialog.dart';
-import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/etmam_app/core/utils/enums/app_font_weight.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_text_widget.dart';
@@ -10,7 +9,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/base/base_view_model.dart';
-import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
@@ -31,7 +29,6 @@ import '../../../vd/presentation/dialogs/vd_all_types_dialog.dart';
 import '../../services_exports.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
-import 'package:smart_advisor/smart_advisor.dart';
 
 class ServiceIcon extends StatelessWidget {
   final ServiceEntity service;
@@ -293,18 +290,15 @@ class ServiceIcon extends StatelessWidget {
                 service.title.tr()
               ));
             } catch (error, stackTrace) {
-              LogsViewModel().sendEventFromModel(
-                event: ErrorExceptionModel(
-                  nameEvent: EventsName.handledException,
-                  message: error.toString(),
-                  stackTrace: stackTrace.toString(),
-                ),
-              );
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
               print(error);
             }
-          } else if (service.id == 408) {
-            SmartAdvisor.navigateToSmartAdvisorApp(
-                context: context, envType: sl<EnvType>());
           }
         },
         child: Container(

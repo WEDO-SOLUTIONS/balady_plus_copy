@@ -10,13 +10,8 @@ import 'package:balady_plus/app/features/chatbot/presentation/widgets/app_bar_ch
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/chat_bot_list.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/send_mseeage_card_chat_bot.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
-
-import '../../../../core/utils/constants/paths/icon_paths.dart';
-import '../../data/models/session_details.dart';
-import '../widgets/chat_history.dart';
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({Key? key}) : super(key: key);
@@ -26,7 +21,12 @@ class ChatBotScreen extends StatefulWidget {
 }
 
 class _ChatBotScreenState extends State<ChatBotScreen> {
-  ChatBotProvider provider = ChatBotProvider(sl(), sectionId: DateTime.now().millisecondsSinceEpoch,);
+  ChatBotProvider provider = ChatBotProvider(
+    sl(),
+    // Make The Section id to send with all question in the Section and send to
+    // rating API switch the request id
+    sectionId: DateTime.now().millisecondsSinceEpoch,
+  );
 
   @override
   void initState() {
@@ -36,17 +36,9 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
-    SessionDetails? intailData = ModalRoute.of(context)!.settings.arguments != null? ModalRoute.of(context)!.settings.arguments as SessionDetails:null;
-    if(intailData != null) {
-      provider.intaiteChat(intailData);
-    }
-
     return ChangeNotifierProvider(
       create: (context) => provider,
       child: Scaffold(
-        drawer: ChatHistory(),
         body: Column(
           children: [
             const AppBarChatBot(),
@@ -57,11 +49,10 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                   return isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : provider.isEnabled
-                          ?  Column(
+                          ? const Column(
                               children: [
                                 ChatBotList(),
                                 SendMessageCardChatBot(),
-                                
                               ],
                             )
                           : Padding(

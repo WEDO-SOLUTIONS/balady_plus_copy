@@ -64,11 +64,13 @@ class RequestsRemoteDataSourceImplementation
           "pzInsKey": params
         };
       }
-
-      response = await webService.dio
+      response = await crmWebService.dio
           .get(ApiUrl.IncidentRequestDetails, queryParameters: queryParms);
 
-      final result = RequestDetailsResponse.fromJson(response.data["data"]["result"]);
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = RequestDetailsResponse.fromJson(response.data);
 
       return result;
     } on DioError catch (error, stackTrace) {
@@ -123,14 +125,13 @@ class RequestsRemoteDataSourceImplementation
           "pzInsKey": params
         };
       }
-
-      response = await webService.dio
+      response = await crmWebService.dio
           .get(ApiUrl.FetchInquiryRequest, queryParameters: queryParms);
 
       final data = response.data;
       data.toString().successLog();
 
-      final result = RequestDetailsResponse.fromJson(response.data["data"]["result"]);
+      final result = RequestDetailsResponse.fromJson(response.data);
 
       return result;
     } on DioError catch (error, stackTrace) {
@@ -185,12 +186,13 @@ class RequestsRemoteDataSourceImplementation
           "pzInsKey": params
         };
       }
-      response = await webService.dio
-          .get(ApiUrl.FetchMuncipalServiceRequest, queryParameters: queryParms);
+      response = await crmWebService.dio
+          .get(ApiUrl.MSRRequestDetails, queryParameters: queryParms);
 
-      // fawzi change api tp apigee
+      final data = response.data;
+      data.toString().successLog();
 
-      final result = RequestDetailsResponse.fromJson(response.data["data"]["result"],
+      final result = RequestDetailsResponse.fromJson(response.data,
           type: RequestsType.REQ);
 
       return result;
@@ -314,10 +316,14 @@ class RequestsRemoteDataSourceImplementation
         };
       }
 
-      response = await webService.dio.get(ApiUrl.IncidentDownloadFile,
-          queryParameters: queryParms);
+      response = await crmWebService.dio.get(ApiUrl.IncidentDownloadFile,
+          queryParameters: queryParms,
+          options: Options(headers: {
+            "Authorization": "Bearer " + (CommonProperties.token ?? "")
+          }));
 
-      final result = DownloadFileResult.fromJson(response.data['data']['result']);
+      final result = DownloadFileResult.fromJson(response.data);
+
       return result;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

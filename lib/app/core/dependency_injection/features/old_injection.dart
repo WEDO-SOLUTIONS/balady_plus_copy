@@ -16,14 +16,14 @@ import '../../../features/transaction_inquiry/presentation/core/view_models/msr/
 import '../../../features/transaction_inquiry/presentation/core/view_models/msr/new_msr_map_view_model.dart';
 import '../../../features/transaction_inquiry/presentation/core/view_models/msr/new_msr_view_model.dart';
 import '../../remote_services/api_service.dart';
-import '../../remote_services/pega_web_service.dart';
+import '../../remote_services/web_service.dart';
 import '../dependency_injection_exports.dart' show sl;
 
 class OLDInjection {
   static void init() {
     sl.registerLazySingleton(() => FacilityQRDetailsViewModel());
 
-    sl.registerLazySingleton(() => PegaWebService());
+    sl.registerLazySingleton(() => WebService());
     sl.registerLazySingleton(() => APIService());
 
     sl.registerLazySingleton(() => AppointmentRepository());

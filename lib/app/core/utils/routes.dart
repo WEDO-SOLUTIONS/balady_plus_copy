@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_routes.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/pages/balady_calendar_page.dart';
-import 'package:balady_plus/app/features/classification_certificate/core/classification_certificate_routes/classification_certificate_routes.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
@@ -49,7 +48,6 @@ import '../../features/calculator/presentation/pages/service_calculator_result_s
 import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
 import '../../features/chatbot/presentation/pages/chatbot_screen.dart';
-import '../../features/chatbot/presentation/widgets/chat_history_details.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_overview/construction_license_overview_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query_Details/construction_license_inquery_details.dart';
@@ -177,8 +175,6 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
     as sharedEtmamFeature;
 
 import 'etmam_route_exports.dart' hide SplashPage;
-
-import 'package:balady_authorization/src/shared/authentication_routes/authentication_routes.dart';
 
 class Routes {
   static Map<String, Widget Function(BuildContext)> etmamRoutes = {
@@ -608,9 +604,6 @@ class Routes {
     RouteName.SpecificServicePage: (context) => const AllServicesPage(),
     RouteName.jodDonationPage: (context) => const JodDonationPage(),
     RouteName.chatbot: (context) => const ChatBotScreen(),
-    RouteName.chatHistoryDetailsRoute: (context) =>
-    const ChatHistoryDetails(),
-
     RouteName.surveyReportInqueryOverView: (context) =>
         const SurveyReportOverviewScreen(),
     RouteName.surveyReportInquery: (context) =>
@@ -627,11 +620,6 @@ class Routes {
         const NotificationsListScreen(),
     RouteName.notificationsDetailsScreen: (context) =>
         const NotificationsDetailsScreen(),
-
-
-
-
-
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {
@@ -639,8 +627,6 @@ class Routes {
     all.addAll(routesApp);
     all.addAll(etmamRoutes);
     all.addAll(CommercialRoutes.routes);
-    all.addAll(AuthenticationRoutes.routes);
-    all.addAll(ClassificationCertificateRoutes.routes);
     return all;
   }
 }

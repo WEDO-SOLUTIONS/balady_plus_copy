@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+
 import '../utils/constants/remote_config.dart';
-import 'package:balady_plus/app/features/classification_certificate/core/classification_certificate_routes/classification_certificate_route_names.dart';
 
 Map<String, dynamic> servicesConfig = {
   "islamic_services": [
@@ -406,29 +406,6 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "ekram_services", "description": null, "tag": null},
       "en": {"title": "ekram_services", "description": null, "tag": null}
     },
-    {
-      "id": 222,
-      "icon": "note",
-      "3d_icon": null,
-      "order": 4,
-      "isNew": true,
-      "isImportant": false,
-      "requireLogin": false,
-      "action": {
-        "type": "page",
-        "value": ClassificationCertificateRouteName.classificationCertificateVerifyOverviewScreen,
-      },
-      "ar": {
-        "title": "classification_certificate_verify",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "classification_certificate_verify",
-        "description": null,
-        "tag": null
-      }
-    },
   ],
   "business_license_services": [
     {
@@ -642,45 +619,8 @@ Map<String, dynamic> servicesConfig = {
       },
       "en": {"title": "municpal_construction", "description": null, "tag": null}
     },
-    {
-      "id": 222,
-      "icon": "note",
-      "3d_icon": null,
-      "order": 4,
-      "isNew": true,
-      "isImportant": false,
-      "requireLogin": false,
-      "action": {
-        "type": "page",
-        "value": ClassificationCertificateRouteName.classificationCertificateVerifyOverviewScreen,
-      },
-      "ar": {
-        "title": "classification_certificate_verify",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "classification_certificate_verify",
-        "description": null,
-        "tag": null
-      }
-    },
   ],
   "help_services": [
-    /*{
-      "id": 408,
-      "icon": "smart_advisor",
-      "3d_icon": null,
-      "order": 13,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "page", "value": ""},
-      "ar": {"title": "smart_advisor", "description": null, "tag": null},
-      "en": {"title": "smart_advisor", "description": null, "tag": null}
-    },*/
-
-
     {
       "id": 401,
       "icon": "municipal_advisor",
@@ -693,21 +633,19 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "municipal_advisor", "description": null, "tag": null},
       "en": {"title": "municipal_advisor", "description": null, "tag": null}
     },
-
-    // fawzi comment to remove gpt icon
-    // {
-    //   "id": 407,
-    //   "icon": "municipal_advisor",
-    //   "3d_icon": null,
-    //   "order": 13,
-    //   "isNew": false,
-    //   "isImportant": false,
-    //   "requireLogin": true,
-    //   "beta": false,
-    //   "action": {"type": "page", "value": RouteName.chatbot},
-    //   "ar": {"title": "municipal_advisor", "description": null, "tag": null},
-    //   "en": {"title": "municipal_advisor", "description": null, "tag": null}
-    // },
+    {
+      "id": 407,
+      "icon": "municipal_advisor",
+      "3d_icon": null,
+      "order": 13,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "beta": false,
+      "action": {"type": "page", "value": RouteName.chatbot},
+      "ar": {"title": "municipal_advisor", "description": null, "tag": null},
+      "en": {"title": "municipal_advisor", "description": null, "tag": null}
+    },
     {
       "id": 499,
       "icon": "calender",
