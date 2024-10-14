@@ -9,7 +9,7 @@ import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
         GetMoreDeceasedTransportRequestsEvent,
         EkramRequestsState,
         GetDeceasedTransportRequestDetailsEvent;
-import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_driver_request_card_widget.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_driver_request_card_widget_new.dart';
 import 'package:balady_plus/etmam_app/core/utils/Debouncer.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -140,7 +140,7 @@ class _DriverEkramTransportationListPageState
 
                             return Column(
                               children: [
-                                EkramDriverRequestCardWidget(
+                                EkramDriverRequestCardWidget_new(
                                   ekramTransportationItem:
                                       state.deceasedRequestItems![index],
                                   OnDetailsPress: () {

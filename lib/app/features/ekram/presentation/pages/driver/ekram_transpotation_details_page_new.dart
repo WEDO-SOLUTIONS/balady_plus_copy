@@ -19,16 +19,16 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
-class EkramTransportationDetailsPage extends StatefulWidget {
-  const EkramTransportationDetailsPage({Key? key}) : super(key: key);
+class EkramTransportationDetailsPage_new extends StatefulWidget {
+  const EkramTransportationDetailsPage_new({Key? key}) : super(key: key);
 
   @override
-  State<EkramTransportationDetailsPage> createState() =>
-      _EkramTransportationDetailsPageState();
+  State<EkramTransportationDetailsPage_new> createState() =>
+      _EkramTransportationDetailsPage_newState();
 }
 
-class _EkramTransportationDetailsPageState
-    extends State<EkramTransportationDetailsPage> {
+class _EkramTransportationDetailsPage_newState
+    extends State<EkramTransportationDetailsPage_new> {
   @override
   void initState() {
     // TODO: implement initState
@@ -124,7 +124,7 @@ class _EkramTransportationDetailsPageState
                     // DriversInfo
                     //  DriversInfoWidget(),
                     // ApplicantInfo
-                    ApplicantInfoWidget(),
+                    // ApplicantInfoWidget(), // fawzi
                     // DeceasedInfo
                     DeceasedInfoWidget(),
                     // BurialInfo

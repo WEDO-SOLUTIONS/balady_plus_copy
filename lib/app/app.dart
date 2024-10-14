@@ -20,6 +20,7 @@ import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart' show AppColor, AppConfig, RouteName;
 import '../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
+import 'core/utils/constants/apis/env_types.dart';
 import 'core/utils/routes.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
@@ -60,6 +61,7 @@ class App extends StatelessWidget {
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>(),
         child: BaladyAuthorizationBloc(
+          env: sl<EnvType>().name,
           child: AppWidget(
             key: materialAppKey,
           ),

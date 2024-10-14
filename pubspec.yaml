@@ -47,7 +47,7 @@ dependencies:
   # Functional programming in Dart e.g. Either<Left,Right>
   dartz: ^0.10.1
   # Form representation and validation in a generic way
-  formz: ^0.6.0
+  formz: ^0.7.0
   # Equality Comparisons among objects
   equatable: ^2.0.5
   # Dependency Injection Service Locator
@@ -95,11 +95,11 @@ dependencies:
   country_picker: ^2.0.16
   camera: any
   # lutter plugin to find available maps installed on a device and launch them with a marker or show directions.
-  map_launcher: ^2.4.0
+  map_launcher: ^3.5.0
   # Hashing
   crypto: ^3.0.1
   # A universal barcode and QR code scanner
-  mobile_scanner: ^2.1.0
+ # mobile_scanner: ^6.0.1
   # Location
   geolocator: ^10.1.0
   # Permissions
@@ -109,18 +109,18 @@ dependencies:
   # API for querying information about an application package
   package_info_plus: ^4.2.0
   # parses Adobe After Effects animations
-  lottie: ^2.2.0
+  lottie: ^3.1.2
   # Generate Unique ID
   uuid: ^4.0.0
   hijri: ^3.0.0
   # swiper/carousel for flutter, with multiple layouts,
-  flutter_card_swiper: ^6.0.0
+  flutter_card_swiper: ^7.0.2
   # QR.Flutter is a Flutter library for simple and fast QR code rendering.
   qr_flutter: ^4.1.0
   # A cross platform plugin for displaying and scheduling local notifications
   flutter_local_notifications: 17.2.3
   # A flutter plugin for getting the local timezone of the device.
-  flutter_timezone: ^1.0.7
+  flutter_timezone: ^3.0.1
   youtube_player_flutter: ^9.1.0
   launch_review: ^3.0.1
   mocktail: ^1.0.4
@@ -131,19 +131,19 @@ dependencies:
   webview_flutter: ^4.2.2
   flutter_inappwebview: ^6.1.4
 
-  version: ^2.0.0
+  version: ^3.0.2
   google_maps_flutter: ^2.5.3
   share_plus: ^10.0.2
   pinput: ^2.2.31
   pin_code_fields: ^8.0.1
   cached_network_image: ^3.2.2
-  mime: ^1.0.4
+  mime: ^2.0.0
   jwt_decoder:
   photo_view: ^0.14.0
   flutter_rating_bar: ^4.0.0
   tuple: ^2.0.0
   flutter_easyloading: ^3.0.3
-  connectivity_plus: ^5.0.1
+  connectivity_plus: ^6.0.5
   qr_code_scanner: ^1.0.1
   scan: ^1.6.0
   sms_user_consent:
@@ -156,7 +156,7 @@ dependencies:
   percent_indicator: ^4.2.3
   flutter_staggered_grid_view: ^0.7.0
   flutter_cached_pdfview: ^0.4.2
-  network_info_plus: ^2.1.4+1
+  network_info_plus: ^6.0.2
   dart_ipify: ^1.1.1
   timelines: ^0.1.0
   pdfx: ^2.6.0
@@ -207,10 +207,10 @@ dependencies:
   mixpanel_flutter: ^2.2.0
   rate_my_app: ^2.0.0
   flutter_datetime_picker_plus: ^2.1.0
-  background_location: ^0.11.8
+  background_location: ^0.13.0
   preload_page_view: ^0.2.0
   flutter_linkify: ^6.0.0
-  screenshot: ^2.1.0
+  screenshot: ^3.0.0
   # To scroll list to specific index and do not calculate width and height by ourselves
   scrollable_positioned_list: ^0.3.8
 
@@ -224,8 +224,9 @@ dependencies:
 
   ############################################################
   balady_authorization:
-    git:
-      url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
+      path: /Users/mohammedkotkat/Desktop/Momrah/Projects/Flutter/Balady Authorization
+#    git:
+#      url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
 #      ref: master
 #      path: packages/firebase_messaging/firebase_messaging
 ############################################################
@@ -241,11 +242,11 @@ dependency_overrides:
 
 dev_dependencies:
   build_runner: ^2.4.12
-  flutter_lints: ^2.0.1
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
   json_serializable: ^6.7.1
-  very_good_analysis: ^5.1.0
+  very_good_analysis: ^6.0.0
 
 flutter:
   uses-material-design: true
