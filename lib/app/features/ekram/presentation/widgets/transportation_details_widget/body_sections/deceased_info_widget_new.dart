@@ -14,8 +14,8 @@ import '../../../../../_shared_feature_/presentation/cards/expandable_card.dart'
 import '../../../../../_shared_feature_/presentation/widgets/custom_enhanced_expansion_panel_widget.dart';
 import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
-class DeceasedInfoWidget extends StatelessWidget {
-  const DeceasedInfoWidget({Key? key}) : super(key: key);
+class DeceasedInfoWidget_new extends StatelessWidget {
+  const DeceasedInfoWidget_new({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,6 @@ class DeceasedInfoWidget extends StatelessWidget {
               textOverflow: TextOverflow.ellipsis,
               textAlign: TextAlign.start,
             ),
-
             ListView.builder(
               padding: EdgeInsets.zero,
               itemCount:
@@ -84,7 +83,60 @@ class DeceasedInfoWidget extends StatelessWidget {
                   ]);
               },
             ),
-            if (state.status == BlocStatus.loading) const CustomLoadingWidget()
+
+            // if (!isDriver && item.trips != null && item.trips!.isNotEmpty)
+            //   ElevatedButtonWidget.primaryCustom(
+            //     onPressed: () {
+            //       showLocation();
+            //     },
+            //     text: ('navigateOnMap').tr(),
+            //   ),
+            // if (isDriver)
+            //   Row(
+            //     children: [
+            //       if (showLogTrip)
+            //         Expanded(
+            //           child: CustomTextButtonWithIconWidgetWithFlexible(
+            //             mainAxisAlignment: MainAxisAlignment.start,
+            //             btnPressed: () => onPressLogTrip(),
+            //             btnText: ('log_driver_trip').tr(),
+            //             icon: CustomSvgIconWidget(
+            //               "assets/icons/tracking.svg",
+            //               iconHeight: 16,
+            //               iconWidth: 16,
+            //             ),
+            //             buttonIconPosition: BUTTON_ICON_POSITION.right,
+            //             btnTextColor: AppColor.primary900Light,
+            //             btnTextSize: 13,
+            //             btnTextWeight: AppFontWeight.medium,
+            //             //  padding: EdgeInsets.all(Constants.semiMediumPadding),
+            //           ),
+            //         ),
+            //       Expanded(
+            //         child: CustomTextButtonWithIconWidgetWithFlexible(
+            //           mainAxisAlignment: MainAxisAlignment.start,
+            //           btnPressed: () => onPressShowTrips(),
+            //
+            //           btnText: ('show_driver_trips').tr(),
+            //           icon: CustomSvgIconWidget(
+            //             "assets/icons/detailsIconSVG.svg",
+            //             iconHeight: 16,
+            //             iconWidth: 16,
+            //           ),
+            //           buttonIconPosition: BUTTON_ICON_POSITION.right,
+            //           btnTextColor: AppColor.primary900Light,
+            //           btnTextSize: 13,
+            //           btnTextWeight: AppFontWeight.medium,
+            //           //  padding: EdgeInsets.all(Constants.semiMediumPadding),
+            //         ),
+            //       ),
+            //     ],
+            //   )
+            //
+            //
+            //
+            //
+            // if (state.status == BlocStatus.loading) const CustomLoadingWidget()
           ],
         );
       },

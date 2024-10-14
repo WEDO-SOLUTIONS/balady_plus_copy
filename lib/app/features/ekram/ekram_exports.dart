@@ -77,7 +77,7 @@ export 'presentation/widgets/transportation_details_widget/deceased_grey_card_wi
 
 /// presentation -> widgets -> transportation details widgets -> body sections
 export 'presentation/widgets/transportation_details_widget/body_sections/transfer_info_widget.dart';
-export 'presentation/widgets/transportation_details_widget/body_sections/deceased_info_widget.dart';
+export 'presentation/widgets/transportation_details_widget/body_sections/deceased_info_widget_new.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/driver_info_widget.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/burial_info_widget.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/applicant_info_widget.dart';

@@ -126,7 +126,7 @@ class _EkramTransportationDetailsPage_newState
                     // ApplicantInfo
                     // ApplicantInfoWidget(), // fawzi
                     // DeceasedInfo
-                    DeceasedInfoWidget(),
+                    DeceasedInfoWidget_new(),
                     // BurialInfo
                     //  BurialInfoWidget(),
                     Constants.verticalSpaceSmall,
