@@ -177,15 +177,21 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(width: 8),
-                                      Text(
-                                        viewModel.servicesCardsDetails!
-                                                .fieldTargetCategories ??
-                                            '',
-                                        style: AppStyle
-                                            .complianceFirstSubmitSubtitleStyle
-                                            .copyWith(color: Colors.black),
+                                      Expanded(
+                                        child: Text(
+                                          viewModel.servicesCardsDetails!
+                                              .fieldTargetCategories ??
+                                              '',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          softWrap: false,
+                                          style: AppStyle
+                                              .complianceFirstSubmitSubtitleStyle
+                                              .copyWith(color: Colors.black),
+                                        ),
                                       ),
-                                      const Spacer(),
+
+
                                       Container(
                                         decoration: const BoxDecoration(
                                             gradient: LinearGradient(

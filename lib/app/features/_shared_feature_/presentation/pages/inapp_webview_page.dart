@@ -42,6 +42,15 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
       body: Stack(
         children: [
           InAppWebView(
+
+            initialSettings: InAppWebViewSettings(
+              useHybridComposition: true,
+              javaScriptEnabled: true,
+              useShouldOverrideUrlLoading: true,
+            ),
+            shouldOverrideUrlLoading: (controller, action) async {
+              return NavigationActionPolicy.ALLOW;
+            },
             onWebViewCreated: (InAppWebViewController controller) {
               _controller = controller;
             },
