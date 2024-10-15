@@ -1,6 +1,5 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/entities/feedback/feedback_field_payload_entity.dart';
+import 'package:mapness/entities/feedback/dto/feedback_field_payload_dto.dart';
 import 'package:mapness/entities/feedback/feedback_form_payload_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -9,6 +8,7 @@ part 'submit_feedback_payload.g.dart';
 /// God, please forgive me for this
 
 /// Provider that holds form data for a while and do necessary transformations
+/// If you want to actually see how data sent to backend refer to [submitFeedbackProvider]
 @riverpod
 class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
   /// payloadId is needed just to collect form in one place and move to second screen.
@@ -19,22 +19,24 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
   void collectForm({
     required int objectId,
     required String categoryId,
-    required Iterable<FeedbackBaseEntity> fields,
+
+    /// complex fields should be already mapped to json
+    required Iterable<MapEntry<String, dynamic>> fields,
   }) {
     state = FeedbackFormPayloadEntity(
-      fields: fields
-          .map((e) => FeedbackFieldPayloadEntity(
-                fieldId: e.id,
-
-                /// Oh my god, this is so bad. Blame dart sum types.
-                /// And retarded type system. Oh there are no such thing...
-                /// Sum types of course.
-                /// https://github.com/dart-lang/language/issues/83
-                value: e.valueToJson(),
-              ))
-          .toIList(),
       category: categoryId,
       objectId: objectId,
+      fields: fields
+          .map(
+            (entry) => entry.value != null
+                ? FeedbackFieldPayloadDto(
+                    id: entry.key,
+                    value: entry.value,
+                  )
+                : null,
+          )
+          .nonNulls
+          .toIList(),
     );
   }
 

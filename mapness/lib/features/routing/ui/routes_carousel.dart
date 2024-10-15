@@ -10,9 +10,7 @@ import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
 
@@ -58,9 +56,8 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
 }
 
 class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
-  static const _bottomSheetHeight = 320.0;
   late PageController _pageController;
-  bool _animating = false;
+  final bool _animating = false;
   int _activeRoute = 0;
 
   @override
@@ -69,14 +66,6 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     _pageController = PageController(
       viewportFraction: PathCardSize.fixedCardWidthWithPadding / widget.biggestWidth,
     );
-    final mediaQuery = ref.read(mediaQueryInfoProvider);
-    final devicePixelRatio = mediaQuery?.devicePixelRatio ?? 0.0;
-    ref.read(cameraPaddingProvider.notifier).setPadding(CameraSetPaddingMessage(
-          leftPadding: 0,
-          topPadding: (mediaQuery?.padding.top ?? .0 * devicePixelRatio).toInt(),
-          rightPadding: 0,
-          bottomPadding: (_bottomSheetHeight * devicePixelRatio).toInt(),
-        ));
   }
 
   @override
@@ -87,26 +76,6 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
         finishPoint: widget.points[1],
         navType: widget.navType,
       ),
-    );
-
-    ref.listen(
-      activeRouteProvider,
-      (prev, next) {
-        setState(() {
-          _animating = true;
-        });
-        _pageController
-            .animateToPage(
-          next,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.linear,
-        )
-            .then(
-          (value) {
-            _animating = false;
-          },
-        );
-      },
     );
 
     return widgets.RoutesCarousel(

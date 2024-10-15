@@ -252,7 +252,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     // At the build method we recalculate [collapsedHeight] and we secretly call the [didUpdateWidget] method
     // of [_dgisSheetController]. And if we call the [animateTo] method before the [didUpdateWidget] method
     // we will get set wrong [Expansion] value
-    Future.delayed(Durations.short1).then((_) {
+    Future.delayed(Durations.short2).then((_) {
       _dgisSheetController.animateTo(Expansion.expanded);
     });
   }

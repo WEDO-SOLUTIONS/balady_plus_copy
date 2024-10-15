@@ -8,8 +8,9 @@ class FeedbackScheduleDto extends FeedbackBaseDto {
     required super.id,
     required super.type,
     required super.isRequired,
-    required super.isHidden,
     required this.label,
+    super.isHidden = false,
+    super.setOnMap = false,
   });
 
   @override

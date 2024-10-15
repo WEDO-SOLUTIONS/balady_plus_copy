@@ -334,7 +334,7 @@ class _FavouriteCache extends _$FavouriteCache {
     } on DioException catch (e) {
       debugPrint(proto.ErrorResponse.fromBuffer(e.response!.data as List<int>).toString());
     }
-    mixpanel?.track('Favorites: addItems');
+    await mixpanel?.track('Favorites: addItems');
   }
 
   Future<FavouritesState> _fetchFavourites() async {
@@ -342,7 +342,7 @@ class _FavouriteCache extends _$FavouriteCache {
     final dio = await ref.watch(dGisNetworkProvider.future);
     final raw = await dio.get('favourites');
     final response = proto.FavouritesResponse.fromBuffer(raw.data as List<int>);
-    mixpanel?.track('Favorites: fetchFavourites');
+    await mixpanel?.track('Favorites: fetchFavourites');
     return response.toDomain();
   }
 

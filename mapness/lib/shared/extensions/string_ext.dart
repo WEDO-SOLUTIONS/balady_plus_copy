@@ -10,4 +10,6 @@ extension StringExt on String {
     }
     return DateTime.tryParse(this);
   }
+
+  String get reversed => split('').reversed.join();
 }

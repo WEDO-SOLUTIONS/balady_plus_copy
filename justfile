@@ -73,11 +73,11 @@ build_pigeon:
     #!/bin/bash
     set -euo pipefail
 
-    cd urbi_map
+    cd urbi_map/dgis_map
     fvm flutter pub get
     fvm dart run build_runner build --delete-conflicting-outputs || true
 
-    cd dgis_map_platform_interface/
+    cd ../dgis_map_platform_interface/
     fvm flutter pub get
     fvm dart run build_runner build --delete-conflicting-outputs || true
 

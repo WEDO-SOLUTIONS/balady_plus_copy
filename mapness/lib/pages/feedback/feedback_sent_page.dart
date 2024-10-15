@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/feedback/submit_feedback.dart';
-import 'package:mapness/features/feedback/submit_feedback_payload.dart';
 import 'package:mapness/pages/feedback/feedback_failure_widget.dart';
 import 'package:mapness/pages/feedback/feedback_loading_widget.dart';
 import 'package:mapness/pages/feedback/feedback_success_widget.dart';
@@ -18,12 +17,7 @@ class FeedbackSentPage extends ConsumerWidget {
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO(Demezy): get data from form
-    final payload = ref.watch(submitFeedbackPayloadProvider(payloadId));
-    if (payload == null) {
-      return const FeedbackFailureWidget();
-    }
-    final sentFeedback = ref.watch(submitFeedbackProvider(payload));
+    final sentFeedback = ref.watch(submitFeedbackProvider(payloadId));
 
     return sentFeedback.when(
       data: (data) => const FeedbackSuccessWidget(),

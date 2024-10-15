@@ -7,8 +7,7 @@ import 'package:mapness/_features/weather/domain/entities/weather_params.dart';
 import 'package:mapness/entry_point.dart';
 
 abstract class WeatherRemoteDataSource {
-  factory WeatherRemoteDataSource(WebServiceWeather service) =>
-      _WeatherRemoteDataSource(webServiceWeather: service);
+  factory WeatherRemoteDataSource(WebServiceWeather service) => _WeatherRemoteDataSource(webServiceWeather: service);
 
   Future<Map<String, dynamic>?>? getCurrentWeatherData({
     required WeatherParams params,
@@ -38,7 +37,7 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
         queryParameters: map,
         cancelToken: cancelToken,
       );
-      mixpanel?.track('WebServiceWeather: getCurrentWeatherData');
+      await mixpanel?.track('WebServiceWeather: getCurrentWeatherData');
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       log('WEATHER API DioException $e');
@@ -68,14 +67,14 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
         ),
         cancelToken: cancelToken,
       );
-      mixpanel?.track('WebServiceWeather: getForecastData');
+      await mixpanel?.track('WebServiceWeather: getForecastData');
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       log('WEATHER API DioException $e');
     } catch (e) {
       log('WEATHER API EXCEPTION $e');
     }
-    mixpanel?.track('WebServiceWeather: getForecastData');
+    await mixpanel?.track('WebServiceWeather: getForecastData');
     return null;
   }
 }

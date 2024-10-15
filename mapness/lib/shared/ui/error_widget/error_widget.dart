@@ -14,12 +14,13 @@ class BaseErrorWidget extends StatelessWidget {
     this.buttonColorScheme = ButtonColorScheme.secondary,
     this.buttonLabel,
     this.errorLabel,
+    this.errorTitle,
     super.key,
   });
 
   /// A factory constructor for creating a [BaseErrorWidget] without a retry button.
   factory BaseErrorWidget.noRetry({
-    required String errorLabel,
+    String? errorLabel,
     Key? key,
   }) =>
       BaseErrorWidget(
@@ -41,17 +42,16 @@ class BaseErrorWidget extends StatelessWidget {
   /// The error message to be displayed.
   final String? errorLabel;
 
+  /// The error message title.
+  ///
+  /// Displayed at fullscreen error widget.
+  final String? errorTitle;
+
   /// The color scheme for the retry button.
   final ButtonColorScheme buttonColorScheme;
 
   @override
   Widget build(BuildContext context) {
-    Text text(String text) => Text(
-          text,
-          textAlign: TextAlign.center,
-          style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
-        );
-
     final errorText = errorLabel ?? '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}';
 
     return Material(
@@ -72,8 +72,23 @@ class BaseErrorWidget extends StatelessWidget {
               'assets/images_svg/illustration_error.svg',
               package: PackageConfig.packageName,
             ),
-            const SizedBox(height: Spacing.$2x),
-            text(errorText),
+            if (errorTitle != null) ...[
+              const SizedBox(height: Spacing.$3x),
+              Text(
+                errorTitle!,
+                textAlign: TextAlign.center,
+                style: context.textStyleV3.h3Medium,
+              ),
+              const SizedBox(height: Spacing.$3x),
+            ] else
+              const SizedBox(height: Spacing.$2x),
+            Text(
+              errorText,
+              textAlign: TextAlign.center,
+              style: context.textStyle.text.copyWith(
+                color: errorTitle != null ? context.colorsV2.foregroundSoft : context.colorsV2.foregroundDefault,
+              ),
+            ),
             if (withRetryButton) ...[
               const SizedBox(height: Spacing.$6x),
               AppButton(

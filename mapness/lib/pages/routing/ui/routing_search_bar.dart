@@ -89,19 +89,20 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
         hintText: widget.placeholder,
         fillColor: context.colorsV2.neutralContainerDefault,
         hintColor: context.colorsV2.foregroundSoft,
-        textFieldHeight: 40,
         textStyle: context.textStyleV3.bodySmallRegular,
       ),
-      onBackButtonPressed: () {
-        Metrics.logEventAdvanced(
-          MetricsConstants.routesKeys.searchBackButton,
-          group: MetricsConstants.routesTag,
-          action: MetricAction.tap.toString(),
-        );
-        FocusScope.of(context).unfocus();
-        context.pop();
-      },
-      backButtonLabel: context.l10n.cancel,
+      option: SearchTextBackOption(
+        text: context.l10n.cancel,
+        onPressed: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.routesKeys.searchBackButton,
+            group: MetricsConstants.routesTag,
+            action: MetricAction.tap.toString(),
+          );
+          FocusScope.of(context).unfocus();
+          context.pop();
+        },
+      ),
     );
   }
 }

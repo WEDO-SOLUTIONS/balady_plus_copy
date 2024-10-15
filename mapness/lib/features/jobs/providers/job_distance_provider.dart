@@ -41,7 +41,9 @@ class JobDistance extends _$JobDistance {
         final briefPoint = responseDistance.first;
 
         final result = await dgisController.findBriefRouteInfos(
-            options: RouteSearchOptionsMessage.car, finishPoint: briefPoint,);
+          options: RouteSearchOptionsMessage.car,
+          finishPoint: briefPoint,
+        );
 
         return JobDistanceInfo(
           briefMessages: result.whereType<BriefRouteInfoMessage>().toList(),
@@ -52,7 +54,7 @@ class JobDistance extends _$JobDistance {
     } on Exception catch (e) {
       debugPrint(e.toString());
     } finally {
-      mixpanel?.track(_metricEventName);
+      await mixpanel?.track(_metricEventName);
     }
     return null;
   }

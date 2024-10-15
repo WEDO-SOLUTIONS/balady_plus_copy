@@ -160,6 +160,6 @@ pubspec.lock
 
 # tests
 reports/
-.fvm/fvm_config.json
-.fvm/release
-.fvm/versions/3.22.2
+
+# FVM Version Cache
+.fvm/

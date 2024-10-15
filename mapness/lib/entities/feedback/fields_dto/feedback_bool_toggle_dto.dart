@@ -5,12 +5,13 @@ part of '../dto/feedback_base_dto.dart';
 class FeedbackBoolToggleDto extends FeedbackBaseDto {
   final String label;
 
-  FeedbackBoolToggleDto({
+  const FeedbackBoolToggleDto({
     required super.id,
     required super.type,
     required super.isRequired,
     required this.label,
-    required super.isHidden,
+    super.isHidden = false,
+    super.setOnMap = false,
   });
 
   @override
