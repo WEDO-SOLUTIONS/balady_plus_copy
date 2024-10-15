@@ -4447,5 +4447,6 @@
   "deactivate":"Deactivate",
   "error_pin":"There is a mismatch between the registered quick PIN and the confirmation of the quick PIN",
   "auth_pacakge_end": "end",
-  "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك "
+  "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
+  "complianceFAQ": "Frequently asked questions"
 }

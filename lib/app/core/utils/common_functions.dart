@@ -1515,9 +1515,9 @@ class CommonFunctions {
         .pushNamed(RouteName.selfRatingMainPage);
   }
 
-  static void openComplianceFaq() {
+  static void openComplianceFaq(String serviceID) {
 //اطلع على الاسئلة الشائعة
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.QAPage);
+    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.QAPage,arguments: serviceID);
   }
 
   static void openComplianceTerms() async {

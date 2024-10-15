@@ -134,6 +134,9 @@ class ApiUrl {
   static const transactionsRequests =
       '/v1/balady-dashboard/objectable-requests';
 
+  static const ServiceQuestionList =
+      'v1/portal-services/faq';
+
   static const postObjection =
       '/v2/objection-services/submit-objection-requests';
 

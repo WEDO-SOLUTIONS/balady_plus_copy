@@ -1,15 +1,25 @@
+
+
 class QAModel {
-  final String? question;
-  final String? answer;
+  QAModel({
+    this.title,
+    this.fieldFaqAnswer,
+    this.fieldAnswer,});
 
-  QAModel({this.question, this.answer});
-  Map<String, dynamic> toJson() => {
-        'question': question,
-        'answer': answer,
-      };
+  QAModel.fromJson(dynamic json) {
+    title = json['title'];
+    fieldFaqAnswer = json['field_faq_answer'];
+    fieldAnswer = json['field_answer'];
+  }
+  String? title;
+  String? fieldFaqAnswer;
+  String? fieldAnswer;
 
-  static QAModel fromJson(Map<String, dynamic> json) => QAModel(
-        question: json['question'],
-        answer: json['answer'],
-      );
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['title'] = title;
+    map['field_faq_answer'] = fieldFaqAnswer;
+    map['field_answer'] = fieldAnswer;
+    return map;
+  }
 }
