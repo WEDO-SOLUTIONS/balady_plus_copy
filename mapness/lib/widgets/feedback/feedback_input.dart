@@ -53,14 +53,12 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
 
     _controller.addListener(() {
       // This is a hack, because the phone number formatter doesn't work well with the text direction
+
       if (widget.type == FeedbackTextType.phone) {
-        if (_controller.text.isEmpty) {
+        final isTextNotEmpty = _controller.text.isNotEmpty;
+        if (_isForceLtr != isTextNotEmpty) {
           setState(() {
-            _isForceLtr = false;
-          });
-        } else {
-          setState(() {
-            _isForceLtr = true;
+            _isForceLtr = isTextNotEmpty;
           });
         }
       }
@@ -104,7 +102,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
               if (widget.type == FeedbackTextType.phone) {
                 formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
               }
-              widget.onChanged?.call(value);
+              widget.onChanged?.call(formattedValue);
             },
             inputFormatters: [
               if (widget.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
