@@ -43,7 +43,6 @@ class FeedbackTextInput extends StatefulWidget {
 
 class _FeedbackTextInputState extends State<FeedbackTextInput> {
   late final TextEditingController _controller;
-
   bool _isForceLtr = false;
 
   @override

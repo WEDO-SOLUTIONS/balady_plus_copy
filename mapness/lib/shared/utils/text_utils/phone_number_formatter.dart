@@ -30,6 +30,7 @@ import 'package:flutter/services.dart';
 
 class PhoneNumberFormatter extends TextInputFormatter {
   static const _arabicCountyCode = '966';
+  static const arabicPhoneNumberMinLength = 12;
 
   final String countyCode;
   const PhoneNumberFormatter({this.countyCode = _arabicCountyCode});

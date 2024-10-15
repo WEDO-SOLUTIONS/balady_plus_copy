@@ -74,7 +74,10 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
             FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: _isRequired),
             FeedbackTextType.phone => FormBuilderValidators.compose([
                 FormBuilderValidators.phoneNumber(checkNullOrEmpty: _isRequired),
-                FormBuilderValidators.minLength(12, checkNullOrEmpty: _isRequired),
+                FormBuilderValidators.minLength(
+                  PhoneNumberFormatter.arabicPhoneNumberMinLength,
+                  checkNullOrEmpty: _isRequired,
+                ),
               ]),
             FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: _isRequired),
             _ when _isRequired => FormBuilderValidators.required(),
