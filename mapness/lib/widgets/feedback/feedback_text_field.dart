@@ -4,6 +4,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
 import 'package:mapness/widgets/feedback/feedback_input.dart';
 
 class FeedbackInput extends StatelessWidget {
@@ -36,13 +37,18 @@ class FeedbackInput extends StatelessWidget {
       validator: FormBuilderValidators.compose([
         switch (field.type) {
           FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: isRequired),
-          FeedbackTextType.phone => FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
+          FeedbackTextType.phone => FormBuilderValidators.compose([
+              FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
+              FormBuilderValidators.minLength(
+                PhoneNumberFormatter.arabicPhoneNumberMinLength,
+                checkNullOrEmpty: isRequired,
+              ),
+            ]),
           FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: isRequired),
           _ when isRequired => FormBuilderValidators.required(),
           _ => (_) => null,
         },
       ]),
-
       builder: (fieldState) => FeedbackTextInput(
         labelText: field.label,
         hintText: field.hint,

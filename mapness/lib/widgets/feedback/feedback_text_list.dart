@@ -72,7 +72,13 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
           }
           final validator = switch (widget.field.type) {
             FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: _isRequired),
-            FeedbackTextType.phone => FormBuilderValidators.phoneNumber(checkNullOrEmpty: _isRequired),
+            FeedbackTextType.phone => FormBuilderValidators.compose([
+                FormBuilderValidators.phoneNumber(checkNullOrEmpty: _isRequired),
+                FormBuilderValidators.minLength(
+                  PhoneNumberFormatter.arabicPhoneNumberMinLength,
+                  checkNullOrEmpty: _isRequired,
+                ),
+              ]),
             FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: _isRequired),
             _ when _isRequired => FormBuilderValidators.required(),
             _ => (_) => null,
