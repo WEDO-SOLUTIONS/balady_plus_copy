@@ -48,18 +48,17 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               page: BottomMenuRoute.page,
               initial: true,
+              barrierDismissible: false,
               customRouteBuilder: customModalSheetBuilder,
               children: [
                 CustomRoute(
                   path: 'explore',
                   page: LandingRoute.page,
-                  barrierDismissible: false,
                   transitionsBuilder: TransitionsBuilders.noTransition,
                 ),
                 CustomRoute(
                   path: 'routing',
                   page: RoutingPointsRoute.page,
-                  barrierDismissible: false,
                   transitionsBuilder: TransitionsBuilders.noTransition,
                 ),
                 CustomRoute(
@@ -91,8 +90,10 @@ class AppRouter extends RootStackRouter {
             ),
             CustomRoute(
               path: 'shared_my_location',
+              barrierDismissible: false,
               page: ShareMyLocationRoute.page,
               transitionsBuilder: TransitionsBuilders.noTransition,
+              customRouteBuilder: customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'deeplink',
@@ -104,6 +105,7 @@ class AppRouter extends RootStackRouter {
               transitionsBuilder: TransitionsBuilders.noTransition,
               fullscreenDialog: true,
               allowSnapshotting: false,
+              barrierDismissible: false,
               page: LayersSheetRoute.page,
               customRouteBuilder: modalSheetBuilder,
             ),

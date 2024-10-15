@@ -130,13 +130,17 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   }
 
                   return GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
+                    onTapDown: (_) {
                       if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
                         _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
                       }
                     },
-                    onPanDown: (details) {
+                    onTapUp: (_) {
+                      if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+                        _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+                      }
+                    },
+                    onTap: () {
                       if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
                         _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
                       }

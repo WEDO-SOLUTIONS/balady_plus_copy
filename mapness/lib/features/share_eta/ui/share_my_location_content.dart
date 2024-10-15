@@ -165,7 +165,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
   }
 
   Future<void> onClose(BuildContext context, WidgetRef ref) async {
-    context.pop();
+    context.router.back();
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.removeAllMarkers();
   }
