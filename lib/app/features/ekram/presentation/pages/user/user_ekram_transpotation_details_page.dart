@@ -116,7 +116,7 @@ class _UsersEkramTransportationDetailsPageState
                     // ApplicantInfo
                     ApplicantInfoWidget(),
                     // DeceasedInfo
-                    DeceasedInfoWidget(),
+                    DeceasedInfoWidget_new(),
                     // BurialInfo
                     //  BurialInfoWidget(),
                     Constants.verticalSpaceSmall,

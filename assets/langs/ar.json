@@ -3449,6 +3449,7 @@
   "ekram_decesssed_identity": "رقم هوية المتوفي",
   "ekram_reciever_info": "معلومات مستلم الجثمان",
   "ekram_reciever_identity": "رقم هوية مستلم الجثمان",
+
   "ekram_reciever_identity_type": "نوع هوية مستلم الجثمان",
   "remain_to_azan": "متبقي على أذان {}",
   "double_fine": "مضاعفة الغرامة",
@@ -4195,5 +4196,7 @@
   "biometrics_failed":"فشل المصادقة الحيوية! .فضلا المحاولة مرة أخرى أو يمكنك تسجيل الدخول عن طريق الرمز السريع أو إسم المستخدم و كلمة المرور",
   "auth_pacakge_end": "end",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
-  "complianceFAQ":"الإسئلة الشائعة"
+  "complianceFAQ":"الإسئلة الشائعة",
+  "ekram_reciever_Mobile": "رقم جوال مستلم الجثمان",
+  "deathCity/arrivelCity": "مدينة الوفاة/وصول الجثمان"
 }

@@ -19,10 +19,10 @@ import '../../../objectable_transactions/presentation/widgets/request_parameter.
 import '../../domain/entities/deceased_transport_requests/transport_request_item.dart';
 import 'ekram_status_widget.dart';
 
-class EkramDriverRequestCardWidget extends StatelessWidget {
+class EkramDriverRequestCardWidget_new extends StatelessWidget {
   final TransportRequestItem ekramTransportationItem;
   final Function OnDetailsPress;
-  const EkramDriverRequestCardWidget(
+  const EkramDriverRequestCardWidget_new(
       {Key? key,
       required this.ekramTransportationItem,
       required this.OnDetailsPress})
@@ -72,28 +72,30 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
                   mainAxisSpacing: 16,
                 ),
                 children: [
-                  RequestParameter(
-                    title: 'transportationType'.tr(),
-                    value: ekramTransportationItem.getCityType() ?? "",
-                  ),
-                  RequestParameter(
-                    title: 'burialCity'.tr(),
-                    value: ekramTransportationItem.deathCityName ?? "",
-                  ),
-                  if (ekramTransportationItem.multipleCityRequest == true)
-                    RequestParameter(
-                      title: 'burial_city'.tr(),
-                      value: ekramTransportationItem.burialCityName ?? "",
-                    ),
-                  RequestParameter(
-                    title: 'transportationStatus'.tr(),
-                    value:
-                        ekramTransportationItem.deathTransferStatusDesc ?? "",
-                  ),
+
                   RequestParameter(
                     title: 'deceasedName'.tr(),
                     value: ekramTransportationItem.deceasedName ?? "",
                   ),
+                  // RequestParameter(
+                  //   title: 'transportationType'.tr(),
+                  //   value: ekramTransportationItem.getCityType() ?? "",
+                  // ),
+                  RequestParameter(
+                    title: 'burialCity'.tr(),
+                    value: ekramTransportationItem.deathCityName ?? "",
+                  ),
+                  // if (ekramTransportationItem.multipleCityRequest == true)
+                  //   RequestParameter(
+                  //     title: 'burial_city'.tr(),
+                  //     value: ekramTransportationItem.burialCityName ?? "",
+                  //   ),
+                  // RequestParameter(
+                  //   title: 'transportationStatus'.tr(),
+                  //   value:
+                  //       ekramTransportationItem.deathTransferStatusDesc ?? "",
+                  // ),
+
                   RequestParameter(
                     title: 'driver_card_applicant_date'.tr(),
                     value: CommonFunctions.getFormattedDateEkramCard(
@@ -104,10 +106,18 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
                     value: CommonFunctions.getFormattedDateEkramCard(
                         ekramTransportationItem.driverAssignDate ?? ""),
                   ),
+                  // RequestParameter(
+                  //   title: 'transportationDestination'.tr(),
+                  //   value: ekramTransportationItem.currentStationName ?? "",
+                  // ),
+
                   RequestParameter(
-                    title: 'transportationDestination'.tr(),
-                    value: ekramTransportationItem.currentStationName ?? "",
-                  )
+                    title: 'transportationStatus'.tr(),
+                    value: ekramTransportationItem
+                        .deceasedTransportRequestStatus ??
+                        "",
+                  ),
+
                   /* RequestParameter(
                     title: 'transportationStatus'.tr(),
                     value: ekramTransportationItem

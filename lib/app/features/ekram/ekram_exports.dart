@@ -51,7 +51,7 @@ export 'presentation/pages/user/ekram_transportation_list_page.dart';
 export 'presentation/pages/ekram_booking_list_page.dart';
 export 'presentation/pages/user/ekram_request_transportation_page.dart';
 export 'presentation/pages/ekram_success_screen.dart';
-export 'presentation/pages/driver/ekram_transpotation_details_page.dart';
+export 'presentation/pages/driver/ekram_transpotation_details_page_new.dart';
 
 /// presentation -> widgets
 export 'presentation/widgets/ekram_booking_card_widget.dart';
@@ -73,11 +73,11 @@ export 'presentation/widgets/transportation_request_widgets/deceased_card_widget
 /// presentation -> widgets -> transportation details widgets
 export 'presentation/widgets/transportation_details_widget/ekram_details_app_bar.dart';
 export 'presentation/widgets/transportation_details_widget/driver_card_widget.dart';
-export 'presentation/widgets/transportation_details_widget/deceased_grey_card_widget.dart';
+export 'presentation/widgets/transportation_details_widget/deceased_grey_card_widget_new.dart';
 
 /// presentation -> widgets -> transportation details widgets -> body sections
 export 'presentation/widgets/transportation_details_widget/body_sections/transfer_info_widget.dart';
-export 'presentation/widgets/transportation_details_widget/body_sections/deceased_info_widget.dart';
+export 'presentation/widgets/transportation_details_widget/body_sections/deceased_info_widget_new.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/driver_info_widget.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/burial_info_widget.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/applicant_info_widget.dart';
