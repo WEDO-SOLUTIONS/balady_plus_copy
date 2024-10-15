@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -27,11 +28,12 @@ import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
-class ShareMyLocationContent extends HookConsumerWidget {
+@RoutePage()
+class ShareMyLocationPage extends HookConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
-  const ShareMyLocationContent({
+  const ShareMyLocationPage({
     super.key,
     this.closestPoint,
     this.cameraConfig,

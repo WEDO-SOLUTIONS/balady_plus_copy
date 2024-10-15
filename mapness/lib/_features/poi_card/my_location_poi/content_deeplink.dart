@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -28,11 +29,12 @@ part 'poi_deeplink_location_action.dart';
 part 'poi_deeplink_location_content.dart';
 part 'poi_my_location_content.dart';
 
-class ContentDeeplink extends ConsumerWidget {
+@RoutePage()
+class DeeplinkPage extends ConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
-  const ContentDeeplink({
+  const DeeplinkPage({
     required this.closestPoint,
     this.cameraConfig,
     super.key,

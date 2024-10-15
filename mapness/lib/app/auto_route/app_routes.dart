@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/others/transparent_barrier.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/ui/stories_transition.dart';
 
@@ -23,6 +24,7 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
         CustomRoute(
           page: OnboardRoute.page,
+          opaque: false,
           transitionsBuilder: (_, __, ___, child) => StoriesTransition(
             type: StoryTypes.onboarding,
             child: child,
@@ -44,59 +46,111 @@ class AppRouter extends RootStackRouter {
           ],
           children: [
             CustomRoute(
+              page: BottomMenuRoute.page,
+              initial: true,
+              customRouteBuilder: customModalSheetBuilder,
+              children: [
+                CustomRoute(
+                  path: 'explore',
+                  page: LandingRoute.page,
+                  barrierDismissible: false,
+                  transitionsBuilder: TransitionsBuilders.noTransition,
+                ),
+                CustomRoute(
+                  path: 'routing',
+                  page: RoutingPointsRoute.page,
+                  barrierDismissible: false,
+                  transitionsBuilder: TransitionsBuilders.noTransition,
+                ),
+                CustomRoute(
+                  path: 'services',
+                  page: MapnessServicesRoute.page,
+                  transitionsBuilder: TransitionsBuilders.noTransition,
+                ),
+                CustomRoute(
+                  path: 'profile',
+                  page: ProfileRoute.page,
+                  transitionsBuilder: TransitionsBuilders.noTransition,
+                ),
+              ],
+            ),
+            CustomRoute(
               path: 'kiblah',
               page: KiblahRoute.page,
-            fullscreenDialog: true,
-            transitionsBuilder: TransitionsBuilders.fadeIn,
-          ),
-          CustomRoute(
-            path: 'search',
-            page: SearchRoute.page,
-          ),
-          CustomRoute(
-            path: 'layers_sheet',
-            transitionsBuilder: TransitionsBuilders.noTransition,
-            fullscreenDialog: true,
-            opaque: false,
-            allowSnapshotting: false,
-            page: LayersSheetRoute.page,
-            customRouteBuilder: modalSheetBuilder,
-          ),
-          CustomRoute(
-            page: BottomMenuRoute.page,
-            initial: true,
-            children: [
-              CustomRoute(
-                path: 'explore',
-                page: LandingRoute.page,
-                transitionsBuilder: TransitionsBuilders.noTransition,
-              ),
-              CustomRoute(
-                path: 'routing',
-                page: RoutingPointsRoute.page,
-                transitionsBuilder: TransitionsBuilders.noTransition,
-              ),
-              CustomRoute(
-                path: 'services',
-                page: MapnessServicesRoute.page,
-                transitionsBuilder: TransitionsBuilders.noTransition,
-              ),
-              CustomRoute(
-                path: 'profile',
-                page: ProfileRoute.page,
-                transitionsBuilder: TransitionsBuilders.noTransition,
-              ),
-            ],
-          ),
+              fullscreenDialog: true,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'search',
+              page: SearchRoute.page,
+            ),
+            CustomRoute(
+              path: 'poi_card',
+              page: PoiCardWidgetRoute.page,
+              transitionsBuilder: TransitionsBuilders.noTransition,
+            ),
+            CustomRoute(
+              path: 'shared_my_location',
+              page: ShareMyLocationRoute.page,
+              transitionsBuilder: TransitionsBuilders.noTransition,
+            ),
+            CustomRoute(
+              path: 'deeplink',
+              page: DeeplinkRoute.page,
+              transitionsBuilder: TransitionsBuilders.noTransition,
+            ),
+            CustomRoute(
+              path: 'layers_sheet',
+              transitionsBuilder: TransitionsBuilders.noTransition,
+              fullscreenDialog: true,
+              allowSnapshotting: false,
+              page: LayersSheetRoute.page,
+              customRouteBuilder: modalSheetBuilder,
+            ),
           ],
         ),
       ];
 
-  Route<T> modalSheetBuilder<T>(BuildContext context, Widget child, AutoRoutePage<T> page) => ModalBottomSheetRoute(
+  /// Creates a modal bottom sheet route (ModalBottomSheetRoute),
+  /// using colors from the UI kit for the modal surface.
+  ///
+  /// - [context] provides information about the current widget state.
+  /// - [child] is the widget that will be displayed in the modal sheet.
+  /// - [page] represents the route page, passed as an AutoRoutePage.
+  ///
+  /// This method sets up the following parameters:
+  /// - [isScrollControlled] enables scroll control in the modal.
+  /// - [modalBarrierColor] uses a color from the UI kit for the modal barrier
+  ///   that blocks interaction with the rest of the UI while the modal is open.
+  /// - [backgroundColor] is set to `Colors.transparent` to avoid a background overlay.
+  ///
+  ///  Using in [CustomRoute] call [customRouteBuilder]
+  Route<T> modalSheetBuilder<T>(
+    BuildContext context,
+    Widget child,
+    AutoRoutePage<T> page,
+  ) =>
+      ModalBottomSheetRoute(
         settings: page,
         builder: (context) => child,
         isScrollControlled: true,
         modalBarrierColor: context.staticColor.surfaceOverlayModal,
         backgroundColor: Colors.transparent,
       );
+
+  /// Creates a custom modal route (CustomModalRoute) that removes the navigation barrier,
+  /// allowing access to routes behind the modal window.
+  ///
+  /// - [context] provides information about the current widget state.
+  /// - [child] is the widget that will be displayed in the modal window.
+  /// - [page] represents the route page, passed as an AutoRoutePage.
+  ///
+  /// This method sets up a route without a barrier, allowing the user
+  /// to interact with navigation elements or other routes behind the modal window.
+  Route<T> customModalSheetBuilder<T>(
+    BuildContext context,
+    Widget child,
+    AutoRoutePage<T> page,
+  ) =>
+      CustomModalRoute(page: page);
 }

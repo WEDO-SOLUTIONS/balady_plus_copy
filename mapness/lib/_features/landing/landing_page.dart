@@ -7,19 +7,16 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/dashboard.dart';
 import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/router.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/routes/events.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -134,6 +131,11 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
                   return GestureDetector(
                     behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+                        _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+                      }
+                    },
                     onPanDown: (details) {
                       if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
                         _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
@@ -152,18 +154,14 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _objectTapListener(TapEvent event) {
-    final currentRoute = ref.watch(currentRouteProvider);
-
-    const routingRoutePath = RoutingRoutesRoute.path;
-
     ///TODO: need to refactor after Dashboard refactoring to designSystem
-    final goRouter = ref.read(goRouterProvider);
-
-    if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
-      return;
-    } else if (goRouter.isCurrentRoute(RoutingRoutesRoute.path)) {
-      return;
-    }
+    // final goRouter = ref.read(goRouterProvider);
+    //
+    // if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
+    //   return;
+    // } else if (goRouter.isCurrentRoute(RoutingRoutesRoute.path)) {
+    //   return;
+    // }
 
     if (event is ObjectTapEvent) {
       Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
@@ -174,13 +172,14 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           });
 
       if (context.mounted) {
-        if (currentRoute?.currentPath == routingRoutePath) {
-          context.pop();
-        }
-        PoiMapRoute.open(
-          ref.read(goRouterProvider),
-          event.dgisObjectId.objectId,
-          latLng: event.latLng,
+        context.router.push(
+          PoiCardWidgetRoute(
+            objectId: DgisObjectIdMessage(
+              objectId: event.dgisObjectId.objectId,
+              entranceId: 0,
+            ),
+            closestPoint: event.latLng,
+          ),
         );
       }
     } else if (event is RoadEventTapEvent) {
@@ -201,15 +200,13 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
         );
 
         final userLocation = ref.read(locationProvider);
-        PoiMapRoute.open(
-          ref.read(goRouterProvider),
-          -1,
-          latLng: userLocation != null
-              ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-              : event.latLng,
-          zoom: 17,
-          bearing: 0,
-          tilt: 0,
+        context.router.push(
+          ShareMyLocationRoute(
+            cameraConfig: PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+            closestPoint: userLocation != null
+                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                : event.latLng,
+          ),
         );
       }
     }

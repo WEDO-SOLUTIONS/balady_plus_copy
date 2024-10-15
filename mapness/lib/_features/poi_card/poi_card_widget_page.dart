@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:collection/collection.dart';
@@ -53,12 +54,13 @@ import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 
 GlobalKey key = GlobalKey<_ContentState>();
 
-class PoiCardWidget extends StatelessWidget {
+@RoutePage()
+class PoiCardWidgetPage extends StatelessWidget {
   final DgisObjectIdMessage objectId;
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
-  const PoiCardWidget({
+  const PoiCardWidgetPage({
     required this.objectId,
     required this.closestPoint,
     this.cameraConfig,
@@ -370,7 +372,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
                   ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                   ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-                  context.pop();
+                  context.maybePop();
                 },
               ),
               content: [

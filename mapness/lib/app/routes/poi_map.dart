@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/my_location_poi/content_deeplink.dart';
-import 'package:mapness/_features/poi_card/poi_card_widget.dart';
+import 'package:mapness/_features/poi_card/poi_card_widget_page.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/share_eta/ui/share_my_location_content.dart';
@@ -88,7 +88,7 @@ class PoiMapRoute extends GoRouteData {
     if (dgisObjectId == -1) {
       return TransculentPage(
         name: path,
-        child: ShareMyLocationContent(
+        child: ShareMyLocationPage(
           key: const Key('POI MY LOCATION CARD WIDGET'),
           cameraConfig: cameraConfig,
           closestPoint: closestPoint,
@@ -97,7 +97,7 @@ class PoiMapRoute extends GoRouteData {
     } else if (dgisObjectId == -2) {
       return TransculentPage(
         name: path,
-        child: ContentDeeplink(
+        child: DeeplinkPage(
           key: const Key('POI OTHER LOCATION CARD WIDGET'),
           cameraConfig: cameraConfig,
           closestPoint: closestPoint,
@@ -106,7 +106,7 @@ class PoiMapRoute extends GoRouteData {
     }
     return TransculentPage(
       name: path,
-      child: PoiCardWidget(
+      child: PoiCardWidgetPage(
         key: const Key('POI CARD WIDGET'),
         cameraConfig: cameraConfig,
         objectId: DgisObjectIdMessage(

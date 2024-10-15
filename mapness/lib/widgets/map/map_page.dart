@@ -2,8 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/auto_route/others/transparent_pointer.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 
 @RoutePage()
 class MapPage extends ConsumerStatefulWidget {
@@ -53,6 +54,15 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
 
+    ref.watch(selectedMarkerProvider);
+    final settings = MapObjectManagerSettings.selectedMarker();
+    ref.watch(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
+    );
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -63,7 +73,7 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
             await dgisController.onMapCreated(controller);
           },
         ),
-        const TransparentPointer(child: AutoRouter()),
+        const AutoRouter()
       ],
     );
   }
