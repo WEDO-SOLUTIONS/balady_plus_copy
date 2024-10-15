@@ -98,8 +98,6 @@ dependencies:
   map_launcher: ^2.4.0
   # Hashing
   crypto: ^3.0.1
-  # A universal barcode and QR code scanner
-  mobile_scanner: ^2.1.0
   # Location
   geolocator: ^10.1.0
   # Permissions
