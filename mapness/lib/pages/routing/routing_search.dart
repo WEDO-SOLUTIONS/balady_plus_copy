@@ -95,6 +95,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
                             SliverPersistentHeader(
                               delegate: RoutingSearchHeaderDelegate(
                                 placeholder: widget.placeholder,
+                                backgroundColor: bgColor,
                               ),
                               pinned: true,
                             ),

@@ -61,16 +61,11 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     final ctx = widget.externalContext;
     for (int i = 0; i < points.length; i++) {
       final labelForMyLocation = labels[i] == ctx.l10n.myLocation;
-      final icon = labelForMyLocation
-          ? ctx.isLTR
-              ? TransportIcons.locationFullLTR
-              : TransportIcons.locationFullLTR
-          : GeneralIcons.bulletCircleSolid;
-      final color = i == 0 ? ctx.colorsV2.successActive : ctx.colorsV2.accentActive;
+
       pointsModels.add(
         ABRouteModel(
           title: labels[i],
-          icon: Icon(icon, color: color),
+          isMyLocation: labelForMyLocation,
         ),
       );
     }
@@ -98,13 +93,10 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-              child: ABRoute(
-                items: pointsModels,
-                onReorder: _onReorder,
-                onTap: _onTap,
-              ),
+            ABRoute(
+              items: pointsModels,
+              onReorder: _onReorder,
+              onTap: _onTap,
             ),
             const SizedBox(height: 12),
             Padding(

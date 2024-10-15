@@ -88,24 +88,36 @@ class RoutingFavourites extends ConsumerWidget {
             children: <Widget>[
           if (showBookmark)
             Expanded(
-              child: AppButton(
-                buttonColorScheme: ButtonColorScheme.tertiary,
-                onTap: onFavouritesTap,
-                primaryIcon: SystemIcons.bookmark,
+              child: SizedBox(
+                height: 48,
+                child: BaladyAppButton(
+                  buttonColorScheme: BaladyButtonColorScheme.neutral,
+                  buttonType: BaladyButtonType.secondary,
+                  primaryIcon: SystemIcons.bookmark,
+                  onTap: onFavouritesTap,
+                ),
               ),
             ),
           Expanded(
-            child: AppButton(
-              buttonColorScheme: ButtonColorScheme.tertiary,
-              onTap: onHomeTap,
-              primaryIcon: GeneralIcons.home,
+            child: SizedBox(
+              height: 48,
+              child: BaladyAppButton(
+                buttonColorScheme: BaladyButtonColorScheme.neutral,
+                buttonType: BaladyButtonType.secondary,
+                primaryIcon: GeneralIcons.home,
+                onTap: onHomeTap,
+              ),
             ),
           ),
           Expanded(
-            child: AppButton(
-              buttonColorScheme: ButtonColorScheme.tertiary,
-              onTap: onWorkTap,
-              primaryIcon: GeneralIcons.briefcase,
+            child: SizedBox(
+              height: 48,
+              child: BaladyAppButton(
+                buttonColorScheme: BaladyButtonColorScheme.neutral,
+                buttonType: BaladyButtonType.secondary,
+                primaryIcon: GeneralIcons.briefcase,
+                onTap: onWorkTap,
+              ),
             ),
           ),
         ].insertBetween(Spacing.$3x.widthBox).toList()),

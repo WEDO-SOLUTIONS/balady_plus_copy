@@ -1,3 +1,5 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +12,6 @@ import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/widgets/routing/ui/route_editor.dart';
 
 class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
   RoutingHeaderDelegate({
@@ -53,89 +54,97 @@ class RoutingHeader extends ConsumerWidget {
   final void Function(List<RoutePoint>) updatePoints;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(16),
-            topLeft: Radius.circular(16),
-          ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<ABRouteModel> items = [];
+    for (var i = 0; i < points.length; i++) {
+      final e = points[i];
+      final isMyLocation = e is RoutePointMyLocation;
+
+      final title = e.title(context.l10n) ??
+          switch (i) {
+            0 => context.l10n.from,
+            1 => context.l10n.to,
+            _ => context.l10n.to,
+          };
+
+      items.add(ABRouteModel(
+        title: title,
+        isMyLocation: isMyLocation,
+      ));
+    }
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(16),
+          topLeft: Radius.circular(16),
         ),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 6,
-            ),
-            const Center(child: SheetDragger()),
-            const SizedBox(
-              height: 6,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: RouteEditor(
-                points: points,
-                onTap: (index) {
-                  Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
-                      group: MetricsConstants.routesTag,
-                      action: MetricAction.tap.toString(),
-                      props: {
-                        'isMyLocation': index == 0 && points[index] is! RoutePointMyLocation,
-                      });
-
-                  ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
-
-                  RoutingSearchRoute(
-                    placeholder: index == 0 ? context.l10n.from : context.l10n.to,
-                    showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
-                  ).push(context).then(
-                    (value) {
-                      if (value != null && value is RoutePoint) {
-                        points[index] = value;
-                        updatePoints(points);
-                      }
-                    },
-                  );
-                },
-                onReorder: (oldIndex, newIndex) {
-                  Metrics.logEventAdvanced(
-                    MetricsConstants.routesKeys.onReorder,
-                    group: MetricsConstants.routesTag,
-                    action: MetricAction.tap.toString(),
-                  );
-
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  points.swap(oldIndex, newIndex);
-                  updatePoints(points);
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            RoutingFavourites(
-              showBookmark: true,
-              onFavouriteTap: (point) async {
-                Metrics.logEventAdvanced(
-                  MetricsConstants.routesKeys.startRouteFromFavorite,
+      ),
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          const Center(child: SheetDragger()),
+          const SizedBox(height: 12),
+          ABRoute(
+            items: items,
+            onTap: (index) {
+              Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
                   group: MetricsConstants.routesTag,
                   action: MetricAction.tap.toString(),
                   props: {
-                    'id': point.entity?.id,
-                    'destination': '${point.coordinates.latitude},${point.coordinates.longitude}'
-                  },
-                );
+                    'isMyLocation': index == 0 && points[index] is! RoutePointMyLocation,
+                  });
 
-                final index = points.indexWhere((element) => !element.isNotEmpty);
-                points[index] = RoutePointFavouriteItem(point);
-                updatePoints(points);
-              },
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-          ],
-        ),
-      );
+              ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
+
+              RoutingSearchRoute(
+                placeholder: index == 0 ? context.l10n.from : context.l10n.to,
+                showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
+              ).push(context).then(
+                (value) {
+                  if (value != null && value is RoutePoint) {
+                    points[index] = value;
+                    updatePoints(points);
+                  }
+                },
+              );
+            },
+            onReorder: (oldIndex, newIndex) {
+              Metrics.logEventAdvanced(
+                MetricsConstants.routesKeys.onReorder,
+                group: MetricsConstants.routesTag,
+                action: MetricAction.tap.toString(),
+              );
+
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              points.swap(oldIndex, newIndex);
+              updatePoints(points);
+            },
+          ),
+          Spacing.$4x.heightBox,
+          RoutingFavourites(
+            showBookmark: true,
+            onFavouriteTap: (point) async {
+              Metrics.logEventAdvanced(
+                MetricsConstants.routesKeys.startRouteFromFavorite,
+                group: MetricsConstants.routesTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'id': point.entity?.id,
+                  'destination': '${point.coordinates.latitude},${point.coordinates.longitude}'
+                },
+              );
+
+              final index = points.indexWhere((element) => !element.isNotEmpty);
+              points[index] = RoutePointFavouriteItem(point);
+              updatePoints(points);
+            },
+          ),
+          Spacing.$4x.heightBox,
+        ],
+      ),
+    );
+  }
 }
