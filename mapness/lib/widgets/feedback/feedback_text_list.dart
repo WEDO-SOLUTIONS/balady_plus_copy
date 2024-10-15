@@ -78,7 +78,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
             _ => (_) => null,
           };
 
-          for (final value in values!) {
+          for (final value in values ?? []) {
             if (validator(value) != null) {
               return validator(value);
             }
