@@ -36,13 +36,15 @@ class FeedbackInput extends StatelessWidget {
       validator: FormBuilderValidators.compose([
         switch (field.type) {
           FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: isRequired),
-          FeedbackTextType.phone => FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
+          FeedbackTextType.phone => FormBuilderValidators.compose([
+              FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
+              FormBuilderValidators.minLength(12, checkNullOrEmpty: isRequired),
+            ]),
           FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: isRequired),
           _ when isRequired => FormBuilderValidators.required(),
           _ => (_) => null,
         },
       ]),
-
       builder: (fieldState) => FeedbackTextInput(
         labelText: field.label,
         hintText: field.hint,

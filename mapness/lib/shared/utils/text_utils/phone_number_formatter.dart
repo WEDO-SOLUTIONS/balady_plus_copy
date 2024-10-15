@@ -56,13 +56,13 @@ class PhoneNumberFormatter extends TextInputFormatter {
       digitsOnly = digitsOnly.replaceFirst(countyCode, '');
     }
     for (; i < min(digitsOnly.length, 10); i++) {
-      if (i == 3) {
+      if (i == 2) {
         formatted.write(') ');
       }
-      if (i == 6) {
+      if (i == 5) {
         formatted.write('-');
       }
-      if (i == 8) {
+      if (i == 7) {
         formatted.write('-');
       }
 
