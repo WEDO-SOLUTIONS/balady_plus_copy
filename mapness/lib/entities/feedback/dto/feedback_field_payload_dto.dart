@@ -9,7 +9,7 @@ class FeedbackFieldPayloadDto {
 
   /// Backend team told that this is due to reusing of the model to pass further.
   /// But since it is defined in API, I've added it.
-  final String? oldValue;
+  final dynamic oldValue;
 
   const FeedbackFieldPayloadDto({
     required this.id,

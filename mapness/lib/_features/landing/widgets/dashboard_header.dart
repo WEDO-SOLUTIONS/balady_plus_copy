@@ -65,7 +65,7 @@ class _DashboardMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$4x * 2;
+    const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$2x * 2;
     final remainingSpaceForQuickFilters = max(0.0, heightOfQuickFilters - shrinkOffset);
     final quickFilterSizeProportion = remainingSpaceForQuickFilters / heightOfQuickFilters;
 
@@ -83,17 +83,20 @@ class _DashboardMenu extends ConsumerWidget {
               double.infinity,
               remainingSpaceForQuickFilters,
             ),
-            child: MapQuickFilters(
-              id: QuickFilterScreen.dashboard,
-              isDashboard: true,
-              customFilters: [
-                FilterItemConfig(
-                  filterType: FilterType.custom,
-                  title: context.l10n.go,
-                  icon: 'assets/icons/svg/quick_filters/free_roam.svg',
-                  onTap: () => FreeRoamRoute.open(ref.watch(goRouterProvider)),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.$2x),
+              child: MapQuickFilters(
+                id: QuickFilterScreen.dashboard,
+                isDashboard: true,
+                customFilters: [
+                  FilterItemConfig(
+                    filterType: FilterType.custom,
+                    title: context.l10n.go,
+                    icon: 'assets/icons/svg/quick_filters/free_roam.svg',
+                    onTap: () => FreeRoamRoute.open(ref.watch(goRouterProvider)),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -117,7 +120,7 @@ class DashboardHeader extends ConsumerWidget {
           color: Colors.white,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$2x),
           child: GestureDetector(
             onTap: () {
               Metrics.logEventAdvanced(

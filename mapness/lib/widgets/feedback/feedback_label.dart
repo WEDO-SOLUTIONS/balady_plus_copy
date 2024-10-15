@@ -4,7 +4,8 @@ import 'package:flutter/widgets.dart';
 
 class FeedbackLabel extends StatelessWidget {
   final String text;
-  const FeedbackLabel({required this.text, super.key});
+  final bool? isRequired;
+  const FeedbackLabel({required this.text, this.isRequired, super.key});
 
   @override
   Widget build(BuildContext context) => Row(
@@ -13,7 +14,7 @@ class FeedbackLabel extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: Spacing.$2x),
               child: Text(
-                text,
+                isRequired ?? false ? '* $text' : text,
                 style: context.textStyle.caption,
               ),
             ),

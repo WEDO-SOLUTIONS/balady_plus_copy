@@ -24,39 +24,46 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
       super.key});
 
   @override
-  Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InputDropDownList(
-              label: workingHours.days.sortedByIndex().map((day) => day.localizedShortName(context.l10n)).join(', '),
-              onTap: onDaysChange,
-            ),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                InputDropDownList(
-                  label: workingHours.workingTime.formatTimeRange(),
-                  onTap: onWorkingHoursChange,
+  Widget build(BuildContext context) {
+    final isDaysEmpty = workingHours.days.isEmpty;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InputDropDownList(
+            label: isDaysEmpty
+                ? context.l10n.feedbackSelectDaysTitle
+                : workingHours.days.sortedByIndex().map((day) => day.localizedShortName(context.l10n)).join(', '),
+            onTap: onDaysChange,
+          ),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              InputDropDownList(
+                isEnable: !isDaysEmpty,
+                label: workingHours.workingTime.formatTimeRange(),
+                onTap: onWorkingHoursChange,
+              ),
+              const SizedBox(width: 6),
+              InputDropDownList(
+                isEnable: !isDaysEmpty,
+                label: _formatBreaks(context.l10n, workingHours.breaks),
+                onTap: onBreaksChange,
+              ),
+              const SizedBox(width: 6),
+              if (onDelete != null)
+                AppButton.close(
+                  onTap: onDelete,
+                  buttonColorScheme: ButtonColorScheme.onColor,
+                  padding: EdgeInsets.zero,
                 ),
-                const SizedBox(width: 6),
-                InputDropDownList(
-                  label: _formatBreaks(context.l10n, workingHours.breaks),
-                  onTap: onBreaksChange,
-                ),
-                const SizedBox(width: 6),
-                if (onDelete != null)
-                  AppButton.close(
-                    onTap: onDelete,
-                    buttonColorScheme: ButtonColorScheme.onColor,
-                    padding: EdgeInsets.zero,
-                  ),
-              ],
-            ),
-          ],
-        ),
-      );
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   String _formatBreaks(AppLocalizations l10n, TimeRangeStartEnd? breaks) {
     if (breaks == null) {
@@ -69,12 +76,13 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
 class InputDropDownList extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
+  final bool isEnable;
 
-  const InputDropDownList({required this.label, required this.onTap, Key? key}) : super(key: key);
+  const InputDropDownList({required this.label, required this.onTap, this.isEnable = true, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
+        onTap: isEnable ? onTap : null,
         child: Container(
           padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
           decoration: BoxDecoration(
@@ -88,10 +96,15 @@ class InputDropDownList extends StatelessWidget {
                 child: Text(
                   label,
                   overflow: TextOverflow.ellipsis,
-                  style: context.textStyleV3.bodySmallRegular,
+                  style: context.textStyleV3.bodySmallRegular.copyWith(
+                    color: isEnable ? null : context.colorsV2.foregroundMuted,
+                  ),
                 ),
               ),
-              const Icon(SystemIcons.arrowCornerDownSmall),
+              Icon(
+                SystemIcons.arrowCornerDownSmall,
+                color: isEnable ? null : context.colorsV2.foregroundMuted,
+              ),
             ],
           ),
         ),

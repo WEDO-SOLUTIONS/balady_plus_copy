@@ -3,7 +3,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FeedbackTypeItemWidget extends ConsumerWidget {
   final String title;
@@ -37,7 +36,7 @@ class FeedbackTypeItemWidget extends ConsumerWidget {
           titleMaxlines: 2,
           actionWidget: ContentRowActionOptions(
             actionIcon: AppIcons(
-              iconData: context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge,
+              iconData: SystemIcons.arrowCornerRightLarge,
               color: context.colorsV2.neutralDefault,
             ),
           ),
