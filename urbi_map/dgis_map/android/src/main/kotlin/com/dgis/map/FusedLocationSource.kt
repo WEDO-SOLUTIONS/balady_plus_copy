@@ -1,5 +1,6 @@
 package com.dgis.map
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.HandlerThread
 import android.util.Log
@@ -13,7 +14,7 @@ import ru.dgis.sdk.positioning.DesiredAccuracy
 import ru.dgis.sdk.positioning.LocationChangeListener
 import ru.dgis.sdk.positioning.LocationSource
 
-class FusedLocationSource(private val context: Context): LocationSource {
+class FusedLocationSource(private val context: Context) : LocationSource {
     private var client: FusedLocationProviderClient? = null
     private var listener: LocationChangeListener? = null
     private var accuracy: DesiredAccuracy = DesiredAccuracy.MEDIUM
@@ -45,23 +46,24 @@ class FusedLocationSource(private val context: Context): LocationSource {
 
     @Synchronized
     override fun setDesiredAccuracy(accuracy: DesiredAccuracy) {
-        if (accuracy == this.accuracy)
-            return
+        if (accuracy == this.accuracy) return
 
         this.accuracy = accuracy
         updateSource()
     }
 
     fun onPermissionGranted() {
+        if (isAvailable) return
         isAvailable = true
         updateSource()
     }
 
+    @SuppressLint("MissingPermission")
     private fun updateSource() {
         val client = this.client ?: return
         val listener = this.listener ?: return
 
-        if(isAvailable) {
+        if (isAvailable) {
             try {
                 val thread = thread ?: HandlerThread("DgisLocation").also {
                     it.start()
@@ -73,9 +75,8 @@ class FusedLocationSource(private val context: Context): LocationSource {
                     DesiredAccuracy.MEDIUM -> Pair(Priority.PRIORITY_HIGH_ACCURACY, 1000L)
                     DesiredAccuracy.LOW -> Pair(Priority.PRIORITY_BALANCED_POWER_ACCURACY, 5000L)
                 }
-                val request = LocationRequest.Builder(newPriority, interval)
-                    .build()
-                val callback = (object: LocationCallback() {
+                val request = LocationRequest.Builder(newPriority, interval).build()
+                val callback = (object : LocationCallback() {
                     override fun onLocationResult(result: LocationResult) {
                         listener.onLocationChanged(result.locations.toTypedArray())
                         lastLocation = result.lastLocation
@@ -87,7 +88,7 @@ class FusedLocationSource(private val context: Context): LocationSource {
                 client.requestLocationUpdates(request, callback, thread.looper)
                 listener.onAvailabilityChanged(true)
             } catch (e: Exception) {
-                Log.e("2Gis","Failed to create location source", e)
+                Log.e("2Gis", "Failed to create location source", e)
             }
         } else {
             this.callback?.let(client::removeLocationUpdates)

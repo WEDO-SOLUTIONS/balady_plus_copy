@@ -6,6 +6,7 @@ import 'package:mapness/_features/debug_overlay/widgets/better_route_settings_wi
 import 'package:mapness/_features/debug_overlay/widgets/colorscheme_toggler.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_controll.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
+import 'package:mapness/_features/debug_overlay/widgets/link_checker.dart';
 import 'package:mapness/_features/debug_overlay/widgets/onboarding_button.dart';
 import 'package:mapness/_features/debug_overlay/widgets/slider_speed.dart';
 import 'package:mapness/_features/debug_overlay/widgets/sso_credential_view.dart';
@@ -99,6 +100,21 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                                 ),
                                 TextSpan(
                                   text: '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
+                                  style: context.textStyle.footNoteBold.copyWith(color: Colors.black87),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // TODO(Sergei): temporary information for internal testing builds from AA branch
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Android Auto: ',
+                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
+                                ),
+                                TextSpan(
+                                  text: 'true',
                                   style: context.textStyle.footNoteBold.copyWith(color: Colors.black87),
                                 ),
                               ],
@@ -198,6 +214,11 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const DebugNavigationControll(),
                   const ColorschemeToggler(),
                   const ShowOnboardingButton(),
+                  const SizedBox(height: 12),
+                  const LinkChecker(),
+                  SizedBox(
+                    height: MediaQuery.of(context).viewInsets.bottom,
+                  ),
                 ],
               ),
             ),

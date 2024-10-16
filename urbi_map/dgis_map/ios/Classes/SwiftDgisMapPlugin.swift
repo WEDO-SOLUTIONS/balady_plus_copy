@@ -43,6 +43,8 @@ class DgisPluginApi: NSObject, PluginApi {
             vendorConfig: DGis.VendorConfig.fromFile(VendorConfigFromFile(path: vendorConfigPath ?? ""))
         )
         SwiftDgisMapPlugin.vendorConfig = vendorConfig
+        SwiftDgisMapPlugin.initialized = true
+        SwiftDgisMapPlugin.delegate?.pluginInitialized()
     }
 }
 
@@ -51,10 +53,19 @@ public class SwiftDgisMapPlugin: NSObject, FlutterPlugin {
     public static var sdkContext: DGis.Container? = nil
     public static var vendorConfig: VendorConfig? = nil
 
+    public static var initialized: Bool = false
+    public static var delegate: SwiftDgisMapPluginDelegate?
+    public static var registrar: FlutterPluginRegistrar?
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let factory = DgisMapViewFactory(registrar: registrar)
 
         registrar.register(factory, withId: self.flutterViewId)
         PluginApiSetup(registrar.messenger(), DgisPluginApi.init(registrar: registrar))
+        self.registrar = registrar
     }
+}
+
+public protocol SwiftDgisMapPluginDelegate {
+    func pluginInitialized()
 }

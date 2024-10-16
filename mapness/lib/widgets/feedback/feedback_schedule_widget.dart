@@ -49,7 +49,7 @@ class FeedbackScheduleWidget extends StatelessWidget {
           }
           final selectedDays = value.expand((e) => e.days).toISet();
 
-          if (ISet(WeekDay.values) != selectedDays) {
+          if (ISet(WeekDay.values) != selectedDays && field.isRequired) {
             return 'not all days';
           }
 
