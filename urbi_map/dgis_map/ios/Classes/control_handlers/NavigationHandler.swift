@@ -282,7 +282,7 @@ class NavigationHandler {
     }
     
     func simulationSpeed(speed: Double) {
-        self.navigationManager.simulationSettings.speedMode = SimulationSpeedMode.speed(SimulationConstantSpeed(speed: speed))
+        NavigationHandler.navigationManager!.simulationSettings.speedMode = SimulationSpeedMode.speed(SimulationConstantSpeed(speed: speed))
     }
     
     func startSimulation(

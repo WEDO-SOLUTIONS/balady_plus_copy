@@ -74,6 +74,24 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
         self.navigationViewFactory = (try? sdk.makeNavigationViewFactory())?.makeNavigationViewControlsFactory()
         
         self.delegate?.viewDidLoad(with: map)
+        
+        loadStylesAsset("assets/maps/styles/styles.2gis")
+    }
+    
+    func loadStylesAsset(_ asset: String) {
+        let assetKey = SwiftDgisMapPlugin.registrar!.lookupKey(forAsset: asset)
+        
+        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
+        
+        let styleFuture = try! SwiftDgisMapPlugin.sdkContext!.styleFactory.loadFile(path: assetPath)
+        cancellables.insert(
+            styleFuture.sink (
+                receiveValue: { [map = self.map] style in
+                    map?.style = style
+                },
+                failure: { _ in }
+            )
+        )
     }
     
     override func viewDidDisappear(_ animated: Bool) {

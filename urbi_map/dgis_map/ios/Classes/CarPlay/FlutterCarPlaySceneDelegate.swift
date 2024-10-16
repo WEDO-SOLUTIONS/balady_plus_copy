@@ -127,6 +127,11 @@ extension FlutterCarPlaySceneDelegate {
 
 extension FlutterCarPlaySceneDelegate {
     static func startNavigation() {
+        if let navigationSession = self.navigationSession {
+            navigationSession.cancelTrip()
+            self.navigationSession = nil
+        }
+        
         self.trip = CPTrip(
             origin: MKMapItem(
                 placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
@@ -191,23 +196,23 @@ extension FlutterCarPlaySceneDelegate {
         case .crossroadKeepRight:
             "Crossroad_keep_right"
         case .roundaboutForward:
-            "Roundabout_forward"
+            "Ringroad_forward"
         case .roundaboutLeft45:
-            "Roundabout_left_45"
+            "Ringroad_left_45"
         case .roundaboutLeft90:
-            "Roundabout_left_90"
+            "Ringroad_left_90"
         case .roundaboutLeft135:
-            "Roundabout_left_135"
+            "Ringroad_left_135"
         case .roundaboutRight45:
-            "Roundabout_right_45"
+            "Ringroad_right_45"
         case .roundaboutRight90:
-            "Roundabout_right_90"
+            "Ringroad_right_90"
         case .roundaboutRight135:
-            "Roundabout_right_135"
+            "Ringroad_right_135"
         case .roundaboutBackward:
-            "Roundabout_backward"
+            "Ringroad_backward"
         case .roundaboutExit:
-            "Roundabout_exit"
+            "Ringroad_exit"
         case .uTurn, .crossroadUTurn:
             "Turn_over_right_hand"
         case .roadCrossing:
