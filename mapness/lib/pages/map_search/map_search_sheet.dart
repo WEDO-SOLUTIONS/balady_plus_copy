@@ -43,7 +43,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
   ConsumerState<MapSearchSheet> createState() => _MapSearchSheetState();
 }
 
-class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
+class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
   late final DgisBottomSheetController _dgisSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
@@ -61,6 +61,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     _dgisSheetController = DgisBottomSheetController();
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     _setupTapListener();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -76,10 +77,18 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      _unfocusSearchField();
+    }
+  }
+
+  @override
   void dispose() {
     _keyboardVisible.cancel();
     _dgisSheetController.dispose();
     _streamSubscription?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
   }
@@ -133,7 +142,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
             scrollableBody: (context, scrollController) {
               /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
               /// https://www.youtube.com/watch?v=L_WoOkDAqbM
-              scrollController.addListener(_unfocusOnScroll);
+              scrollController.addListener(_unfocusSearchField);
 
               return ClipRRect(
                 borderRadius: const BorderRadius.vertical(
@@ -229,12 +238,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {
-      _unfocusOnScroll();
+      _unfocusSearchField();
     }
     return true;
   }
 
-  void _unfocusOnScroll() {
+  void _unfocusSearchField() {
     if (kbVisibilityController.isVisible) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
@@ -287,7 +296,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
       if (goRouter.isCurrentRoute(SearchRoute.path)) {
         _dgisSheetController.animateTo(Expansion.collapsed);
-        _unfocusOnScroll();
+        _unfocusSearchField();
       }
     });
   }
