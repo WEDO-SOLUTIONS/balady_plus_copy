@@ -80,12 +80,15 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     }
 
     final isFormValid = formState.saveAndValidate();
+
     // if for any reason validation has not been triggered, than this will do it
     // and disable button until form valid. But actually step is redundant in current configuration.
     if (!isFormValid) {
       return;
     }
-    final fields = formState.value.entries;
+    final fields = formState.value.entries
+        .map((entry) => MapEntry(entry.key, formState.getTransformedValue(entry.key, fromSaved: true)))
+        .toList();
     print('>>>>>>>>>>>>>>>>>>>>>>>>>>>');
     print(fields);
     // print(jsonEncode(formState.value));
