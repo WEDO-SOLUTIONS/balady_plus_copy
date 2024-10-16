@@ -76,38 +76,7 @@ class SearchItem extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // this part of the code will be included in the uikit component, so it is not included as a separate widget
-            if (photosUrls.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 12),
-                child: SizedBox(
-                  height: 96,
-                  child: ScrollConfiguration(
-                    behavior: NoGlowingScrollBehavior(),
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: photosUrls.length,
-                      itemBuilder: (context, i) {
-                        final photo = photoItems[i].previewUrls?.smallByWidth ?? photosUrls[i];
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                            RadiusBorder.l,
-                          ),
-                          child: Image.network(
-                            photo,
-                            fit: BoxFit.cover,
-                            height: 96,
-                            width: 96,
-                            cacheHeight: 96,
-                            cacheWidth: 96,
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) => Spacing.$1x.widthBox,
-                    ),
-                  ),
-                ),
-              ),
+            if (photosUrls.isNotEmpty) _PhotosGallery(photosUrls: photosUrls, photoItems: photoItems),
             ContentRowV2(
               crossAxisAlignment: CrossAxisAlignment.start,
               text: ContentRowTextOptions(
@@ -159,6 +128,53 @@ class SearchItem extends ConsumerWidget {
         result.markerPosition!.longitude,
         myLocation!.latitude,
         myLocation!.longitude,
+      ),
+    );
+  }
+}
+
+class _PhotosGallery extends StatelessWidget {
+  static const heightOfGallery = 96;
+  final List<String> photosUrls;
+  final List<Item> photoItems;
+
+  const _PhotosGallery({
+    required this.photosUrls,
+    required this.photoItems,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final photo = photoItems[i].previewUrls?.smallByWidth ?? photosUrls[i];
+    return Padding(
+      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, top: Spacing.$3x),
+      child: SizedBox(
+        height: heightOfGallery.toDouble(),
+        child: ScrollConfiguration(
+          behavior: NoGlowingScrollBehavior(),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: photosUrls.length,
+            itemBuilder: (context, i) {
+              final photo = photosUrls[i];
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  RadiusBorder.l,
+                ),
+                child: Image.network(
+                  photo,
+                  fit: BoxFit.cover,
+                  height: heightOfGallery.toDouble(),
+                  width: heightOfGallery.toDouble(),
+                  cacheHeight: heightOfGallery,
+                  cacheWidth: heightOfGallery,
+                ),
+              );
+            },
+            separatorBuilder: (context, index) => Spacing.$1x.widthBox,
+          ),
+        ),
       ),
     );
   }
