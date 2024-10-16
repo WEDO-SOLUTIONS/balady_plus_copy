@@ -191,7 +191,7 @@ dependencies:
   balady_uikit:
     git:
       url: https://github.com/urbi-ae/balady_uikit.git
-      ref: 6fce4656dfe60eca6d57cbefa6eebff540b79b2b
+      ref: d472794d47819d1b6e10bb623cd79f721cfc2c5b
 
   mapness:
     path: mapness

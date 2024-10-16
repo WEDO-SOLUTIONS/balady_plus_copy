@@ -103,7 +103,14 @@ class RoutingHeader extends ConsumerWidget {
               ).push(context).then(
                 (value) {
                   if (value != null && value is RoutePoint) {
-                    points[index] = value;
+                    // We don't want to make route MyLocation - MyLocation and if we already have myLocation, we just
+                    // swap previous points
+                    if (points.whereType<RoutePointMyLocation>().length == 1 && value is RoutePointMyLocation) {
+                      points.swap(0, 1);
+                    } else {
+                      points[index] = value;
+                    }
+
                     updatePoints(points);
                   }
                 },

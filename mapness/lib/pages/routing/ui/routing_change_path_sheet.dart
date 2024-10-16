@@ -93,10 +93,13 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
                 ],
               ),
             ),
-            ABRoute(
-              items: pointsModels,
-              onReorder: _onReorder,
-              onTap: _onTap,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+              child: ABRoute(
+                items: pointsModels,
+                onReorder: _onReorder,
+                onTap: _onTap,
+              ),
             ),
             const SizedBox(height: 12),
             Padding(
