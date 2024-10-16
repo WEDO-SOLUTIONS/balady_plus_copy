@@ -24,6 +24,7 @@ class RoutingSuggestList extends ConsumerWidget {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
     final myLocation = ref.watch(locationProvider);
     final contentColor = context.colorsV2.backgroundSurface4;
+
     return Padding(
       padding: const EdgeInsets.only(
         left: Spacing.$4x,

@@ -82,6 +82,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
                 scrollableBody: (context, scrollController) {
                   scrollController.addListener(_unFocusOnScroll);
                   final bgColor = context.colorsV2.backgroundSurface1;
+
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(RadiusBorder.xl),
                     child: Material(

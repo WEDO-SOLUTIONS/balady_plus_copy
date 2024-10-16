@@ -33,6 +33,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
   Widget build(BuildContext context) {
     final hasManyResults = widget.history.length > 10;
     final contentColor = context.colorsV2.backgroundSurface4;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(

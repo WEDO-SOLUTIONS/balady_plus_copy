@@ -26,6 +26,7 @@ class SearchScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final contentColor = context.colorsV2.backgroundSurface4;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: context.colorsV2.backgroundSurface1,
