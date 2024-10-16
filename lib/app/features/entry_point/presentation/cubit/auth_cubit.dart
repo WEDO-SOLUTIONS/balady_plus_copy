@@ -232,7 +232,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       final failureOrSuccess = await _refreshToken(refreshToken);
 
       return await failureOrSuccess.fold((failure) async {
-        await autoLogout();
+        //await autoLogout();
       }, (success) async {
         SSOToken token = SSOToken(
             token: success.accessToken,
@@ -262,7 +262,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         });
       });
     } else {
-      await autoLogout();
+     // await autoLogout();
     }
   }
 
