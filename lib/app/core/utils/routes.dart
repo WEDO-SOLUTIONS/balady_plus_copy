@@ -62,7 +62,7 @@ import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_
 import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_start_service.dart';
 import '../../features/ekram/presentation/pages/user/ekram_request_transportation_start_service.dart';
 import '../../features/ekram/presentation/pages/user/user_ekram_transpotation_details_page.dart';
-import '../../features/ekram/presentation/pages/driver/driver_transportation_list_page.dart';
+import '../../features/ekram/presentation/pages/driver/request_list_page.dart';
 import '../../features/ekram/presentation/pages/ekram_booking_list_page.dart';
 import '../../features/ekram/presentation/pages/ekram_cemetry_details_page.dart';
 import '../../features/ekram/presentation/pages/ekram_home_page.dart';
@@ -72,7 +72,7 @@ import '../../features/ekram/presentation/pages/user/ekram_map_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_orders_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_request_transportation_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_transportation_list_page.dart';
-import '../../features/ekram/presentation/pages/driver/ekram_transpotation_details_page_new.dart';
+import '../../features/ekram/presentation/pages/driver/identical_list_page.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_cemetries/inquiry_cemetry_details.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_cemetries/inquiry_cemetry_result.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_graves/inquiry_grave_details.dart';
@@ -550,7 +550,7 @@ class Routes {
         const EkramTransportationListPage(),
 
     RouteName.driverEkramTransportationListScreen: (context) =>
-        const DriverEkramTransportationListPage(),
+        const RequestListPage(),
 
     RouteName.ekramBookingListScreen: (context) => const EkramBookingListPage(),
 
@@ -565,7 +565,7 @@ class Routes {
     RouteName.ekramSuccessScreen: (context) => const EkramSuccessPage(),
 
     RouteName.ekramTransportationDetailsScreen: (context) =>
-        const EkramTransportationDetailsPage_new(),
+        const IdenticalListPage(),
 
     RouteName.driverEkramTransportationDetailsScreen: (context) =>
         const UsersEkramTransportationDetailsPage(),

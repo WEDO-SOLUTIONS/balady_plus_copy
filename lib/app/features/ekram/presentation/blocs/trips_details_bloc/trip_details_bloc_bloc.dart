@@ -120,29 +120,29 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
 
   Future<void> _getTripsDetailsInDialogHandler(
       GetTripsDetailsInDialogEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-
-    final failureOrSuccess = await _getTrips(state.deathInfo.deathInfoId!);
-
-    failureOrSuccess.fold((failure) {
-      String? errorCode = (failure as ServerFailure).errorCode;
-      BlocStatus status = BlocStatus.failure;
-      if (errorCode == "2") {
-        status = BlocStatus.success;
-      }
-      emitter(state.copyWith(
-          status: status,
-          errorMessage: status == BlocStatus.failure
-              ? (failure as ServerFailure).errorMessage
-              : null,
-          tripDetails: status == BlocStatus.success ? [] : null));
-    }, (success) async {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-        tripDetails: success.data?.result,
-      ));
-    });
+    // emitter(state.copyWith(status: BlocStatus.loading));
+    //
+    // final failureOrSuccess = await _getTrips(state.deathInfo.deathInfoId!);
+    //
+    // failureOrSuccess.fold((failure) {
+    //   String? errorCode = (failure as ServerFailure).errorCode;
+    //   BlocStatus status = BlocStatus.failure;
+    //   if (errorCode == "2") {
+    //     status = BlocStatus.success;
+    //   }
+    //   emitter(state.copyWith(
+    //       status: status,
+    //       errorMessage: status == BlocStatus.failure
+    //           ? (failure as ServerFailure).errorMessage
+    //           : null,
+    //       tripDetails: status == BlocStatus.success ? [] : null));
+    // }, (success) async {
+    //   emitter(state.copyWith(
+    //     status: BlocStatus.success,
+    //     errorMessage: "",
+    //     tripDetails: success.data?.result,
+    //   ));
+    // });
   }
 
   Future<void> _deleteTripHandler(DeleteTripEvent e, Emitter emitter) async {

@@ -13,21 +13,21 @@ import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart'
 import '../../../domain/entities/deceased_request_details/deceased_request_details.dart';
 import '../ekram_status_widget.dart';
 
-class DeceasedGreyCardWidget_new extends StatelessWidget {
+class IdenticalDeceasedCardWidget extends StatelessWidget {
   final DeceasedInfoResponseDtoList item;
   final bool isDriver;
-  final Function onPressShowTrips;
-  final Function onPressLogTrip;
-  final Function showLocation;
+  // final Function onPressShowTrips;
+  // final Function onPressLogTrip;
+  // final Function showLocation;
   final bool showLogTrip;
 
-  const DeceasedGreyCardWidget_new(
+  const IdenticalDeceasedCardWidget(
       {Key? key,
       required this.item,
       required this.isDriver,
-      required this.onPressShowTrips,
-      required this.showLocation,
-      required this.onPressLogTrip,
+      // required this.onPressShowTrips,
+      // required this.showLocation,
+      // required this.onPressLogTrip,
       required this.showLogTrip})
       : super(key: key);
 
@@ -150,6 +150,59 @@ class DeceasedGreyCardWidget_new extends StatelessWidget {
           //   lineColor: AppColor.black400.withOpacity(0.2000000029802322),
           // ),
           //
+
+
+          // if (!isDriver && item.trips != null && item.trips!.isNotEmpty)
+          //   ElevatedButtonWidget.primaryCustom(
+          //     onPressed: () {
+          //       showLocation();
+          //     },
+          //     text: ('navigateOnMap').tr(),
+          //   ),
+          // if (isDriver)
+          //   Row(
+          //     children: [
+          //       if (showLogTrip)
+          //         Expanded(
+          //           child: CustomTextButtonWithIconWidgetWithFlexible(
+          //             mainAxisAlignment: MainAxisAlignment.start,
+          //             btnPressed: () => onPressLogTrip(),
+          //             btnText: ('log_driver_trip').tr(),
+          //             icon: CustomSvgIconWidget(
+          //               "assets/icons/tracking.svg",
+          //               iconHeight: 16,
+          //               iconWidth: 16,
+          //             ),
+          //             buttonIconPosition: BUTTON_ICON_POSITION.right,
+          //             btnTextColor: AppColor.primary900Light,
+          //             btnTextSize: 13,
+          //             btnTextWeight: AppFontWeight.medium,
+          //             //  padding: EdgeInsets.all(Constants.semiMediumPadding),
+          //           ),
+          //         ),
+          //       Expanded(
+          //         child: CustomTextButtonWithIconWidgetWithFlexible(
+          //           mainAxisAlignment: MainAxisAlignment.start,
+          //           btnPressed: () => onPressShowTrips(),
+          //
+          //           btnText: ('show_driver_trips').tr(),
+          //           icon: CustomSvgIconWidget(
+          //             "assets/icons/detailsIconSVG.svg",
+          //             iconHeight: 16,
+          //             iconWidth: 16,
+          //           ),
+          //           buttonIconPosition: BUTTON_ICON_POSITION.right,
+          //           btnTextColor: AppColor.primary900Light,
+          //           btnTextSize: 13,
+          //           btnTextWeight: AppFontWeight.medium,
+          //           //  padding: EdgeInsets.all(Constants.semiMediumPadding),
+          //         ),
+          //       ),
+          //     ],
+          //   )
+          //
+
+
 
 
 

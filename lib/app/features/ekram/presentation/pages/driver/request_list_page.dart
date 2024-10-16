@@ -9,7 +9,7 @@ import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
         GetMoreDeceasedTransportRequestsEvent,
         EkramRequestsState,
         GetDeceasedTransportRequestDetailsEvent;
-import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_driver_request_card_widget_new.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/driver/request_card_widget.dart';
 import 'package:balady_plus/etmam_app/core/utils/Debouncer.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -34,16 +34,16 @@ import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../../../../objectable_transactions/presentation/widgets/app_bar_search_bar.dart';
 
-class DriverEkramTransportationListPage extends StatefulWidget {
-  const DriverEkramTransportationListPage({Key? key}) : super(key: key);
+class RequestListPage extends StatefulWidget {
+  const RequestListPage({Key? key}) : super(key: key);
 
   @override
-  State<DriverEkramTransportationListPage> createState() =>
-      _DriverEkramTransportationListPageState();
+  State<RequestListPage> createState() =>
+      _RequestListPageState();
 }
 
-class _DriverEkramTransportationListPageState
-    extends State<DriverEkramTransportationListPage> {
+class _RequestListPageState
+    extends State<RequestListPage> {
   final ScrollController _scrollContrller = ScrollController();
   final _debouncer = Debouncer(milliseconds: 500);
 
@@ -87,9 +87,7 @@ class _DriverEkramTransportationListPageState
             _scrollContrller.addListener(() {
               if (_scrollContrller.position.maxScrollExtent ==
                   _scrollContrller.offset) {
-                context
-                    .read<EkramRequestsBloc>()
-                    .add(GetMoreDeceasedTransportRequestsEvent(isDriver: true));
+                context.read<EkramRequestsBloc>().add(GetMoreDeceasedTransportRequestsEvent(isDriver: true));
               }
             });
           }
@@ -140,7 +138,7 @@ class _DriverEkramTransportationListPageState
 
                             return Column(
                               children: [
-                                EkramDriverRequestCardWidget_new(
+                                RequestCardWidget(
                                   ekramTransportationItem:
                                       state.deceasedRequestItems![index],
                                   OnDetailsPress: () {

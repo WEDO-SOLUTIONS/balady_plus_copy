@@ -13,7 +13,7 @@ import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.
 import '../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../objectable_transactions/presentation/widgets/request_parameter.dart';
 import '../../domain/entities/deceased_transport_requests/transport_request_item.dart';
-import 'ekram_driver_request_card_widget_new.dart';
+import 'driver/request_card_widget.dart';
 import 'ekram_status_widget.dart';
 
 class EkramTransporationCardWidget extends StatelessWidget {

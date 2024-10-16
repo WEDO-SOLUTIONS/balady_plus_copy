@@ -1,4 +1,4 @@
-part of 'ekram_add_trip_bloc.dart';
+part of 'ekram_add_trip_bloc_new.dart';
 
 abstract class EkramAddTripEvent extends Equatable {
   const EkramAddTripEvent();

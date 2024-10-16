@@ -23,15 +23,16 @@ import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../../../data/model/driver/trip_details_model.dart';
+
 part 'ekram_add_trip_event.dart';
-part 'ekram_add_trip_state.dart';
+part 'ekram_add_trip_state_new.dart';
 
 class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
   final GetEkramLookUp _getLookUp;
   final GetHospitals _getHospitals;
   final GetMosques _getMosquess;
   final GetLaundries _getLaundries;
-
   final AddTrip _addTrip;
   final UpadateDriverLocation _upadateDriverLocation;
   TextEditingController nextTripStationNameController = TextEditingController();
@@ -42,7 +43,7 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
       required GetMosques getMosquess,
       required GetLaundries getLaundries,
       required GetHospitals getHospitals,
-      required AddTripDialogParams params,
+      required List<TripDetailsModel> params,
       required UpadateDriverLocation updateDriverLocation})
       : _getLookUp = getLookUp,
         _addTrip = addTrip,
@@ -50,14 +51,15 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
         _getLaundries = getLaundries,
         _getMosquess = getMosquess,
         _upadateDriverLocation = updateDriverLocation,
-        super(EkramAddTripState(
+        super(
+          EkramAddTripState(
           data: params,
-          currentTripStationArrivalTime: params.currentTripStationArrivalTime,
-          currentTripStationName: params.currentTripStationName,
-          currentTripStationId: params.currentTripStationId,
-          currentTripStationLocationX: params.currentTripStationLocationX,
-          currentTripStationLocationY: params.currentTripStationLocationY,
-          currentTripStationTypeId: params.currentTripStationTypeId,
+          // currentTripStationArrivalTime: params.currentTripStationArrivalTime,
+          // currentTripStationName: params.currentTripStationName,
+          // currentTripStationId: params.currentTripStationId,
+          // currentTripStationLocationX: params.currentTripStationLocationX,
+          // currentTripStationLocationY: params.currentTripStationLocationY,
+          // currentTripStationTypeId: params.currentTripStationTypeId,
         )) {
     on<EkramAddTripEvent>((event, emit) {
       // TODO: implement event handler
@@ -78,13 +80,13 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
 
   Future<void> _changeNextTripStationType(
       ChangeNextTripStationType e, Emitter emitter) async {
-    emitter(
-        state.copyWith(nextTripStationTypeId: e.item, clearNextStation: true));
-
-    nextTripStationNameController.text = "";
-    if (state.isCemetry()) {
-      nextTripStationNameController.text = state.data.cemetryName ?? "";
-    }
+    // emitter(
+    //     state.copyWith(nextTripStationTypeId: e.item, clearNextStation: true));
+    //
+    // nextTripStationNameController.text = "";
+    // if (state.isCemetry()) {
+    //   nextTripStationNameController.text = state.data.cemetryName ?? "";
+    // }
   }
 
   Future<void> _changeaArrivalTimeEvent(
@@ -137,105 +139,105 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
   Future<void> _submitHandler(SubmitEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    AddTripParams params = AddTripParams(
-        currentTripStationArrivalTime: state.currentTripStationArrivalTime,
-        currentTripStationId: state.currentTripStationId,
-        currentTripStationLocationX: state.currentTripStationLocationX,
-        currentTripStationLocationY: state.currentTripStationLocationY,
-        currentTripStationName: state.currentTripStationName,
-        currentTripStationTypeId: state.currentTripStationTypeId,
-        nextTripStationArrivalTime: state.nextTripStationArrivalTime,
-        nextTripStationId: state.nextTripStationId,
-        nextTripStationName: state.nextTripStationName,
-        nextTripStationTypeId: state.nextTripStationTypeId?.id,
-        requestProcessId: state.data.deathInfoId);
-
-    LookUpItemLocation? locationInfo;
-    if (state.nextLaundryStation != null) {
-      locationInfo = state.launduries?.firstWhereOrNull(
-          (element) => element.id == state.nextLaundryStation?.id);
-      params.nextTripStationName = state.nextLaundryStation?.name;
-      params.nextTripStationId = state.nextLaundryStation?.id;
-    }
-    if (state.nextMosqueStation != null) {
-      locationInfo = state.mosques?.firstWhereOrNull(
-          (element) => element.id == state.nextMosqueStation?.id);
-      params.nextTripStationName = state.nextMosqueStation?.name;
-      params.nextTripStationId = state.nextMosqueStation?.id;
-    }
-
-    if (state.nextHospitalStation != null) {
-      params.nextTripStationName = state.nextHospitalStation?.name;
-      params.nextTripStationId = state.nextHospitalStation?.id;
-    }
-
-    if (state.isCemetry()) {
-      // MM Check
-      params.nextTripStationName = state.data.cemetryName;
-      params.nextTripStationId = state.data.cemetryId;
-    }
-
-    params.nextTripStationLocationX = double.tryParse(locationInfo?.x ?? "");
-    params.nextTripStationLocationY = double.tryParse(locationInfo?.y ?? "");
-
-    final failureOrSuccess = await _addTrip(params);
-
-    await failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) async {
-      await _updateDriverLocatioHandler();
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-
-      NavigationService.navigatorKey.currentState
-          ?.pop(success.data?.responseMessage);
-    });
+    // AddTripParams params = AddTripParams(
+    //     currentTripStationArrivalTime: state.currentTripStationArrivalTime,
+    //     currentTripStationId: state.currentTripStationId,
+    //     currentTripStationLocationX: state.currentTripStationLocationX,
+    //     currentTripStationLocationY: state.currentTripStationLocationY,
+    //     currentTripStationName: state.currentTripStationName,
+    //     currentTripStationTypeId: state.currentTripStationTypeId,
+    //     nextTripStationArrivalTime: state.nextTripStationArrivalTime,
+    //     nextTripStationId: state.nextTripStationId,
+    //     nextTripStationName: state.nextTripStationName,
+    //     nextTripStationTypeId: state.nextTripStationTypeId?.id,
+    //     requestProcessId: state.data.deathInfoId);
+    //
+    // LookUpItemLocation? locationInfo;
+    // if (state.nextLaundryStation != null) {
+    //   locationInfo = state.launduries?.firstWhereOrNull(
+    //       (element) => element.id == state.nextLaundryStation?.id);
+    //   params.nextTripStationName = state.nextLaundryStation?.name;
+    //   params.nextTripStationId = state.nextLaundryStation?.id;
+    // }
+    // if (state.nextMosqueStation != null) {
+    //   locationInfo = state.mosques?.firstWhereOrNull(
+    //       (element) => element.id == state.nextMosqueStation?.id);
+    //   params.nextTripStationName = state.nextMosqueStation?.name;
+    //   params.nextTripStationId = state.nextMosqueStation?.id;
+    // }
+    //
+    // if (state.nextHospitalStation != null) {
+    //   params.nextTripStationName = state.nextHospitalStation?.name;
+    //   params.nextTripStationId = state.nextHospitalStation?.id;
+    // }
+    //
+    // if (state.isCemetry()) {
+    //   // MM Check
+    //   params.nextTripStationName = state.data.cemetryName;
+    //   params.nextTripStationId = state.data.cemetryId;
+    // }
+    //
+    // params.nextTripStationLocationX = double.tryParse(locationInfo?.x ?? "");
+    // params.nextTripStationLocationY = double.tryParse(locationInfo?.y ?? "");
+    //
+    // final failureOrSuccess = await _addTrip(params);
+    //
+    // await failureOrSuccess.fold((failure) {
+    //   emitter(state.copyWith(
+    //     status: BlocStatus.failure,
+    //     errorMessage: (failure as ServerFailure).errorMessage,
+    //   ));
+    // }, (success) async {
+    //   await _updateDriverLocatioHandler();
+    //   emitter(state.copyWith(
+    //     status: BlocStatus.success,
+    //     errorMessage: "",
+    //   ));
+    //
+    //   NavigationService.navigatorKey.currentState
+    //       ?.pop(success.data?.responseMessage);
+    // });
   }
 
   Future<List<LookUpItem>?> getNextStationTypeLookUp() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getLookUp("TRANSPORT_STATIONS");
-    return failureOrSuccess.fold((failure) {
-      emit(state.copyWith(
-        status: BlocStatus.retry,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-      return null;
-    }, (success) {
-      List<int> trips = state.data.trips
-              ?.map((e) => e.nextTripStationTypeId)
-              .whereNotNull()
-              .toList() ??
-          [];
-      List<LookUpItem>? result = success.data?.result;
-
-      result = result?.map((e) {
-        e.isDisblaed = trips.contains(e.id);
-        if (e.id == 30502) {
-          e.isDisblaed = true;
-        }
-        return e;
-      }).toList();
-
-      emit(state.copyWith(
-        status: BlocStatus.success,
-        nextStationType: result,
-        errorMessage: "",
-      ));
-      return result;
-    });
+    // final failureOrSuccess = await _getLookUp("TRANSPORT_STATIONS");
+    // return failureOrSuccess.fold((failure) {
+    //   emit(state.copyWith(
+    //     status: BlocStatus.retry,
+    //     errorMessage: (failure as ServerFailure).errorMessage,
+    //   ));
+    //   return null;
+    // }, (success) {
+    //   List<int> trips = state.data.trips
+    //           ?.map((e) => e.nextTripStationTypeId)
+    //           .whereNotNull()
+    //           .toList() ??
+    //       [];
+    //   List<LookUpItem>? result = success.data?.result;
+    //
+    //   result = result?.map((e) {
+    //     e.isDisblaed = trips.contains(e.id);
+    //     if (e.id == 30502) {
+    //       e.isDisblaed = true;
+    //     }
+    //     return e;
+    //   }).toList();
+    //
+    //   emit(state.copyWith(
+    //     status: BlocStatus.success,
+    //     nextStationType: result,
+    //     errorMessage: "",
+    //   ));
+    //   return result;
+    // });
   }
 
-  Future<List<LookUpItem>?> getHospitalsLookUp() async {
+  Future<List<LookUpItem>?> getHospitalsLookUp(int? deathCityId) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getHospitals(state.data.deathCityId!);
+    final failureOrSuccess = await _getHospitals(deathCityId!);
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,
@@ -253,10 +255,10 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
     });
   }
 
-  Future<List<LookUpItem>?> getMosquesLookUp() async {
+  Future<List<LookUpItem>?> getMosquesLookUp(int? deathCityId) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getMosquess(state.data.deathCityId!);
+    final failureOrSuccess = await _getMosquess(deathCityId!);
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,
@@ -280,9 +282,9 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
     });
   }
 
-  Future<List<LookUpItem>?> getLanuduriesLookUp() async {
+  Future<List<LookUpItem>?> getLanuduriesLookUp(int? deathCityId) async {
     emit(state.copyWith(status: BlocStatus.loading));
-    final failureOrSuccess = await _getLaundries(state.data.deathCityId!);
+    final failureOrSuccess = await _getLaundries(deathCityId!);
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,

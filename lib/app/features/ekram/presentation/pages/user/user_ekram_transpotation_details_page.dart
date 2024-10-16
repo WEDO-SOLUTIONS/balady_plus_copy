@@ -53,7 +53,8 @@ class _UsersEkramTransportationDetailsPageState
           },
           child: Scaffold(
             backgroundColor: AppColor.white2,
-            appBar: DetailsHeader(
+            appBar:
+            DetailsHeader(
               titleWidget: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -114,7 +115,7 @@ class _UsersEkramTransportationDetailsPageState
                     // DriversInfo
                     //  DriversInfoWidget(),
                     // ApplicantInfo
-                    ApplicantInfoWidget(),
+                  //  ApplicantInfoWidget(),
                     // DeceasedInfo
                     DeceasedInfoWidget_new(),
                     // BurialInfo

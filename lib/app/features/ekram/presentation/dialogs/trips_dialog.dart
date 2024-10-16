@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/add_trip_dialog_params.dart';
-import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_add_trip/ekram_add_trip_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_add_trip/ekram_add_trip_bloc_new.dart';
 
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
@@ -18,77 +18,79 @@ import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.
 import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
 class TripsDialog extends StatelessWidget {
-  final AddTripDialogParams params;
+  final AddTripParameter params;
   const TripsDialog({Key? key, required this.params}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => EkramAddTripBloc(
-          getLookUp: sl(),
-          params: params,
-          addTrip: sl(),
-          getHospitals: sl(),
-          getLaundries: sl(),
-          getMosquess: sl(),
-          updateDriverLocation: sl()),
-      child: BlocConsumer<EkramAddTripBloc, EkramAddTripState>(
-        listener: (context, state) {
-          if (state.status == BlocStatus.failure) {
-            CommonFunctions.showError(state.errorMessage ?? "");
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                              child: CustomTextWidget(
-                            trans('register_trip_details'),
-                            maxLines: 1,
-                            fontSize: 24,
-                            fontColor: AppColor.black,
-                            textAlign: TextAlign.start,
-                          )),
-                          CustomTextButtonWidget(
-                            onPressed: () => Navigator.of(context).pop(),
-                            text: "closeButton".tr(),
-                            btnTextColor: AppColor.grey1000,
-                            btnTextSize: 17.0,
-                            btnTextWeight: AppFontWeight.medium,
-                            btnAlignment: AlignmentDirectional.centerEnd,
-                          ),
-                        ],
-                      ),
-                      Expanded(child: DialogBody()),
-                      ElevatedButtonWidget.custom(
-                        isDisabled: !state.isFormValid(),
-                        text: ("confirm").tr(),
-                        onPressed: () {
-                          context
-                              .read<EkramAddTripBloc>()
-                              .add(const SubmitEvent());
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                if (state.status == BlocStatus.loading)
-                  const CustomCircularLoadingWidget(),
-              ],
-            ),
-          );
-        },
-      ),
-    );
+
+    return Container();
+    // return BlocProvider(
+    //   create: (context) => EkramAddTripBloc(
+    //       getLookUp: sl(),
+    //       params: params,
+    //       addTrip: sl(),
+    //       getHospitals: sl(),
+    //       getLaundries: sl(),
+    //       getMosquess: sl(),
+    //       updateDriverLocation: sl()),
+    //   child: BlocConsumer<EkramAddTripBloc, EkramAddTripState>(
+    //     listener: (context, state) {
+    //       if (state.status == BlocStatus.failure) {
+    //         CommonFunctions.showError(state.errorMessage ?? "");
+    //       }
+    //     },
+    //     builder: (context, state) {
+    //       return Scaffold(
+    //         backgroundColor: Colors.transparent,
+    //         body: Stack(
+    //           children: [
+    //             Container(
+    //               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+    //               child: Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: [
+    //                   Row(
+    //                     children: [
+    //                       Expanded(
+    //                           child: CustomTextWidget(
+    //                         trans('register_trip_details'),
+    //                         maxLines: 1,
+    //                         fontSize: 24,
+    //                         fontColor: AppColor.black,
+    //                         textAlign: TextAlign.start,
+    //                       )),
+    //                       CustomTextButtonWidget(
+    //                         onPressed: () => Navigator.of(context).pop(),
+    //                         text: "closeButton".tr(),
+    //                         btnTextColor: AppColor.grey1000,
+    //                         btnTextSize: 17.0,
+    //                         btnTextWeight: AppFontWeight.medium,
+    //                         btnAlignment: AlignmentDirectional.centerEnd,
+    //                       ),
+    //                     ],
+    //                   ),
+    //                   Expanded(child: DialogBody()),
+    //                   ElevatedButtonWidget.custom(
+    //                     isDisabled: !state.isFormValid(),
+    //                     text: ("confirm").tr(),
+    //                     onPressed: () {
+    //                       context
+    //                           .read<EkramAddTripBloc>()
+    //                           .add(const SubmitEvent());
+    //                     },
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+    //             if (state.status == BlocStatus.loading)
+    //               const CustomCircularLoadingWidget(),
+    //           ],
+    //         ),
+    //       );
+    //     },
+    //   ),
+    // );
   }
 }
 

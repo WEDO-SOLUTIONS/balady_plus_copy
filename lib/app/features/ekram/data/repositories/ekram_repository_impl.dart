@@ -28,6 +28,7 @@ import '../../domain/entities/cemetry_request_details/cemetry_request_details.da
 import '../../domain/entities/cemetry_requests/cemetry_request_response.dart';
 import '../../domain/entities/get_cemetries_params.dart';
 import '../../domain/entities/user_info_request_params.dart';
+import '../model/driver/trip_details_model.dart';
 import '../model/upload_letter_params.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -211,7 +212,7 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<List<TripDetails>>>> getTrips(
+  Future<Either<Failure, ResponseBodyModel<List<TripDetailsModel>>>> getTrips(
       int params) async {
     try {
       final data = await remoteDataSource.getTrips(params);

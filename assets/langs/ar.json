@@ -2452,12 +2452,8 @@
   "driver_card_applicant_date": "تاريخ الطلب",
   "log_driver_trip": "تسجيل رحلة نقل",
   "show_driver_trips": "عرض رحلات النقل",
-  "currentTripStationType": "نوع محطة النقل الحالية",
-  "currentTripStationName": "اسم محطة النقل الحالية",
-  "currentTripStationArrivalTime": "وقت الوصول للمحطة الحالية",
-  "nextTripStationType": "نوع محطة النقل التالية",
-  "nextTripStationName": "اسم محطة النقل التالية",
-  "nextTripStationArrivalTime": "وقت الوصول للمحطة التالية",
+
+
   "register_trip_details": "تسجيل رحلة نقل",
   "trip_details": "تفاصيل رحلة نقل",
   "trip_done": "مكتمل",
@@ -4197,6 +4193,20 @@
   "auth_pacakge_end": "end",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
   "complianceFAQ":"الإسئلة الشائعة",
+
+
   "ekram_reciever_Mobile": "رقم جوال مستلم الجثمان",
-  "deathCity/arrivelCity": "مدينة الوفاة/وصول الجثمان"
+  "deathCity/arrivelCity": "مدينة الوفاة/وصول الجثمان",
+  "currentTripStationType": "نوع المحطة  الحالية",
+  "currentTripCity": "مدينة المحطة الحالية",
+  "nextTripCity": "مدينة المحطة التالية",
+  "currentTripStationName": "اسم المحطة الحالية",
+  "currentTripStationArrivalTime": "وقت الإنطلاق",
+  "nextTripStationType": "نوع المحطة التالية",
+  "nextTripStationName": "اسم المحطة التالية",
+  "nextTripStationArrivalTime": "وقت الوصول",
+  "ekram_current_step_location": "موقع المحطة الحالية",
+  "tripPaths": "مسارات رحلة النقل",
+  "tripPathsnumber": "مسار رقم ",
+  "startTrip": "بدء النقل"
 }

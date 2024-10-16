@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
@@ -15,20 +16,22 @@ import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
-class EkramTransportationDetailsPage_new extends StatefulWidget {
-  const EkramTransportationDetailsPage_new({Key? key}) : super(key: key);
+class IdenticalListPage extends StatefulWidget {
+  const IdenticalListPage({Key? key}) : super(key: key);
 
   @override
-  State<EkramTransportationDetailsPage_new> createState() =>
-      _EkramTransportationDetailsPage_newState();
+  State<IdenticalListPage> createState() =>
+      _IdenticalListPageState();
 }
 
-class _EkramTransportationDetailsPage_newState
-    extends State<EkramTransportationDetailsPage_new> {
+class _IdenticalListPageState
+    extends State<IdenticalListPage> {
   @override
   void initState() {
     // TODO: implement initState
@@ -51,7 +54,7 @@ class _EkramTransportationDetailsPage_newState
           isDriver: true),
       child: BlocConsumer<RequestDetailsBloc, RequestDetailsState>(
         listener: (context, state) {
-          print("state $state");
+
           if (state.status == BlocStatus.failure) {
             //   showError(state.errorMessage ?? "");
           }
@@ -93,6 +96,9 @@ class _EkramTransportationDetailsPage_newState
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,16 +125,58 @@ class _EkramTransportationDetailsPage_newState
                         )
                       ],
                     ),
-                    Constants.verticalSpaceSmall,
-                    // TransferInfo
-                    // DriversInfo
-                    //  DriversInfoWidget(),
-                    // ApplicantInfo
-                    // ApplicantInfoWidget(), // fawzi
-                    // DeceasedInfo
-                    DeceasedInfoWidget_new(),
-                    // BurialInfo
-                    //  BurialInfoWidget(),
+                    CustomVerticalSpace(height: 10),
+                    CustomTextWidget(
+                      "deceasedData".tr(),
+                      fontSize: 20.0,
+                      fontWeight: AppFontWeight.bold,
+                      fontColor: AppColor.blackModern700Light,
+                      maxLines: 1,
+                      textOverflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.start,
+                    ),
+                    ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount:
+                      state.details.deceasedInfoResponseDtoList?.length ??
+                          0,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (ctx, index) {
+                        return
+
+                          ExpandableCard(
+                              title: "${("cemetry_deceassed_info").tr()} ${index+1}",
+                              icon: null,
+                              children:
+                              [
+                                IdenticalDeceasedCardWidget(
+                                  item: state.details.deceasedInfoResponseDtoList![index],
+                                  isDriver: state.isDriver,
+                                  showLogTrip: state.details.requestStatusId != 5 &&
+                                      state.details.requestStatusId != 6,),
+                              ]);
+                      },
+                    ),
+
+
+                    Positioned(
+                      bottom: 10,
+                      child: ElevatedButtonWidget.primaryCustom(
+                        onPressed: () {
+                          context
+                              .read<RequestDetailsBloc>()
+                              .add(GetTripsEvent(index: 0));
+
+                        },
+                        text: ('startTrip').tr(),
+                      ),
+                    ),
+
+
+
+
+                    if (state.status == BlocStatus.loading) const CustomLoadingWidget(),
                     Constants.verticalSpaceSmall,
                   ],
                 ),

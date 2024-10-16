@@ -13,6 +13,7 @@ import '../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_enhanced_expansion_panel_widget.dart';
 import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../../_shared_feature_/shared_feature_exports.dart';
 
 class DeceasedInfoWidget_new extends StatelessWidget {
   const DeceasedInfoWidget_new({Key? key}) : super(key: key);
@@ -21,8 +22,10 @@ class DeceasedInfoWidget_new extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RequestDetailsBloc, RequestDetailsState>(
       builder: (context, state) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        return
+
+          Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomVerticalSpace(height: 10),
@@ -50,93 +53,30 @@ class DeceasedInfoWidget_new extends StatelessWidget {
                       icon: null,
                     children:
                     [
-                      DeceasedGreyCardWidget_new(
-                    item:
-                        state.details.deceasedInfoResponseDtoList![index],
+                      IdenticalDeceasedCardWidget(
+                    item: state.details.deceasedInfoResponseDtoList![index],
                     isDriver: state.isDriver,
                     showLogTrip: state.details.requestStatusId != 5 &&
-                        state.details.requestStatusId != 6,
-
-
-                    onPressLogTrip: () async {
-                      context
-                          .read<RequestDetailsBloc>()
-                          .add(GetTripsEvent(index: index));
-                    },
-                    showLocation: () {
-                      context
-                          .read<RequestDetailsBloc>()
-                          .add(GetTripsLocationEvent(index: index));
-                    },
-                    onPressShowTrips: () {
-                      context.read<RequestDetailsBloc>().add(
-                          GetTripsDetailsEvent(
-                              requestStatusId:
-                                  state.details.requestStatusId!,
-                              requestId: state.details.requestId!,
-                              letters: state
-                                  .details.transportAttachResponseDtoList,
-                              dto: state.details
-                                  .deceasedInfoResponseDtoList![index]));
-                    },
-                                          ),
+                        state.details.requestStatusId != 6,),
                   ]);
               },
             ),
 
-            // if (!isDriver && item.trips != null && item.trips!.isNotEmpty)
-            //   ElevatedButtonWidget.primaryCustom(
-            //     onPressed: () {
-            //       showLocation();
-            //     },
-            //     text: ('navigateOnMap').tr(),
-            //   ),
-            // if (isDriver)
-            //   Row(
-            //     children: [
-            //       if (showLogTrip)
-            //         Expanded(
-            //           child: CustomTextButtonWithIconWidgetWithFlexible(
-            //             mainAxisAlignment: MainAxisAlignment.start,
-            //             btnPressed: () => onPressLogTrip(),
-            //             btnText: ('log_driver_trip').tr(),
-            //             icon: CustomSvgIconWidget(
-            //               "assets/icons/tracking.svg",
-            //               iconHeight: 16,
-            //               iconWidth: 16,
-            //             ),
-            //             buttonIconPosition: BUTTON_ICON_POSITION.right,
-            //             btnTextColor: AppColor.primary900Light,
-            //             btnTextSize: 13,
-            //             btnTextWeight: AppFontWeight.medium,
-            //             //  padding: EdgeInsets.all(Constants.semiMediumPadding),
-            //           ),
-            //         ),
-            //       Expanded(
-            //         child: CustomTextButtonWithIconWidgetWithFlexible(
-            //           mainAxisAlignment: MainAxisAlignment.start,
-            //           btnPressed: () => onPressShowTrips(),
-            //
-            //           btnText: ('show_driver_trips').tr(),
-            //           icon: CustomSvgIconWidget(
-            //             "assets/icons/detailsIconSVG.svg",
-            //             iconHeight: 16,
-            //             iconWidth: 16,
-            //           ),
-            //           buttonIconPosition: BUTTON_ICON_POSITION.right,
-            //           btnTextColor: AppColor.primary900Light,
-            //           btnTextSize: 13,
-            //           btnTextWeight: AppFontWeight.medium,
-            //           //  padding: EdgeInsets.all(Constants.semiMediumPadding),
-            //         ),
-            //       ),
-            //     ],
-            //   )
-            //
-            //
-            //
-            //
-            // if (state.status == BlocStatus.loading) const CustomLoadingWidget()
+
+              ElevatedButtonWidget.primaryCustom(
+                onPressed: () {
+                  context
+                      .read<RequestDetailsBloc>()
+                      .add(GetTripsEvent(index: 0));
+
+                },
+                text: ('startTrip').tr(),
+              ),
+
+
+
+
+            if (state.status == BlocStatus.loading) const CustomLoadingWidget()
           ],
         );
       },

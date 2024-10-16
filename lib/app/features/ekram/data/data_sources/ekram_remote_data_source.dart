@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/ekram/data/model/add_trip_params.dart';
@@ -5,7 +7,7 @@ import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_respons
 import 'package:balady_plus/app/features/ekram/data/model/deceased_request_details_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
-import 'package:balady_plus/app/features/ekram/data/model/trip_details_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/driver/trip_details_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/trip_location_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/upload_letter_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
@@ -15,6 +17,7 @@ import 'package:balady_plus/app/features/ekram/domain/use_cases/update_driver_lo
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/errors/exceptions.dart';
@@ -406,27 +409,44 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
 
     try {
-      response = await webService.dio.get(
-        ApiUrl.deceasedTransportRequests,
-        queryParameters: {
-          "isDriver": params.isDriver ? 1 : 0,
-          "page": params.page,
-          "size": params.size,
-          if (int.tryParse(params.text ?? "") != null) "requestId": params.text,
-          if ((params.text?.isNotEmpty ?? false) &&
-              int.tryParse(params.text ?? "") == null)
-            "deceasedName": params.text,
-          if ((params.deceasedTransportRequestStatusId != null))
-            "requestStatusList": params.deceasedTransportRequestStatusId,
-          if ((params.transportLocationStatusId != null))
-            "transportLocationStatusId": params.transportLocationStatusId,
-          if ((params.isMultiCity != null)) "isMultiCity": params.isMultiCity,
-        },
-      );
 
-      var data = response.data["data"]?["result"];
-      Map<String, dynamic> x = {};
-      x["items"] = data;
+
+
+      // response = await webService.dio.get(
+      //   ApiUrl.deceasedTransportRequests,
+      //   queryParameters: {
+      //     "isDriver": params.isDriver ? 1 : 0,
+      //     "page": params.page,
+      //     "size": params.size,
+      //     if (int.tryParse(params.text ?? "") != null) "requestId": params.text,
+      //     if ((params.text?.isNotEmpty ?? false) &&
+      //         int.tryParse(params.text ?? "") == null)
+      //       "deceasedName": params.text,
+      //     if ((params.deceasedTransportRequestStatusId != null))
+      //       "requestStatusList": params.deceasedTransportRequestStatusId,
+      //     if ((params.transportLocationStatusId != null))
+      //       "transportLocationStatusId": params.transportLocationStatusId,
+      //     if ((params.isMultiCity != null)) "isMultiCity": params.isMultiCity,
+      //   },
+      // );
+      //
+      // var data = response.data["data"]?["result"];
+      // Map<String, dynamic> x = {};
+      // x["items"] = data;
+
+
+
+      String qa = "";
+
+      qa = await rootBundle.loadString("assets/trips.json");
+
+      var response = json.decode(qa);
+
+
+      var data = response["data"]?["result"];
+
+
+
       TransportRequestResponseModel? parsedResult =
           data != null ? TransportRequestResponseModel.fromMap(x) : null;
 
@@ -615,12 +635,21 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
 
     try {
-      response = await webService.dio.get(
-        "${ApiUrl.ekramGetTrips}/$params",
-        queryParameters: {"isDriver": 1},
-      );
+      // response = await webService.dio.get(
+      //   "https://bldtrain.momra.gov.sa/buriallicenseapi/trips/4617330967/trips"
+      //  // "${ApiUrl.ekramGetTrips}/$params",
+      //     );
 
-      var data = response.data["data"]?["result"];
+
+
+          String qa = "";
+
+            qa = await rootBundle.loadString("assets/trips.json");
+
+          var response = json.decode(qa);
+
+
+      var data = response["data"]?["result"];
 
       List<TripDetailsModel> parsedResult = data != null
           ? List<TripDetailsModel>.from(
@@ -628,7 +657,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           : [];
 
       final decodedResponse = ResponseBodyModel<List<TripDetailsModel>>.fromMap(
-          response.data,
+          response,
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();

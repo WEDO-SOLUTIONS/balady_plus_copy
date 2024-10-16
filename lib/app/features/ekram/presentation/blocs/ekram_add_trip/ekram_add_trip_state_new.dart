@@ -1,4 +1,4 @@
-part of 'ekram_add_trip_bloc.dart';
+part of 'ekram_add_trip_bloc_new.dart';
 
 class EkramAddTripState extends Equatable {
   final BlocStatus status;
@@ -16,19 +16,17 @@ class EkramAddTripState extends Equatable {
   final double? nextTripStationLocationX;
   final double? nextTripStationLocationY;
   final String? nextTripStationName;
-  final LookUpItem? nextTripStationTypeId;
+
   final int? requestProcessId;
 
-  final AddTripDialogParams data;
+  final List<TripDetailsModel> data;
   final List<LookUpItem>? nextStationType;
-
   final LookUpItem? nextHospitalStation;
   final LookUpItem? nextMosqueStation;
   final LookUpItem? nextLaundryStation;
-
+  final LookUpItem? nextTripStationTypeId;
   final List<LookUpItemLocation>? mosques;
   final List<LookUpItemLocation>? launduries;
-
   final List<LookUpItem>? hospitals;
   final List<LookUpItem>? mosquesList;
   final List<LookUpItem>? launduriesList;
@@ -74,7 +72,7 @@ class EkramAddTripState extends Equatable {
       final String? nextTripStationName,
       final LookUpItem? nextTripStationTypeId,
       final int? requestProcessId,
-      final AddTripDialogParams? data,
+      final List<TripDetailsModel>? data,
       final LookUpItem? nextHospitalStation,
       final LookUpItem? nextMosqueStation,
       final LookUpItem? nextLaundryStation,
