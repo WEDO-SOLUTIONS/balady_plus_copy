@@ -376,14 +376,16 @@ class NavigationHandler {
         }
     }
     
-    func getCurrentNavigationState(completion: @escaping (NavigationStateMessage?, FlutterError?) -> Void) {
-        let state = switch navigationManager.uiModel.state {
+    func getCurrentNavigationState(
+        completion: @escaping (NavigationStateMessage?, FlutterError?) -> Void
+    ) {
+        let state = switch NavigationHandler.navigationManager!.uiModel.state {
         case .navigation, .routeSearch:  NavigationState.navigation
         case   .finished: NavigationState.finish
         case  .disabled: NavigationState.disabled
         default: NavigationState.disabled
         }
-        let options = navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions() ?? RouteSearchOptionsMessage.car
+        let options = NavigationHandler.navigationManager!.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions() ?? RouteSearchOptionsMessage.car
         completion(
             NavigationStateMessage.make(with: state, routeSearchOptions: options),
             nil
