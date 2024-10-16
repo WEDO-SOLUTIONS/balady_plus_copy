@@ -189,11 +189,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       textDirection: direction,
       child: Stack(
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: const MapPage(),
-          ),
+          // SizedBox(
+          //   width: MediaQuery.of(context).size.width,
+          //   height: MediaQuery.of(context).size.height,
+          //   child: const MapPage(),
+          // ),
           Consumer(
             builder: (context, ref, child) {
               final colorScheme = ref.watch(colorSchemeProvider);
