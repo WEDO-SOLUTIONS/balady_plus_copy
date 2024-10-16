@@ -139,39 +139,33 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
             onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
             middleHeight: widget.biggestHeight * 0.8,
             collapsedHeight: collapsedHeight,
-            scrollableBody: (context, scrollController) {
-              /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
-              /// https://www.youtube.com/watch?v=L_WoOkDAqbM
-              scrollController.addListener(_unfocusSearchField);
-
-              return ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
-                child: Material(
-                  color: Colors.white,
-                  child: SearchScope(
-                    named: SearchScopeEnum.map,
-                    child: CustomScrollView(
-                      controller: scrollController,
-                      physics: const ClampingScrollPhysics(),
-                      slivers: [
-                        SliverPersistentHeader(
-                          delegate: MapSearchHeaderDelegate(
-                            requestFocus: widget.requestFocus,
-                            onClose: onClose,
-                          ),
-                          pinned: true,
+            scrollableBody: (context, scrollController) => ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+              child: Material(
+                color: Colors.white,
+                child: SearchScope(
+                  named: SearchScopeEnum.map,
+                  child: CustomScrollView(
+                    controller: scrollController,
+                    physics: const ClampingScrollPhysics(),
+                    slivers: [
+                      SliverPersistentHeader(
+                        delegate: MapSearchHeaderDelegate(
+                          requestFocus: widget.requestFocus,
+                          onClose: onClose,
                         ),
-                        MapSearchContent(
-                          scrollController: scrollController,
-                        ),
-                      ],
-                    ),
+                        pinned: true,
+                      ),
+                      MapSearchContent(
+                        scrollController: scrollController,
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ),
         Container(
