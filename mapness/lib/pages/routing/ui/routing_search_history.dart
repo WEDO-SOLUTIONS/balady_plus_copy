@@ -48,17 +48,11 @@ class RoutingSearchHistory extends ConsumerWidget {
             children: [
               if (showMyLocation)
                 ContentRowV2(
-                  leading: isLTR
-                      ? Icon(
-                          TransportIcons.locationFullLTR,
-                          color: context.colorsV2.accentActive,
-                          size: 22,
-                        )
-                      : Icon(
-                          TransportIcons.locationFullRTL,
-                          color: context.colorsV2.accentActive,
-                          size: 22,
-                        ),
+                  leading: Icon(
+                    isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL,
+                    color: context.colorsV2.accentActive,
+                    size: 22,
+                  ),
                   text: ContentRowTextOptions(
                     title: context.l10n.myLocation,
                   ),

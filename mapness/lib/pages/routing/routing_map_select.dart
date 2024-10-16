@@ -130,7 +130,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                                     color: context.color.textAndIconsBasePrimary,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                uikit.Spacing.$1x.heightBox,
                                 Text(
                                   context.l10n.moveMap,
                                   style: context.textStyleV3.bodySmallRegular.copyWith(
@@ -144,7 +144,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    uikit.Spacing.$2x.heightBox,
                     _NearestObject(
                       nearestObject: nearestObject,
                     ),
@@ -152,8 +152,8 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                       padding: const EdgeInsets.only(
                         left: uikit.Spacing.$4x,
                         right: uikit.Spacing.$4x,
-                        top: 12,
-                        bottom: 8,
+                        top: uikit.Spacing.$3x,
+                        bottom: uikit.Spacing.$2x,
                       ),
                       child: uikit.BaladyAppButton(
                         primaryLabel: context.l10n.done,
@@ -232,72 +232,6 @@ class _NearestObject extends StatelessWidget {
           ),
         ),
       );
-  // Row(
-  //       children: [
-  //         Padding(
-  //           padding: const EdgeInsets.only(
-  //             top: 15,
-  //             bottom: 17,
-  //             left: 4,
-  //             right: 4,
-  //           ),
-  //           child: nearestObject.when(
-  //             data: (_) => SvgPicture.asset(
-  //               'assets/icons/svg/ic_routing_circle.svg',
-  //               package: PackageConfig.packageName,
-  //               width: 20,
-  //               height: 20,
-  //             ),
-  //             error: (_, __) => SizedBox(
-  //               width: 20,
-  //               height: 20,
-  //               child: CircularProgressIndicator(
-  //                 strokeWidth: 2,
-  //                 color: context.color.textAndIconsBasePrimary,
-  //               ),
-  //             ),
-  //             loading: () => SizedBox(
-  //               width: 20,
-  //               height: 20,
-  //               child: CircularProgressIndicator(
-  //                 strokeWidth: 2,
-  //                 color: context.color.textAndIconsBasePrimary,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         const SizedBox(
-  //           width: 14,
-  //         ),
-  //         Expanded(
-  //           child: nearestObject.when(
-  //             data: (object) => Text(
-  //               _buildTitle(object),
-  //               style: context.textStyle.text.copyWith(
-  //                 color: context.color.textAndIconsBasePrimary,
-  //               ),
-  //               overflow: TextOverflow.ellipsis,
-  //             ),
-  //             error: (_, __) => Text(
-  //               context.l10n.moveMap,
-  //               style: context.textStyle.text.copyWith(
-  //                 color: context.color.textAndIconsBasePrimary,
-  //               ),
-  //               overflow: TextOverflow.ellipsis,
-  //             ),
-  //             loading: () => Text(
-  //               context.l10n.moveMap,
-  //               style: context.textStyle.text.copyWith(
-  //                 color: context.color.textAndIconsBasePrimary,
-  //               ),
-  //               overflow: TextOverflow.ellipsis,
-  //             ),
-  //             skipLoadingOnRefresh: true,
-  //             skipLoadingOnReload: true,
-  //           ),
-  //         ),
-  //       ],
-  //     );
 
   String _buildTitle(NearestObject object) => switch (object) {
         DGisNearestObject() => object.object.title,

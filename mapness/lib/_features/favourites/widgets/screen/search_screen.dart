@@ -77,7 +77,6 @@ class SearchScreen extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
                     child: ListView.builder(
-                      //physics: const NeverScrollableScrollPhysics(),
                       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,

@@ -87,41 +87,44 @@ class RoutingFavourites extends ConsumerWidget {
         child: Row(
             children: <Widget>[
           if (showBookmark)
-            Expanded(
-              child: SizedBox(
-                height: 48,
-                child: BaladyAppButton(
-                  buttonColorScheme: BaladyButtonColorScheme.neutral,
-                  buttonType: BaladyButtonType.secondary,
-                  primaryIcon: SystemIcons.bookmark,
-                  onTap: onFavouritesTap,
-                ),
-              ),
+            _Button(
+              icon: SystemIcons.bookmark,
+              onTap: onFavouritesTap,
             ),
-          Expanded(
-            child: SizedBox(
-              height: 48,
-              child: BaladyAppButton(
-                buttonColorScheme: BaladyButtonColorScheme.neutral,
-                buttonType: BaladyButtonType.secondary,
-                primaryIcon: GeneralIcons.home,
-                onTap: onHomeTap,
-              ),
-            ),
+          _Button(
+            icon: GeneralIcons.home,
+            onTap: onHomeTap,
           ),
-          Expanded(
-            child: SizedBox(
-              height: 48,
-              child: BaladyAppButton(
-                buttonColorScheme: BaladyButtonColorScheme.neutral,
-                buttonType: BaladyButtonType.secondary,
-                primaryIcon: GeneralIcons.briefcase,
-                onTap: onWorkTap,
-              ),
-            ),
+          _Button(
+            icon: GeneralIcons.briefcase,
+            onTap: onWorkTap,
           ),
         ].insertBetween(Spacing.$3x.widthBox).toList()),
       ),
     );
   }
+}
+
+class _Button extends StatelessWidget {
+  final VoidCallback onTap;
+  final IconData icon;
+
+  const _Button({
+    required this.onTap,
+    required this.icon,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => Expanded(
+        child: SizedBox(
+          height: 48,
+          child: BaladyAppButton(
+            buttonColorScheme: BaladyButtonColorScheme.neutral,
+            buttonType: BaladyButtonType.secondary,
+            primaryIcon: icon,
+            onTap: onTap,
+          ),
+        ),
+      );
 }

@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -57,10 +58,10 @@ class RoutingHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final List<ABRouteModel> items = [];
     for (var i = 0; i < points.length; i++) {
-      final e = points[i];
-      final isMyLocation = e is RoutePointMyLocation;
+      final point = points[i];
+      final isMyLocation = point is RoutePointMyLocation;
 
-      final title = e.title(context.l10n) ??
+      final title = point.title(context.l10n) ??
           switch (i) {
             0 => context.l10n.from,
             1 => context.l10n.to,
@@ -82,76 +83,79 @@ class RoutingHeader extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          const SizedBox(height: 8),
+          const SizedBox(height: Spacing.$2x),
           const Center(child: SheetDragger()),
-          const SizedBox(height: 12),
+          const SizedBox(height: Spacing.$3x),
           ABRoute(
             items: items,
-            onTap: (index) {
-              Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
-                  group: MetricsConstants.routesTag,
-                  action: MetricAction.tap.toString(),
-                  props: {
-                    'isMyLocation': index == 0 && points[index] is! RoutePointMyLocation,
-                  });
-
-              ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
-
-              RoutingSearchRoute(
-                placeholder: index == 0 ? context.l10n.from : context.l10n.to,
-                showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
-              ).push(context).then(
-                (value) {
-                  if (value != null && value is RoutePoint) {
-                    // We don't want to make route MyLocation - MyLocation and if we already have myLocation, we just
-                    // swap previous points
-                    if (points.whereType<RoutePointMyLocation>().length == 1 && value is RoutePointMyLocation) {
-                      points.swap(0, 1);
-                    } else {
-                      points[index] = value;
-                    }
-
-                    updatePoints(points);
-                  }
-                },
-              );
-            },
-            onReorder: (oldIndex, newIndex) {
-              Metrics.logEventAdvanced(
-                MetricsConstants.routesKeys.onReorder,
-                group: MetricsConstants.routesTag,
-                action: MetricAction.tap.toString(),
-              );
-
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
-              points.swap(oldIndex, newIndex);
-              updatePoints(points);
-            },
+            onTap: (i) => _onTap(i, context, ref),
+            onReorder: _onReorder,
           ),
           Spacing.$4x.heightBox,
           RoutingFavourites(
             showBookmark: true,
-            onFavouriteTap: (point) async {
-              Metrics.logEventAdvanced(
-                MetricsConstants.routesKeys.startRouteFromFavorite,
-                group: MetricsConstants.routesTag,
-                action: MetricAction.tap.toString(),
-                props: {
-                  'id': point.entity?.id,
-                  'destination': '${point.coordinates.latitude},${point.coordinates.longitude}'
-                },
-              );
-
-              final index = points.indexWhere((element) => !element.isNotEmpty);
-              points[index] = RoutePointFavouriteItem(point);
-              updatePoints(points);
-            },
+            onFavouriteTap: _onFavouritesTap,
           ),
           Spacing.$4x.heightBox,
         ],
       ),
+    );
+  }
+
+  Future<void> _onFavouritesTap(FavouriteItem point) async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.startRouteFromFavorite,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+      props: {'id': point.entity?.id, 'destination': '${point.coordinates.latitude},${point.coordinates.longitude}'},
+    );
+
+    final index = points.indexWhere((element) => !element.isNotEmpty);
+    points[index] = RoutePointFavouriteItem(point);
+    updatePoints(points);
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.onReorder,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+    );
+    var newIndex_ = newIndex;
+    if (oldIndex < newIndex_) {
+      newIndex_ -= 1;
+    }
+    points.swap(oldIndex, newIndex_);
+    updatePoints(points);
+  }
+
+  void _onTap(int index, BuildContext context, WidgetRef ref) {
+    Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
+        group: MetricsConstants.routesTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'isMyLocation': index == 0 && points[index] is! RoutePointMyLocation,
+        });
+
+    ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
+
+    RoutingSearchRoute(
+      placeholder: index == 0 ? context.l10n.from : context.l10n.to,
+      showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
+    ).push(context).then(
+      (value) {
+        if (value != null && value is RoutePoint) {
+          // We don't want to make route MyLocation - MyLocation and if we already have myLocation, we just
+          // swap previous points
+          if (points.whereType<RoutePointMyLocation>().length == 1 && value is RoutePointMyLocation) {
+            points.swap(0, 1);
+          } else {
+            points[index] = value;
+          }
+
+          updatePoints(points);
+        }
+      },
     );
   }
 }

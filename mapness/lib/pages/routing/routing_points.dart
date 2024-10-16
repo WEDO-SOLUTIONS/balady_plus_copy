@@ -114,40 +114,31 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
             initialExpansion: initialExpansion,
             middleHeight: middleHeightFraction * widget.biggestHeight,
             collapsedHeight: controlsBottomExtent,
-            scrollableBody: (context, scrollController) => Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(RadiusBorder.xl),
-                  topLeft: Radius.circular(RadiusBorder.xl),
-                ),
+            scrollableBody: (context, scrollController) => Material(
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(RadiusBorder.xl),
+                topLeft: Radius.circular(RadiusBorder.xl),
               ),
-              child: Material(
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(RadiusBorder.xl),
-                  topLeft: Radius.circular(RadiusBorder.xl),
-                ),
-                color: context.color.surfaceBasePrimary,
-                child: CustomScrollView(
-                  controller: scrollController,
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: RoutingHeaderDelegate(
-                        points: points,
-                        updatePoints: _updatePoints,
-                      ),
-                      pinned: true,
+              color: context.color.surfaceBasePrimary,
+              child: CustomScrollView(
+                controller: scrollController,
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverPersistentHeader(
+                    delegate: RoutingHeaderDelegate(
+                      points: points,
+                      updatePoints: _updatePoints,
                     ),
-                    SliverToBoxAdapter(
-                      child: RoutingHistory(
-                        updatePoint: _updatePoint,
-                        searchByQuery: _searchQuery,
-                      ),
+                    pinned: true,
+                  ),
+                  SliverToBoxAdapter(
+                    child: RoutingHistory(
+                      updatePoint: _updatePoint,
+                      searchByQuery: _searchQuery,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

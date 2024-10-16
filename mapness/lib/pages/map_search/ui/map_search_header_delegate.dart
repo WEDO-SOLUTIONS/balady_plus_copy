@@ -55,9 +55,9 @@ class DashboardHeader extends ConsumerWidget {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 6),
+            const SizedBox(height: Spacing.$1_5x),
             const Center(child: SheetDragger()),
-            const SizedBox(height: 6),
+            const SizedBox(height: Spacing.$1_5x),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               child: MapSearchBar(
@@ -65,7 +65,7 @@ class DashboardHeader extends ConsumerWidget {
                 onClose: onClose,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: Spacing.$4x),
           ],
         ),
       );

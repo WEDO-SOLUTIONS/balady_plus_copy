@@ -71,11 +71,7 @@ class SuggestItem extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       onTap: _onSuggestTap,
       isDividerEnabled: !isLast,
-      leading: Icon(
-        SystemIcons.search,
-        size: 24,
-        color: context.colorsV2.foregroundDefault,
-      ),
+      leading: SystemIcons.search.icon(color: context.colorsV2.foregroundDefault),
       text: ContentRowTextOptions(
         title: suggest.title.text,
         titleOptions: ContentRowTextOption(
@@ -92,30 +88,6 @@ class SuggestItem extends ConsumerWidget {
             )
           : null,
     );
-    // return Material(
-    //   color: Colors.transparent,
-    //   child: SearchTapHandler(
-    //     onTap: _onSuggestTap,
-    //     splashColor: context.color.surfaceBaseSecondary,
-    //     child: ContentRow(
-    //       options: ContentRowOptions(
-    //         leadingIcon: Icon(
-    //           SystemIcons.search,
-    //           size: 24,
-    //           color: context.color.textAndIconsBaseTertiary,
-    //         ),
-    //         actionWidget: distanceKm != null
-    //             ? ContentRowActionOptions(actionText: (distanceKm * 1000).formatDistance(context.l10n))
-    //             : null,
-    //         title: suggest.title.text,
-    //         titleMatchedParts: _getSpans(suggest.title),
-    //         subtitle: subtitle,
-    //         subtitleMatchedParts: _getSpans(suggest.subtitle),
-    //         dividerEnabled: !isLast,
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
 
