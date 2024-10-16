@@ -528,12 +528,14 @@ class AddMarkersWithPhotoMessage {
 
 class LayerPointObjectMessage {
   LayerPointObjectMessage({required this.position, required this.attributes});
+
   GeoPointWithElevationMessage position;
   final Map<String?, String?> attributes;
 }
 
 class AddLayerPointObjectsMessage {
   AddLayerPointObjectsMessage(this.objects);
+
   final List<LayerPointObjectMessage?> objects;
 }
 
@@ -988,6 +990,7 @@ class LogOptionsMessage {
 
 class RouteSearchPointMessage {
   RouteSearchPointMessage(this.coordinates, this.course, this.objectId, this.levelId);
+
   final GeoPointMessage coordinates;
   final BearingMessage? course;
   final DgisObjectIdMessage objectId;
@@ -996,11 +999,13 @@ class RouteSearchPointMessage {
 
 class LevelIdMessage {
   LevelIdMessage(this.value);
+
   final int value;
 }
 
 class BearingMessage {
   BearingMessage(this.value);
+
   final double value;
 }
 
@@ -1067,6 +1072,7 @@ class WeatherMapMessage {
     required this.rasterTileUri,
     required this.enabled,
   });
+
   final WeatherMapType? type;
   final String? layerName;
   final String? rasterTileUri;
@@ -1108,6 +1114,19 @@ class SpeedRangeZoom {
   final double styleZoomValue;
 }
 
+enum NavigationState {
+  navigation,
+  finish,
+  disabled,
+}
+
+class NavigationStateMessage {
+  NavigationStateMessage(this.state, this.routeSearchOptions);
+
+  final NavigationState state;
+  final RouteSearchOptionsMessage routeSearchOptions;
+}
+
 /// Represents the types of sound toggles.
 ///
 /// The [SoundToggleType] enum defines three types of sound toggles:
@@ -1138,6 +1157,7 @@ class BetterRouteSettingsMessage {
     required this.betterRouteLengthThreshold,
     required this.routeSearchDelay,
   });
+
   final int betterRouteTimeCostThreshold;
   final int betterRouteLengthThreshold;
   final int routeSearchDelay;
@@ -1435,6 +1455,9 @@ abstract class MapApi {
 
   @async
   Uint8List saveNavigationState();
+
+  @async
+  NavigationStateMessage getCurrentNavigationState();
 
   @async
   void restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom);
