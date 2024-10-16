@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_model.dart';
 import 'package:dio/dio.dart' show Options, ResponseType, Response, DioError;
@@ -12,12 +13,23 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../models/chat_refresh_session.dart';
+import '../models/chat_refresh_session.dart';
+import '../models/session_data.dart';
+import '../models/session_details.dart';
+
 abstract class ChatBotDataSources {
   Future<Stream> sendQuestionMessageSSE({required String question});
 
   Future<ChatBotMessageModel> sendQuestionMessage({required String question});
 
   Future<bool> chatBotIsEnabled();
+  Future<bool> sendFeedBack({required String messID, required bool like});
+
+  Future<dynamic> getSessionHistory({required String id});
+  Future< SessionDetails?> getSessionDetails({required String id});
+  Future< ChatRefreshSession?> refreshSession({required String id});
+
 }
 
 class ChatBotDataSourcesImplementation extends ChatBotDataSources {
@@ -93,7 +105,7 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         "Answer": result['response'],
         "Duration_Seconds": dateGetData.difference(dateSendData).inSeconds,
         "Duration_Milliseconds":
-            dateGetData.difference(dateSendData).inMilliseconds,
+        dateGetData.difference(dateSendData).inMilliseconds,
       };
       // CommonFunctions.sendUXCamEventWithProperties(
       //   UXCamEvents.sendQuestionChatBot,
@@ -152,47 +164,22 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         options: Options(
           headers: {
             "Accept": "*/*",
-            "sessionId":sharedPrefs.getChatbotSessionId(),//"001c44b8-2eee-415a-912d-601616e724be"
+            "sessionId":sharedPrefs.getChatbotSessionId(),
+            "userIdentifier":CommonProperties.userInfo?.idNo??""
+            //"001c44b8-2eee-415a-912d-601616e724be"
           },
           responseType: ResponseType.stream,
         ),
       );
       StreamTransformer<Uint8List, List<int>> unit8Transformer =
-          StreamTransformer.fromHandlers(
+      StreamTransformer.fromHandlers(
         handleData: (data, sink) => sink.add(List<int>.from(data)),
       );
 
       StreamTransformer<String, String> stringTransformer =
-          StreamTransformer.fromHandlers(
+      StreamTransformer.fromHandlers(
         handleData: (data, sink) {
           print("sink : $data");
-          // String sOne = data.substring(7);
-          // String sOne = data.replaceAll("u","");
-          // String sOne = data.replaceAll("\"", "");
-          // sOne = sOne.replaceAll("\\", "");
-          // var s = utf8.encode(sOne);
-          // var y = utf8.decode(sOne.codeUnits);
-          // var t = utf8.decode(sOne.runes.toList());
-          // String data = String.fromCharCodes(dataUint8List);
-
-          // if (sOne != "\\" &&
-          //     sOne != "end" &&
-          //     sOne != "start" &&
-          //     sOne.isNotEmpty) {
-          //   // var re = RegExp(r'u(?<codePoint>[0-9A-Fa-f\u0621-\u064A]{4})');
-          //   // var matches = re.allMatches(sOne);
-          //   // var matches = sOne.split("u");
-          //   // var codePoints = [
-          //   //   for (var match in matches)
-          //   //     int.parse(match.namedGroup('codePoint')!, radix: 16),
-          //   // ];
-          //   // var codepoint = int.parse(sOne, radix: 16);
-          //   // String unicodeString = String.fromCharCode(codepoint);
-          //   // print(unicodeString);
-          //   // sink.add(String.fromCharCodes(codePoints));
-          //   sink.add(sOne);//
-          // }
-
           sink.add(data);
         },
       );
@@ -239,4 +226,221 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
       }
     }
   }
+
+
+  @override
+  Future<bool> sendFeedBack({required String messID, required bool like}) async {
+
+    Response? response;
+    try {
+      response = await webService.dio.post(ApiUrl.sendMessagechatBotFeedback,data: {"msg_id":messID,"feedback_value":like ? 1 : 0});
+      final data = response.data;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return result['msg_id'] == messID ;
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+
+  }
+
+  @override
+  Future< List<SessionData>> getSessionHistory({required String id}) async {
+    Response? response;
+    try {
+      response = await webService.dio.get("${ApiUrl.getChatgptOldSession}/${id}");
+
+
+      var data = response.data["data"]?["result"];
+
+      List<SessionData> parsedResult = data != null
+          ? List<SessionData>.from(data.map((x) => SessionData.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<SessionData>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+  return decodedResponse.data!.result!.toFuture(); ;
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future< SessionDetails?> getSessionDetails({required String id}) async {
+    Response? response;
+    try {
+      response = await webService.dio.get("${ApiUrl.getChatgptSessionDetails}/${id}");
+
+
+      var data = response.data["data"]?["result"];
+
+      SessionDetails? parsedResult = data != null
+          ?  SessionDetails.fromJson(data)
+          : null;
+
+
+
+      return parsedResult ;
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<ChatRefreshSession?> refreshSession({required String id}) async {
+
+    Response? response;
+    try {
+      response = await webService.dio.get("${ApiUrl.refreshChatSession}/${id}");
+
+
+      var data = response.data["data"];
+
+      ChatRefreshSession? parsedResult = data != null
+          ?  ChatRefreshSession.fromJson(data)
+          : null;
+
+
+
+      return parsedResult ;
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+
+  }
+
+
 }

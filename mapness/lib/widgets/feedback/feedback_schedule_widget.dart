@@ -1,89 +1,178 @@
+// ignore_for_file: prefer_expression_function_bodies, unused_local_variable, unused_import
+
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:mapness/entities/feedback/dto/feedback_field_payload_dto.dart';
+import 'package:mapness/entities/feedback/dto/feedback_schedule_payload_dto.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/weekday_entity.dart';
+import 'package:mapness/widgets/feedback/schedule/drum_picker_widget.dart';
 import 'package:mapness/widgets/feedback/schedule/feedback_schedule_interval_widget.dart';
 import 'package:mapness/widgets/feedback/schedule/feedback_select_days_sheet.dart';
+import 'package:mapness/widgets/feedback/schedule/feedback_time_select_sheet.dart';
+import 'package:mapness/widgets/feedback/schedule/gradiented_opacity_widget.dart';
 
 typedef _WorkingHours = FeedbackScheduleWorkingHoursEntity;
+typedef _FieldPayload = IList<_WorkingHours>;
+typedef _FieldState = FormFieldState<_FieldPayload>;
 
 class FeedbackScheduleWidget extends StatelessWidget {
   final FeedbackScheduleEntity field;
-  final void Function(IList<FeedbackScheduleWorkingHoursEntity>) onValueChange;
 
   const FeedbackScheduleWidget({
     required this.field,
-    required this.onValueChange,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final intervals = field.value ?? const IList.empty();
+    return FormBuilderField<_FieldPayload>(
+        name: field.id,
+        valueTransformer: (value) {
+          if (value == null) {
+            return null;
+          }
+          return FeedbackSchedulePayloadDto.fromDomain(value).toJson();
+        },
+        validator: (value) {
+          /// not required => may be empty
+          if (!field.isRequired && (value?.isEmpty ?? true)) {
+            return null;
+          }
+          if (value == null) {
+            // no message is displayed
+            return 'should be not empty';
+          }
+          final selectedDays = value.expand((e) => e.days).toISet();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        /// working hours intervals
-        for (final (intervalIndex, workingHours) in intervals.indexed)
-          FeedbackScheduleIntervalWidget(
-            onDelete: () => _onIntervalDelete(intervalIndex),
-            onDaysChange: () async => _onDaysChange(context, intervalIndex),
-            onWorkingHoursChange: (workingTime) => _onWorkingHoursChange(intervalIndex, workingTime.workingTime),
-            workingHours: workingHours,
-          ),
+          if (ISet(WeekDay.values) != selectedDays) {
+            return 'not all days';
+          }
 
-        if (_isAddModeIntervalsShown(field))
-          uikit.AppButton(
-            size: ButtonSize.small,
-            buttonColorScheme: ButtonColorScheme.secondary,
-            primaryLabel: context.l10n.feedbackScheduleAddMoreDays,
-            onTap: () => _onIntervalAdd(),
-          ),
-      ],
-    );
+          return null;
+        },
+        initialValue: IList(const [
+          FeedbackScheduleWorkingHoursEntity(
+            workingTime: TimeRange.standard,
+            days: ISet.empty(),
+          )
+        ]),
+        builder: (fieldState) {
+          final intervals = fieldState.value ?? const IList.empty();
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// working hours intervals
+              for (final (intervalIndex, workingHours) in intervals.indexed)
+                FeedbackScheduleIntervalWidget(
+                  onDelete: intervalIndex == 0 ? null : () => fieldState.didChange(intervals.removeAt(intervalIndex)),
+                  onDaysChange: () async => _onDaysChange(context, intervalIndex, fieldState),
+                  onWorkingHoursChange: () => _showWorkingHoursSheet(
+                    context,
+                    intervalIndex,
+                    fieldState,
+                  ),
+                  workingHours: workingHours,
+                  onBreaksChange: () => _showBreaksSheet(context, intervalIndex, fieldState),
+                ),
+
+              if (_isAddModeIntervalsShown(intervals))
+                SizedBox(
+                  width: double.infinity,
+                  child: uikit.AppButton(
+                    size: ButtonSize.small,
+                    buttonColorScheme: ButtonColorScheme.secondary,
+                    primaryLabel: context.l10n.feedbackScheduleAddMoreDays,
+                    onTap: () => _onIntervalAdd(fieldState),
+                  ),
+                ),
+            ],
+          );
+        });
   }
 
-  void _onWorkingHoursChange(int intervalIndex, TimeRange workingTime) {
-    /// help retarded dart analyzer to determine that value is not null
-    final value = field.value;
-    if (value == null) {
+  Future<void> _showBreaksSheet(
+    BuildContext context,
+    int intervalIndex,
+    _FieldState fieldState,
+  ) async {
+    final value = fieldState.value?[intervalIndex];
+    if (value == null || fieldState.value == null) {
       return;
     }
 
-    onValueChange(
-      value.replace(
-        intervalIndex,
-        _WorkingHours(
-          workingTime: workingTime,
-          days: value[intervalIndex].days,
+    await showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Spacing.$4x),
         ),
+      ),
+      builder: (context) => FeedbackTimeSelectSheet(
+        initialValue: value.breaks,
+        onSave: (timeRange) {
+          fieldState.didChange(
+            fieldState.value!.replace(
+              intervalIndex,
+              value.copyWith(breaks: timeRange),
+            ),
+          );
+        },
+        startDrumTitle: context.l10n.feedbackBreaksSheetStartOfBreak,
+        endDrumTitle: context.l10n.feedbackBreaksSheetEndOfBreak,
+        toggleTitle: context.l10n.feedbackBreaksSheetNoBreaks,
       ),
     );
   }
 
-  void _onIntervalDelete(int intervalIndex) {
-    final value = field.value;
-    if (value == null) {
+  Future<void> _showWorkingHoursSheet(
+    BuildContext context,
+    int intervalIndex,
+    _FieldState fieldState,
+  ) async {
+    final value = fieldState.value?[intervalIndex];
+    if (value == null || fieldState.value == null) {
       return;
     }
 
-    onValueChange(
-      value.removeAt(intervalIndex),
+    await showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Spacing.$4x),
+        ),
+      ),
+      builder: (context) => FeedbackTimeSelectSheet(
+        initialValue: switch (value.workingTime) {
+          TimeRangeStartEnd() => value.workingTime as TimeRangeStartEnd,
+          TimeRangeAllDay() => null,
+        },
+        onSave: (timeRange) {
+          fieldState.didChange(
+            fieldState.value!.replace(
+              intervalIndex,
+              value.copyWith(workingTime: timeRange ?? const TimeRangeAllDay()),
+            ),
+          );
+        },
+        startDrumTitle: context.l10n.feedbackWorkingHoursSheetStartOfWork,
+        endDrumTitle: context.l10n.feedbackWorkingHoursSheetEndOfWork,
+        toggleTitle: context.l10n.feedbackWorkingHoursSheetAllDay,
+      ),
     );
   }
 
-  void _onIntervalAdd() {
-    onValueChange(
-      (field.value ?? const IList.empty()).add(
+  void _onIntervalAdd(_FieldState fieldState) {
+    final value = fieldState.value ?? const IList.empty();
+    fieldState.didChange(
+      value.add(
         const _WorkingHours(
-          workingTime: TimeRangeStartEnd(
-            start: TimeOfDay(hour: 9, minute: 0),
-            end: TimeOfDay(hour: 18, minute: 0),
-          ),
+          workingTime: TimeRange.standard,
           days: ISet.empty(),
         ),
       ),
@@ -93,16 +182,12 @@ class FeedbackScheduleWidget extends StatelessWidget {
   Future<void> _onDaysChange(
     BuildContext context,
     int intervalIndex,
+    _FieldState fieldState,
   ) async {
-    final workingHours = field.value?[intervalIndex];
-    if (workingHours == null) {
+    final intervals = fieldState.value;
+    if (intervals == null || intervals.length < intervalIndex) {
       return;
     }
-
-    /// we could change days of the selected interval, but not already picked days
-    final lockedDays = ISet(
-      field.value?.expand((e) => e.days).toISet().difference(workingHours.days),
-    );
 
     await showModalBottomSheet(
       context: context,
@@ -112,19 +197,16 @@ class FeedbackScheduleWidget extends StatelessWidget {
         ),
       ),
       builder: (context) => FeedbackSelectDaysSheet(
-        workingHours: workingHours,
-        lockedDays: lockedDays,
-        onDaysChange: (workingHours) => _onWorkingHoursChange(intervalIndex, workingHours.workingTime),
+        fieldState: fieldState,
+        fieldIndex: intervalIndex,
       ),
     );
   }
 }
 
-bool _isAddModeIntervalsShown(FeedbackScheduleEntity field) {
-  final fieldValue = field.value ?? const IList.empty();
-
-  final lockedDays = fieldValue.expand((e) => e.days).toISet();
+bool _isAddModeIntervalsShown(_FieldPayload intervals) {
+  final lockedDays = intervals.expand((e) => e.days).toISet();
   final allDays = ISet(WeekDay.values);
 
-  return lockedDays != allDays && fieldValue.every((e) => e.days.isNotEmpty);
+  return lockedDays != allDays && intervals.every((e) => e.days.isNotEmpty);
 }

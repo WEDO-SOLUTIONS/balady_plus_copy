@@ -36,7 +36,7 @@ class FeedbackFormPayloadDto {
   }) =>
       FeedbackFormPayloadDto(
         category: entity.category,
-        fields: entity.fields.map((e) => FeedbackFieldPayloadDto.fromDomain(e)).toList(),
+        fields: entity.fields.unlock,
         latitude: latitude,
         longitude: longitude,
         objectId: entity.objectId.toString(),

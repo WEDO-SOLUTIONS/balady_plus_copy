@@ -106,15 +106,17 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         hintText: context.l10n.search,
         fillColor: context.colorsV2.neutralContainerDefault,
         hintColor: context.colorsV2.foregroundSoft,
-        textFieldHeight: 40,
+        // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
         textStyle: context.textStyleV3.bodySmallRegular,
       ),
-      backButtonLabel: context.l10n.cancel,
-      onBackButtonPressed: () {
-        FocusScope.of(context).unfocus();
-        searcher.clear();
-        widget.onClose();
-      },
+      option: SearchTextBackOption(
+        text: context.l10n.cancel,
+        onPressed: () {
+          FocusScope.of(context).unfocus();
+          searcher.clear();
+          widget.onClose();
+        },
+      ),
     );
   }
 }

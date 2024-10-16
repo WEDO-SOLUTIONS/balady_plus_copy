@@ -5,7 +5,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
-import '../../../../../../core/remote_services/web_service.dart';
+import '../../../../../../core/remote_services/pega_web_service.dart';
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../core/utils/app_analytics_events.dart';
@@ -43,7 +43,7 @@ class TransactionInquiryViewModel extends BaseViewModel {
     DropDownItem(id: "17", name: "baha_municipality".tr()),
     DropDownItem(id: "18", name: "njran_municipality".tr()),
   ];
-  final webServices = locator<WebService>();
+  final webServices = locator<PegaWebService>();
   InquiryTransactionResponse? response;
 
   void validateForm() {

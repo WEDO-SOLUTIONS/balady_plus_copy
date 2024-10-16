@@ -1,5 +1,10 @@
+// ignore_for_file: unused_local_variable, unused_import, avoid_print
+
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/feedback.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
@@ -10,6 +15,8 @@ import 'package:mapness/pages/feedback/components/feedback_form_widget.dart';
 import 'package:mapness/pages/feedback/feedback_failure_widget.dart';
 import 'package:mapness/pages/feedback/feedback_loading_widget.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
+
+final _formKey = GlobalKey<FormBuilderState>();
 
 class FeedbackPage extends ConsumerStatefulWidget {
   final String categoryId;
@@ -27,6 +34,7 @@ class FeedbackPage extends ConsumerStatefulWidget {
 
 class _FeedbackPageState extends ConsumerState<FeedbackPage> {
   final _isFormValidNotifier = ValueNotifier(false);
+
   @override
   Widget build(BuildContext context) {
     final objectId = int.tryParse(widget.poiId);
@@ -35,64 +43,75 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     }
     final poiData = ref.watch(poiFeedbackProvider(objectId));
     final objectType = poiData.valueOrNull?.types[0]?.type;
-    final categories = ref.watch(
-      feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType)),
-    );
-
-    if (poiData.isLoading || categories.isLoading) {
-      return const FeedbackLoadingWidget();
-    } else if (poiData.hasError || categories.hasError) {
-      return const FeedbackFailureWidget();
-    }
-
+    final provider = feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType));
+    final categories = ref.watch(provider);
     final category = categories.value?.firstWhereOrNull((element) => element.id == widget.categoryId);
 
     if (category == null || category.fields.isEmpty) {
-      return const FeedbackFailureWidget();
-    }
-    final payloadId = 'feedback_${DateTime.now().millisecondsSinceEpoch}';
-    final feedbackSubmitPayloadProvider = ref.watch(submitFeedbackPayloadProvider(payloadId).notifier);
-
-    void _collectForm() {
-      /// tweak to pass compex structure through gorouter and not
-      /// to suck if user open page quickly
-
-      feedbackSubmitPayloadProvider.keepAliveForAWhile();
-      FeedbackSentRoute(payloadId: payloadId, objectId: widget.poiId, categoryId: widget.categoryId).replace(context);
+      return FeedbackFailureWidget(
+        onRetry: () {
+          ref.invalidate(provider);
+        },
+      );
     }
 
-    return ValueListenableBuilder(
-      valueListenable: _isFormValidNotifier,
-      builder: (context, isFormValid, child) => FeedbackFormContainer(
-        title: category.name,
-        isSendEnabled: isFormValid,
-        onSend: _collectForm,
-        child: child!,
-      ),
-      child: FeedbackFormWidget(
-        fields: category.fields,
-        isFormValidNotifier: _isFormValidNotifier,
-        payloadId: payloadId,
-        objectId: objectId,
-        categoryId: category.id,
+    return FormBuilder(
+      key: _formKey,
+      onChanged: () => _isFormValidNotifier.value = _formKey.currentState?.isValid ?? false,
+
+      /// limit rebuilds to form title with send
+      child: ValueListenableBuilder(
+        valueListenable: _isFormValidNotifier,
+        builder: (context, isFormBalid, child) => FeedbackFormContainer(
+          title: category.name,
+          isSendEnabled: isFormBalid,
+          onSend: () => _collectForm(objectId, category.id),
+          child: child!,
+        ),
+        child: FeedbackFormWidget(fields: category.fields),
       ),
     );
   }
 
-  // void _collectForm(
-  //   int objectId,
-  //   String categoryId,
-  // ) {
-  //   /// tweak to pass compex structure through gorouter and not
-  //   /// to suck if user open page quickly
+  void _collectForm(int objectId, String categoryId) {
+    final formState = _formKey.currentState;
+    if (formState == null) {
+      return;
+    }
 
-  //   ref.read(submitFeedbackPayloadProvider(objectId).notifier).keepAliveForAWhile();
-  //   FeedbackSentRoute(payloadId: payloadId).replace(context);
+    final isFormValid = formState.saveAndValidate();
+    // if for any reason validation has not been triggered, than this will do it
+    // and disable button until form valid. But actually step is redundant in current configuration.
+    if (!isFormValid) {
+      return;
+    }
+    final fields = formState.value.entries;
+    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+    print(fields);
+    // print(jsonEncode(formState.value));
+    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
-  //   // ref.read(submitFeedbackPayloadProvider(payloadId).notifier).collectForm(
-  //   //       objectId: objectId,
-  //   //       categoryId: categoryId,
-  //   //       fields: category.fields,
-  //   //     );
-  // }
+    /// tweak to pass compex structure through gorouter.
+    /// Id guarantee that old provider would be disposed if new form filled,
+    /// state do not mix
+    final payloadId = 'feedback_${DateTime.now().millisecondsSinceEpoch}';
+
+    ref.read(submitFeedbackPayloadProvider(payloadId).notifier)
+      // pass data
+      ..collectForm(
+        objectId: objectId,
+        categoryId: categoryId,
+        fields: fields,
+      )
+      // guarantee that provider would be alive after navigation.
+      // probably for thousands of filled form within this time window
+      // may be mem overflow, but esimate as impossible
+      ..keepAliveForAWhile();
+
+    FeedbackSentRoute(
+      payloadId: payloadId,
+      objectId: widget.poiId,
+      categoryId: widget.categoryId,
+    ).replace(context);
+  }
 }

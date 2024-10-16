@@ -6,14 +6,15 @@ class FeedbackImageInputDto extends FeedbackBaseDto {
   final int size;
   final List<String> format;
 
-  FeedbackImageInputDto({
+  const FeedbackImageInputDto({
     required super.id,
     required super.type,
     required super.isRequired,
     required this.label,
     required this.size,
     required this.format,
-    required super.isHidden,
+    super.isHidden = false,
+    super.setOnMap = false,
   });
 
   @override

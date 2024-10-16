@@ -12,7 +12,7 @@ class FeedbackChipsItemEntity {
   });
 }
 
-class FeedbackChipsEntity extends FeedbackBaseEntity<UnmodifiableSetView<int>> {
+class FeedbackChipsEntity extends FeedbackBaseEntity {
   final String label;
   final List<FeedbackChipsItemEntity> variants;
 
@@ -21,20 +21,6 @@ class FeedbackChipsEntity extends FeedbackBaseEntity<UnmodifiableSetView<int>> {
     required super.isRequired,
     required this.label,
     required this.variants,
-    required super.value,
     required super.isHidden,
   });
-
-  @override
-  FeedbackChipsEntity updatedValue(Set<int> value) => FeedbackChipsEntity(
-        id: id,
-        isRequired: isRequired,
-        label: label,
-        variants: variants,
-        value: UnmodifiableSetView<int>(value),
-        isHidden: isHidden,
-      );
-
-  @override
-  dynamic valueToJson() => value?.toList();
 }

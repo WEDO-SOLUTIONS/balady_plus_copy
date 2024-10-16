@@ -1,3 +1,5 @@
+// ignore_for_file: cascade_invocations
+
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -10,24 +12,38 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/weekday_entity.dart';
 import 'package:mapness/widgets/feedback/schedule/feedback_scroll_handle_widget.dart';
 
+typedef _FieldState = FormFieldState<IList<FeedbackScheduleWorkingHoursEntity>>;
+
 /// TODO(Demezy): when uikit bottom sheet released, use it instead of this
-class FeedbackSelectDaysSheet extends StatelessWidget {
-  final FeedbackScheduleWorkingHoursEntity workingHours;
-  final void Function(FeedbackScheduleWorkingHoursEntity) onDaysChange;
+class FeedbackSelectDaysSheet extends StatefulWidget {
+  /// DO NOT ADD VALUES INSIDE OF IT
+  final _FieldState fieldState;
+  final int fieldIndex;
 
-  final ISet<WeekDay> lockedDays;
-
-  const FeedbackSelectDaysSheet({
-    required this.workingHours,
-    required this.onDaysChange,
-    required this.lockedDays,
+  FeedbackSelectDaysSheet({
+    required this.fieldState,
+    required this.fieldIndex,
     super.key,
-  });
+  })  : assert(fieldState.value != null, 'field value should present'),
+        assert(fieldState.value!.length > fieldIndex, 'field index should be withing range of fields');
 
   @override
+  State<FeedbackSelectDaysSheet> createState() => _FeedbackSelectDaysSheetState();
+}
+
+class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
+  ISet<WeekDay> get lockedDays => (widget.fieldState.value ?? const IList.empty())
+      // safe since collection is immutable
+      .removeAt(widget.fieldIndex)
+      .expand((schedule) => schedule.days)
+      .toISet();
+
+  FeedbackScheduleWorkingHoursEntity get workingHours => widget.fieldState.value![widget.fieldIndex];
+
+  @override
+  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
-    final selectedDays = workingHours.days;
-    final selectAllState = _isAllDaysState(lockedDays, selectedDays);
+    final selectAllState = _isAllDaysState(lockedDays, workingHours.days);
 
     return Container(
       padding: const EdgeInsets.all(Spacing.$4x),
@@ -53,12 +69,7 @@ class FeedbackSelectDaysSheet extends StatelessWidget {
                     style: context.textStyle.heading2,
                   ),
                   Text(
-                    lockedDays
-                        .sortedByIndex()
-                        .map(
-                          (day) => day.localizedShortName(context.l10n),
-                        )
-                        .join(', '),
+                    lockedDays.sortedByIndex().map((day) => day.localizedShortName(context.l10n)).join(', '),
                     style: context.textStyle.footNote.copyWith(
                       color: context.colorsV2.foregroundSoft,
                     ),
@@ -84,38 +95,15 @@ class FeedbackSelectDaysSheet extends StatelessWidget {
                   state: selectAllState,
                   disable: false,
                   dayName: context.l10n.feedbackEverydayCheckboxLabel,
-                  onTap: () {
-                    onDaysChange(
-                      switch (selectAllState) {
-                        /// if all days are selected, select none
-                        BaladyCheckBoxState.checked => workingHours.copyWith(days: ISet(const {})),
-
-                        /// if not all days are selected, select all days
-                        BaladyCheckBoxState.indeterminate || BaladyCheckBoxState.unchecked => workingHours.copyWith(
-                            days: ISet(
-                              WeekDay.values.toSet().difference(lockedDays.toSet()),
-                            ),
-                          ),
-                      },
-                    );
-                  },
+                  onTap: () => _handleMarkAll(selectAllState),
                 ),
                 for (final day in WeekDay.values)
                   _SelectDayItem(
-                    state: [...selectedDays, ...lockedDays].contains(day)
-                        ? BaladyCheckBoxState.checked
-                        : BaladyCheckBoxState.unchecked,
+                    state:
+                        workingHours.days.contains(day) ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked,
                     disable: lockedDays.contains(day),
-                    dayName: day.localizedShortName(context.l10n),
-                    onTap: () {
-                      onDaysChange(
-                        workingHours.copyWith(
-                          days: selectedDays.contains(day)
-                              ? ISet(selectedDays.difference({day}))
-                              : ISet({...selectedDays, day}),
-                        ),
-                      );
-                    },
+                    dayName: day.localizedName(context.l10n),
+                    onTap: () => _handleOnDayTap(day),
                   ),
               ],
             ),
@@ -123,6 +111,59 @@ class FeedbackSelectDaysSheet extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _updateFieldInState(
+    int fieldIndex,
+    FeedbackScheduleWorkingHoursEntity updatedField,
+  ) {
+    /// since this widget is in other tree we could not directly listen to updates.
+    /// Fortunately there is no flow where update comes from outside => we could assume
+    /// that both in sync.
+    if (!mounted) {
+      return;
+    }
+    setState(
+      () {
+        widget.fieldState.didChange(
+          widget.fieldState.value!.replace(fieldIndex, updatedField),
+        );
+      },
+    );
+  }
+
+  void _handleOnDayTap(WeekDay day) {
+    _updateFieldInState(
+      widget.fieldIndex,
+      workingHours.copyWith(
+        days: workingHours.days.contains(day)
+            ? ISet(workingHours.days.difference({day}))
+            : ISet({...workingHours.days, day}),
+      ),
+    );
+  }
+
+  void _handleMarkAll(
+    BaladyCheckBoxState selectAllState,
+  ) {
+    _updateFieldInState(
+      widget.fieldIndex,
+      switch (selectAllState) {
+        /// if all days are selected, select none
+        BaladyCheckBoxState.checked => workingHours.copyWith(days: ISet(const {})),
+
+        /// if not all days are selected, select all days
+        BaladyCheckBoxState.indeterminate || BaladyCheckBoxState.unchecked => workingHours.copyWith(
+            days: ISet(
+              WeekDay.values.toSet().difference(lockedDays.toSet()),
+            ),
+          ),
+      },
+    );
+    if (!mounted) {
+      return;
+    }
+    setState(() {});
   }
 }
 

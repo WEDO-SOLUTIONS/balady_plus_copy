@@ -5,13 +5,13 @@ import 'package:version/version.dart';
 
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/remote_services/api_constants.dart';
-import '../../../../core/remote_services/web_service.dart';
+import '../../../../core/remote_services/pega_web_service.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../data/VersionInfo.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ForceUpdateViewModel extends BaseViewModel {
-  final webService = locator<WebService>();
+  final webService = locator<PegaWebService>();
 
   void getVersionInfo() async {
     try {

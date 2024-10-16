@@ -65,16 +65,12 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
       2: '/services',
       3: '/profile',
     };
-    for (final entry in bottomBarLocations.entries) {
-      var key = entry.key;
-      final direction = Directionality.of(context);
-      if (direction == TextDirection.rtl) {
-        key = bottomBarLocations.length - 1 - entry.key;
-      }
-      if (location.contains(entry.value)) {
-        onClose(key);
-        return;
-      }
+
+    final entry = bottomBarLocations.entries.firstWhereOrNull((entry) => location.contains(entry.value));
+
+    if (entry != null) {
+      onClose(entry.key);
+      return;
     }
 
     if (location.contains('/snap_and_send')) {

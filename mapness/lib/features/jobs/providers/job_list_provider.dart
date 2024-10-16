@@ -59,7 +59,7 @@ class JobList extends _$JobList {
     } finally {
       _isLoading = false;
     }
-    mixpanel?.track('JobList: _load');
+    await mixpanel?.track('JobList: _load');
     return _allJobs;
   }
 

@@ -49,7 +49,8 @@ class CustomNetworkImageWidget extends StatefulWidget {
   final BoxFit imageFit;
   final Widget? placeHolderWidget;
   final bool ssoAuth;
-  final bool sso; 
+  final bool sso;
+  final bool addHeader;
 
   const CustomNetworkImageWidget(this.imagePath,
       {Key? key,
@@ -59,7 +60,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
       this.imageAlignment = Alignment.center,
       this.imageFit = BoxFit.cover,
       this.placeHolderWidget,
-      this.ssoAuth = false,  this.sso = false})
+      this.ssoAuth = false,  this.sso = false,this.addHeader=false})
       : super(key: key);
 
   @override
@@ -72,6 +73,35 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
   Widget build(BuildContext context) {
     bool isSvgIcon = widget.imagePath.contains(".svg");
     bool isUrl = widget.imagePath.startsWith("http");
+
+    final header=  widget.sso ? {
+
+      "Authorization":
+      "Bearer ${CommonProperties.token}"
+    } :  widget.ssoAuth
+        ? //null
+    {
+
+      "verifyingKEY":
+      CommonFunctions.hashRequest(widget.imagePath, "GET")
+
+      //  "Authorization":
+      //      "Bearer ${locator<AuthService>().accessToken}"
+    }
+        : !widget.ssoAuth //MM
+        ? {
+
+      'Authorization':
+      'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'
+    }
+        : null;
+
+    if(widget.addHeader == true && header!= null)
+      {
+        header.addAll({"X-Service-Id":"2"});
+
+      }
+
     return isUrl
         ? isSvgIcon
             ? SvgPicture.network(
@@ -93,26 +123,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                 width: widget.imageWidth,
                 height: widget.imageHeight,
                 fit: widget.imageFit,
-                headers: widget.sso ? {
-                       
-
-                         "Authorization":
-                             "Bearer ${CommonProperties.token}"
-                      } :  widget.ssoAuth
-                    ? //null
-                    {
-                        "verifyingKEY":
-                            CommonFunctions.hashRequest(widget.imagePath, "GET")
-
-                        //  "Authorization":
-                        //      "Bearer ${locator<AuthService>().accessToken}"
-                      }
-                    : !widget.ssoAuth //MM
-                        ? {
-                            'Authorization':
-                                'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'
-                          }
-                        : null,
+                headers:header,
                 loadingBuilder: (BuildContext context, Widget child,
                     ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;

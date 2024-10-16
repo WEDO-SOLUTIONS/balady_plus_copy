@@ -1,12 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/core/utils/extensions/log.dart';
+import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../core/base/base_view_model.dart';
-import '../../../../../core/remote_services/web_service.dart';
+import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/remote_services/pega_web_service.dart';
+import '../../../../../core/services/global/web_service.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../transaction_inquiry/presentation/core/models/download_file_result.dart';
@@ -21,10 +25,9 @@ import '../../../data/models/daem_submuncipality.response.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class DaemRepository {
-  final webServices = locator<WebService>();
-
-  Future<Tuple3<bool?, String?, DaemCategoryTypeResponse?>>
-      getDaemCategoryList() async {
+  final pegaWebServices = locator<PegaWebService>();
+  final webServices = sl<WebService>();
+  Future<Tuple3<bool?, String?, DaemCategoryTypeResponse?>> getDaemCategoryList() async {
     Map<String, dynamic> queryParms = {};
     if (CommonProperties.userInfo?.idNo != null) {
       queryParms = {
@@ -39,15 +42,20 @@ class DaemRepository {
 
     String url = ApiUrl.DaemRetrieveData;
 
-    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    final res = await webServices.dio.get(url, queryParameters: queryParms);
 
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    bool state = false;
+
+
+    if(res.statusCode == HttpStatus.ok ) {
+     state = true ;
+    }
+    dynamic data = res.data["data"]["result"];
+    String error = res.statusMessage ?? ("errors_server_error_1").tr();
     DaemCategoryTypeResponse? result;
     try {
       DaemCategoryTypeResponse response =
-          DaemCategoryTypeResponse.fromJson(json.decode(data));
+          DaemCategoryTypeResponse.fromJson(data);
       result = response;
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
@@ -76,8 +84,7 @@ class DaemRepository {
         state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, DaemSubCategoryTypeResponse?>>
-      getDaemSubCategoryList(String category) async {
+  Future<Tuple3<bool?, String?, DaemSubCategoryTypeResponse?>> getDaemSubCategoryList(String category) async {
     Map<String, dynamic> queryParms = {};
     if (CommonProperties.userInfo?.idNo != null) {
       queryParms = {
@@ -93,14 +100,18 @@ class DaemRepository {
 
     String url = ApiUrl.DaemRetrieveData;
 
-    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    final res = await webServices.dio.get(url, queryParameters: queryParms);
+    bool state = false;
+
+    if(res.statusCode == HttpStatus.ok ) {
+      state = true ;
+    }
+    dynamic data = res.data["data"]["result"];
+    String error = res.statusMessage ?? ("errors_server_error_1").tr();
     DaemSubCategoryTypeResponse? result;
     try {
       DaemSubCategoryTypeResponse response =
-          DaemSubCategoryTypeResponse.fromJson(json.decode(data));
+          DaemSubCategoryTypeResponse.fromJson(data);
       result = response;
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
@@ -147,14 +158,19 @@ class DaemRepository {
 
     String url = ApiUrl.DaemRetrieveData;
 
-    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    final res = await webServices.dio.get(url, queryParameters: queryParms);
+    bool state = false;
+
+    if(res.statusCode == HttpStatus.ok ) {
+      state = true ;
+    }
+    dynamic data = res.data["data"]["result"];
+    String error = res.statusMessage ?? ("errors_server_error_1").tr();
+
     DaemAreaTypeResponse? result;
     try {
       DaemAreaTypeResponse response =
-          DaemAreaTypeResponse.fromJson(json.decode(data));
+          DaemAreaTypeResponse.fromJson(data);
       result = response;
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
@@ -203,14 +219,18 @@ class DaemRepository {
 
     String url = ApiUrl.DaemRetrieveData;
 
-    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    final res = await webServices.dio.get(url, queryParameters: queryParms);
+    bool state = false;
+
+    if(res.statusCode == HttpStatus.ok ) {
+      state = true ;
+    }
+    dynamic data = res.data["data"]["result"];
+    String error = res.statusMessage ?? ("errors_server_error_1").tr();
     DaemIssueTypeResponse? result;
     try {
       DaemIssueTypeResponse response =
-          DaemIssueTypeResponse.fromJson(json.decode(data));
+          DaemIssueTypeResponse.fromJson(data);
       result = response;
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
@@ -253,14 +273,20 @@ class DaemRepository {
 
     String url = ApiUrl.DaemRetrieveData;
 
-    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    final res = await webServices.dio.get(url, queryParameters: queryParms);
+    bool state = false;
+
+    if(res.statusCode == HttpStatus.ok ) {
+      state = true ;
+    }
+    dynamic data = res.data["data"]["result"];
+    String error = res.statusMessage ?? ("errors_server_error_1").tr();
+
+
     DaemMunicipalityResponse? result;
     try {
       DaemMunicipalityResponse response =
-          DaemMunicipalityResponse.fromJson(json.decode(data));
+          DaemMunicipalityResponse.fromJson(data);
       result = response;
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
@@ -306,14 +332,18 @@ class DaemRepository {
 
     String url = ApiUrl.DaemRetrieveData;
 
-    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    final res = await webServices.dio.get(url, queryParameters: queryParms);
+    bool state = false;
+
+    if(res.statusCode == HttpStatus.ok ) {
+      state = true ;
+    }
+    dynamic data = res.data["data"]["result"];
+    String error = res.statusMessage ?? ("errors_server_error_1").tr();
     DaemSubMunicipalityResponse? result;
     try {
       DaemSubMunicipalityResponse response =
-          DaemSubMunicipalityResponse.fromJson(json.decode(data));
+          DaemSubMunicipalityResponse.fromJson(data);
       result = response;
       if (result.errors != null && result.errors!.isNotEmpty) {
         error = result.errors![0].message ?? error;
@@ -376,24 +406,60 @@ class DaemRepository {
       }
     };
 
-    final body = await webServices.postPegaRequest(url, body: bodyRequest);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    dynamic data;
+    bool state = false;
+    String? err = ("errors_server_error_1").tr();
     DaemCreateTicket? result;
+
     try {
-      DaemCreateTicket response = DaemCreateTicket.fromJson(json.decode(data));
+
+      final res = await webServices.dio.post(url, data: bodyRequest);
+
+      if(res.statusCode == HttpStatus.ok ) {
+        state = true ;
+      }
+      data = res.data["data"]["result"];
+      err = res.statusMessage ?? ("errors_server_error_1").tr();
+      DaemCreateTicket response = DaemCreateTicket.fromJson(data);
       result = response;
       if (result.errors != null && result.errors!.isNotEmpty) {
-        error = result.errors![0].message ?? error;
-        if (error.isEmpty) {
-          error = ("errors_server_error_1").tr();
+        err = result.errors![0].message ?? err;
+        if (err.isEmpty) {
+          err = ("errors_server_error_1").tr();
         }
         if (result.errors![0].id == "CS_API_049") {
-          error = ("daem_duplicate_error").tr();
+          err = ("daem_duplicate_error").tr();
         }
       }
-    } catch (error, stackTrace) {
+    }
+    on DioError catch (error, stackTrace) {
+
+      if(error.response?.data &&error.response?.data['data']['responseMessage'] != null) {
+        err = error.response?.data['data']['responseMessage'];
+      }
+
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      try {
+        Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+    }
+
+
+    catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -413,7 +479,7 @@ class DaemRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, DaemCreateTicket?>(state, error, result);
+    return Tuple3<bool?, String?, DaemCreateTicket?>(state, err, result);
   }
 
   Future<Tuple3<bool?, String?, UploadFileResult?>> uploadFile(
@@ -460,18 +526,24 @@ class DaemRepository {
         "AttachStream": fileBase64,
       };
     }
-    String url = ApiUrl.DaemUploadFile;
+    String url = ApiUrl.IncidentDaemUploadFile;
 
     CommonProperties.token.actionLog();
 
-    final res = await webServices.postPegaRequest(url, body: body);
+    final res = await webServices.dio.post(url, data: body);
 
-    bool? state = res['state'];
-    dynamic data = res['data'];
-    String? error = res['error'];
+    bool state = false;
+
+
+    if(res.statusCode == HttpStatus.ok ) {
+      state = true ;
+    }
+    dynamic data = res.data["data"]["result"];
+    String error = res.statusMessage ?? ("errors_server_error_1").tr();
+
     UploadFileResult? response;
     try {
-      response = UploadFileResult.fromJson(json.decode(data));
+      response = UploadFileResult.fromJson(data);
       if (response != null &&
           response.errors != null &&
           response.errors!.isNotEmpty) {
@@ -535,16 +607,17 @@ class DaemRepository {
       };
     }
     String url = ApiUrl.IncidentDownloadFile;
-
-    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
     DownloadFileResult? result;
-    bool? state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
-
+    dynamic data;
     try {
-      result = DownloadFileResult.fromJson(json.decode(data));
-    } catch (error, stackTrace) {
+      final res = await webServices.dio.get(url, queryParameters: queryParms);
+       data = res.data["data"]["result"];
+      result = DownloadFileResult.fromJson(data);
+    }
+
+
+
+    catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,

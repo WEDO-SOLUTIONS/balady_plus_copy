@@ -12,11 +12,8 @@ class LocalStoriesService extends _$LocalStoriesService {
   Future<List<StoryData>> build(String file) async {
     final networkStories = StoryTypedData.fromFile(file).stories;
 
-    final stories = networkStories;
+    final stories = List.of(networkStories)..sort((a, b) => !a.isWatched ? 1 : -1);
 
-    return [
-      ...stories.where((element) => element.isViewed),
-      ...stories.where((element) => !element.isViewed),
-    ];
+    return stories;
   }
 }

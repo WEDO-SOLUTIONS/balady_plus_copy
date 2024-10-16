@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,59 +8,48 @@ import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 class QuickFilter extends StatelessWidget {
   final FilterItemConfig item;
   final bool selected;
-  final Color background;
+  final ChipsType chipsType;
 
   const QuickFilter({
     required this.item,
     required this.selected,
+    this.chipsType = ChipsType.neutral,
     super.key,
-    this.background = NonThemeColor.color11,
   });
 
   @override
-  Widget build(BuildContext context) => Material(
-        color: selected ? context.color.strokeAccent : background,
-        borderRadius: BorderRadius.circular(8),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(8),
-          onTap: item.onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 52),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 9,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (item.icon != null)
-                    SvgPicture.asset(
-                      item.icon!,
-                      height: 24,
-                      width: 24,
-                      package: PackageConfig.packageName,
-                      colorFilter: ColorFilter.mode(
-                        selected ? Colors.white : context.color.textAndIconsBasePrimary,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  if (item.title != null) ...[
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      item.title!,
-                      style: context.textStyle.text.copyWith(
-                        color: selected ? Colors.white : context.color.textAndIconsBasePrimary,
-                      ),
-                    ),
-                  ],
-                ],
+  Widget build(BuildContext context) {
+    final leadingIcon = item.icon != null
+        ? ChipIconWidgetV2(
+            ({color}) => SvgPicture.asset(
+              item.icon!,
+              height: 24,
+              width: 24,
+              package: PackageConfig.packageName,
+              colorFilter: ColorFilter.mode(
+                color ?? context.color.textAndIconsBasePrimary,
+                BlendMode.srcIn,
               ),
             ),
-          ),
-        ),
+          )
+        : null;
+    final label = item.title;
+    if (label == null || label.isEmpty == true) {
+      if (leadingIcon == null) {
+        return const SizedBox.shrink();
+      }
+      return ChipsElement(
+        onPressed: item.onTap,
+        isSelected: item.selected,
+        type: chipsType,
+        options: ChipsIconOptions(icon: leadingIcon),
       );
+    }
+    return ChipsElement(
+      onPressed: item.onTap,
+      isSelected: item.selected,
+      type: chipsType,
+      options: ChipsLabelOptions(labelFirst: label, leadingIcon: leadingIcon),
+    );
+  }
 }

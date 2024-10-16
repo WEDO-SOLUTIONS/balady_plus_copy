@@ -11,6 +11,7 @@ import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/routing/providers/routes_helper.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
@@ -78,6 +79,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
     ref
       ..watch(layersControlsProvider)
+      ..watch(routesHelperProvider)
       ..watch(locationProvider.select((_) => null))
       ..watch(favouriteMarkersProvider.select((value) => null))
 
