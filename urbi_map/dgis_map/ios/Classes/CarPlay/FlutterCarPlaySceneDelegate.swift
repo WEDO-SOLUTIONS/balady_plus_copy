@@ -267,7 +267,12 @@ extension Measurement<UnitLength> {
     
     var roundedMeters: Measurement<UnitLength> {
         let meters = self.converted(to: .meters).value
-        let roundedMeters = (meters / 50).rounded(.down) * 50
+        
+        let roundedMeters = if meters > 200 {
+            (meters / 50).rounded(.down) * 50
+        } else {
+            (meters / 10).rounded(.down) * 10
+        }
         
         return Measurement(value: roundedMeters, unit: .meters)
     }
