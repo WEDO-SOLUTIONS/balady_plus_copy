@@ -58,7 +58,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 11429,
+            serviceId: RemoteConfig.MunicipalServicesIDs["create_complianceLocation"]["id"],
           ),
         ),
       ],

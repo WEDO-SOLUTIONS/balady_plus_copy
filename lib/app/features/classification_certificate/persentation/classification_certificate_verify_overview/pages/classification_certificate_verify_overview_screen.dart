@@ -23,7 +23,7 @@ class ClassificationCertificateVerifyOverviewScreen extends StatelessWidget {
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 11340,
+            serviceId: RemoteConfig.MunicipalServicesIDs["classification_certificate"]["id"],
           ),
         ),
       ],

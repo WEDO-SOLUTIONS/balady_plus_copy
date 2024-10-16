@@ -381,6 +381,14 @@ class _RemoteConfig {
         "id": 11124,
         "Key_name": "license_query",
       },
+      "classification_certificate": {
+        "id": 11340,
+        "Key_name": "classification_certificate",
+      },
+      "create_complianceLocation": {
+        "id": 11429,
+        "Key_name": "create_complianceLocation",
+      },
     },
     stgVal: {
       "survey_report_inquery": {
@@ -391,8 +399,20 @@ class _RemoteConfig {
         "id": 11124,
         "Key_name": "license_query",
       },
+      "classification_certificate": {
+        "id": 11340,
+        "Key_name": "classification_certificate",
+      },
+      "create_complianceLocation": {
+        "id": 11429,
+        "Key_name": "create_complianceLocation",
+      },
     },
     preVal: {
+      "classification_certificate": {
+        "id": 11380,
+        "Key_name": "classification_certificate",
+      },
       "survey_report_inquery": {
         "id": 11632,
         "Key_name": "license_query",
@@ -400,9 +420,17 @@ class _RemoteConfig {
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
+      },
+      "create_complianceLocation": {
+        "id": 13701,
+        "Key_name": "create_complianceLocation",
       },
     },
     prodVal: {
+      "classification_certificate": {
+        "id": 11380,
+        "Key_name": "classification_certificate",
+      },
       "survey_report_inquery": {
         "id": 11632,
         "Key_name": "license_query",
@@ -410,6 +438,10 @@ class _RemoteConfig {
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
+      },
+      "create_complianceLocation": {
+        "id": 13701,
+        "Key_name": "create_complianceLocation",
       },
     },
     urbiPreVal: {
@@ -420,6 +452,14 @@ class _RemoteConfig {
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
+      },
+      "inquiry_construction_license": {
+        "id": 11124,
+        "Key_name": "license_query",
+      },
+      "create_complianceLocation": {
+        "id": 11429,
+        "Key_name": "create_complianceLocation",
       },
     },
   );

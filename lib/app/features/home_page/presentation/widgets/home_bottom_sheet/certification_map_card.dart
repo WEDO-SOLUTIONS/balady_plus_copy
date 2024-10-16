@@ -125,7 +125,7 @@ class CertificationMapCard extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         NavigationService.navigatorKey.currentState!
-                            .pushNamed(RouteName.QAPage,arguments: "11429");
+                            .pushNamed(RouteName.QAPage,arguments: RemoteConfig.MunicipalServicesIDs["create_complianceLocation"]["id"]);
                       },
                       child: CustomTextWidget(
                         "check_faq".tr(),
