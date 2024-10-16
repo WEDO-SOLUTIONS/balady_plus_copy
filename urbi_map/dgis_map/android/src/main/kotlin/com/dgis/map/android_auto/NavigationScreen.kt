@@ -365,7 +365,11 @@ class NavigationScreen(
             CarIcon.Builder(IconCompat.createWithResource(carContext, iconResourceId)).build()
         val maneuver = Maneuver.Builder(type).setIcon(icon)
 
-        if (type == Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW || type == Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW || type == Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW_WITH_ANGLE || type == Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW_WITH_ANGLE) {
+        val isRoundabout = when (type) {
+            Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW, Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW, Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW_WITH_ANGLE, Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW_WITH_ANGLE -> true
+            else -> false
+        }
+        if (isRoundabout) {
             maneuver.setRoundaboutExitNumber(exitNumber ?: 1)
         }
         return maneuver.build()

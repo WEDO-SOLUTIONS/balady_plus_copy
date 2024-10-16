@@ -47,7 +47,7 @@ object DgisMapInitializer {
                     vendorConfigFile
                 )
             ),
-            logOptions = /*logOptions ?: */LogOptions(
+            logOptions = logOptions ?: LogOptions(
                 systemLevel = LogLevel.ERROR, customLevel = LogLevel.ERROR
             ),
             httpOptions = HttpOptions(useCache = true),
@@ -88,8 +88,6 @@ object DgisMapInitializer {
     }
 
     enum class VendorConfig {
-        URBI_PRE_PROD,
-        MOMRAH_PROD,
-        MOMRAH_STG,
+        URBI_PRE_PROD, MOMRAH_PROD, MOMRAH_STG,
     }
 }
