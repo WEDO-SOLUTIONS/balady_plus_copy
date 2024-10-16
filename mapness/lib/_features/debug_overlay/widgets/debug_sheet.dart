@@ -105,6 +105,21 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                               ],
                             ),
                           ),
+                          // TODO(Sergei): temporary information for internal testing builds from AA branch
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Android Auto: ',
+                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
+                                ),
+                                TextSpan(
+                                  text: 'true',
+                                  style: context.textStyle.footNoteBold.copyWith(color: Colors.black87),
+                                ),
+                              ],
+                            ),
+                          ),
                           RichText(
                             text: TextSpan(
                               children: [

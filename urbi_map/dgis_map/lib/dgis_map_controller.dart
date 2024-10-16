@@ -510,6 +510,9 @@ class DgisMapController {
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
   Future<void> stopNavigation() => _instance.stopNavigation();
 
+  /// Current navigation state
+  Future<NavigationStateMessage> getCurrentNavigationState() => _instance.getCurrentNavigationState();
+
   /// Controls sounds in navigation.
   Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) =>
       _instance.toggleVoiceInstruction(toggleType: toggleType);

@@ -22,8 +22,6 @@ class NavigationHandler {
     
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
-    private let locationSource: MyLocationMapObjectSource
-    private var prevMyLocationMapObjectSource: MyLocationMapObjectSource?
     
     // Models to observe channels and send events to Flutter
     private let speedControlModel: SpeedControlModel
@@ -45,12 +43,6 @@ class NavigationHandler {
         self.navigationManager.mapManager.addMap(map: self.map)
         
         self.voiceManager = getVoiceManager(context: context)
-        
-        self.locationSource = MyLocationMapObjectSource(
-            context: context,
-            controllerSettings: MyLocationControllerSettings(),
-            markerType: MyLocationMapObjectMarkerType.model
-        )
 
         self.speedControlModel = SpeedControlModel(
             model: self.navigationManager.uiModel,
@@ -187,12 +179,6 @@ class NavigationHandler {
     func setupCamera(
         speedRangeZoom: SpeedRangeZoom
     ) {
-        self.prevMyLocationMapObjectSource = self.map.sources.first { $0 is MyLocationMapObjectSource } as? MyLocationMapObjectSource
-        if let prevLocationSource = self.prevMyLocationMapObjectSource {
-            self.map.removeSource(source: prevLocationSource)
-        }
-        self.map.addSource(source: self.locationSource)
-        
         self.prevCameraBehaviour = self.map.camera.behaviour.newBehaviour
         self.map.camera.setBehaviour(
             behaviour: self.navigationManager.mapFollowController.cameraBehaviour
@@ -217,10 +203,6 @@ class NavigationHandler {
     }
     
     func resetCamera() {
-        self.map.removeSource(source: self.locationSource)
-        if let prevLocationSource = self.prevMyLocationMapObjectSource {
-            self.map.addSource(source: prevLocationSource)
-        }
         if let prevCameraBehaviour {
             self.map.camera.setBehaviour(behaviour: prevCameraBehaviour)
         }
@@ -345,6 +327,20 @@ class NavigationHandler {
             ))
             return
         }
+    }
+    
+    func getCurrentNavigationState(completion: @escaping (NavigationStateMessage?, FlutterError?) -> Void) {
+        let state = switch navigationManager.uiModel.state {
+        case .navigation, .routeSearch:  NavigationState.navigation
+        case   .finished: NavigationState.finish
+        case  .disabled: NavigationState.disabled
+        default: NavigationState.disabled
+        }
+        let options = navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions() ?? RouteSearchOptionsMessage.car
+        completion(
+            NavigationStateMessage.make(with: state, routeSearchOptions: options),
+            nil
+        )
     }
 
     func startFreeRoam(speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
