@@ -89,10 +89,6 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     final fields = formState.value.entries
         .map((entry) => MapEntry(entry.key, formState.getTransformedValue(entry.key, fromSaved: true)))
         .toList();
-    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    print(fields);
-    // print(jsonEncode(formState.value));
-    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
     /// tweak to pass compex structure through gorouter.
     /// Id guarantee that old provider would be disposed if new form filled,

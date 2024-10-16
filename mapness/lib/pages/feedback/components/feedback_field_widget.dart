@@ -35,19 +35,24 @@ class _FeedbackFieldWidgetState extends State<FeedbackFieldWidget> with Automati
       FeedbackTextEntity() => FeedbackInput(key: ValueKey(widget.field.id), field: widget.field as FeedbackTextEntity),
 
       /// various string inputs like phone, etc
-      FeedbackTextListEntity() => FeedbackTextListField(field: widget.field as FeedbackTextListEntity),
+      FeedbackTextListEntity() =>
+        FeedbackTextListField(key: ValueKey(widget.field.id), field: widget.field as FeedbackTextListEntity),
 
       /// bool
-      FeedbackBoolToggleEntity() => FeedbackBoolToggle(field: widget.field as FeedbackBoolToggleEntity),
+      FeedbackBoolToggleEntity() =>
+        FeedbackBoolToggle(key: ValueKey(widget.field.id), field: widget.field as FeedbackBoolToggleEntity),
 
       /// upload photos
-      FeedbackImageInputEntity() => FeedbackImages(field: widget.field as FeedbackImageInputEntity),
+      FeedbackImageInputEntity() =>
+        FeedbackImages(key: ValueKey(widget.field.id), field: widget.field as FeedbackImageInputEntity),
 
       /// select one of many
-      FeedbackChipsEntity() => FeedbackChips(field: widget.field as FeedbackChipsEntity),
+      FeedbackChipsEntity() =>
+        FeedbackChips(key: ValueKey(widget.field.id), field: widget.field as FeedbackChipsEntity),
 
       /// working days, breaks, schedule
-      FeedbackScheduleEntity() => FeedbackScheduleWidget(field: widget.field as FeedbackScheduleEntity),
+      FeedbackScheduleEntity() =>
+        FeedbackScheduleWidget(key: ValueKey(widget.field.id), field: widget.field as FeedbackScheduleEntity),
 
       /// Handle unknown fields (if i.e. backend does not increase api version but change protocol)
       /// since field is required make form invalid
