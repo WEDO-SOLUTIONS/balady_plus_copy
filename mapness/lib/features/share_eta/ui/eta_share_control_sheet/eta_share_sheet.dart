@@ -1,8 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 
 typedef EtaSheetSubtitleBuilder = Widget Function(BuildContext context, String timeLeft);
@@ -28,9 +28,7 @@ class EtaShareSheet extends StatelessWidget {
   });
 
   @override
-  // ignore: prefer_expression_function_bodies
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       decoration: BoxDecoration(
         color: context.colorsV2.backgroundSurface4,
         borderRadius: const BorderRadius.only(
@@ -57,7 +55,7 @@ class EtaShareSheet extends StatelessWidget {
                   color: context.colorsV2.foregroundDefault,
                 ),
                 customActionWidget: AppButton.close(
-                  onTap: context.pop,
+                  onTap: () => context.maybePop(),
                   padding: EdgeInsets.zero,
                   textColor: context.colorsV2.neutralOnContainer,
                   color: context.colorsV2.neutralContainerDefault,
@@ -90,5 +88,4 @@ class EtaShareSheet extends StatelessWidget {
         ),
       ),
     );
-  }
 }

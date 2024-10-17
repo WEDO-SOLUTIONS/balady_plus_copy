@@ -16,4 +16,11 @@ class RoutesObserver extends AutoRouterObserver {
     ref.read(urbiAnalyticsProvider).screen(currentPath);
     debugPrint('New route pushed: $currentPath');
   }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPop(route, previousRoute);
+    debugPrint('Current Screen pop: ${route.settings.name}');
+  }
+
 }

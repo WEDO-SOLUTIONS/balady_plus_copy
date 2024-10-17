@@ -30,7 +30,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('materialAppKey');
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
           enableAdvancedGestureRecognition: true,
@@ -76,7 +75,6 @@ class AppWidget extends StatefulWidget {
 class AppWidgetState extends State<AppWidget> {
   @override
   Widget build(BuildContext context) {
-    print('AppWidgetState');
     return GestureDetector(
       onTap: () {
         // When running in iOS, dismiss the keyboard when any Tap happens outside a TextField

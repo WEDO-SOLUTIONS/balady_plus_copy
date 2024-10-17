@@ -34,6 +34,7 @@ import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_loading_sheet.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
@@ -62,7 +63,7 @@ class PoiCardWidgetPage extends StatelessWidget {
 
   const PoiCardWidgetPage({
     required this.objectId,
-    required this.closestPoint,
+    this.closestPoint,
     this.cameraConfig,
     super.key,
   });
@@ -375,7 +376,11 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
                   ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                   ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-                  context.maybePop();
+                  if (context.router.canNavigateBack) {
+                    context.router.maybePopTop();
+                  } else {
+                    context.router.push(const BottomMenuRoute());
+                  }
                 },
               ),
               content: [

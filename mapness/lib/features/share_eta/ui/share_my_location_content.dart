@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
@@ -71,7 +70,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
       }
       if (next.hasError) {
         LoadingOverlay.of(context).endLoading();
-        context.pop();
+        context.maybePop();
         ToastOverlay.of(context).show(
           title: context.l10n.failedShareLiveLocation,
           actionText: context.l10n.tryAgain,
@@ -205,17 +204,18 @@ class ShareMyLocationPage extends HookConsumerWidget {
   }
 
   void _showEtaControlSheet(BuildContext context, WidgetRef ref) {
+    // TODO(Ayat) Change showModalBottomSheet to screen AutoRoute
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (context) => EtaSharingSheet(
         onCurrentLocationPressed: () {
-          context.pop();
+          Navigator.pop(context);
           ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint);
         },
         onLiveLocationPressed: () {
-          context.pop();
+          Navigator.pop(context);
           _showEtaTimeSheet(context, ref);
         },
       ),
@@ -223,13 +223,14 @@ class ShareMyLocationPage extends HookConsumerWidget {
   }
 
   void _showEtaTimeSheet(BuildContext context, WidgetRef ref) {
+    // TODO(Ayat) Change showModalBottomSheet to screen AutoRoute
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (context) => EtaSharingTimeSheet(
         onConfirmTap: (v) {
-          context.pop();
+          Navigator.pop(context);
           LoadingOverlay.of(context).startLoading();
 
           ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);

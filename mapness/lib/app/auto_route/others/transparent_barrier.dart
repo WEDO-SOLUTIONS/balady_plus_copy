@@ -100,26 +100,18 @@ class CustomModalRoute<T> extends PageRoute<T> {
   @override
   Widget buildModalBarrier() => const SizedBox.shrink();
 
-  /// Builds the transition for the route based on the animation.
-  ///
-  /// If a [transitionsBuilder] is provided in the [CustomRouteType], it will
-  /// be used to define the transition. Otherwise, it defaults to the standard
-  /// Flutter page transitions.
-  ///
-  /// - [context] provides information about the widget tree.
-  /// - [animation] represents the current animation for the route transition.
-  /// - [secondaryAnimation] is used for secondary transitions between routes.
-  /// - [child] is the page that is being transitioned to or from.
   @override
-  Widget buildTransitions(
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      Widget child,
-      ) {
-    final transitionsBuilder = routeType.transitionsBuilder;
-    return transitionsBuilder != null
-        ? transitionsBuilder(context, animation, secondaryAnimation, child)
-        : super.buildTransitions(context, animation, secondaryAnimation, child);
+  Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation,
+      Widget child) {
+    final transitionsBuilder = routeType.transitionsBuilder ?? _defaultTransitionsBuilder;
+    return transitionsBuilder(context, animation, secondaryAnimation, child);
   }
+
+  Widget _defaultTransitionsBuilder(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) =>
+      child;
 }

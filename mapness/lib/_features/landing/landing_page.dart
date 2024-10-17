@@ -23,7 +23,6 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 
 @RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
@@ -106,7 +105,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
-      ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
 

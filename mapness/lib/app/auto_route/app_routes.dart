@@ -41,11 +41,14 @@ class AppRouter extends RootStackRouter {
         AutoRoute(
           page: MapRoute.page,
           path: '/',
+          keepHistory: false,
+          initial: true,
           guards: [
             OnboardRouteGuard(ref),
           ],
           children: [
             CustomRoute(
+              path: 'bottom_menu',
               page: BottomMenuRoute.page,
               initial: true,
               barrierDismissible: false,
@@ -53,6 +56,7 @@ class AppRouter extends RootStackRouter {
               children: [
                 CustomRoute(
                   path: 'explore',
+                  initial: true,
                   page: LandingRoute.page,
                   transitionsBuilder: TransitionsBuilders.noTransition,
                 ),
@@ -86,23 +90,25 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'poi_card',
               page: PoiCardWidgetRoute.page,
-              transitionsBuilder: TransitionsBuilders.noTransition,
-            ),
-            CustomRoute(
-              path: 'shared_my_location',
-              barrierDismissible: false,
-              page: ShareMyLocationRoute.page,
-              transitionsBuilder: TransitionsBuilders.noTransition,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
               customRouteBuilder: customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'deeplink',
               page: DeeplinkRoute.page,
-              transitionsBuilder: TransitionsBuilders.noTransition,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'shared_my_location',
+              barrierDismissible: false,
+              page: ShareMyLocationRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              customRouteBuilder: customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'layers_sheet',
-              transitionsBuilder: TransitionsBuilders.noTransition,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
               fullscreenDialog: true,
               allowSnapshotting: false,
               barrierDismissible: false,
