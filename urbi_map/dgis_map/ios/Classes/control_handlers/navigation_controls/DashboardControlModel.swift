@@ -64,6 +64,13 @@ class DashboardControlModel {
             return
         }
         
+        if FlutterCarPlaySceneDelegate.map != nil {
+            FlutterCarPlaySceneDelegate.updateEstimates(
+                distanceRemaining: distance,
+                timeRemaining: duration
+            )
+        }
+        
         eventChannel.success([
             "event": Events.dashboardEvent,
             "duration": Int(duration),

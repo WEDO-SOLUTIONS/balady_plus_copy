@@ -96,6 +96,7 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
     required this.mapCreated,
     super.key,
   });
+
   final void Function(DgisMapController) mapCreated;
 
   @override
@@ -122,6 +123,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // TODO(Scroollocker): Disable this feature. Because need to research fail restore cases
       // restoreState();
       clearCache();
+      checkNavigationState();
     });
   }
 
@@ -141,6 +143,32 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       final extra = {
         'data': RouteSearchOptionsMessageExt.fromString(type!),
         'restoreFromState': true,
+      };
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final location = ref.read(locationProvider);
+        if (location != null) {
+          ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+        } else {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
+            if (next != null) {
+              _locationListener?.close();
+              ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+            }
+          });
+        }
+      });
+    }
+  }
+
+  // TODO(Sergei): add NavigationState listening, when navigation start from AA, CarPlay is implemented
+  Future<void> checkNavigationState() async {
+    final controller = await ref.read(dgisControllerProvider.future);
+    final navStateMessage = await controller.getCurrentNavigationState();
+
+    if (navStateMessage.state == NavigationState.navigation) {
+      final extra = {
+        'data': navStateMessage.routeSearchOptions,
+        'restoreFromState': false,
       };
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);

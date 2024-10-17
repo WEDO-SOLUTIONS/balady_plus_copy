@@ -1,10 +1,10 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/widget_label.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/widgets/feedback/feedback_label.dart';
 
 class FeedbackChips extends StatelessWidget {
   final FeedbackChipsEntity field;
@@ -18,9 +18,18 @@ class FeedbackChips extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FeedbackLabel(
-            text: field.label,
-            isRequired: field.isRequired,
+          Row(
+            children: [
+              Flexible(
+                child: WidgetLabel(
+                  isRequired: field.isRequired,
+                  label: field.label,
+                  labelStyle: context.textStyleV3.captionMediumRegular.copyWith(
+                    color: context.colorsV2.foregroundDefault,
+                  ),
+                ),
+              ),
+            ],
           ),
           FormBuilderField<int>(
             name: field.id,
