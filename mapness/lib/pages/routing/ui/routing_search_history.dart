@@ -96,7 +96,7 @@ class RoutingSearchHistory extends ConsumerWidget {
   Future<void> _specifyOnTheMap(BuildContext context) async {
     final result = await const RoutingMapRoute().push(context);
 
-    if (result != null) {
+    if (result != null && context.mounted) {
       context.pop(result);
     }
   }
