@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import '../app/core/utils/utils_exports.dart' show EnvType;
 import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
