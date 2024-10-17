@@ -15,6 +15,8 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 
+part 'widgets/search_history_gallery.dart';
+
 const prefixMapping = {
   'region': 'منطقة',
   'rovernorate': 'محافظة',

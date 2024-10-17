@@ -105,16 +105,14 @@ class RoutingSearchHistory extends ConsumerWidget {
     await CommonFunctions.authOrOpen(
       context,
       callback: () async {
-        if (!context.mounted) return;
-        final result =
-            // ignore: inference_failure_on_function_invocation
-            await const FavouritesPickerRoute().push(context);
+        if (context.mounted) {
+          final result = await const FavouritesPickerRoute().push(context);
 
-        if (result != null) {
-          // ignore: use_build_context_synchronously
-          context.pop(
-            RoutePointFavouriteItem(result as FavouriteItem?),
-          );
+          if (result != null && context.mounted) {
+            context.pop(
+              RoutePointFavouriteItem(result as FavouriteItem?),
+            );
+          }
         }
       },
     );

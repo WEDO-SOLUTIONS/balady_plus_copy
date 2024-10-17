@@ -80,7 +80,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                     },
                     itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
                   ),
-                  if (hasManyResults) ...[
+                  if (hasManyResults)
                     ContentRowV2(
                       onTap: () => setState(() => _collapsed = !_collapsed),
                       leading: AppIcons(
@@ -92,7 +92,6 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                         title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
                       ),
                     ),
-                  ],
                 ],
               ),
             ),

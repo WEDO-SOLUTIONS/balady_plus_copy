@@ -9,6 +9,8 @@ import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+part 'widgets/routing_favourites_button.dart';
+
 class RoutingFavourites extends ConsumerWidget {
   const RoutingFavourites({
     required this.showBookmark,
@@ -103,28 +105,4 @@ class RoutingFavourites extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _Button extends StatelessWidget {
-  final VoidCallback onTap;
-  final IconData icon;
-
-  const _Button({
-    required this.onTap,
-    required this.icon,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) => Expanded(
-        child: SizedBox(
-          height: 48,
-          child: BaladyAppButton(
-            buttonColorScheme: BaladyButtonColorScheme.neutral,
-            buttonType: BaladyButtonType.secondary,
-            primaryIcon: icon,
-            onTap: onTap,
-          ),
-        ),
-      );
 }
