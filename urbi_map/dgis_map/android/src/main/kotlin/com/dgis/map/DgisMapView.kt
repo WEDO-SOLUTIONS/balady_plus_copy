@@ -1,6 +1,7 @@
 package com.dgis.map
 
 import android.content.Context
+import android.util.Log
 import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
@@ -21,6 +22,7 @@ import ru.dgis.sdk.directory.RubricId
 import ru.dgis.sdk.directory.SearchManager
 import ru.dgis.sdk.geometry.PolygonGeometry
 import ru.dgis.sdk.map.*
+import ru.dgis.sdk.navigation.State
 import ru.dgis.sdk.platform.Locale
 import ru.dgis.sdk.platform.getLocaleManager
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
@@ -52,10 +54,11 @@ class DgisMapView(
     private var searchHandler: SearchHandler? = null
     private var routeHandler: RouteHandler? = null
     private var weatherHandler: WeatherHandler? = null
+    private val navigationManager = DgisMapInitializer.getNavigationManager()
     private val navigationHandler by unsafeLazy {
         NavigationHandler(
             sdkContext = sdkContext,
-            navigationView = mapView.findViewById(R.id.navigationView),
+            navigationManager = navigationManager,
             eventSink = eventSink,
             map = map!!,
         )
@@ -92,11 +95,10 @@ class DgisMapView(
         locationControlHandler?.close()
         indoorControlHandler?.close()
         searchHandler?.close()
-        locationSource.deactivate()
         visibleRectHandler?.close()
         compassControlHandler?.close()
         trafficAndParkingControlHandler?.close()
-        packagesHandler?.close()
+        packagesHandler.close()
     }
 
     override fun initialize(result: ApiResult<InitializeMessage>) {
@@ -758,6 +760,10 @@ class DgisMapView(
         navigationHandler.saveNavigationState(result = result)
     }
 
+    override fun getCurrentNavigationState(result: Messages.Result<NavigationStateMessage>) {
+        navigationHandler.getCurrentNavigationState(result)
+    }
+
     override fun restoreNavigationState(
         state: ByteArray,
         speedRangeZoom: SpeedRangeZoom,
@@ -821,7 +827,7 @@ class DgisMapView(
         locationSource.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
         result?.success(null)
     }
-    
+
     override fun overlappedBy(
         outerRect: GeoRectMessage,
         innerRect: GeoRectMessage,
@@ -964,7 +970,10 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun toggleVoiceInstruction(toggleType: SoundToggleType, result: Messages.Result<Void>?) {
+    override fun toggleVoiceInstruction(
+        toggleType: SoundToggleType,
+        result: Messages.Result<Void>?
+    ) {
         navigationHandler.toggleVoiceInstruction(toggleType)
         result?.success(null)
     }
@@ -1008,10 +1017,8 @@ class DgisMapView(
         visibleRectHandler = VisibleRectHandler(map, eventSink)
         searchHandler = SearchHandler(
             map,
-            sdkContext,
             SearchManager.createOnlineManager(sdkContext),
             locationSource,
-            DgisMapPlugin.vendorConfig,
         )
         compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler =

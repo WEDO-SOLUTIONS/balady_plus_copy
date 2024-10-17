@@ -705,6 +705,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.stopNavigation();
   }
 
+  Future<NavigationStateMessage> getCurrentNavigationState() => _api.getCurrentNavigationState();
+
   Future<void> moveCameraToSelectedPanorama() {
     return _api.moveCameraToSelectedPanorama();
   }
