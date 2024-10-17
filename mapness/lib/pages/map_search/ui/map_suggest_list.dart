@@ -47,20 +47,23 @@ class MapSuggestList extends ConsumerWidget {
                   : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
               isLast: index == suggests.length - 1,
               onObjectTap: (object) {
-                Metrics.logEventAdvanced(
-                  MetricsConstants.searchKeys.suggestion,
-                  group: MetricsConstants.searchTag,
-                  action: MetricAction.tap.toString(),
-                  props: {
-                    'object': object.id!.objectId,
-                  },
-                );
+                final objectId = object.id?.objectId;
+                if (objectId != null) {
+                  Metrics.logEventAdvanced(
+                    MetricsConstants.searchKeys.suggestion,
+                    group: MetricsConstants.searchTag,
+                    action: MetricAction.tap.toString(),
+                    props: {
+                      'object': objectId,
+                    },
+                  );
 
-                PoiMapRoute.open(
-                  ref.read(goRouterProvider),
-                  object.id!.objectId,
-                  zoom: 18,
-                );
+                  PoiMapRoute.open(
+                    ref.read(goRouterProvider),
+                    objectId,
+                    zoom: 18,
+                  );
+                }
               },
             ),
             itemCount: suggests.length,

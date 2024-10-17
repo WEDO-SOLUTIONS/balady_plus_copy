@@ -155,19 +155,25 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                         top: uikit.Spacing.$3x,
                         bottom: uikit.Spacing.$2x,
                       ),
-                      child: uikit.BaladyAppButton(
-                        primaryLabel: context.l10n.done,
-                        buttonType:
-                            nearestObject.isLoading ? uikit.BaladyButtonType.secondary : uikit.BaladyButtonType.primary,
-                        buttonColorScheme: nearestObject.isLoading
-                            ? uikit.BaladyButtonColorScheme.neutral
-                            : uikit.BaladyButtonColorScheme.accent,
-                        onTap: () => _onTap(nearestObject),
-                        buttonState: nearestObject.isLoading
-                            ? uikit.BaladyButtonState.loading
-                            : nearestObject.unwrapPrevious().hasValue
-                                ? uikit.BaladyButtonState.defaultState
-                                : uikit.BaladyButtonState.disabled,
+                      child: nearestObject.when(
+                        loading: () => uikit.BaladyAppButton(
+                          primaryLabel: context.l10n.done,
+                          buttonType: uikit.BaladyButtonType.secondary,
+                          buttonColorScheme: uikit.BaladyButtonColorScheme.neutral,
+                          onTap: null,
+                          buttonState: uikit.BaladyButtonState.loading,
+                        ),
+                        data: (data) => uikit.BaladyAppButton(
+                          primaryLabel: context.l10n.done,
+                          buttonColorScheme: uikit.BaladyButtonColorScheme.accent,
+                          onTap: () => _onTap(data),
+                        ),
+                        error: (error, stackTrace) => uikit.BaladyAppButton(
+                          primaryLabel: context.l10n.done,
+                          buttonColorScheme: uikit.BaladyButtonColorScheme.accent,
+                          onTap: null,
+                          buttonState: uikit.BaladyButtonState.disabled,
+                        ),
                       ),
                     ),
                   ],
@@ -180,14 +186,14 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
     );
   }
 
-  void _onTap(AsyncValue<NearestObject> nearestObject) {
+  void _onTap(NearestObject nearestObject) {
     Metrics.logEventAdvanced(
       MetricsConstants.routesKeys.specifyOnMapDone,
       group: MetricsConstants.routesTag,
       action: MetricAction.tap.toString(),
     );
 
-    switch (nearestObject.value!) {
+    switch (nearestObject) {
       case DGisNearestObject(nearestPoint: final nearestPoint):
         context.pop(
           // We need to pass the coordinates of the nearest point
