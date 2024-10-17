@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,17 +42,16 @@ class _IdenticalListPageState
 
   @override
   Widget build(BuildContext context) {
-    DeceasedRequestDetails? params =
-        ModalRoute.of(context)!.settings.arguments as DeceasedRequestDetails?;
+     RequestItemModel params =
+        ModalRoute.of(context)!.settings.arguments as RequestItemModel;
 
     return BlocProvider(
-      create: (context) => RequestDetailsBloc(
+      create: (context) => IdenticalListBloc(
           getTrips: sl(),
-          details: params!,
-          getDeceasedDriverRequestDetails: sl(),
-          getTripsLocation: sl(),
-          isDriver: true),
-      child: BlocConsumer<RequestDetailsBloc, RequestDetailsState>(
+          requestID: params.requestId!,
+          getIdenticalListRequestDetails: sl(),
+          isDriver: true)..add(GetIdenticalListRequestEvent()),
+      child: BlocConsumer<IdenticalListBloc, IdenticalListState>(
         listener: (context, state) {
 
           if (state.status == BlocStatus.failure) {
@@ -120,7 +119,7 @@ class _IdenticalListPageState
                           ],
                         ),
                         HomeTag(
-                          title: params?.requestStatus ?? "",
+                          title: params?.requestStatusName ?? "",
                           backgroundColor: AppColor.secondary100Light,
                         )
                       ],
@@ -138,7 +137,7 @@ class _IdenticalListPageState
                     ListView.builder(
                       padding: EdgeInsets.zero,
                       itemCount:
-                      state.details.deceasedInfoResponseDtoList?.length ??
+                      state.details?.deceasedInfoResponseDtoList?.length ??
                           0,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -151,10 +150,10 @@ class _IdenticalListPageState
                               children:
                               [
                                 IdenticalDeceasedCardWidget(
-                                  item: state.details.deceasedInfoResponseDtoList![index],
+                                  item: state.details!.deceasedInfoResponseDtoList![index],
                                   isDriver: state.isDriver,
-                                  showLogTrip: state.details.requestStatusId != 5 &&
-                                      state.details.requestStatusId != 6,),
+                                  showLogTrip: state.details!.requestStatusId != 5 &&
+                                      state.details!.requestStatusId != 6,),
                               ]);
                       },
                     ),
@@ -165,7 +164,7 @@ class _IdenticalListPageState
                       child: ElevatedButtonWidget.primaryCustom(
                         onPressed: () {
                           context
-                              .read<RequestDetailsBloc>()
+                              .read<IdenticalListBloc>()
                               .add(GetTripsEvent(index: 0));
 
                         },

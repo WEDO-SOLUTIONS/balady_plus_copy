@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
 import 'package:balady_plus/app/features/objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +14,7 @@ class ApplicantInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RequestDetailsBloc, RequestDetailsState>(
+    return BlocBuilder<IdenticalListBloc, IdenticalListState>(
         builder: (context, state) {
       return ExpandableCard(
         title: Helpers.translatingWord("ekram_order_info"),
@@ -24,14 +24,14 @@ class ApplicantInfoWidget extends StatelessWidget {
 
           FieldData(
             title: Helpers.translatingWord("submitterName"),
-            subTitle: state.details.submitterName,
+            subTitle: state.details?.submitterName,
           ),
           const CustomVerticalSpace(
             height: 16,
           ),
           FieldData(
             title: Helpers.translatingWord("ekramApplicantType"),
-            subTitle: state.details.submitterTypeName,
+            subTitle: state.details?.submitterTypeName,
           ),
           const CustomVerticalSpace(
             height: 16,
@@ -44,7 +44,7 @@ class ApplicantInfoWidget extends StatelessWidget {
             },
             child: FieldData(
               title: Helpers.translatingWord("driver_card_applicant_mobile"),
-              subTitle: state.details.submitterMobileNumber,
+              subTitle: state.details?.submitterMobileNumber,
             ),
           ),
           const CustomVerticalSpace(
@@ -53,7 +53,7 @@ class ApplicantInfoWidget extends StatelessWidget {
 
           FieldData(
             title: Helpers.translatingWord("ekramRelationShip"),
-            subTitle: state.details.relationship,
+            subTitle: state.details?.relationship,
           ),
 
           const CustomVerticalSpace(
@@ -62,7 +62,7 @@ class ApplicantInfoWidget extends StatelessWidget {
 
           FieldData(
             title: Helpers.translatingWord("burialCity"),
-            subTitle: state.details.deathCityName,
+            subTitle: state.details?.deathCityName,
           ),
 
           const CustomVerticalSpace(
@@ -71,7 +71,7 @@ class ApplicantInfoWidget extends StatelessWidget {
 
           FieldData(
             title: Helpers.translatingWord("transportationStatus"),
-            subTitle: state.details.deathTransferStatusDesc,
+            subTitle: state.details?.deathTransferStatusDesc,
           ),
         ],
       );

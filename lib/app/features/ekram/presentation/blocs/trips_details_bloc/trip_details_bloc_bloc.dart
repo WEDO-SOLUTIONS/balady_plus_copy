@@ -16,7 +16,7 @@ import '../../../domain/entities/trip_details.dart';
 import '../../../domain/use_cases/complete_trip.dart';
 import '../../../domain/use_cases/delete_trip.dart';
 import '../../../domain/use_cases/download_attachment.dart';
-import '../../../domain/use_cases/get_deceased_driver_request_details.dart';
+import '../../../domain/use_cases/get_identical_list_request.dart';
 import '../../../domain/use_cases/get_ekram_lookups.dart';
 import '../../../domain/use_cases/get_trips.dart';
 import '../../../domain/use_cases/upload_trip.dart';
@@ -33,7 +33,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
   final GetEkramLookUp _getLookUp;
   final UploadLetter _uploadLetter;
   final DownloadAttachment _downloadAttachment;
-  final GetDeceasedDriverRequestDetails _getDeceasedDriverRequestDetails;
+  final GetIdenticalListRequest _getDeceasedDriverRequestDetails;
 
   TripDetailsBloc(
       {required DeleteTrip deleteTrip,
@@ -43,7 +43,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
       required TripDetailsParmas params,
       required UploadLetter uploadLetter,
       required DownloadAttachment downloadAttachment,
-      required GetDeceasedDriverRequestDetails getDeceasedDriverRequestDetails})
+      required GetIdenticalListRequest getDeceasedDriverRequestDetails})
       : _getTrips = getTrips,
         _deleteTrip = deleteTrip,
         _completeTrip = completeTrip,

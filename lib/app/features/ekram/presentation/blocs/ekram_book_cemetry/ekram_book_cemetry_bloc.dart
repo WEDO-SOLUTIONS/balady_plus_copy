@@ -40,7 +40,7 @@ import '../../../domain/use_cases/get_nationality_types.dart';
 import '../../widgets/ekram_book_cemetry/agreement_section.dart';
 import '../../widgets/ekram_book_cemetry/applicant_info_section.dart';
 import '../../widgets/ekram_book_cemetry/cemetry_deceased_info_section.dart';
-import '../ekram_requests_bloc/ekram_requests_bloc.dart';
+import '../driver_request_bloc/ekram_requests_bloc.dart';
 
 part 'ekram_book_cemetry_event.dart';
 

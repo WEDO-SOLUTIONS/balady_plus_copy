@@ -1,27 +1,31 @@
-part of 'request_details_bloc_bloc.dart';
+part of 'identical_list_bloc.dart';
 
-class RequestDetailsState extends Equatable {
+class IdenticalListState extends Equatable {
   final BlocStatus status;
   final String? errorMessage;
-  final DeceasedRequestDetails details;
+  final DeceasedRequestDetails? details;
   final bool isDriver;
   final bool? isCompleted;
-  RequestDetailsState(
+  final int requestID;
+  IdenticalListState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
       required this.isDriver,
-      required this.details,
+        required this.requestID,
+       this.details,
       this.isCompleted});
 
-  RequestDetailsState copyWith(
+  IdenticalListState copyWith(
       {final BlocStatus? status,
       final String? errorMessage,
       final bool? isDriver,
+        final int? requestID,
       final DeceasedRequestDetails? deceasedRequestItems,
       final bool? isCompleted}) {
-    return RequestDetailsState(
+    return IdenticalListState(
         status: status ?? this.status,
         isDriver: isDriver ?? this.isDriver,
+        requestID: requestID ?? this.requestID,
         errorMessage: errorMessage ?? this.errorMessage,
         details: deceasedRequestItems ?? this.details,
         isCompleted: isCompleted ?? this.isCompleted);

@@ -139,16 +139,9 @@ class _RequestListPageState
                             return Column(
                               children: [
                                 RequestCardWidget(
-                                  ekramTransportationItem:
+                                  requestItemModel:
                                       state.deceasedRequestItems![index],
-                                  OnDetailsPress: () {
-                                    context.read<EkramRequestsBloc>().add(
-                                        GetDeceasedTransportRequestDetailsEvent(
-                                            isDriver: true,
-                                            requestId: state
-                                                .deceasedRequestItems![index]
-                                                .requestId!));
-                                  },
+
                                 ),
                                 CustomVerticalSpace(
                                     height: index ==

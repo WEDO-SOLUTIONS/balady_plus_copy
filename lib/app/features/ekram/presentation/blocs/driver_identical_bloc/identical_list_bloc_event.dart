@@ -1,18 +1,18 @@
-part of 'request_details_bloc_bloc.dart';
+part of 'identical_list_bloc.dart';
 
-abstract class RequestDetailsEvent extends Equatable {
-  const RequestDetailsEvent();
+abstract class IdenticalListEvent extends Equatable {
+  const IdenticalListEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class GetTripsEvent extends RequestDetailsEvent {
+class GetTripsEvent extends IdenticalListEvent {
   final int index;
   const GetTripsEvent({required this.index});
 }
 
-class GetTripsDetailsEvent extends RequestDetailsEvent {
+class GetTripsDetailsEvent extends IdenticalListEvent {
   final DeceasedInfoResponseDtoList dto;
   final List<TransportAttachResponseDto>? letters;
   final int requestId;
@@ -24,11 +24,11 @@ class GetTripsDetailsEvent extends RequestDetailsEvent {
       this.letters});
 }
 
-class GetDriverRequestDetails extends RequestDetailsEvent {
-  const GetDriverRequestDetails();
+class GetIdenticalListRequestEvent extends IdenticalListEvent {
+  const GetIdenticalListRequestEvent();
 }
 
-class GetTripsLocationEvent extends RequestDetailsEvent {
+class GetTripsLocationEvent extends IdenticalListEvent {
   final int index;
   const GetTripsLocationEvent({required this.index});
 }

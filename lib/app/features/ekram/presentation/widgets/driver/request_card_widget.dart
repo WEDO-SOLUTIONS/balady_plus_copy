@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_buttons_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -16,22 +17,28 @@ import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart'
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../../objectable_transactions/presentation/widgets/request_parameter.dart';
+import '../../../data/model/driver/request_item_model.dart';
 import '../../../domain/entities/deceased_transport_requests/transport_request_item.dart';
 import '../ekram_status_widget.dart';
 
 class RequestCardWidget extends StatelessWidget {
-  final TransportRequestItem ekramTransportationItem;
-  final Function OnDetailsPress;
+  final RequestItemModel requestItemModel;
+
   const RequestCardWidget(
       {Key? key,
-      required this.ekramTransportationItem,
-      required this.OnDetailsPress})
+      required this.requestItemModel,})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => OnDetailsPress(),
+      onTap: () {
+       NavigatorState navigator = Navigator.of(context);
+
+       navigator.pushNamed(RouteName.IdenticalListPage,
+           arguments: requestItemModel);
+
+      },
       child: Container(
         margin: const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
         padding: const EdgeInsets.all(16),
@@ -49,13 +56,13 @@ class RequestCardWidget extends StatelessWidget {
                 ),
                 Expanded(
                   child: CustomTextWidget(
-                    '#${ekramTransportationItem.requestId.toString()}',
+                    '#${requestItemModel.requestId.toString()}',
                     textStyle: AppStyle.requestNumberTextStle,
                     textAlign: TextAlign.start,
                   ),
                 ),
                 HomeTag(
-                  title: ekramTransportationItem.requestStatus ?? "",
+                  title: requestItemModel.requestStatusName ?? "",
                   backgroundColor: AppColor.secondary100Light,
                 ),
               ],
@@ -75,7 +82,7 @@ class RequestCardWidget extends StatelessWidget {
 
                   RequestParameter(
                     title: 'deceasedName'.tr(),
-                    value: ekramTransportationItem.deceasedName ?? "",
+                    value: requestItemModel.deceasedName ?? "",
                   ),
                   // RequestParameter(
                   //   title: 'transportationType'.tr(),
@@ -83,28 +90,19 @@ class RequestCardWidget extends StatelessWidget {
                   // ),
                   RequestParameter(
                     title: 'burialCity'.tr(),
-                    value: ekramTransportationItem.deathCityName ?? "",
+                    value: requestItemModel.deathCityName ?? "",
                   ),
-                  // if (ekramTransportationItem.multipleCityRequest == true)
-                  //   RequestParameter(
-                  //     title: 'burial_city'.tr(),
-                  //     value: ekramTransportationItem.burialCityName ?? "",
-                  //   ),
-                  // RequestParameter(
-                  //   title: 'transportationStatus'.tr(),
-                  //   value:
-                  //       ekramTransportationItem.deathTransferStatusDesc ?? "",
-                  // ),
+
 
                   RequestParameter(
                     title: 'driver_card_applicant_date'.tr(),
                     value: CommonFunctions.getFormattedDateEkramCard(
-                        ekramTransportationItem.requestDate ?? ""),
+                        requestItemModel.requestDate ?? ""),
                   ),
                   RequestParameter(
                     title: 'ekram_assign_Date'.tr(),
                     value: CommonFunctions.getFormattedDateEkramCard(
-                        ekramTransportationItem.driverAssignDate ?? ""),
+                        requestItemModel.deathDate ?? ""),
                   ),
                   // RequestParameter(
                   //   title: 'transportationDestination'.tr(),
@@ -113,27 +111,22 @@ class RequestCardWidget extends StatelessWidget {
 
                   RequestParameter(
                     title: 'transportationStatus'.tr(),
-                    value: ekramTransportationItem
-                        .deceasedTransportRequestStatus ??
+                    value: requestItemModel
+                        .transportCaseName ??
                         "",
                   ),
 
-                  /* RequestParameter(
-                    title: 'transportationStatus'.tr(),
-                    value: ekramTransportationItem
-                            .deceasedTransportRequestStatus ??
-                        "",
-                  ),
-                  RequestParameter(
-                    title: 'transportationDestination'.tr(),
-                    value: ekramTransportationItem.currentStationName ?? "",
-                  ),*/
+
                 ],
               ),
             ),
             ElevatedButtonWidget.primaryCustom(
                 height: 40,
-                onPressed: () => OnDetailsPress(),
+                onPressed: () {
+                  NavigatorState navigator = Navigator.of(context);
+                  navigator.pushNamed(RouteName.IdenticalListPage,
+                      arguments: requestItemModel);
+                },
                 text: "details".tr())
           ],
         ),

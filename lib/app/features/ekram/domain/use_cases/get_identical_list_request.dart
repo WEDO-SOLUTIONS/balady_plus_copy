@@ -7,14 +7,14 @@ import '../../ekram_exports.dart';
 import '../repositories/ekram_repository.dart';
 import 'package:dartz/dartz.dart' show Either;
 
-class GetDeceasedDriverRequestDetails
+class GetIdenticalListRequest
     extends UseCase<ResponseBodyModel<DeceasedRequestDetails>, int> {
   final EkramRepository repository;
 
-  GetDeceasedDriverRequestDetails({required this.repository});
+  GetIdenticalListRequest({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<DeceasedRequestDetails>>> call(
       int params) async {
-    return await repository.getDeceasedDriverRequestDetails(params);
+    return await repository.getidenticalList(params);
   }
 }

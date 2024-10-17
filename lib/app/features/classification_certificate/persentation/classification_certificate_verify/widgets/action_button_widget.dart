@@ -24,9 +24,10 @@ class ActionButtonWidget extends StatelessWidget {
                 arguments: state.searchRequestModel,
             );
           } else if(state is AdvancedSearchState) {
+
             Navigator.of(context).pushNamed(
               ClassificationCertificateRouteName.classificationCertificateListScreen,
-              arguments: state.searchRequestModel,
+              arguments: state.searchRequestModel.copyWith(phoneNumber: state.phoneNumberTextEditingController.text),
             );
           }
         }

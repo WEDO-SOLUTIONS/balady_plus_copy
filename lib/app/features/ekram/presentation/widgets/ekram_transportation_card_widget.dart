@@ -12,12 +12,13 @@ import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../objectable_transactions/presentation/widgets/request_parameter.dart';
+import '../../data/model/driver/request_item_model.dart';
 import '../../domain/entities/deceased_transport_requests/transport_request_item.dart';
 import 'driver/request_card_widget.dart';
 import 'ekram_status_widget.dart';
 
 class EkramTransporationCardWidget extends StatelessWidget {
-  final TransportRequestItem ekramTransportationItem;
+  final RequestItemModel ekramTransportationItem;
   final Function OnDetailsPress;
   const EkramTransporationCardWidget(
       {Key? key,
@@ -52,7 +53,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
                   ),
                 ),
                 HomeTag(
-                  title: ekramTransportationItem.requestStatus ?? "",
+                  title: ekramTransportationItem.transportCaseName ?? "",
                   backgroundColor: AppColor.secondary100Light,
                 ),
               ],
@@ -84,7 +85,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
                   RequestParameter(
                     title: 'ekram_transport_status'.tr(),
                     value:
-                        ekramTransportationItem.deathTransferStatusDesc ?? "",
+                        ekramTransportationItem.transportCaseName ?? "",
                   ),
                   /* RequestParameter(
                     title: 'transportationStatus'.tr(),

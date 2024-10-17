@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
-import 'package:balady_plus/app/features/ekram/domain/use_cases/get_deceased_driver_request_details.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_identical_list_request.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_deceased_transport_request_details.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_locations.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_status.dart';
@@ -29,7 +29,7 @@ part 'ekram_requests_state.dart';
 class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
   final GetDeceasedTransportRequests _getDeceasedTransportRequests;
   final GetDeceasedTransportRequestDetails _getDeceasedTransportRequestDetails;
-  final GetDeceasedDriverRequestDetails _getDeceasedDriverRequestDetails;
+  final GetIdenticalListRequest _getDeceasedDriverRequestDetails;
   final GetLookUp _getLookUp;
   final GetStatus _getStatus;
   final GetLocations _getLocations;
@@ -40,7 +40,7 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
       {required GetDeceasedTransportRequests getDeceasedTransportRequests,
       required GetDeceasedTransportRequestDetails
           getDeceasedTransportRequestDetails,
-      required GetDeceasedDriverRequestDetails getDeceasedDriverRequestDetails,
+      required GetIdenticalListRequest getDeceasedDriverRequestDetails,
       required bool isDriver,
       required GetLookUp getLookUp,
       required GetStatus getStatus,
@@ -96,9 +96,9 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
             : "",
       ));
     }, (success) {
-      List<TransportRequestItem>? newDeceasedRequestItems =
+      List<RequestItemModel>? newDeceasedRequestItems =
           success.data?.result?.items;
-      List<TransportRequestItem>? oldDeceasedRequestItems =
+      List<RequestItemModel>? oldDeceasedRequestItems =
           state.deceasedRequestItems;
       if (newDeceasedRequestItems != null)
         oldDeceasedRequestItems?.addAll(newDeceasedRequestItems);
@@ -182,7 +182,7 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
       ));
       if (e.isDriver) {
         final result = await NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.ekramTransportationDetailsScreen,
+            .pushNamed(RouteName.IdenticalListPage,
                 arguments: success.data?.result);
         print(result);
         if (result == true) {

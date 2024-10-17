@@ -57,7 +57,7 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<DeceasedRequestDetailsModel>>
       getTransportRequestDetails(int params);
   Future<ResponseBodyModel<DeceasedRequestDetailsModel>>
-      getDriverRequestDetails(int params);
+      getIdenticalList(int params);
 
   Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(int params);
 
@@ -438,7 +438,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
       String qa = "";
 
-      qa = await rootBundle.loadString("assets/trips.json");
+      qa = await rootBundle.loadString("assets/request.json");
 
       var response = json.decode(qa);
 
@@ -448,11 +448,11 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
 
       TransportRequestResponseModel? parsedResult =
-          data != null ? TransportRequestResponseModel.fromMap(x) : null;
+          data != null ? TransportRequestResponseModel.fromMap(data) : null;
 
       final decodedResponse =
           ResponseBodyModel<TransportRequestResponseModel>.fromMap(
-              response.data,
+              response,
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
@@ -573,7 +573,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
   @override
   Future<ResponseBodyModel<DeceasedRequestDetailsModel>>
-      getDriverRequestDetails(int params) async {
+      getIdenticalList(int params) async {
     Response response;
 
     try {

@@ -58,7 +58,7 @@ abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<DeceasedRequestDetails>>>
       getDeceasedTransportRequestDetails(int params);
   Future<Either<Failure, ResponseBodyModel<DeceasedRequestDetails>>>
-      getDeceasedDriverRequestDetails(int params);
+      getidenticalList(int params);
 
   Future<Either<Failure, ResponseBodyModel<List<TripDetailsModel>>>> getTrips(
       int params);

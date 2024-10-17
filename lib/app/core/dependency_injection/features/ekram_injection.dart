@@ -8,7 +8,7 @@ import '../../../features/ekram/domain/use_cases/get_active_cities.dart';
 import '../../../features/ekram/domain/use_cases/get_cemetries.dart';
 import '../../../features/ekram/domain/use_cases/get_cemetry_request_details.dart';
 import '../../../features/ekram/domain/use_cases/get_cemetry_requests.dart';
-import '../../../features/ekram/domain/use_cases/get_deceased_driver_request_details.dart';
+import '../../../features/ekram/domain/use_cases/get_identical_list_request.dart';
 import '../../../features/ekram/domain/use_cases/get_deceased_transport_request_details.dart';
 import '../../../features/ekram/domain/use_cases/get_ekram_lookups.dart';
 import '../../../features/ekram/domain/use_cases/get_launduries.dart';
@@ -47,7 +47,7 @@ class EkramInjection {
     sl.registerLazySingleton(
         () => GetDeceasedTransportRequestDetails(repository: sl()));
     sl.registerLazySingleton(
-        () => GetDeceasedDriverRequestDetails(repository: sl()));
+        () => GetIdenticalListRequest(repository: sl()));
     sl.registerLazySingleton(() => GetTrips(repository: sl()));
     sl.registerLazySingleton(() => AddTrip(repository: sl()));
     sl.registerLazySingleton(() => GetMosques(repository: sl()));

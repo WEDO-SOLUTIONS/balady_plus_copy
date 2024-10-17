@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -38,13 +38,13 @@ class _UsersEkramTransportationDetailsPageState
         ModalRoute.of(context)!.settings.arguments as DeceasedRequestDetails;
 
     return BlocProvider(
-      create: (context) => RequestDetailsBloc(
+      create: (context) => IdenticalListBloc(
           getTrips: sl(),
-          details: params,
-          getDeceasedDriverRequestDetails: sl(),
-          getTripsLocation: sl(),
-          isDriver: false),
-      child: BlocListener<RequestDetailsBloc, RequestDetailsState>(
+
+          getIdenticalListRequestDetails: sl(),
+
+          isDriver: false, requestID: params.requestId!),
+      child: BlocListener<IdenticalListBloc, IdenticalListState>(
           listener: (context, state) {
             print("state $state");
             if (state.status == BlocStatus.failure) {

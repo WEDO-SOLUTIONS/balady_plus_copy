@@ -564,7 +564,7 @@ class Routes {
 
     RouteName.ekramSuccessScreen: (context) => const EkramSuccessPage(),
 
-    RouteName.ekramTransportationDetailsScreen: (context) =>
+    RouteName.IdenticalListPage: (context) =>
         const IdenticalListPage(),
 
     RouteName.driverEkramTransportationDetailsScreen: (context) =>

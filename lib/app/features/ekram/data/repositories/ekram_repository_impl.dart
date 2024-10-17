@@ -194,9 +194,9 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<DeceasedRequestDetails>>>
-      getDeceasedDriverRequestDetails(int params) async {
+      getidenticalList(int params) async {
     try {
-      final data = await remoteDataSource.getDriverRequestDetails(params);
+      final data = await remoteDataSource.getIdenticalList(params);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

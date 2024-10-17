@@ -19,47 +19,48 @@ import '../../../domain/entities/add_trip_dialog_params.dart';
 import '../../../domain/entities/deceased_request_details/deceased_request_details.dart';
 import '../../../domain/entities/trip_details.dart';
 import '../../../domain/entities/trip_location_response.dart';
-import '../../../domain/use_cases/get_deceased_driver_request_details.dart';
+import '../../../domain/use_cases/get_identical_list_request.dart';
 import '../../../domain/use_cases/get_trips.dart';
 import '../../../domain/use_cases/get_trips_location.dart';
 import '../../dialogs/add_trip_new.dart';
 import '../../dialogs/trip_details_dialog.dart';
 
-part 'request_details_bloc_event.dart';
+part 'identical_list_bloc_event.dart';
 
-part 'request_details_bloc_state.dart';
+part 'identical_list_bloc_state.dart';
 
-class RequestDetailsBloc
-    extends Bloc<RequestDetailsEvent, RequestDetailsState> {
+class IdenticalListBloc
+    extends Bloc<IdenticalListEvent, IdenticalListState> {
   final GetTrips _getTrips;
-  final GetTripsLocation _getTripsLocation;
-  final GetDeceasedDriverRequestDetails _getDeceasedDriverRequestDetails;
 
-  RequestDetailsBloc(
-      {required DeceasedRequestDetails details,
-      required GetDeceasedDriverRequestDetails getDeceasedDriverRequestDetails,
+  final GetIdenticalListRequest _getIdenticalListRequestDetails;
+
+  IdenticalListBloc(
+      {
+        required int requestID,
+      required GetIdenticalListRequest getIdenticalListRequestDetails,
       required GetTrips getTrips,
-      required GetTripsLocation getTripsLocation,
       required bool isDriver})
       : _getTrips = getTrips,
-        _getTripsLocation = getTripsLocation,
-        _getDeceasedDriverRequestDetails = getDeceasedDriverRequestDetails,
-        super(RequestDetailsState(details: details, isDriver: isDriver)) {
-    on<RequestDetailsEvent>((event, emit) {
+
+        _getIdenticalListRequestDetails = getIdenticalListRequestDetails,
+        super(IdenticalListState( isDriver: isDriver,requestID: requestID)) {
+
+    on<IdenticalListEvent>((event, emit) {
       // TODO: implement event handler
     });
-    on<GetDriverRequestDetails>(_getDeceasedDriverRequestHandler);
+    on<GetIdenticalListRequestEvent>(_getIndenticalListRequestHandler);
     on<GetTripsEvent>(_getTripsHandler);
-    on<GetTripsLocationEvent>(_getTripsLocationsHandler);
+
 
     on<GetTripsDetailsEvent>(_getTripsDetailsHandler);
   }
 
-  Future<void> _getDeceasedDriverRequestHandler(
-      GetDriverRequestDetails e, Emitter emitter) async {
+  Future<void> _getIndenticalListRequestHandler(
+      GetIdenticalListRequestEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
     var failureOrSuccess =
-        await _getDeceasedDriverRequestDetails(state.details.requestId!);
+        await _getIdenticalListRequestDetails(state.requestID);
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
         status: BlocStatus.failure,
@@ -78,7 +79,7 @@ class RequestDetailsBloc
     emitter(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _getTrips(
-        state.details.deceasedInfoResponseDtoList![e.index].deathInfoId!);
+        state.details!.deceasedInfoResponseDtoList![e.index].deathInfoId!);
 
     failureOrSuccess.fold((failure) async {
       emitter(state.copyWith(
@@ -147,37 +148,37 @@ class RequestDetailsBloc
     });
   }
 
-  Future<void> _getTripsLocationsHandler(
-      GetTripsLocationEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-
-    final failureOrSuccess = await _getTripsLocation(
-        state.details.deceasedInfoResponseDtoList![e.index].deathInfoId!);
-
-    failureOrSuccess.fold((failure) async {
-      print("failurefailure");
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) async {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-
-      var context = NavigationService.navigatorKey.currentContext;
-
-      TripLocationItem? item = success.data?.result?.items?.firstOrNull;
-      if (item != null && item.lastX != null && item.lastY != null) {
-        double? lat = double.tryParse(item.lastY ?? "");
-        double? lon = double.tryParse(item.lastX ?? "");
-        if (lat != null && lon != null)
-          NavigationService.navigatorKey.currentState!
-              .pushNamed(RouteName.EkramMapPage, arguments: LatLng(lat, lon));
-      }
-    });
-  }
+  // Future<void> _getTripsLocationsHandler(
+  //     GetTripsLocationEvent e, Emitter emitter) async {
+  //   emitter(state.copyWith(status: BlocStatus.loading));
+  //
+  //   final failureOrSuccess = await _getTripsLocation(
+  //       state.details!.deceasedInfoResponseDtoList![e.index].deathInfoId!);
+  //
+  //   failureOrSuccess.fold((failure) async {
+  //     print("failurefailure");
+  //     emitter(state.copyWith(
+  //       status: BlocStatus.failure,
+  //       errorMessage: (failure as ServerFailure).errorMessage,
+  //     ));
+  //   }, (success) async {
+  //     emitter(state.copyWith(
+  //       status: BlocStatus.success,
+  //       errorMessage: "",
+  //     ));
+  //
+  //     var context = NavigationService.navigatorKey.currentContext;
+  //
+  //     TripLocationItem? item = success.data?.result?.items?.firstOrNull;
+  //     if (item != null && item.lastX != null && item.lastY != null) {
+  //       double? lat = double.tryParse(item.lastY ?? "");
+  //       double? lon = double.tryParse(item.lastX ?? "");
+  //       if (lat != null && lon != null)
+  //         NavigationService.navigatorKey.currentState!
+  //             .pushNamed(RouteName.EkramMapPage, arguments: LatLng(lat, lon));
+  //     }
+  //   });
+  // }
 
   // AddTripParameter getCurrentAddTripData(
   //     TripDetailsModel? lastTrip, DeceasedInfoResponseDtoList info,
@@ -233,7 +234,7 @@ class RequestDetailsBloc
                 transportAttachResponseDtoList: e.letters)),
         height: MediaQuery.of(context).size.height * 0.95);
     if (result == true) {
-      add(GetDriverRequestDetails());
+      add(GetIdenticalListRequestEvent());
       emitter(state.copyWith(isCompleted: true));
     }
   }
