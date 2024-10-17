@@ -9,7 +9,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dar
 import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../domain/entities/ekram_types.dart';
-import '../blocs/driver_request_bloc/ekram_requests_bloc.dart';
+import '../blocs/driver_request_bloc/transport_requests_bloc.dart';
 
 class EkramTypeCardWidget extends StatelessWidget {
   final EkramTypes ekramTypes;

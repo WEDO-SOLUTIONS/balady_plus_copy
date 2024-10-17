@@ -1,4 +1,4 @@
-part of 'ekram_requests_bloc.dart';
+part of 'transport_requests_bloc.dart';
 
 class EkramRequestsState extends Equatable {
   final BlocStatus status;

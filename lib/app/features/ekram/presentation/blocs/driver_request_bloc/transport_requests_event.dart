@@ -1,4 +1,4 @@
-part of 'ekram_requests_bloc.dart';
+part of 'transport_requests_bloc.dart';
 
 abstract class EkramRequestsEvent extends Equatable {
   const EkramRequestsEvent();

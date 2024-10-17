@@ -37,7 +37,7 @@ export 'domain/use_cases/get_deceased_transport_requests.dart';
 /// presentation -> blocs
 export 'presentation/blocs/ekram_request_transportation_bloc/ekram_request_transportation_bloc.dart';
 export 'presentation/blocs/trips_details_bloc/trip_details_bloc_bloc.dart';
-export 'presentation/blocs/driver_request_bloc/ekram_requests_bloc.dart';
+export 'presentation/blocs/driver_request_bloc/transport_requests_bloc.dart';
 
 /// presentation -> dialogs
 export 'presentation/dialogs/add_deceased_dialog.dart';

@@ -22,9 +22,9 @@ import '../../../domain/entities/cemetry_requests/cemetry_request_item.dart';
 import '../../../domain/use_cases/get_cemetry_request_details.dart';
 import '../../../domain/use_cases/get_cemetry_requests.dart';
 
-part 'ekram_requests_event.dart';
+part 'transport_requests_event.dart';
 
-part 'ekram_requests_state.dart';
+part 'transport_requests_state.dart';
 
 class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
   final GetDeceasedTransportRequests _getDeceasedTransportRequests;
@@ -58,7 +58,7 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
     on<EkramRequestsEvent>((event, emit) {
       emit(state);
     });
-    on<GetDeceasedTransportRequestsEvent>(_getDeceasedTransportRequestsHandler);
+    on<GetDeceasedTransportRequestsEvent>(_getRequestsHandler);
 
     on<GetDeceasedTransportRequestDetailsEvent>(
         _getDeceasedTransportRequestDetailsHandler);
@@ -111,7 +111,7 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
     });
   }
 
-  Future<void> _getDeceasedTransportRequestsHandler(
+  Future<void> _getRequestsHandler(
       GetDeceasedTransportRequestsEvent e, Emitter emitter) async {
     emitter(state.copyWith(
         status: BlocStatus.loadingShimmer,
