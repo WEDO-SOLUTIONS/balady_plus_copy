@@ -12,7 +12,6 @@ import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.da
 import 'package:mapness/_features/poi_card/provider/poi_my_location_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -30,31 +29,26 @@ part 'poi_deeplink_location_content.dart';
 part 'poi_my_location_content.dart';
 
 @RoutePage()
-class DeeplinkPage extends ConsumerStatefulWidget {
+class DeeplinkPage extends ConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
   const DeeplinkPage({
-    this.closestPoint,
+    required this.closestPoint,
     this.cameraConfig,
     super.key,
   });
 
   @override
-  ConsumerState<DeeplinkPage> createState() => _DeeplinkState();
-}
-
-class _DeeplinkState extends ConsumerState<DeeplinkPage> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     print('appLanguageProvider');
     final language = ref.watch(appLanguageProvider);
     _cameraAnimation(ref);
 
     final data = ref.watch(
       poiMyLocationProvider(
-        latitude: widget.closestPoint!.latitude,
-        longitude: widget.closestPoint!.longitude,
+        latitude: closestPoint!.latitude,
+        longitude: closestPoint!.longitude,
       ),
     );
     final sheetSizes = _calculateSheetSize(context, data);
@@ -84,20 +78,20 @@ class _DeeplinkState extends ConsumerState<DeeplinkPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 PoiDeeplinkContent(
-                  location: widget.closestPoint!,
+                  location: closestPoint!,
                   onTapClose: () => onClose(context, ref),
                   data: data,
                 ),
                 PoiDeeplinkPersonActions(
-                  onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(widget.closestPoint),
+                  onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
                   onGo: () {
                     ref
                         .read(poiCardActionsProvider.notifier)
                         .goRoute(
-                          startLabel: context.l10n.myLocation,
-                          finishLabel: context.l10n.pointToMap,
-                          finishLocation: widget.closestPoint!,
-                        )
+                      startLabel: context.l10n.myLocation,
+                      finishLabel: context.l10n.pointToMap,
+                      finishLocation: closestPoint!,
+                    )
                         .pushReplacement(context);
                   },
                 )
@@ -110,13 +104,13 @@ class _DeeplinkState extends ConsumerState<DeeplinkPage> {
   }
 
   Future<void> onClose(BuildContext context, WidgetRef ref) async {
-    await context.router.push(const BottomMenuRoute());
+    context.router.back();
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.removeAllMarkers();
   }
 
   Future<void> _cameraAnimation(WidgetRef ref) async {
-    if (widget.closestPoint != null) {
+    if (closestPoint != null) {
       final settings = MapObjectManagerSettings.myLocation();
       final mapObjectManager = ref.watch(
         mapObjectManagerProvider(
@@ -127,8 +121,8 @@ class _DeeplinkState extends ConsumerState<DeeplinkPage> {
       await mapObjectManager.removeAllMarkers();
       final marker = Markers.pinMarker(
         GeoPointWithElevationMessage(
-          latitude: widget.closestPoint!.latitude,
-          longitude: widget.closestPoint!.longitude,
+          latitude: closestPoint!.latitude,
+          longitude: closestPoint!.longitude,
           elevation: 1,
         ),
       );
@@ -139,14 +133,13 @@ class _DeeplinkState extends ConsumerState<DeeplinkPage> {
       await mapObjectManager.addMarker(marker);
 
       await ref.read(cameraPositionProvider.notifier).animateTo(
-            CameraPositionMessage(
-              point:
-                  GeoPointMessage(latitude: widget.closestPoint!.latitude, longitude: widget.closestPoint!.longitude),
-              zoom: widget.cameraConfig?.zoom ?? 16,
-              tilt: widget.cameraConfig?.tilt ?? 0,
-              bearing: widget.cameraConfig?.bearing ?? 0,
-            ),
-          );
+        CameraPositionMessage(
+          point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
+          zoom: cameraConfig?.zoom ?? 16,
+          tilt: cameraConfig?.tilt ?? 0,
+          bearing: cameraConfig?.bearing ?? 0,
+        ),
+      );
     }
   }
 
@@ -190,7 +183,7 @@ class _DeeplinkState extends ConsumerState<DeeplinkPage> {
 
   Size _textSize(String text, TextStyle style) {
     final TextPainter textPainter =
-        TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)..layout();
+    TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)..layout();
     return textPainter.size;
   }
 }

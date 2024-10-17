@@ -1,15 +1,13 @@
-// ignore_for_file: always_put_control_body_on_new_line
-
 import 'dart:async';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
@@ -114,6 +112,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   void initState() {
     super.initState();
     initMixpanel();
+    initDeepLinks();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Update MediaQueryInfoProvider with the initial MediaQuery
@@ -191,7 +190,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   navigatorObservers: () => [
                     RoutesObserver(ref: ref),
                   ],
-                  deepLinkBuilder: (uri) => openAppLink(uri),
                 ),
             theme: ThemeData(
               scaffoldBackgroundColor: Colors.transparent,
@@ -256,8 +254,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     await FlutterUxcam.startWithConfiguration(config);
   }
 
-  Future<DeepLink> openAppLink(PlatformDeepLink uri) async {
-    final decodeFull = Uri.decodeFull('https://apps.balady.gov.sa/#/poi-map?lat=24.74227&lon=46.6448583&type=my-location');
+  Future<void> initDeepLinks() async {
+    _appLinks = AppLinks();
+
+    final appLink = await _appLinks.getInitialAppLink();
+    if (appLink != null) {
+      await openAppLink(appLink, isFirstRun: true);
+    }
+
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      if (kDebugMode) {
+        print('_linkSubscription $uri');
+      }
+      openAppLink(uri);
+    });
+  }
+
+  Future<void> openAppLink(uri, {isFirstRun = false}) async {
+    await initCameraPositionPoint();
+    final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
     final url = Uri.parse(parse.fragment);
 
@@ -280,7 +295,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         latitude: latitude,
         longitude: longitude,
       )) {
-        return DeepLink.defaultPath;
+        return;
       }
     }
 
@@ -288,35 +303,42 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       final id = int.tryParse(objectId);
       if (id != null) {
         final location =
-            (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
-        return _poiDeeplinkById(id, location);
+        (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
+        if (isFirstRun) {
+          // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
+          await Future.delayed(const Duration(milliseconds: 300));
+        }
+        await _poiDeeplinkById(id, location);
       }
     } else if (latitude != null && longitude != null) {
       if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
-        return _myLocationDeepLinkHandler(latitude, longitude);
+        _myLocationDeepLinkHandler(latitude, longitude);
       } else {
-        return _poiDeepLinkByCoords(latitude, longitude);
+        if (isFirstRun) {
+          await Future.delayed(const Duration(milliseconds: 300));
+        }
+        await _poiDeepLinkByCoords(latitude, longitude);
       }
     } else if (momrahId != null) {
-      return _momrahDeepLinkHandler(momrahId);
-    } else if (url.toString().isNotEmpty) {
-      return DeepLink.path(url.toString());
-    }
+      await _momrahDeepLinkHandler(momrahId);
+    } else if (url.toString().isNotEmpty)  {
 
-    return DeepLink.defaultPath;
+      await ref.watch(appRouterProvider).pushNamed(url.toString());
+    }
   }
 
-  DeepLink _poiDeeplinkById(int dgisObjectId, [LatLng? location]) => DeepLink.single(
-        PoiCardWidgetRoute(
-          objectId: DgisObjectIdMessage(
-            objectId: dgisObjectId,
-            entranceId: 0,
-          ),
-          cameraConfig: PoiCameraConfig(zoom: 17),
-        ),
-      );
+  Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
+    final appRouter = ref.watch(appRouterProvider);
+    await appRouter.push(PoiCardWidgetRoute(
+      objectId: DgisObjectIdMessage(
+        objectId: dgisObjectId,
+        entranceId: 0,
+      ),
+      cameraConfig: PoiCameraConfig(zoom: 17),
+    ));
+  }
 
-  Future<DeepLink> _poiDeepLinkByCoords(double latitude, double longitude) async {
+  Future<void> _poiDeepLinkByCoords(double latitude, double longitude) async {
     final vendorConfig = await ref.read(vendorConfigProvider.future);
     final dio = ref.read(baseDioProvider);
 
@@ -341,45 +363,53 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         data['meta'] is Map<String, dynamic> &&
         (data['meta'] as Map<String, dynamic>).containsKey('code') &&
         (data['meta'] as Map<String, dynamic>)['code'] == 404) {
-      return DeepLink.single(
-        DeeplinkRoute(
-          closestPoint: LatLng(latitude: latitude, longitude: longitude),
-          cameraConfig: PoiCameraConfig(zoom: 17),
-        ),
-      );
+      // Dgis object id -2 is used to open map with provided coordinates not with poi id
+      final appRouter = ref.watch(appRouterProvider);
+      await appRouter.push(DeeplinkRoute(
+        closestPoint: LatLng(latitude: latitude, longitude: longitude),
+        cameraConfig: PoiCameraConfig(zoom: 17),
+      ));
     }
 
-    if (!data.containsKey('result')) return DeepLink.defaultPath;
+    if (!data.containsKey('result')) {
+      return;
+    }
 
     final result = data['result'] as Map<String, dynamic>;
-    if (!result.containsKey('items')) return DeepLink.defaultPath;
+    if (!result.containsKey('items')) {
+      return;
+    }
 
     final items = result['items'] as List<dynamic>;
-    if (items.isEmpty) return DeepLink.defaultPath;
+    if (items.isEmpty) {
+      return;
+    }
 
     final geocoderBest = items.first as Map<String, dynamic>;
-    if (!geocoderBest.containsKey('id')) return DeepLink.defaultPath;
+    if (!geocoderBest.containsKey('id')) {
+      return;
+    }
 
     final dgisId = int.tryParse(geocoderBest['id']);
-    if (dgisId == null) return DeepLink.defaultPath;
+    if (dgisId == null) {
+      return;
+    }
 
-    return DeepLink.single(
-      PoiCardWidgetRoute(
-        objectId: DgisObjectIdMessage(
-          objectId: dgisId,
-          entranceId: 0,
-        ),
-        cameraConfig: PoiCameraConfig(zoom: 17),
+    await ref.watch(appRouterProvider).push(PoiCardWidgetRoute(
+      objectId: DgisObjectIdMessage(
+        objectId: dgisId,
+        entranceId: 0,
       ),
-    );
+      cameraConfig: PoiCameraConfig(zoom: 17),
+    ));
   }
 
-  DeepLink _myLocationDeepLinkHandler(double latitude, double longitude) {
+  void _myLocationDeepLinkHandler(double latitude, double longitude) {
     final latLng = LatLng(latitude: latitude, longitude: longitude);
-    return DeepLink.single(DeeplinkRoute(closestPoint: latLng));
+    ref.watch(appRouterProvider).push(DeeplinkRoute(closestPoint: latLng));
   }
 
-  Future<DeepLink> _momrahDeepLinkHandler(String momrahId) async {
+  Future<void> _momrahDeepLinkHandler(String momrahId) async {
     final env = await ref.read(dgisEnvironmentProvider.future);
     final dio = ref.read(baseDioProvider);
 
@@ -392,35 +422,48 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
     final data = twinsResponse.data as Map<String, dynamic>;
 
-    if (!data.containsKey('result')) return DeepLink.defaultPath;
+    if (!data.containsKey('result')) {
+      return;
+    }
 
     final result = data['result'] as Map<String, dynamic>;
-    if (!result.containsKey('items')) return DeepLink.defaultPath;
+    if (!result.containsKey('items')) {
+      return;
+    }
 
     final items = result['items'] as List<dynamic>;
-    if (items.isEmpty) return DeepLink.defaultPath;
+    if (items.isEmpty) {
+      return;
+    }
 
     final item = items.first as Map<String, dynamic>;
-    if (!item.containsKey('twins')) return DeepLink.defaultPath;
+    if (!item.containsKey('twins')) {
+      return;
+    }
 
     final twins = item['twins'] as List<dynamic>;
-    if (twins.isEmpty) return DeepLink.defaultPath;
+    if (twins.isEmpty) {
+      return;
+    }
 
     final twin = twins.first as Map<String, dynamic>;
-    if (!twin.containsKey('dgis_id')) return DeepLink.defaultPath;
+    if (!twin.containsKey('dgis_id')) {
+      return;
+    }
 
     final dgisId = int.tryParse(twin['dgis_id']);
-    if (dgisId == null) return DeepLink.defaultPath;
+    if (dgisId == null) {
+      return;
+    }
 
-    return DeepLink.single(
-      PoiCardWidgetRoute(
-        objectId: DgisObjectIdMessage(
-          objectId: dgisId,
-          entranceId: 0,
-        ),
-        cameraConfig: PoiCameraConfig(zoom: 17),
+    final appRouter = ref.watch(appRouterProvider);
+    await appRouter.push(PoiCardWidgetRoute(
+      objectId: DgisObjectIdMessage(
+        objectId: dgisId,
+        entranceId: 0,
       ),
-    );
+      cameraConfig: PoiCameraConfig(zoom: 17),
+    ));
   }
 }
 

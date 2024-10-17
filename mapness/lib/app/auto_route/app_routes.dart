@@ -97,7 +97,6 @@ class AppRouter extends RootStackRouter {
               path: 'deeplink',
               page: DeeplinkRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'shared_my_location',
