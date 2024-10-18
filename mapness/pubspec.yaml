@@ -151,6 +151,8 @@ dev_dependencies:
   very_good_analysis: ^5.1.0
   cached_build_runner: ^0.0.7
   sentry_flutter: ^8.9.0
+  connectivity_plus: ^5.0.1
+  battery_plus: ^6.0.4
 
 flutter:
   assets:

@@ -10,7 +10,7 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  UrbiMetricsUtils().startTimeMeasure(UrbiMetricsUtils.testKey);
+  AdvancedMetrics.instance.startMeasureStartup();
   await runMapnessApp(() async {
     await AppEnv.setupEnv(EnvType.urbiPre);
     await setupMapness(EnvType.urbiPre);

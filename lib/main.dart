@@ -12,7 +12,7 @@ import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
   unhandledExceptionBaladyLogs(() async {
-    UrbiMetricsUtils().startTimeMeasure(UrbiMetricsUtils.testKey);
+    AdvancedMetrics.instance.startMeasureStartup();
     await runMapnessApp(() async {
       await AppEnv.setupEnv(EnvType.prod);
       await setupMapness(EnvType.prod);

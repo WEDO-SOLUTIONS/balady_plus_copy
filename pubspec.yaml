@@ -126,6 +126,7 @@ dependencies:
   launch_review: ^3.0.1
   mocktail: ^1.0.4
   flutter_riverpod: ^2.4.1
+  battery_plus: ^6.0.4
 
   flutter_appauth: ^7.0.1
 

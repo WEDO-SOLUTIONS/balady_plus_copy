@@ -7,6 +7,7 @@ class MetricsConstants {
   static const String poiTag = 'Poi';
   static const String loginTag = 'Login';
   static const String layersTag = 'Layers';
+  static const String baladyAppTag = 'BaladyApp';
 
   static const Favorites favoritesKeys = Favorites();
   static const Explore exploreKeys = Explore();
@@ -16,6 +17,7 @@ class MetricsConstants {
   static const Search searchKeys = Search();
   static const Login loginKeys = Login();
   static const Layers layersKeys = Layers();
+  static const BaladyApp baladyAppKeys = BaladyApp();
 }
 
 class Favorites {
@@ -55,8 +57,7 @@ class Explore {
   String get locateMeIcon => 'Locate me icon';
   String get storiesRefresh => 'Stories - Refresh';
   String get storyBanner => 'Story banner';
-  String get enhanceUrbanSceneBannerButton =>
-      'Enhance Urban Scene banner button';
+  String get enhanceUrbanSceneBannerButton => 'Enhance Urban Scene banner button';
   String get placesToShopBanner => 'Places to shop banner';
   String get bookmarkIcon => 'Bookmark icon';
   String get quickFilter => 'Quick filter';
@@ -84,8 +85,7 @@ class Routes {
   String get startRouteFromFavorite => 'Start route from favorite';
   String get onReorder => 'On reorder';
   String get changeLocation => 'Change location';
-  String get routeSelectionReverseRouteDirectionIcon =>
-      'Route-selection/Reverse Route Direction icon';
+  String get routeSelectionReverseRouteDirectionIcon => 'Route-selection/Reverse Route Direction icon';
   String get routeSelectionBack => 'Route-selection/Back';
   String get searchQuery => 'Search/Query';
   String get specifyOnMapDone => 'Specify on map/Done';
@@ -141,7 +141,31 @@ class Layers {
   String get layerSelect => 'Layer select';
   String get exitIcon => 'Exit icon';
   String get complianceOpenRatingBuilding => 'Compliance/open_rating_building';
-  String get complianceOpenCreateCompliance =>
-      'Compliance/open_create_compliance';
+  String get complianceOpenCreateCompliance => 'Compliance/open_create_compliance';
   String get complianceOpenCompliance => 'Compliance/open_compliance';
+}
+
+class BaladyApp {
+  const BaladyApp();
+  // Load Time
+  String get loadTime => 'Load Time';
+  String get loadType => 'Load Type';
+
+  // Battery
+  String get batteryUsage => 'Battery Usage';
+  String get appRuntime => 'App Runtime';
+  String get activeProcesses => 'Active Processes';
+  String get deviceState => 'Device State';
+
+  // Navi: Lost GPS
+  String get lostGpsCount => 'Lost Signal Count';
+  String get lostGpsDuration => 'Lost Signal Duration';
+
+  // General
+  String get deviceType => 'Device Type';
+  String get appVersion => 'App Version';
+  String get timestamp => 'Timestamp';
+  String get networkType => 'Network Type';
+  String get sessionId => 'Session ID';
+  String get location => 'Location';
 }
