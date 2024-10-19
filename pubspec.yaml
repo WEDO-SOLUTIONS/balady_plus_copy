@@ -126,8 +126,8 @@ dependencies:
   mocktail: ^1.0.4
   flutter_riverpod: ^2.4.1
 
-  flutter_appauth:
-    path: packages/flutter_appauth/flutter_appauth
+  flutter_appauth: ^7.0.1
+    #path: packages/flutter_appauth/flutter_appauth
   webview_flutter: ^4.2.2
   flutter_inappwebview: ^6.1.4
 
@@ -224,6 +224,7 @@ dependencies:
 
   ############################################################
   balady_authorization:
+    #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
     git:
       url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
 #      ref: master
