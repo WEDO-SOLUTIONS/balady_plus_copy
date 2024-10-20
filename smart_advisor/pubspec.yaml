@@ -76,7 +76,9 @@ dependency_overrides:
   intl: 0.19.0
   cached_network_image:
   dio_cache_interceptor: ^3.5.0
-  open_file_plus: ^3.4.1+1
+  open_file_plus:
+    git:
+      url: https://github.com/urbi-ae/open_file_plus
   archive: ^3.6.1
   dio: ^5.0.0
   json_serializable: ^6.7.1

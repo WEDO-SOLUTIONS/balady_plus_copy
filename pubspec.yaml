@@ -70,7 +70,9 @@ dependencies:
   # picking images and taking new pictures with the camera.
   image_picker: ^0.8.6
   # Native APP to open files with string result
-  open_file_plus: ^3.4.1+1
+  open_file_plus:
+    git:
+      url: https://github.com/urbi-ae/open_file_plus
   # for getting commonly used locations on host platform file
   path_provider: ^2.0.11
   # Launching a URL, Open contacts and others.
