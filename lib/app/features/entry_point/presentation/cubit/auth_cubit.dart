@@ -262,7 +262,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         });
       });
     } else {
-     // await autoLogout();
+      // await autoLogout();
     }
   }
 
@@ -306,24 +306,21 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> clearAuth() async {
     try {
       sl<AuthenticationBloc>().add(LogoutAuthentication());
-      // if (sl<EntryPointCubit>().state.token?.idToken?.isNotEmpty ?? false) {
-      //   await _clearAuth(NoParams());
-      // }
-
-      try {
-        await _logout(NoParams());
-      } catch(e) {
-        EasyLoading.dismiss();
-      }
-      sl<DelegatorsCubit>().clearDelegators();
-      sharedPrefs.setSSOToken(null);
-      clearSSOInfo();
       emit(
         const EntryPointState(
           status: AuthStatus.notAuthenticated,
           showSplash: false,
         ),
       );
+
+      try {
+        await _logout(NoParams());
+      } catch (e) {
+        EasyLoading.dismiss();
+      }
+      sl<DelegatorsCubit>().clearDelegators();
+      sharedPrefs.setSSOToken(null);
+      clearSSOInfo();
       if (CommonProperties.fcmToken != null &&
           CommonProperties.fcmToken!.isNotEmpty) {
         CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
@@ -336,33 +333,25 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> autoLogout() async {
-    // if (sl<EntryPointCubit>().state.token?.idToken?.isEmpty ?? false) {
-    //   await _clearAuth(NoParams());
-    // }
     sharedPrefs.setSSOToken(null);
     sl<DelegatorsCubit>().clearDelegators();
     try {
       sl<AuthenticationBloc>().add(LogoutAuthentication());
+      emit(
+        const EntryPointState(
+          status: AuthStatus.notAuthenticated,
+        ),
+      );
     } catch (e) {
       print("object");
     }
-    //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
-    emit(const EntryPointState(
-      status: AuthStatus.notAuthenticated,
-    ));
-
     try {
       await _logout(NoParams());
-    } catch(e) {
+    } catch (e) {
       EasyLoading.dismiss();
     }
-    //MM  sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
-
-    // Fix White screen on startup
-    // Helpers.backToHome();
-
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
