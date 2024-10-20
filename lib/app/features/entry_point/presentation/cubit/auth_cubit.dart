@@ -309,7 +309,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       // if (sl<EntryPointCubit>().state.token?.idToken?.isNotEmpty ?? false) {
       //   await _clearAuth(NoParams());
       // }
-      await _logout(NoParams());
+
+      try {
+        await _logout(NoParams());
+      } catch(e) {
+        EasyLoading.dismiss();
+      }
       sl<DelegatorsCubit>().clearDelegators();
       sharedPrefs.setSSOToken(null);
       clearSSOInfo();
@@ -348,7 +353,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       status: AuthStatus.notAuthenticated,
     ));
 
-    _logout(NoParams());
+    try {
+      await _logout(NoParams());
+    } catch(e) {
+      EasyLoading.dismiss();
+    }
     //MM  sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
 
     // Fix White screen on startup
