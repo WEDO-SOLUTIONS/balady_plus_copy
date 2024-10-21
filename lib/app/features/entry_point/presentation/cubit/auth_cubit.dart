@@ -248,11 +248,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           return false;
         }, (s) {
           emit(state.copyWith(
-            status: AuthStatus.notAuthenticated,
+            status: AuthStatus.authenticated,
             token: token,
             errorMessage: "",
           ));
-
           if (CommonProperties.fcmToken != null &&
               CommonProperties.fcmToken!.isNotEmpty) {
             CommonFunctions.updateNotificationSettings(
@@ -305,6 +304,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> clearAuth() async {
     try {
+      if(state.status == AuthStatus.notAuthenticated) {
+        return;
+      }
       sl<AuthenticationBloc>().add(LogoutAuthentication());
       emit(
         const EntryPointState(
@@ -333,18 +335,22 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> autoLogout() async {
-    sharedPrefs.setSSOToken(null);
-    sl<DelegatorsCubit>().clearDelegators();
+    if(state.status == AuthStatus.notAuthenticated) {
+      return;
+    }
     try {
-      sl<AuthenticationBloc>().add(LogoutAuthentication());
       emit(
         const EntryPointState(
           status: AuthStatus.notAuthenticated,
         ),
       );
+      sl<AuthenticationBloc>().add(LogoutAuthentication());
     } catch (e) {
       print("object");
     }
+
+    sharedPrefs.setSSOToken(null);
+    sl<DelegatorsCubit>().clearDelegators();
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
     try {
