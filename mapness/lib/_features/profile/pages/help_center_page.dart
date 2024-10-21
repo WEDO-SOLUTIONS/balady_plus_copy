@@ -1,15 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mapness/app/routes/profile.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/widgets/profile/contact_info.dart';
 
+@RoutePage()
 class HelpCenterPage extends ConsumerStatefulWidget {
   const HelpCenterPage({super.key});
 
@@ -35,7 +36,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                   title: context.l10n.helpCenter,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
-                    onPressed: () => context.pop(),
+                    onPressed: () => context.router.maybePop(),
                     icon: SystemIcons.arrowCornerLeftLarge,
                   ),
                 ),
@@ -52,7 +53,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                         color: context.color.surfaceBaseSecondary,
                         children: [
                           ContentRow(
-                            onTap: () => const MomraWebsitePageRoute().push(context),
+                            onTap: () => context.router.push(const MomraWebsiteRoute()),
                             options: ContentRowOptions(
                               title: context.l10n.baladyWebsite,
                               leadingIcon: GeneralIcons.web.icon(

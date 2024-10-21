@@ -1,17 +1,18 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/app/routes/voice_settings.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+@RoutePage()
 class SoundSettingsPage extends ConsumerStatefulWidget {
   const SoundSettingsPage({super.key});
 
@@ -46,7 +47,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                   color: colorsV2.foregroundDefault,
                 ),
                 leading: ActionModel(
-                  onPressed: () => context.pop(),
+                  onPressed: () => context.router.maybePop(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
@@ -107,7 +108,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                             ),
                           ),
                           ContentRow(
-                            onTap: () => const VoiceSettingsRoute().push(context),
+                            onTap: () => context.router.push(const VoiceSettingsRoute()),
                             options: ContentRowOptions(
                               wrapperColor: color.surfaceBaseTertiary,
                               wrapperEnabled: true,

@@ -19,7 +19,7 @@ class JobsMapRoute extends GoRouteData {
   Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: JobOverlayContent(),
+        child: JobOverlayContentPage(),
       ),
     );
 }
@@ -38,7 +38,7 @@ class JobsMapDetail extends GoRouteData {
   Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: JobDetailOverlay(jobId: jobId),
+        child: JobDetailOverlayPage(jobId: jobId),
       ),
     );
 }

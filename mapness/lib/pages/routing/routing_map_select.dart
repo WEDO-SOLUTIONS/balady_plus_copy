@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -19,14 +20,15 @@ import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
-class RoutingMapSelect extends ConsumerStatefulWidget {
-  const RoutingMapSelect({super.key});
+@RoutePage()
+class RoutingMapSelectPage extends ConsumerStatefulWidget {
+  const RoutingMapSelectPage({super.key});
 
   @override
-  ConsumerState<RoutingMapSelect> createState() => _RoutingMapSelectState();
+  ConsumerState<RoutingMapSelectPage> createState() => _RoutingMapSelectState();
 }
 
-class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
+class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
   @override
   Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);

@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -38,10 +39,14 @@ class MapSuggestList extends ConsumerWidget {
             },
           );
 
-          PoiMapRoute.open(
-            ref.read(goRouterProvider),
-            object.id!.objectId,
-            zoom: 18,
+          context.router.push(
+            PoiCardWidgetRoute(
+              objectId: DgisObjectIdMessage(
+                objectId: object.id!.objectId,
+                entranceId: 0,
+              ),
+              cameraConfig: PoiCameraConfig(zoom: 18),
+            ),
           );
         },
       ),

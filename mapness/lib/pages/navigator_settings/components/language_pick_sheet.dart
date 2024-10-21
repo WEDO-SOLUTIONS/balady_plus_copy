@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -9,8 +10,9 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
-class LanguagePickSheet extends StatelessWidget {
-  const LanguagePickSheet({super.key});
+@RoutePage()
+class LanguagePickSheetPage extends StatelessWidget {
+  const LanguagePickSheetPage({super.key});
 
   @override
   Widget build(BuildContext context) {

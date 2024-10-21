@@ -1,9 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -185,10 +186,12 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     final isContainsMyLocation = labels.contains(l10n.myLocation);
 
     // Show the search route screen and get new value from it
-    final value = await RoutingSearchRoute(
-      placeholder: index == 0 ? l10n.from : l10n.to,
-      showMyLocation: !isMyLocation && !isContainsMyLocation,
-    ).push(context);
+    final value = await context.router.push(
+      RoutingSearchSheetRoute(
+        placeholder: index == 0 ? l10n.from : l10n.to,
+        showMyLocation: !isMyLocation && !isContainsMyLocation,
+      ),
+    );
 
     if (value != null && value is RoutePoint) {
       var latitude = value.latitude;

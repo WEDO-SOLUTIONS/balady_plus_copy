@@ -14,7 +14,6 @@ import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -192,7 +191,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
         props: {'event': event.id.objectId, 'title': event.title},
       );
 
-      EventsRoute.open(context, event);
+      context.router.push(RoadClosureRoute(
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        startTime: event.startTime,
+        finishTime: event.finishTime,
+        latitude: event.latLng.latitude,
+        longitude: event.latLng.longitude,
+      ));
     } else if (event is MyLocationTapEvent) {
       if (context.mounted) {
         Metrics.logEventAdvanced(

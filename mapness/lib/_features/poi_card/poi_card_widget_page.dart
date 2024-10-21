@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -34,9 +33,8 @@ import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_inbuilding_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_loading_sheet.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -411,8 +409,11 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
   }
 
   void _openRoutingRoutes(
-      BuildContext context, WidgetRef ref, DirectoryObjectMessage data, RouteSearchPoint finishPoint) {
-    final objectMessage = data;
+    BuildContext context,
+    WidgetRef ref,
+    DirectoryObjectMessage objectMessage,
+    RouteSearchPoint finishPoint,
+  ) {
     Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
         group: MetricsConstants.poiTag,
         action: MetricAction.tap.toString(),
@@ -421,40 +422,22 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           'finish_point': '${finishPoint.coordinates.latitude},${finishPoint.coordinates.longitude}'
         });
 
-    final goRouter = ref.read(goRouterProvider);
-    final matches = goRouter.routerDelegate.currentConfiguration.matches;
-    final hasRoutingRoutes = matches.any((element) => element.matchedLocation == RoutingRoutesRoute.path);
-
-    if (hasRoutingRoutes) {
-      context.popRouteUntilFirst();
-      final dgisObjectId = objectMessage.id?.objectId;
-      if (dgisObjectId != null) {
-        PoiMapRoute.open(goRouter, dgisObjectId);
-      }
-    }
-
-    final route = _createRoutingRoute(objectMessage, context.l10n.myLocation);
-    unawaited(route.push(context));
-  }
-
-  RoutingRoutesRoute _createRoutingRoute(
-    DirectoryObjectMessage objectMessage,
-    String startLabel,
-  ) =>
+    context.router.push(
       RoutingRoutesRoute(
-        finishLabel: objectMessage.title,
-        finishLatitude: objectMessage.markerPosition!.latitude,
-        finishLongitude: objectMessage.markerPosition!.longitude,
-        finishObjectId: objectMessage.id?.objectId,
-        finishEntranceId: objectMessage.id?.entranceId,
-        finishLevelId: objectMessage.levelId,
-        startLabel: startLabel,
-        startLatitude: null,
-        startLongitude: null,
-        startObjectId: null,
-        startEntranceId: null,
-        startLevelId: null,
-      );
+        points: [
+          null,
+          RouteParamsPoint(
+            latitude: objectMessage.markerPosition!.latitude,
+            longitude: objectMessage.markerPosition!.longitude,
+            objectId: objectMessage.id?.objectId,
+            entranceId: objectMessage.id?.entranceId,
+            levelId: objectMessage.levelId,
+          ),
+        ],
+        labels: [context.l10n.myLocation, objectMessage.title],
+      ),
+    );
+  }
 
   Future<void> _onFavoriteTap({
     required BuildContext context,

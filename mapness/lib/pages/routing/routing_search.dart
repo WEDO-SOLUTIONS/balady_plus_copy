@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
@@ -12,12 +12,13 @@ import 'package:mapness/pages/routing/ui/routing_search_content.dart';
 import 'package:mapness/pages/routing/ui/routing_search_header_delegate.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
-class RoutingSearchSheet extends ConsumerStatefulWidget {
+@RoutePage()
+class RoutingSearchSheetPage extends ConsumerStatefulWidget {
   final String placeholder;
   final String? initialQuery;
   final bool showMyLocation;
 
-  const RoutingSearchSheet({
+  const RoutingSearchSheetPage({
     required this.placeholder,
     required this.showMyLocation,
     this.initialQuery,
@@ -25,10 +26,10 @@ class RoutingSearchSheet extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<RoutingSearchSheet> createState() => _RoutingSearchSheetState();
+  ConsumerState<RoutingSearchSheetPage> createState() => _RoutingSearchSheetState();
 }
 
-class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
+class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
   late final DgisBottomSheetController _dgisSheetController;
   final kbVisibilityController = KeyboardVisibilityController();
   late final StreamSubscription<bool> _keyboardVisible;
@@ -74,7 +75,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
                 },
                 onExpansionChanged: (expansion, {byUser = false}) {
                   if (expansion == Expansion.hidden && context.mounted) {
-                    context.pop();
+                    context.maybePop();
                   }
                 },
                 middleHeight: constraints.maxHeight * 0.7,

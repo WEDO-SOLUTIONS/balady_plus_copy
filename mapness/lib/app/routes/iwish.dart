@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entities/iwish/models/iwish_marker.dart';
 import 'package:mapness/pages/iwish/iwish_feedback_comment.dart';
@@ -23,7 +23,7 @@ class IwishCardRoute extends GoRouteData {
     final route = IwishCardRoute(iwishId: marker.id);
     final matches = router.routerDelegate.currentConfiguration.matches;
     if (matches.last.matchedLocation.contains(path) ||
-        matches.last.matchedLocation == (PoiMapRoute.path)) {
+        matches.last.matchedLocation == (PoiCardWidgetRoute.name)) {
       router.pushReplacement(route.location);
     } else {
       router.push(route.location);

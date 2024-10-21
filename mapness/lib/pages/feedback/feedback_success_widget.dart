@@ -1,11 +1,11 @@
-import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -76,7 +76,9 @@ class FeedbackSuccessWidget extends StatelessWidget {
                       buttonColorScheme: ButtonColorScheme.primary,
                       primaryLabel: context.l10n.complete,
                       onTap: () {
-                        context.popUntilRoute(PoiMapRoute.path);
+                        context.router.popUntil(
+                          (route) => route.settings.name == PoiCardWidgetRoute.name,
+                        );
                       },
                     ),
                   ),

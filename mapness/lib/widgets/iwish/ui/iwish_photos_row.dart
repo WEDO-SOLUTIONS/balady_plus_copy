@@ -1,7 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/photo_viewer.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 
 class IwishPhotosRow extends ConsumerWidget {
@@ -39,7 +39,8 @@ class IwishPhotosRow extends ConsumerWidget {
                   key: ValueKey(photos[index]),
                   aspectRatio: 1,
                   child: LoadingShimmerImage(
-                    onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photos),
+                    onImageTap: (name, {isAsset}) =>
+                        context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
                     imageUrl: photos[index],
                     fit: BoxFit.cover,
                   ),

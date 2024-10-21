@@ -10,8 +10,6 @@ import 'package:mapness/_features/landing/providers/quick_filter_request_source_
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/free_roam.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -93,7 +91,7 @@ class _DashboardMenu extends ConsumerWidget {
                     filterType: FilterType.custom,
                     title: context.l10n.go,
                     icon: 'assets/icons/svg/quick_filters/free_roam.svg',
-                    onTap: () => FreeRoamRoute.open(ref.watch(goRouterProvider)),
+                    onTap: () => context.router.push(const FreeRoamRoute()),
                   ),
                 ],
               ),

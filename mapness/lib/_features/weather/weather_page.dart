@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:mapness/_features/weather/weather_controls.dart';
 import 'package:mapness/_features/weather/weather_dashboard.dart';
 import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
 
+@RoutePage()
 class WeatherPage extends ConsumerStatefulWidget {
   const WeatherPage({super.key});
 

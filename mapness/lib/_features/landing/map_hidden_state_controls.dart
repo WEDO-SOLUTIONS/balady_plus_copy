@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -9,9 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/free_roam.dart';
-import 'package:mapness/app/routes/free_roam_autostart_settings.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
@@ -108,7 +107,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                       child: AppButton(
                         onTap: () {
                           ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
-                          FreeRoamAutostartSettingsRoute.open(context);
+                          context.router.push(const AutostartSettingsSheetRoute());
                         },
                         buttonColorScheme: ButtonColorScheme.onColor,
                         primaryLabel: context.l10n.cancel,
@@ -241,7 +240,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
         child: InkWell(
           borderRadius: BorderRadius.circular(borderRadius),
           onTap: () {
-            FreeRoamRoute.open(ref.watch(goRouterProvider));
+            context.router.push(FreeRoamRoute());
             ref.read(freeRoamStarterProvider.notifier).setShown();
           },
           child: ConstrainedBox(

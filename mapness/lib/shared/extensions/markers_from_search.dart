@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -71,7 +71,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _poiMapFont = 'Noto Sans Arabic Regular';
 
   Future<List<Marker>> getMarkers({
-    required GoRouter router,
+    required AppRouter router,
     MarkerIconMessage? icon,
     bool withLabel = true,
     bool isRtl = true,
@@ -92,7 +92,15 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
             onTap: () {
               Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
                   group: MetricsConstants.poiTag, action: MetricAction.tap.toString(), props: {_propertyKey: objectId});
-              PoiMapRoute.open(router, objectId!);
+
+              router.push(
+                PoiCardWidgetRoute(
+                  objectId: DgisObjectIdMessage(
+                    objectId: objectId!,
+                    entranceId: 0,
+                  ),
+                ),
+              );
             },
             options: MarkerOptionsMessage(
               text: hasLabels && objectId != null ? uiObjectMaps[objectId] : null,

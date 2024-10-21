@@ -1,15 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/routes/home_shell.dart';
-import 'package:mapness/app/routes/iwish.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes_helper.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -22,10 +20,10 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/widgets/routing/ui_kit/ab_point/ab_points.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+@RoutePage()
 class RoutingRoutesPage extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
   final List<String> labels;
@@ -60,7 +58,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     /// if route from user location make sure he has location permission
     if (widget.points.any((element) => element == null)) {
       locationPermission.checkLocationPermission(
-        routeOnClose: const RoutingRoute().location,
+        routeOnClose: RoutingRoutesRoute.name,
       );
     }
   }
@@ -181,7 +179,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         points: List.of(points),
         labels: List.of(labels),
 
-        onClose: context.pop,
+        onClose: () => context.router.maybePop(),
         // We have to pass external context to the sheet to be able to get the colors, text styles, etc.
         externalContext: context,
       ),
@@ -197,7 +195,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       this.points = points;
       this.labels = labels;
     });
-    context.pop();
+    context.router.maybePop();
   }
 
   void _onClose() {
@@ -217,18 +215,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       action: MetricAction.tap.toString(),
     );
 
-    final routes = ref.read(currentRouteProvider);
-
-    switch (routes?.previousPath) {
-      case PoiMapRoute.path:
-      case IwishCardRoute.path:
-        context.pop();
-        break;
-      case LandingRoute.path:
-        const LandingRoute().go(context);
-        break;
-      default:
-        const RoutingRoute().pushReplacement(context);
-    }
+    context.back();
   }
 }

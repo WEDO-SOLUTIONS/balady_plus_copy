@@ -23,8 +23,7 @@ import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/path_nav.dart';
+import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
@@ -140,19 +139,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
 
     if (state != null) {
-      final extra = {
-        'data': RouteSearchOptionsMessageExt.fromString(type!),
-        'restoreFromState': true,
-      };
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
         if (location != null) {
-          ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+          ref.read(appRouterProvider).push(
+                PathNavRoute(
+                  navType: RouteSearchOptionsMessageExt.fromString(type!),
+                  restoreFromState: true,
+                ),
+              );
         } else {
           _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
-              ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+              ref.read(appRouterProvider).push(
+                PathNavRoute(
+                  navType: RouteSearchOptionsMessageExt.fromString(type!),
+                  restoreFromState: true,
+                ),
+              );
             }
           });
         }
@@ -166,19 +171,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final navStateMessage = await controller.getCurrentNavigationState();
 
     if (navStateMessage.state == NavigationState.navigation) {
-      final extra = {
-        'data': navStateMessage.routeSearchOptions,
-        'restoreFromState': false,
-      };
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
         if (location != null) {
-          ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+          ref.read(appRouterProvider).push(
+                PathNavRoute(
+                  navType: navStateMessage.routeSearchOptions,
+                  restoreFromState: false,
+                ),
+              );
         } else {
           _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
-              ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+              ref.read(appRouterProvider).push(
+                    PathNavRoute(
+                      navType: navStateMessage.routeSearchOptions,
+                      restoreFromState: false,
+                    ),
+                  );
             }
           });
         }
@@ -235,6 +246,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 ? LoadingOverlay(
                     child: ToastOverlay(
                       child: GlobalScopes(
+                        key: rootNavigatorKey,
                         child: child,
                       ),
                     ),

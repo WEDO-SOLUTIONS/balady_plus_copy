@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,16 +10,18 @@ import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_details.dart';
 import 'package:shimmer/shimmer.dart';
 
-class LayersDetailsWidget extends ConsumerStatefulWidget {
-  const LayersDetailsWidget({super.key, this.data});
+@RoutePage()
+// TODO(Ayat) check screen logic
+class LayersDetailsWidgetPage extends ConsumerStatefulWidget {
+  const LayersDetailsWidgetPage({super.key, this.data});
 
   final PointLayersData? data;
 
   @override
-  ConsumerState<LayersDetailsWidget> createState() => LayersDetailsState();
+  ConsumerState<LayersDetailsWidgetPage> createState() => LayersDetailsState();
 }
 
-class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
+class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
   @override
   Widget build(BuildContext context) => SafeArea(
         child: Padding(

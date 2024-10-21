@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' show Spacing;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +17,13 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
+@RoutePage()
 class EtaRoutePage extends ConsumerStatefulWidget {
+  static const tokenKey = 'token';
+  static const streamKey = 'stream';
+  static const latKey = 'lat';
+  static const lonKey = 'lon';
+
   final double? latitude;
   final double? longitude;
   const EtaRoutePage({

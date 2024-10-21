@@ -1,20 +1,18 @@
-// ignore_for_file: prefer_expression_function_bodies
-
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
@@ -44,6 +42,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 /// We don't show black background under the opened sheet. The meaning of this is that the user have to control the map even if he opened the sheet.
 /// You don't need to add black background to make the app similar to the other app
+@RoutePage()
 class PathNavPage extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage navType;
   final bool restoreFromState;
@@ -135,7 +134,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       );
     } catch (e) {
       await clearNavigationState();
-      context.pop();
+      await context.router.maybePop();
     }
   }
 
@@ -367,7 +366,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await _endTrip(() {
       if (context.mounted) {
-        const RoutingRoute(collapseInitially: true).go(context);
+        context.router.popUntilRouteWithName(BottomMenuRoute.name);
       }
     });
   }
@@ -383,7 +382,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await _endTrip(() {
       if (context.mounted) {
-        const LandingRoute().go(context);
+        context.router.popUntilRouteWithName(BottomMenuRoute.name);
       }
     });
   }

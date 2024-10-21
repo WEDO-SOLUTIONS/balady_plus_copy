@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -13,6 +14,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+@RoutePage()
 class VoiceSettingsPage extends ConsumerStatefulWidget {
   const VoiceSettingsPage({super.key});
 

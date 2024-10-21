@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -5,20 +6,21 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class AutostartSettingsSheet extends ConsumerStatefulWidget {
-  const AutostartSettingsSheet({super.key});
+@RoutePage()
+class AutostartSettingsSheetPage extends ConsumerStatefulWidget {
+  const AutostartSettingsSheetPage({super.key});
 
   @override
-  ConsumerState<AutostartSettingsSheet> createState() => AutostartSettingsSheetState();
+  ConsumerState<AutostartSettingsSheetPage> createState() => AutostartSettingsSheetState();
 }
 
-class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheet> with SingleTickerProviderStateMixin {
+class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPage> with SingleTickerProviderStateMixin {
   static const duration = Duration(milliseconds: 250);
   static const showHideDuration = Duration(milliseconds: 150);
 
@@ -168,14 +170,14 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheet> 
     ref.read(freeRoamAutostartSettingsProvider.notifier).setState(isAutostart: false);
     ref.read(freeRoamStarterProvider.notifier).setShown();
     if (context.mounted) {
-      const LandingRoute().go(context);
+      context.router.popUntilRouteWithName(BottomMenuRoute.name);
     }
   }
 
   void continueAutorun() {
     ref.read(freeRoamAutostartSettingsProvider.notifier).setState(isAutostart: true);
     if (context.mounted) {
-      const LandingRoute().go(context);
+      context.router.popUntilRouteWithName(BottomMenuRoute.name);
     }
   }
 }

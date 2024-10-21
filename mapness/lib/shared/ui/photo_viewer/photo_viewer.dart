@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -7,21 +8,22 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
-class PhotoViewerWidget extends StatefulWidget {
+@RoutePage()
+class PhotoViewerPage extends StatefulWidget {
   final List<String>? photoPaths;
   final int currentPhotoIndex;
 
-  const PhotoViewerWidget({
+  const PhotoViewerPage({
     required this.photoPaths,
     required this.currentPhotoIndex,
     super.key,
   });
 
   @override
-  State<PhotoViewerWidget> createState() => _PhotoViewerWidgetState();
+  State<PhotoViewerPage> createState() => _PhotoViewerPageState();
 }
 
-class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
+class _PhotoViewerPageState extends State<PhotoViewerPage> {
   static const backgroundColor = Color(0xff0B1218);
   String _title = '';
   late final PhotoViewController _scaleController;
@@ -45,7 +47,7 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
   }
 
   @override
-  void didUpdateWidget(covariant PhotoViewerWidget oldWidget) {
+  void didUpdateWidget(covariant PhotoViewerPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     _title = getTitle(widget.currentPhotoIndex);
   }

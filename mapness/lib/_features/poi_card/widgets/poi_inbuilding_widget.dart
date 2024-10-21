@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -10,8 +11,7 @@ import 'package:mapness/_features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 
 class PoiInBuildingWidget extends ConsumerStatefulWidget {
   final PoiCardState? state;
@@ -84,13 +84,19 @@ class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
                           return;
                         }
                         context.pop();
-                        PoiMapRoute.open(
-                          ref.read(goRouterProvider),
-                          int.parse(id),
-                          zoom: widget.cameraConfig?.zoom,
-                          bearing: widget.cameraConfig?.bearing,
-                          tilt: widget.cameraConfig?.tilt,
-                          latLng: widget.closestPoint,
+                        context.router.push(
+                          PoiCardWidgetRoute(
+                            objectId: DgisObjectIdMessage(
+                              objectId: int.parse(id),
+                              entranceId: 0,
+                            ),
+                            closestPoint: widget.closestPoint,
+                            cameraConfig: PoiCameraConfig(
+                              zoom: widget.cameraConfig?.zoom,
+                              bearing: widget.cameraConfig?.bearing,
+                              tilt: widget.cameraConfig?.tilt,
+                            ),
+                          ),
                         );
                       },
                       options: ContentRowOptions(
@@ -105,7 +111,8 @@ class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
               separatorBuilder: (context, index) => Spacing.$4x.heightBox,
             ),
             SliverToBoxAdapter(
-                child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox),
+              child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox,
+            ),
           ],
         ),
       );

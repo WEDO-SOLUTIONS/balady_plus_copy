@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:custom_image_crop/custom_image_crop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+@RoutePage()
 class ImageEditorPage extends ConsumerStatefulWidget {
   const ImageEditorPage(this.image, {super.key});
 
@@ -40,7 +42,7 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                   cropController: controller,
                   image: MemoryImage(
                     widget.image,
-                  ), // Any Imageprovider will work, try with a NetworkImage for example...
+                  ),
                 ),
               ),
               Row(

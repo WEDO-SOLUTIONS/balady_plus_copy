@@ -49,7 +49,7 @@ class LanguagePickSheetRoute extends GoRouteData {
           ),
           child: child,
         ),
-        child: const LanguagePickSheet(),
+        child: const LanguagePickSheetPage(),
       );
 }
 

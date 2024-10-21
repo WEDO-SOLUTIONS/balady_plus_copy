@@ -13,8 +13,8 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/profile.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
@@ -105,10 +105,7 @@ class AuthorizedWidget extends ConsumerWidget {
       return;
     }
     final bytes = await image.readAsBytes();
-    final Uint8List? croppedBytes = await ref.read(goRouterProvider).push(
-          const ImageEditorRoute().location,
-          extra: bytes,
-        );
+    final Uint8List? croppedBytes = await ref.read(appRouterProvider).push(ImageEditorRoute(image: bytes));
     if (croppedBytes != null) {
       await ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes);
     }

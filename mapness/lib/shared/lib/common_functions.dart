@@ -1,10 +1,11 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dgis_map/library.dart' show VisibleRect;
 import 'package:flutter/widgets.dart';
 import 'package:geobase/geobase.dart' as gb;
-import 'package:mapness/app/routes/signin.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommonFunctions {
@@ -41,7 +42,7 @@ class CommonFunctions {
     var isAuth = CommonProperties.isLoggedIn;
     if (!isAuth) {
       if (context.mounted) {
-        await const SignInRoute().push(context);
+        await context.router.push(const SigninRoute());
         isAuth = CommonProperties.isLoggedIn;
       }
     }

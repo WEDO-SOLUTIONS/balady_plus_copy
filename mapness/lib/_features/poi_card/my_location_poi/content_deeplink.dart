@@ -12,7 +12,8 @@ import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.da
 import 'package:mapness/_features/poi_card/provider/poi_my_location_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
-import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -85,14 +86,18 @@ class DeeplinkPage extends ConsumerWidget {
                 PoiDeeplinkPersonActions(
                   onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
                   onGo: () {
-                    ref
-                        .read(poiCardActionsProvider.notifier)
-                        .goRoute(
-                      startLabel: context.l10n.myLocation,
-                      finishLabel: context.l10n.pointToMap,
-                      finishLocation: closestPoint!,
-                    )
-                        .pushReplacement(context);
+                    context.router.popAndPush(
+                      RoutingRoutesRoute(
+                        points: [
+                          null,
+                          RouteParamsPoint(
+                            latitude: closestPoint!.latitude,
+                            longitude: closestPoint!.longitude,
+                          )
+                        ],
+                        labels: [context.l10n.myLocation, context.l10n.pointToMap],
+                      ),
+                    );
                   },
                 )
               ],

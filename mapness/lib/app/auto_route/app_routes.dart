@@ -38,10 +38,64 @@ class AppRouter extends RootStackRouter {
             child: child,
           ),
         ),
+        CustomRoute(
+          path: '/settings',
+          page: SettingsRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/dark_map',
+          page: DarkMapRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/about_balady',
+          page: AboutBaladyRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/help_center',
+          page: HelpCenterRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/profile_info',
+          page: ProfileInfoRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/momra_website',
+          page: MomraWebsiteRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/image_editor',
+          page: ImageEditorRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/sign_in',
+          page: SigninRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/navigator_settings',
+          page: NavigatorSettingsRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/sound_settings',
+          page: SoundSettingsRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
+          path: '/voice_settings',
+          page: VoiceSettingsRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
         AutoRoute(
           page: MapRoute.page,
           path: '/',
-          keepHistory: false,
           initial: true,
           guards: [
             OnboardRouteGuard(ref),
@@ -84,8 +138,19 @@ class AppRouter extends RootStackRouter {
               transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
+              path: 'path_nav',
+              page: PathNavRoute.page,
+              fullscreenDialog: true,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
               path: 'search',
               page: SearchRoute.page,
+            ),
+            CustomRoute(
+              path: 'routing_map',
+              page: RoutingMapSelectRoute.page,
             ),
             CustomRoute(
               path: 'poi_card',
@@ -97,6 +162,67 @@ class AppRouter extends RootStackRouter {
               path: 'deeplink',
               page: DeeplinkRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'routing_routes',
+              page: RoutingRoutesRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'eta_roue',
+              page: EtaRouteRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'weather_router',
+              page: WeatherRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              page: RoutingSearchSheetRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'road_panel_sheet',
+              page: RoadPanelSheetRoute.page,
+              fullscreenDialog: true,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'free_roam',
+              page: FreeRoamRoute.page,
+              fullscreenDialog: true,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'road_closure',
+              page: RoadClosureRoute.page,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'auto_start_settings',
+              page: AutostartSettingsSheetRoute.page,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'layers_details',
+              page: LayersDetailsWidgetRoute.page,
+              fullscreenDialog: true,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              customRouteBuilder: customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'shared_my_location',

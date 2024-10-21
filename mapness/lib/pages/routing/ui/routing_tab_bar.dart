@@ -1,9 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/routes/navigator_settings.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
@@ -34,7 +35,7 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
         child: Row(
           children: [
             AppButton(
-              onTap: () => const NavigatorSettingsRoute().push(context),
+              onTap: () => context.router.push(const NavigatorSettingsRoute()),
               buttonColorScheme: ButtonColorScheme.tertiary,
               size: ButtonSize.small,
               primaryIcon: SystemIcons.tuning,
