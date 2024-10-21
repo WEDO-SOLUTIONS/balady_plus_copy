@@ -18,6 +18,7 @@ class MessageEventHandler {
   /// Message handler for navigation messages.
   void handleMessageEvent(Map<dynamic, dynamic> map) {
     final event = map['state'];
+    log('>> event: $event');
     if (event == NaviMessageEventState.gpsLost.name) {
       log('>> GPS Signal lost');
       _controller.sink.add(const NaviMessageEvent(NaviMessageEventState.gpsLost));

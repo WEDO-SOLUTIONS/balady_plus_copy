@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mapness/shared/lib/metrics/battery_usage.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/metrics/lost_gps.dart';
+import 'package:mapness/shared/lib/metrics/route_calculation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -203,6 +204,36 @@ class AdvancedMetrics {
     if (jsonString != null) {
       final metrics = LostGpsMetrics.fromJson(jsonString);
       log('>>> $metrics');
+    }
+  }
+
+  // Route calculation time
+  Stopwatch? _routeCalculationRuntime;
+  final route = <List<double>>[];
+
+  Future<void> startRouteCalculation(List<double>? start, List<double>? end) async {
+    _routeCalculationRuntime = Stopwatch()..start();
+    route
+      ..clear()
+      ..addAll([start ?? [], end ?? []]);
+  }
+
+  Future<void> stopRouteCalculation() async {
+    if (_routeCalculationRuntime != null) {
+      final duration = _routeCalculationRuntime!.elapsedMilliseconds;
+      _routeCalculationRuntime?.stop();
+      _routeCalculationRuntime = null;
+
+      final routeCalculation = RouteCalculationMetrics(
+        duration: duration,
+        route: route,
+        deviceType: await getDeviceInfo(),
+        appVersion: await _getAppVersion(),
+        timestamp: _timeStamp,
+        networkType: await Connectivity().checkConnectivity(),
+        sessionId: UrbiMetricsUtils.instance.sessionUuid,
+      );
+      log('>>> Route $routeCalculation');
     }
   }
 
