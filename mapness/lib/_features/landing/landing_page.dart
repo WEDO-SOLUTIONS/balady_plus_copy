@@ -124,6 +124,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     if (state == AppLifecycleState.resumed) {
       ref.read(locationProvider.notifier).checkLocationPermission();
       ref.read(freeRoamStarterProvider.notifier).reset();
+    } else if (state == AppLifecycleState.paused) {
+      AdvancedMetrics.instance.stopMeasureBattery();
     }
 
     super.didChangeAppLifecycleState(state);
