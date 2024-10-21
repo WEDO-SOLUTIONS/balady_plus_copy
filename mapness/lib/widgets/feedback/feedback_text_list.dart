@@ -40,6 +40,12 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
     });
   }
 
+  void _removeInput(int i) {
+    setState(() {
+      _inputs.removeAt(i);
+    });
+  }
+
   void _updateInput(int i, String text) {
     var formattedValue = text;
     if (widget.field.type == FeedbackTextType.phone) {
@@ -48,6 +54,23 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
     setState(() {
       _inputs[i] = formattedValue;
     });
+  }
+
+  bool _isValid(String? value) {
+    final validator = switch (widget.field.type) {
+      FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: _isRequired),
+      FeedbackTextType.phone => FormBuilderValidators.compose([
+          FormBuilderValidators.phoneNumber(checkNullOrEmpty: _isRequired),
+          FormBuilderValidators.minLength(
+            PhoneNumberFormatter.arabicPhoneNumberMinLength,
+            checkNullOrEmpty: _isRequired,
+          ),
+        ]),
+      FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: _isRequired),
+      _ when _isRequired => FormBuilderValidators.required(),
+      _ => (_) => null,
+    };
+    return validator(value) == null;
   }
 
   @override
@@ -70,17 +93,10 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
           if (_isRequired && values == null) {
             return FormBuilderValidators.required()(values);
           }
-          final validator = switch (widget.field.type) {
-            FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: _isRequired),
-            FeedbackTextType.phone => FormBuilderValidators.phoneNumber(checkNullOrEmpty: _isRequired),
-            FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: _isRequired),
-            _ when _isRequired => FormBuilderValidators.required(),
-            _ => (_) => null,
-          };
 
-          for (final value in values!) {
-            if (validator(value) != null) {
-              return validator(value);
+          for (final value in values ?? []) {
+            if (!_isValid(value)) {
+              return 'Wrong field';
             }
           }
 
@@ -89,19 +105,34 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
         builder: (fieldState) => Column(
               children: [
                 for (var i = 0; i < _inputs.length; i++) ...[
-                  FeedbackTextInput(
-                    labelText: i == 0 ? widget.field.label : null,
-                    hintText: widget.field.hint,
-                    onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
-                    allowedInputPattern: allowedInputPattern,
-                    isRequired: widget.field.isRequired,
-                    maxLength: widget.field.maxLength,
-                    keyboardType: keyboardType,
-                    onChanged: (value) {
-                      _updateInput(i, value);
-                      fieldState.didChange(_inputs);
-                    },
-                    type: widget.field.type,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FeedbackTextInput(
+                          labelText: i == 0 ? widget.field.label : null,
+                          hintText: widget.field.hint,
+                          onValidate: (v) => _isValid(v) ? null : context.l10n.feedbackTextFieldWrongFormat,
+                          allowedInputPattern: allowedInputPattern,
+                          isRequired: widget.field.isRequired,
+                          maxLength: widget.field.maxLength,
+                          keyboardType: keyboardType,
+                          onChanged: (value) {
+                            _updateInput(i, value);
+                            fieldState.didChange(_inputs);
+                          },
+                          type: widget.field.type,
+                        ),
+                      ),
+                      if (_inputs.length > 1 && i != 0)
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
+                          child: AppButton.close(
+                            onTap: () => _removeInput(i),
+                            buttonColorScheme: ButtonColorScheme.onColor,
+                            padding: EdgeInsets.zero,
+                          ),
+                        ),
+                    ],
                   ),
                   Spacing.$2x.heightBox,
                 ],

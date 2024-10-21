@@ -248,11 +248,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           return false;
         }, (s) {
           emit(state.copyWith(
-            status: AuthStatus.notAuthenticated,
+            status: AuthStatus.authenticated,
             token: token,
             errorMessage: "",
           ));
-
           if (CommonProperties.fcmToken != null &&
               CommonProperties.fcmToken!.isNotEmpty) {
             CommonFunctions.updateNotificationSettings(
@@ -262,7 +261,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         });
       });
     } else {
-     // await autoLogout();
+      // await autoLogout();
     }
   }
 
@@ -305,20 +304,25 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> clearAuth() async {
     try {
+      if(state.status == AuthStatus.notAuthenticated) {
+        return;
+      }
       sl<AuthenticationBloc>().add(LogoutAuthentication());
-      // if (sl<EntryPointCubit>().state.token?.idToken?.isNotEmpty ?? false) {
-      //   await _clearAuth(NoParams());
-      // }
-      await _logout(NoParams());
-      sl<DelegatorsCubit>().clearDelegators();
-      sharedPrefs.setSSOToken(null);
-      clearSSOInfo();
       emit(
         const EntryPointState(
           status: AuthStatus.notAuthenticated,
           showSplash: false,
         ),
       );
+
+      try {
+        await _logout(NoParams());
+      } catch (e) {
+        EasyLoading.dismiss();
+      }
+      sl<DelegatorsCubit>().clearDelegators();
+      sharedPrefs.setSSOToken(null);
+      clearSSOInfo();
       if (CommonProperties.fcmToken != null &&
           CommonProperties.fcmToken!.isNotEmpty) {
         CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
@@ -331,29 +335,29 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> autoLogout() async {
-    // if (sl<EntryPointCubit>().state.token?.idToken?.isEmpty ?? false) {
-    //   await _clearAuth(NoParams());
-    // }
-    sharedPrefs.setSSOToken(null);
-    sl<DelegatorsCubit>().clearDelegators();
+    if(state.status == AuthStatus.notAuthenticated) {
+      return;
+    }
     try {
+      emit(
+        const EntryPointState(
+          status: AuthStatus.notAuthenticated,
+        ),
+      );
       sl<AuthenticationBloc>().add(LogoutAuthentication());
     } catch (e) {
       print("object");
     }
-    //MM sharedPrefs.setUserProfile(null);
+
+    sharedPrefs.setSSOToken(null);
+    sl<DelegatorsCubit>().clearDelegators();
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
-    emit(const EntryPointState(
-      status: AuthStatus.notAuthenticated,
-    ));
-
-    _logout(NoParams());
-    //MM  sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
-
-    // Fix White screen on startup
-    // Helpers.backToHome();
-
+    try {
+      await _logout(NoParams());
+    } catch (e) {
+      EasyLoading.dismiss();
+    }
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);

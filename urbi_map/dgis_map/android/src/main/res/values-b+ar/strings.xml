@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- Navigation -->
+  <string name="better_route_alert_title">طريق أفضل</string>
+  <string name="better_route_alert_subtitle">–%1$d دقيقة</string>
+  <string name="better_route_alert_close_action">إغلاق</string>
+  <string name="better_route_alert_choose_action">اختيار</string>
+  <string name="stop_navigation_action">إنهاء الرحلة</string>
+  <string name="rerouting_message">إعادة التوجيه…</string>
+  <string name="location_signal_lost_message">فقدنا الاتصال بك…</string>
+  <string name="end_trip_alert_title">لقد وصلت</string>
+  <string name="end_trip_alert_action">إنهاء الرحلة</string>
+
+  <!-- Permission request -->
+  <string name="location_permission_request_message">يرجى إيقاف السيارة والسماح لتطبيق بلدي بالوصول إلى موقعك على هاتفك</string>
+  <string name="grant_access_action">السماح بالوصول</string>
+</resources>

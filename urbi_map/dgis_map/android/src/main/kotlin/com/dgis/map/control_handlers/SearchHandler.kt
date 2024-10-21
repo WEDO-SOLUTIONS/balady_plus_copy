@@ -26,10 +26,8 @@ import kotlin.Exception
 
 class SearchHandler(
     private val map: DgisMap,
-    private val sdkContext: Context,
     private val searchManager: SearchManager,
     private val locationSource: FusedLocationSource,
-    private val vendorConfig: VendorConfig?,
 ) : AutoCloseable {
     private var objectSearchFuture: AutoCloseable? = null
     private var searchFuture: AutoCloseable? = null

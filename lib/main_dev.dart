@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart' ;
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show LocalizedApp;
+import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -14,29 +13,27 @@ import 'app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 void main() async {
-  unhandledExceptionBaladyLogs( () async {
-  await runMapnessApp(() async {
-    await AppEnv.setupEnv(EnvType.dev);
+  unhandledExceptionBaladyLogs(() async {
+    await runMapnessApp(() async {
+      await AppEnv.setupEnv(EnvType.dev);
 
-    // to observe all blocs movements
-    Bloc.observer = SimpleBlocObserver();
+      // to observe all blocs movements
+      // Bloc.observer = SimpleBlocObserver();
 
-    await setupMapness(EnvType.dev);
+      await setupMapness(EnvType.dev);
 
-    await SentryFlutter.init(
-      (options) {
-        options.dsn =
-            'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
-        options.tracesSampleRate = 0.1;
-        options.profilesSampleRate = 0.1;
-        options.attachScreenshot = true;
-        options.enableUserInteractionTracing = true;
-        options.captureFailedRequests = true;
-        options.environment = sl<EnvType>().name;
-      },
-      appRunner: () =>
-          runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
-    );
-  });
+      await SentryFlutter.init(
+        (options) {
+          options.dsn = 'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+          options.tracesSampleRate = 0.1;
+          options.profilesSampleRate = 0.1;
+          options.attachScreenshot = true;
+          options.enableUserInteractionTracing = true;
+          options.captureFailedRequests = true;
+          options.environment = sl<EnvType>().name;
+        },
+        appRunner: () => runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
+      );
+    });
   });
 }

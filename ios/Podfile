@@ -30,7 +30,6 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 target 'Runner' do
   use_frameworks!
-  pod 'AppAuth', :git => 'https://github.com/MahmoudMB/AppAuth-iOS.git'
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))

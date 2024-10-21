@@ -31,8 +31,28 @@ fun RouteSearchOptionsMessage.toRouteSearchOptions(): RouteSearchOptions = when 
     RouteSearchOptionsMessage.PUBLIC_TRANSPORT -> RouteSearchOptions(publicTransport = PublicTransportRouteSearchOptions())
     RouteSearchOptionsMessage.PEDESTRIAN -> RouteSearchOptions(pedestrian = PedestrianRouteSearchOptions())
     RouteSearchOptionsMessage.SCOOTER -> RouteSearchOptions(scooter = ScooterRouteSearchOptions())
-    RouteSearchOptionsMessage.TRUCK -> RouteSearchOptions(truck = TruckRouteSearchOptions(CarRouteSearchOptions()))
-    RouteSearchOptionsMessage.TAXI -> RouteSearchOptions(taxi = TaxiRouteSearchOptions(CarRouteSearchOptions()))
+    RouteSearchOptionsMessage.TRUCK -> RouteSearchOptions(
+        truck = TruckRouteSearchOptions(
+            CarRouteSearchOptions()
+        )
+    )
+
+    RouteSearchOptionsMessage.TAXI -> RouteSearchOptions(
+        taxi = TaxiRouteSearchOptions(
+            CarRouteSearchOptions()
+        )
+    )
+}
+
+fun RouteSearchOptions.toRouteSearchOptionsMessage(): RouteSearchOptionsMessage = when {
+    isBicycle -> RouteSearchOptionsMessage.BICYCLE
+    isCar -> RouteSearchOptionsMessage.CAR
+    isPublicTransport -> RouteSearchOptionsMessage.PUBLIC_TRANSPORT
+    isPedestrian -> RouteSearchOptionsMessage.PEDESTRIAN
+    isScooter -> RouteSearchOptionsMessage.SCOOTER
+    isTruck -> RouteSearchOptionsMessage.TRUCK
+    isTaxi -> RouteSearchOptionsMessage.TAXI
+    else -> RouteSearchOptionsMessage.CAR
 }
 
 fun BearingMessage.toBearing(): Bearing {
@@ -49,10 +69,10 @@ fun LevelIdMessage.toLevelId(): LevelId {
 
 fun RouteSearchPointMessage.toRouteSearchPoint(): RouteSearchPoint {
     return RouteSearchPoint(
-            coordinates = coordinates.toGeoPoint(),
-            course = course?.toBearing(),
-            objectId = objectId.toDgisObjectId(),
-            levelId = levelId?.toLevelId(),
+        coordinates = coordinates.toGeoPoint(),
+        course = course?.toBearing(),
+        objectId = objectId.toDgisObjectId(),
+        levelId = levelId?.toLevelId(),
     )
 }
 
@@ -83,8 +103,8 @@ fun BriefExtraRouteInfo.toBriefExtraRouteInfoMessage(): BriefExtraRouteInfoMessa
 
 fun BriefRouteInfo.toBriefRouteInfoMessage(): BriefRouteInfoMessage {
     return BriefRouteInfoMessage.Builder()
-            .setDuration(duration.inSeconds.toDouble())
-            .setExtraInfo(extraInfo.toBriefExtraRouteInfoMessage())
-            .build()
+        .setDuration(duration.inSeconds.toDouble())
+        .setExtraInfo(extraInfo.toBriefExtraRouteInfoMessage())
+        .build()
 }
 
