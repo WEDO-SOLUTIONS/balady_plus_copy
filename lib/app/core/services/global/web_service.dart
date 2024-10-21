@@ -254,9 +254,8 @@ class AppInterceptors extends Interceptor {
     }
     if (options.headers[ApiHeader.requiresToken.eName] == false)
       options.headers.remove("Authorization");
-//Uri.decodeQueryComponent(url)
     if (options.data is! FormData) {
-      final verifyingKEY = CommonFunctions.hashRequest(url, method,
+      final verifyingKEY = CommonFunctions.hashRequest(Uri.decodeQueryComponent(url), method,
           body: (options.data != null &&
                   !options.uri.toString().contains("bcg/upload-file"))
               ? json.encode(options.data)
