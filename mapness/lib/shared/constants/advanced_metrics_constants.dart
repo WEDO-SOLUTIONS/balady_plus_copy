@@ -36,7 +36,6 @@ class _AdvancedMetricsKeys {
   String get deviceState => 'device_battery_state';
 
   // Navi: Lost GPS
-  String get lostGpsCount => 'lost_gps_count';
   String get lostGpsDuration => 'lost_gps_duration';
 
   // Search

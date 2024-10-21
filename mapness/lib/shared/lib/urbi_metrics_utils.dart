@@ -7,7 +7,9 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/shared/lib/metrics/battery_usage.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
+import 'package:mapness/shared/lib/metrics/lost_gps.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class UrbiMetricsUtils {
@@ -155,6 +157,55 @@ class AdvancedMetrics {
     }
   }
 
+  // Lost GPS
+  LostGpsMetrics? _lostGpsLast;
+  final _lostGpsKey = 'lost_gps';
+  Stopwatch? _lostGpsRuntime;
+
+  Future<void> addLostGPS() async {
+    _lostGpsRuntime = Stopwatch()..start();
+    _lostGpsLast = LostGpsMetrics(
+      deviceType: await getDeviceInfo(),
+      appVersion: await _getAppVersion(),
+      timestamp: _timeStamp,
+      networkType: await Connectivity().checkConnectivity(),
+      sessionId: UrbiMetricsUtils.instance.sessionUuid,
+      location: await _getLocation(),
+    );
+
+    final sharedPrefs = await SharedPreferences.getInstance();
+    if (_lostGpsLast != null) {
+      final jsonString = _lostGpsLast!.toJsonString();
+      await sharedPrefs.setString(_lostGpsKey, jsonString);
+    }
+    log('>>> $_lostGpsLast');
+  }
+
+  Future<void> addRestoreGPS() async {
+    if (_lostGpsRuntime != null && _lostGpsLast != null) {
+      final duration = _lostGpsRuntime!.elapsedMilliseconds;
+      _lostGpsRuntime?.stop();
+      _lostGpsRuntime = null;
+
+      _lostGpsLast!.copyWith(duration: duration);
+      await sendLostGPS();
+    }
+  }
+
+  Future<void> sendLostGPS() async {
+    if (_lostGpsLast != null) {
+      log('>>> $_lostGpsLast');
+      return;
+    }
+
+    final sharedPrefs = await SharedPreferences.getInstance();
+    final jsonString = sharedPrefs.getString(_lostGpsKey);
+    if (jsonString != null) {
+      final metrics = LostGpsMetrics.fromJson(jsonString);
+      log('>>> $metrics');
+    }
+  }
+
   // General
   Future<String> getDeviceInfo() async {
     if (_deviceInfo != null) {
@@ -181,7 +232,7 @@ class AdvancedMetrics {
   Future<List<double>> _getLocation() async {
     final location = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.medium,
-      timeLimit: const Duration(seconds: 1),
+      timeLimit: const Duration(milliseconds: 500),
     );
     return [location.latitude, location.longitude];
   }
