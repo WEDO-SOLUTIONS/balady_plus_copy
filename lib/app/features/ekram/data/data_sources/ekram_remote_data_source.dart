@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/commercial_model/features/comercial_license_renew/data/data_sources/renew_cr_remote_data_source.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/ekram/data/model/add_trip_params.dart';
@@ -34,14 +35,19 @@ import '../model/cemetry_request_details/cemetry_request_details_model.dart';
 import '../model/cemetry_requests/cemetry_request_response_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../model/driver/deceased_identical_item.dart';
+import '../model/driver/trip_stations.dart';
+
 abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getCities();
 
   Future<ResponseBodyModel<List<LookUpItem>>> getDeathCities();
 
   Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int params);
+
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosques(
       int params);
+
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundries(
       int params);
 
@@ -51,18 +57,22 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<ApplyDeceasedResponseModel>> applyDeceasedTransport(
       ApplyDeceasedParams params);
+
   Future<ResponseBodyModel<TransportRequestResponseModel>>
       getDeceasedTransportRequests(GetRequestsParams params);
 
   Future<ResponseBodyModel<DeceasedRequestDetailsModel>>
       getTransportRequestDetails(int params);
-  Future<ResponseBodyModel<DeceasedRequestDetailsModel>>
-      getIdenticalList(int params);
+
+  Future<ResponseBodyModel<List<DeceasedIdenticalItem>>> getIdenticalList(
+      int params);
 
   Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(int params);
 
   Future<ResponseBodyModel> addTrip(AddTripParams params);
+
   Future<ResponseBodyModel<dynamic>> completeTrip(int params);
+
   Future<ResponseBodyModel<dynamic>> deleteTrip(int params);
 
   Future<ResponseBodyModel<dynamic>> uploadLetter(UploadLetterParamas params);
@@ -74,6 +84,7 @@ abstract class EkramRemoteDataSource {
       int params);
 
   Future<ResponseBodyModel<List<LookUpItem>>> getStatus();
+
   Future<ResponseBodyModel<List<LookUpItem>>> getLocations();
 
   Future<EkramAttachmentResponse> downLoadAttachment(int id);
@@ -102,8 +113,12 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getCountries();
 
   Future<ResponseBodyModel<List<LookUpItem>>> getBurialCities();
+
   Future<ResponseBodyModel<List<LookUpItem>>> getEkramOrgnizations(
       GetOrgnizationsParams params);
+
+  Future<ResponseBodyModel<List<TripStations>>> getTripStations(
+      int params);
 
   Future<ResponseBodyModel<GraveActiveRequestDetails>>
       getActiveGraveRequestDetails(ActiveGraveRequestParams params);
@@ -160,14 +175,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -217,14 +232,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -274,14 +289,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -333,14 +348,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -390,14 +405,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -410,49 +425,36 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
 
+      response = await webService.dio.post(
+        ApiUrl.deceasedTransportRequests, queryParameters: {"page": params.page, "size": params.size,"isDriver":true},);
 
-
-      // response = await webService.dio.get(
-      //   ApiUrl.deceasedTransportRequests,
-      //   queryParameters: {
-      //     "isDriver": params.isDriver ? 1 : 0,
-      //     "page": params.page,
-      //     "size": params.size,
-      //     if (int.tryParse(params.text ?? "") != null) "requestId": params.text,
-      //     if ((params.text?.isNotEmpty ?? false) &&
-      //         int.tryParse(params.text ?? "") == null)
-      //       "deceasedName": params.text,
-      //     if ((params.deceasedTransportRequestStatusId != null))
-      //       "requestStatusList": params.deceasedTransportRequestStatusId,
-      //     if ((params.transportLocationStatusId != null))
-      //       "transportLocationStatusId": params.transportLocationStatusId,
-      //     if ((params.isMultiCity != null)) "isMultiCity": params.isMultiCity,
-      //   },
-      // );
+      //   if (int.tryParse(params.text ?? "") != null) "requestId": params.text,
+      // if ((params.text?.isNotEmpty ?? false) &&
+      // int.tryParse(params.text ?? "") == null)
+      // "deceasedName": params.text,
+      // if ((params.deceasedTransportRequestStatusId != null))
+      // "requestStatusList": params.deceasedTransportRequestStatusId,
+      // if ((params.transportLocationStatusId != null))
+      // "transportLocationStatusId": params.transportLocationStatusId,
+      // if ((params.isMultiCity != null)) "isMultiCity": params.isMultiCity,
       //
-      // var data = response.data["data"]?["result"];
-      // Map<String, dynamic> x = {};
-      // x["items"] = data;
 
+      // String qa = "";
+      //
+      // qa = await rootBundle.loadString("assets/request.json");
+      //
+      // var response = json.decode(qa);
+      //
+      //
+      // var data = response["data"]?["result"];
+      //
 
-
-      String qa = "";
-
-      qa = await rootBundle.loadString("assets/request.json");
-
-      var response = json.decode(qa);
-
-
-      var data = response["data"]?["result"];
-
-
-
+      var data = response.data["data"]?["result"];
       TransportRequestResponseModel? parsedResult =
           data != null ? TransportRequestResponseModel.fromMap(data) : null;
 
       final decodedResponse =
-          ResponseBodyModel<TransportRequestResponseModel>.fromMap(
-              response,
+          ResponseBodyModel<TransportRequestResponseModel>.fromMap(response.data,
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
@@ -471,14 +473,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode,
@@ -498,18 +500,99 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
+
+
+  @override
+  Future<ResponseBodyModel<List<TripStations>>>
+  getTripStations(int params) async {
+    Response response;
+
+    try {
+
+      response = await webService.dio.get(
+        ApiUrl.GetTripstations(params),queryParameters: {"isDriver":true});
+      var data = response.data["data"]?["result"];
+
+
+      List<TripStations> parsedResult = data != null
+          ? List<TripStations>.from(
+          data.map((x) => TripStations.fromJson(x)))
+          : [];
+
+
+      final decodedResponse = ResponseBodyModel<List<TripStations>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      String? errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode,
+          errorCode: errorCode,
+          dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //   //CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+
 
   @override
   Future<ResponseBodyModel<DeceasedRequestDetailsModel>>
@@ -558,37 +641,48 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           // //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
 
   @override
-  Future<ResponseBodyModel<DeceasedRequestDetailsModel>>
-      getIdenticalList(int params) async {
+  Future<ResponseBodyModel<List<DeceasedIdenticalItem>>> getIdenticalList(
+      int params) async {
     Response response;
 
     try {
+
+
       response = await webService.dio.get(
-        "${ApiUrl.deceasedTransportRequestDetails}/$params",
-        queryParameters: {"isDriver": 1},
+        "${ApiUrl.getIdenticalDeseasedList("$params")}",
+        queryParameters: {"transportActions":"ADD_TRIP"},
       );
 
       var data = response.data["data"]?["result"];
 
-      DeceasedRequestDetailsModel? parsedResult =
-          data != null ? DeceasedRequestDetailsModel.fromMap(data) : null;
+      // DeceasedRequestDetailsModel? parsedResult =
+      //     data != null ? DeceasedRequestDetailsModel.fromMap(response.data) : null;
+
+      // List<DeceasedRequestDetailsModel>?  parsedResult =   data != null ? List<DeceasedRequestDetailsModel>.from(data
+      //     .map((x) => RequestItemModel.fromJson(x))): null;
+
+      List<DeceasedIdenticalItem> parsedResult = data != null
+          ? List<DeceasedIdenticalItem>.from(
+          data.map((x) => DeceasedIdenticalItem.fromJson(x)))
+          : [];
+
 
       final decodedResponse =
-          ResponseBodyModel<DeceasedRequestDetailsModel>.fromMap(response.data,
+          ResponseBodyModel<List<DeceasedIdenticalItem>>.fromMap(response.data,
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
@@ -617,14 +711,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -636,18 +730,15 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       // response = await webService.dio.get(
-      //   "https://bldtrain.momra.gov.sa/buriallicenseapi/trips/4617330967/trips"
-      //  // "${ApiUrl.ekramGetTrips}/$params",
-      //     );
+      //
+      //     "${ApiUrl.ekramGetTrips(params)}",queryParameters: {"isDriver":true}
+      // );
 
+      String qa = "";
 
+      qa = await rootBundle.loadString("assets/trips.json");
 
-          String qa = "";
-
-            qa = await rootBundle.loadString("assets/trips.json");
-
-          var response = json.decode(qa);
-
+       var response = json.decode(qa);
 
       var data = response["data"]?["result"];
 
@@ -676,14 +767,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode,
@@ -703,14 +794,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -760,14 +851,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -820,14 +911,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //  //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -880,14 +971,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -930,14 +1021,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -980,14 +1071,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1032,14 +1123,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1086,14 +1177,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1134,14 +1225,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode,
@@ -1162,14 +1253,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1220,14 +1311,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1277,14 +1368,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1325,14 +1416,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //  CommonFunctions.sendExceptionLog(exception:  error, response: "");
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1388,14 +1479,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           // CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1446,14 +1537,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           // CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1503,14 +1594,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1562,14 +1653,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1621,14 +1712,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1680,14 +1771,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1733,14 +1824,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode,
@@ -1761,14 +1852,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           // CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1818,14 +1909,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1875,14 +1966,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1932,14 +2023,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -1989,14 +2080,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -2046,14 +2137,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -2099,14 +2190,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -2152,14 +2243,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }

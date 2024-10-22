@@ -7,7 +7,7 @@ class TransportRequestResponseModel extends TransportRequestResponse {
 
   factory TransportRequestResponseModel.fromMap(Map<String, dynamic> json) =>
       TransportRequestResponseModel(
-          totalItemCount: json["totalItemCount"],
+          totalItemCount: json["itemsCount"],
           totalPageCount: json["totalPageCount"],
           items: json["items"] != null
               ? List<RequestItemModel>.from(json["items"]

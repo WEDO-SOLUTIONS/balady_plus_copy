@@ -1,5 +1,5 @@
 class GetRequestsParams {
-  bool isDriver;
+
   int page;
   int size;
   String? text;
@@ -7,7 +7,7 @@ class GetRequestsParams {
   int? transportLocationStatusId;
   bool? isMultiCity;
   GetRequestsParams(
-      {required this.isDriver,
+      {
       required this.page,
       required this.size,
       this.text,

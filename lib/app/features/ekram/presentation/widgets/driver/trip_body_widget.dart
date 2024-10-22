@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/ekram/presentation/widgets/driver/trip_datetime_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -8,7 +9,8 @@ import '../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../data/model/driver/trip_details_model.dart';
-import '../../blocs/ekram_add_trip/ekram_add_trip_bloc_new.dart';
+
+
 
 class TripBodyWidget extends StatefulWidget {
  final TripDetailsModel? model;
@@ -32,7 +34,9 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return
+
+      Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomVerticalSpace(height: 20),
@@ -64,12 +68,17 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
 
 
         CustomVerticalSpace(height: 10),
-        ReadOnlyField(
+
+        TripDateTimeWidget(
+
           title: "currentTripStationArrivalTime".tr(),
-          subTitle: widget.model?.startupInfo?.date ?? "",
-          subTitleColor:AppColor.grey1000.withOpacity(0.5),
-          decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+          date: CommonFunctions.getFormattedDateEkram(
+              widget.model?.startupInfo?.date  ?? ""),
+          time: CommonFunctions.getFormattedTimeEkram(
+              widget.model?.startupInfo?.time ?? ""),
         ),
+
+        CustomVerticalSpace(height: 15),
 
 
         if (widget.model?.startupInfo?.location?.x != null && widget.model?.startupInfo?.location?.y != null )

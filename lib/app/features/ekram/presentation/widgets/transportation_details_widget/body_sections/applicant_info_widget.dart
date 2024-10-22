@@ -16,65 +16,67 @@ class ApplicantInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<IdenticalListBloc, IdenticalListState>(
         builder: (context, state) {
-      return ExpandableCard(
-        title: Helpers.translatingWord("ekram_order_info"),
-        icon: IconPath.vdSummuryDesc,
-        children: [
-          //MM Ekram
+      return Container();
 
-          FieldData(
-            title: Helpers.translatingWord("submitterName"),
-            subTitle: state.details?.submitterName,
-          ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-          FieldData(
-            title: Helpers.translatingWord("ekramApplicantType"),
-            subTitle: state.details?.submitterTypeName,
-          ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-
-          GestureDetector(
-            onTap: () {
-              //if (state.details.submitterMobileNumber != null)
-              //  CommonFunctions.call(state.details.submitterMobileNumber);
-            },
-            child: FieldData(
-              title: Helpers.translatingWord("driver_card_applicant_mobile"),
-              subTitle: state.details?.submitterMobileNumber,
-            ),
-          ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-
-          FieldData(
-            title: Helpers.translatingWord("ekramRelationShip"),
-            subTitle: state.details?.relationship,
-          ),
-
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-
-          FieldData(
-            title: Helpers.translatingWord("burialCity"),
-            subTitle: state.details?.deathCityName,
-          ),
-
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-
-          FieldData(
-            title: Helpers.translatingWord("transportationStatus"),
-            subTitle: state.details?.deathTransferStatusDesc,
-          ),
-        ],
-      );
+      //   ExpandableCard(
+      //   title: Helpers.translatingWord("ekram_order_info"),
+      //   icon: IconPath.vdSummuryDesc,
+      //   children: [
+      //     //MM Ekram
+      //
+      //     FieldData(
+      //       title: Helpers.translatingWord("submitterName"),
+      //       subTitle: state.details?.submitterName,
+      //     ),
+      //     const CustomVerticalSpace(
+      //       height: 16,
+      //     ),
+      //     FieldData(
+      //       title: Helpers.translatingWord("ekramApplicantType"),
+      //       subTitle: state.details?.submitterTypeName,
+      //     ),
+      //     const CustomVerticalSpace(
+      //       height: 16,
+      //     ),
+      //
+      //     GestureDetector(
+      //       onTap: () {
+      //         //if (state.details.submitterMobileNumber != null)
+      //         //  CommonFunctions.call(state.details.submitterMobileNumber);
+      //       },
+      //       child: FieldData(
+      //         title: Helpers.translatingWord("driver_card_applicant_mobile"),
+      //         subTitle: state.details?.submitterMobileNumber,
+      //       ),
+      //     ),
+      //     const CustomVerticalSpace(
+      //       height: 16,
+      //     ),
+      //
+      //     FieldData(
+      //       title: Helpers.translatingWord("ekramRelationShip"),
+      //       subTitle: state.details?.relationship,
+      //     ),
+      //
+      //     const CustomVerticalSpace(
+      //       height: 16,
+      //     ),
+      //
+      //     FieldData(
+      //       title: Helpers.translatingWord("burialCity"),
+      //       subTitle: state.details?.deathCityName,
+      //     ),
+      //
+      //     const CustomVerticalSpace(
+      //       height: 16,
+      //     ),
+      //
+      //     FieldData(
+      //       title: Helpers.translatingWord("transportationStatus"),
+      //       subTitle: state.details?.deathTransferStatusDesc,
+      //     ),
+      //   ],
+      // );
     });
   }
 }

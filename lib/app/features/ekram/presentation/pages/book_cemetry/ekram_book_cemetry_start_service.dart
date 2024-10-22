@@ -36,8 +36,8 @@ class _EkramBookCemetryStartServiceState
 
   @override
   Widget build(BuildContext context) {
-    EkramRequestsBloc? ekramRequestsBloc =
-        ModalRoute.of(context)!.settings.arguments as EkramRequestsBloc?;
+    TransportRequestsBloc? ekramRequestsBloc =
+        ModalRoute.of(context)!.settings.arguments as TransportRequestsBloc?;
 
     return Scaffold(
       appBar: DefaultAppBarWidget(

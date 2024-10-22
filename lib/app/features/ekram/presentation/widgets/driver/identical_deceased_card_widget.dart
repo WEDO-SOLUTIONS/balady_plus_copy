@@ -10,11 +10,12 @@ import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
+import '../../../data/model/driver/deceased_identical_item.dart';
 import '../../../domain/entities/deceased_request_details/deceased_request_details.dart';
 import '../ekram_status_widget.dart';
 
 class IdenticalDeceasedCardWidget extends StatelessWidget {
-  final DeceasedInfoResponseDtoList item;
+  final DeceasedIdenticalItem item;
   final bool isDriver;
   // final Function onPressShowTrips;
   // final Function onPressLogTrip;
@@ -46,19 +47,19 @@ class IdenticalDeceasedCardWidget extends StatelessWidget {
           SizedBox(height: 15,),
           EkramHeaderAndDescWidget_new(
                       title: ('deceasedName').tr(),
-                      details: item.name ?? "",
+                      details: item.deceasedName ?? "",
                     ),
           EkramHeaderAndDescWidget_new(
                       title: ('ekram_deceased_id').tr(),
-                      details: item.carId !=null ?"${item.carId}" :"",
+                      details: item.deceasedIdentityId !=null ?"${item.deceasedIdentityId}" :"",
                     ),
           EkramHeaderAndDescWidget_new(
                       title: ('transportationStatus').tr(),
-                      details: item.carId !=null ?"${item.carId}" :"",
+                      details: item.transportCaseName !=null ?"${item.transportCaseName}" :"",
                     ),
           EkramHeaderAndDescWidget_new(
             title: ('deathCity/arrivelCity').tr(),
-            details: item.carId !=null ?"${item.carId}" :"",
+            details: item.deathCityName !=null ?"${item.deathCityName}" :"",
           ),
           EkramHeaderAndDescWidget_new(
             title: ('burial_city').tr(),
@@ -66,15 +67,15 @@ class IdenticalDeceasedCardWidget extends StatelessWidget {
           ),
           EkramHeaderAndDescWidget_new(
             title: ('ekram_reciever_Mobile').tr(),
-            details: item.burialCityName ?? "",
+            details: item.bodyRecipientMobile ?? "",
           ),
           EkramHeaderAndDescWidget_new(
                       title: ('needSpecialTransfer').tr(),
-                      details: (item.specialTransferNeeded ?? false)
+                      details: (item.needSpecialTransport ?? false)
             ? ("yes").tr()
             : ("no").tr(),
                     ),
-          if (item.specialTransferNeeded == true)
+          if (item.needSpecialTransport == true)
             EkramHeaderAndDescWidget_new(
                           title: ('reasonForSpecialTransfer').tr(),
                           details: item.getSpecialTransferReason(),

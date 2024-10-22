@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/add_trip_dialog_params.dart';
-import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_add_trip/ekram_add_trip_bloc_new.dart';
+
 
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +16,8 @@ import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dar
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../blocs/driver_add_trip/add_trip_bloc.dart';
+
 
 class TripsDialog extends StatelessWidget {
   final AddTripParameter params;
@@ -26,7 +28,7 @@ class TripsDialog extends StatelessWidget {
 
     return Container();
     // return BlocProvider(
-    //   create: (context) => EkramAddTripBloc(
+    //   create: (context) => AddTripBloc(
     //       getLookUp: sl(),
     //       params: params,
     //       addTrip: sl(),
@@ -34,7 +36,7 @@ class TripsDialog extends StatelessWidget {
     //       getLaundries: sl(),
     //       getMosquess: sl(),
     //       updateDriverLocation: sl()),
-    //   child: BlocConsumer<EkramAddTripBloc, EkramAddTripState>(
+    //   child: BlocConsumer<AddTripBloc, EkramAddTripState>(
     //     listener: (context, state) {
     //       if (state.status == BlocStatus.failure) {
     //         CommonFunctions.showError(state.errorMessage ?? "");
@@ -76,7 +78,7 @@ class TripsDialog extends StatelessWidget {
     //                     text: ("confirm").tr(),
     //                     onPressed: () {
     //                       context
-    //                           .read<EkramAddTripBloc>()
+    //                           .read<AddTripBloc>()
     //                           .add(const SubmitEvent());
     //                     },
     //                   ),
@@ -109,105 +111,108 @@ class _DialogBodyState extends State<DialogBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EkramAddTripBloc, EkramAddTripState>(
+    return BlocBuilder<AddTripBloc, AddTripState>(
       builder: (context, state) {
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomVerticalSpace(height: 20),
-              CustomTextFieldWidget(
-                  label: trans("currentTripStationType"),
-                  hintText: trans("currentTripStationType"),
-                  maxLines: 1,
-                  readOnly: true,
-                  initialValue: state.currentTripStationTypeId.toString(),
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.text,
-                  onChanged: (String? text) {
-                    /*  context
-                        .read<EkramAddTripBloc>()
-                        .add(ChangeFullNameEvent(text: text));*/
-                  },
-                  onValidate: (String? value) {}),
-              CustomVerticalSpace(height: 10),
-              CustomTextFieldWidget(
-                  label: trans("currentTripStationName"),
-                  hintText: trans("currentTripStationName"),
-                  maxLines: 1,
-                  readOnly: true,
-                  initialValue: state.currentTripStationName,
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.text,
-                  onChanged: (String? text) {
-                    /*  context
-                        .read<EkramAddTripBloc>()
-                        .add(ChangeFullNameEvent(text: text));*/
-                  },
-                  onValidate: (String? value) {}),
-              CustomVerticalSpace(height: 10),
-              CustomTextFieldWidget(
-                  label: trans("currentTripStationArrivalTime"),
-                  hintText: trans("currentTripStationArrivalTime"),
-                  maxLines: 1,
-                  readOnly: true,
-                  initialValue: state.currentTripStationArrivalTime,
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.text,
-                  onChanged: (String? text) {
-                    /*  context
-                        .read<EkramAddTripBloc>()
-                        .add(ChangeFullNameEvent(text: text));*/
-                  },
-                  onValidate: (String? value) {}),
-              CustomLookUpLongDialog(
-                items: state.nextStationType ?? [],
-                value: state.nextTripStationTypeId,
-                onChangeType: (LookUpItem? item) {
-                  context
-                      .read<EkramAddTripBloc>()
-                      .add(ChangeNextTripStationType(item: item));
-                },
-                onEmptyList: () async {
-                  return context
-                      .read<EkramAddTripBloc>()
-                      .getNextStationTypeLookUp();
-                },
-                label: ("nextTripStationType").tr(),
-                hint: ("nextTripStationType").tr(),
-              ),
-              CustomVerticalSpace(height: 16),
-              CustomTextFieldWidget(
-                  label: trans("nextTripStationName"),
-                  hintText: trans("nextTripStationName"),
-                  maxLines: 1,
-                  initialValue: state.nextTripStationName,
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.text,
-                  onChanged: (String? text) {
-                    context
-                        .read<EkramAddTripBloc>()
-                        .add(ChangeNextTripStationName(text: text));
-                  },
-                  onValidate: (String? value) {}),
-              CustomVerticalSpace(height: 16),
-              GestureDetector(
-                onTap: () {
-                  context
-                      .read<EkramAddTripBloc>()
-                      .add(ChangeArrivalTimeEvent());
-                },
-                child: ReadOnlyField(
-                  title: trans("nextTripStationArrivalTime"),
-                  subTitle: state.nextTripStationArrivalTime ?? "",
-                ),
-              ),
-              CustomVerticalSpace(height: 16),
-              CustomVerticalSpace(height: 16),
-              CustomVerticalSpace(height: 20),
-            ],
-          ),
-        );
+        return Container();
+
+
+        //   SingleChildScrollView(
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+        //       CustomVerticalSpace(height: 20),
+        //       CustomTextFieldWidget(
+        //           label: trans("currentTripStationType"),
+        //           hintText: trans("currentTripStationType"),
+        //           maxLines: 1,
+        //           readOnly: true,
+        //           initialValue: state.currentTripStationTypeId.toString(),
+        //           textInputAction: TextInputAction.next,
+        //           keyboardType: TextInputType.text,
+        //           onChanged: (String? text) {
+        //             /*  context
+        //                 .read<AddTripBloc>()
+        //                 .add(ChangeFullNameEvent(text: text));*/
+        //           },
+        //           onValidate: (String? value) {}),
+        //       CustomVerticalSpace(height: 10),
+        //       CustomTextFieldWidget(
+        //           label: trans("currentTripStationName"),
+        //           hintText: trans("currentTripStationName"),
+        //           maxLines: 1,
+        //           readOnly: true,
+        //           initialValue: state.currentTripStationName,
+        //           textInputAction: TextInputAction.next,
+        //           keyboardType: TextInputType.text,
+        //           onChanged: (String? text) {
+        //             /*  context
+        //                 .read<AddTripBloc>()
+        //                 .add(ChangeFullNameEvent(text: text));*/
+        //           },
+        //           onValidate: (String? value) {}),
+        //       CustomVerticalSpace(height: 10),
+        //       CustomTextFieldWidget(
+        //           label: trans("currentTripStationArrivalTime"),
+        //           hintText: trans("currentTripStationArrivalTime"),
+        //           maxLines: 1,
+        //           readOnly: true,
+        //           initialValue: state.currentTripStationArrivalTime,
+        //           textInputAction: TextInputAction.next,
+        //           keyboardType: TextInputType.text,
+        //           onChanged: (String? text) {
+        //             /*  context
+        //                 .read<AddTripBloc>()
+        //                 .add(ChangeFullNameEvent(text: text));*/
+        //           },
+        //           onValidate: (String? value) {}),
+        //       CustomLookUpLongDialog(
+        //         items: state.nextStationType ?? [],
+        //         value: state.nextTripStationTypeId,
+        //         onChangeType: (LookUpItem? item) {
+        //           context
+        //               .read<AddTripBloc>()
+        //               .add(ChangeNextTripStationType(item: item));
+        //         },
+        //         onEmptyList: () async {
+        //           return context
+        //               .read<AddTripBloc>()
+        //               .getNextStationTypeLookUp();
+        //         },
+        //         label: ("nextTripStationType").tr(),
+        //         hint: ("nextTripStationType").tr(),
+        //       ),
+        //       CustomVerticalSpace(height: 16),
+        //       CustomTextFieldWidget(
+        //           label: trans("nextTripStationName"),
+        //           hintText: trans("nextTripStationName"),
+        //           maxLines: 1,
+        //           initialValue: state.nextTripStationName,
+        //           textInputAction: TextInputAction.next,
+        //           keyboardType: TextInputType.text,
+        //           onChanged: (String? text) {
+        //             context
+        //                 .read<AddTripBloc>()
+        //                 .add(ChangeNextTripStationName(text: text));
+        //           },
+        //           onValidate: (String? value) {}),
+        //       CustomVerticalSpace(height: 16),
+        //       GestureDetector(
+        //         onTap: () {
+        //           context
+        //               .read<AddTripBloc>()
+        //               .add(ChangeArrivalTimeEvent());
+        //         },
+        //         child: ReadOnlyField(
+        //           title: trans("nextTripStationArrivalTime"),
+        //           subTitle: state.nextTripStationArrivalTime ?? "",
+        //         ),
+        //       ),
+        //       CustomVerticalSpace(height: 16),
+        //       CustomVerticalSpace(height: 16),
+        //       CustomVerticalSpace(height: 20),
+        //     ],
+        //   ),
+        // );
       },
     );
   }

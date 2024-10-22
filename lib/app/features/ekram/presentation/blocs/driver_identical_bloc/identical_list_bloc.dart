@@ -13,6 +13,7 @@ import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../../data/model/driver/deceased_identical_item.dart';
 import '../../../data/model/driver/trip_details_model.dart';
 import '../../../data/model/trips_details_params.dart';
 import '../../../domain/entities/add_trip_dialog_params.dart';
@@ -22,16 +23,15 @@ import '../../../domain/entities/trip_location_response.dart';
 import '../../../domain/use_cases/get_identical_list_request.dart';
 import '../../../domain/use_cases/get_trips.dart';
 import '../../../domain/use_cases/get_trips_location.dart';
-import '../../dialogs/add_trip_new.dart';
+import '../../pages/driver/request_trips.dart';
 import '../../dialogs/trip_details_dialog.dart';
 
 part 'identical_list_bloc_event.dart';
 
 part 'identical_list_bloc_state.dart';
 
-class IdenticalListBloc
-    extends Bloc<IdenticalListEvent, IdenticalListState> {
-  final GetTrips _getTrips;
+class IdenticalListBloc extends Bloc<IdenticalListEvent, IdenticalListState> {
+
 
   final GetIdenticalListRequest _getIdenticalListRequestDetails;
 
@@ -39,10 +39,8 @@ class IdenticalListBloc
       {
         required int requestID,
       required GetIdenticalListRequest getIdenticalListRequestDetails,
-      required GetTrips getTrips,
       required bool isDriver})
-      : _getTrips = getTrips,
-
+      :
         _getIdenticalListRequestDetails = getIdenticalListRequestDetails,
         super(IdenticalListState( isDriver: isDriver,requestID: requestID)) {
 
@@ -50,7 +48,7 @@ class IdenticalListBloc
       // TODO: implement event handler
     });
     on<GetIdenticalListRequestEvent>(_getIndenticalListRequestHandler);
-    on<GetTripsEvent>(_getTripsHandler);
+
 
 
     on<GetTripsDetailsEvent>(_getTripsDetailsHandler);
@@ -75,152 +73,6 @@ class IdenticalListBloc
     });
   }
 
-  Future<void> _getTripsHandler(GetTripsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-
-    final failureOrSuccess = await _getTrips(
-        state.details!.deceasedInfoResponseDtoList![e.index].deathInfoId!);
-
-    failureOrSuccess.fold((failure) async {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-
-      var context = NavigationService.navigatorKey.currentContext;
-
-
-      Navigator.push(
-        context!,
-        MaterialPageRoute(builder: (context) => AddTrip_new(
-          params: []),
-        ),
-      );
-
-
-      // final result = await CustomPopUpsWidgets.showBottomSheet(context!,
-      //     child:
-      //
-      //     AddTripDialog(
-      //       params: getCurrentAddTripData(
-      //           null, state.details.deceasedInfoResponseDtoList![e.index],
-      //           trips: []),
-      //     ),
-      //     height: MediaQuery.of(context).size.height * 0.95);
-
-      // if (result != null) {
-      //   NavigationService.navigatorKey.currentState!.pushNamed(
-      //       RouteName.successRoute,
-      //       arguments: SuccessScreenArgs(
-      //           type: PAGE_TYPE.other, thanksMessage: result));
-      // }
-    }, (success) async {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-
-      var context = NavigationService.navigatorKey.currentContext;
-
-      Navigator.push(
-        context!,
-        MaterialPageRoute(builder: (context) => AddTrip_new(
-          params:success.data!.result!,
-        )),
-      );
-
-
-      // final result = await CustomPopUpsWidgets.showBottomSheet(context!,
-      //     child: AddTripDialog(
-      //       params: getCurrentAddTripData(success.data?.result?.lastOrNull,
-      //           state.details.deceasedInfoResponseDtoList![e.index],
-      //           trips: success.data?.result),
-      //     ),
-      //     height: MediaQuery.of(context).size.height * 0.95);
-      //
-      //
-      // if (result != null) {
-      //   NavigationService.navigatorKey.currentState!.pushNamed(
-      //       RouteName.successRoute,
-      //       arguments: SuccessScreenArgs(
-      //           type: PAGE_TYPE.other, thanksMessage: result));
-      // }
-    });
-  }
-
-  // Future<void> _getTripsLocationsHandler(
-  //     GetTripsLocationEvent e, Emitter emitter) async {
-  //   emitter(state.copyWith(status: BlocStatus.loading));
-  //
-  //   final failureOrSuccess = await _getTripsLocation(
-  //       state.details!.deceasedInfoResponseDtoList![e.index].deathInfoId!);
-  //
-  //   failureOrSuccess.fold((failure) async {
-  //     print("failurefailure");
-  //     emitter(state.copyWith(
-  //       status: BlocStatus.failure,
-  //       errorMessage: (failure as ServerFailure).errorMessage,
-  //     ));
-  //   }, (success) async {
-  //     emitter(state.copyWith(
-  //       status: BlocStatus.success,
-  //       errorMessage: "",
-  //     ));
-  //
-  //     var context = NavigationService.navigatorKey.currentContext;
-  //
-  //     TripLocationItem? item = success.data?.result?.items?.firstOrNull;
-  //     if (item != null && item.lastX != null && item.lastY != null) {
-  //       double? lat = double.tryParse(item.lastY ?? "");
-  //       double? lon = double.tryParse(item.lastX ?? "");
-  //       if (lat != null && lon != null)
-  //         NavigationService.navigatorKey.currentState!
-  //             .pushNamed(RouteName.EkramMapPage, arguments: LatLng(lat, lon));
-  //     }
-  //   });
-  // }
-
-  // AddTripParameter getCurrentAddTripData(
-  //     TripDetailsModel? lastTrip, DeceasedInfoResponseDtoList info,
-  //     {List<TripDetailsModel>? trips}) {
-  //   if (lastTrip == null) {
-  //     return AddTripParameter(
-  //         deathCityId: state.details.deathCityId,
-  //         deathInfoId: info.deathInfoId,
-  //         currentTripStationArrivalTime:
-  //             info.driverAssignDateTime?.replaceAll("-", "/"),
-  //         currentTripStationId: info.transferOrganizationId,
-  //         currentTripStationLocationX: double.tryParse(
-  //           info.transferOrganizationX ?? "",
-  //         ),
-  //         currentTripStationLocationY: double.tryParse(
-  //           info.transferOrganizationY ?? "",
-  //         ),
-  //         currentTripStationName: info.transferOrganizationName,
-  //         currentTripStationTypeId: 30502,
-  //         cemetryId: info.cemeteryId,
-  //         cemetryName: info.cemeteryName,
-  //         trips: trips);
-  //   } else {
-  //     return AddTripParameter(
-  //         deathCityId: state.details.deathCityId,
-  //         deathInfoId: info.deathInfoId,
-  //         currentTripStationArrivalTime:
-  //             lastTrip.nextTripStationArrivalTime?.replaceAll("-", "/"),
-  //         currentTripStationId: lastTrip.nextTripStationId,
-  //         currentTripStationLocationX: double.tryParse(
-  //           lastTrip.nextTripStationLocationX ?? "",
-  //         ),
-  //         currentTripStationLocationY: double.tryParse(
-  //           lastTrip.nextTripStationLocationY ?? "",
-  //         ),
-  //         currentTripStationName: lastTrip.nextTripStationName,
-  //         currentTripStationTypeId: lastTrip.nextTripStationTypeId,
-  //         cemetryId: info.cemeteryId,
-  //         cemetryName: info.cemeteryName,
-  //         trips: trips);
-  //   }
-  // }
 
   Future<void> _getTripsDetailsHandler(
       GetTripsDetailsEvent e, Emitter emitter) async {

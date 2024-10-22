@@ -3356,7 +3356,7 @@
   "cemetry_booking_request": "طلب حجز مقبرة",
   "is_dead_fetus": "هل المتوفى جنين؟",
   "ekram_main_data": "البيانات الرئيسية",
-  "ekram_benf_transport": "طلبات نقل وتجهيز متوفى",
+  "ekram_benf_transport": "طلب نقل وتجهيز الموتى",
   "ekram_empolyee_title": "سائق نقل الموتى",
   "ekram_inquiry_burial_grave": "الاستعلام عن المقابر",
   "ekram_inquiry_orgnizations": "استعلام عن مقدمي خدمات نقل وتجهيز الموتى",
@@ -4208,5 +4208,8 @@
   "ekram_current_step_location": "موقع المحطة الحالية",
   "tripPaths": "مسارات رحلة النقل",
   "tripPathsnumber": "مسار رقم ",
-  "startTrip": "بدء النقل"
+  "startTrip": "بدء النقل",
+  "currentRequest": "الطلبات الحالية",
+  "addnewPath": "+ إضافة مسار جديد رحلة "
+
 }

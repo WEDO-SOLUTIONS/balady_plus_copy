@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_trip_stations.dart';
+
 import '../../../features/ekram/domain/use_cases/add_trip.dart';
 import '../../../features/ekram/domain/use_cases/book_cemetry.dart';
 import '../../../features/ekram/domain/use_cases/check_user_info.dart';
@@ -57,6 +59,7 @@ class EkramInjection {
     sl.registerLazySingleton(() => UploadLetter(repository: sl()));
     sl.registerLazySingleton(() => UpadateDriverLocation(repository: sl()));
     sl.registerLazySingleton(() => GetTripsLocation(repository: sl()));
+    sl.registerLazySingleton(() => GetTripStations(repository: sl()));
     sl.registerLazySingleton(() => DownloadAttachment(repository: sl()));
     sl.registerLazySingleton(() => GetEkramLookUp(repository: sl()));
     sl.registerLazySingleton(() => CheckUserinfo(repository: sl()));

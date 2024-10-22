@@ -84,4 +84,4 @@ export 'presentation/widgets/transportation_details_widget/body_sections/applica
 
 /// presentation -> widgets -> trip details dialog widgets
 export 'presentation/widgets/trip_details_dialog_widgets/trip_details_card_widget.dart';
-export 'presentation/widgets/trip_details_dialog_widgets/trip_details_header_and_desc.dart';
+export 'presentation/widgets/driver/trip_details_header_and_desc.dart';

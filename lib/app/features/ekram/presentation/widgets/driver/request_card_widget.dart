@@ -102,7 +102,7 @@ class RequestCardWidget extends StatelessWidget {
                   RequestParameter(
                     title: 'ekram_assign_Date'.tr(),
                     value: CommonFunctions.getFormattedDateEkramCard(
-                        requestItemModel.deathDate ?? ""),
+                        requestItemModel.assignDriverDate ?? ""),
                   ),
                   // RequestParameter(
                   //   title: 'transportationDestination'.tr(),
@@ -120,6 +120,7 @@ class RequestCardWidget extends StatelessWidget {
                 ],
               ),
             ),
+
             ElevatedButtonWidget.primaryCustom(
                 height: 40,
                 onPressed: () {
@@ -127,7 +128,7 @@ class RequestCardWidget extends StatelessWidget {
                   navigator.pushNamed(RouteName.IdenticalListPage,
                       arguments: requestItemModel);
                 },
-                text: "details".tr())
+                text: "register_trip_details".tr())
           ],
         ),
       ),

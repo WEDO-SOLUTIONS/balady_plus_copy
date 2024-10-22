@@ -28,7 +28,7 @@ part 'ekram_request_transportation_state.dart';
 class EkramRequestTransportationBloc extends Bloc<
     EkramRequestTransportationEvent, EkramRequestTransportationState> {
   PageController controller = PageController();
-  EkramRequestsBloc? ekramRequestsBloc;
+  TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
     const DeceasedVerificationSection(),
     const ApplicantInfoSection(),

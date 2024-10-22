@@ -379,15 +379,18 @@ class ApiUrl {
   static const ekramAnotherLookup = 'v2/ekram-mobile-services/lookups';
 
   static const deceasedTransportRequests =
-      'v2/ekram-mobile-services/deceased-transport-requests';
+      'v1/superapp-ekram-services/deceased-transport-requests';
 
   static const deceasedTransportRequestDetails =
       'v2/ekram-mobile-services/deceased-transport-details';
 
+
+
+
+
   static const ekramDeceasedTransportApply =
       'v2/ekram-mobile-services/deceased-transport/add-request';
 
-  static const ekramGetTrips = 'v2/ekram-mobile-services/trips';
 
   static const applyTrip = 'v2/ekram-mobile-services/apply-trip-steps';
 
@@ -625,6 +628,12 @@ class ApiUrl {
   static const getChatgptSessionDetails = '/v1/chatbot-services/view-session';
 
   static const refreshChatSession = '/v1/chatbot-services/load-session';
+  static  getIdenticalDeseasedList(String id) => '/v1/superapp-ekram-services/transport/$id/identical-deceased-list';
+  static  ekramGetTrips (int requestId)=> 'v1/superapp-ekram-services/trips/$requestId/initialize';
+
+  static  GetTripstations (int requestId)=> 'v1/superapp-ekram-services/trips/$requestId/trip-stations';
+
+
 
 
 

@@ -4,7 +4,7 @@ import '../../presentation/blocs/driver_request_bloc/transport_requests_bloc.dar
 class EkramSuccessPageParams {
   String? msg;
   EkramType type;
-  EkramRequestsBloc? ekramBloc;
+  TransportRequestsBloc? ekramBloc;
 
   EkramSuccessPageParams({this.msg, required this.type, this.ekramBloc});
 }

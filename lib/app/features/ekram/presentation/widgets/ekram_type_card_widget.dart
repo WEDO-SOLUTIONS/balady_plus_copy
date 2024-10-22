@@ -13,7 +13,7 @@ import '../blocs/driver_request_bloc/transport_requests_bloc.dart';
 
 class EkramTypeCardWidget extends StatelessWidget {
   final EkramTypes ekramTypes;
-  final EkramRequestsBloc ekramBloc;
+  final TransportRequestsBloc ekramBloc;
   const EkramTypeCardWidget(
       {Key? key, required this.ekramTypes, required this.ekramBloc})
       : super(key: key);

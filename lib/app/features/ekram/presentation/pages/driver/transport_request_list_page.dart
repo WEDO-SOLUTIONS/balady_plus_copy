@@ -3,7 +3,7 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     show
         EkramTransporationCardWidget,
-        EkramRequestsBloc,
+        TransportRequestsBloc,
         ShowFilterEvent,
         GetDeceasedTransportRequestsEvent,
         GetMoreDeceasedTransportRequestsEvent,
@@ -34,7 +34,7 @@ import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../../../../objectable_transactions/presentation/widgets/app_bar_search_bar.dart';
 
-class TransportRequestListPage extends StatefulWidget {
+class TransportRequestListPage extends StatefulWidget  {
   const TransportRequestListPage({Key? key}) : super(key: key);
 
   @override
@@ -42,11 +42,20 @@ class TransportRequestListPage extends StatefulWidget {
       _TransportRequestListPageState();
 }
 
-class _TransportRequestListPageState
-    extends State<TransportRequestListPage> {
+class _TransportRequestListPageState extends State<TransportRequestListPage> with SingleTickerProviderStateMixin {
   final ScrollController _scrollContrller = ScrollController();
   final _debouncer = Debouncer(milliseconds: 500);
 
+  late final TabController _controller = TabController(
+    vsync: this,
+    length: tabs.length,
+    initialIndex: selectedIndex,
+  );
+  int selectedIndex = 0;
+  final List<Tab> tabs = <Tab>[
+    const Tab(text: 'LEFT'),
+    const Tab(text: 'RIGHT'),
+  ];
   @override
   void initState() {
     // TODO: implement initState
@@ -56,19 +65,30 @@ class _TransportRequestListPageState
 
     CommonFunctions.checkLocationSettings(context);
     sl<EkramLocationService>().start();
+
   }
+
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     sl<EkramLocationService>().stop();
+
+    _controller.addListener(() {
+      setState(() {
+        if (selectedIndex != _controller.index) {
+          selectedIndex = _controller.index;
+
+        }
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EkramRequestsBloc(
+      create: (context) => TransportRequestsBloc(
           getDeceasedTransportRequests: sl(),
           getDeceasedTransportRequestDetails: sl(),
           getDeceasedDriverRequestDetails: sl(),
@@ -77,7 +97,7 @@ class _TransportRequestListPageState
           getStatus: sl(),
           isDriver: true)
         ..add(GetDeceasedTransportRequestsEvent(isDriver: true)),
-      child: BlocConsumer<EkramRequestsBloc, EkramRequestsState>(
+      child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
             CommonFunctions.showError(state.errorMessage ?? "");
@@ -87,7 +107,7 @@ class _TransportRequestListPageState
             _scrollContrller.addListener(() {
               if (_scrollContrller.position.maxScrollExtent ==
                   _scrollContrller.offset) {
-                context.read<EkramRequestsBloc>().add(GetMoreDeceasedTransportRequestsEvent(isDriver: true));
+                context.read<TransportRequestsBloc>().add(GetMoreDeceasedTransportRequestsEvent(isDriver: true));
               }
             });
           }
@@ -99,7 +119,7 @@ class _TransportRequestListPageState
               bottom: AppBarSeachBar(
                 onChanged: (value) {
                   _debouncer.run(() {
-                    context.read<EkramRequestsBloc>().add(
+                    context.read<TransportRequestsBloc>().add(
                         GetDeceasedTransportRequestsEvent(
                             isDriver: true, text: value));
                   });
@@ -108,20 +128,23 @@ class _TransportRequestListPageState
               actions: [
                 FilterIcon(
                   onTap: () async {
-                    context.read<EkramRequestsBloc>().add(ShowFilterEvent());
+                    context.read<TransportRequestsBloc>().add(ShowFilterEvent());
                   },
                 ),
               ],
             ),
             body: Stack(
               children: [
+
+
                 Column(
                   children: [
+
                     const CustomVerticalSpace(height: 15),
                     Expanded(
                       child: ListView.builder(
                           itemCount:
-                              (state.deceasedRequestItems?.length ?? 0) + 1,
+                          (state.deceasedRequestItems?.length ?? 0) + 1,
                           controller: _scrollContrller,
                           itemBuilder: (ctx, index) {
                             if (index >=
@@ -140,14 +163,14 @@ class _TransportRequestListPageState
                               children: [
                                 RequestCardWidget(
                                   requestItemModel:
-                                      state.deceasedRequestItems![index],
+                                  state.deceasedRequestItems![index],
 
                                 ),
                                 CustomVerticalSpace(
                                     height: index ==
-                                            (state.deceasedRequestItems!
-                                                    .length -
-                                                1)
+                                        (state.deceasedRequestItems!
+                                            .length -
+                                            1)
                                         ? 30
                                         : 12)
                               ],
@@ -157,16 +180,22 @@ class _TransportRequestListPageState
                     //  CustomVerticalSpace(height: 30)
                   ],
                 ),
+
+
+
+
                 if (state.status == BlocStatus.loadingShimmer)
-                  CustomShimmerListWidget(
-                    height: 274,
-                    itemCount: 3,
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  ),
+                  CustomCircularLoadingWidget(),
+
+                  // CustomShimmerListWidget(
+                  //   height: 274,
+                  //   itemCount: 3,
+                  //   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  // ),
                 if (state.status == BlocStatus.retry)
                   ReloadWidget(
                     onTab: () {
-                      context.read<EkramRequestsBloc>().add(
+                      context.read<TransportRequestsBloc>().add(
                           GetDeceasedTransportRequestsEvent(isDriver: true));
                     },
                   ),

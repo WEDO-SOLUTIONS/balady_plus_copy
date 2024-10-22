@@ -22,63 +22,63 @@ class DeceasedInfoWidget_new extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<IdenticalListBloc, IdenticalListState>(
       builder: (context, state) {
-        return
+        return Container();
 
-          Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomVerticalSpace(height: 10),
-            CustomTextWidget(
-              "deceasedData".tr(),
-              fontSize: 20.0,
-              fontWeight: AppFontWeight.bold,
-              fontColor: AppColor.blackModern700Light,
-              maxLines: 1,
-              textOverflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.start,
-            ),
-            ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount:
-                  state.details?.deceasedInfoResponseDtoList?.length ??
-                      0,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (ctx, index) {
-                return
-
-                  ExpandableCard(
-                      title: "${("cemetry_deceassed_info").tr()} ${index+1}",
-                      icon: null,
-                    children:
-                    [
-                      IdenticalDeceasedCardWidget(
-                    item: state.details!.deceasedInfoResponseDtoList![index],
-                    isDriver: state.isDriver,
-                    showLogTrip: state.details!.requestStatusId != 5 &&
-                        state.details!.requestStatusId != 6,),
-                  ]);
-              },
-            ),
-
-
-              ElevatedButtonWidget.primaryCustom(
-                onPressed: () {
-                  context
-                      .read<IdenticalListBloc>()
-                      .add(GetTripsEvent(index: 0));
-
-                },
-                text: ('startTrip').tr(),
-              ),
-
-
-
-
-            if (state.status == BlocStatus.loading) const CustomLoadingWidget()
-          ],
-        );
+        //   Column(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     CustomVerticalSpace(height: 10),
+        //     CustomTextWidget(
+        //       "deceasedData".tr(),
+        //       fontSize: 20.0,
+        //       fontWeight: AppFontWeight.bold,
+        //       fontColor: AppColor.blackModern700Light,
+        //       maxLines: 1,
+        //       textOverflow: TextOverflow.ellipsis,
+        //       textAlign: TextAlign.start,
+        //     ),
+        //     ListView.builder(
+        //       padding: EdgeInsets.zero,
+        //       itemCount:
+        //           state.details?.deceasedInfoResponseDtoList?.length ??
+        //               0,
+        //       shrinkWrap: true,
+        //       physics: const NeverScrollableScrollPhysics(),
+        //       itemBuilder: (ctx, index) {
+        //         return
+        //
+        //           ExpandableCard(
+        //               title: "${("cemetry_deceassed_info").tr()} ${index+1}",
+        //               icon: null,
+        //             children:
+        //             [
+        //               IdenticalDeceasedCardWidget(
+        //             item: state.details!.deceasedInfoResponseDtoList![index],
+        //             isDriver: state.isDriver,
+        //             showLogTrip: state.details!.requestStatusId != 5 &&
+        //                 state.details!.requestStatusId != 6,),
+        //           ]);
+        //       },
+        //     ),
+        //
+        //
+        //       ElevatedButtonWidget.primaryCustom(
+        //         onPressed: () {
+        //           context
+        //               .read<IdenticalListBloc>()
+        //               .add(GetTripsEvent(index: 0));
+        //
+        //         },
+        //         text: ('startTrip').tr(),
+        //       ),
+        //
+        //
+        //
+        //
+        //     if (state.status == BlocStatus.loading) const CustomLoadingWidget()
+        //   ],
+        // );
       },
     );
   }

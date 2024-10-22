@@ -3,7 +3,7 @@ part of 'identical_list_bloc.dart';
 class IdenticalListState extends Equatable {
   final BlocStatus status;
   final String? errorMessage;
-  final DeceasedRequestDetails? details;
+  final List<DeceasedIdenticalItem>? details;
   final bool isDriver;
   final bool? isCompleted;
   final int requestID;
@@ -20,7 +20,7 @@ class IdenticalListState extends Equatable {
       final String? errorMessage,
       final bool? isDriver,
         final int? requestID,
-      final DeceasedRequestDetails? deceasedRequestItems,
+      final List<DeceasedIdenticalItem>? deceasedRequestItems,
       final bool? isCompleted}) {
     return IdenticalListState(
         status: status ?? this.status,
