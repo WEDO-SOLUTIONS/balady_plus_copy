@@ -130,7 +130,7 @@ class AdvancedMetrics {
       _lostGpsRuntime?.stop();
       _lostGpsRuntime = null;
 
-      _lostGpsLast!.copyWith(duration: duration);
+      _lostGpsLast = _lostGpsLast!.copyWith(duration: duration);
       await sendLostGPS();
     }
   }
@@ -138,6 +138,8 @@ class AdvancedMetrics {
   Future<void> sendLostGPS() async {
     if (_lostGpsLast != null) {
       log('>>> $_lostGpsLast');
+      _lostGpsLast = null;
+      await _lostGPSClean();
       return;
     }
 
@@ -146,7 +148,14 @@ class AdvancedMetrics {
     if (jsonString != null) {
       final metrics = LostGpsMetrics.fromJson(jsonString);
       log('>>> $metrics');
+      await _lostGPSClean();
     }
+  }
+
+  Future<void> _lostGPSClean() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    await sharedPrefs.remove(_lostGpsKey);
+    _lostGpsLast = null;
   }
 
   // Route calculation time

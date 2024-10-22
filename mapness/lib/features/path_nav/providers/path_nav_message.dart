@@ -22,13 +22,14 @@ class _PathNavMessage extends _$PathNavMessage {
     AdvancedMetrics.instance.sendLostGPS();
 
     subscription = mapController.value?.naviMessageController.events.listen((event) {
-      if (event == NaviMessageEventState.gpsLost) {
+      if (event.state == NaviMessageEventState.gpsLost) {
         AdvancedMetrics.instance.addLostGPS();
-      } else if (event == NaviMessageEventState.routeResearch) {
+      } else {
         // We will not send the event if gps signal was not lost
         // So we can send it without any additional checks
         AdvancedMetrics.instance.addRestoreGPS();
       }
+
       state = event.state.getNaviMessage();
     });
 
