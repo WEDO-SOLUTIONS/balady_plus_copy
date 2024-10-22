@@ -5,6 +5,7 @@ import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -70,7 +71,7 @@ class Search extends _$Search {
         state = const SearchStateHistory();
         return;
       }
-
+      AdvancedMetrics.instance.startSearchResponse(query, '');
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
       _previousQuery = query;
@@ -92,6 +93,7 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final result = await searchOperation.value;
+      await AdvancedMetrics.instance.stopSearchResponse();
 
       state = result.suggests.isEmpty
           ? SearchStateEmpty(searchText: query)
@@ -116,6 +118,7 @@ class Search extends _$Search {
     }
     try {
       state = SearchStateLoading(searchText: searchQuery);
+      AdvancedMetrics.instance.startSearchResponse(searchQuery, quickSearch.name);
       _previousType = SearchType.quickSearch;
       _previousQuickSearch = quickSearch;
       final searchRect =
@@ -140,6 +143,7 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
+      await AdvancedMetrics.instance.stopSearchResponse();
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: searchQuery)
           : SearchStateResults(
@@ -158,6 +162,7 @@ class Search extends _$Search {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: query);
+      AdvancedMetrics.instance.startSearchResponse(query, '');
       _previousType = SearchType.searchByText;
       _previousQuery = query;
       final searchRect =
@@ -182,6 +187,7 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
+      await AdvancedMetrics.instance.stopSearchResponse();
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: query)
           : SearchStateResults(
@@ -199,6 +205,7 @@ class Search extends _$Search {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: text);
+      AdvancedMetrics.instance.startSearchResponse(text, query.id);
       _previousType = SearchType.searchByQuery;
       _previousQuery = text;
       _previousSearchQueryMessage = query;
@@ -224,6 +231,7 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
+      await AdvancedMetrics.instance.stopSearchResponse();
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: text)
           : SearchStateResults(

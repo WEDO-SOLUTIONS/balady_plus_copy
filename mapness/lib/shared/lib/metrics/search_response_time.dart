@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 
 class SearchResponseTimeMetric {
   /// A value in milliseconds indicating how long it took to return search results.
@@ -43,4 +44,41 @@ class SearchResponseTimeMetric {
     required this.networkType,
     required this.sessionId,
   });
+
+  SearchResponseTimeMetric copyWith({
+    int? responseTime,
+    String? query,
+    String? searchQuery,
+    String? deviceType,
+    String? appVersion,
+    String? timestamp,
+    ConnectivityResult? networkType,
+    String? sessionId,
+  }) =>
+      SearchResponseTimeMetric(
+        responseTime: responseTime ?? this.responseTime,
+        query: query ?? this.query,
+        searchQuery: searchQuery ?? this.searchQuery,
+        deviceType: deviceType ?? this.deviceType,
+        appVersion: appVersion ?? this.appVersion,
+        timestamp: timestamp ?? this.timestamp,
+        networkType: networkType ?? this.networkType,
+        sessionId: sessionId ?? this.sessionId,
+      );
+
+  /// Convert the object to a Map
+  Map<String, dynamic> toJson() => {
+        AdvancedMetricsConstants.keys.searchResponseDuration: responseTime,
+        AdvancedMetricsConstants.keys.searchQueryType: query,
+        AdvancedMetricsConstants.keys.searchQueryValue: searchQuery,
+        AdvancedMetricsConstants.keys.deviceType: deviceType,
+        AdvancedMetricsConstants.keys.appVersion: appVersion,
+        AdvancedMetricsConstants.keys.timestamp: timestamp,
+        AdvancedMetricsConstants.keys.networkType: networkType.name,
+        AdvancedMetricsConstants.keys.sessionId: sessionId,
+      };
+
+  @override
+  String toString() =>
+      'SearchResponseTimeMetric(responseTime: $responseTime, query: $query, searchQuery: $searchQuery, deviceType: $deviceType, appVersion: $appVersion, timestamp: $timestamp, networkType: $networkType, sessionId: $sessionId)';
 }

@@ -9,6 +9,7 @@ import 'package:mapness/shared/lib/metrics/battery_usage.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/metrics/lost_gps.dart';
 import 'package:mapness/shared/lib/metrics/route_calculation.dart';
+import 'package:mapness/shared/lib/metrics/search_response_time.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -234,6 +235,37 @@ class AdvancedMetrics {
         sessionId: UrbiMetricsUtils.instance.sessionUuid,
       );
       log('>>> Route $routeCalculation');
+    }
+  }
+
+  // Search response time
+  Stopwatch? _searchResponseRuntime;
+  String? _searchQuery;
+  String? _searchQueryType;
+
+  void startSearchResponse(String query, String searchQuery) {
+    _searchResponseRuntime = Stopwatch()..start();
+    _searchQuery = query;
+    _searchQueryType = searchQuery;
+  }
+
+  Future<void> stopSearchResponse() async {
+    if (_searchResponseRuntime != null && _searchQuery != null && _searchQueryType != null) {
+      final duration = _searchResponseRuntime!.elapsedMilliseconds;
+      _searchResponseRuntime?.stop();
+      _searchResponseRuntime = null;
+
+      final searchResponse = SearchResponseTimeMetric(
+        responseTime: duration,
+        query: _searchQuery!,
+        searchQuery: _searchQueryType!,
+        deviceType: await getDeviceInfo(),
+        appVersion: await _getAppVersion(),
+        timestamp: _timeStamp,
+        networkType: await Connectivity().checkConnectivity(),
+        sessionId: UrbiMetricsUtils.instance.sessionUuid,
+      );
+      log('>>> Search response time: $searchResponse');
     }
   }
 
