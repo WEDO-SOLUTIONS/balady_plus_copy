@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -9,8 +10,8 @@ import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/routes/favourites.dart';
-import 'package:mapness/app/routes/feedback.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -90,7 +91,7 @@ class InfoWidget extends ConsumerWidget {
         if (objectId == null) {
           return;
         }
-        FeedbackBaseRoute(objectId: objectId).push(context);
+        context.router.push(FeedbackSelectTypeRoute(objectId: objectId));
       },
       title: context.l10n.reportError,
       buttonText: context.l10n.send,

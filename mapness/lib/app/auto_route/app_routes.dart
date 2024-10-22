@@ -245,6 +245,25 @@ class AppRouter extends RootStackRouter {
               page: LayersSheetRoute.page,
               customRouteBuilder: modalSheetBuilder,
             ),
+            CustomRoute(
+              path: 'feedback/:objectId',
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              page: FeedbackSelectTypeRoute.page,
+              children: [
+                CustomRoute(
+                  path: ':categoryId',
+                  page: FeedbackRoute.page,
+                  transitionsBuilder: TransitionsBuilders.fadeIn,
+                  children: [
+                    CustomRoute(
+                      path: 'success',
+                      page: FeedbackSentRoute.page,
+                      transitionsBuilder: TransitionsBuilders.fadeIn,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
       ];
