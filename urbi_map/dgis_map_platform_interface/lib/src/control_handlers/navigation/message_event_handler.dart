@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:dgis_map_platform_interface/src/events/navi_message_events.dart';
 
