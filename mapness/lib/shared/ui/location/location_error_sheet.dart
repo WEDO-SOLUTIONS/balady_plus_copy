@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -13,16 +13,17 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
 
-class LocationErrorSheet extends ConsumerStatefulWidget {
+@RoutePage()
+class LocationErrorSheetPage extends ConsumerStatefulWidget {
   final String? routeOnClose;
 
-  const LocationErrorSheet({super.key, this.routeOnClose});
+  const LocationErrorSheetPage({super.key, this.routeOnClose});
 
   @override
-  ConsumerState<LocationErrorSheet> createState() => _LocationErrorSheetState();
+  ConsumerState<LocationErrorSheetPage> createState() => _LocationErrorSheetState();
 }
 
-class _LocationErrorSheetState extends ConsumerState<LocationErrorSheet> with WidgetsBindingObserver {
+class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -48,7 +49,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheet> with Wi
     final result = await ref.read(locationProvider.notifier).checkOnLocationPermissionGranted();
 
     if (result && mounted) {
-      context.pop(result);
+      await context.router.maybePopTop(result);
     }
   }
 
@@ -68,9 +69,9 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheet> with Wi
                     ? () {
                         ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                         CommonFunctions.locationDialogShowed = false;
-                        context.go(widget.routeOnClose!);
+                        context.router.maybePopTop(widget.routeOnClose);
                       }
-                    : () => context.pop(),
+                    : () => context.back(),
                 errorTitle: context.l10n.locationDialogErrorTitle,
                 errorContent: context.l10n.locationDialogErrorContent,
                 buttonLabel: context.l10n.locationDialogButtonLabel,
