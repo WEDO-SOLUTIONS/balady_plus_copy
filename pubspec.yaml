@@ -227,8 +227,8 @@ dependencies:
   balady_authorization:
     #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
     git:
-      url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
-          # https://github.com/urbi-ae/balady_authorization.git
+      ref: main
+      url: git@github.com:urbi-ae/balady_authorization.git
   #      ref: master
   #      path: packages/firebase_messaging/firebase_messaging
   ############################################################
