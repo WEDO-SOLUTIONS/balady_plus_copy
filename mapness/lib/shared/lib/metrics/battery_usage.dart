@@ -29,8 +29,9 @@ class BatteryUsage {
   final ConnectivityResult networkType;
 
   /// Location latitude and longitude
-  /// Example: [37.7749, 122.4194]
-  final List<double> location;
+  /// Example: [37.7749, 122.4194] or null
+  /// If the location is null, the location is not available or the error occurred
+  final List<double>? location;
 
   /// Active processes
   /// Example: [com.google.maps, com.mapbox.navigation]
@@ -47,9 +48,9 @@ class BatteryUsage {
     required this.appVersion,
     required this.timestamp,
     required this.networkType,
-    required this.location,
     required this.activeProcesses,
     required this.deviceState,
+    this.location,
   });
 
   /// Convert the object to a Map

@@ -14,65 +14,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
-class UrbiMetricsUtils {
-  UrbiMetricsUtils._privateConstructor();
-
-  static final UrbiMetricsUtils _instance = UrbiMetricsUtils._privateConstructor();
-
-  static UrbiMetricsUtils get instance => _instance;
-
-  static String testKey = 'measure_startup_time';
-
-  // Session id
-  final _sessionUuid = const Uuid().v4();
-  String get sessionUuid => _sessionUuid;
-
-  // Battery level and state
-  final battery = Battery();
-
-  final Map<String, Stopwatch> _timers = {};
-  (DateTime, int)? _batteryMeasureStart;
-
-  Future<void> startBatteryMeasure() async {
-    try {
-      final level = await battery.batteryLevel;
-      _batteryMeasureStart = (DateTime.now(), level);
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
-  Future<void> stopBatteryMeasure() async {
-    if (_batteryMeasureStart != null) {
-      final end = DateTime.now();
-      final start = _batteryMeasureStart!.$1;
-      final level = await battery.batteryLevel;
-      final startLevel = _batteryMeasureStart!.$2;
-      final duration = end.difference(start).inMilliseconds;
-      final levelDiff = level - startLevel;
-      log('>>> Battery measure: $duration ms, $levelDiff %');
-      log('>>> Battery velocity: ${levelDiff / duration} %/ms');
-    }
-  }
-
-  void startTimeMeasure(String key) {
-    if (!_timers.containsKey(key)) {
-      _timers[key] = Stopwatch();
-    }
-    _timers[key]?.stop();
-    _timers[key]?.start();
-  }
-
-  int? stopAndGetTime(String key) {
-    int? result;
-    if (_timers.containsKey(key)) {
-      result = _timers[key]?.elapsedMilliseconds;
-      _timers[key]?.stop();
-    }
-    return result;
-  }
-}
-
 class AdvancedMetrics {
   AdvancedMetrics._privateConstructor();
 
@@ -111,7 +52,7 @@ class AdvancedMetrics {
         appVersion: await _getAppVersion(),
         timestamp: _timeStamp,
         networkType: await Connectivity().checkConnectivity(),
-        sessionId: UrbiMetricsUtils.instance.sessionUuid,
+        sessionId: _sessionUuid,
         location: await _getLocation(),
       );
       log('>>> $_loadTimeMetrics');
@@ -171,7 +112,7 @@ class AdvancedMetrics {
       appVersion: await _getAppVersion(),
       timestamp: _timeStamp,
       networkType: await Connectivity().checkConnectivity(),
-      sessionId: UrbiMetricsUtils.instance.sessionUuid,
+      sessionId: _sessionUuid,
       location: await _getLocation(),
     );
 
@@ -232,7 +173,7 @@ class AdvancedMetrics {
         appVersion: await _getAppVersion(),
         timestamp: _timeStamp,
         networkType: await Connectivity().checkConnectivity(),
-        sessionId: UrbiMetricsUtils.instance.sessionUuid,
+        sessionId: _sessionUuid,
       );
       log('>>> Route $routeCalculation');
     }
@@ -263,7 +204,7 @@ class AdvancedMetrics {
         appVersion: await _getAppVersion(),
         timestamp: _timeStamp,
         networkType: await Connectivity().checkConnectivity(),
-        sessionId: UrbiMetricsUtils.instance.sessionUuid,
+        sessionId: _sessionUuid,
       );
       log('>>> Search response time: $searchResponse');
     }
@@ -286,17 +227,26 @@ class AdvancedMetrics {
   }
 
   Future<String> _getAppVersion() async {
+    if (_appVersion != null) {
+      return _appVersion!;
+    }
     final platformInfo = await PackageInfo.fromPlatform();
-    return '${platformInfo.version}(${platformInfo.buildNumber})';
+    _appVersion = '${platformInfo.version}(${platformInfo.buildNumber})';
+    return _appVersion!;
   }
 
   String get _timeStamp => DateTime.now().toUtc().toIso8601String();
 
-  Future<List<double>> _getLocation() async {
-    final location = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.medium,
-      timeLimit: const Duration(milliseconds: 500),
-    );
-    return [location.latitude, location.longitude];
+  Future<List<double>?> _getLocation() async {
+    try {
+      final location = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(milliseconds: 300),
+      );
+      return [location.latitude, location.longitude];
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
   }
 }

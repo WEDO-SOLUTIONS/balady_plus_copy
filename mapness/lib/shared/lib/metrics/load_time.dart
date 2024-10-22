@@ -31,8 +31,9 @@ class LoadTimeMetrics {
   final String sessionId;
 
   /// Location: latitude and longitude
-  /// Example: [37.7749, 122.4194]
-  final List<double> location;
+  /// Example: [37.7749, 122.4194] or null
+  /// If the location is null, the location is not available or the error occurred
+  final List<double>? location;
 
   const LoadTimeMetrics({
     required this.loadTime,
@@ -41,7 +42,7 @@ class LoadTimeMetrics {
     required this.timestamp,
     required this.networkType,
     required this.sessionId,
-    required this.location,
+    this.location,
     this.loadType = LoadType.unknown,
   });
 

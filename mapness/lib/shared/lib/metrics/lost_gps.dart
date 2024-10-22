@@ -30,8 +30,9 @@ class LostGpsMetrics {
   final String sessionId;
 
   /// Location: latitude and longitude
-  /// Example: [37.7749, 122.4194]
-  final List<double> location;
+  /// Example: [37.7749, 122.4194] or null
+  /// If the location is null, the location is not available or the error occurred
+  final List<double>? location;
 
   const LostGpsMetrics({
     required this.deviceType,
@@ -39,7 +40,7 @@ class LostGpsMetrics {
     required this.timestamp,
     required this.networkType,
     required this.sessionId,
-    required this.location,
+    this.location,
     this.duration,
   });
 
