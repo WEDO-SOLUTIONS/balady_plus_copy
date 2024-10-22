@@ -69,9 +69,11 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
                     ? () {
                         ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                         CommonFunctions.locationDialogShowed = false;
-                        context.router.maybePopTop(widget.routeOnClose);
+                        context.router.maybePop(widget.routeOnClose);
                       }
-                    : () => context.back(),
+                    : () {
+                  context.maybePop();
+                },
                 errorTitle: context.l10n.locationDialogErrorTitle,
                 errorContent: context.l10n.locationDialogErrorContent,
                 buttonLabel: context.l10n.locationDialogButtonLabel,

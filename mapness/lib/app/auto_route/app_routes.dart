@@ -138,9 +138,8 @@ class AppRouter extends RootStackRouter {
               transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
-              path: 'location_error',
+              path: 'request_location',
               page: LocationErrorSheetRoute.page,
-              customRouteBuilder: customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'path_nav',

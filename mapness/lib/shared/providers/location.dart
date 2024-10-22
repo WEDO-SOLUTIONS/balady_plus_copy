@@ -52,7 +52,7 @@ class _Location extends _$Location {
         if (CommonFunctions.locationDialogShowed) {
           return false;
         }
-        if (ref.read(currentRouteProvider)?.currentPath == routeLocation) {
+        if (router.isPathActive(routeLocation)) {
           return false;
         }
         CommonFunctions.locationDialogShowed = true;
