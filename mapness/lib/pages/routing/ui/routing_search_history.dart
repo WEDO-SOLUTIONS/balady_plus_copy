@@ -33,7 +33,7 @@ class RoutingSearchHistory extends ConsumerWidget {
         Container(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.only(bottom: Spacing.$4x),
             child: RoutingFavourites(
               showBookmark: false,
               onFavouriteTap: (point) async {
@@ -43,7 +43,7 @@ class RoutingSearchHistory extends ConsumerWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: SearchActions(
             children: [
               if (showMyLocation)
