@@ -55,7 +55,6 @@ class Search extends _$Search {
       object: runtimeType,
       extras: {'value': query},
     );
-    await mixpanel?.track('SearchQuery', properties: {'value': query});
 
     if (query.isEmpty) {
       clear();
@@ -71,16 +70,19 @@ class Search extends _$Search {
         state = const SearchStateHistory();
         return;
       }
-      AdvancedMetrics.instance.startSearchResponse(query, '');
+
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
       _previousQuery = query;
+      // -- Analytics
+      AdvancedMetrics.instance.startSearchResponse(query, '');
       Metrics.logEvent(
         'fetchSuggest',
         object: runtimeType,
       );
-
       mixpanel?.timeEvent('Search: fetchSuggest');
+      // -- Analytics
+
       final dgisController = await ref.read(dgisControllerProvider.future);
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
@@ -93,7 +95,6 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final result = await searchOperation.value;
-      await AdvancedMetrics.instance.stopSearchResponse();
 
       state = result.suggests.isEmpty
           ? SearchStateEmpty(searchText: query)
@@ -101,7 +102,10 @@ class Search extends _$Search {
               suggest: result,
               searchText: query,
             );
+      // -- Analytics
+      await AdvancedMetrics.instance.stopSearchResponse();
       await mixpanel?.track('Search: fetchSuggest');
+      // -- Analytics
     } on Exception catch (_) {
       state = SearchStateError(searchText: query);
       rethrow;
@@ -118,18 +122,22 @@ class Search extends _$Search {
     }
     try {
       state = SearchStateLoading(searchText: searchQuery);
-      AdvancedMetrics.instance.startSearchResponse(searchQuery, quickSearch.name);
+
       _previousType = SearchType.quickSearch;
       _previousQuickSearch = quickSearch;
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+
+      // -- Analytics
+      AdvancedMetrics.instance.startSearchResponse(searchQuery, quickSearch.name);
       Metrics.logEvent(
         'quickSearch',
         object: runtimeType,
         extras: {'query': searchQuery},
       );
-
       mixpanel?.timeEvent('Search: quickSearch');
+      // -- Analytics
+
       final dgisController = await ref.read(dgisControllerProvider.future);
 
       final searchOperation = CancelableOperation.fromFuture(
@@ -143,7 +151,12 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
+
+      // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse();
+      await mixpanel?.track('Search: quickSearch');
+      // -- Analytics
+
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: searchQuery)
           : SearchStateResults(
@@ -151,7 +164,6 @@ class Search extends _$Search {
               searchText: searchQuery,
               markerType: quickSearch.markerType,
             );
-      await mixpanel?.track('Search: quickSearch');
     } on Exception catch (_) {
       state = SearchStateError(searchText: searchQuery);
       rethrow;
@@ -162,18 +174,21 @@ class Search extends _$Search {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: query);
-      AdvancedMetrics.instance.startSearchResponse(query, '');
+
       _previousType = SearchType.searchByText;
       _previousQuery = query;
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      // -- Analytics
+      AdvancedMetrics.instance.startSearchResponse(query, '');
       Metrics.logEvent(
         'searchByText',
         object: runtimeType,
         extras: {'query': query},
       );
-
       mixpanel?.timeEvent('Search: searchByText');
+      // -- Analytics
+
       final dgisController = await ref.read(dgisControllerProvider.future);
 
       final searchOperation = CancelableOperation.fromFuture(
@@ -187,14 +202,17 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
-      await AdvancedMetrics.instance.stopSearchResponse();
+
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: query)
           : SearchStateResults(
               results: results,
               searchText: query,
             );
+      // -- Analytics
+      await AdvancedMetrics.instance.stopSearchResponse();
       await mixpanel?.track('Search: searchByText');
+      // -- Analytics
     } on Exception catch (_) {
       state = SearchStateError(searchText: query);
       rethrow;
@@ -205,19 +223,22 @@ class Search extends _$Search {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: text);
-      AdvancedMetrics.instance.startSearchResponse(text, query.id);
+
       _previousType = SearchType.searchByQuery;
       _previousQuery = text;
       _previousSearchQueryMessage = query;
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
-
+      // -- Analytics
+      AdvancedMetrics.instance.startSearchResponse(text, query.id);
       Metrics.logEvent(
         'Search/searchByQuery',
         object: runtimeType,
         extras: {'query_id': query.id},
       );
       mixpanel?.timeEvent('Search: searchByQuery');
+      // -- Analytics
+
       final dgisController = await ref.read(dgisControllerProvider.future);
 
       final searchOperation = CancelableOperation.fromFuture(
@@ -231,14 +252,17 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
-      await AdvancedMetrics.instance.stopSearchResponse();
+
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: text)
           : SearchStateResults(
               results: results,
               searchText: text,
             );
+      // -- Analytics
+      await AdvancedMetrics.instance.stopSearchResponse();
       await mixpanel?.track('Search: searchByQuery');
+      // -- Analytics
     } on Exception catch (_) {
       state = SearchStateError(searchText: text);
       rethrow;
