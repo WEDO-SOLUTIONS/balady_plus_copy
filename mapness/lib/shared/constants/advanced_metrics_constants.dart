@@ -3,20 +3,20 @@ class AdvancedMetricsConstants {
 
   /// Metric that measures the time it takes for the app to load
   /// Also we need to add additional information about the device and session
-  static String get appLoadTime => 'App Load Time';
+  static String get appLoadTime => 'app_load_time';
 
   /// Metric that measures the battery usage of the app
   /// Also we need to add additional information about the device and session
-  static String get batteryUsage => 'Battery Usage';
+  static String get batteryUsage => 'battery_usage';
 
   /// Metric that measures the amount and duration of GPS lost signals
-  static String get lostGps => 'Lost GPS';
+  static String get lostGps => 'lost_gps';
 
   /// Metric that measures the duration of the search response
-  static String get searchResponseDuration => 'Search Response Duration';
+  static String get searchResponseDuration => 'search_response_duration';
 
   /// Metric that measures the route calculation time
-  static String get routeCalculationTime => 'Route Calculation Time';
+  static String get routeCalculationTime => 'route_calculation_time';
 
   static const keys = _AdvancedMetricsKeys();
 }
