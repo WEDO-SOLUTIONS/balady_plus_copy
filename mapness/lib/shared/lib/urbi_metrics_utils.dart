@@ -5,6 +5,7 @@ import 'package:battery_plus/battery_plus.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/lib/metrics/battery_usage.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/metrics/lost_gps.dart';
@@ -13,6 +14,8 @@ import 'package:mapness/shared/lib/metrics/search_response_time.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+
+typedef TrackEvent = Future<dynamic> Function(String event, {Map<String, dynamic>? properties});
 
 class AdvancedMetrics {
   AdvancedMetrics._privateConstructor();
@@ -40,22 +43,29 @@ class AdvancedMetrics {
     _startupMeasure = Stopwatch()..start();
   }
 
-  Future<void> stopMeasureStartup() async {
+  Future<void> stopMeasureStartup({required TrackEvent track}) async {
     if (_startupMeasure != null) {
       final duration = _startupMeasure!.elapsedMilliseconds;
       _startupMeasure?.stop();
       _startupMeasure = null;
-
-      _loadTimeMetrics = LoadTimeMetrics(
-        loadTime: duration,
-        deviceType: await getDeviceInfo(),
-        appVersion: await _getAppVersion(),
-        timestamp: _timeStamp,
-        networkType: await Connectivity().checkConnectivity(),
-        sessionId: _sessionUuid,
-        location: await _getLocation(),
-      );
-      log('>>> $_loadTimeMetrics');
+      try {
+        _loadTimeMetrics = LoadTimeMetrics(
+          loadTime: duration,
+          deviceType: await getDeviceInfo(),
+          appVersion: await _getAppVersion(),
+          timestamp: _timeStamp,
+          networkType: await Connectivity().checkConnectivity(),
+          sessionId: _sessionUuid,
+          location: await _getLocation(),
+        );
+        await track(
+          AdvancedMetricsConstants.appLoadTime,
+          properties: _loadTimeMetrics!.toJson(),
+        );
+        log('>>> $_loadTimeMetrics');
+      } catch (e) {
+        log('Log event failed: $e');
+      }
     }
   }
 
@@ -69,7 +79,7 @@ class AdvancedMetrics {
     _batteryInitial = await _battery.batteryLevel;
   }
 
-  Future<void> stopMeasureBattery() async {
+  Future<void> stopMeasureBattery({required TrackEvent track}) async {
     if (_appRuntime != null && _batteryInitial != null) {
       final duration = _appRuntime!.elapsedMilliseconds;
       _appRuntime?.stop();
@@ -95,6 +105,10 @@ class AdvancedMetrics {
         location: await _getLocation(),
         activeProcesses: [],
         deviceState: await _battery.batteryState,
+      );
+      await track(
+        AdvancedMetricsConstants.batteryUsage,
+        properties: batteryUsageMetrics.toJson(),
       );
       log('>>> $batteryUsageMetrics');
     }
@@ -124,19 +138,23 @@ class AdvancedMetrics {
     log('>>> $_lostGpsLast');
   }
 
-  Future<void> addRestoreGPS() async {
+  Future<void> addRestoreGPS({required TrackEvent track}) async {
     if (_lostGpsRuntime != null && _lostGpsLast != null) {
       final duration = _lostGpsRuntime!.elapsedMilliseconds;
       _lostGpsRuntime?.stop();
       _lostGpsRuntime = null;
 
       _lostGpsLast = _lostGpsLast!.copyWith(duration: duration);
-      await sendLostGPS();
+      await sendLostGPS(track: track);
     }
   }
 
-  Future<void> sendLostGPS() async {
+  Future<void> sendLostGPS({required TrackEvent track}) async {
     if (_lostGpsLast != null) {
+      await track(
+        AdvancedMetricsConstants.lostGps,
+        properties: _lostGpsLast!.toJson(),
+      );
       log('>>> $_lostGpsLast');
       _lostGpsLast = null;
       await _lostGPSClean();
@@ -147,6 +165,10 @@ class AdvancedMetrics {
     final jsonString = sharedPrefs.getString(_lostGpsKey);
     if (jsonString != null) {
       final metrics = LostGpsMetrics.fromJson(jsonString);
+      await track(
+        AdvancedMetricsConstants.lostGps,
+        properties: metrics.toJson(),
+      );
       log('>>> $metrics');
       await _lostGPSClean();
     }
@@ -169,7 +191,7 @@ class AdvancedMetrics {
       ..addAll([start ?? [], end ?? []]);
   }
 
-  Future<void> stopRouteCalculation() async {
+  Future<void> stopRouteCalculation({required TrackEvent track}) async {
     if (_routeCalculationRuntime != null) {
       final duration = _routeCalculationRuntime!.elapsedMilliseconds;
       _routeCalculationRuntime?.stop();
@@ -184,6 +206,10 @@ class AdvancedMetrics {
         networkType: await Connectivity().checkConnectivity(),
         sessionId: _sessionUuid,
       );
+      await track(
+        AdvancedMetricsConstants.routeCalculationTime,
+        properties: routeCalculation.toJson(),
+      );
       log('>>> Route $routeCalculation');
     }
   }
@@ -193,13 +219,13 @@ class AdvancedMetrics {
   String? _searchQuery;
   String? _searchQueryType;
 
-  void startSearchResponse(String query, String searchQuery) {
+  void startSearchResponse({required String queryType, required String searchQuery}) {
     _searchResponseRuntime = Stopwatch()..start();
-    _searchQuery = query;
-    _searchQueryType = searchQuery;
+    _searchQuery = searchQuery;
+    _searchQueryType = queryType;
   }
 
-  Future<void> stopSearchResponse() async {
+  Future<void> stopSearchResponse({required TrackEvent track}) async {
     if (_searchResponseRuntime != null && _searchQuery != null && _searchQueryType != null) {
       final duration = _searchResponseRuntime!.elapsedMilliseconds;
       _searchResponseRuntime?.stop();
@@ -214,6 +240,10 @@ class AdvancedMetrics {
         timestamp: _timeStamp,
         networkType: await Connectivity().checkConnectivity(),
         sessionId: _sessionUuid,
+      );
+      await track(
+        AdvancedMetricsConstants.searchResponseDuration,
+        properties: searchResponse.toJson(),
       );
       log('>>> Search response time: $searchResponse');
     }

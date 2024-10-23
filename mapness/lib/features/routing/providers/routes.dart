@@ -7,6 +7,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'routes.g.dart';
@@ -43,7 +44,7 @@ class Routes extends _$Routes {
     final routesCompleter = Completer<List<RouteInfo>>();
     final subscribtion = dgisController.value?.routesInfoChangedEvents.listen((event) async {
       await dgisController.value?.showRoutes();
-      await AdvancedMetrics.instance.stopRouteCalculation();
+      await AdvancedMetrics.instance.stopRouteCalculation(track: ref.read(urbiAnalyticsProvider).track);
       routesCompleter.complete(event.routes);
     });
     Timer(const Duration(minutes: 2), () {

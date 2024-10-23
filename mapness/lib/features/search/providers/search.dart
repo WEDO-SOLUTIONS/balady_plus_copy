@@ -8,6 +8,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search.g.dart';
@@ -75,7 +76,10 @@ class Search extends _$Search {
       _previousType = SearchType.fetchSuggest;
       _previousQuery = query;
       // -- Analytics
-      AdvancedMetrics.instance.startSearchResponse(query, '');
+      AdvancedMetrics.instance.startSearchResponse(
+        queryType: _previousType!.name,
+        searchQuery: query,
+      );
       Metrics.logEvent(
         'fetchSuggest',
         object: runtimeType,
@@ -103,7 +107,7 @@ class Search extends _$Search {
               searchText: query,
             );
       // -- Analytics
-      await AdvancedMetrics.instance.stopSearchResponse();
+      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: fetchSuggest');
       // -- Analytics
     } on Exception catch (_) {
@@ -129,7 +133,10 @@ class Search extends _$Search {
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
 
       // -- Analytics
-      AdvancedMetrics.instance.startSearchResponse(searchQuery, quickSearch.name);
+      AdvancedMetrics.instance.startSearchResponse(
+        queryType: _previousType!.name,
+        searchQuery: searchQuery,
+      );
       Metrics.logEvent(
         'quickSearch',
         object: runtimeType,
@@ -153,7 +160,7 @@ class Search extends _$Search {
       final results = await searchOperation.value;
 
       // -- Analytics
-      await AdvancedMetrics.instance.stopSearchResponse();
+      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: quickSearch');
       // -- Analytics
 
@@ -180,7 +187,10 @@ class Search extends _$Search {
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
       // -- Analytics
-      AdvancedMetrics.instance.startSearchResponse(query, '');
+      AdvancedMetrics.instance.startSearchResponse(
+        queryType: _previousType!.name,
+        searchQuery: query,
+      );
       Metrics.logEvent(
         'searchByText',
         object: runtimeType,
@@ -210,7 +220,7 @@ class Search extends _$Search {
               searchText: query,
             );
       // -- Analytics
-      await AdvancedMetrics.instance.stopSearchResponse();
+      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByText');
       // -- Analytics
     } on Exception catch (_) {
@@ -230,7 +240,10 @@ class Search extends _$Search {
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
       // -- Analytics
-      AdvancedMetrics.instance.startSearchResponse(text, query.id);
+      AdvancedMetrics.instance.startSearchResponse(
+        queryType: _previousType!.name,
+        searchQuery: text,
+      );
       Metrics.logEvent(
         'Search/searchByQuery',
         object: runtimeType,
@@ -260,7 +273,7 @@ class Search extends _$Search {
               searchText: text,
             );
       // -- Analytics
-      await AdvancedMetrics.instance.stopSearchResponse();
+      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByQuery');
       // -- Analytics
     } on Exception catch (_) {
