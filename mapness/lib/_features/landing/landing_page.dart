@@ -41,6 +41,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
+  Completer<void>? _checkPermissionCompleter;
 
   @override
   void initState() {
@@ -86,7 +87,19 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      ref.read(locationProvider.notifier).checkLocationPermission();
+      if (_checkPermissionCompleter == null) {
+        final completer = Completer<void>();
+        _checkPermissionCompleter = completer;
+        ref.read(locationProvider.notifier).checkLocationPermission().then((_) {
+          completer.complete();
+        }).catchError((Object e, StackTrace s) {
+          completer.completeError(e, s);
+        }).whenComplete(() async {
+          await Future.delayed(const Duration(milliseconds: 100));
+          _checkPermissionCompleter = null;
+        });
+      }
+
       ref.read(freeRoamStarterProvider.notifier).reset();
     }
 

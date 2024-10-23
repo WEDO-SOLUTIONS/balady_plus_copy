@@ -54,7 +54,6 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
 
-    print('selectedMarkerProvider');
     ref.watch(selectedMarkerProvider);
     final settings = MapObjectManagerSettings.selectedMarker();
     ref.watch(
