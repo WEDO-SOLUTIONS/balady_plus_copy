@@ -1,14 +1,18 @@
 import 'package:balady_plus/app/features/ekram/presentation/widgets/driver/trip_datetime_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../data/model/driver/trip_details_model.dart';
+import '../../blocs/driver_add_trip/add_trip_bloc.dart';
 
 
 
@@ -21,6 +25,8 @@ class TripBodyWidget extends StatefulWidget {
 }
 
 class _TripBodyWidgetState extends State<TripBodyWidget> {
+  bool enableEdit =false;
+
   @override
   void dispose() {
     super.dispose();
@@ -39,6 +45,51 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
       Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        CustomVerticalSpace(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CustomTextWidget(
+              "${'pathID'.tr()} #${widget.model?.id}",
+              fontSize: 14,
+              maxLines: 1,
+              textOverflow: TextOverflow.ellipsis,
+              fontWeight: AppFontWeight.bold,
+              fontColor: AppColor.blackModern700Light,
+            ),
+
+
+            Row(
+              children: [
+                widget.model?.editable == true?  IconButton(
+                  onPressed: () {
+
+                    setState(() {
+                      enableEdit = true;
+                    });
+
+                  },
+                  icon: SvgPicture.asset(
+                      IconPath.edit,
+                      color: AppColor.primary800Light),
+                  iconSize: 25 ,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),):Container(),
+
+                SizedBox(width: 10,),
+                widget.model?.deletable == true?  IconButton(
+                  onPressed: () {},
+                  icon: SvgPicture.asset(
+                    IconPath.delete,
+                    color: Colors.grey),
+                  iconSize: 25 ,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),):Container(),
+              ],
+            ),
+          ],
+        ),
+
         CustomVerticalSpace(height: 20),
         ReadOnlyField(
           title: "currentTripCity".tr(),
@@ -70,23 +121,55 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
         CustomVerticalSpace(height: 10),
 
         TripDateTimeWidget(
-
+          isEditable:enableEdit,
           title: "currentTripStationArrivalTime".tr(),
-          date: CommonFunctions.getFormattedDateEkram(
-              widget.model?.startupInfo?.date  ?? ""),
-          time: CommonFunctions.getFormattedTimeEkram(
-              widget.model?.startupInfo?.time ?? ""),
+          date: widget.model?.startupInfo?.date != null ?CommonFunctions.getFormattedDateEkram(
+              widget.model?.startupInfo?.date):null,
+          time: widget.model?.startupInfo?.time != null ?CommonFunctions.getFormattedTimeEkram(
+              widget.model?.startupInfo?.time):null,
+          onDateCallback: (String? date){
+
+            if(date != null)
+            {
+
+              setState(() {
+                widget.model?.startupInfo?.date = date;
+              });
+
+              // var x =  context.read<AddTripBloc>();
+              // context.read<AddTripBloc>().add(EditTripPathData(item:widget.model));
+
+            }
+          },
+          onTimeCallback: (String? time){
+
+            if(time != null)
+            {
+
+              DateTime tempTime = DateFormat("h:mm a").parse(time!);
+              String strTime = DateFormat("HH:mm")
+                  .format(tempTime)
+                  .toString();
+              setState(() {
+                widget.model?.startupInfo?.time = strTime;
+              });
+              // widget.model?.startupInfo?.time= time;
+              // context.read<AddTripBloc>().add(EditTripPathData(item:widget.model));
+            }
+          },
+
         ),
 
         CustomVerticalSpace(height: 15),
 
 
-        if (widget.model?.startupInfo?.location?.x != null && widget.model?.startupInfo?.location?.y != null )
-          InkWell(
+         InkWell(
             onTap: () {
-              CommonFunctions.openMap(
+              if (widget.model?.startupInfo?.location?.x != null && widget.model?.startupInfo?.location?.y != null ) {
+                CommonFunctions.openMap(
                   double.parse(widget.model!.startupInfo!.location!.x!),
                   double.parse(widget.model!.startupInfo!.location!.y!));
+              }
             },
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -111,7 +194,6 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
               ),
             ),
           ),
-
 
         CustomVerticalSpace(height: 20),
         ReadOnlyField(
@@ -142,20 +224,58 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
 
 
         CustomVerticalSpace(height: 10),
-        ReadOnlyField(
-          title: "nextTripStationArrivalTime".tr(),
-          subTitle: widget.model?.arrivalInfo?.date ?? "",
-          subTitleColor:AppColor.grey1000.withOpacity(0.5),
-          decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
+
+
+        TripDateTimeWidget(
+          isEditable:enableEdit,
+          title: "nextTripStationArrivalTime".tr(),
+          date: widget.model?.arrivalInfo?.date != null ?CommonFunctions.getFormattedDateEkram(
+              widget.model?.arrivalInfo?.date):null,
+          time: widget.model?.arrivalInfo?.time != null ?CommonFunctions.getFormattedTimeEkram(
+              widget.model?.arrivalInfo?.time):null,
+          onDateCallback: (String? date){
+
+            if(date != null)
+            {
+
+
+              setState(() {
+                widget.model?.arrivalInfo?.date = date;
+              });
+
+              // var x =  context.read<AddTripBloc>();
+              // context.read<AddTripBloc>().add(EditTripPathData(item:widget.model));
+
+            }
+          },
+          onTimeCallback: (String? time){
+
+            if(time != null)
+            {
+
+              DateTime tempTime = DateFormat("h:mm a").parse(time!);
+              String strTime = DateFormat("HH:mm")
+                  .format(tempTime)
+                  .toString();
+              setState(() {
+                widget.model?.arrivalInfo?.time = strTime;
+              });
+              // widget.model?.startupInfo?.time= time;
+              // context.read<AddTripBloc>().add(EditTripPathData(item:widget.model));
+            }
+          },
         ),
 
-        if (widget.model?.arrivalInfo?.location?.x != null && widget.model?.arrivalInfo?.location?.y != null )
-          InkWell(
+
+        CustomVerticalSpace(height: 15),
+         InkWell(
             onTap: () {
-              CommonFunctions.openMap(
+              if (widget.model?.arrivalInfo?.location?.x != null && widget.model?.arrivalInfo?.location?.y != null ) {
+                CommonFunctions.openMap(
                   double.parse(widget.model!.arrivalInfo!.location!.x!),
                   double.parse(widget.model!.arrivalInfo!.location!.y!));
+              }
             },
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -183,107 +303,7 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
 
 
 
-        // CustomLookUpLongDialog(
-        //   refreshList: true,
-        //   items: widget.state?.nextStationType ?? [],
-        //   value: widget.state?.nextTripStationTypeId,
-        //   onChangeType: (LookUpItem? item) {
-        //     context
-        //         .read<EkramAddTripBloc>()
-        //         .add(ChangeNextTripStationType(item: item));
-        //   },
-        //   onEmptyList: () async {
-        //     return context
-        //         .read<EkramAddTripBloc>()
-        //         .getNextStationTypeLookUp();
-        //   },
-        //   label: Helpers.translatingWord("nextTripStationType"),
-        //   hint: Helpers.translatingWord("nextTripStationType"),
-        // ),
-        // CustomVerticalSpace(height: 16),
-        // if (widget.state?.showHospitalList())
-        //   CustomLookUpLongDialog(
-        //     items: widget.state?.hospitals ?? [],
-        //     value: widget.state?.nextHospitalStation,
-        //     onChangeType: (LookUpItem? item) {
-        //       context
-        //           .read<EkramAddTripBloc>()
-        //           .add(ChangeNextTripHospitalStation(item: item));
-        //     },
-        //     onEmptyList: () async {
-        //       return context
-        //           .read<EkramAddTripBloc>()
-        //           .getHospitalsLookUp();
-        //     },
-        //     label: Helpers.translatingWord("ekram_hospital_field_name"),
-        //     hint: Helpers.translatingWord("ekram_hospital_field_name"),
-        //   ),
-        // if (widget.state?.showLaundryList())
-        //   CustomLookUpLongDialog(
-        //     items: widget.state?.launduriesList ?? [],
-        //     value: widget.state?.nextLaundryStation,
-        //     onChangeType: (LookUpItem? item) {
-        //       context
-        //           .read<EkramAddTripBloc>()
-        //           .add(ChangeNextTripLaundryStation(item: item));
-        //     },
-        //     onEmptyList: () async {
-        //       return context
-        //           .read<EkramAddTripBloc>()
-        //           .getLanuduriesLookUp();
-        //     },
-        //     label: Helpers.translatingWord("ekram_laundry_field_name"),
-        //     hint: Helpers.translatingWord("ekram_laundry_field_name"),
-        //   ),
-        // if (widget.state?.showMosqueList())
-        //   CustomLookUpLongDialog(
-        //     items: widget.state?.mosquesList ?? [],
-        //     value: widget.state?.nextMosqueStation,
-        //     onChangeType: (LookUpItem? item) {
-        //       context
-        //           .read<EkramAddTripBloc>()
-        //           .add(ChangeNextTripMosuqeStation(item: item));
-        //     },
-        //     onEmptyList: () async {
-        //       return context.read<EkramAddTripBloc>().getMosquesLookUp();
-        //     },
-        //     label: Helpers.translatingWord("ekram_mosque_field_name"),
-        //     hint: Helpers.translatingWord("ekram_mosque_field_name"),
-        //   ),
-        // if (widget.state?.showNextStationName())
-        //   CustomTextFieldWidget(
-        //       label: trans("nextTripStationName"),
-        //       hintText: trans("nextTripStationName"),
-        //       maxLines: 1,
-        //       controller: context
-        //           .read<EkramAddTripBloc>()
-        //           .nextTripStationNameController,
-        //       enabled: !widget.state?.isCemetry(),
-        //       textInputAction: TextInputAction.next,
-        //       keyboardType: TextInputType.text,
-        //       onChanged: (String? text) {
-        //         context
-        //             .read<EkramAddTripBloc>()
-        //             .add(ChangeNextTripStationName(text: text));
-        //       },
-        //       onValidate: (String? value) {}),
-        // CustomVerticalSpace(height: 16),
-        // GestureDetector(
-        //   onTap: () {
-        //     context
-        //         .read<EkramAddTripBloc>()
-        //         .add(ChangeArrivalTimeEvent());
-        //   },
-        //   child: ReadOnlyField(
-        //     title: trans("nextTripStationArrivalTime"),
-        //     subTitle: widget.state?.nextTripStationArrivalTime ??
-        //         trans("nextTripStationArrivalTime"),
-        //     subTitleColor: AppColor.blackModern400Light,
-        //   ),
-        // ),
-        // CustomVerticalSpace(height: 16),
-        // CustomVerticalSpace(height: 16),
-        // CustomVerticalSpace(height: 20),
+
       ],
     );
   }

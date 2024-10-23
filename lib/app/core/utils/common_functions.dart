@@ -418,13 +418,14 @@ class CommonFunctions {
   }
 
   static String getFormattedTimeEkram(String? timeStr,
-      {Duration? subtractedDuration}) {
+      {Duration? subtractedDuration,String? formate}) {
+
     String formattedTime = "";
     print(timeStr);
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime =
-          DateFormat("hh:mm").parse(biddingEndingTime);
+          DateFormat(formate??"hh:mm").parse(biddingEndingTime);
       String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
           .format(tempTime)
           .toString();

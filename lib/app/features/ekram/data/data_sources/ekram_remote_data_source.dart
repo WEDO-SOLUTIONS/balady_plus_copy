@@ -729,18 +729,18 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
 
     try {
-      // response = await webService.dio.get(
+      response = await webService.dio.put(
+
+          "${ApiUrl.ekramGetTrips(params)}",queryParameters: {"isDriver":true}
+      );
+
+      // String qa = "";
       //
-      //     "${ApiUrl.ekramGetTrips(params)}",queryParameters: {"isDriver":true}
-      // );
+      // qa = await rootBundle.loadString("assets/trips.json");
+      //
+      //  var response = json.decode(qa);
 
-      String qa = "";
-
-      qa = await rootBundle.loadString("assets/trips.json");
-
-       var response = json.decode(qa);
-
-      var data = response["data"]?["result"];
+      var data = response.data["data"]?["result"];
 
       List<TripDetailsModel> parsedResult = data != null
           ? List<TripDetailsModel>.from(
@@ -748,7 +748,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           : [];
 
       final decodedResponse = ResponseBodyModel<List<TripDetailsModel>>.fromMap(
-          response,
+          response.data,
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();

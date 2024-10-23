@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/transport_request_item.dart';
 
-class RequestItemModel{
-  RequestItemModel({
+class TransportRequestItemModel{
+  TransportRequestItemModel({
     this.requestId,
     this.subMunicipalityName,
     this.municipalityName,
@@ -43,7 +43,7 @@ class RequestItemModel{
     this.transferring,
     this.done,});
 
-  RequestItemModel.fromJson(dynamic json) {
+  TransportRequestItemModel.fromJson(dynamic json) {
     requestId = json['requestId'];
     subMunicipalityName = json['subMunicipalityName'];
     municipalityName = json['municipalityName'];

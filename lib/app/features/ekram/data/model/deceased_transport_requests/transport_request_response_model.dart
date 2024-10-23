@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/features/ekram/data/model/driver/request_item_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/driver/transport_request_item_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/transport_request_response.dart';
 
 class TransportRequestResponseModel extends TransportRequestResponse {
@@ -10,7 +10,7 @@ class TransportRequestResponseModel extends TransportRequestResponse {
           totalItemCount: json["itemsCount"],
           totalPageCount: json["totalPageCount"],
           items: json["items"] != null
-              ? List<RequestItemModel>.from(json["items"]
-                  .map((x) => RequestItemModel.fromJson(x)))
+              ? List<TransportRequestItemModel>.from(json["items"]
+                  .map((x) => TransportRequestItemModel.fromJson(x)))
               : null);
 }

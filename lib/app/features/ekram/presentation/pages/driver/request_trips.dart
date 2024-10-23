@@ -127,6 +127,8 @@ class RequestTrips extends StatelessWidget {
                                     icon: null,
                                     children:
                                     [
+
+
                                       TripBodyWidget(model:state.data![index]),
                                     ]);
                             },

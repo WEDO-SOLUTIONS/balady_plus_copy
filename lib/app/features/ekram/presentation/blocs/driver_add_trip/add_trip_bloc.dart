@@ -60,20 +60,57 @@ class AddTripBloc extends Bloc<AddTripEvent, AddTripState> {
     on<AddTripEvent>((event, emit) {});
     on<GetTripsEvent>(_getTripsHandler);
     on<GetTripsStationEvent>(_getTripStationHandler);
-    on<updateCurrentTripStation>(_updateCurrentTripStation);
-    on<ChangeArrivalTimeEvent>(_changeaArrivalTimeEvent);
+    on<updateNewTripPathData>(_updateNewTripPathData);
+    on<EditTripPathData>(_editTripPathData);
+
+
+
     on<ClearErrorMsgEvent>(_clearErrorMsg);
     on<SubmitEvent>(_submitHandler);
     // on<UpdateDriverLocationEvent>(_updateDriverLocatioHandler);
 
   }
 
-  Future<void> _updateCurrentTripStation(updateCurrentTripStation e, Emitter emitter) async {
-    emitter(
-        state.copyWith(currentTripStation: e.item));
+
+
+  Future<void> _editTripPathData(EditTripPathData e, Emitter emitter) async {
+
+
+    var x = e.item;
+    //emitter(state.copyWith(addTripPath: newTripPath));
 
 
   }
+
+  Future<void> _updateNewTripPathData(updateNewTripPathData e, Emitter emitter) async {
+
+
+   var newTripPath= state.addTripPath;
+   newTripPath ??= TripDetailsModel(startupInfo: TripInfo(), arrivalInfo: TripInfo());
+if(e.isStartupInfo == true) {
+  newTripPath = newTripPath.copyWith(
+      startupInfo: newTripPath.startupInfo?.copyWith(typeName: e.item?.typeName,
+          cityName: e.item?.cityName,
+          name: e.item?.name,
+          date: e.item?.date,
+          time: e.item?.time));
+}
+else
+  {
+    newTripPath = newTripPath.copyWith(
+        arrivalInfo: newTripPath.arrivalInfo?.copyWith(typeName: e.item?.typeName,
+            cityName: e.item?.cityName,
+            name: e.item?.name,
+            date: e.item?.date,
+            time: e.item?.time));
+
+  }
+   emitter(state.copyWith(addTripPath: newTripPath));
+
+
+  }
+
+
 
 
 

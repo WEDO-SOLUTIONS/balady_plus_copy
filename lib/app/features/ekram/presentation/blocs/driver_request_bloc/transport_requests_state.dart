@@ -5,7 +5,7 @@ class EkramRequestsState extends Equatable {
   final String? errorMessage;
   final int currentPage;
   final int? totalItemCount;
-  final List<RequestItemModel>? deceasedRequestItems;
+  final List<TransportRequestItemModel>? deceasedRequestItems;
   final String? searchBy;
   final LookUpItem? filterItem;
   final List<LookUpItem>? transferStatusList;
@@ -47,7 +47,7 @@ class EkramRequestsState extends Equatable {
     final String? errorMessage,
     final int? currentPage,
     final int? totalItemCount,
-    final List<RequestItemModel>? deceasedRequestItems,
+    final List<TransportRequestItemModel>? deceasedRequestItems,
     final String? searchBy,
     final LookUpItem? filterItem,
     final List<LookUpItem>? transferStatusList,

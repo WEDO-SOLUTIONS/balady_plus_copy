@@ -16,13 +16,16 @@ import '../../../../daem/presentation/dialogs/str_type_with_search_dialog.dart';
 import '../../../data/model/driver/trip_stations.dart';
 
 class CustomDropDownDialog extends StatefulWidget {
-  TripStations? value;
+
+
   Function(TripStations? item) onChangeType;
   List<TripStations> items;
   String label;
   String? hint;
   String? searchHint;
   String? errorText;
+  String? selectedValue;
+ // String? selectedValue;
   final bool? showOptional;
   final bool showHintAsTitle;
   final Function? onEmptyList;
@@ -32,7 +35,7 @@ class CustomDropDownDialog extends StatefulWidget {
   CustomDropDownDialog(
       {Key? key,
         required this.onChangeType,
-        this.value,
+        this.selectedValue,
         required this.items,
         this.hint,
         required this.label,
@@ -55,7 +58,7 @@ class _CustomDropDownDialog extends State<CustomDropDownDialog> {
     return CustomHeaderAndDescOnTapWidget(
         label: widget.label,
         hintText: widget.hint!,
-        textValue: widget.value?.typeName,
+        textValue: widget.selectedValue??widget.hint,
 
         showOptional: widget.showOptional,
         onTap: widget.isDisbaled == false
@@ -68,7 +71,7 @@ class _CustomDropDownDialog extends State<CustomDropDownDialog> {
               onSelect: (TripStations item) =>
                   widget.onChangeType(item),
               items: widget.items,
-              selectedItem: widget.value,
+              selectedItem: widget.selectedValue,
               title:
               widget.showHintAsTitle ? widget.hint : widget.label,
               searchHint: widget.searchHint,
@@ -87,7 +90,7 @@ class _CustomDropDownDialog extends State<CustomDropDownDialog> {
                   onSelect: (TripStations item) =>
                       widget.onChangeType(item),
                   items: items,
-                  selectedItem: widget.value,
+                  selectedItem: widget.selectedValue,
                   title: widget.showHintAsTitle
                       ? widget.hint
                       : widget.label,
@@ -107,7 +110,7 @@ class _CustomDropDownDialog extends State<CustomDropDownDialog> {
 class SearchDialog extends StatefulWidget {
   final Function(TripStations item) onSelect;
   List<TripStations> items;
-  TripStations? selectedItem;
+  String? selectedItem;
   String? title;
   String? searchHint;
 
@@ -137,7 +140,7 @@ class _SearchDialog extends State<SearchDialog> {
   @override
   void initState() {
     super.initState();
-    currentSelected = widget.selectedItem;
+
     items.clear();
     items.addAll(widget.items);
 
@@ -184,7 +187,7 @@ class _SearchDialog extends State<SearchDialog> {
                     value: items[index],
                     isDisabled: false,
 
-                    currentSelected: currentSelected,
+                    currentSelected: currentSelected ??items[0],
                     onChange: onItemChanged,
                   );
                 }),

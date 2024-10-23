@@ -6,7 +6,7 @@ export 'data/data_sources/ekram_remote_data_source.dart';
 export 'data/model/apply_deceased/deceased_info_dto.dart';
 export 'data/model/apply_deceased/apply_deceased_params.dart';
 export 'data/model/apply_deceased/apply_deceased_response_model.dart';
-export 'data/model/driver/request_item_model.dart';
+export 'data/model/driver/transport_request_item_model.dart';
 export 'data/model/deceased_transport_requests/transport_request_response_model.dart';
 
 /// data -> repositories

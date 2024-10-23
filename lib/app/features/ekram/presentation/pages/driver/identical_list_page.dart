@@ -43,8 +43,8 @@ class _IdenticalListPageState
 
   @override
   Widget build(BuildContext context) {
-     RequestItemModel params =
-        ModalRoute.of(context)!.settings.arguments as RequestItemModel;
+     TransportRequestItemModel params =
+        ModalRoute.of(context)!.settings.arguments as TransportRequestItemModel;
 
     return BlocProvider(
       create: (context) => IdenticalListBloc(

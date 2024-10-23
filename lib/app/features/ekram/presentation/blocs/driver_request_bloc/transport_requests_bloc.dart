@@ -95,9 +95,9 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
             : "",
       ));
     }, (success) {
-      List<RequestItemModel>? newDeceasedRequestItems =
+      List<TransportRequestItemModel>? newDeceasedRequestItems =
           success.data?.result?.items;
-      List<RequestItemModel>? oldDeceasedRequestItems =
+      List<TransportRequestItemModel>? oldDeceasedRequestItems =
           state.deceasedRequestItems;
       if (newDeceasedRequestItems != null)
         oldDeceasedRequestItems?.addAll(newDeceasedRequestItems);

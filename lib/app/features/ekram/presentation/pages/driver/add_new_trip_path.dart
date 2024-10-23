@@ -87,12 +87,12 @@ class AddNewTripPath extends StatelessWidget {
                               CustomVerticalSpace(height: 10),
 
                               CustomDropDownDialog(
-                        items: state.lstTripStation ?? [],
-                        value: state.currentTripStation,
+                                items: state.lstTripStation ?? [],
+                                selectedValue: state.addTripPath?.startupInfo?.typeName,
                           onChangeType: (TripStations? item) {
                           context
                               .read<AddTripBloc>()
-                              .add(updateCurrentTripStation(item: item));
+                              .add(updateNewTripPathData(item: item,isStartupInfo: true));
                         },
                         onEmptyList: () async {
                           // return context
@@ -106,7 +106,7 @@ class AddNewTripPath extends StatelessWidget {
 
                               ReadOnlyField(
                                 title: "currentTripCity".tr(),
-                                subTitle: state.currentTripStation?.cityName  ?? "",
+                                subTitle: state.addTripPath?.startupInfo?.cityName  ?? "",
                                 subTitleColor:AppColor.grey1000.withOpacity(0.5),
                                 decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
@@ -115,7 +115,7 @@ class AddNewTripPath extends StatelessWidget {
                               CustomVerticalSpace(height: 10),
                               ReadOnlyField(
                                 title: "currentTripStationName".tr(),
-                                subTitle: state.currentTripStation?.name  ?? "",
+                                subTitle: state.addTripPath?.startupInfo?.name  ?? "",
                                 subTitleColor:AppColor.grey1000.withOpacity(0.5),
                                 decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
@@ -126,30 +126,106 @@ class AddNewTripPath extends StatelessWidget {
 
                               TripDateTimeWidget(
                                 title: "currentTripStationArrivalTime".tr(),
-                                isEditable: state.currentTripStation != null ? true :false,
-                                date: state.currentTripStation?.date,
-                                time: state.currentTripStation?.time,
+                                isEditable: state.addTripPath != null ? true :false,
+                                date: state.addTripPath?.startupInfo?.date,
+                                time: state.addTripPath?.startupInfo?.time,
                                 onDateCallback: (String? date){
 
                                   if(date != null)
                                     {
-                                      TripStations? currentTripStation = state.currentTripStation?.copyWith(date: date);
-                                      context.read<AddTripBloc>().add(updateCurrentTripStation(item: currentTripStation));
-                                    }
+
+                                      context.read<AddTripBloc>().add(updateNewTripPathData(item: TripStations(date: date),isStartupInfo: true));
+                                     }
                                 },
                                 onTimeCallback: (String? time){
 
                                   if(time != null)
                                   {
 
-                                    TripStations? currentTripStation = state.currentTripStation?.copyWith(time: time);
-                                    context.read<AddTripBloc>().add(updateCurrentTripStation(item: currentTripStation));
+
+                                     context.read<AddTripBloc>().add(updateNewTripPathData(item: TripStations(time: time),isStartupInfo: true));
                                   }
                                 },
 
                               ),
 
-                        //
+
+
+
+                              CustomVerticalSpace(height: 10),
+
+
+                              CustomDropDownDialog(
+                                items: state.addTripPath?.startupInfo != null ? state.lstTripStation!:[],
+                                selectedValue: state.addTripPath?.arrivalInfo?.typeName,
+                                onChangeType: (TripStations? item) {
+                                  context
+                                      .read<AddTripBloc>()
+                                      .add(updateNewTripPathData(item: item,isStartupInfo: false));
+                                },
+                                onEmptyList: () async {
+                                  // return context
+                                  //     .read<AddTripBloc>()
+                                  //     .getLanuduriesLookUp();
+                                },
+                                label: "nextTripStationType".tr(),
+                                hint: "nextTripStationType".tr(),
+                              ),
+
+
+                              ReadOnlyField(
+                                title: "nextTripCity".tr(),
+                                subTitle: state.addTripPath?.arrivalInfo?.cityName  ?? "",
+                                subTitleColor:AppColor.grey1000.withOpacity(0.5),
+                                decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+
+                              ),
+
+                              CustomVerticalSpace(height: 10),
+                              ReadOnlyField(
+                                title: "nextTripStationName".tr(),
+                                subTitle: state.addTripPath?.arrivalInfo?.name  ?? "",
+                                subTitleColor:AppColor.grey1000.withOpacity(0.5),
+                                decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+
+                              ),
+
+
+                              CustomVerticalSpace(height: 10),
+
+                              TripDateTimeWidget(
+                                title: "nextTripStationArrivalTime".tr(),
+                                isEditable: state.addTripPath != null ? true :false,
+                                date: state.addTripPath?.arrivalInfo?.date,
+                                time: state.addTripPath?.arrivalInfo?.time,
+                                onDateCallback: (String? date){
+
+                                  if(date != null)
+                                  {
+
+                                    context.read<AddTripBloc>().add(updateNewTripPathData(item: TripStations(date: date),isStartupInfo: false));
+                                  }
+                                },
+                                onTimeCallback: (String? time){
+
+                                  if(time != null)
+                                  {
+
+
+                                    context.read<AddTripBloc>().add(updateNewTripPathData(item: TripStations(time: time),isStartupInfo: false));
+                                  }
+                                },
+
+                              ),
+
+
+
+
+
+
+
+
+                              //
                         //
                         //       CustomVerticalSpace(height: 10),
                         //       ReadOnlyField(

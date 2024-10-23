@@ -39,7 +39,14 @@ class GetTripsStationEvent extends AddTripEvent {
   const GetTripsStationEvent();
 }
 
-class updateCurrentTripStation extends AddTripEvent {
+
+
+class updateNewTripPathData extends AddTripEvent {
   final TripStations? item;
-  updateCurrentTripStation({this.item});
+  final bool isStartupInfo;
+  updateNewTripPathData({this.item,required this.isStartupInfo});
+}
+class EditTripPathData extends AddTripEvent {
+  final TripDetailsModel? item;
+  EditTripPathData({this.item});
 }
