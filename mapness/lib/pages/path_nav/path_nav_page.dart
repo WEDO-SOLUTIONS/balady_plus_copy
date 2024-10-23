@@ -344,6 +344,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       log(e.toString());
     }
 
+    action();
     if (_navigationState.value != PathNavState.finished) {
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
@@ -351,7 +352,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
     await clearNavigationState();
 
-    action();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
   }

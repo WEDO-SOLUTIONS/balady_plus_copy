@@ -42,7 +42,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
   ConsumerState<MapSearchSheet> createState() => _MapSearchSheetState();
 }
 
-class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
+class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
   late final DgisBottomSheetController _dgisSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
@@ -60,6 +60,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     _dgisSheetController = DgisBottomSheetController();
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     _setupTapListener();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -75,10 +76,18 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      _unfocusSearchField();
+    }
+  }
+
+  @override
   void dispose() {
     _keyboardVisible.cancel();
     _dgisSheetController.dispose();
     _streamSubscription?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
   }
@@ -129,39 +138,33 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
             onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
             middleHeight: widget.biggestHeight * 0.8,
             collapsedHeight: collapsedHeight,
-            scrollableBody: (context, scrollController) {
-              /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
-              /// https://www.youtube.com/watch?v=L_WoOkDAqbM
-              scrollController.addListener(_unfocusOnScroll);
-
-              return ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
-                child: Material(
-                  color: Colors.white,
-                  child: SearchScope(
-                    named: SearchScopeEnum.map,
-                    child: CustomScrollView(
-                      controller: scrollController,
-                      physics: const ClampingScrollPhysics(),
-                      slivers: [
-                        SliverPersistentHeader(
-                          delegate: MapSearchHeaderDelegate(
-                            requestFocus: widget.requestFocus,
-                            onClose: onClose,
-                          ),
-                          pinned: true,
+            scrollableBody: (context, scrollController) => ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+              child: Material(
+                color: Colors.white,
+                child: SearchScope(
+                  named: SearchScopeEnum.map,
+                  child: CustomScrollView(
+                    controller: scrollController,
+                    physics: const ClampingScrollPhysics(),
+                    slivers: [
+                      SliverPersistentHeader(
+                        delegate: MapSearchHeaderDelegate(
+                          requestFocus: widget.requestFocus,
+                          onClose: onClose,
                         ),
-                        MapSearchContent(
-                          scrollController: scrollController,
-                        ),
-                      ],
-                    ),
+                        pinned: true,
+                      ),
+                      MapSearchContent(
+                        scrollController: scrollController,
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ),
         Container(
@@ -228,12 +231,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {
-      _unfocusOnScroll();
+      _unfocusSearchField();
     }
     return true;
   }
 
-  void _unfocusOnScroll() {
+  void _unfocusSearchField() {
     if (kbVisibilityController.isVisible) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
@@ -284,7 +287,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     _streamSubscription = dgisController.objectTapEvents.listen((_) {
       if (context.router.isRouteActive(SearchRoute.name)) {
         _dgisSheetController.animateTo(Expansion.collapsed);
-        _unfocusOnScroll();
+        _unfocusSearchField();
       }
     });
   }
