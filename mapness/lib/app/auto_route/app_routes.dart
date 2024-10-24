@@ -93,6 +93,13 @@ class AppRouter extends RootStackRouter {
           page: VoiceSettingsRoute.page,
           transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
+        CustomRoute(
+          path: '/language_pick_sheet',
+          page: LanguagePickSheetRoute.page,
+          fullscreenDialog: true,
+          opaque: false,
+          customRouteBuilder: modalSheetBuilder,
+        ),
         AutoRoute(
           page: MapRoute.page,
           path: '/',
