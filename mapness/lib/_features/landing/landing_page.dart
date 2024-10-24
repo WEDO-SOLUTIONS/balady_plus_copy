@@ -172,6 +172,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       return;
     } else if (context.router.isPathActive(RoutingRoutesRoute.name)) {
       return;
+    } else if (context.router.isPathActive(SearchRoute.name)) {
+      return;
     }
 
     if (event is ObjectTapEvent) {
