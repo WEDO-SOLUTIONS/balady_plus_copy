@@ -65,7 +65,7 @@ class App extends StatelessWidget {
 
 class AppWidget extends StatefulWidget {
   const AppWidget({
-    super.key
+    super.key,
   });
 
   @override
