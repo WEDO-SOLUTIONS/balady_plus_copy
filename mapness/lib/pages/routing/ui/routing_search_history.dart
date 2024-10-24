@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/components.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,18 +31,13 @@ class RoutingSearchHistory extends ConsumerWidget {
     final isLTR = Directionality.of(context) == TextDirection.ltr;
     return Column(
       children: [
-        Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.$4x),
-            child: RoutingFavourites(
-              showBookmark: false,
-              onFavouriteTap: (point) async {
-                context.pop(RoutePointFavouriteItem(point));
-              },
-            ),
-          ),
+        RoutingFavourites(
+          showBookmark: false,
+          onFavouriteTap: (point) async {
+            context.pop(RoutePointFavouriteItem(point));
+          },
         ),
+        Spacing.$4x.heightBox,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: SearchActions(
@@ -49,7 +45,7 @@ class RoutingSearchHistory extends ConsumerWidget {
               if (showMyLocation)
                 ContentRowV2(
                   leading: Icon(
-                    isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL,
+                    isLTR ? TransportIcons.locationLTR : TransportIcons.locationRTL,
                     color: context.colorsV2.accentActive,
                     size: 22,
                   ),
@@ -81,6 +77,7 @@ class RoutingSearchHistory extends ConsumerWidget {
             ],
           ),
         ),
+        Spacing.$4x.heightBox,
         RoutingHistory(
           updatePoint: (point) {
             context.pop(point);
