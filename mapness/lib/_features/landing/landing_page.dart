@@ -168,14 +168,11 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _objectTapListener(TapEvent event) {
-    ///TODO: need to refactor after Dashboard refactoring to designSystem
-    // final goRouter = ref.read(goRouterProvider);
-    //
-    // if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
-    //   return;
-    // } else if (goRouter.isCurrentRoute(RoutingRoutesRoute.path)) {
-    //   return;
-    // }
+    if (context.router.isPathActive(RoutingMapSelectRoute.name)) {
+      return;
+    } else if (context.router.isPathActive(RoutingRoutesRoute.name)) {
+      return;
+    }
 
     if (event is ObjectTapEvent) {
       Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
