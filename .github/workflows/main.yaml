@@ -59,15 +59,15 @@ jobs:
           echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
 
-      - name: Setup requirements
-        env: # Set the secret as an environment variable
-          BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
-          BALADY_AUTHORIZATION_DEPLOY_KEY: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY }}
-        run: |
-          echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
-          chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
-          echo "${BALADY_AUTHORIZATION_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-authorization.key
-          chmod 600 ${GITHUB_WORKSPACE}/.balady-authorization.key
+      # - name: Setup requirements
+      #   env: # Set the secret as an environment variable
+      #     BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
+      #     BALADY_AUTHORIZATION_DEPLOY_KEY: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY }}
+      #   run: |
+      #     echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
+      #     chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
+      #     echo "${BALADY_AUTHORIZATION_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-authorization.key
+      #     chmod 600 ${GITHUB_WORKSPACE}/.balady-authorization.key
 
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
@@ -122,6 +122,16 @@ jobs:
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
 
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY }}
+
       - name: 🤖🔨 Development setup mapness
         env:
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
@@ -129,7 +139,6 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
           ssh-add ${GITHUB_WORKSPACE}/.balady-authorization.key
-          git config --global core.sshCommand "ssh -vvv"
           cd mapness
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
