@@ -11,12 +11,12 @@ class ServiceNotAvailable extends _$ServiceNotAvailable {
   // We need to store it in Remote Config
   final CityRect rect = const CityRect(
     northEast: LocationPoint(
-      latitude: 25.177958,
-      longitude: 47.180222,
+      latitude: 25.178203,
+      longitude: 47.298231,
     ),
     southWest: LocationPoint(
-      latitude: 24.379137,
-      longitude: 46.324123, // Меньшая долгота
+      latitude: 24.29659,
+      longitude: 46.3237,
     ),
   );
 
