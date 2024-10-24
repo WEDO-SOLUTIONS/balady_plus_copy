@@ -236,6 +236,27 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: customModalSheetBuilder,
             ),
             CustomRoute(
+              path: 'iwish/:iwishId/card',
+              barrierDismissible: false,
+              page: IwishPlaceCardRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'iwish/:iwishId/feedback',
+              barrierDismissible: false,
+              page: IwishFeedbackContainerRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'iwish/:iwishId/comment',
+              barrierDismissible: false,
+              page: IwishFeedbackCommentRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              customRouteBuilder: customModalSheetBuilder,
+            ),
+            CustomRoute(
               path: 'layers_sheet',
               transitionsBuilder: TransitionsBuilders.fadeIn,
               fullscreenDialog: true,

@@ -6,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -78,7 +77,7 @@ class _Location extends _$Location {
       if (CommonFunctions.locationDialogShowed) {
         return false;
       }
-      if (ref.read(currentRouteProvider)?.currentPath == routeLocation) {
+      if (router.isPathActive(routeLocation)) {
         return false;
       }
       CommonFunctions.locationDialogShowed = true;
