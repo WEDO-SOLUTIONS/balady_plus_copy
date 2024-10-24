@@ -249,21 +249,37 @@ class AppRouter extends RootStackRouter {
               path: 'feedback/:objectId',
               transitionsBuilder: TransitionsBuilders.fadeIn,
               page: FeedbackSelectTypeRoute.page,
-              children: [
-                CustomRoute(
-                  path: ':categoryId',
-                  page: FeedbackRoute.page,
-                  transitionsBuilder: TransitionsBuilders.fadeIn,
-                  children: [
-                    CustomRoute(
-                      path: 'success',
-                      page: FeedbackSentRoute.page,
-                      transitionsBuilder: TransitionsBuilders.fadeIn,
-                    ),
-                  ],
-                ),
-              ],
             ),
+            CustomRoute(
+              path: ':categoryId',
+              page: FeedbackRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'success',
+              page: FeedbackSentRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'favourites',
+              page: FavouritesRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'search',
+              page: FavouritesSearchRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              page: DeleteAllContentRoute.page,
+              path: 'delete_all',
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              page: FavouritesPickerRoute.page,
+              path: 'picker',
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            )
           ],
         ),
       ];

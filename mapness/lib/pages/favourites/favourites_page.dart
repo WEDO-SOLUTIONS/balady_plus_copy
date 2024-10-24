@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -21,6 +20,7 @@ import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
 import 'package:mapness/widgets/favourites/favourites_toggle.dart';
 import 'package:mapness/widgets/favourites/pinned_place_card.dart';
 
+@RoutePage()
 class FavouritesPage extends ConsumerStatefulWidget {
   const FavouritesPage({super.key});
 
@@ -144,7 +144,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             leading: InkWell(
               onTap: () {
                 if (!isEditing) {
-                  ctx.maybePop();
+                  context.router.maybePop();
                 } else {
                   toggleEditing();
                 }
@@ -262,14 +262,18 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             },
                             onTapShare: () => ShareUtil.share(entity?.id),
                             onTapChange: () {
-                              const FavouritesSearchRoute(
-                                markerType: FavouriteItemMarkerType.home,
-                              ).push(ctx);
+                              context.router.push(
+                                FavouritesSearchRoute(
+                                  markerType: FavouriteItemMarkerType.home,
+                                ),
+                              );
                             },
                             onTap: home == null
-                                ? () => const FavouritesSearchRoute(
-                                      markerType: FavouriteItemMarkerType.home,
-                                    ).push(ctx)
+                                ? () => context.router.push(
+                                      FavouritesSearchRoute(
+                                        markerType: FavouriteItemMarkerType.home,
+                                      ),
+                                    )
                                 : () => ctx.router.push(
                                       PoiCardWidgetRoute(
                                         objectId: DgisObjectIdMessage(
@@ -321,14 +325,18 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               },
                               onTapShare: () => ShareUtil.share(entity?.id),
                               onTapChange: () {
-                                const FavouritesSearchRoute(
-                                  markerType: FavouriteItemMarkerType.work,
-                                ).push(ctx);
+                                context.router.push(
+                                  FavouritesSearchRoute(
+                                    markerType: FavouriteItemMarkerType.work,
+                                  ),
+                                );
                               },
                               onTap: work == null
-                                  ? () => const FavouritesSearchRoute(
-                                        markerType: FavouriteItemMarkerType.work,
-                                      ).push(ctx)
+                                  ? () => context.router.push(
+                                        FavouritesSearchRoute(
+                                          markerType: FavouriteItemMarkerType.work,
+                                        ),
+                                      )
                                   : () => ctx.router.push(
                                         PoiCardWidgetRoute(
                                           objectId: DgisObjectIdMessage(

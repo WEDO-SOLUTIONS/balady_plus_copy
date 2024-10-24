@@ -11,7 +11,6 @@ import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart'
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -67,7 +66,7 @@ class InfoWidget extends ConsumerWidget {
         action: MetricAction.tap.toString(),
       );
 
-      const FavouritesRoute().push(context);
+      context.router.push(const FavouritesRoute());
     };
 
     // On phone card tap handler

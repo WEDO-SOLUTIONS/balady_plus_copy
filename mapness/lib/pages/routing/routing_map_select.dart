@@ -4,7 +4,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
@@ -153,7 +152,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                               action: MetricAction.tap.toString(),
                             );
 
-                            context.pop();
+                            context.router.back();
                           },
                         ),
                       ],
@@ -180,13 +179,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
 
                           switch (nearestObject.value!) {
                             case DGisNearestObject(nearestPoint: final nearestPoint):
-                              context.pop(
+                              context.router.maybePopTop(
                                 // We need to pass the coordinates of the nearest point
                                 // because coordinates of object like street or districts are so far from the selected point
                                 RoutePointCoordinates(nearestPoint.geoPoint),
                               );
                             case CooridnatesNearestObject(geoPoint: final geoPoint):
-                              context.pop(
+                              context.router.maybePopTop(
                                 RoutePointCoordinates(geoPoint),
                               );
                           }

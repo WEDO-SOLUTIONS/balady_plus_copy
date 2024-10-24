@@ -101,7 +101,7 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
 
             ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
             if (context.mounted) {
-              context.pop();
+              context.router.back();
             }
 
             WidgetsBinding.instance.addPostFrameCallback((_) {
