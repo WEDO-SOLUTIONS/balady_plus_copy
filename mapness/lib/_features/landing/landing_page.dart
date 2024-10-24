@@ -16,8 +16,10 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
@@ -28,6 +30,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
+import 'package:mapness/shared/ui/loading/service_not_available_sheet.dart';
 
 class LandingPage extends ConsumerStatefulWidget {
   const LandingPage({super.key});
@@ -66,6 +69,21 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
 
     _calculatePadding();
+  }
+
+  void _showServiceNotAvilibleSheet() {
+    // Show not available sheet if service is not available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (rootNavigatorKey.currentContext?.mounted ?? false) {
+        showModalBottomSheet(
+          context: rootNavigatorKey.currentContext!,
+          backgroundColor: Colors.transparent,
+          builder: (_) => Builder(
+            builder: (ctx) => const ServiceNotAvailableSheet(),
+          ),
+        );
+      }
+    });
   }
 
   void _calculatePadding() {
@@ -115,6 +133,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..listen(currentRouteProvider, (_, next) {
         if (next?.currentPath == KiblahRoute.path) {
           bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+        }
+      })
+      ..listen(serviceNotAvailableProvider, (prev, isAvailible) {
+        final isPrevIsAvailible = prev?.valueOrNull ?? true;
+        final isAvailibleValue = isAvailible.valueOrNull;
+
+        // Show only if service is not available
+        if (isPrevIsAvailible == true && isAvailibleValue == false) {
+          _showServiceNotAvilibleSheet();
         }
       })
 
