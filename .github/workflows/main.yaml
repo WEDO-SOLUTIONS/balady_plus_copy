@@ -129,7 +129,7 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
           ssh-add ${GITHUB_WORKSPACE}/.balady-authorization.key
-          git config --global core.sshCommand "ssh"
+          git config --global core.sshCommand "ssh -vvv"
           cd mapness
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
