@@ -1,7 +1,7 @@
 part of 'add_trip_bloc.dart';
 
-abstract class AddTripEvent extends Equatable {
-  const AddTripEvent();
+abstract class TripEvent extends Equatable {
+  const TripEvent();
 
   @override
   List<Object> get props => [];
@@ -9,44 +9,38 @@ abstract class AddTripEvent extends Equatable {
 
 
 
-
-
-
-class ChangeArrivalTimeEvent extends AddTripEvent {
-  final String? time;
-  ChangeArrivalTimeEvent({this.time});
-}
-
-class SubmitEvent extends AddTripEvent {
+class SubmitEvent extends TripEvent {
   const SubmitEvent();
 }
 
-class UpdateDriverLocationEvent extends AddTripEvent {
+class UpdateDriverLocationEvent extends TripEvent {
   const UpdateDriverLocationEvent();
 }
 
-class ClearErrorMsgEvent extends AddTripEvent {
+class ClearErrorMsgEvent extends TripEvent {
   const ClearErrorMsgEvent();
 }
 
-class GetTripsEvent extends AddTripEvent {
+class GetTripsEvent extends TripEvent {
 
   const GetTripsEvent();
 }
 
-class GetTripsStationEvent extends AddTripEvent {
+class GetTripsStationEvent extends TripEvent {
 
   const GetTripsStationEvent();
 }
+class AddNewPathEvent extends TripEvent {
+  const AddNewPathEvent();
+}
 
 
-
-class updateNewTripPathData extends AddTripEvent {
+class setNewPathData extends TripEvent {
   final TripStations? item;
   final bool isStartupInfo;
-  updateNewTripPathData({this.item,required this.isStartupInfo});
+  setNewPathData({this.item,required this.isStartupInfo});
 }
-class EditTripPathData extends AddTripEvent {
+class EditTripPathData extends TripEvent {
   final TripDetailsModel? item;
   EditTripPathData({this.item});
 }

@@ -20,6 +20,7 @@ import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
+import '../../../data/model/driver/transport_request_item_model.dart';
 import '../../../data/model/driver/trip_stations.dart';
 import '../../blocs/driver_add_trip/add_trip_bloc.dart';
 import '../../widgets/driver/custom_dropdown_dialog.dart';
@@ -28,17 +29,18 @@ import '../../widgets/driver/trip_datetime_widget.dart';
 
 
 class AddNewTripPath extends StatelessWidget {
-  final int requestId;
+  final TransportRequestItemModel model;
 
-   AddNewTripPath({Key? key, required this.requestId}) : super(key: key);
+   AddNewTripPath({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AddTripBloc(
           getTripStations: sl(),
+          editTrip: sl(),
           getTrips: sl(),
-          requestId: requestId,
+          model: model,
           addTrip: sl(),
           updateDriverLocation: sl())..add(GetTripsStationEvent()),
       child: BlocConsumer<AddTripBloc, AddTripState>(
@@ -92,7 +94,7 @@ class AddNewTripPath extends StatelessWidget {
                           onChangeType: (TripStations? item) {
                           context
                               .read<AddTripBloc>()
-                              .add(updateNewTripPathData(item: item,isStartupInfo: true));
+                              .add(setNewPathData(item: item,isStartupInfo: true));
                         },
                         onEmptyList: () async {
                           // return context
@@ -134,7 +136,7 @@ class AddNewTripPath extends StatelessWidget {
                                   if(date != null)
                                     {
 
-                                      context.read<AddTripBloc>().add(updateNewTripPathData(item: TripStations(date: date),isStartupInfo: true));
+                                      context.read<AddTripBloc>().add(setNewPathData(item: TripStations(date: date),isStartupInfo: true));
                                      }
                                 },
                                 onTimeCallback: (String? time){
@@ -143,7 +145,7 @@ class AddNewTripPath extends StatelessWidget {
                                   {
 
 
-                                     context.read<AddTripBloc>().add(updateNewTripPathData(item: TripStations(time: time),isStartupInfo: true));
+                                     context.read<AddTripBloc>().add(setNewPathData(item: TripStations(time: time),isStartupInfo: true));
                                   }
                                 },
 
@@ -161,7 +163,7 @@ class AddNewTripPath extends StatelessWidget {
                                 onChangeType: (TripStations? item) {
                                   context
                                       .read<AddTripBloc>()
-                                      .add(updateNewTripPathData(item: item,isStartupInfo: false));
+                                      .add(setNewPathData(item: item,isStartupInfo: false));
                                 },
                                 onEmptyList: () async {
                                   // return context
@@ -203,7 +205,7 @@ class AddNewTripPath extends StatelessWidget {
                                   if(date != null)
                                   {
 
-                                    context.read<AddTripBloc>().add(updateNewTripPathData(item: TripStations(date: date),isStartupInfo: false));
+                                    context.read<AddTripBloc>().add(setNewPathData(item: TripStations(date: date),isStartupInfo: false));
                                   }
                                 },
                                 onTimeCallback: (String? time){
@@ -212,233 +214,13 @@ class AddNewTripPath extends StatelessWidget {
                                   {
 
 
-                                    context.read<AddTripBloc>().add(updateNewTripPathData(item: TripStations(time: time),isStartupInfo: false));
+                                    context.read<AddTripBloc>().add(setNewPathData(item: TripStations(time: time),isStartupInfo: false));
                                   }
                                 },
 
                               ),
 
 
-
-
-
-
-
-
-                              //
-                        //
-                        //       CustomVerticalSpace(height: 10),
-                        //       ReadOnlyField(
-                        //         title: "currentTripStationArrivalTime".tr(),
-                        //         subTitle: widget.model?.startupInfo?.date ?? "",
-                        //         subTitleColor:AppColor.grey1000.withOpacity(0.5),
-                        //         decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
-                        //       ),
-                        //
-                        //
-                        //       if (widget.model?.startupInfo?.location?.x != null && widget.model?.startupInfo?.location?.y != null )
-                        //         InkWell(
-                        //           onTap: () {
-                        //             CommonFunctions.openMap(
-                        //                 double.parse(widget.model!.startupInfo!.location!.x!),
-                        //                 double.parse(widget.model!.startupInfo!.location!.y!));
-                        //           },
-                        //           child: Container(
-                        //             padding: const EdgeInsets.all(16),
-                        //             width: double.infinity,
-                        //             decoration: BoxDecoration(
-                        //                 color: Colors.transparent,
-                        //                 border:
-                        //                 Border.all(color: AppColor.blackModern300Light, width: 1),
-                        //                 borderRadius: BorderRadius.circular(6)),
-                        //             child: Row(
-                        //               mainAxisAlignment: MainAxisAlignment.center,
-                        //               children: [
-                        //
-                        //                 CustomTextWidget(
-                        //                   ("ekram_current_step_location").tr(),
-                        //                   fontSize: 12,
-                        //                   fontWeight: AppFontWeight.medium,
-                        //                   fontColor: AppColor.black,
-                        //                   textAlign: TextAlign.start,
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //
-                        //
-                        //       CustomVerticalSpace(height: 20),
-                        //       ReadOnlyField(
-                        //         title: "nextTripCity".tr(),
-                        //         subTitle: widget.model?.arrivalInfo?.cityName ?? "",
-                        //         subTitleColor:AppColor.grey1000.withOpacity(0.5),
-                        //         decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
-                        //
-                        //       ),
-                        //       CustomVerticalSpace(height: 10),
-                        //       ReadOnlyField(
-                        //         title: "nextTripStationType".tr(),
-                        //         subTitle: widget.model?.arrivalInfo?.typeName  ?? "",
-                        //         subTitleColor:AppColor.grey1000.withOpacity(0.5),
-                        //         decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
-                        //
-                        //       ),
-                        //
-                        //
-                        //       CustomVerticalSpace(height: 10),
-                        //       ReadOnlyField(
-                        //         title: "nextTripStationName".tr(),
-                        //         subTitle: widget.model?.arrivalInfo?.name  ?? "",
-                        //         subTitleColor:AppColor.grey1000.withOpacity(0.5),
-                        //         decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
-                        //
-                        //       ),
-                        //
-                        //
-                        //       CustomVerticalSpace(height: 10),
-                        //       ReadOnlyField(
-                        //         title: "nextTripStationArrivalTime".tr(),
-                        //         subTitle: widget.model?.arrivalInfo?.date ?? "",
-                        //         subTitleColor:AppColor.grey1000.withOpacity(0.5),
-                        //         decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
-                        //
-                        //       ),
-                        //
-                        //       if (widget.model?.arrivalInfo?.location?.x != null && widget.model?.arrivalInfo?.location?.y != null )
-                        //         InkWell(
-                        //           onTap: () {
-                        //             CommonFunctions.openMap(
-                        //                 double.parse(widget.model!.arrivalInfo!.location!.x!),
-                        //                 double.parse(widget.model!.arrivalInfo!.location!.y!));
-                        //           },
-                        //           child: Container(
-                        //             padding: const EdgeInsets.all(16),
-                        //             width: double.infinity,
-                        //             decoration: BoxDecoration(
-                        //                 color: Colors.transparent,
-                        //                 border:
-                        //                 Border.all(color: AppColor.blackModern300Light, width: 1),
-                        //                 borderRadius: BorderRadius.circular(6)),
-                        //             child: Row(
-                        //               mainAxisAlignment: MainAxisAlignment.center,
-                        //               children: [
-                        //
-                        //                 CustomTextWidget(
-                        //                   ("ekram_current_step_location").tr(),
-                        //                   fontSize: 12,
-                        //                   fontWeight: AppFontWeight.medium,
-                        //                   fontColor: AppColor.black,
-                        //                   textAlign: TextAlign.start,
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //
-
-
-                              // CustomLookUpLongDialog(
-                              //   refreshList: true,
-                              //   items: widget.state?.nextStationType ?? [],
-                              //   value: widget.state?.nextTripStationTypeId,
-                              //   onChangeType: (LookUpItem? item) {
-                              //     context
-                              //         .read<EkramAddTripBloc>()
-                              //         .add(ChangeNextTripStationType(item: item));
-                              //   },
-                              //   onEmptyList: () async {
-                              //     return context
-                              //         .read<EkramAddTripBloc>()
-                              //         .getNextStationTypeLookUp();
-                              //   },
-                              //   label: Helpers.translatingWord("nextTripStationType"),
-                              //   hint: Helpers.translatingWord("nextTripStationType"),
-                              // ),
-                              // CustomVerticalSpace(height: 16),
-                              // if (widget.state?.showHospitalList())
-                              //   CustomLookUpLongDialog(
-                              //     items: widget.state?.hospitals ?? [],
-                              //     value: widget.state?.nextHospitalStation,
-                              //     onChangeType: (LookUpItem? item) {
-                              //       context
-                              //           .read<EkramAddTripBloc>()
-                              //           .add(ChangeNextTripHospitalStation(item: item));
-                              //     },
-                              //     onEmptyList: () async {
-                              //       return context
-                              //           .read<EkramAddTripBloc>()
-                              //           .getHospitalsLookUp();
-                              //     },
-                              //     label: Helpers.translatingWord("ekram_hospital_field_name"),
-                              //     hint: Helpers.translatingWord("ekram_hospital_field_name"),
-                              //   ),
-                              // if (widget.state?.showLaundryList())
-                              //   CustomLookUpLongDialog(
-                              //     items: widget.state?.launduriesList ?? [],
-                              //     value: widget.state?.nextLaundryStation,
-                              //     onChangeType: (LookUpItem? item) {
-                              //       context
-                              //           .read<EkramAddTripBloc>()
-                              //           .add(ChangeNextTripLaundryStation(item: item));
-                              //     },
-                              //     onEmptyList: () async {
-                              //       return context
-                              //           .read<EkramAddTripBloc>()
-                              //           .getLanuduriesLookUp();
-                              //     },
-                              //     label: Helpers.translatingWord("ekram_laundry_field_name"),
-                              //     hint: Helpers.translatingWord("ekram_laundry_field_name"),
-                              //   ),
-                              // if (widget.state?.showMosqueList())
-                              //   CustomLookUpLongDialog(
-                              //     items: widget.state?.mosquesList ?? [],
-                              //     value: widget.state?.nextMosqueStation,
-                              //     onChangeType: (LookUpItem? item) {
-                              //       context
-                              //           .read<EkramAddTripBloc>()
-                              //           .add(ChangeNextTripMosuqeStation(item: item));
-                              //     },
-                              //     onEmptyList: () async {
-                              //       return context.read<EkramAddTripBloc>().getMosquesLookUp();
-                              //     },
-                              //     label: Helpers.translatingWord("ekram_mosque_field_name"),
-                              //     hint: Helpers.translatingWord("ekram_mosque_field_name"),
-                              //   ),
-                              // if (widget.state?.showNextStationName())
-                              //   CustomTextFieldWidget(
-                              //       label: trans("nextTripStationName"),
-                              //       hintText: trans("nextTripStationName"),
-                              //       maxLines: 1,
-                              //       controller: context
-                              //           .read<EkramAddTripBloc>()
-                              //           .nextTripStationNameController,
-                              //       enabled: !widget.state?.isCemetry(),
-                              //       textInputAction: TextInputAction.next,
-                              //       keyboardType: TextInputType.text,
-                              //       onChanged: (String? text) {
-                              //         context
-                              //             .read<EkramAddTripBloc>()
-                              //             .add(ChangeNextTripStationName(text: text));
-                              //       },
-                              //       onValidate: (String? value) {}),
-                              // CustomVerticalSpace(height: 16),
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     context
-                              //         .read<EkramAddTripBloc>()
-                              //         .add(ChangeArrivalTimeEvent());
-                              //   },
-                              //   child: ReadOnlyField(
-                              //     title: trans("nextTripStationArrivalTime"),
-                              //     subTitle: widget.state?.nextTripStationArrivalTime ??
-                              //         trans("nextTripStationArrivalTime"),
-                              //     subTitleColor: AppColor.blackModern400Light,
-                              //   ),
-                              // ),
-                              // CustomVerticalSpace(height: 16),
-                              // CustomVerticalSpace(height: 16),
-                              // CustomVerticalSpace(height: 20),
                             ],
                           ),
 
@@ -457,12 +239,11 @@ class AddNewTripPath extends StatelessWidget {
                   ),
                   ElevatedButtonWidget.primaryCustom(
                     onPressed: () {
-
-
-
+                      // context.read<AddTripBloc>().add(
+                      //     ());
 
                     },
-                    text: ('startTrip').tr(),
+                    text: ('addnewPath').tr(),
                   ),
 
                 ],

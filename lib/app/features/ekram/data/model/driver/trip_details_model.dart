@@ -9,7 +9,10 @@ class TripDetailsModel {
     this.arrivalInfo,
     this.deletable,
     this.editable,
-    this.note,});
+    this.note,
+    this.isSuggestPath
+
+  });
 
   TripDetailsModel.fromJson(dynamic json) {
     id = json['id'];
@@ -28,6 +31,7 @@ class TripDetailsModel {
   TripInfo? arrivalInfo;
   bool? deletable;
   bool? editable;
+  bool? isSuggestPath;
   dynamic note;
 
   Map<String, dynamic> toJson() {

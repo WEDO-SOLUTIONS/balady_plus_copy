@@ -17,7 +17,7 @@ class AddTripState extends Equatable {
   // final double? nextTripStationLocationY;
   // final String? nextTripStationName;
 
-  final int requestProcessId;
+  final TransportRequestItemModel model;
 
   final List<TripDetailsModel>? data;
   final List<TripStations>? lstTripStation;
@@ -32,12 +32,12 @@ class AddTripState extends Equatable {
        this.data,
         this.lstTripStation,
         this.addTripPath,
-      required this.requestProcessId,
+      required this.model,
    });
   AddTripState copyWith(
       {final BlocStatus? status,
       final String? errorMessage,
-      final int? requestProcessId,
+      final TransportRequestItemModel? model,
       final List<TripDetailsModel>? data,
         final List<TripStations>? lstTripStation,
         final TripDetailsModel? addTripPath,
@@ -50,7 +50,7 @@ class AddTripState extends Equatable {
 
         errorMessage: errorMessage ?? this.errorMessage,
         status: status ?? this.status,
-        requestProcessId: requestProcessId ?? this.requestProcessId,
+        model: model ?? this.model,
       );
   }
 
@@ -61,7 +61,7 @@ class AddTripState extends Equatable {
        lstTripStation,
         data,
     addTripPath,
-        requestProcessId,
+        model,
 
       ];
 

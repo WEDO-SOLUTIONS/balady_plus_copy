@@ -376,6 +376,7 @@ class RouteName {
   static const SucessfullScreen = 'Sucessfull_Screen';
   static const chatHistoryDetailsRoute = 'chat_history_details';
 
+
 }
 
 class EtmamRoutesNames {
@@ -444,6 +445,8 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
+
+
 
 
 }

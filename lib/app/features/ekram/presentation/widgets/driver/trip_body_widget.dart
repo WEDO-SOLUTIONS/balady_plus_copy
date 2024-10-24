@@ -8,11 +8,13 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../data/model/driver/trip_details_model.dart';
 import '../../blocs/driver_add_trip/add_trip_bloc.dart';
+import '../../pages/driver/location_selector.dart';
 
 
 
@@ -170,15 +172,24 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
                   double.parse(widget.model!.startupInfo!.location!.x!),
                   double.parse(widget.model!.startupInfo!.location!.y!));
               }
+              else
+                {
+                  CommonFunctions.showError("noData".tr());
+                }
+              // else if(enableEdit == true)
+              //   {
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //         builder: (context) => LocationSelectorScreen(callback: updateLocation,isCurrentStation:true)));
+              //
+              //   }
             },
             child: Container(
               padding: const EdgeInsets.all(16),
               width: double.infinity,
-              decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border:
-                  Border.all(color: AppColor.blackModern300Light, width: 1),
-                  borderRadius: BorderRadius.circular(6)),
+              decoration:  BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.blackModern300Light, width: 1), borderRadius: BorderRadius.circular(6)),
+        //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -194,6 +205,9 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
               ),
             ),
           ),
+
+
+
 
         CustomVerticalSpace(height: 20),
         ReadOnlyField(
@@ -244,8 +258,7 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
                 widget.model?.arrivalInfo?.date = date;
               });
 
-              // var x =  context.read<AddTripBloc>();
-              // context.read<AddTripBloc>().add(EditTripPathData(item:widget.model));
+
 
             }
           },
@@ -276,21 +289,32 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
                   double.parse(widget.model!.arrivalInfo!.location!.x!),
                   double.parse(widget.model!.arrivalInfo!.location!.y!));
               }
+              else
+              {
+                CommonFunctions.showError("noData".tr());
+              }
+              // else if(enableEdit == true)
+              // {
+              //   Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => LocationSelectorScreen(callback: updateLocation,isCurrentStation:false)));
+              //
+              // }
+
             },
             child: Container(
               padding: const EdgeInsets.all(16),
               width: double.infinity,
-              decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border:
-                  Border.all(color: AppColor.blackModern300Light, width: 1),
-                  borderRadius: BorderRadius.circular(6)),
+              decoration: BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.blackModern300Light, width: 1), borderRadius: BorderRadius.circular(6)),
+        //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
 
                   CustomTextWidget(
-                    ("ekram_current_step_location").tr(),
+                    ("ekram_next_step_location").tr(),
                     fontSize: 12,
                     fontWeight: AppFontWeight.medium,
                     fontColor: AppColor.black,
@@ -303,8 +327,51 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
 
 
 
+        Padding(
+          padding: const EdgeInsets.only(top: 20,left: 30,right: 30),
+          child: ElevatedButtonWidget.primaryCustom(
+            btnColor: enableEdit == true ? AppColor.primary800Light: AppColor.blackModern300Light.withOpacity(0.4),
+            height: 40,
+            onPressed: () {
+              if(enableEdit== true ) {
+                if (widget.model?.startupInfo?.date != null &&
+                    widget.model?.startupInfo?.time != null
+                    && widget.model?.arrivalInfo?.date != null &&
+                    widget.model?.arrivalInfo?.time != null) {
+                  context.read<AddTripBloc>().add(
+                      EditTripPathData(item: widget.model));
+                }
+                else {
+                  CommonFunctions.showError("please_enter_date_and_time".tr());
+                }
+              }
+
+            },
+            text: ('saveButton').tr(),
+          ),
+        ),
+
+
+
 
       ],
     );
+  }
+   void updateLocation(double? lat,double? lng,String? address,bool isCurrentStation)
+  {
+    if(isCurrentStation == true) {
+      setState(() {
+        widget.model?.startupInfo?.location = Location(x: "$lat",y: "$lng");
+      });
+
+    }
+    else
+      {
+        setState(() {
+          widget.model?.arrivalInfo?.location = Location(x: "$lat",y: "$lng");
+        });
+
+      }
+
   }
 }

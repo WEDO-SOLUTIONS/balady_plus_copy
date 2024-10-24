@@ -29,6 +29,7 @@ import '../../domain/entities/cemetry_requests/cemetry_request_response.dart';
 import '../../domain/entities/get_cemetries_params.dart';
 import '../../domain/entities/user_info_request_params.dart';
 import '../model/driver/deceased_identical_item.dart';
+import '../model/driver/transport_request_item_model.dart';
 import '../model/driver/trip_details_model.dart';
 import '../model/driver/trip_stations.dart';
 import '../model/upload_letter_params.dart';
@@ -215,7 +216,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<TripDetailsModel>>>> getTrips(
-      int params) async {
+      TransportRequestItemModel params) async {
     try {
       final data = await remoteDataSource.getTrips(params);
       return Right(data);
@@ -233,10 +234,10 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel>> addTrip(
-      AddTripParams params) async {
+  Future<Either<Failure, ResponseBodyModel>> addTrip(int requestId,
+      TripDetailsModel params) async {
     try {
-      final data = await remoteDataSource.addTrip(params);
+      final data = await remoteDataSource.addTrip(requestId,params);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -250,6 +251,28 @@ class EkramRepositoryImpl implements EkramRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+  @override
+  Future<Either<Failure, ResponseBodyModel>> editTrip(
+      int requestID,TripDetailsModel model) async {
+    try {
+      final data = await remoteDataSource.editTrip(requestID,model);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+
+
+
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>

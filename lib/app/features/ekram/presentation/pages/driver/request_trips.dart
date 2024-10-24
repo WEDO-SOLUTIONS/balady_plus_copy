@@ -14,6 +14,7 @@ import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
+import '../../../data/model/driver/transport_request_item_model.dart';
 import '../../blocs/driver_add_trip/add_trip_bloc.dart';
 
 
@@ -21,25 +22,26 @@ import '../../widgets/driver/trip_body_widget.dart';
 import 'add_new_trip_path.dart';
 
 class RequestTrips extends StatelessWidget {
-  final int requestId;
-  const RequestTrips({Key? key, required this.requestId}) : super(key: key);
+  final TransportRequestItemModel model;
+  const RequestTrips({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AddTripBloc(
           getTrips: sl(),
+          editTrip: sl(),
           getTripStations: sl(),
-          requestId: requestId,
+          model: model,
           addTrip: sl(),
           updateDriverLocation: sl())..add(GetTripsEvent()),
       child: BlocConsumer<AddTripBloc, AddTripState>(
         listener: (context, state) {
-          if (state.status == BlocStatus.failure) {
-
-            context.read<AddTripBloc>().add(ClearErrorMsgEvent());
-             CommonFunctions.showError(state.errorMessage ?? "");
-          }
+          // if (state.status == BlocStatus.failure) {
+          //
+          //
+          //   // CommonFunctions.showError(state.errorMessage ?? "");
+          // }
         },
         builder: (context, state) {
 
@@ -63,13 +65,17 @@ class RequestTrips extends StatelessWidget {
            body:
            Padding(
              padding: const EdgeInsets.all(16.0),
-             child: Column(
-               mainAxisSize: MainAxisSize.max,
-               children: [
-
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.start,
+             child: Stack(
+               children:
+               [
+                 Column(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   mainAxisSize: MainAxisSize.max,
                    children: [
+
+                     Row(
+                       mainAxisAlignment: MainAxisAlignment.start,
+                       children: [
                          CustomTextWidget(
                            "tripPaths".tr(),
                            fontSize: 20.0,
@@ -79,92 +85,99 @@ class RequestTrips extends StatelessWidget {
                            textOverflow: TextOverflow.ellipsis,
                            textAlign: TextAlign.start,
                          ),
-                     SizedBox(width: 20,),
-                     Flexible(
-                     child: ElevatedButtonWidget.primaryCustomBorderColor(
-                       borderColor: AppColor.kGreenBoarder,
-                       bgColor: Colors.transparent,
-                       color: AppColor.darkGreylight,
-                       fontSize:13,
-                       height:45,
+                         SizedBox(width: 20,),
+                         Flexible(
+                           child: ElevatedButtonWidget.primaryCustomBorderColor(
+                             borderColor: AppColor.kGreenBoarder,
+                             bgColor: Colors.transparent,
+                             color: AppColor.darkGreylight,
+                             fontSize:13,
+                             height:45,
+                             onPressed: () {
+                               Navigator.push(
+                                 context,
+                                 MaterialPageRoute(builder: (context) => AddNewTripPath(model: model,),
+                                 ),
+                               );
+
+
+
+                             },
+                             text: ('addnewPath').tr(),
+                           ),
+                         ),
+
+
+
+
+                       ],),
+                     Expanded(
+                       child: SingleChildScrollView(
+                         child: Column(
+                           mainAxisAlignment: MainAxisAlignment.start,
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           mainAxisSize: MainAxisSize.max,
+                           children: [
+                             ListView.builder(
+                               padding: EdgeInsets.zero,
+                               itemCount:
+                               state.data?.length ?? 0,
+                               shrinkWrap: true,
+
+                               physics: const NeverScrollableScrollPhysics(),
+                               itemBuilder: (ctx, index) {
+                                 if(state.data![index].isSuggestPath==false) {
+                                   return ExpandableCard(
+                                       title: "${("tripPathsnumber")
+                                           .tr()}${index + 1}",
+                                       icon: null,
+                                       children:
+                                       [
+                                         TripBodyWidget(
+                                             model: state.data![index]),
+                                       ]);
+                                 }
+                                 else
+                                   {
+                                     return Container();
+                                   }
+                               },
+                             ),
+
+
+                             if (state.status == BlocStatus.retry)
+                               ReloadWidget(
+                                 onTab: () {
+                                   context.read<AddTripBloc>().add(
+                                       GetTripsEvent());
+                                 },
+                               ),
+                           ],
+                         ),
+                       ),
+                     ),
+                     ElevatedButtonWidget.primaryCustom(
                        onPressed: () {
                          Navigator.push(
                            context,
-                           MaterialPageRoute(builder: (context) => AddNewTripPath(requestId: requestId,),
+                           MaterialPageRoute(builder: (context) => RequestTrips(
+                             model: model,),
                            ),
                          );
-                     
-                     
-                     
+
+
+
                        },
-                       text: ('addnewPath').tr(),
+                       text: ('startTrip').tr(),
                      ),
-                   ),
 
-
-
-
-                 ],),
-
-                 Expanded(
-                   child: SingleChildScrollView(
-                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                       mainAxisSize: MainAxisSize.max,
-                        children: [
-                          ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemCount:
-                            state.data?.length ?? 0,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (ctx, index) {
-                              return
-
-                                ExpandableCard(
-                                    title: "${("tripPathsnumber").tr()}${index+1}",
-                                    icon: null,
-                                    children:
-                                    [
-
-
-                                      TripBodyWidget(model:state.data![index]),
-                                    ]);
-                            },
-                          ),
-
-
-
-                          if (state.status == BlocStatus.loading) const CustomLoadingWidget(),
-
-                          if (state.status == BlocStatus.retry)
-                            ReloadWidget(
-                              onTab: () {
-                                context.read<AddTripBloc>().add(
-                                    GetTripsEvent());
-                              },
-                            ),
-                        ],
-                      ),
-                   ),
-                 ),
-                 ElevatedButtonWidget.primaryCustom(
-                   onPressed: () {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => RequestTrips(
-                         requestId: requestId,),
-                       ),
-                     );
-
-
-
-                   },
-                   text: ('startTrip').tr(),
+                   ],
                  ),
 
-               ],
+                 if (state.status == BlocStatus.loading) Center(child: const CustomLoadingWidget()),
+
+               ]
+
              ),
            ),
          );

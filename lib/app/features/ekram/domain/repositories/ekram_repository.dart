@@ -62,13 +62,15 @@ abstract class EkramRepository {
       getidenticalList(int params);
 
   Future<Either<Failure, ResponseBodyModel<List<TripDetailsModel>>>> getTrips(
-      int params);
+      TransportRequestItemModel params);
 
   Future<Either<Failure, ResponseBodyModel<TripLocationsResponse>>>
       getTripsLocation(int params);
 
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> addTrip(
-      AddTripParams params);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> addTrip(int requestId,
+  TripDetailsModel params);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> editTrip(int requestId,
+      TripDetailsModel params);
 
   Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteTrip(int params);
 

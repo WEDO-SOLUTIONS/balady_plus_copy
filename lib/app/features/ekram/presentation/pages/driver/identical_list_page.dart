@@ -177,7 +177,7 @@ class _IdenticalListPageState
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => RequestTrips(
-                                 requestId: params.requestId!,),
+                              model: params,),
                             ),
                           );
 

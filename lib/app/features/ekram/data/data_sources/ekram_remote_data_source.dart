@@ -67,9 +67,11 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<DeceasedIdenticalItem>>> getIdenticalList(
       int params);
 
-  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(int params);
+  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(TransportRequestItemModel params);
 
-  Future<ResponseBodyModel> addTrip(AddTripParams params);
+  Future<ResponseBodyModel> addTrip(int requestId, TripDetailsModel params);
+
+  Future<ResponseBodyModel> editTrip(int requestID,TripDetailsModel params);
 
   Future<ResponseBodyModel<dynamic>> completeTrip(int params);
 
@@ -725,14 +727,15 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(int params) async {
+  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(TransportRequestItemModel params) async {
     Response response;
 
     try {
-      response = await webService.dio.put(
 
-          "${ApiUrl.ekramGetTrips(params)}",queryParameters: {"isDriver":true}
+
+      response = await webService.dio.put("${ApiUrl.initializeTripsRquest(params.requestId!)}",queryParameters: {"isDriver":true}
       );
+
 
       // String qa = "";
       //
@@ -808,13 +811,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel> addTrip(AddTripParams params) async {
+  Future<ResponseBodyModel> addTrip(int requestId, TripDetailsModel params) async {
     Response response;
     try {
-      print(params.toMap());
+
       response = await webService.dio.post(
-        ApiUrl.applyTrip,
-        data: params.toMap(),
+        ApiUrl.addNewPath(requestId),
+        data: params.toJson(),
+          queryParameters: {"isDriver":true}
       );
 
       var data = response.data["data"]?["result"];
@@ -863,6 +867,70 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
+
+
+
+  @override
+  Future<ResponseBodyModel> editTrip(int requestID,TripDetailsModel params) async {
+    Response response;
+    try {
+
+      response = await webService.dio.post(
+        ApiUrl.EditTrip(requestID,params.id!),
+        data: params.toJson(),
+        queryParameters: {"isDriver":true}
+      );
+
+      var data = response.data["data"]?["result"];
+
+      final decodedResponse =
+      ResponseBodyModel<bool>.fromMap(response.data,
+          parsedResult: data);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+
+
+
+
+
+
 
   @override
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundries(

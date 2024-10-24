@@ -4210,7 +4210,7 @@
   "tripPathsnumber": "مسار رقم ",
   "startTrip": "بدء النقل",
   "currentRequest": "الطلبات الحالية",
-  "addnewPath": "+ إضافة مسار جديد رحلة ",
-  "pathID": "رقم المسار"
-
+  "addnewPath": "+ إضافة مسار جديد",
+  "pathID": "رقم المسار",
+  "please_enter_date_and_time": "من فضلك اختر الوقت والتاريخ الخاصة بالمسار"
 }
