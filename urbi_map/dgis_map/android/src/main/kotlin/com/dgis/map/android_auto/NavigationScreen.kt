@@ -6,10 +6,12 @@ import androidx.car.app.Screen
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.Alert
+import androidx.car.app.model.AlertCallback
 import androidx.car.app.model.CarColor
 import androidx.car.app.model.CarIcon
 import androidx.car.app.model.CarText
 import androidx.car.app.model.Distance
+import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Template
 import androidx.car.app.navigation.NavigationManager
 import androidx.car.app.navigation.NavigationManagerCallback
@@ -61,6 +63,7 @@ class NavigationScreen(
 
     private var isPanMode: Boolean = false
     private var isTrafficEnabled: Boolean = false
+    private var isEndTripShown: Boolean = false
 
     private var navigationState = NavigationState.DISABLED
     private var locationState = LocationState.AVAILABLE
@@ -77,6 +80,9 @@ class NavigationScreen(
         get() = navigationState == NavigationState.NAVIGATION || navigationState == NavigationState.REROUTING
 
     override fun onGetTemplate(): Template {
+        if (navigationState == NavigationState.DISABLED && !isEndTripShown) {
+            return createStartNavigationMessageTemplate()
+        }
         val actionStrip = ActionStrip.Builder()
         val trafficAction = Action.Builder().setIcon(
             CarIcon.Builder(
@@ -312,6 +318,7 @@ class NavigationScreen(
     }
 
     private fun showEndTrip() {
+        isEndTripShown = true
         val title = CarText.create(
             getString(R.string.end_trip_alert_title)
         )
@@ -327,7 +334,13 @@ class NavigationScreen(
         if (destination?.name != null) {
             endTripAlert.setSubtitle(destination!!.name!!)
         }
-        endTripAlert.addAction(endTripAction.build())
+        endTripAlert.addAction(endTripAction.build()).setCallback(object :AlertCallback{
+            override fun onCancel(reason: Int) {}
+            override fun onDismiss() {
+                isEndTripShown = false
+                invalidate()
+            }
+        })
         appManager.showAlert(endTripAlert.build())
     }
 
@@ -441,6 +454,16 @@ class NavigationScreen(
     private fun buildStopNavigationAction(): Action {
         return Action.Builder().setTitle(getString(R.string.stop_navigation_action))
             .setOnClickListener { stopNavigation() }.build()
+    }
+
+    private fun createStartNavigationMessageTemplate(): Template {
+        val icon = CarIcon.Builder(
+            IconCompat.createWithResource(
+                carContext, R.drawable.logo
+            )
+        ).build()
+        return MessageTemplate.Builder(getString(R.string.start_navigation_message))
+            .setIcon(icon).build()
     }
 
     private companion object {
