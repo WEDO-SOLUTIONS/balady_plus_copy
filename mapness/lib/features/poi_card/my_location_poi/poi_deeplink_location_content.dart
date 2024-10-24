@@ -1,0 +1,62 @@
+part of 'content_deeplink.dart';
+
+class PoiDeeplinkContent extends ConsumerWidget {
+  final Function()? onTapClose;
+  final LatLng location;
+  final AsyncValue<PoiMyLocationState?> data;
+
+  const PoiDeeplinkContent({
+    required this.onTapClose,
+    required this.location,
+    required this.data,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.only(left: 16, right: 16),
+        decoration: const ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+          ),
+        ),
+        child: Builder(
+          builder: (context) {
+            final title = context.l10n.pointToMap;
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 16),
+                CardHeader(
+                  onTapClose: onTapClose,
+                  title: title,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: Spacing.$4x,
+                    bottom: Spacing.$4x,
+                  ),
+                  child: Text(
+                    data.maybeWhen(
+                      data: (value) => value?.address ?? '${location.latitude}, ${location.longitude}',
+                      orElse: () => '',
+                    ),
+                    style: context.textStyleV3.bodySmallRegular.copyWith(
+                      color: context.colorsV2.foregroundSoft,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+}
