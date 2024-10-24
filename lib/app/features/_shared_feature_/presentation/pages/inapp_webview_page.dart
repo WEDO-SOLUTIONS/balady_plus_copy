@@ -34,6 +34,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
     ({String requestNum, String url, bool? isObjections}) args =
         ModalRoute.of(context)!.settings.arguments as ({String requestNum, String url, bool? isObjections});
 
+   String url = args.url.replaceAll("\n", "");
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: "back".tr(),
@@ -41,12 +42,21 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
       body: Stack(
         children: [
           InAppWebView(
+
+            initialSettings: InAppWebViewSettings(
+              useHybridComposition: true,
+              javaScriptEnabled: true,
+              useShouldOverrideUrlLoading: true,
+            ),
+            shouldOverrideUrlLoading: (controller, action) async {
+              return NavigationActionPolicy.ALLOW;
+            },
             onWebViewCreated: (InAppWebViewController controller) {
               _controller = controller;
             },
             initialUrlRequest: URLRequest(
               // url: Uri.parse('https://flutter.dev/'),
-              url: WebUri(args.url),
+              url: WebUri(url),
             ),
             initialOptions: InAppWebViewGroupOptions(
               android: AndroidInAppWebViewOptions(

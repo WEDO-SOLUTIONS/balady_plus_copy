@@ -48,83 +48,54 @@ class MessageBotBubble extends StatelessWidget {
                   isLoading
                       ? const LoadingBubble()
                       :
-                      ////////////////////////////////////////////////////////
-                      Selector<MessageChatBotProvider, StreamSubscription?>(
-                          selector: (_, provider) => provider.listen,
-                          builder: (_, listen, __) {
-                            // provider.isLoading = isLoading;
-                            return ChatBotBubble(
-                              body: Wrap(
-                                alignment: WrapAlignment.end,
-                                children: [
-                                  // ValueListenableBuilder<ChatBotMessageEntities>(
-                                  //   valueListenable: messageProvide.message,
-                                  //   builder: (_, listMessages, child) {
-                                  //     return Wrap(
-                                  //       children: messageProvide.message.value.answer
-                                  //           .map((message) => AnimatedTextKit(
-                                  //                 // key: Key(message),
-                                  //                 animatedTexts: [
-                                  //                   TypewriterAnimatedText(
-                                  //                     message,
-                                  //                     textStyle: AppStyle
-                                  //                         .textFieldTitleTextStyle
-                                  //                         .copyWith(
-                                  //                       color: AppColor.blackModern700Light,
-                                  //                       fontFamily: GeneralKey.appFontType,
-                                  //                     ),
-                                  //                     speed:
-                                  //                         const Duration(milliseconds: 50),
-                                  //                   ),
-                                  //                 ],
-                                  //                 pause: const Duration(milliseconds: 100),
-                                  //                 repeatForever: false,
-                                  //                 isRepeatingAnimation: false,
-                                  //                 totalRepeatCount: 2,
-                                  //               ))
-                                  //           .toList(),
-                                  //     );
-                                  //   },
-                                  // ),
-                                  ValueListenableBuilder<
-                                      ChatBotMessageEntities>(
-                                    valueListenable: messageProvide.message,
-                                    builder: (_, listMessages, child) {
-                                      return MessageChatText(
-                                          text: messageProvide
-                                              .message.value.answer);
-                                    },
-                                  ),
+                  ////////////////////////////////////////////////////////
+                  Selector<MessageChatBotProvider, StreamSubscription?>(
+                    selector: (_, provider) => provider.listen,
+                    builder: (_, listen, __) {
+                      // provider.isLoading = isLoading;
+                      return ChatBotBubble(
+                        body: Wrap(
+                          alignment: WrapAlignment.end,
+                          children: [
+                            ValueListenableBuilder<
+                                ChatBotMessageEntities>(
+                              valueListenable: messageProvide.message,
+                              builder: (_, listMessages, child) {
+                                return MessageChatText(
+                                  text: messageProvide
+                                      .message.value.answer, provider: messageProvide,);
+                              },
+                            ),
 
-                                  Selector<MessageChatBotProvider, bool>(
-                                    selector: (_, provider) =>
-                                        provider.isLoading,
-                                    builder: (_, isLoading, __) {
-                                      // provider.isLoading = isLoading;
-                                      return isLoading
-                                          ? const CustomCircularLoadingWidget()
-                                          : messageProvide
-                                                  .message.value.haveError
-                                              ? CustomPrimaryButton(
-                                                  onPressed: () {
-                                                    messageProvide.sendQuestion(
-                                                      messageProvide.message
-                                                          .value.question,
-                                                    );
-                                                  },
-                                                  btnText: 'retry'.tr(),
-                                                )
-                                              : const SizedBox();
-                                    },
-                                  ),
-                                ],
-                              ),
-                              timeStamp: messageProvide
-                                  .message.value.timeStampReceived,
-                              isResponse: true,
-                            );
-                          },
+                            Selector<MessageChatBotProvider, bool>(
+                              selector: (_, provider) =>
+                              provider.isLoading,
+                              builder: (_, isLoading, __) {
+                                // provider.isLoading = isLoading;
+                                return isLoading
+                                    ? const CustomCircularLoadingWidget()
+                                    : messageProvide
+                                    .message.value.haveError
+                                    ? CustomPrimaryButton(
+                                  onPressed: () {
+                                    messageProvide.sendQuestion(
+                                      messageProvide.message
+                                          .value.question,
+                                    );
+                                  },
+                                  btnText: 'retry'.tr(),
+                                )
+                                    : const SizedBox();
+                              },
+                            ),
+                          ],
                         ),
+                        timeStamp: messageProvide
+                            .message.value.timeStampReceived,
+                        isResponse: true,
+                      );
+                    },
+                  ),
                 ],
               ),
             );
