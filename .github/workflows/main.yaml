@@ -130,7 +130,7 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY }}
+          ssh-private-key: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
 
       - name: 🤖🔨 Development setup mapness
         env:
