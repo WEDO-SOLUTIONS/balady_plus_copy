@@ -62,9 +62,12 @@ jobs:
       - name: Setup requirements
         env: # Set the secret as an environment variable
           BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
+          BALADY_AUTHORIZATION_DEPLOY_KEY: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY }}
         run: |
           echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
           chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
+          echo "${BALADY_AUTHORIZATION_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-authorization.key
+          chmod 600 ${GITHUB_WORKSPACE}/.balady-authorization.key
 
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
@@ -125,6 +128,7 @@ jobs:
         run: |
           eval $(ssh-agent -s)
           ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
+          ssh-add ${GITHUB_WORKSPACE}/.balady-authorization.key
 
           cd mapness
           flutter pub get
