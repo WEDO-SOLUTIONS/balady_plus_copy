@@ -211,4 +211,10 @@ class AppWidgetState extends State<AppWidget> {
       FocusManager.instance.primaryFocus?.unfocus();
     }
   }
+
+  @override
+  void dispose() {
+    AdvancedMetrics.instance.dispose();
+    super.dispose();
+  }
 }

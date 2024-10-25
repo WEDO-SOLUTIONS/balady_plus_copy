@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
@@ -70,48 +71,94 @@ class AdvancedMetrics {
   }
 
   // Battery usage measurement
-  final _battery = Battery();
   Stopwatch? _appRuntime;
+  Timer? _batteryTimer;
+  final _batteryDuration = const Duration(seconds: 15);
   int? _batteryInitial;
+
+  Future<void> sendPreviousSessionBatteryUsage({required TrackEvent track}) async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    final jsonString = sharedPrefs.getString(AdvancedMetricsConstants.batteryUsage);
+    if (jsonString != null) {
+      final metrics = BatteryUsage.fromJson(jsonString);
+      try {
+        await track(
+          AdvancedMetricsConstants.batteryUsage,
+          properties: metrics.toJson(),
+        );
+        await sharedPrefs.remove(AdvancedMetricsConstants.batteryUsage);
+        log(metrics.toString());
+      } catch (e) {
+        log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+      }
+    }
+  }
 
   Future<void> startMeasureBattery() async {
     _appRuntime = Stopwatch()..start();
-    _batteryInitial = await _battery.batteryLevel;
+    try {
+      _batteryInitial = await Battery().batteryLevel;
+    } catch (e) {
+      log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+      return;
+    }
+    await _measureBattery();
+
+    _batteryTimer = Timer.periodic(_batteryDuration, (_) async {
+      await _measureBattery();
+    });
   }
 
-  Future<void> stopMeasureBattery({required TrackEvent track}) async {
+  Future<void> pauseMeasureBattery() async {
+    _appRuntime?.stop();
+    _batteryTimer?.cancel();
+    await _measureBattery();
+  }
+
+  Future<void> resumeMeasureBattery() async {
+    _appRuntime?.start();
+    await _measureBattery();
+    _batteryTimer = Timer.periodic(_batteryDuration, (_) async {
+      await _measureBattery();
+    });
+  }
+
+  Future<void> _measureBattery() async {
     if (_appRuntime != null && _batteryInitial != null) {
       final duration = _appRuntime!.elapsedMilliseconds;
-      _appRuntime?.stop();
-      _appRuntime = null;
       int level = -1;
       try {
-        level = await _battery.batteryLevel;
+        level = await Battery().batteryLevel;
       } catch (e) {
-        log(e.toString());
+        log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
         return;
       }
 
-      final levelDiff = level - _batteryInitial!;
-      final batteryUsage = levelDiff / duration;
+      final levelDiff = _batteryInitial! - level;
+      final batteryUsage = levelDiff / (duration / (1000 * 60));
 
       final batteryUsageMetrics = BatteryUsage(
         batteryUsage: batteryUsage,
-        appRuntime: duration.toDouble(),
+        sessionDuration: duration.toDouble(),
         deviceType: await getDeviceInfo(),
         appVersion: await _getAppVersion(),
         timestamp: _timeStamp,
         networkType: await Connectivity().checkConnectivity(),
         location: await _getLocation(),
         activeProcesses: [],
-        deviceState: await _battery.batteryState,
+        deviceState: await Battery().batteryState,
+        isInBatterySaveMode: await Battery().isInBatterySaveMode,
+        sessionId: _sessionUuid,
       );
-      await track(
-        AdvancedMetricsConstants.batteryUsage,
-        properties: batteryUsageMetrics.toJson(),
-      );
-      log('>>> $batteryUsageMetrics');
+      await _saveBatteryUsage(batteryUsageMetrics);
+      log(batteryUsageMetrics.toString());
     }
+  }
+
+  Future<void> _saveBatteryUsage(BatteryUsage metrics) async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    final jsonString = metrics.toJsonString();
+    await sharedPrefs.setString(AdvancedMetricsConstants.batteryUsage, jsonString);
   }
 
   // Lost GPS
@@ -242,7 +289,7 @@ class AdvancedMetrics {
         sessionId: _sessionUuid,
       );
       await track(
-        AdvancedMetricsConstants.searchResponseDuration,
+        AdvancedMetricsConstants.searchDuration,
         properties: searchResponse.toJson(),
       );
       log('>>> Search response time: $searchResponse');
@@ -287,5 +334,14 @@ class AdvancedMetrics {
       log(e.toString());
     }
     return null;
+  }
+
+  void dispose() {
+    _startupMeasure?.stop();
+    _batteryTimer?.cancel();
+    _appRuntime?.stop();
+    _lostGpsRuntime?.stop();
+    _routeCalculationRuntime?.stop();
+    _searchResponseRuntime?.stop();
   }
 }

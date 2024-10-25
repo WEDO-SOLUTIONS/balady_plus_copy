@@ -13,10 +13,13 @@ class AdvancedMetricsConstants {
   static String get lostGps => 'lost_gps';
 
   /// Metric that measures the duration of the search response
-  static String get searchResponseDuration => 'search_response_duration';
+  static String get searchDuration => 'search_duration';
 
   /// Metric that measures the route calculation time
   static String get routeCalculationTime => 'route_calculation_time';
+
+  /// The analytics key for debug console
+  static String get debugConsole => 'Analytics';
 
   static const keys = _AdvancedMetricsKeys();
 }
@@ -31,9 +34,10 @@ class _AdvancedMetricsKeys {
   // Battery
   String get batteryUsage => 'battery_usage';
   // Time during the app is running
-  String get appRuntime => 'app_runtime';
+  String get sessionDuration => 'session_duration';
   String get activeProcesses => 'active_processes';
   String get deviceState => 'device_battery_state';
+  String get isInBatterySaveMode => 'is_in_battery_save_mode';
 
   // Navi: Lost GPS
   String get lostGpsDuration => 'lost_gps_duration';
