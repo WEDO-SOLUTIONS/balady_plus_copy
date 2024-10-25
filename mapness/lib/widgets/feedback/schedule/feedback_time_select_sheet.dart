@@ -1,8 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/schedule/drum_picker_widget.dart';
@@ -136,7 +136,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
                 ),
 
                 /// fade and do not allow to scroll any value
-                if (_isNoBreaksSelected) Positioned.fill(child: AbsorbPointer()),
+                if (_isNoBreaksSelected) const Positioned.fill(child: AbsorbPointer()),
               ],
             ),
           ),
@@ -155,7 +155,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
               )
             ]),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
 
           /// buttons
           Row(
@@ -165,10 +165,10 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
                 child: AppButton(
                   primaryLabel: context.l10n.feedbackBreaksSheetClose,
                   buttonColorScheme: ButtonColorScheme.tertiary,
-                  onTap: () => context.pop(),
+                  onTap: () => context.router.back(),
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
 
               /// set button
               Expanded(
@@ -181,7 +181,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
         ],
       ),
     );
@@ -234,14 +234,10 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
       _isNoBreaksSelected ? null : selectedStartEnd,
     );
 
-    context.pop();
+    context.router.back();
   }
 }
 
-TimeOfDay _timeOfDayFromMinutes(int minutes) {
-  return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
-}
+TimeOfDay _timeOfDayFromMinutes(int minutes) => TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
 
-int _minutesFromTimeOfDay(TimeOfDay time) {
-  return time.hour * 60 + time.minute;
-}
+int _minutesFromTimeOfDay(TimeOfDay time) => time.hour * 60 + time.minute;

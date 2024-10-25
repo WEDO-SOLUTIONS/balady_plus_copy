@@ -1,16 +1,40 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/favourites/widgets/screen/search_screen.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
+
+@RoutePage()
+class FavouritesSearchPage extends StatelessWidget {
+  final FavouriteItemMarkerType markerType;
+
+  const FavouritesSearchPage({
+    required this.markerType,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => SearchScope(
+        named: SearchScopeEnum.map,
+        child: Material(
+          child: FavouritesSearch(
+            markerType: FavouriteItemMarkerType.values.firstWhere(
+              (element) => element.name == markerType.name,
+              orElse: () => FavouriteItemMarkerType.place,
+            ),
+          ),
+        ),
+      );
+}
 
 class FavouritesSearch extends ConsumerWidget {
   const FavouritesSearch({required this.markerType, super.key});
@@ -40,7 +64,7 @@ class FavouritesSearch extends ConsumerWidget {
       },
       onBackTap: () {
         FocusScope.of(context).unfocus();
-        context.pop();
+        context.router.back();
       },
       itemCount: searchResult.length,
       itemBuilder: (_, index) {
@@ -69,8 +93,8 @@ class FavouritesSearch extends ConsumerWidget {
       FavouriteItemMarkerType.home => repo.setHome(favItem),
       FavouriteItemMarkerType.work => repo.setWork(favItem),
     };
-    if (context.mounted && context.canPop()) {
-      context.pop();
+    if (context.mounted && context.router.canPop()) {
+      context.router.back();
     }
   }
 }

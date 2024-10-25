@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -95,7 +94,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             group: MetricsConstants.exploreTag,
           );
 
-          const FavouritesRoute().push(context);
+          context.router.push(const FavouritesRoute());
         },
       ),
       onQuickFilterTap: (quickFilter) {

@@ -1,11 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/components.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/app/routes/favourites.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -26,7 +26,7 @@ class RoutingFavourites extends ConsumerWidget {
         await CommonFunctions.authOrOpen(
           context,
           callback: () async {
-            final result = await const FavouritesPickerRoute().push(context);
+            final result = await context.router.push(const FavouritesPickerRoute());
 
             if (result != null) {
               onFavouriteTap(result as FavouriteItem);
@@ -43,9 +43,11 @@ class RoutingFavourites extends ConsumerWidget {
         await CommonFunctions.authOrOpen(
           context,
           callback: () async {
-            await const FavouritesSearchRoute(
-              markerType: FavouriteItemMarkerType.home,
-            ).push(context);
+            await context.router.push(
+              FavouritesSearchRoute(
+                markerType: FavouriteItemMarkerType.home,
+              ),
+            );
 
             final favouritesState = await ref.read(favouriteCacheProvider.future);
 
@@ -64,9 +66,11 @@ class RoutingFavourites extends ConsumerWidget {
         await CommonFunctions.authOrOpen(
           context,
           callback: () async {
-            await const FavouritesSearchRoute(
-              markerType: FavouriteItemMarkerType.work,
-            ).push(context);
+            await context.router.push(
+              FavouritesSearchRoute(
+                markerType: FavouriteItemMarkerType.work,
+              ),
+            );
 
             final favouritesState = await ref.read(favouriteCacheProvider.future);
 

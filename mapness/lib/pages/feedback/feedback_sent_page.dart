@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/feedback/submit_feedback.dart';
@@ -6,6 +7,7 @@ import 'package:mapness/pages/feedback/feedback_loading_widget.dart';
 import 'package:mapness/pages/feedback/feedback_success_widget.dart';
 import 'package:urbi_analytics/logger.dart';
 
+@RoutePage()
 class FeedbackSentPage extends ConsumerWidget {
   final String payloadId;
 

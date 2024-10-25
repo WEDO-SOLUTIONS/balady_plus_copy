@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -32,7 +31,7 @@ class RoutingSearchHistory extends ConsumerWidget {
               child: RoutingFavourites(
                 showBookmark: false,
                 onFavouriteTap: (point) async {
-                  context.pop(RoutePointFavouriteItem(point));
+                  await context.router.maybePopTop(RoutePointFavouriteItem(point));
                 },
               ),
             ),
@@ -65,7 +64,7 @@ class RoutingSearchHistory extends ConsumerWidget {
                       final result = await context.router.push(const RoutingMapSelectRoute());
 
                       if (result != null) {
-                        context.pop(result);
+                        await context.router.maybePopTop(result);
                       }
                     },
                     child: SearchActionRow(
@@ -85,11 +84,10 @@ class RoutingSearchHistory extends ConsumerWidget {
                           if (!context.mounted) {
                             return;
                           }
-                          final result =
-                              await const FavouritesPickerRoute().push(context);
+                          final result = await context.router.push(const FavouritesPickerRoute());
 
                           if (result != null) {
-                            context.pop(
+                            await context.router.maybePop(
                               RoutePointFavouriteItem(result as FavouriteItem?),
                             );
                           }
