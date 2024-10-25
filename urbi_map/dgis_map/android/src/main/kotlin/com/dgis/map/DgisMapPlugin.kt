@@ -5,6 +5,7 @@ import com.dgis.map.extensions.toLogOptions
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.MapApi
 import com.dgis.map.map_api.Messages.PluginApi
+import com.dgis.map.map_api.Messages.VendorConfigContentMessage
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -16,24 +17,19 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
     override fun initialize(
         message: Messages.LogOptionsMessage?,
         configMessage: Messages.VendorConfigMessage?,
+        configContent: Messages.VendorConfigContentMessage?,
         result: Messages.Result<Void>?
     ) {
-        initializeDGis(context, message?.toLogOptions(context), configMessage)
+        initializeDGis(context, message?.toLogOptions(context), configMessage, configContent)
         result?.success(null)
     }
 
     private fun initializeDGis(
-        appContext: Context, logOptions: LogOptions?, message: Messages.VendorConfigMessage?
+        appContext: Context, logOptions: LogOptions?, vendorConfig: Messages.VendorConfigMessage?,
+        vendorConfigContentMessage: VendorConfigContentMessage?,
     ) {
 
-        val vendorConfig = when (message) {
-            Messages.VendorConfigMessage.URBI_PRE_PROD -> DgisMapInitializer.VendorConfig.URBI_PRE_PROD
-            Messages.VendorConfigMessage.MOMRAH_PROD -> DgisMapInitializer.VendorConfig.MOMRAH_PROD
-            Messages.VendorConfigMessage.MOMRAH_STG -> DgisMapInitializer.VendorConfig.MOMRAH_STG
-            null -> DgisMapInitializer.VendorConfig.MOMRAH_PROD
-        }
-
-        DgisMapInitializer.init(appContext, vendorConfig, logOptions)
+        DgisMapInitializer.init(appContext, vendorConfig, vendorConfigContentMessage, logOptions)
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {

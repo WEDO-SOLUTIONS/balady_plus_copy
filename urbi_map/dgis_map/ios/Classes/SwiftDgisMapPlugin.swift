@@ -9,7 +9,9 @@ class DgisPluginApi: NSObject, PluginApi {
         self.registrar = registrar
     }
 
-    func initializeMessage(_ message: LogOptionsMessage?, configMessage: VendorConfigMessage, completion: @escaping (FlutterError?) -> Void) {
+    func initializeMessage(_ message: LogOptionsMessage?, configMessage: VendorConfigMessage, 
+                           contentMessage: VendorConfigContentMessage?,
+                           completion: @escaping (FlutterError?) -> Void) {
         initializeDGis(logOptions: message?.logOptions, configMessage: configMessage)
         completion(nil)
     }

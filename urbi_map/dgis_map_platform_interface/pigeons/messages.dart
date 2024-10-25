@@ -1163,6 +1163,12 @@ class BetterRouteSettingsMessage {
   final int routeSearchDelay;
 }
 
+class VendorConfigContentMessage {
+  const VendorConfigContentMessage(this.content);
+  final String content;
+}
+
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1568,5 +1574,5 @@ abstract class FlutterMapApi {
 @HostApi()
 abstract class PluginApi {
   @async
-  void initialize(LogOptionsMessage? message, VendorConfigMessage? configMessage);
+  void initialize(LogOptionsMessage? message, VendorConfigMessage? configMessage, VendorConfigContentMessage? contentMessage);
 }
