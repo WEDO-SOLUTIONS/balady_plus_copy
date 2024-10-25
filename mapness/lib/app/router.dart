@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,9 +11,7 @@ GoRouter goRouter(GoRouterRef ref) {
     initialLocation: '/landing',
     navigatorKey: rootNavigatorKey,
     debugLogDiagnostics: true,
-    routes: [
-      ...$appRoutes,
-    ],
+    routes: [],
   );
   router.routerDelegate.addListener(() {
     Future.delayed(

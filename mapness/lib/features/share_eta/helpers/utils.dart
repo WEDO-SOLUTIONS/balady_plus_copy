@@ -10,7 +10,6 @@ import 'package:image/image.dart' as img;
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';

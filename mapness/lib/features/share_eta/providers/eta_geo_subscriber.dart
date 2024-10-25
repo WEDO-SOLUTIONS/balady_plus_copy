@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image/image.dart' as img;
 import 'package:mapness/_features/common/providers/network_status.dart';
-import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';

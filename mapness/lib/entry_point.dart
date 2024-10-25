@@ -23,7 +23,6 @@ import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
-import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';

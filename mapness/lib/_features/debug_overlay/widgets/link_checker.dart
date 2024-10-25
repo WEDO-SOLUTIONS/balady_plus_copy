@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/routes.dart';
 
 class LinkChecker extends HookConsumerWidget {
   const LinkChecker({super.key});
@@ -24,12 +23,11 @@ class LinkChecker extends HookConsumerWidget {
       children: [
         AutofillGroup(
             child: TextField(
-          autofillHints: $appRoutes.map((r) => (r as GoRoute).path),
-          controller: linkController,
-          decoration: const InputDecoration(
-            labelText: 'Link',
+            autofillHints: ref.read(appRouterProvider).routes.map((e) => e.path),
+            controller: linkController,
+            decoration: const InputDecoration(labelText: 'Link'),
           ),
-        )),
+        ),
         ElevatedButton(
           onPressed: () {
             try {

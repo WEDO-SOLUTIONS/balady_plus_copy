@@ -11,7 +11,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 
 @RoutePage()
-// TODO(Ayat) check screen logic
 class RoadClosurePage extends ConsumerStatefulWidget {
   const RoadClosurePage({
     required this.id,

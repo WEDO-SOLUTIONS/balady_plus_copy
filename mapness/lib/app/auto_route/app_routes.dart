@@ -10,6 +10,7 @@ import 'app_routes.gr.dart';
 import 'others/onboard_route_guard.dart';
 
 final appRouterProvider = Provider((ref) => AppRouter(ref));
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
 class AppRouter extends RootStackRouter {

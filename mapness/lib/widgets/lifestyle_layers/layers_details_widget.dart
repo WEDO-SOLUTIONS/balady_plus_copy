@@ -11,7 +11,6 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_details.dart
 import 'package:shimmer/shimmer.dart';
 
 @RoutePage()
-// TODO(Ayat) check screen logic
 class LayersDetailsWidgetPage extends ConsumerStatefulWidget {
   const LayersDetailsWidgetPage({super.key, this.data});
 

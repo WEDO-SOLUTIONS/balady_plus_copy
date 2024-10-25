@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/share_eta/helpers/constants.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
