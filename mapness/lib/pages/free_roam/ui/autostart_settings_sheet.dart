@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/router.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -157,10 +156,9 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
     )
         .then((_) {
       sheetController.addListener(() {
-        final navigator = ref.read(goRouterProvider);
-        if (sheetController.isAttached && sheetController.size < .1 && navigator.canPop()) {
+        if (sheetController.isAttached && sheetController.size < .1 && context.router.canPop()) {
           ref.read(freeRoamStarterProvider.notifier).setShown();
-          navigator.pop();
+          context.router.maybePop();
         }
       });
     });

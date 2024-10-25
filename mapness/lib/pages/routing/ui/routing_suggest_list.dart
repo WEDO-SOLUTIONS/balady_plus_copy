@@ -1,7 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
@@ -40,7 +41,7 @@ class RoutingSuggestList extends ConsumerWidget {
                 'item': object.id?.objectId,
               });
 
-          context.pop(RoutePointDirectoryObject(object));
+          context.router.maybePop(RoutePointDirectoryObject(object));
         },
       ),
       itemCount: suggests.length,

@@ -5,7 +5,6 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mapness/_features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
@@ -83,7 +82,7 @@ class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
                         if (id == null) {
                           return;
                         }
-                        context.pop();
+                        context.router.maybePop();
                         context.router.push(
                           PoiCardWidgetRoute(
                             objectId: DgisObjectIdMessage(

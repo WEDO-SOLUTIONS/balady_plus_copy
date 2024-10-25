@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
@@ -40,7 +40,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                               streetName: selectedPoint?.streetName,
                               parcelNo: selectedPoint?.parcelCode,
                               stageNo: selectedPoint?.phase,
-                              onClose: () => context.pop(),
+                              onClose: () => context.router.maybePop(),
                             ),
                           );
                         case final InvestmentSites? selectedPoint:
@@ -58,7 +58,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                               opportunityNumber: selectedPoint?.opportunityNumber,
                               subMunicipality: selectedPoint?.subMunicipalityId,
                               mainActivity: selectedPoint?.mainActivityName,
-                              onClose: () => context.pop(),
+                              onClose: () => context.router.maybePop(),
                             ),
                           );
                         case final BuildingComplianceCertificate? selectedPoint:
@@ -70,7 +70,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                               targetBuildingType: selectedPoint?.targetBuildingType,
                               streetName: selectedPoint?.streetName,
                               stageNo: selectedPoint?.stageno,
-                              onClose: () => context.pop(),
+                              onClose: () => context.router.maybePop(),
                             ),
                           );
                         default:
@@ -78,7 +78,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                       }
                     },
                     error: (error) {
-                      context.pop();
+                      context.router.maybePop();
                       return buildShimmer();
                     },
                     loading: (_) => buildShimmer(),

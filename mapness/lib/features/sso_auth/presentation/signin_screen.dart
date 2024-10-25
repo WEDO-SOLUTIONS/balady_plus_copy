@@ -4,7 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -76,7 +76,7 @@ class SigninPage extends ConsumerWidget {
                             if (!context.mounted) {
                               return;
                             }
-                            context.pop();
+                            await context.router.maybePop();
                           },
                           label: context.l10n.signIn,
                           textColor: context.color.strokeAccent,
@@ -106,7 +106,7 @@ class SigninPage extends ConsumerWidget {
                 action: MetricAction.tap.toString(),
               );
 
-              context.pop();
+              context.router.maybePop();
             },
             child: Container(
               height: 40,

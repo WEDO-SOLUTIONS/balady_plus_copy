@@ -10,7 +10,7 @@ import 'package:mapness/_features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/_features/poi_card/domain/model/organizations_response.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
-import 'package:mapness/app/router.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -124,7 +124,7 @@ class PoiCardProvider extends _$PoiCardProvider {
         .timeout(
       const Duration(minutes: 1),
       onTimeout: () {
-        ref.read(goRouterProvider).pop();
+        ref.read(appRouterProvider).maybePop();
         return null;
       },
     );

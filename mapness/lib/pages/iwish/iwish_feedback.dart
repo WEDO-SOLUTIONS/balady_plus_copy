@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
@@ -102,7 +102,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
     };
 
     return LabeledDraggableSheet(
-      onClose: context.pop,
+      onClose: context.router.back,
       title: title,
       child: SafeArea(
         top: false,

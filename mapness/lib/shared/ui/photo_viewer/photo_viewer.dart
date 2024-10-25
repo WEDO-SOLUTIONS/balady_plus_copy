@@ -3,7 +3,7 @@ import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -166,7 +166,7 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
                 size: 24,
               ),
             ),
-            onLeadingPressed: () => context.pop(),
+            onLeadingPressed: () => context.router.maybePop(),
           ),
         ],
       );

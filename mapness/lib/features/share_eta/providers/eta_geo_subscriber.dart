@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:image/image.dart' as img;
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
@@ -470,10 +471,10 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         builder: (context, ref, _) => EtaWatchingSheet(
           onStopWatchingPressed: () {
             stopStreaming();
-            context.pop();
+            context.router.maybePop();
             // Extra close call for close the bottom sheet
             if (_metaInfo?.payload?.type == StreamType.eta) {
-              context.pop();
+              context.router.maybePop();
             }
           },
         ),

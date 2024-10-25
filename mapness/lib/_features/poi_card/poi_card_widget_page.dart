@@ -7,7 +7,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
@@ -212,7 +211,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               buttonLabel: context.l10n.poiObjectNotFoundButtonLabel,
               assetImage: 'assets/images_svg/happy_face.svg',
               package: PackageConfig.packageName,
-              onRetry: () => context.pop(),
+              onRetry: () => context.router.maybePop(),
             )
           ],
         );

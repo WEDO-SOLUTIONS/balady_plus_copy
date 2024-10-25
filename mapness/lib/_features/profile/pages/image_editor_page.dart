@@ -5,7 +5,7 @@ import 'package:custom_image_crop/custom_image_crop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 
 @RoutePage()
 class ImageEditorPage extends ConsumerStatefulWidget {
@@ -51,7 +51,7 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                   TextButton(
                     child: const Text('Cancel'),
                     onPressed: () {
-                      context.pop();
+                      context.router.maybePop();
                     },
                   ),
                   const Spacer(),
@@ -79,7 +79,7 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                     child: const Text('Accept'),
                     onPressed: () async {
                       final image = await controller.onCropImage();
-                      context.pop(image?.bytes);
+                      await context.router.maybePop(image?.bytes);
                     },
                   ),
                   const Spacer(),

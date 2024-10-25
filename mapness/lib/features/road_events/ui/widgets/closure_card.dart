@@ -1,6 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class ClosureCard extends StatelessWidget {
@@ -56,7 +57,7 @@ class ClosureCard extends StatelessWidget {
                       ),
                     ),
                     CustomCloseButton(
-                      onClose: () => context.pop(),
+                      onClose: () => context.router.maybePop(),
                     ),
                   ],
                 ),

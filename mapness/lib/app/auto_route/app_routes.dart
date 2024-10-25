@@ -75,7 +75,7 @@ class AppRouter extends RootStackRouter {
           transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
-          path: '/sign_in',
+          path: '/signin',
           page: SigninRoute.page,
           transitionsBuilder: TransitionsBuilders.fadeIn,
         ),

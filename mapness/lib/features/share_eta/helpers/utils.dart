@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/router.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
@@ -128,7 +127,7 @@ class EtaUtils {
         }
 
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
-        unawaited(ref.read(goRouterProvider).push(uriPath.toString()));
+        unawaited(ref.read(appRouterProvider).pushNamed(uriPath.toString()));
       } catch (e) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showEtaExpired(rootNavigatorKey.currentContext!);

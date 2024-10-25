@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_point.dart';
@@ -48,7 +48,7 @@ class RoutingSearchHistory extends ConsumerWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     child: InkWell(
-                      onTap: () => context.pop(RoutePointMyLocation()),
+                      onTap: () => context.router.maybePop(RoutePointMyLocation()),
                       borderRadius: BorderRadius.circular(12),
                       child: SearchActionRow(
                         icon: 'assets/icons/svg/ic_actions_loc.svg',
@@ -105,7 +105,7 @@ class RoutingSearchHistory extends ConsumerWidget {
           ),
           RoutingHistory(
             updatePoint: (point) {
-              context.pop(point);
+              context.router.maybePop(point);
             },
             searchByQuery: (query) {
               ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).fetchSuggest(query);

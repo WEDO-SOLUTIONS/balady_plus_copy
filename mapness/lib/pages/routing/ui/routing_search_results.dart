@@ -1,7 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
@@ -55,7 +56,7 @@ class RoutingSearchResults extends ConsumerWidget {
           ref.read(searchHistoryProvider(scope.value).notifier).put(
                 SearchHistoryItem.fromDirectoryObject(item),
               );
-          context.pop(RoutePointDirectoryObject(item));
+          context.router.maybePop(RoutePointDirectoryObject(item));
         },
       ),
     );

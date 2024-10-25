@@ -1,8 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -30,10 +30,8 @@ class EtaShareExpired extends StatelessWidget {
       );
 
   @override
-  // ignore: prefer_expression_function_bodies
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
         color: context.colorsV2.backgroundSurface4,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(RadiusBorder.xl),
@@ -58,8 +56,8 @@ class EtaShareExpired extends StatelessWidget {
                   color: context.colorsV2.foregroundDefault,
                 ),
                 customActionWidget: AppButton.close(
-                  onTap: context.pop,
-                  padding: EdgeInsets.zero,
+                    onTap: context.router.back,
+                    padding: EdgeInsets.zero,
                   textColor: context.colorsV2.neutralOnContainer,
                   color: context.colorsV2.neutralContainerDefault,
                   innerPadding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -92,5 +90,4 @@ class EtaShareExpired extends StatelessWidget {
         ),
       ),
     );
-  }
 }

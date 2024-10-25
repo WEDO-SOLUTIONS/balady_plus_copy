@@ -4,7 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/personal_data.dart';
@@ -35,7 +35,7 @@ class ProfileInfoPage extends ConsumerWidget {
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
                     text: context.l10n.back,
-                    onPressed: () => context.pop(),
+                    onPressed: () => context.router.maybePop(),
                     icon: SystemIcons.arrowCornerLeftLarge,
                   ),
                 ),
