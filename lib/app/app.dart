@@ -3,15 +3,16 @@ import 'dart:io';
 import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
-import 'package:bot_toast/bot_toast.dart' show BotToastInit, BotToastNavigatorObserver;
+import 'package:bot_toast/bot_toast.dart'
+    show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
-import 'package:localize_and_translate/localize_and_translate.dart' show Translation, translator;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show Translation, translator;
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
@@ -48,7 +49,8 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (BuildContext context) => MapViewModel(layersRepositories: sl()),
+          create: (BuildContext context) =>
+              MapViewModel(layersRepositories: sl()),
         ),
         BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
         BlocProvider.value(value: sl<LocationCubit>()),
@@ -87,9 +89,12 @@ class AppWidgetState extends State<AppWidget> {
         if (Platform.isIOS) hideKeyboard(context);
       },
       child: Directionality(
-        textDirection: translator.activeLanguageCode == "ar" ? TextDirection.rtl : TextDirection.ltr,
+        textDirection: translator.activeLanguageCode == "ar"
+            ? TextDirection.rtl
+            : TextDirection.ltr,
         child: MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: const TextScaler.linear(1.0)),
           child: MaterialApp(
             title: 'appNameWord'.tr(),
             debugShowCheckedModeBanner: false,
@@ -170,19 +175,20 @@ class AppWidgetState extends State<AppWidget> {
               ),
               outlinedButtonTheme: OutlinedButtonThemeData(
                 style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColor.primary900Light,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    minimumSize: const Size(double.infinity, 34),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    side: const BorderSide(
-                      width: .8,
-                      color: AppColor.primary900Light,
-                    )),
+                  foregroundColor: AppColor.primary900Light,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  minimumSize: const Size(double.infinity, 34),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  side: const BorderSide(
+                    width: .8,
+                    color: AppColor.primary900Light,
+                  )
+                ),
               ),
             ),
             builder: EasyLoading.init(builder: BotToastInit()),
@@ -191,7 +197,8 @@ class AppWidgetState extends State<AppWidget> {
               FlutterUxcamNavigatorObserver(),
               MapnessRouteObserver(),
             ],
-            localizationsDelegates: translator.delegates.toList()..add(CountryLocalizations.delegate),
+            localizationsDelegates: translator.delegates.toList()
+              ..add(CountryLocalizations.delegate),
             // Android + iOS Delegates
             locale: translator.activeLocale,
             // Active locale
@@ -210,11 +217,5 @@ class AppWidgetState extends State<AppWidget> {
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
-  }
-
-  @override
-  void dispose() {
-    AdvancedMetrics.instance.dispose();
-    super.dispose();
   }
 }
