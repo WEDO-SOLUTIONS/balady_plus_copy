@@ -37,16 +37,17 @@ class ServiceNotAvailable extends _$ServiceNotAvailable {
       return true;
     }
 
-    isShown = true;
-
     final locationPoint = LocationPoint(
       latitude: location.latitude,
       longitude: location.longitude,
     );
 
-    return await ref.read(
-          cityContainProvider(rect, locationPoint).future,
-        ) ??
-        false;
+    final containValue = await ref.read(
+      cityContainProvider(rect, locationPoint).future,
+    );
+
+    isShown = true;
+
+    return containValue;
   }
 }
