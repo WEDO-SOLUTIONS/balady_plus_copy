@@ -60,7 +60,7 @@ class LoadTimeMetrics {
 
   @override
   String toString() =>
-      'LoadTime:  1. Load Time: $loadTime ms, 2. Load Type: $loadType, 3. Device type: $deviceType, 4. App Version: $appVersion, 5. Timestamp: $timestamp, 6. Network type: $networkType, 7. Session Id: $sessionId, 8. Location: $location';
+      '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.appLoadTime}:  1. Load Time: $loadTime ms, 2. Load Type: $loadType, 3. Device type: $deviceType, 4. App Version: $appVersion, 5. Timestamp: $timestamp, 6. Network type: $networkType, 7. Session Id: $sessionId, 8. Location: $location';
 }
 
 enum LoadType {

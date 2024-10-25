@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:battery_plus/battery_plus.dart';
@@ -63,9 +62,9 @@ class AdvancedMetrics {
           AdvancedMetricsConstants.appLoadTime,
           properties: _loadTimeMetrics!.toJson(),
         );
-        log('>>> $_loadTimeMetrics');
+        print(_loadTimeMetrics.toString());
       } catch (e) {
-        log('Log event failed: $e');
+        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.appLoadTime}: ${e.toString()}');
       }
     }
   }
@@ -87,9 +86,9 @@ class AdvancedMetrics {
           properties: metrics.toJson(),
         );
         await sharedPrefs.remove(AdvancedMetricsConstants.batteryUsage);
-        log(metrics.toString());
+        print(metrics.toString());
       } catch (e) {
-        log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
       }
     }
   }
@@ -99,7 +98,7 @@ class AdvancedMetrics {
     try {
       _batteryInitial = await Battery().batteryLevel;
     } catch (e) {
-      log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+      print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
       return;
     }
     await _measureBattery();
@@ -130,7 +129,7 @@ class AdvancedMetrics {
       try {
         level = await Battery().batteryLevel;
       } catch (e) {
-        log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
         return;
       }
 
@@ -151,7 +150,7 @@ class AdvancedMetrics {
         sessionId: _sessionUuid,
       );
       await _saveBatteryUsage(batteryUsageMetrics);
-      log(batteryUsageMetrics.toString());
+      print(batteryUsageMetrics.toString());
     }
   }
 
@@ -182,7 +181,7 @@ class AdvancedMetrics {
       final jsonString = _lostGpsLast!.toJsonString();
       await sharedPrefs.setString(_lostGpsKey, jsonString);
     }
-    log('>>> $_lostGpsLast');
+    print(_lostGpsLast.toString());
   }
 
   Future<void> addRestoreGPS({required TrackEvent track}) async {
@@ -202,7 +201,7 @@ class AdvancedMetrics {
         AdvancedMetricsConstants.lostGps,
         properties: _lostGpsLast!.toJson(),
       );
-      log('>>> $_lostGpsLast');
+      print(_lostGpsLast.toString());
       _lostGpsLast = null;
       await _lostGPSClean();
       return;
@@ -216,7 +215,7 @@ class AdvancedMetrics {
         AdvancedMetricsConstants.lostGps,
         properties: metrics.toJson(),
       );
-      log('>>> $metrics');
+      print(metrics.toString());
       await _lostGPSClean();
     }
   }
@@ -257,7 +256,7 @@ class AdvancedMetrics {
         AdvancedMetricsConstants.routeCalculationTime,
         properties: routeCalculation.toJson(),
       );
-      log('>>> Route $routeCalculation');
+      print(routeCalculation.toString());
     }
   }
 
@@ -292,7 +291,7 @@ class AdvancedMetrics {
         AdvancedMetricsConstants.searchDuration,
         properties: searchResponse.toJson(),
       );
-      log('>>> Search response time: $searchResponse');
+      print(searchResponse.toString());
     }
   }
 
@@ -331,7 +330,7 @@ class AdvancedMetrics {
       );
       return [location.latitude, location.longitude];
     } catch (e) {
-      log(e.toString());
+      print('${AdvancedMetricsConstants.debugConsole}::Location: ${e.toString()}');
     }
     return null;
   }

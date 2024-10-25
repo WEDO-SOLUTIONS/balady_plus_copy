@@ -80,5 +80,5 @@ class SearchResponseTimeMetric {
 
   @override
   String toString() =>
-      'SearchResponseTimeMetric(responseTime: $responseTime, query: $query, searchQuery: $searchQuery, deviceType: $deviceType, appVersion: $appVersion, timestamp: $timestamp, networkType: $networkType, sessionId: $sessionId)';
+      '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.searchDuration}: ResponseTime: $responseTime ms, query: $query, searchQuery: $searchQuery, deviceType: $deviceType, appVersion: $appVersion, timestamp: $timestamp, networkType: $networkType, sessionId: $sessionId';
 }

@@ -53,5 +53,5 @@ class RouteCalculationMetrics {
 
   @override
   String toString() =>
-      'RouteCalculationMetrics(duration: $duration, route: $route, deviceType: $deviceType, appVersion: $appVersion, timestamp: $timestamp, networkType: $networkType, sessionId: $sessionId)';
+      '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.routeCalculationTime}: duration: $duration ms, route: $route, deviceType: $deviceType, appVersion: $appVersion, timestamp: $timestamp, networkType: $networkType, sessionId: $sessionId';
 }

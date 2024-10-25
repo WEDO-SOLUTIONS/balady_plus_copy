@@ -96,5 +96,5 @@ class LostGpsMetrics {
 
   @override
   String toString() =>
-      'LostGps: duration: $duration, deviceType: $deviceType, appVersion: $appVersion, timestamp: $timestamp, networkType: $networkType, sessionId: $sessionId, location: $location';
+      '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}: duration: $duration, deviceType: $deviceType, appVersion: $appVersion, timestamp: $timestamp, networkType: $networkType, sessionId: $sessionId, location: $location';
 }
