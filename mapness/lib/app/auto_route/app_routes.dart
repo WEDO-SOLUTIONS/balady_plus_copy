@@ -114,6 +114,7 @@ class AppRouter extends RootStackRouter {
               page: BottomMenuRoute.page,
               initial: true,
               barrierDismissible: false,
+              transitionsBuilder: TransitionsBuilders.noTransition,
               customRouteBuilder: customModalSheetBuilder,
               children: [
                 CustomRoute(
@@ -163,6 +164,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'routing_map',
               page: RoutingMapSelectRoute.page,
+              customRouteBuilder: customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'poi_card',

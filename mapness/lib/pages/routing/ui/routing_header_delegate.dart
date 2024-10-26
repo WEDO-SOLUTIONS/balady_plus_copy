@@ -112,9 +112,7 @@ class RoutingHeader extends ConsumerWidget {
                 },
               ),
             ),
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
             RoutingFavourites(
               showBookmark: true,
               onFavouriteTap: (point) async {

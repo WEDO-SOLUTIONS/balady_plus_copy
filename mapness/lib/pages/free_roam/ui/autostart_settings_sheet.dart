@@ -191,7 +191,9 @@ class ContentContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(
-            color: context.colorsV2.backgroundSurface1, borderRadius: BorderRadius.circular(RadiusBorder.xl)),
+          color: context.colorsV2.backgroundSurface1,
+          borderRadius: BorderRadius.circular(RadiusBorder.xl),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: child,
