@@ -173,7 +173,7 @@ class ToastOverlayState extends State<ToastOverlay> {
       isFlipped: true,
       iconData: General16Icons.infoCircleFill,
       iconColor: context.colorsV2.accentDefault,
-      displayDuration: const Duration(seconds: 10),
+      displayDuration: const Duration(seconds: 20),
     );
   }
 
