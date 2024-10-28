@@ -2,14 +2,18 @@ part of 'toast_overlay.dart';
 
 class _ToastTransition extends StatefulWidget {
   final String title;
+  final TextStyle? titleStyle;
   final String? actionText;
   final VoidCallback hide;
   final VoidCallback? onActionTap;
   final String? iconAsset;
   final IconData? iconData;
+  final Color? iconColor;
   final Duration displayDuration;
   final Duration transitionDuration;
   final bool? isDismissible;
+  final bool isClosable;
+  final bool isFlipped;
 
   const _ToastTransition({
     required this.hide,
@@ -18,9 +22,13 @@ class _ToastTransition extends StatefulWidget {
     required this.iconData,
     required this.transitionDuration,
     required this.displayDuration,
+    this.titleStyle,
     this.isDismissible,
+    this.isClosable = false,
+    this.isFlipped = false,
     this.actionText,
     this.onActionTap,
+    this.iconColor,
   });
 
   @override
@@ -75,18 +83,26 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
             position: _animation,
             child: _ToastWidget(
               title: widget.title,
+              titleStyle: widget.titleStyle,
               actionText: widget.actionText,
               onActionTap: _onActionTap,
+              onCloseTap: widget.isClosable ? _hide : null,
               iconAsset: widget.iconAsset,
               iconData: widget.iconData,
+              iconColor: widget.iconColor,
+              isFlipped: widget.isFlipped,
             ),
           ),
         )
       : _ToastWidget(
           title: widget.title,
+          titleStyle: widget.titleStyle,
           actionText: widget.actionText,
           onActionTap: _onActionTap,
+          onCloseTap: widget.isClosable ? _hide : null,
           iconAsset: widget.iconAsset,
           iconData: widget.iconData,
+          iconColor: widget.iconColor,
+          isFlipped: widget.isFlipped,
         );
 }

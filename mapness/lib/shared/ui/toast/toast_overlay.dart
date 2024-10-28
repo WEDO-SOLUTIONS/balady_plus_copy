@@ -54,11 +54,15 @@ class ToastOverlayState extends State<ToastOverlay> {
 
   void show({
     required String title,
+    TextStyle? titleStyle,
     String? actionText,
     VoidCallback? onActionTap,
     String? iconAsset,
     IconData? iconData,
+    Color? iconColor,
     bool? isDismissible,
+    bool isClosable = false,
+    bool isFlipped = false,
     Duration displayDuration = const Duration(seconds: 3),
     Duration transitionDuration = const Duration(milliseconds: 200),
   }) {
@@ -73,14 +77,18 @@ class ToastOverlayState extends State<ToastOverlay> {
           data: Theme.of(context),
           child: _ToastTransition(
             isDismissible: isDismissible,
+            isClosable: isClosable,
+            isFlipped: isFlipped,
             hide: hide,
             title: title,
+            titleStyle: titleStyle,
             actionText: actionText,
             onActionTap: onActionTap,
             iconAsset: iconAsset,
             displayDuration: displayDuration,
             transitionDuration: transitionDuration,
             iconData: iconData,
+            iconColor: iconColor,
           ),
         ),
       ),
@@ -140,6 +148,32 @@ class ToastOverlayState extends State<ToastOverlay> {
       actionText: context.l10n.tryAgain,
       onActionTap: onRetry,
       iconData: SystemIcons.offline,
+    );
+  }
+
+  /// Displays a toast notification only when it is the first time user opens the app.
+  ///
+  /// [title] is set to 'You are among the first to try Balady Navigation'.
+  /// [iconData] is set to [General16Icons.infoCircleFill].
+  /// [isDismissible] is set to `true`.
+  /// [isClosable] is set to `true`.
+  /// [isFlipped] is set to `true`.
+  /// [displayDuration] is set to `10 seconds`.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// ToastOverlay.of(context).showBetaNotification();
+  /// ```
+  void showBetaNotification() {
+    show(
+      title: context.l10n.firstToTryNavigation,
+      titleStyle: context.textStyleV3.captionLargeRegular.copyWith(fontSize: context.isLTR ? 12 : 13),
+      isDismissible: true,
+      isClosable: true,
+      isFlipped: true,
+      iconData: General16Icons.infoCircleFill,
+      iconColor: context.colorsV2.accentDefault,
+      displayDuration: const Duration(seconds: 10),
     );
   }
 
