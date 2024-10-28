@@ -1,5 +1,6 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,52 +17,51 @@ class SigninScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-        body: Stack(
-          children: [
-            const Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      NonThemeColor.color12,
-                      NonThemeColor.color13,
+        backgroundColor: const Color.fromRGBO(48, 205, 194, 1),
+        body: SafeArea(
+          child: Column(
+            children: [
+              SizedBox(
+                height: Spacing.$10x,
+                width: double.maxFinite,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.$4x,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Spacing.$10x.widthBox,
+                      SizedBox(
+                        width: 95,
+                        child: SvgPicture.asset(
+                          context.isLTR
+                              ? 'assets/images_svg/en_balady_logo.svg'
+                              : 'assets/images_svg/ar_balady_logo.svg',
+                          fit: BoxFit.cover,
+                          package: PackageConfig.packageName,
+                        ),
+                      ),
+                      _buildcloseButton(context, ref),
                     ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              top: 55,
-              left: 0,
-              right: 0,
-              child: SvgPicture.asset(
-                'assets/images_svg/balady_logo.svg',
-                height: 40,
-                package: PackageConfig.packageName,
-              ),
-            ),
-            Positioned(
-              top: 55,
-              right: 16,
-              child: _buildcloseButton(context, ref),
-            ),
-            Positioned.fill(
-              child: Center(
+              const Spacer(),
+              Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       context.l10n.signInToUnlock,
                       textAlign: TextAlign.center,
-                      style: context.textStyle.text.apply(color: Colors.white),
+                      style: context.textStyleV3.bodyLargeRegular.copyWith(color: const Color.fromRGBO(0, 52, 73, 1)),
                     ),
-                    const SizedBox(height: 16),
+                    Spacing.$4x.heightBox,
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints.expand(height: 48),
+                        constraints: const BoxConstraints.expand(height: Spacing.$12x),
                         child: LabeledElevatedButton(
                           onPressed: () async {
                             Metrics.logEventAdvanced(
@@ -77,7 +77,7 @@ class SigninScreen extends ConsumerWidget {
                             context.pop();
                           },
                           label: context.l10n.signIn,
-                          textColor: context.color.strokeAccent,
+                          textColor: const Color.fromRGBO(0, 52, 73, 1),
                           backgroundColor: Colors.white,
                         ),
                       ),
@@ -85,44 +85,42 @@ class SigninScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-            ),
-          ],
+              const Spacer(),
+            ],
+          ),
         ),
       );
 
-  Widget _buildcloseButton(BuildContext context, WidgetRef ref) => Padding(
-        padding: const EdgeInsets.only(bottom: 16),
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: () {
-              Metrics.logEventAdvanced(
-                MetricsConstants.loginKeys.close,
-                group: MetricsConstants.loginTag,
-                action: MetricAction.tap.toString(),
-              );
+  Widget _buildcloseButton(BuildContext context, WidgetRef ref) => Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(RadiusBorder.xl),
+          onTap: () {
+            Metrics.logEventAdvanced(
+              MetricsConstants.loginKeys.close,
+              group: MetricsConstants.loginTag,
+              action: MetricAction.tap.toString(),
+            );
 
-              context.pop();
-            },
-            child: Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(8),
-                ),
-                color: context.color.textAndIconsBasePrimary.withOpacity(0.05),
+            context.pop();
+          },
+          child: Container(
+            height: Spacing.$10x,
+            width: Spacing.$10x,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(RadiusBorder.m),
+              color: context.color.textAndIconsBasePrimary.withOpacity(0.05),
+            ),
+            padding: const EdgeInsets.all(Spacing.$2x),
+            child: SvgPicture.asset(
+              'assets/icons/svg/ic_search_close.svg',
+              semanticsLabel: 'MinApps Screen',
+              package: PackageConfig.packageName,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
               ),
-              padding: const EdgeInsets.all(8),
-              child: SvgPicture.asset('assets/icons/svg/ic_search_close.svg',
-                  semanticsLabel: 'MinApps Screen',
-                  package: PackageConfig.packageName,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  )),
             ),
           ),
         ),
