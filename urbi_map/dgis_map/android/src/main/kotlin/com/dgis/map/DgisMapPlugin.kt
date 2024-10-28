@@ -17,7 +17,7 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
     override fun initialize(
         message: Messages.LogOptionsMessage?,
         configMessage: Messages.VendorConfigMessage?,
-        configContent: Messages.VendorConfigContentMessage?,
+        configContent: VendorConfigContentMessage?,
         result: Messages.Result<Void>?
     ) {
         initializeDGis(context, message?.toLogOptions(context), configMessage, configContent)
