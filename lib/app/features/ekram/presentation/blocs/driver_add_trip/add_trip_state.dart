@@ -4,19 +4,6 @@ class AddTripState extends Equatable {
   final BlocStatus status;
   final String? errorMessage;
 
-  // final String? currentTripStationArrivalTime;
-  // final int? currentTripStationId;
-  // final double? currentTripStationLocationX;
-  // final double? currentTripStationLocationY;
-  // final String? currentTripStationName;
-  // final int? currentTripStationTypeId;
-  //
-  // final String? nextTripStationArrivalTime;
-  // final int? nextTripStationId;
-  // final double? nextTripStationLocationX;
-  // final double? nextTripStationLocationY;
-  // final String? nextTripStationName;
-
   final TransportRequestItemModel model;
 
   final List<TripDetailsModel>? data;

@@ -11,6 +11,8 @@ import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../data/model/add_trip_params.dart';
 import '../../data/model/apply_deceased/grave_active_request_details.dart';
 import '../../data/model/baqie_approval_response.dart';
+import '../../data/model/driver/GhuslEmploye.dart';
+import '../../data/model/driver/deceased_attachment.dart';
 import '../../data/model/driver/deceased_identical_item.dart';
 import '../../data/model/driver/trip_details_model.dart';
 import '../../data/model/ekram_attachment_response.dart';
@@ -27,6 +29,12 @@ import '../entities/user_info_request_params.dart';
 
 abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCities();
+  Future<Either<Failure, ResponseBodyModel<List<GhuslEmploye>>>> getGhuslEmployees(int requestId);
+
+
+  Future<Either<Failure, ResponseBodyModel<List<DeceasedAttachment>>>> getDeceasedAttachment(int requestId);
+
+
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getDeathCities();
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
@@ -72,7 +80,7 @@ abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<dynamic>>> editTrip(int requestId,
       TripDetailsModel params);
 
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteTrip(int params);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteTrip(int tripId,int requestId);
 
   Future<Either<Failure, ResponseBodyModel<dynamic>>> getTripStations(int params);
   Future<Either<Failure, ResponseBodyModel<dynamic>>> completeTrip(int params);

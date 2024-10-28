@@ -10,6 +10,7 @@ import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../data/model/driver/trip_details_model.dart';
@@ -80,7 +81,26 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
 
                 SizedBox(width: 10,),
                 widget.model?.deletable == true?  IconButton(
-                  onPressed: () {},
+                  onPressed: () async {
+
+
+
+                    await CustomPopUpsWidgets.showConfirmMessageDialog(
+                      context,
+                      "do_you_want_to_delete_path".tr(),
+                      primaryBtn: (){
+                        context.read<AddTripBloc>().add(
+                            DeleteTripPath(tripId: widget.model?.id!));
+                      },
+                        secondaryBtn:(){
+                          Navigator.pop(context);
+                        }
+
+
+                    );
+
+
+                  },
                   icon: SvgPicture.asset(
                     IconPath.delete,
                     color: Colors.grey),
@@ -339,7 +359,7 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
                     && widget.model?.arrivalInfo?.date != null &&
                     widget.model?.arrivalInfo?.time != null) {
                   context.read<AddTripBloc>().add(
-                      EditTripPathData(item: widget.model));
+                      EditTripPathData(item: widget.model, hidenScreen: false));
                 }
                 else {
                   CommonFunctions.showError("please_enter_date_and_time".tr());
@@ -357,21 +377,58 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
       ],
     );
   }
-   void updateLocation(double? lat,double? lng,String? address,bool isCurrentStation)
-  {
-    if(isCurrentStation == true) {
-      setState(() {
-        widget.model?.startupInfo?.location = Location(x: "$lat",y: "$lng");
-      });
+  //  void updateLocation(double? lat,double? lng,String? address,bool isCurrentStation)
+  // {
+  //   if(isCurrentStation == true) {
+  //     setState(() {
+  //       widget.model?.startupInfo?.location = Location(x: "$lat",y: "$lng");
+  //     });
+  //
+  //   }
+  //   else
+  //     {
+  //       setState(() {
+  //         widget.model?.arrivalInfo?.location = Location(x: "$lat",y: "$lng");
+  //       });
+  //
+  //     }
+  //
+  // }
 
-    }
-    else
-      {
-        setState(() {
-          widget.model?.arrivalInfo?.location = Location(x: "$lat",y: "$lng");
-        });
-
-      }
-
+  void showCancelConfirmDialog(Function onConfirm,BuildContext context) {
+    BottomSheetDialog.showDraggableSheet(
+        context,
+      child: BottomSheetWithActions(
+          title: "",
+          action: Row(
+            children: [
+              Expanded(
+                child: ElevatedButtonWidget.primaryCustom(
+                    text: "poster_cancel_confirm_yes".tr(),
+                    onPressed: () {
+                      onConfirm();
+                    }),
+              ),
+              const CustomHorizontalSpace(width: 32),
+              Expanded(
+                child: ElevatedButtonWidget.primaryCustomBorder(
+                    text: "poster_cancel_confirm_no".tr(),
+                    onPressed: () {
+                      Navigator.pop(context);;
+                    }),
+              ),
+            ],
+          ),
+          body: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CustomVerticalSpace(height: 32),
+              NotesWidget(notes: [
+                "do_you_want_to_delete_path".tr()
+              ])
+            ],
+          )),
+    );
   }
+
 }

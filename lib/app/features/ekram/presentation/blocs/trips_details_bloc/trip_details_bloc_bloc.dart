@@ -148,22 +148,22 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
   Future<void> _deleteTripHandler(DeleteTripEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _deleteTrip(e.id);
-
-    failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) async {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-
-      CommonFunctions.showSuccess(success.data?.responseMessage ?? "");
-      add(GetTripsDetailsInDialogEvent());
-    });
+    // final failureOrSuccess = await _deleteTrip(e.id,);
+    //
+    // failureOrSuccess.fold((failure) {
+    //   emitter(state.copyWith(
+    //     status: BlocStatus.failure,
+    //     errorMessage: (failure as ServerFailure).errorMessage,
+    //   ));
+    // }, (success) async {
+    //   emitter(state.copyWith(
+    //     status: BlocStatus.success,
+    //     errorMessage: "",
+    //   ));
+    //
+    //   CommonFunctions.showSuccess(success.data?.responseMessage ?? "");
+    //   add(GetTripsDetailsInDialogEvent());
+    // });
   }
 
   Future<void> _completeTripHandler(

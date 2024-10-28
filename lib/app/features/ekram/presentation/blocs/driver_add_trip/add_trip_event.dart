@@ -30,17 +30,24 @@ class GetTripsStationEvent extends TripEvent {
 
   const GetTripsStationEvent();
 }
-class AddNewPathEvent extends TripEvent {
-  const AddNewPathEvent();
+
+class AddCustomPathEvent extends TripEvent {
+  const AddCustomPathEvent();
 }
 
 
-class setNewPathData extends TripEvent {
+
+class setCustomPathDataEvent extends TripEvent {
   final TripStations? item;
   final bool isStartupInfo;
-  setNewPathData({this.item,required this.isStartupInfo});
+  setCustomPathDataEvent({this.item,required this.isStartupInfo});
 }
 class EditTripPathData extends TripEvent {
   final TripDetailsModel? item;
-  EditTripPathData({this.item});
+  final bool? hidenScreen;
+  EditTripPathData({this.item, required this.hidenScreen});
+}
+class DeleteTripPath extends TripEvent {
+  final int? tripId;
+  DeleteTripPath({this.tripId});
 }

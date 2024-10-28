@@ -1,8 +1,11 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_buttons_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/app_style.dart';
@@ -24,20 +27,19 @@ import '../ekram_status_widget.dart';
 class RequestCardWidget extends StatelessWidget {
   final TransportRequestItemModel requestItemModel;
 
-  const RequestCardWidget(
-      {Key? key,
-      required this.requestItemModel,})
-      : super(key: key);
+  const RequestCardWidget({
+    Key? key,
+    required this.requestItemModel,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-       NavigatorState navigator = Navigator.of(context);
+        NavigatorState navigator = Navigator.of(context);
 
-       navigator.pushNamed(RouteName.IdenticalListPage,
-           arguments: requestItemModel);
-
+        navigator.pushNamed(RouteName.IdenticalListPage,
+            arguments: requestItemModel);
       },
       child: Container(
         margin: const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
@@ -79,7 +81,6 @@ class RequestCardWidget extends StatelessWidget {
                   mainAxisSpacing: 16,
                 ),
                 children: [
-
                   RequestParameter(
                     title: 'deceasedName'.tr(),
                     value: requestItemModel.deceasedName ?? "",
@@ -92,7 +93,6 @@ class RequestCardWidget extends StatelessWidget {
                     title: 'burialCity'.tr(),
                     value: requestItemModel.deathCityName ?? "",
                   ),
-
 
                   RequestParameter(
                     title: 'driver_card_applicant_date'.tr(),
@@ -111,30 +111,40 @@ class RequestCardWidget extends StatelessWidget {
 
                   RequestParameter(
                     title: 'transportationStatus'.tr(),
-                    value: requestItemModel
-                        .transportCaseName ??
-                        "",
+                    value: requestItemModel.transportCaseName ?? "",
                   ),
-
-
                 ],
               ),
             ),
-
             ElevatedButtonWidget.primaryCustom(
                 height: 40,
                 onPressed: () {
                   NavigatorState navigator = Navigator.of(context);
-                  navigator.pushNamed(RouteName.IdenticalListPage,
-                      arguments: requestItemModel);
+
+                  NavigationService.navigatorKey.currentState!.pushNamed(
+                    RouteName.IdenticalListPage,
+                    arguments: requestItemModel,
+                  );
+
+                  sl<IdenticalListBloc>().add(
+                    GetIdenticalListRequestEvent(
+                      requestId: requestItemModel.requestId!,
+                    ),
+                  );
+                  // navigator.pushNamed(RouteName.IdenticalListPage,
+                  //     arguments: requestItemModel);
+
+                  // Navigator.pushNamed(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => DriverExtraDataPage(),
+                  //   ),
+                  // );
                 },
                 text: "register_trip_details".tr())
           ],
         ),
       ),
     );
-
-
   }
 }
 

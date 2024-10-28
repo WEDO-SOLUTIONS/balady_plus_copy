@@ -37,12 +37,12 @@ class IdenticalListBloc extends Bloc<IdenticalListEvent, IdenticalListState> {
 
   IdenticalListBloc(
       {
-        required int requestID,
-      required GetIdenticalListRequest getIdenticalListRequestDetails,
+
+        required GetIdenticalListRequest getIdenticalListRequestDetails,
       required bool isDriver})
       :
         _getIdenticalListRequestDetails = getIdenticalListRequestDetails,
-        super(IdenticalListState( isDriver: isDriver,requestID: requestID)) {
+        super(IdenticalListState( isDriver: isDriver)) {
 
     on<IdenticalListEvent>((event, emit) {
       // TODO: implement event handler
@@ -51,15 +51,18 @@ class IdenticalListBloc extends Bloc<IdenticalListEvent, IdenticalListState> {
 
 
 
-    on<GetTripsDetailsEvent>(_getTripsDetailsHandler);
+    // on<GetTripsDetailsEvent>(_getTripsDetailsHandler);
   }
 
   Future<void> _getIndenticalListRequestHandler(
       GetIdenticalListRequestEvent e, Emitter emitter) async {
+    if(isClosed) return;
+    emitter(state.copyWith(requestID: e.requestId));
     emitter(state.copyWith(status: BlocStatus.loading));
     var failureOrSuccess =
-        await _getIdenticalListRequestDetails(state.requestID);
+        await _getIdenticalListRequestDetails(state.requestID!);
     failureOrSuccess.fold((failure) {
+
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
@@ -74,20 +77,20 @@ class IdenticalListBloc extends Bloc<IdenticalListEvent, IdenticalListState> {
   }
 
 
-  Future<void> _getTripsDetailsHandler(
-      GetTripsDetailsEvent e, Emitter emitter) async {
-    var context = NavigationService.navigatorKey.currentContext!;
-    final result = await CustomPopUpsWidgets.showBottomSheet(context,
-        child: TripDetailsDialog(
-            params: TripDetailsParmas(
-                requestId: e.requestId,
-                info: e.dto,
-                requestStatusId: e.requestStatusId,
-                transportAttachResponseDtoList: e.letters)),
-        height: MediaQuery.of(context).size.height * 0.95);
-    if (result == true) {
-      add(GetIdenticalListRequestEvent());
-      emitter(state.copyWith(isCompleted: true));
-    }
-  }
+  // Future<void> _getTripsDetailsHandler(
+  //     GetTripsDetailsEvent e, Emitter emitter) async {
+  //   var context = NavigationService.navigatorKey.currentContext!;
+  //   final result = await CustomPopUpsWidgets.showBottomSheet(context,
+  //       child: TripDetailsDialog(
+  //           params: TripDetailsParmas(
+  //               requestId: e.requestId,
+  //               info: e.dto,
+  //               requestStatusId: e.requestStatusId,
+  //               transportAttachResponseDtoList: e.letters)),
+  //       height: MediaQuery.of(context).size.height * 0.95);
+  //   if (result == true) {
+  //     add(GetIdenticalListRequestEvent());
+  //     emitter(state.copyWith(isCompleted: true));
+  //   }
+  // }
 }

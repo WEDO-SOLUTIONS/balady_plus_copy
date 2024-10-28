@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
@@ -18,23 +20,38 @@ import '../../../data/model/driver/transport_request_item_model.dart';
 import '../../blocs/driver_add_trip/add_trip_bloc.dart';
 
 
+import '../../blocs/driver_identical_bloc/identical_list_bloc.dart';
+import '../../dialogs/add_path_dialog.dart';
 import '../../widgets/driver/trip_body_widget.dart';
-import 'add_new_trip_path.dart';
+import 'add_custom_trip_path.dart';
+import 'extra_data.dart';
 
 class RequestTrips extends StatelessWidget {
   final TransportRequestItemModel model;
-  const RequestTrips({Key? key, required this.model}) : super(key: key);
+  AddTripBloc? bloc;
+  int pathCounter=0;
+   RequestTrips({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return BlocProvider(
-      create: (context) => AddTripBloc(
-          getTrips: sl(),
-          editTrip: sl(),
-          getTripStations: sl(),
-          model: model,
-          addTrip: sl(),
-          updateDriverLocation: sl())..add(GetTripsEvent()),
+      create: (context)
+      {
+        bloc = AddTripBloc(
+            deleteTrip: sl(),
+            getTrips: sl(),
+            editTrip: sl(),
+            getTripStations: sl(),
+            model: model,
+            context: context,
+            addTrip: sl(),
+            updateDriverLocation: sl());
+        bloc!.add(GetTripsEvent());
+
+
+        return bloc!;
+      },
       child: BlocConsumer<AddTripBloc, AddTripState>(
         listener: (context, state) {
           // if (state.status == BlocStatus.failure) {
@@ -43,8 +60,8 @@ class RequestTrips extends StatelessWidget {
           //   // CommonFunctions.showError(state.errorMessage ?? "");
           // }
         },
-        builder: (context, state) {
-
+        builder: (cont, state) {
+          pathCounter = 0;
          return Scaffold(
            appBar:
            DetailsHeader(
@@ -87,23 +104,54 @@ class RequestTrips extends StatelessWidget {
                          ),
                          SizedBox(width: 20,),
                          Flexible(
-                           child: ElevatedButtonWidget.primaryCustomBorderColor(
-                             borderColor: AppColor.kGreenBoarder,
-                             bgColor: Colors.transparent,
-                             color: AppColor.darkGreylight,
-                             fontSize:13,
-                             height:45,
-                             onPressed: () {
-                               Navigator.push(
-                                 context,
-                                 MaterialPageRoute(builder: (context) => AddNewTripPath(model: model,),
+                           child: Column(
+                             children: [
+                               ElevatedButtonWidget.primaryCustomBorderColor(
+                                 borderColor: AppColor.kGreenBoarder,
+                                 bgColor: Colors.transparent,
+                                 color: AppColor.darkGreylight,
+                                 fontSize:13,
+                                 height:45,
+                                 onPressed: () async {
+
+                                   bloc ??= context.read<AddTripBloc>();
+                                   await CustomPopUpsWidgets.showBottomSheet(
+                                   context, child: AddNewTripPathDailog( title: 'addnewPath'.tr(), bloc: bloc!,),
+                                   );
+
+
+                                 },
+                                 text: ('addnewPath').tr(),
+                               ),
+                               InkWell(
+                                 onTap: () async {
+
+                                 //  NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) => DriverExtraDataPage(),),);
+                                   await CustomPopUpsWidgets.showBottomSheet(
+                                     context, child: DriverExtraDataPage(),
+                                   );
+                                 },
+                                 child: Container(
+                                   padding: const EdgeInsets.all(16),
+                                   width: double.infinity,
+                                   decoration:  BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.blackModern300Light, width: 1), borderRadius: BorderRadius.circular(6)),
+                                   //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+                                   child: Row(
+                                     mainAxisAlignment: MainAxisAlignment.center,
+                                     children: [
+
+                                       CustomTextWidget(
+                                         ("extra_data").tr(),
+                                         fontSize: 12,
+                                         fontWeight: AppFontWeight.medium,
+                                         fontColor: AppColor.black,
+                                         textAlign: TextAlign.start,
+                                       ),
+                                     ],
+                                   ),
                                  ),
-                               );
-
-
-
-                             },
-                             text: ('addnewPath').tr(),
+                               ),
+                             ],
                            ),
                          ),
 
@@ -111,6 +159,10 @@ class RequestTrips extends StatelessWidget {
 
 
                        ],),
+
+
+
+
                      Expanded(
                        child: SingleChildScrollView(
                          child: Column(
@@ -123,13 +175,13 @@ class RequestTrips extends StatelessWidget {
                                itemCount:
                                state.data?.length ?? 0,
                                shrinkWrap: true,
-
                                physics: const NeverScrollableScrollPhysics(),
                                itemBuilder: (ctx, index) {
                                  if(state.data![index].isSuggestPath==false) {
+                                   pathCounter = pathCounter+1;
                                    return ExpandableCard(
                                        title: "${("tripPathsnumber")
-                                           .tr()}${index + 1}",
+                                           .tr()}${pathCounter}",
                                        icon: null,
                                        children:
                                        [
@@ -148,7 +200,7 @@ class RequestTrips extends StatelessWidget {
                              if (state.status == BlocStatus.retry)
                                ReloadWidget(
                                  onTab: () {
-                                   context.read<AddTripBloc>().add(
+                                   bloc?.add(
                                        GetTripsEvent());
                                  },
                                ),
@@ -156,19 +208,16 @@ class RequestTrips extends StatelessWidget {
                          ),
                        ),
                      ),
+
+                     SizedBox(height: 20,),
                      ElevatedButtonWidget.primaryCustom(
                        onPressed: () {
-                         Navigator.push(
-                           context,
-                           MaterialPageRoute(builder: (context) => RequestTrips(
-                             model: model,),
-                           ),
-                         );
 
-
+                         NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) => DriverExtraDataPage(),),);
+               // fffff
 
                        },
-                       text: ('startTrip').tr(),
+                       text: ('nextButton').tr(),
                      ),
 
                    ],

@@ -28,6 +28,8 @@ import '../../domain/entities/cemetry_request_details/cemetry_request_details.da
 import '../../domain/entities/cemetry_requests/cemetry_request_response.dart';
 import '../../domain/entities/get_cemetries_params.dart';
 import '../../domain/entities/user_info_request_params.dart';
+import '../model/driver/GhuslEmploye.dart';
+import '../model/driver/deceased_attachment.dart';
 import '../model/driver/deceased_identical_item.dart';
 import '../model/driver/transport_request_item_model.dart';
 import '../model/driver/trip_details_model.dart';
@@ -335,10 +337,9 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteTrip(
-      int params) async {
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteTrip(int tripId,int requestId)async {
     try {
-      final data = await remoteDataSource.deleteTrip(params);
+      final data = await remoteDataSource.deleteTrip(tripId,requestId);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -542,6 +543,43 @@ class EkramRepositoryImpl implements EkramRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<GhuslEmploye>>>> getGhuslEmployees(int requestId) async {
+    try {
+      final data = await remoteDataSource.getGhuslEmployees(requestId);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<DeceasedAttachment>>>> getDeceasedAttachment(int requestId) async {
+    try {
+      final data = await remoteDataSource.getDeceasedAttachment(requestId);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
 
   @override
   Future<Either<Failure, ResponseBodyModel<ApplyDeceasedResponse>>> bookCemetry(

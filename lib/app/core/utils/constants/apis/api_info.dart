@@ -397,7 +397,7 @@ class ApiUrl {
 
 
 
-  static const deleteTrip = 'v2/ekram-mobile-services/delete-trips';
+
 
   static const completeTrip =
       'v2/ekram-mobile-services/complete-deceased-transports';
@@ -641,8 +641,9 @@ class ApiUrl {
   static  addNewPath (int requestId) => 'v1/superapp-ekram-services/trips/$requestId/add-trip';
   static  ekramGetTrips (int requestId)=> 'v1/superapp-ekram-services/trips/$requestId/trips';
 
-
-
+  static  deleteTrip (int requestId,int tripId) => 'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
+  static  ghuslEmployees (int requestId)=> 'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';
+  static  deceasedAttachment (int requestId)=> 'v1/superapp-ekram-services/attachments/$requestId/request-attachments';
 
 
 

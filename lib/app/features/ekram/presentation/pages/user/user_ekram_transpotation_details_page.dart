@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_extra_data_bloc/extra_data_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,6 +13,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../home_page/presentation/widgets/home_tag.dart';
+import '../../blocs/driver_identical_bloc/identical_list_bloc.dart';
 
 class UsersEkramTransportationDetailsPage extends StatefulWidget {
   const UsersEkramTransportationDetailsPage({Key? key}) : super(key: key);
@@ -41,8 +42,8 @@ class _UsersEkramTransportationDetailsPageState
       create: (context) => IdenticalListBloc(
           getIdenticalListRequestDetails: sl(),
 
-          isDriver: false, requestID: params.requestId!),
-      child: BlocListener<IdenticalListBloc, IdenticalListState>(
+          isDriver: false),
+      child: BlocListener<ExtraDataBloc, ExtraDataState>(
           listener: (context, state) {
             print("state $state");
             if (state.status == BlocStatus.failure) {

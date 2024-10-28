@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_extra_data_bloc/extra_data_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -10,7 +10,7 @@ class DriversInfoWidget extends StatelessWidget {
   const DriversInfoWidget({Key? key}) : super(key: key);
 
   Widget build(BuildContext context) {
-    return BlocBuilder<IdenticalListBloc, IdenticalListState>(
+    return BlocBuilder<ExtraDataBloc, ExtraDataState>(
       builder: (context, state) {
         return Container();
 

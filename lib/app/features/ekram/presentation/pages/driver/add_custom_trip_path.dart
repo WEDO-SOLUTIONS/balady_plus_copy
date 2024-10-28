@@ -5,11 +5,13 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
 
+import '../../../../_shared_feature_/presentation/dialogs/dialog_header.dart';
 import '../../../../_shared_feature_/presentation/fields/read_only_field.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -28,48 +30,30 @@ import '../../widgets/driver/trip_datetime_widget.dart';
 
 
 
-class AddNewTripPath extends StatelessWidget {
-  final TransportRequestItemModel model;
+class AddCustomTripPath extends StatelessWidget {
+  final AddTripBloc bloc;
 
-   AddNewTripPath({Key? key, required this.model}) : super(key: key);
+   AddCustomTripPath({Key? key, required this.bloc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AddTripBloc(
-          getTripStations: sl(),
-          editTrip: sl(),
-          getTrips: sl(),
-          model: model,
-          addTrip: sl(),
-          updateDriverLocation: sl())..add(GetTripsStationEvent()),
-      child: BlocConsumer<AddTripBloc, AddTripState>(
-        listener: (context, state) {
-          if (state.status == BlocStatus.failure) {
+    bloc.add(GetTripsStationEvent());
 
-            context.read<AddTripBloc>().add(ClearErrorMsgEvent());
-            CommonFunctions.showError(state.errorMessage ?? "");
+    return BlocProvider.value(
+      value: bloc,
+      child:
+      BlocConsumer<AddTripBloc, AddTripState>(
+        listener: (context, state) {
+          if (bloc.state.status == BlocStatus.failure) {
+
+            //bloc.add(ClearErrorMsgEvent());
+            // CommonFunctions.showError(bloc.state.errorMessage ?? "");
           }
         },
         builder: (context, state) {
 
-          return Scaffold(
-            appBar:
-            DetailsHeader(
-              titleWidget: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CustomTextWidget(
-                    'requests_transporting_deceased'.tr(),
-                    fontSize: 20,
-                    maxLines: 1,
-                    textOverflow: TextOverflow.ellipsis,
-                    fontWeight: AppFontWeight.bold,
-                    fontColor: AppColor.blackModern700Light,
-                  ),
-                ],
-              ),
-            ),
+          return  Scaffold(
+
             body:
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -83,32 +67,36 @@ class AddNewTripPath extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
+                          DialogHeader(
+                            title: "addnewPath".tr(),
+                          ),
+
+
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CustomVerticalSpace(height: 10),
+                              CustomVerticalSpace(height: 20),
 
                               CustomDropDownDialog(
-                                items: state.lstTripStation ?? [],
-                                selectedValue: state.addTripPath?.startupInfo?.typeName,
-                          onChangeType: (TripStations? item) {
-                          context
-                              .read<AddTripBloc>()
-                              .add(setNewPathData(item: item,isStartupInfo: true));
-                        },
-                        onEmptyList: () async {
-                          // return context
-                          //     .read<AddTripBloc>()
-                          //     .getLanuduriesLookUp();
-                        },
-                        label: "currentTripStationType".tr(),
-                        hint: "currentTripStationType".tr(),
-                      ),
+                                items: bloc.state.lstTripStation ?? [],
+                                selectedValue: bloc.state.addTripPath?.startupInfo?.typeName,
+                                onChangeType: (var item) {
+
+                                  bloc.add(setCustomPathDataEvent(item: item,isStartupInfo: true));
+                                },
+                                onEmptyList: () async {
+                                  // return context
+                                  //     .read<AddTripBloc>()
+                                  //     .getLanuduriesLookUp();
+                                },
+                                label: "currentTripStationType".tr(),
+                                hint: "currentTripStationType".tr(),
+                              ),
 
 
                               ReadOnlyField(
                                 title: "currentTripCity".tr(),
-                                subTitle: state.addTripPath?.startupInfo?.cityName  ?? "",
+                                subTitle: bloc.state.addTripPath?.startupInfo?.cityName  ?? "",
                                 subTitleColor:AppColor.grey1000.withOpacity(0.5),
                                 decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
@@ -117,7 +105,7 @@ class AddNewTripPath extends StatelessWidget {
                               CustomVerticalSpace(height: 10),
                               ReadOnlyField(
                                 title: "currentTripStationName".tr(),
-                                subTitle: state.addTripPath?.startupInfo?.name  ?? "",
+                                subTitle: bloc.state.addTripPath?.startupInfo?.name  ?? "",
                                 subTitleColor:AppColor.grey1000.withOpacity(0.5),
                                 decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
@@ -128,24 +116,28 @@ class AddNewTripPath extends StatelessWidget {
 
                               TripDateTimeWidget(
                                 title: "currentTripStationArrivalTime".tr(),
-                                isEditable: state.addTripPath != null ? true :false,
-                                date: state.addTripPath?.startupInfo?.date,
-                                time: state.addTripPath?.startupInfo?.time,
+                                isEditable: bloc.state.addTripPath != null ? true :false,
+                                date:bloc.state.addTripPath?.startupInfo?.date != null? CommonFunctions.getFormattedDateEkram(bloc.state.addTripPath?.startupInfo?.date):null,
+                                time: bloc.state.addTripPath?.startupInfo?.time != null? CommonFunctions.getFormattedTimeEkram(bloc.state.addTripPath?.startupInfo?.time):null,
+
                                 onDateCallback: (String? date){
 
                                   if(date != null)
-                                    {
+                                  {
 
-                                      context.read<AddTripBloc>().add(setNewPathData(item: TripStations(date: date),isStartupInfo: true));
-                                     }
+                                    bloc.add(setCustomPathDataEvent(item: TripStations(date: date),isStartupInfo: true));
+                                  }
                                 },
                                 onTimeCallback: (String? time){
 
                                   if(time != null)
                                   {
 
-
-                                     context.read<AddTripBloc>().add(setNewPathData(item: TripStations(time: time),isStartupInfo: true));
+                                    DateTime tempTime = DateFormat("h:mm a").parse(time!);
+                                    String strTime = DateFormat("HH:mm")
+                                        .format(tempTime)
+                                        .toString();
+                                    bloc.add(setCustomPathDataEvent(item: TripStations(time: strTime),isStartupInfo: true));
                                   }
                                 },
 
@@ -158,12 +150,10 @@ class AddNewTripPath extends StatelessWidget {
 
 
                               CustomDropDownDialog(
-                                items: state.addTripPath?.startupInfo != null ? state.lstTripStation!:[],
-                                selectedValue: state.addTripPath?.arrivalInfo?.typeName,
-                                onChangeType: (TripStations? item) {
-                                  context
-                                      .read<AddTripBloc>()
-                                      .add(setNewPathData(item: item,isStartupInfo: false));
+                                items: bloc.state.addTripPath?.startupInfo != null ? bloc.state.lstTripStation!:[],
+                                selectedValue: bloc.state.addTripPath?.arrivalInfo?.typeName,
+                                onChangeType: (var item) {
+                                  bloc.add(setCustomPathDataEvent(item: item,isStartupInfo: false));
                                 },
                                 onEmptyList: () async {
                                   // return context
@@ -177,7 +167,7 @@ class AddNewTripPath extends StatelessWidget {
 
                               ReadOnlyField(
                                 title: "nextTripCity".tr(),
-                                subTitle: state.addTripPath?.arrivalInfo?.cityName  ?? "",
+                                subTitle: bloc.state.addTripPath?.arrivalInfo?.cityName  ?? "",
                                 subTitleColor:AppColor.grey1000.withOpacity(0.5),
                                 decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
@@ -186,7 +176,7 @@ class AddNewTripPath extends StatelessWidget {
                               CustomVerticalSpace(height: 10),
                               ReadOnlyField(
                                 title: "nextTripStationName".tr(),
-                                subTitle: state.addTripPath?.arrivalInfo?.name  ?? "",
+                                subTitle: bloc.state.addTripPath?.arrivalInfo?.name  ?? "",
                                 subTitleColor:AppColor.grey1000.withOpacity(0.5),
                                 decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
@@ -197,15 +187,18 @@ class AddNewTripPath extends StatelessWidget {
 
                               TripDateTimeWidget(
                                 title: "nextTripStationArrivalTime".tr(),
-                                isEditable: state.addTripPath != null ? true :false,
-                                date: state.addTripPath?.arrivalInfo?.date,
-                                time: state.addTripPath?.arrivalInfo?.time,
+                                isEditable: bloc.state.addTripPath != null ? true :false,
+                                date:bloc.state.addTripPath?.arrivalInfo?.date != null? CommonFunctions.getFormattedDateEkram(bloc.state.addTripPath?.arrivalInfo?.date):null,
+                                time: bloc.state.addTripPath?.arrivalInfo?.time != null? CommonFunctions.getFormattedTimeEkram(bloc.state.addTripPath?.arrivalInfo?.time):null,
+
+
+
                                 onDateCallback: (String? date){
 
                                   if(date != null)
                                   {
 
-                                    context.read<AddTripBloc>().add(setNewPathData(item: TripStations(date: date),isStartupInfo: false));
+                                    bloc.add(setCustomPathDataEvent(item: TripStations(date: date),isStartupInfo: false));
                                   }
                                 },
                                 onTimeCallback: (String? time){
@@ -213,23 +206,27 @@ class AddNewTripPath extends StatelessWidget {
                                   if(time != null)
                                   {
 
-
-                                    context.read<AddTripBloc>().add(setNewPathData(item: TripStations(time: time),isStartupInfo: false));
+                                    DateTime tempTime = DateFormat("h:mm a").parse(time!);
+                                    String strTime = DateFormat("HH:mm")
+                                        .format(tempTime)
+                                        .toString();
+                                    bloc.add(setCustomPathDataEvent(item: TripStations(time: strTime),isStartupInfo: false));
                                   }
                                 },
 
                               ),
 
+                              CustomVerticalSpace(height: 20),
+
 
                             ],
                           ),
+                          if (bloc.state.status == BlocStatus.loading) const CustomLoadingWidget(),
 
-                          if (state.status == BlocStatus.loading) const CustomLoadingWidget(),
-
-                          if (state.status == BlocStatus.retry)
+                          if (bloc.state.status == BlocStatus.retry)
                             ReloadWidget(
                               onTab: () {
-                                context.read<AddTripBloc>().add(
+                                bloc.add(
                                     GetTripsEvent());
                               },
                             ),
@@ -239,8 +236,7 @@ class AddNewTripPath extends StatelessWidget {
                   ),
                   ElevatedButtonWidget.primaryCustom(
                     onPressed: () {
-                      // context.read<AddTripBloc>().add(
-                      //     ());
+                      bloc.add(AddCustomPathEvent());
 
                     },
                     text: ('addnewPath').tr(),
@@ -251,10 +247,13 @@ class AddNewTripPath extends StatelessWidget {
             ),
           );
 
-
         },
-      ),
+      )
+
+
+
     );
+
   }
 }
 
