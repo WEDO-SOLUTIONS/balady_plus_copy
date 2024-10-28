@@ -1,6 +1,8 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/deceased_transportation_info.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/deceased_verification_section.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/emirate_approval_info_section.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 
 import 'package:bloc/bloc.dart';
@@ -31,10 +33,11 @@ class EkramRequestTransportationBloc extends Bloc<
   EkramRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
     const DeceasedVerificationSection(),
-    const ApplicantInfoSection(),
     const DeceasedInfoSection(),
+    const ApplicantInfoSection(),
     const DeathAndBurialInfoSection(),
-    const AgreementSection()
+    const EmirateApprovalInfoSection(),
+    const DeceasedTransportationInfo()
   ];
 
   final GetCities _getCities;
@@ -174,7 +177,7 @@ class EkramRequestTransportationBloc extends Bloc<
       print("Succ3ess $success");
       success.data?.result
           ?.insert(0, LookUpItem(id: -1, name: trans("other_hospital")));
-      print("Succ3ess 555 ${success?.data?.result?.length}");
+      print("Succ3ess 555 ${success.data?.result?.length}");
 
       emitter(state.copyWith(
         status: BlocStatus.success,
