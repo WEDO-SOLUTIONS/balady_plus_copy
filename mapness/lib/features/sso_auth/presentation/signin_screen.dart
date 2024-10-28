@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -55,7 +56,7 @@ class SigninScreen extends ConsumerWidget {
                     Text(
                       context.l10n.signInToUnlock,
                       textAlign: TextAlign.center,
-                      style: context.textStyleV3.bodyLargeRegular.copyWith(color: const Color.fromRGBO(0, 52, 73, 1)),
+                      style: context.textStyleV3.bodyLargeRegular.copyWith(color: AppColor.newAuthSubtitleColor),
                     ),
                     Spacing.$4x.heightBox,
                     Padding(
@@ -77,7 +78,7 @@ class SigninScreen extends ConsumerWidget {
                             context.pop();
                           },
                           label: context.l10n.signIn,
-                          textColor: const Color.fromRGBO(0, 52, 73, 1),
+                          textColor: AppColor.newAuthSubtitleColor,
                           backgroundColor: Colors.white,
                         ),
                       ),
