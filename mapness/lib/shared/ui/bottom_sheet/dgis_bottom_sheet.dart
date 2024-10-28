@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -419,8 +420,8 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
             behavior: widget.scrollBehavior,
             child:
                 // todo(somebody): provide theme when ready
-                WillPopScope(
-              onWillPop: onWillPop,
+                PopScope(
+              onPopInvokedWithResult: onPopInvokedWithResult,
               child: Stack(
                 children: [
                   if (widget.showBarrier)
@@ -889,16 +890,21 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   /// Если возможно - свернёт [DgisBottomSheet] до самого нижнего состояния и вернёт false
   /// Если сворачивать некуда - возвращаем true
   ///
-  /// По умолчанию этот метод вызывается из [WillPopScope] в корне [DgisBottomSheet]
+  /// По умолчанию этот метод вызывается из [PopScope] в корне [DgisBottomSheet]
   /// т.е. если сворачивать данный метод возвращает true,
   /// то будет закрыт текущий роут
   ///
-  /// Если [WillPopScope] есть выше по дереву, например в корне экрана,
+  /// Если [PopScope] есть выше по дереву, например в корне экрана,
   /// необходимо сначала вызвать этот метод для текущего [DgisBottomSheet]
   /// и только после, если метод вернул true, выполнять свою логику
-  Future<bool> onWillPop() async {
+  Future<bool> onPopInvokedWithResult(didPop, Object? result) async {
     final lowestAvailableExpansion = _lowestAvailableExpansion();
     if (_expansion == lowestAvailableExpansion) {
+      if (result != null) {
+        await context.router.maybePop(result);
+        return false;
+      }
+
       return true;
     } else {
       // ignore: unawaited_futures
