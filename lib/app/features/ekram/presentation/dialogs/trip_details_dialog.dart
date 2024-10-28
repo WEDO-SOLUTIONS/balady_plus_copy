@@ -3,7 +3,7 @@ import 'package:balady_plus/app/features/ekram/data/model/trips_details_params.d
 import 'package:balady_plus/app/features/ekram/domain/entities/add_trip_dialog_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/trip_details.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/dialogs/add_trip_new.dart';
+import 'package:balady_plus/app/features/ekram/presentation/pages/driver/request_trips.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/trip_details_dialog_widgets/police_letter.dart';
 import 'package:collection/collection.dart';
 

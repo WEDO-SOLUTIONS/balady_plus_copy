@@ -9,14 +9,17 @@ class TripDetailsModel {
     this.arrivalInfo,
     this.deletable,
     this.editable,
-    this.note,});
+    this.note,
+    this.isSuggestPath
+
+  });
 
   TripDetailsModel.fromJson(dynamic json) {
     id = json['id'];
     startupDate = json['startupDate'];
     createDate = json['createDate'];
-    startupInfo = json['startupInfo'] != null ? StartupInfo.fromJson(json['startupInfo']) : null;
-    arrivalInfo = json['arrivalInfo'] != null ? ArrivalInfo.fromJson(json['arrivalInfo']) : null;
+    startupInfo = json['startupInfo'] != null ? TripInfo.fromJson(json['startupInfo']) : null;
+    arrivalInfo = json['arrivalInfo'] != null ? TripInfo.fromJson(json['arrivalInfo']) : null;
     deletable = json['deletable'];
     editable = json['editable'];
     note = json['note'];
@@ -24,10 +27,11 @@ class TripDetailsModel {
   int? id;
   int? startupDate;
   String? createDate;
-  StartupInfo? startupInfo;
-  ArrivalInfo? arrivalInfo;
+  TripInfo? startupInfo;
+  TripInfo? arrivalInfo;
   bool? deletable;
   bool? editable;
+  bool? isSuggestPath;
   dynamic note;
 
   Map<String, dynamic> toJson() {
@@ -47,74 +51,47 @@ class TripDetailsModel {
     return map;
   }
 
-}
 
-class ArrivalInfo {
-  ArrivalInfo({
-    this.id,
-    this.name,
-    this.categoryId,
-    this.categoryKey,
-    this.categoryName,
-    this.typeId,
-    this.typeName,
-    this.cityId,
-    this.cityName,
-    this.date,
-    this.time,
-    this.location,
-    this.dateTime,});
+  TripDetailsModel copyWith({  int? id,
+    int? startupDate,
+    String? createDate,
+    TripInfo? startupInfo,
+    TripInfo? arrivalInfo,
+    bool? deletable,
+    bool? editable,
+    dynamic note,
+  }) {
 
-  ArrivalInfo.fromJson(dynamic json) {
-    id = json['id'];
-    name = json['name'];
-    categoryId = json['categoryId'];
-    categoryKey = json['categoryKey'];
-    categoryName = json['categoryName'];
-    typeId = json['typeId'];
-    typeName = json['typeName'];
-    cityId = json['cityId'];
-    cityName = json['cityName'];
-    date = json['date'];
-    time = json['time'];
-    location = json['location'] != null ? Location.fromJson(json['location']) : null;
-    dateTime = json['dateTime'];
-  }
-  int? id;
-  String? name;
-  int? categoryId;
-  String? categoryKey;
-  String? categoryName;
-  int? typeId;
-  String? typeName;
-  int? cityId;
-  String? cityName;
-  String? date;
-  String? time;
-  Location? location;
-  int? dateTime;
+    return  TripDetailsModel(id: id ?? this.id,
+      startupDate: startupDate ?? this.startupDate,
+      createDate: createDate ?? this.createDate,
+      startupInfo: startupInfo ?? this.startupInfo,
+      arrivalInfo: arrivalInfo ?? this.arrivalInfo,
+      deletable: deletable ?? this.deletable,
+      editable: editable ?? this.editable,
+      note: note ?? this.note,
+    );
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = id;
-    map['name'] = name;
-    map['categoryId'] = categoryId;
-    map['categoryKey'] = categoryKey;
-    map['categoryName'] = categoryName;
-    map['typeId'] = typeId;
-    map['typeName'] = typeName;
-    map['cityId'] = cityId;
-    map['cityName'] = cityName;
-    map['date'] = date;
-    map['time'] = time;
-    if (location != null) {
-      map['location'] = location?.toJson();
-    }
-    map['dateTime'] = dateTime;
-    return map;
   }
 
+
+  @override
+  List<Object?> get props => [
+    id,
+    startupDate,
+    createDate,
+    startupInfo,
+    arrivalInfo,
+   deletable,
+   editable,
+  note
+
+  ];
+
+
+
 }
+
 
 class Location {
   Location({
@@ -137,8 +114,8 @@ class Location {
 
 }
 
-class StartupInfo {
-  StartupInfo({
+class TripInfo {
+  TripInfo({
     this.id,
     this.name,
     this.categoryId,
@@ -153,7 +130,7 @@ class StartupInfo {
     this.location,
     this.dateTime,});
 
-  StartupInfo.fromJson(dynamic json) {
+  TripInfo.fromJson(dynamic json) {
     id = json['id'];
     name = json['name'];
     categoryId = json['categoryId'];
@@ -200,6 +177,57 @@ class StartupInfo {
     }
     map['dateTime'] = dateTime;
     return map;
+  }
+
+
+
+  @override
+  List<Object?> get props => [
+    id,
+    name,
+   categoryId,
+   categoryKey,
+   categoryName,
+   typeId,
+  typeName,
+   cityId,
+    cityName,
+    date,
+  time,
+   location,
+   dateTime
+
+  ];
+
+  TripInfo copyWith({  int? id,
+    String? name,
+    int? categoryId,
+    String? categoryKey,
+    String? categoryName,
+    int? typeId,
+    String? typeName,
+    int? cityId,
+    String? cityName,
+    String? date,
+    String? time,
+    Location? location,
+    int? dateTime,
+  }) {
+   return
+     TripInfo(id: id ?? this.id,
+      name: name ?? this.name,
+      categoryId: categoryId ?? this.categoryId,
+      categoryKey: categoryKey ?? this.categoryKey,
+      categoryName: categoryName ?? this.categoryName,
+      typeId: typeId ?? this.typeId,
+      typeName: typeName ?? this.typeName,
+      cityId: cityId ?? this.cityId,
+      cityName: cityName ?? this.cityName,
+      date: date ?? this.date,
+      time: time ?? this.time,
+      location: location ?? this.location,
+      dateTime: dateTime ?? this.dateTime,
+    );
   }
 
 }

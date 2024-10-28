@@ -57,7 +57,7 @@ class EkramBookCemetryBloc
   final thirdNameController = TextEditingController();
   final fourthNameController = TextEditingController();
 
-  EkramRequestsBloc? ekramRequestsBloc;
+  TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
     const ApplicantInfoSection(),
     const CemetryDeceasedInfoSection(),

@@ -39,8 +39,6 @@ class _UsersEkramTransportationDetailsPageState
 
     return BlocProvider(
       create: (context) => IdenticalListBloc(
-          getTrips: sl(),
-
           getIdenticalListRequestDetails: sl(),
 
           isDriver: false, requestID: params.requestId!),

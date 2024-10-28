@@ -87,14 +87,14 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        transportAttachResponseDtoList:
-            success.data?.result?.transportAttachResponseDtoList,
-        isCompleted: success.data?.result?.requestStatusId == 6 ||
-            success.data?.result?.requestStatusId == 5,
-        errorMessage: "",
-      ));
+      // emitter(state.copyWith(
+      //   status: BlocStatus.success,
+      //   transportAttachResponseDtoList:
+      //       success.data?.result?.transportAttachResponseDtoList,
+      //   isCompleted: success.data?.result?.requestStatusId == 6 ||
+      //       success.data?.result?.requestStatusId == 5,
+      //   errorMessage: "",
+      // ));
     });
   }
 

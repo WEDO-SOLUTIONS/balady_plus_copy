@@ -1,9 +1,12 @@
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_trip_stations.dart';
+
 import '../../../features/ekram/domain/use_cases/add_trip.dart';
 import '../../../features/ekram/domain/use_cases/book_cemetry.dart';
 import '../../../features/ekram/domain/use_cases/check_user_info.dart';
 import '../../../features/ekram/domain/use_cases/complete_trip.dart';
 import '../../../features/ekram/domain/use_cases/delete_trip.dart';
 import '../../../features/ekram/domain/use_cases/download_attachment.dart';
+import '../../../features/ekram/domain/use_cases/edit_trip.dart';
 import '../../../features/ekram/domain/use_cases/get_active_cities.dart';
 import '../../../features/ekram/domain/use_cases/get_cemetries.dart';
 import '../../../features/ekram/domain/use_cases/get_cemetry_request_details.dart';
@@ -49,6 +52,7 @@ class EkramInjection {
     sl.registerLazySingleton(
         () => GetIdenticalListRequest(repository: sl()));
     sl.registerLazySingleton(() => GetTrips(repository: sl()));
+    sl.registerLazySingleton(() => EditTrip(repository: sl()));
     sl.registerLazySingleton(() => AddTrip(repository: sl()));
     sl.registerLazySingleton(() => GetMosques(repository: sl()));
     sl.registerLazySingleton(() => GetLaundries(repository: sl()));
@@ -57,6 +61,7 @@ class EkramInjection {
     sl.registerLazySingleton(() => UploadLetter(repository: sl()));
     sl.registerLazySingleton(() => UpadateDriverLocation(repository: sl()));
     sl.registerLazySingleton(() => GetTripsLocation(repository: sl()));
+    sl.registerLazySingleton(() => GetTripStations(repository: sl()));
     sl.registerLazySingleton(() => DownloadAttachment(repository: sl()));
     sl.registerLazySingleton(() => GetEkramLookUp(repository: sl()));
     sl.registerLazySingleton(() => CheckUserinfo(repository: sl()));

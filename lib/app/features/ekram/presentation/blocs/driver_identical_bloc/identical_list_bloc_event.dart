@@ -7,10 +7,7 @@ abstract class IdenticalListEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetTripsEvent extends IdenticalListEvent {
-  final int index;
-  const GetTripsEvent({required this.index});
-}
+
 
 class GetTripsDetailsEvent extends IdenticalListEvent {
   final DeceasedInfoResponseDtoList dto;

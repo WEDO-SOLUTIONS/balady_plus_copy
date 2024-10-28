@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/pages/driver/request_trips.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,12 +43,11 @@ class _IdenticalListPageState
 
   @override
   Widget build(BuildContext context) {
-     RequestItemModel params =
-        ModalRoute.of(context)!.settings.arguments as RequestItemModel;
+     TransportRequestItemModel params =
+        ModalRoute.of(context)!.settings.arguments as TransportRequestItemModel;
 
     return BlocProvider(
       create: (context) => IdenticalListBloc(
-          getTrips: sl(),
           requestID: params.requestId!,
           getIdenticalListRequestDetails: sl(),
           isDriver: true)..add(GetIdenticalListRequestEvent()),
@@ -70,7 +70,7 @@ class _IdenticalListPageState
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CustomTextWidget(
-                    "request".tr(),
+                    'requests_transporting_deceased'.tr(),
                     fontSize: 20,
                     maxLines: 1,
                     textOverflow: TextOverflow.ellipsis,
@@ -80,106 +80,117 @@ class _IdenticalListPageState
                   const SizedBox(
                     width: 16,
                   ),
-                  CustomTextWidget(
-                    "#${params?.requestId}",
-                    fontSize: 14,
-                    maxLines: 1,
-                    textOverflow: TextOverflow.ellipsis,
-                    fontWeight: AppFontWeight.medium,
-                    fontColor: AppColor.blackModern700Light,
-                  ),
+                  // CustomTextWidget(
+                  //   "#${params.requestId}",
+                  //   fontSize: 14,
+                  //   maxLines: 1,
+                  //   textOverflow: TextOverflow.ellipsis,
+                  //   fontWeight: AppFontWeight.medium,
+                  //   fontColor: AppColor.blackModern700Light,
+                  // ),
                 ],
               ),
             ),
             body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              IconPath.calendarIcon,
-                              width: 24,
-                              height: 24,
-                            ),
-                            CustomHorizontalSpace(width: 8),
-                            CustomTextWidget(
-                              params?.requestDate ?? "",
-                              fontColor: AppColor.blackModern500Light,
-                              fontSize: 12,
-                              fontWeight: AppFontWeight.bold,
-                            )
-                          ],
+              padding: const EdgeInsets.only(top: 16.0,right: 16,left: 16,bottom: 30),
+              child:
+                  Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        IconPath.calendarIcon,
+                                        width: 24,
+                                        height: 24,
+                                      ),
+                                      CustomHorizontalSpace(width: 8),
+                                      CustomTextWidget(
+                                        params.requestDate ?? "",
+                                        fontColor: AppColor.blackModern500Light,
+                                        fontSize: 12,
+                                        fontWeight: AppFontWeight.bold,
+                                      )
+                                    ],
+                                  ),
+                                  HomeTag(
+                                    title: params.requestStatusName ?? "",
+                                    backgroundColor: AppColor.secondary100Light,
+                                  )
+                                ],
+                              ),
+                              CustomVerticalSpace(height: 10),
+                              CustomTextWidget(
+                                "deceasedData".tr(),
+                                fontSize: 20.0,
+                                fontWeight: AppFontWeight.bold,
+                                fontColor: AppColor.blackModern700Light,
+                                maxLines: 1,
+                                textOverflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.start,
+                              ),
+                              ListView.builder(
+                                padding: EdgeInsets.zero,
+                                itemCount:
+                                state.details?.length ??
+                                    0,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (ctx, index) {
+                                  return
+
+                                    ExpandableCard(
+                                        title: "${("cemetry_deceassed_info").tr()} ${index+1}",
+                                        icon: null,
+                                        children:
+                                        [
+                                          IdenticalDeceasedCardWidget(
+                                            item: state.details![index],
+                                            isDriver: state.isDriver,
+                                            showLogTrip: state.details![index].requestId != 5 &&
+                                                state.details![index].requestStatusId != 6,),
+                                        ]);
+                                },
+                              ),
+
+
+
+                              if (state.status == BlocStatus.loading)
+                                const CustomLoadingWidget(),
+                              Constants.verticalSpaceSmall,
+                            ],
+                          ),
                         ),
-                        HomeTag(
-                          title: params?.requestStatusName ?? "",
-                          backgroundColor: AppColor.secondary100Light,
-                        )
-                      ],
-                    ),
-                    CustomVerticalSpace(height: 10),
-                    CustomTextWidget(
-                      "deceasedData".tr(),
-                      fontSize: 20.0,
-                      fontWeight: AppFontWeight.bold,
-                      fontColor: AppColor.blackModern700Light,
-                      maxLines: 1,
-                      textOverflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.start,
-                    ),
-                    ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount:
-                      state.details?.deceasedInfoResponseDtoList?.length ??
-                          0,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (ctx, index) {
-                        return
-
-                          ExpandableCard(
-                              title: "${("cemetry_deceassed_info").tr()} ${index+1}",
-                              icon: null,
-                              children:
-                              [
-                                IdenticalDeceasedCardWidget(
-                                  item: state.details!.deceasedInfoResponseDtoList![index],
-                                  isDriver: state.isDriver,
-                                  showLogTrip: state.details!.requestStatusId != 5 &&
-                                      state.details!.requestStatusId != 6,),
-                              ]);
-                      },
-                    ),
-
-
-                    Positioned(
-                      bottom: 10,
-                      child: ElevatedButtonWidget.primaryCustom(
+                      ),
+                      ElevatedButtonWidget.primaryCustom(
                         onPressed: () {
-                          context
-                              .read<IdenticalListBloc>()
-                              .add(GetTripsEvent(index: 0));
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => RequestTrips(
+                              model: params,),
+                            ),
+                          );
+
+
 
                         },
                         text: ('startTrip').tr(),
                       ),
-                    ),
+                    ],
+                  ),
 
 
 
-
-                    if (state.status == BlocStatus.loading) const CustomLoadingWidget(),
-                    Constants.verticalSpaceSmall,
-                  ],
-                ),
-              ),
             ),
           ),
         ),

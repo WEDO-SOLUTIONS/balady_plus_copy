@@ -456,7 +456,9 @@ class IconPath {
   static const chat_bot_side_menu_icon = '${_svgIconPath}sidemenu$_svg';
   static const chat_gpt_bot_icon = '${_svgIconPath}chat_gpt$_svg';
 
+  static const edit = '${_svgIconPath}edit$_svg';
 
+  static const delete = '${_svgIconPath}delete$_svg';
 
 
 

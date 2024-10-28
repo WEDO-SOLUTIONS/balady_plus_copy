@@ -379,17 +379,23 @@ class ApiUrl {
   static const ekramAnotherLookup = 'v2/ekram-mobile-services/lookups';
 
   static const deceasedTransportRequests =
-      'v2/ekram-mobile-services/deceased-transport-requests';
+      'v1/superapp-ekram-services/deceased-transport-requests';
 
   static const deceasedTransportRequestDetails =
       'v2/ekram-mobile-services/deceased-transport-details';
 
+
+
+
+
   static const ekramDeceasedTransportApply =
       'v2/ekram-mobile-services/deceased-transport/add-request';
 
-  static const ekramGetTrips = 'v2/ekram-mobile-services/trips';
 
-  static const applyTrip = 'v2/ekram-mobile-services/apply-trip-steps';
+
+
+
+
 
   static const deleteTrip = 'v2/ekram-mobile-services/delete-trips';
 
@@ -625,6 +631,16 @@ class ApiUrl {
   static const getChatgptSessionDetails = '/v1/chatbot-services/view-session';
 
   static const refreshChatSession = '/v1/chatbot-services/load-session';
+
+
+  static  getIdenticalDeseasedList(String id) => '/v1/superapp-ekram-services/transport/$id/identical-deceased-list';
+  static  initializeTripsRquest (int requestId)=> 'v1/superapp-ekram-services/trips/$requestId/initialize';
+  static  GetTripstations (int requestId)=> 'v1/superapp-ekram-services/trips/$requestId/trip-stations';
+  static  EditTrip (int requestId,int tripId)=> 'v1/superapp-ekram-services/trips/$requestId/$tripId/edit-trip';
+
+  static  addNewPath (int requestId) => 'v1/superapp-ekram-services/trips/$requestId/add-trip';
+  static  ekramGetTrips (int requestId)=> 'v1/superapp-ekram-services/trips/$requestId/trips';
+
 
 
 

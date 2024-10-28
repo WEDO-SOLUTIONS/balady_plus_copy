@@ -3,17 +3,18 @@ import 'package:dartz/dartz.dart' show Either;
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
+import '../../data/model/driver/transport_request_item_model.dart';
 import '../../data/model/driver/trip_details_model.dart';
 import '../entities/trip_details.dart';
 import '../repositories/ekram_repository.dart';
 
-class GetTrips extends UseCase<ResponseBodyModel<List<TripDetailsModel>>, int> {
+class GetTrips extends UseCase<ResponseBodyModel<List<TripDetailsModel>>, TransportRequestItemModel> {
   final EkramRepository repository;
 
   GetTrips({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<List<TripDetailsModel>>>> call(
-      int params) async {
+      TransportRequestItemModel params) async {
     return await repository.getTrips(params);
   }
 }

@@ -603,14 +603,10 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                             showDivider: false,
                                           ),
 
-
-
                                         CostumeListTile(
                                             onTap: () {
 
-
                                                 CommonFunctions.openComplianceFaq("${viewModel.serviceId}");
-
                                             },
                                             leading: Icon(
                                               Icons.question_mark,

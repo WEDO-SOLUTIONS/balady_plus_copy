@@ -17,12 +17,12 @@ import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart'
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../../objectable_transactions/presentation/widgets/request_parameter.dart';
-import '../../../data/model/driver/request_item_model.dart';
+import '../../../data/model/driver/transport_request_item_model.dart';
 import '../../../domain/entities/deceased_transport_requests/transport_request_item.dart';
 import '../ekram_status_widget.dart';
 
 class RequestCardWidget extends StatelessWidget {
-  final RequestItemModel requestItemModel;
+  final TransportRequestItemModel requestItemModel;
 
   const RequestCardWidget(
       {Key? key,
@@ -102,7 +102,7 @@ class RequestCardWidget extends StatelessWidget {
                   RequestParameter(
                     title: 'ekram_assign_Date'.tr(),
                     value: CommonFunctions.getFormattedDateEkramCard(
-                        requestItemModel.deathDate ?? ""),
+                        requestItemModel.assignDriverDate ?? ""),
                   ),
                   // RequestParameter(
                   //   title: 'transportationDestination'.tr(),
@@ -120,6 +120,7 @@ class RequestCardWidget extends StatelessWidget {
                 ],
               ),
             ),
+
             ElevatedButtonWidget.primaryCustom(
                 height: 40,
                 onPressed: () {
@@ -127,7 +128,7 @@ class RequestCardWidget extends StatelessWidget {
                   navigator.pushNamed(RouteName.IdenticalListPage,
                       arguments: requestItemModel);
                 },
-                text: "details".tr())
+                text: "register_trip_details".tr())
           ],
         ),
       ),

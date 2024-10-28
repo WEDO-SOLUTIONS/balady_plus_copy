@@ -28,7 +28,10 @@ import '../../domain/entities/cemetry_request_details/cemetry_request_details.da
 import '../../domain/entities/cemetry_requests/cemetry_request_response.dart';
 import '../../domain/entities/get_cemetries_params.dart';
 import '../../domain/entities/user_info_request_params.dart';
+import '../model/driver/deceased_identical_item.dart';
+import '../model/driver/transport_request_item_model.dart';
 import '../model/driver/trip_details_model.dart';
+import '../model/driver/trip_stations.dart';
 import '../model/upload_letter_params.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -39,7 +42,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getCountries() async {
+  getCountries() async {
     try {
       final data = await remoteDataSource.getCountries();
 
@@ -59,7 +62,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getCities() async {
+  getCities() async {
     try {
       final data = await remoteDataSource.getCities();
 
@@ -99,7 +102,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getNationalities() async {
+  getNationalities() async {
     try {
       final data = await remoteDataSource.getNationalities();
       return Right(data);
@@ -118,7 +121,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<ApplyDeceasedResponse>>>
-      applyDeceasedTransport(ApplyDeceasedParams params) async {
+  applyDeceasedTransport(ApplyDeceasedParams params) async {
     try {
       final data = await remoteDataSource.applyDeceasedTransport(params);
       return Right(data);
@@ -156,7 +159,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<TransportRequestResponseModel>>>
-      getDeceasedTransportRequests(GetRequestsParams params) async {
+  getDeceasedTransportRequests(GetRequestsParams params) async {
     try {
       final data = await remoteDataSource.getDeceasedTransportRequests(params);
       return Right(data);
@@ -175,7 +178,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<DeceasedRequestDetails>>>
-      getDeceasedTransportRequestDetails(int params) async {
+  getDeceasedTransportRequestDetails(int params) async {
     try {
       final data = await remoteDataSource.getTransportRequestDetails(params);
       return Right(data);
@@ -193,8 +196,8 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<DeceasedRequestDetails>>>
-      getidenticalList(int params) async {
+  Future<Either<Failure, ResponseBodyModel<List<DeceasedIdenticalItem>>>>
+  getidenticalList(int params) async {
     try {
       final data = await remoteDataSource.getIdenticalList(params);
       return Right(data);
@@ -213,7 +216,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<TripDetailsModel>>>> getTrips(
-      int params) async {
+      TransportRequestItemModel params) async {
     try {
       final data = await remoteDataSource.getTrips(params);
       return Right(data);
@@ -231,10 +234,28 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel>> addTrip(
-      AddTripParams params) async {
+  Future<Either<Failure, ResponseBodyModel>> addTrip(int requestId,
+      TripDetailsModel params) async {
     try {
-      final data = await remoteDataSource.addTrip(params);
+      final data = await remoteDataSource.addTrip(requestId,params);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+  @override
+  Future<Either<Failure, ResponseBodyModel>> editTrip(
+      int requestID,TripDetailsModel model) async {
+    try {
+      final data = await remoteDataSource.editTrip(requestID,model);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -249,9 +270,13 @@ class EkramRepositoryImpl implements EkramRepository {
     }
   }
 
+
+
+
+
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getLaundries(int cityId) async {
+  getLaundries(int cityId) async {
     try {
       final data = await remoteDataSource.getLaundries(cityId);
 
@@ -271,7 +296,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getMosques(int cityId) async {
+  getMosques(int cityId) async {
     try {
       final data = await remoteDataSource.getMosques(cityId);
 
@@ -368,7 +393,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<TripLocationsResponse>>>
-      getTripsLocation(int params) async {
+  getTripsLocation(int params) async {
     try {
       final data = await remoteDataSource.getTripsLocation(params);
       return Right(data);
@@ -387,7 +412,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getLocations() async {
+  getLocations() async {
     try {
       final data = await remoteDataSource.getLocations();
       return Right(data);
@@ -406,7 +431,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getStatus() async {
+  getStatus() async {
     try {
       final data = await remoteDataSource.getStatus();
       return Right(data);
@@ -463,7 +488,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<UserInfoResponseModel>>>
-      checkUserinfo(UserInfoRequestParams params) async {
+  checkUserinfo(UserInfoRequestParams params) async {
     try {
       final data = await remoteDataSource.checkUserinfo(params);
       return Right(data);
@@ -482,7 +507,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getActiveCities() async {
+  getActiveCities() async {
     try {
       final data = await remoteDataSource.getActiveCities();
       return Right(data);
@@ -539,7 +564,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<CemetryRequestDetails>>>
-      getCemetryRequestDetails(String params) async {
+  getCemetryRequestDetails(String params) async {
     try {
       final data = await remoteDataSource.getCemetryRequestDetails(params);
       return Right(data);
@@ -558,7 +583,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<CemetryRequestResponse>>>
-      getCemetryRequests(GetRequestsParams params) async {
+  getCemetryRequests(GetRequestsParams params) async {
     try {
       final data = await remoteDataSource.getCemetryRequests(params);
       return Right(data);
@@ -577,7 +602,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getNationalityTypes() async {
+  getNationalityTypes() async {
     try {
       final data = await remoteDataSource.getNationalityTypes();
       return Right(data);
@@ -596,7 +621,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getDeathCities() async {
+  getDeathCities() async {
     try {
       final data = await remoteDataSource.getDeathCities();
       return Right(data);
@@ -615,7 +640,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getBurialCities() async {
+  getBurialCities() async {
     try {
       final data = await remoteDataSource.getBurialCities();
       return Right(data);
@@ -634,7 +659,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getEkramOrgnizations(GetOrgnizationsParams params) async {
+  getEkramOrgnizations(GetOrgnizationsParams params) async {
     try {
       final data = await remoteDataSource.getEkramOrgnizations(params);
       return Right(data);
@@ -653,7 +678,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<GraveActiveRequestDetails>>>
-      getActiveGraveRequestDetails(ActiveGraveRequestParams params) async {
+  getActiveGraveRequestDetails(ActiveGraveRequestParams params) async {
     try {
       final data = await remoteDataSource.getActiveGraveRequestDetails(params);
       return Right(data);
@@ -688,4 +713,24 @@ class EkramRepositoryImpl implements EkramRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<TripStations>>>> getTripStations (
+      int params) async {
+    try {
+      final data = await remoteDataSource.getTripStations(params);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
 }
+

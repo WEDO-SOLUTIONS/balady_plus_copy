@@ -2,7 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     show
         EkramBookingCardWidget,
-        EkramRequestsBloc,
+        TransportRequestsBloc,
         EkramRequestsState,
         GetCemetryRequestDetailsEvent,
         GetCemetryRequestsEvent,
@@ -54,7 +54,7 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EkramRequestsBloc(
+      create: (context) => TransportRequestsBloc(
           getDeceasedTransportRequests: sl(),
           getDeceasedTransportRequestDetails: sl(),
           getDeceasedDriverRequestDetails: sl(),
@@ -63,7 +63,7 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
           getStatus: sl(),
           isDriver: false)
         ..add(GetCemetryRequestsEvent()),
-      child: BlocConsumer<EkramRequestsBloc, EkramRequestsState>(
+      child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(
         listener: (context, state) {
           if (state.cemetryListStatus == BlocStatus.failure ||
               state.status == BlocStatus.failure) {
@@ -75,7 +75,7 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
               if (_scrollContrller.position.maxScrollExtent ==
                   _scrollContrller.offset) {
                 context
-                    .read<EkramRequestsBloc>()
+                    .read<TransportRequestsBloc>()
                     .add(GetMoreCemetryRequestsEvent());
               }
             });
@@ -93,7 +93,7 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
                     onTap: () {
                       NavigationService.navigatorKey.currentState!.pushNamed(
                           RouteName.EkramBookCemetryStartService,
-                          arguments: context.read<EkramRequestsBloc>());
+                          arguments: context.read<TransportRequestsBloc>());
                     },
                     child: CircleIcon(
                       backgroundColor: AppColor.primary50Light,
@@ -135,7 +135,7 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
                                 EkramBookingCardWidget(
                                   item: state.cemetryRequestItems![index],
                                   OnDetailsPress: () {
-                                    context.read<EkramRequestsBloc>().add(
+                                    context.read<TransportRequestsBloc>().add(
                                         GetCemetryRequestDetailsEvent(
                                             requestId: state
                                                 .cemetryRequestItems![index]
@@ -165,7 +165,7 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
                   ReloadWidget(
                     onTab: () {
                       context
-                          .read<EkramRequestsBloc>()
+                          .read<TransportRequestsBloc>()
                           .add(GetCemetryRequestsEvent());
                     },
                   ),

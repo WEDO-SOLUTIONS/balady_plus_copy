@@ -12,26 +12,28 @@ class DriversInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<IdenticalListBloc, IdenticalListState>(
       builder: (context, state) {
-        return CustomEnhancedExpansionPanelWidget(
-            underline: false,
-            title: "driversInfo".tr(),
-            child: SizedBox(
-              height: 240,
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
+        return Container();
 
-                itemCount:
-                    state.details!.deceasedInfoResponseDtoList?.length ?? 0,
-                scrollDirection: Axis.horizontal,
-                // physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (ctx, index) {
-                  return DriverCardWidget(
-                    item: state.details!.deceasedInfoResponseDtoList![index],
-                  );
-                },
-              ),
-            ));
+          // CustomEnhancedExpansionPanelWidget(
+          //   underline: false,
+          //   title: "driversInfo".tr(),
+          //   child: SizedBox(
+          //     height: 240,
+          //     child: ListView.builder(
+          //       padding: EdgeInsets.zero,
+          //       shrinkWrap: true,
+          //
+          //       itemCount:
+          //           state.details!.deceasedInfoResponseDtoList?.length ?? 0,
+          //       scrollDirection: Axis.horizontal,
+          //       // physics: const NeverScrollableScrollPhysics(),
+          //       itemBuilder: (ctx, index) {
+          //         return DriverCardWidget(
+          //           item: state.details!.deceasedInfoResponseDtoList![index],
+          //         );
+          //       },
+          //     ),
+          //   ));
       },
     );
   }
