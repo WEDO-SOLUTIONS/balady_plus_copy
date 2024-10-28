@@ -1,9 +1,9 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -16,44 +16,59 @@ class UnautorizedProfile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: const Color.fromRGBO(48, 205, 194, 1),
+          image: DecorationImage(
+            image: AssetImage(
+              ref.read(colorSchemeProvider) == AppColorScheme.brown
+                  ? 'assets/images/log_in_card_brown.png'
+                  : 'assets/images/log_in_card.png',
+              package: PackageConfig.packageName,
+            ),
+            fit: BoxFit.cover,
+          ),
         ),
         child: Column(
           children: [
-            Spacing.$8x.heightBox,
+            const SizedBox(
+              height: 32,
+            ),
             SizedBox(
               width: 95,
-              height: Spacing.$10x,
+              height: 40,
               child: SvgPicture.asset(
-                context.isLTR ? 'assets/images_svg/en_balady_logo.svg' : 'assets/images_svg/ar_balady_logo.svg',
-                fit: BoxFit.cover,
+                'assets/images_svg/balady_logo.svg',
                 package: PackageConfig.packageName,
               ),
             ),
-            Spacing.$6x.heightBox,
+            const SizedBox(
+              height: 24,
+            ),
             SizedBox(
               width: 280,
               child: Text(
                 context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
                 textAlign: TextAlign.center,
-                style: context.textStyle.text.copyWith(color: const Color.fromRGBO(1, 53, 74, 1)),
+                style: context.textStyle.text.copyWith(color: Colors.white),
               ),
             ),
-            Spacing.$4x.heightBox,
+            const SizedBox(
+              height: 16,
+            ),
             Row(
               children: [
                 Expanded(
                   child: AppButton(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     primaryLabel: context.l10n.connectToMomrah,
                     buttonColorScheme: ButtonColorScheme.onColor,
                     onTap: onConnect,
-                    textColor: const Color.fromRGBO(0, 52, 73, 1),
+                    textColor: context.color.textAndIconsStatusAccent,
                   ),
                 ),
               ],
             ),
-            Spacing.$4x.heightBox,
+            const SizedBox(
+              height: 16,
+            ),
           ],
         ),
       );
