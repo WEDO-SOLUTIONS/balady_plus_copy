@@ -204,9 +204,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
             finish.title(context.l10n) ?? '',
           ],
         ),
-        onFailure: (failure) {
-          print('RoutingRoutesRoute $failure');
-        }
       );
     }
   }
@@ -217,9 +214,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       placeholder: index == 0 ? context.l10n.from : context.l10n.to,
       showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
       initialQuery: query
-    ), onFailure: (failure) {
-      print('failure $failure');
-    });
+    ));
 
     if (value != null && value is RoutePoint) {
       points[index] = value;
