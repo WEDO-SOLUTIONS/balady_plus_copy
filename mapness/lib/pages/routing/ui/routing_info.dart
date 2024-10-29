@@ -100,8 +100,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     }
 
     final finishPoint = widget.points[1]!;
+    final dgisObjectId = finishPoint.dgisObjectId;
 
-    if (location == null || dgisController == null || finishPoint.dgisObjectId == null) {
+    if (location == null || dgisController == null || dgisObjectId == null) {
       _isNavTypeLoading.value = false;
       return;
     }
@@ -140,7 +141,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       // if distance is less than 0.7 km and time <= 7 min then use pedestrian just for in building navigation
       else if (distance < 0.7 && time.floor() <= 7) {
         // Check if finish point is in building, if we have building name then it's in building)
-        final objectInfo = await dgisController.searchByObjectId(finishPoint.dgisObjectId!);
+        final objectInfo = await dgisController.searchByObjectId(dgisObjectId);
         if (objectInfo.buildingInfo.buildingName != null) {
           _navType.value = RouteSearchOptionsMessage.pedestrian;
         }
@@ -160,30 +161,32 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     });
     return ValueListenableBuilder(
       valueListenable: _isNavTypeLoading,
-      builder: (context, isLoading, child) => switch (isLoading) {
-        true => Center(child: Loading.large()),
-        false => ValueListenableBuilder(
-            valueListenable: _navType,
-            builder: (context, navigatingType, _) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Spacing.$4x.heightBox,
-                RoutesCarousel(
-                  points: widget.points,
-                  startNavigation: (route) => _startNavigation(route, navigatingType),
-                  navType: navigatingType,
-                ),
-                Spacing.$4x.heightBox,
-                RouteTabBar(
-                  active: navigatingType,
-                  onChanged: _onChanged,
-                  points: widget.points,
-                ),
-                Spacing.$4x.heightBox,
-              ],
-            ),
+      builder: (context, isLoading, child) {
+        if (isLoading) {
+          return Center(child: Loading.large());
+        }
+        return ValueListenableBuilder(
+          valueListenable: _navType,
+          builder: (context, navigatingType, _) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Spacing.$4x.heightBox,
+              RoutesCarousel(
+                points: widget.points,
+                startNavigation: (route) => _startNavigation(route, navigatingType),
+                navType: navigatingType,
+              ),
+              Spacing.$4x.heightBox,
+              RouteTabBar(
+                active: navigatingType,
+                onChanged: _onChanged,
+                points: widget.points,
+              ),
+              Spacing.$4x.heightBox,
+            ],
           ),
+        );
       },
     );
   }
