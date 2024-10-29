@@ -11,6 +11,7 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/ui/balady_logo/balady_logo.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class SigninScreen extends ConsumerWidget {
@@ -33,16 +34,7 @@ class SigninScreen extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Spacing.$10x.widthBox,
-                      SizedBox(
-                        width: 95,
-                        child: SvgPicture.asset(
-                          context.isLTR
-                              ? 'assets/images_svg/en_balady_logo.svg'
-                              : 'assets/images_svg/ar_balady_logo.svg',
-                          fit: BoxFit.cover,
-                          package: PackageConfig.packageName,
-                        ),
-                      ),
+                      const BaladyLogo(),
                       _buildcloseButton(context, ref),
                     ],
                   ),
@@ -56,7 +48,7 @@ class SigninScreen extends ConsumerWidget {
                     Text(
                       context.l10n.signInToUnlock,
                       textAlign: TextAlign.center,
-                      style: context.textStyleV3.bodyLargeRegular.copyWith(color: AppColor.newAuthSubtitleColor),
+                      style: context.textStyleV3.bodyLargeRegular.copyWith(color: AppColor.authSubtitleColorV2),
                     ),
                     Spacing.$4x.heightBox,
                     Padding(
@@ -78,7 +70,7 @@ class SigninScreen extends ConsumerWidget {
                             context.pop();
                           },
                           label: context.l10n.signIn,
-                          textColor: AppColor.newAuthSubtitleColor,
+                          textColor: AppColor.authSubtitleColorV2,
                           backgroundColor: Colors.white,
                         ),
                       ),

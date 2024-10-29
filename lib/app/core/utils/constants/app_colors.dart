@@ -205,9 +205,9 @@ class AppColor {
 
   static const Color secondary900Light = Color(0xff84bc47);
 
-  static const Color newAuthBackgroundColor = Color(0xff30CDC2);
+  static const Color authBackgroundColorV2 = Color(0xff30CDC2);
 
-  static const Color newAuthTitleColor = Color(0xff01354A);
+  static const Color authTitleColorV2 = Color(0xff01354A);
 
-  static const Color newAuthSubtitleColor = Color(0xff003449);
+  static const Color authSubtitleColorV2 = Color(0xff003449);
 }
