@@ -6,6 +6,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
+import 'package:mapness/_features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -47,12 +48,13 @@ class SearchItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     String subtitle = result.subtitle;
     List<String> photosUrls = [];
+    List<Item> photoItems = [];
 
     final objectId = result.id?.objectId ?? 0;
     final photos = ref.watch(poiPhotoProvider(objectId));
 
     if (photos.hasValue) {
-      final photoItems = photos.requireValue.items;
+      photoItems = photos.requireValue.items;
       photosUrls = photoItems.map((e) => e.url).toList();
     }
 
@@ -88,7 +90,7 @@ class SearchItem extends ConsumerWidget {
                         scrollDirection: Axis.horizontal,
                         itemCount: photosUrls.length,
                         itemBuilder: (context, i) {
-                          final photo = photosUrls[i];
+                          final photo = photoItems[i].previewUrls?.smallByWidth ?? photosUrls[i];
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(
                               RadiusBorder.l,
