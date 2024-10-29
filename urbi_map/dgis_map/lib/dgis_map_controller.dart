@@ -51,8 +51,11 @@ class DgisMapController {
   /// Available routes update.
   Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents => _instance.routesInfoChangedEvents;
 
-  // Better route availability update.
+  /// Better route availability update.
   Stream<BetterRouteInfoEvent> get betterRouteInfoEvents => _instance.betterRouteInfoEvents;
+
+  /// Android Auto connection state.
+  Stream<bool> get androidAutoConnectionEvents => _instance.androidAutoConnectionEvents;
 
   /// Events during navigation.
   Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
@@ -613,6 +616,9 @@ class DgisMapController {
 
   ///Set map attribute bool
   Future<void> setMapAttributeBool(String name, {required bool value}) => _instance.setMapAttributeBool(name, value);
+
+  /// Getting Android Auto connection state
+  Future<bool> getAndroidAutoConnectionState() => _instance.getAndroidAutoConnectionState();
 }
 
 /// Extension methods for `WeekTimeSearchMessage`.

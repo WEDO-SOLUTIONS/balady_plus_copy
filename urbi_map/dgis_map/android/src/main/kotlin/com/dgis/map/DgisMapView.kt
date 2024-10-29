@@ -1,7 +1,6 @@
 package com.dgis.map
 
 import android.content.Context
-import android.util.Log
 import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
@@ -22,7 +21,6 @@ import ru.dgis.sdk.directory.RubricId
 import ru.dgis.sdk.directory.SearchManager
 import ru.dgis.sdk.geometry.PolygonGeometry
 import ru.dgis.sdk.map.*
-import ru.dgis.sdk.navigation.State
 import ru.dgis.sdk.platform.Locale
 import ru.dgis.sdk.platform.getLocaleManager
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
@@ -79,6 +77,8 @@ class DgisMapView(
     private val eventSink = QueuingEventSink()
     private val eventStreamHandler = DgisStreamHandler(eventSink)
 
+    private val androidAutoHandler = AndroidAutoHandler(context, eventSink)
+
     private val closables = mutableListOf<AutoCloseable>()
 
     init {
@@ -99,6 +99,7 @@ class DgisMapView(
         compassControlHandler?.close()
         trafficAndParkingControlHandler?.close()
         packagesHandler.close()
+        androidAutoHandler.close()
     }
 
     override fun initialize(result: ApiResult<InitializeMessage>) {
@@ -303,9 +304,10 @@ class DgisMapView(
         }
 
         val area = map.camera.visibleArea
-        if(area is PolygonGeometry) {
+        if (area is PolygonGeometry) {
             val polygonArea = area as PolygonGeometry
-            val contours = polygonArea.contours.map { element -> element.map { e -> e.toMessage() } }
+            val contours =
+                polygonArea.contours.map { element -> element.map { e -> e.toMessage() } }
             result?.success(
                 PolygonGeometryMessage
                     .Builder()
@@ -1105,6 +1107,13 @@ class DgisMapView(
     ) {
         navigationHandler.setBetterRouteSettings(message)
         result?.success(null)
+    }
+
+    override fun getAndroidAutoConnectionState(
+        result: Messages.Result<Boolean>?
+    ) {
+        val connected = androidAutoHandler.getConnectionState()
+        result?.success(connected)
     }
 
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {

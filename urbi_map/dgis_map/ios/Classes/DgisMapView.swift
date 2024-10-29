@@ -1202,4 +1202,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func voicePlayWelcomeId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         completion(nil)
     }
+
+    func getAndroidAutoConnectionState(completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        completion(NSNumber(value: false), nil)
+    }
 }
