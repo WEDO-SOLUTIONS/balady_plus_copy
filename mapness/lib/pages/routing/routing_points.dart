@@ -179,7 +179,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   void _showRoute() {
     if (points.every((element) => element.isNotEmpty)) {
-      print('RoutingRoutesRoute _showRoute');
       final start = points[0];
       final finish = points[1];
       context.router.push(
