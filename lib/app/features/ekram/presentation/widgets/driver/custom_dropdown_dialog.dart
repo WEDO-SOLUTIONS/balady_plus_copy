@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/ekram/domain/entities/deceased_request_details/deceased_request_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -13,13 +14,14 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../../../../daem/presentation/dialogs/str_type_with_search_dialog.dart';
+import '../../../data/model/driver/GhuslEmploye.dart';
 import '../../../data/model/driver/trip_stations.dart';
 
-class CustomDropDownDialog extends StatefulWidget {
+class CustomDropDownDialog<T> extends StatefulWidget {
 
 
-  Function(TripStations? item) onChangeType;
-  List<TripStations> items;
+  Function(T? item) onChangeType;
+  List<T> items;
   String label;
   String? hint;
   String? searchHint;
@@ -68,8 +70,9 @@ class _CustomDropDownDialog extends State<CustomDropDownDialog> {
           await CustomPopUpsWidgets.showBottomSheet(
             NavigationService.navigatorKey.currentContext!,
             child: SearchDialog(
-              onSelect: (TripStations item) =>
+              onSelect: (var item) =>
                   widget.onChangeType(item),
+
               items: widget.items,
               selectedItem: widget.selectedValue,
               title:
@@ -81,13 +84,13 @@ class _CustomDropDownDialog extends State<CustomDropDownDialog> {
             : () async {
           FocusManager.instance.primaryFocus?.unfocus();
           if (widget.onEmptyList != null) {
-            List<TripStations>? items = await widget.onEmptyList!();
+            List<dynamic>? items = await widget.onEmptyList!();
             if (items != null) {
               FocusManager.instance.primaryFocus?.unfocus();
               await CustomPopUpsWidgets.showBottomSheet(
                 NavigationService.navigatorKey.currentContext!,
                 child: SearchDialog(
-                  onSelect: (TripStations item) =>
+                  onSelect: (var item) =>
                       widget.onChangeType(item),
                   items: items,
                   selectedItem: widget.selectedValue,
@@ -107,9 +110,9 @@ class _CustomDropDownDialog extends State<CustomDropDownDialog> {
 }
 
 
-class SearchDialog extends StatefulWidget {
-  final Function(TripStations item) onSelect;
-  List<TripStations> items;
+class SearchDialog<T> extends StatefulWidget {
+  final Function(T item) onSelect;
+  List<T> items;
   String? selectedItem;
   String? title;
   String? searchHint;
@@ -130,8 +133,8 @@ class SearchDialog extends StatefulWidget {
 }
 
 class _SearchDialog extends State<SearchDialog> {
-  List<TripStations> items = [];
-  TripStations? currentSelected;
+  List<dynamic> items = [];
+ var currentSelected;
 
   //List<SpecializedClassificationItem> items = [];
   final ScrollController _scrollController = ScrollController();
@@ -164,9 +167,20 @@ class _SearchDialog extends State<SearchDialog> {
             onTextChanged: /* () {},*/
                 (value) {
               setState(() {
-                items = widget.items
-                    .where((element) => element.typeName?.contains(value) ?? false)
-                    .toList();
+
+                if(items[0] is TripStations ) {
+                  items = widget.items
+                      .where((element) =>
+                  element.typeName?.contains(value) ?? false)
+                      .toList();
+                }
+                else
+                  {
+                    items = widget.items
+                        .where((element) =>
+                    element.fullName?.contains(value) ?? false)
+                        .toList();
+                  }
               });
             },
             onSubmitSearch: (String val) {},
@@ -180,10 +194,10 @@ class _SearchDialog extends State<SearchDialog> {
                 shrinkWrap: true,
                 controller: _scrollController,
                 itemBuilder: (ctx, index) {
-                  return CustomRadioButtonEnd<TripStations>(
+                  return CustomRadioButtonEnd<dynamic>(
                     // title: items[index].name,
                     // value: items[index].id,
-                    title: items[index].typeName ?? "",
+                    title: items[index] is TripStations? items[index].typeName ?? "":(items[index] as GhuslEmploye).fullName,
                     value: items[index],
                     isDisabled: false,
 
@@ -220,7 +234,7 @@ class _SearchDialog extends State<SearchDialog> {
     );
   }
 
-  void onItemChanged(TripStations item) {
+  void onItemChanged(var item) {
     FocusScope.of(context).unfocus();
     isButtonDisabled = false;
     setState(() {

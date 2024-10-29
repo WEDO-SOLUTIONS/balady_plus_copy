@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_extra_data_bloc/extra_data_bloc.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +20,7 @@ class DeceasedInfoWidget_new extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<IdenticalListBloc, IdenticalListState>(
+    return BlocBuilder<ExtraDataBloc, ExtraDataState>(
       builder: (context, state) {
         return Container();
 

@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_extra_data_bloc/extra_data_bloc.dart';
 import 'package:balady_plus/app/features/ekram/presentation/pages/driver/request_trips.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_tag.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
@@ -22,6 +23,7 @@ import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../blocs/driver_identical_bloc/identical_list_bloc.dart';
 
 class IdenticalListPage extends StatefulWidget {
   const IdenticalListPage({Key? key}) : super(key: key);
@@ -39,20 +41,24 @@ class _IdenticalListPageState
     super.initState();
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.detailsServiceFuneralCarDriver);
+
   }
 
   @override
   Widget build(BuildContext context) {
-     TransportRequestItemModel params =
-        ModalRoute.of(context)!.settings.arguments as TransportRequestItemModel;
 
-    return BlocProvider(
-      create: (context) => IdenticalListBloc(
-          requestID: params.requestId!,
-          getIdenticalListRequestDetails: sl(),
-          isDriver: true)..add(GetIdenticalListRequestEvent()),
+    TransportRequestItemModel params =
+    ModalRoute.of(context)!.settings.arguments as TransportRequestItemModel;
+
+    return BlocProvider.value(
+      value: sl<IdenticalListBloc>(),
+      // create: (conts) {
+      //   IdenticalListBloc bloc= sl();
+      //   bloc.add(GetIdenticalListRequestEvent(requestId: params.requestId!));
+      //   return bloc;
+      // },
       child: BlocConsumer<IdenticalListBloc, IdenticalListState>(
-        listener: (context, state) {
+        listener: (cont, state) {
 
           if (state.status == BlocStatus.failure) {
             //   showError(state.errorMessage ?? "");
@@ -174,9 +180,7 @@ class _IdenticalListPageState
                       ElevatedButtonWidget.primaryCustom(
                         onPressed: () {
 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => RequestTrips(
+                          NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) => RequestTrips(
                               model: params,),
                             ),
                           );

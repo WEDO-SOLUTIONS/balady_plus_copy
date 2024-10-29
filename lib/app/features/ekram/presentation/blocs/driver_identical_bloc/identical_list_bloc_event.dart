@@ -9,20 +9,21 @@ abstract class IdenticalListEvent extends Equatable {
 
 
 
-class GetTripsDetailsEvent extends IdenticalListEvent {
-  final DeceasedInfoResponseDtoList dto;
-  final List<TransportAttachResponseDto>? letters;
-  final int requestId;
-  final int requestStatusId;
-  const GetTripsDetailsEvent(
-      {required this.dto,
-      required this.requestId,
-      required this.requestStatusId,
-      this.letters});
-}
+// class GetTripsDetailsEvent extends IdenticalListEvent {
+//   final DeceasedInfoResponseDtoList dto;
+//   final List<TransportAttachResponseDto>? letters;
+//   final int requestId;
+//   final int requestStatusId;
+//   const GetTripsDetailsEvent(
+//       {required this.dto,
+//       required this.requestId,
+//       required this.requestStatusId,
+//       this.letters});
+// }
 
 class GetIdenticalListRequestEvent extends IdenticalListEvent {
-  const GetIdenticalListRequestEvent();
+ final int requestId;
+  const GetIdenticalListRequestEvent({required this.requestId});
 }
 
 class GetTripsLocationEvent extends IdenticalListEvent {

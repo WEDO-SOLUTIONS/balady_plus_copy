@@ -4218,7 +4218,12 @@
   "tripPathsnumber": "مسار رقم ",
   "startTrip": "بدء النقل",
   "currentRequest": "الطلبات الحالية",
-  "addnewPath": "+ إضافة مسار جديد",
+  "addnewPath": "إضافة مسار جديد",
   "pathID": "رقم المسار",
-  "please_enter_date_and_time": "من فضلك اختر الوقت والتاريخ الخاصة بالمسار"
+  "add_Custom_Path": "مسار جديد اضافي ",
+  "please_enter_date_and_time": "من فضلك اختر الوقت والتاريخ الخاصة بالمسار",
+  "path_deleted": "تم حذف المسار بنجاح",
+  "do_you_want_to_delete_path": "هل تريد حذف المسار؟",
+  "extra_data": "بيانات اضافية",
+  "GhuslName": "اسم المغسل*"
 }

@@ -35,6 +35,8 @@ import '../model/cemetry_request_details/cemetry_request_details_model.dart';
 import '../model/cemetry_requests/cemetry_request_response_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../model/driver/GhuslEmploye.dart';
+import '../model/driver/deceased_attachment.dart';
 import '../model/driver/deceased_identical_item.dart';
 import '../model/driver/trip_stations.dart';
 
@@ -75,7 +77,7 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<dynamic>> completeTrip(int params);
 
-  Future<ResponseBodyModel<dynamic>> deleteTrip(int params);
+  Future<ResponseBodyModel<dynamic>> deleteTrip(int tripId,int requestId);
 
   Future<ResponseBodyModel<dynamic>> uploadLetter(UploadLetterParamas params);
 
@@ -100,6 +102,11 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
       GetCemetriesParams params);
+
+  Future<ResponseBodyModel<List<GhuslEmploye>>> getGhuslEmployees(
+      int requestId);
+  Future<ResponseBodyModel<List<DeceasedAttachment>>> getDeceasedAttachment(
+      int requestId);
 
   Future<ResponseBodyModel<ApplyDeceasedResponseModel>> bookCemetry(
       BookCemetryParamas params);
@@ -246,6 +253,128 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
+
+  @override
+  Future<ResponseBodyModel<List<GhuslEmploye>>> getGhuslEmployees(int requestId) async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.ghuslEmployees(requestId),
+        queryParameters: {"isDriver":true}
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<GhuslEmploye> parsedResult = data != null
+          ? List<GhuslEmploye>.from(data.map((x) => GhuslEmploye.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<GhuslEmploye>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<DeceasedAttachment>>> getDeceasedAttachment(
+      int requestId) async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(
+          ApiUrl.deceasedAttachment(requestId),
+          queryParameters: {"isDriver":true}
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<DeceasedAttachment> parsedResult = data != null
+          ? List<DeceasedAttachment>.from(data.map((x) => DeceasedAttachment.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<DeceasedAttachment>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+
+
+
+
 
   @override
   Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int params) async {
@@ -821,15 +950,12 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           queryParameters: {"isDriver":true}
       );
 
+
       var data = response.data["data"]?["result"];
 
-      ApplyDeceasedResponseModel? parsedResult =
-          data != null ? ApplyDeceasedResponseModel.fromMap(data) : null;
-
       final decodedResponse =
-          ResponseBodyModel<ApplyDeceasedResponseModel>.fromMap(response.data,
-              parsedResult: parsedResult);
-
+      ResponseBodyModel<bool>.fromMap(response.data,
+          parsedResult: data);
       return decodedResponse.toFuture();
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -1053,16 +1179,19 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<dynamic>> deleteTrip(int params) async {
+  Future<ResponseBodyModel<dynamic>> deleteTrip(int tripId,int requestId)async {
     Response response;
     try {
-      response = await webService.dio.post(
-        "${ApiUrl.deleteTrip}/$params",
+      response = await webService.dio.delete(
+        ApiUrl.deleteTrip(tripId,requestId),
+        queryParameters: {"isDriver":true}
       );
 
       var data = response.data["data"]?["result"];
 
-      final decodedResponse = ResponseBodyModel<dynamic>.fromMap(response.data);
+      final decodedResponse =
+      ResponseBodyModel<bool>.fromMap(response.data,
+          parsedResult: data);
 
       return decodedResponse.toFuture();
     } on DioError catch (error, stackTrace) {

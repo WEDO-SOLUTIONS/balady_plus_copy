@@ -6,12 +6,12 @@ class IdenticalListState extends Equatable {
   final List<DeceasedIdenticalItem>? details;
   final bool isDriver;
   final bool? isCompleted;
-  final int requestID;
+  final int? requestID;
   IdenticalListState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
       required this.isDriver,
-        required this.requestID,
+        this.requestID,
        this.details,
       this.isCompleted});
 
