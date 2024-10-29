@@ -105,11 +105,11 @@ class DashboardControlModel {
         let currentCategories = self.navigationManager.soundNotificationSettings.enabledSoundCategories
 
         if roadCameras {
-            // When road cameras are enabled: exclude them from the current categories
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting(roadCameraCategories)
+         // When road cameras are disabled: add them back to the current categories
+         self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(roadCameraCategories)
         } else {
-            // When road cameras are disabled: add them back to the current categories
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.union(roadCameraCategories)
+         // When road cameras are enabled: exclude them from the current categories
+         self.navigationManager.soundNotificationSettings.enabledSoundCategories = currentCategories.subtracting(roadCameraCategories)
         }
     }
 
