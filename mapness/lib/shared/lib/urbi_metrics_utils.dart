@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:battery_plus/battery_plus.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/lib/metrics/battery_usage.dart';
@@ -11,7 +8,6 @@ import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/metrics/lost_gps.dart';
 import 'package:mapness/shared/lib/metrics/route_calculation.dart';
 import 'package:mapness/shared/lib/metrics/search_response_time.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -51,11 +47,6 @@ class AdvancedMetrics {
       try {
         _loadTimeMetrics = LoadTimeMetrics(
           loadTime: duration,
-          deviceType: await getDeviceInfo(),
-          appVersion: await _getAppVersion(),
-          timestamp: _timeStamp,
-          networkType: await Connectivity().checkConnectivity(),
-          sessionId: _sessionUuid,
           location: await _getLocation(),
         );
         await track(
@@ -139,15 +130,10 @@ class AdvancedMetrics {
       final batteryUsageMetrics = BatteryUsage(
         batteryUsage: batteryUsage,
         sessionDuration: duration.toDouble(),
-        deviceType: await getDeviceInfo(),
-        appVersion: await _getAppVersion(),
-        timestamp: _timeStamp,
-        networkType: await Connectivity().checkConnectivity(),
         location: await _getLocation(),
         activeProcesses: [],
         deviceState: await Battery().batteryState,
         isInBatterySaveMode: await Battery().isInBatterySaveMode,
-        sessionId: _sessionUuid,
       );
       await _saveBatteryUsage(batteryUsageMetrics);
       print(batteryUsageMetrics.toString());
@@ -168,11 +154,6 @@ class AdvancedMetrics {
   Future<void> addLostGPS() async {
     _lostGpsRuntime = Stopwatch()..start();
     _lostGpsLast = LostGpsMetrics(
-      deviceType: await getDeviceInfo(),
-      appVersion: await _getAppVersion(),
-      timestamp: _timeStamp,
-      networkType: await Connectivity().checkConnectivity(),
-      sessionId: _sessionUuid,
       location: await _getLocation(),
     );
 
@@ -246,11 +227,6 @@ class AdvancedMetrics {
       final routeCalculation = RouteCalculationMetrics(
         duration: duration,
         route: route,
-        deviceType: await getDeviceInfo(),
-        appVersion: await _getAppVersion(),
-        timestamp: _timeStamp,
-        networkType: await Connectivity().checkConnectivity(),
-        sessionId: _sessionUuid,
       );
       await track(
         AdvancedMetricsConstants.routeCalculationTime,
@@ -281,11 +257,6 @@ class AdvancedMetrics {
         responseTime: duration,
         query: _searchQuery!,
         searchQuery: _searchQueryType!,
-        deviceType: await getDeviceInfo(),
-        appVersion: await _getAppVersion(),
-        timestamp: _timeStamp,
-        networkType: await Connectivity().checkConnectivity(),
-        sessionId: _sessionUuid,
       );
       await track(
         AdvancedMetricsConstants.searchDuration,
@@ -296,32 +267,6 @@ class AdvancedMetrics {
   }
 
   // General
-  Future<String> getDeviceInfo() async {
-    if (_deviceInfo != null) {
-      return _deviceInfo!;
-    }
-    final deviceInfoPlugin = DeviceInfoPlugin();
-    if (Platform.isIOS) {
-      final deviceInfo = await deviceInfoPlugin.iosInfo;
-      _deviceInfo = '${deviceInfo.name} ${deviceInfo.systemVersion}';
-    } else {
-      final deviceInfo = await deviceInfoPlugin.androidInfo;
-      _deviceInfo = '${deviceInfo.model} ${deviceInfo.version}';
-    }
-    return _deviceInfo!;
-  }
-
-  Future<String> _getAppVersion() async {
-    if (_appVersion != null) {
-      return _appVersion!;
-    }
-    final platformInfo = await PackageInfo.fromPlatform();
-    _appVersion = '${platformInfo.version}(${platformInfo.buildNumber})';
-    return _appVersion!;
-  }
-
-  String get _timeStamp => DateTime.now().toUtc().toIso8601String();
-
   Future<List<double>?> _getLocation() async {
     try {
       final location = await Geolocator.getCurrentPosition(

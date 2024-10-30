@@ -53,10 +53,5 @@ class _AdvancedMetricsKeys {
   String get errorCount => 'route_error_count';
 
   // General
-  String get deviceType => 'device_type';
-  String get appVersion => 'app_version';
-  String get timestamp => 'timestamp';
-  String get networkType => 'network_type';
-  String get sessionId => 'session_id';
   String get location => 'location';
 }
