@@ -37,7 +37,7 @@ class PoiDeeplinkContent extends ConsumerWidget {
                 const SizedBox(height: 16),
                 CardHeader(
                   onTapClose: onTapClose,
-                  title: title,
+                  title: CardHeaderText.title(text: title, context: context),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(

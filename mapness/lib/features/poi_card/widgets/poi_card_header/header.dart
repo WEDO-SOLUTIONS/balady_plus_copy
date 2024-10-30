@@ -68,11 +68,13 @@ class PoiHeader extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CardHeader(
-            titleWidget: TitleComponent(title: title),
+            title: CardHeaderWidget(child: TitleComponent(title: title)),
             onTapClose: onTapClose,
-            subTitleWidget: SubtitleComponent(
-              subtitle: subTitle,
-              subtitleIcon: subtitleIcon,
+            subTitle: CardHeaderWidget(
+              child: SubtitleComponent(
+                subtitle: subTitle,
+                subtitleIcon: subtitleIcon,
+              ),
             ),
           ),
           if (workingHours?.title != null)

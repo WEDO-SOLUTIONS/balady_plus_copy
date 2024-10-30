@@ -132,8 +132,8 @@ class ShareMyLocationContent extends HookConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                   child: CardHeader(
                     onTapClose: () => onClose(context, ref),
-                    title: title,
-                    subTitle: subTitle,
+                    title: CardHeaderText.title(text: title, context: context),
+                    subTitle: subTitle != null ? CardHeaderText.subTitle(text: subTitle, context: context) : null,
                     profileImage: isAuthorized
                         ? const Padding(
                             padding: EdgeInsets.only(top: Spacing.$1x),
