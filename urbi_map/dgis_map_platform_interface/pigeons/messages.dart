@@ -1557,6 +1557,9 @@ abstract class MapApi {
   void setBetterRouteSettings(BetterRouteSettingsMessage message);
 
   @async
+  void setBetterRouteEnabled(bool enabled);
+
+  @async
   bool getAndroidAutoConnectionState();
 }
 

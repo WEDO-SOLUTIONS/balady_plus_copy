@@ -614,6 +614,9 @@ class DgisMapController {
   ///Set better route settings
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
 
+  ///Set better route enabled
+  Future<void> setBetterRouteEnabled(bool enabled) => _instance.setBetterRouteEnabled(enabled);
+
   ///Set map attribute bool
   Future<void> setMapAttributeBool(String name, {required bool value}) => _instance.setMapAttributeBool(name, value);
 

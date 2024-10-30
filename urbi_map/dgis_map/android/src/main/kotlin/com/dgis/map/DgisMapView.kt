@@ -1109,6 +1109,11 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun setBetterRouteEnabled(enabled: Boolean, result: Messages.Result<Void?>?){
+        navigationHandler.setBetterRouteEnabled(enabled)
+        result?.success(null)
+    }
+
     override fun getAndroidAutoConnectionState(
         result: Messages.Result<Boolean>?
     ) {

@@ -916,4 +916,6 @@ class DgisMapPlugin extends FlutterMapApi {
   Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _api.getBetterRouteSettings();
 
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _api.setBetterRouteSettings(message);
+
+  Future<void> setBetterRouteEnabled(bool enabled) => _api.setBetterRouteEnabled(enabled);
 }

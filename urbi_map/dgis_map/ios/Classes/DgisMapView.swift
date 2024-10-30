@@ -1162,6 +1162,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
 
+    func setBetterRouteEnabledEnabled(_ enabled: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        navigationHandler?.setBetterRouteEnabled(enabled: enabled.boolValue)
+        completion(nil)
+    }
+
     func toggleVoiceInstructionToggleType(_ toggleType: SoundToggleType, completion: @escaping (FlutterError?) -> Void) {
         self.navigationHandler?.toggleSounds(toggleType: toggleType)
         completion(nil)
