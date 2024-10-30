@@ -1555,6 +1555,12 @@ abstract class MapApi {
 
   @async
   void setBetterRouteSettings(BetterRouteSettingsMessage message);
+
+  @async
+  void setBetterRouteEnabled(bool enabled);
+
+  @async
+  bool getAndroidAutoConnectionState();
 }
 
 @FlutterApi()

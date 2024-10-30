@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
@@ -23,7 +24,8 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(shareEtaProvider.select((_) => null))
       ..watch(etaServiceProvider.select((_) => null))
       ..watch(navigatorSpeedCamerasSettingsProvider.select((_) => null))
-      ..watch(bearingStateProvider.select((_) => null));
+      ..watch(bearingStateProvider.select((_) => null))
+      ..watch(serviceNotAvailableProvider.select((_) => null));
 
     return child;
   }

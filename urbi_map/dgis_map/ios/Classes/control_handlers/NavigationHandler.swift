@@ -168,6 +168,10 @@ class NavigationHandler {
         NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = settings.betterRouteTimeCostThreshold.doubleValue
         NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: settings.betterRouteLengthThreshold.int64Value)
     }
+    
+    func setBetterRouteEnabled(enabled: Bool) {
+        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteEnabled = enabled
+    }
 
     func cancel() {
         cancelable.forEach { $0.cancel() }

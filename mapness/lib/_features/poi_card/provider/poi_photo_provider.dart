@@ -31,7 +31,7 @@ class PoiPhoto extends _$PoiPhoto {
           Language.english => 'en_SA',
           Language.arabic => 'ar_AE',
         },
-        'previewSize': '100x100',
+        'preview_size': '100x100,100x,x100',
       },
       cancelToken: cancelToken,
     );
