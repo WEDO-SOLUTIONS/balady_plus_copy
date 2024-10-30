@@ -1,16 +1,24 @@
 
+import 'package:balady_plus/app/commercial_model/features/comercial_license_renew/data/data_sources/renew_cr_remote_data_source.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mime/mime.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../data/model/driver/EditAdditionalRequest.dart';
 import '../../../data/model/driver/GhuslEmploye.dart';
 import '../../../data/model/driver/deceased_attachment.dart';
 import '../../../data/model/driver/deceased_identical_item.dart';
-import '../../../domain/use_cases/download_attachment.dart';
+import '../../../data/model/upload_letter_params.dart';
+import '../../../domain/use_cases/edit_aditional_data.dart';
 import '../../../domain/use_cases/get_deceased_attachment.dart';
 import '../../../domain/use_cases/get_ghusl_employees.dart';
 import '../../../domain/use_cases/get_identical_list_request.dart';
+import '../../../domain/use_cases/upload_attachment.dart';
 part 'extra_data_bloc_state.dart';
 part 'extra_data_bloc_event.dart';
 
@@ -19,50 +27,102 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
 
   final GetGhuslEmployees _getGhuslEmployees;
   final GetDeceasedAttachment _getDeceasedAttachment;
-  final DownloadAttachment _downloadAttachment;
+  final UploadAttachment _uploadAttachment;
+  final EditAdditionalData _editAdditionalData;
+
+
+
 
 
   ExtraDataBloc(
       {
         required GetGhuslEmployees getGhuslEmployees,
         required GetDeceasedAttachment getDeceasedAttachment,
-        required DownloadAttachment downloadAttachment,
+        required UploadAttachment uploadAttachment,
+        required EditAdditionalData editAdditionalData
       })
       :
         _getGhuslEmployees = getGhuslEmployees,
         _getDeceasedAttachment = getDeceasedAttachment,
-        _downloadAttachment = downloadAttachment,
-        super(ExtraDataState()) {
+        _editAdditionalData = editAdditionalData,
+        _uploadAttachment = uploadAttachment,
+        super(ExtraDataState(lstSelectedEmploye: {},lstEmployee: {},lstDeceasedAttachment: {})) {
 
 
     on<GetGhuslEmployeesEvent>(_getGhuslEmployeesHandler);
     on<GetDeceasedAttachmentEvent>(_getDeceasedAttachmentHandler);
-    on<SetSelectEmployeeEvent>(_setSelectedEmployee);
-    on<DownLoadDeceasedAttachmentEvent>(_downLoadAttachmentHandler);
+    on<SetSelectEmployeeEvent>(_setSelectedEmployeeHandler);
+    on<UploadDeceasedAttachmentEvent>(_UploadAttachmentHandler);
+     on<EditAdditionalDataEvent>(_editAdditionalDataHandler);
+
 
   }
 
-  Future<void> _getDeceasedAttachmentHandler(GetDeceasedAttachmentEvent e, Emitter emitter) async {
+
+  Future<void> _editAdditionalDataHandler(EditAdditionalDataEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
-    var failureOrSuccess =
-    await _getDeceasedAttachment(4617328594);
+    String? ghuslEmployeeIdentityNumber;
+    GhuslEmploye? emp =getSelectedEmployeeData(e.requestId);
+    if(emp != null) {
+      ghuslEmployeeIdentityNumber= emp.identityNumber;
+    }
+    EditAdditionalRequest request = EditAdditionalRequest().copyWith(requestId: e.requestId,attachments:getAttachmentByRequestId(e.requestId),ghuslEmployeeIdentityNumber:ghuslEmployeeIdentityNumber);
+    var failureOrSuccess = await _editAdditionalData(request);
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
-    }, (success) {
+      CommonFunctions.showError((failure as ServerFailure).errorMessage);
+    }, (success) async {
 
-      Map<int, List<DeceasedAttachment>>? data = prepareAttachmentData(e.requestId,success.data?.result);
+
+      Map<int, List<DeceasedAttachment>>? lst = prepareAttachmentData(e.requestId,success.data?.result);
+
+
+
+
+          emitter(state.copyWith(
+            status: BlocStatus.success,
+            lstDeceasedAttachment: lst,
+            errorMessage: "",
+          ));
+
+
+    });
+  }
+
+  Future<void> _getDeceasedAttachmentHandler(GetDeceasedAttachmentEvent e, Emitter emitter) async {
+   // emitter(state.copyWith(lstDeceasedAttachment:{}));
+    emitter(state.copyWith(status: BlocStatus.loading));
+    var failureOrSuccess =
+    await _getDeceasedAttachment(e.requestId);
+    failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
-        status: BlocStatus.success,
-        lstDeceasedAttachment: data,
-        errorMessage: "",
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
       ));
+    }, (success) async {
+      Map<int, List<DeceasedAttachment>>? data =prepareAttachmentData(e.requestId,success.data?.result);
+      emitter(state.copyWith(
+       status: BlocStatus.success,
+       lstDeceasedAttachment: data,
+       errorMessage: "",
+       ));
+
+
+
+
+      //  emitter(state.copyWith(
+      //   status: BlocStatus.success,
+      //   lstDeceasedAttachment: data,
+      //   errorMessage: "",
+      // ));
     });
   }
 
   Future<void> _getGhuslEmployeesHandler(GetGhuslEmployeesEvent e, Emitter emitter) async {
+   // emitter(state.copyWith(lstDeceasedAttachment:{},lstSelectedEmployee: {}));
     emitter(state.copyWith(status: BlocStatus.loading));
     var failureOrSuccess =
         await _getGhuslEmployees(e.requestId);
@@ -74,19 +134,22 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
     }, (success) {
 
       Map<int, List<GhuslEmploye>>? data = prepareData(e.requestId,success.data?.result);
+      GhuslEmploye? emp  = getDefultSelectedEmployee(data,e.requestId,e.ghuslEmployeeIdentityNo);
+      Map<int, GhuslEmploye>? lstSelectedEmployee =setSelectedEmployeeData(e.requestId, emp);
+      
       emitter(state.copyWith(
         status: BlocStatus.success,
         lstEmploye: data,
+        lstSelectedEmployee: lstSelectedEmployee,
         errorMessage: "",
       ));
     });
   }
 
-  Future<void> _downLoadAttachmentHandler(
-      DownLoadDeceasedAttachmentEvent e, Emitter emitter) async {
+  Future<void> _UploadAttachmentHandler(UploadDeceasedAttachmentEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _downloadAttachment(e.id);
+    final failureOrSuccess = await _uploadAttachment([e.attachmentId,e.file!]);
 
     failureOrSuccess.fold((failure) {
       print(failure);
@@ -94,30 +157,62 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
-    }, (success) async {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-      Helpers.openFile(success.data, contentType: success.type);
+    }, (res) async {
+
+      if(res.data?.result != null)
+        {
+          Map<int, List<DeceasedAttachment>>?map = state.lstDeceasedAttachment;
+          if(map != null && map.containsKey(e.requestId))
+            {
+              List<DeceasedAttachment>? lst=  map[e.requestId];
+              if(lst != null)
+                {
+
+                  int index=lst.indexWhere((item) => item.attachmentTypeId == res.data?.result?.attachmentTypeId );
+                if(index != -1)
+                  {
+                    var newAttachment = res.data!.result;
+                    newAttachment?.allowedFilesExtension = lst[index].allowedFilesExtension;
+                    lst.removeAt(index);
+                    lst.add(newAttachment!);
+                    map[e.requestId!]=lst;
+                    emitter(state.copyWith(
+                      status: BlocStatus.success,
+                      errorMessage: "",
+                      lstDeceasedAttachment: map
+                    ));
+
+                    CommonFunctions.showSuccess("uploadSucessfull".tr());
+
+                  }
+
+
+                }
+
+            }
+        }
+
+
+
+     // CommonFunctions.showSuccess(success.data?.responseMessage ?? "");
+
     });
+
   }
 
+ _setSelectedEmployeeHandler(SetSelectEmployeeEvent e, Emitter emitter)  {
+   emitter(state.copyWith(
+     status: BlocStatus.loading,
+     errorMessage: "",
+   ));
+    Map<int, GhuslEmploye>? lstSelectedEmployee =setSelectedEmployeeData(e.requestId,e.employee );
 
+        emitter(state.copyWith(
+          status: BlocStatus.success,
+          lstSelectedEmployee: lstSelectedEmployee,
+          errorMessage: "",
+        ));
 
-
-
-
-
-  Future<void> _setSelectedEmployee(SetSelectEmployeeEvent e, Emitter emitter) async {
-
-
-
-    emitter(state.copyWith(
-      status: BlocStatus.success,
-      lstSelectedEmployee: setSelectedEmployeeData(e.requestId, e.employee),
-      errorMessage: "",
-    ));
 
   }
 
@@ -142,7 +237,7 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
   }
 
 
-  Map<int, GhuslEmploye>? setSelectedEmployeeData(int requestId,GhuslEmploye? emp){
+  Map<int, GhuslEmploye>? setSelectedEmployeeData(int requestId,GhuslEmploye? emp) {
 
     Map<int, GhuslEmploye>? map= state.lstSelectedEmploye;
     map ??= <int, GhuslEmploye>{};
@@ -152,14 +247,42 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
     }
     return map;
   }
+   GhuslEmploye? getSelectedEmployeeData(int requestId){
+
+    Map<int, GhuslEmploye>? map= state.lstSelectedEmploye;
+    map ??= <int, GhuslEmploye>{};
+
+    return map[requestId];
+  }
 
   List<GhuslEmploye>? getGhuslEmployeeByRequestId(int requestId)
   {
     Map<int, List<GhuslEmploye>>? map= state.lstEmployee;
     if(map!= null && map.containsKey(requestId))
       {
+        
         return map[requestId];
       }
+
+    return null;
+  }
+
+  GhuslEmploye? getDefultSelectedEmployee(Map<int, List<GhuslEmploye>>? map,int requestId,String? employeeId)
+  {
+
+    if(map!= null && map.containsKey(requestId))
+    {
+
+      List<GhuslEmploye>? lstEmployee =   map[requestId];
+      if(lstEmployee != null && lstEmployee.isNotEmpty && employeeId != null)
+        {
+          GhuslEmploye emp=lstEmployee.firstWhere((item) => item.identityNumber == employeeId );
+        
+          return emp;
+
+        }
+    
+    }
 
     return null;
   }

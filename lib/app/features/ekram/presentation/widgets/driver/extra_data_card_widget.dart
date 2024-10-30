@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../etmam_app/core/utils/common_functions.dart';
+import '../../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
@@ -28,17 +29,19 @@ class ExtraDataCardWidget extends StatelessWidget {
    ExtraDataCardWidget(
       {Key? key,
         required this.item,
+        required this.bloc,
 
        })
-      : super(key: key);
+      :super(key: key){
+     bloc!.add(GetDeceasedAttachmentEvent(requestId: item.requestId!));
+     bloc!.add(GetGhuslEmployeesEvent(requestId: item.requestId!,ghuslEmployeeIdentityNo: item.ghuslEmployeeIdentityNo));
+
+   }
 
 
   @override
   Widget build(BuildContext context) {
-    bloc=  sl();
 
-    bloc!.add(GetGhuslEmployeesEvent(requestId: item.requestId!));
-    bloc!.add(GetDeceasedAttachmentEvent(requestId: item.requestId!));
     return BlocProvider.value(
       value:bloc! ,
         child:
@@ -67,8 +70,8 @@ class ExtraDataCardWidget extends StatelessWidget {
                     details: item.deceasedName ?? "",
                   ),
 
-
-                  CustomDropDownDialog(
+                 // item.ghuslable ==true ?
+                 CustomDropDownDialog(
                     items: bloc!.getGhuslEmployeeByRequestId(item.requestId!) ?? [],
                     selectedValue: state.lstSelectedEmploye?[item.requestId]?.fullName,
                     onChangeType: (var selectedItem) {
@@ -80,9 +83,10 @@ class ExtraDataCardWidget extends StatelessWidget {
                       //     .read<AddTripBloc>()
                       //     .getLanuduriesLookUp();
                     },
-                    label: "GhuslName".tr(),
+                    label: "GhuslName".tr()+ (item.ghuslEmployeeRequired==true?" *":""),
                     hint: "GhuslName".tr(),
                   ),
+                     //:Container(),
 
 
                   ListView.builder(
@@ -94,14 +98,45 @@ class ExtraDataCardWidget extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (ctx, index) {
                       return DeceasedAttachmentCardWidget(
-                        item: bloc!.getAttachmentByRequestId(item.requestId!)![index],bloc: bloc!,
+                        item: bloc!.getAttachmentByRequestId(item.requestId!)![index],bloc: bloc!,requestId: item.requestId!,
 
                       );
                     },
                   ),
 
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20,left: 30,right: 30),
+                    child: ElevatedButtonWidget.primaryCustom(
+                      btnColor:  AppColor.primary800Light,
+                      height: 40,
+                      onPressed: () {
+                        bloc?.add(EditAdditionalDataEvent(requestId: item.requestId!));
+
+                        // if (widget.model?.startupInfo?.date != null &&
+                        //     widget.model?.startupInfo?.time != null
+                        //     && widget.model?.arrivalInfo?.date != null &&
+                        //     widget.model?.arrivalInfo?.time != null) {
+                        //
+                        //
+                        //   // context.read<AddTripBloc>().add(
+                        //   //     EditTripPathData(item: widget.model, hidenScreen: false));
+                        // }
+                        // else {
+                        //   CommonFunctions.showError("please_enter_date_and_time".tr());
+                        // }
 
 
+                      },
+                      text: ('saveButton').tr(),
+                    ),
+                  ),
+
+
+                  if (state.status == BlocStatus.loading)
+                    const CustomLoadingWidget(),
 
                 ],
               ),

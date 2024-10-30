@@ -383,7 +383,7 @@ class Routes {
     RouteName.inappWebview: (context) => const InAppWebViewPage(),
 
     RouteName.dmsImageFullScreen: (context) => const ViewDMSImageScreen(),
-    RouteName.apigeeImageFullScreen: (context) => const ViewAPIGEEImageScreen(),
+    RouteName.apigeeImageFullScreen: (context) =>  ViewAPIGEEImageScreen(),
 
     RouteName.serviceCards: (context) => const ServiceCardsPage(),
 

@@ -202,7 +202,7 @@ dependencies:
 
   flutter_html:
   curl_logger_dio_interceptor: ^1.0.0
-  mixpanel_flutter: ^2.2.0
+  mixpanel_flutter: ^2.3.3
   rate_my_app: ^2.0.0
   flutter_datetime_picker_plus: ^2.1.0
   background_location: ^0.13.0

@@ -289,7 +289,9 @@ class ComplainceAttachment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return
+
+      GestureDetector(
         onTap: () {
           CommonFunctions.showApigeeFile(
             url,

@@ -4217,5 +4217,6 @@
   "path_deleted": "تم حذف المسار بنجاح",
   "do_you_want_to_delete_path": "هل تريد حذف المسار؟",
   "extra_data": "بيانات اضافية",
-  "GhuslName": "اسم المغسل*"
+  "GhuslName": "اسم المغسل",
+  "uploadSucessfull": "تم رفع الملف بنجاح"
 }

@@ -23,11 +23,13 @@ import 'package:dartz/dartz.dart' show Either, Left, Right;
 import 'package:dio/dio.dart';
 
 import '../../../../core/errors/exceptions.dart';
+import '../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../domain/entities/book_cemetry_params.dart';
 import '../../domain/entities/cemetry_request_details/cemetry_request_details.dart';
 import '../../domain/entities/cemetry_requests/cemetry_request_response.dart';
 import '../../domain/entities/get_cemetries_params.dart';
 import '../../domain/entities/user_info_request_params.dart';
+import '../model/driver/EditAdditionalRequest.dart';
 import '../model/driver/GhuslEmploye.dart';
 import '../model/driver/deceased_attachment.dart';
 import '../model/driver/deceased_identical_item.dart';
@@ -355,10 +357,9 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel>> uploadLetter(
-      UploadLetterParamas params) async {
+  Future<Either<Failure, ResponseBodyModel<DeceasedAttachment>>> uploadAttachment(int attachmentId, FileDataItem params ) async {
     try {
-      final data = await remoteDataSource.uploadLetter(params);
+      final data = await remoteDataSource.uploadAttachment(attachmentId,params);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -450,10 +451,10 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, EkramAttachmentResponse>> downLoadAttachment(
-      int id) async {
+  Future<Either<Failure, EkramAttachmentResponse>> editAdditionalData(
+      EditAdditionalRequest request) async {
     try {
-      final data = await remoteDataSource.downLoadAttachment(id);
+      final data = await remoteDataSource.editAdditionalData(request.requestId!,request);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

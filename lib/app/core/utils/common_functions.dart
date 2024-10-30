@@ -50,6 +50,7 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
+import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
@@ -621,6 +622,7 @@ class CommonFunctions {
     String? body,
     bool authorization = false,
     String? corelationId,
+        String? xserviceId,
   }) {
     //var encodedURL = Uri.encodeComponent(url);
 
@@ -628,6 +630,7 @@ class CommonFunctions {
     message = url + method;
 
     if (corelationId != null) message += corelationId;
+    if (xserviceId != null) message += xserviceId;
     if (authorization) message += 'Bearer ${CommonProperties.token}';
 
     if (body != null) {
@@ -1383,7 +1386,16 @@ class CommonFunctions {
         if (serviceId == 2) {
           NavigationService.navigatorKey.currentState!
               .pushNamed(RouteName.dmsImageFullScreen, arguments: fileUrl);
-        } else {
+        }
+        else if(serviceId==0)
+          {
+            NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(
+                builder: (context) => ViewAPIGEEImageScreen(imgUrl: fileUrl,xServiceId: "${serviceId!}",)));
+          }
+
+        else {
+
+
           NavigationService.navigatorKey.currentState!
               .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
         }

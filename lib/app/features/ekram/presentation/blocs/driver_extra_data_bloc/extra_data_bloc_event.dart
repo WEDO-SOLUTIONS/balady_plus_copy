@@ -18,10 +18,23 @@ class DownLoadDeceasedAttachmentEvent extends ExtraDataEvent {
   final int id;
   const DownLoadDeceasedAttachmentEvent({required this.id});
 }
+class UploadDeceasedAttachmentEvent extends ExtraDataEvent {
+  final FileDataItem? file;
+  final int? attachmentId;
+  final int? requestId;
+  const UploadDeceasedAttachmentEvent({this.file, this.attachmentId, this.requestId});
+
+}
 
 class GetGhuslEmployeesEvent extends ExtraDataEvent {
   int requestId;
-   GetGhuslEmployeesEvent({required this.requestId});
+  String? ghuslEmployeeIdentityNo;
+   GetGhuslEmployeesEvent({required this.requestId,required this.ghuslEmployeeIdentityNo});
+}
+class EditAdditionalDataEvent extends ExtraDataEvent {
+  int requestId;
+
+  EditAdditionalDataEvent({required this.requestId});
 }
 class SetSelectEmployeeEvent extends ExtraDataEvent {
   int requestId;

@@ -39,7 +39,13 @@ class DeceasedIdenticalItem {
       this.tripable, 
       this.draft, 
       this.transferring, 
-      this.done,});
+      this.done,
+    this.ghuslEmployeeRequired,
+    this.ghuslEmployeeIdentityNo,
+    this.ghuslEmployeeName,
+    this.ghuslable,
+
+  });
 
   DeceasedIdenticalItem.fromJson(dynamic json) {
     requestId = json['requestId'];
@@ -82,6 +88,13 @@ class DeceasedIdenticalItem {
     draft = json['draft'];
     transferring = json['transferring'];
     done = json['done'];
+    ghuslEmployeeRequired = json['ghuslEmployeeRequired'];
+    ghuslEmployeeIdentityNo = json['ghuslEmployeeIdentityNo'];
+    ghuslEmployeeName = json['ghuslEmployeeName'];
+    ghuslable = json['ghuslable'];
+
+
+
   }
   int? requestId;
   dynamic subMunicipalityName;
@@ -123,51 +136,12 @@ class DeceasedIdenticalItem {
   bool? draft;
   bool? transferring;
   bool? done;
+  bool? ghuslEmployeeRequired;
+  String? ghuslEmployeeIdentityNo;
+  String? ghuslEmployeeName;
+  bool? ghuslable;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['requestId'] = requestId;
-    map['subMunicipalityName'] = subMunicipalityName;
-    map['municipalityName'] = municipalityName;
-    map['charityName'] = charityName;
-    map['deceasedIdentityTypeName'] = deceasedIdentityTypeName;
-    map['deceasedIdentityId'] = deceasedIdentityId;
-    map['deceasedNationalityName'] = deceasedNationalityName;
-    map['deceasedName'] = deceasedName;
-    map['deathCityName'] = deathCityName;
-    map['burialCityName'] = burialCityName;
-    map['cemeteryName'] = cemeteryName;
-    map['hospitalName'] = hospitalName;
-    map['gender'] = gender;
-    map['isMuslim'] = isMuslim;
-    map['requestDate'] = requestDate;
-    map['assignDriverDate'] = assignDriverDate;
-    map['deathDate'] = deathDate;
-    map['burialDate'] = burialDate;
-    map['vehicleName'] = vehicleName;
-    map['vehicleBrand'] = vehicleBrand;
-    map['driverName'] = driverName;
-    map['driverMobile'] = driverMobile;
-    map['transportCaseName'] = transportCaseName;
-    map['requestStatusId'] = requestStatusId;
-    map['requestStatusName'] = requestStatusName;
-    map['currentTrip'] = currentTrip;
-    map['nextTrip'] = nextTrip;
-    map['bodyRecipientName'] = bodyRecipientName;
-    map['bodyRecipientMobile'] = bodyRecipientMobile;
-    map['needSpecialTransport'] = needSpecialTransport;
-    map['specialTransportReasonId'] = specialTransportReasonId;
-    map['specialTransportReasonName'] = specialTransportReasonName;
-    map['specialTransportReasonOther'] = specialTransportReasonOther;
-    map['cancelable'] = cancelable;
-    map['editable'] = editable;
-    map['assignable'] = assignable;
-    map['tripable'] = tripable;
-    map['draft'] = draft;
-    map['transferring'] = transferring;
-    map['done'] = done;
-    return map;
-  }
+
 
   String getSpecialTransferReason() {
     if (needSpecialTransport == true) {
