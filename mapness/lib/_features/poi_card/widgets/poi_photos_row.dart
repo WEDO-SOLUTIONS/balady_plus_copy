@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
@@ -86,7 +85,7 @@ class PoiPhotosRow extends ConsumerWidget {
 
                             PhotoViewerRoute.open(ref.read(goRouterProvider), index, photos);
                           },
-                          imageUrl: photo,
+                          imageUrl: photosState.requireValue.items[index].previewUrls?.smallByWidth ?? photo,
                           fit: BoxFit.cover,
                         ),
                       ),

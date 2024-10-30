@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/library.dart';
+import 'package:dgis_map_platform_interface/src/control_handlers/android_auto_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/camera_state_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/indoor_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/location_event_handler.dart';
@@ -15,6 +16,7 @@ import 'package:dgis_map_platform_interface/src/control_handlers/public_transpor
 import 'package:dgis_map_platform_interface/src/control_handlers/traffic_and_parking_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/visible_rect_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/zoom_event_handler.dart';
+import 'package:dgis_map_platform_interface/src/events/android_auto_connection_event.dart';
 import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
 import 'package:flutter/services.dart';
 
@@ -44,6 +46,7 @@ class DgisMapPlugin extends FlutterMapApi {
   late final _navigationEventHandler = NavigationEventHandler();
   late final _naviSpeedEventHandler = SpeedEventHandler();
   late final _naviDashboardEventHandler = DashboardEventHandler();
+  late final _androidAutoHandler = AndroidAutoHandler();
   late final _compassEventHandler = CompassEventHandler();
   late final _publicTransportEventHandler = PublicTransportEventHandler();
   late final _naviMessageEventHandler = MessageEventHandler();
@@ -82,6 +85,8 @@ class DgisMapPlugin extends FlutterMapApi {
   Stream<BetterRouteInfoEvent> get betterRouteInfoEvents => _routesEventHandler.betterRouteInfoEvents;
 
   Stream<NavigationEvent> get navigationEvents => _navigationEventHandler.navigationEvents;
+
+  Stream<bool> get androidAutoConnectionEvents => _androidAutoHandler.androidAutoEvents;
 
   Stream<NaviDashboardEvent> get naviDashboardEvents => _naviDashboardEventHandler.dashboardEvents;
 
@@ -143,6 +148,7 @@ class DgisMapPlugin extends FlutterMapApi {
     await _navigationEventHandler.dispose();
     await _naviSpeedEventHandler.dispose();
     await _naviDashboardEventHandler.dispose();
+    await _androidAutoHandler.dispose();
     await _compassEventHandler.dispose();
     await _naviManeuverEventHandler.dispose();
     await _trafficAndParkingStateEventHandler.dispose();
@@ -214,6 +220,8 @@ class DgisMapPlugin extends FlutterMapApi {
             return _routesEventHandler.betterRouteInfoEvent(map);
           case NavigationEvent.name:
             return _navigationEventHandler.handleNavigationEvent(map);
+          case AndroidAutoConnectionEvent.name:
+            return _androidAutoHandler.handleAndroidAutoConnectionEvent(map);
           case IoTapEvent.name:
             return _objectTapEventHandler.onIoTap(map);
           case IdleTapEvent.name:
@@ -735,6 +743,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.stopFreeRoam();
   }
 
+  Future<bool> getAndroidAutoConnectionState() {
+    return _api.getAndroidAutoConnectionState();
+  }
+
   /// The [toggleVoiceInstruction] is responsible for switching the sound.
   ///
   /// Parameters:
@@ -904,4 +916,6 @@ class DgisMapPlugin extends FlutterMapApi {
   Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _api.getBetterRouteSettings();
 
   Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _api.setBetterRouteSettings(message);
+
+  Future<void> setBetterRouteEnabled(bool enabled) => _api.setBetterRouteEnabled(enabled);
 }

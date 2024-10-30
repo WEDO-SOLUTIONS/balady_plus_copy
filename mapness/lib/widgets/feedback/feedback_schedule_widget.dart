@@ -33,10 +33,13 @@ class FeedbackScheduleWidget extends StatelessWidget {
     return FormBuilderField<_FieldPayload>(
         name: field.id,
         valueTransformer: (value) {
-          if (value == null) {
+          if (value == null || value.isEmpty) {
             return null;
           }
-          return FeedbackSchedulePayloadDto.fromDomain(value).toJson();
+
+          final days = FeedbackSchedulePayloadDto.fromDomain(value);
+
+          return days.isNotEmpty() ? days.toJson() : null;
         },
         validator: (value) {
           /// not required => may be empty
