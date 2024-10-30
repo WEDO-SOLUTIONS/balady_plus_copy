@@ -18,6 +18,13 @@ class PoiCardMapControls extends StatelessWidget {
   static const topPadding = ui_kit.Spacing.$3x;
   static const bottomPadding = ui_kit.Spacing.$4x;
 
+  static const padding = EdgeInsets.only(
+    left: PoiCardMapControls.horizontalPadding,
+    top: PoiCardMapControls.topPadding,
+    right: PoiCardMapControls.horizontalPadding,
+    bottom: PoiCardMapControls.bottomPadding,
+  );
+
   @override
   Widget build(BuildContext context) => Directionality(
         textDirection: TextDirection.ltr,
@@ -27,12 +34,7 @@ class PoiCardMapControls extends StatelessWidget {
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: PoiCardMapControls.horizontalPadding,
-                    top: PoiCardMapControls.topPadding,
-                    right: PoiCardMapControls.horizontalPadding,
-                    bottom: PoiCardMapControls.bottomPadding,
-                  ),
+                  padding: PoiCardMapControls.padding,
                   child: Row(
                     children: [
                       const Column(
@@ -47,9 +49,7 @@ class PoiCardMapControls extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const LayersControl(),
-                          const SizedBox(
-                            height: 8,
-                          ),
+                          const SizedBox(height: ui_kit.Spacing.$2x),
                           Consumer(
                             builder: (context, ref, _) {
                               final navi = ref.watch(appFeaturesProvider);

@@ -17,7 +17,6 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
-// import 'package:mapness/features/poi_card/domain/model/poi_bottom_sheet_config.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/poi_card_state_mapper.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
