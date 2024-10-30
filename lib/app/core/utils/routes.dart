@@ -15,6 +15,7 @@ import 'package:balady_plus/app/features/profile_features/help/presentation/scre
 import 'package:balady_plus/app/features/profile_features/rate_us/rate_us.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
+import 'package:balady_plus/app/features/splash/presentation/pages/splash_page.dart';
 import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
 import 'package:balady_plus/app/features/zmzm_points/zmzm_points_exports.dart';
 import 'package:flutter/material.dart'
@@ -300,6 +301,7 @@ class Routes {
   };
   static Map<String, Widget Function(BuildContext)> routesApp = {
     RouteName.bottomNavigation: (context) => const b.BottomNavigationPage(),
+    RouteName.splashScreen: (context) => const SplashPage(),
     RouteName.AppointmentsListScreen: (context) =>
         const AppointmentsListScreen(),
 

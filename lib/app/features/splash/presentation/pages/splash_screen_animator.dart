@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:gif/gif.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
@@ -20,60 +20,36 @@ class SplashScreenAnimator extends StatefulWidget {
   State<SplashScreenAnimator> createState() => _SplashScreenAnimatorState();
 }
 
-class _SplashScreenAnimatorState extends State<SplashScreenAnimator> with SingleTickerProviderStateMixin {
-
-
+class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
+    with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    String image = "assets/images/splash-screen.gif";
+    // check if time to change the splash screen set the new splash screen
     if (CommonFunctions.changeSpalsh()) {
-      return Scaffold(
-        backgroundColor: AppColor.primary900Light,
-        body: SizedBox(
-          width: double.maxFinite,
-          height: double.maxFinite,
-          child: Gif(
-            image: const AssetImage("assets/images/splash-screen.gif"),
-            // controller: GifController(vsync: this), // if duration and fps is null, original gif fps will be used.
-            // fps: 30,
-            // duration: const Duration(seconds: 10),
-            fit: BoxFit.cover,
-            autostart: Autostart.once,
-            onFetchCompleted: () async {
-              await Future.delayed(const Duration(seconds: 4));
-              sl<EntryPointCubit>().hideSplash();
-            },
-          ),
-        ),
-      );
-
-      // return Gif(
-      //   image: const AssetImage("assets/images/splash-screen.gif"),
-      //   // controller:
-      //   //    _controller, // if duration and fps is null, original gif fps will be used.
-      //   fps: 30,
-      //
-      //   fit: BoxFit.cover,
-      //
-      //   duration: const Duration(seconds: 10),
-      //   autostart: Autostart.once,
-      //   onFetchCompleted: () {},
-      // );
+      image = "assets/images/splash-screen-2.gif";
     }
     return Scaffold(
-        backgroundColor: AppColor.primary900Light,
-        body: AnimatedBuilder(
-          animation: widget.animation.controller,
-          builder: (context, _) {
-            return Center(
-              child: Lottie.asset(
-                'assets/animation/logo.json',
-                fit: BoxFit.fill,
-                height: 168,
-                width: 228,
-                controller: widget.controller,
-              ),
-            );
+      backgroundColor: AppColor.primary900Light,
+      body: SizedBox(
+        width: double.maxFinite,
+        height: double.maxFinite,
+        child: Gif(
+          image: AssetImage(image),
+          fit: BoxFit.cover,
+          autostart: Autostart.once,
+          onFetchCompleted: () async {
+            // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
+            Future.delayed(const Duration(milliseconds: 1300)).then((e) {
+              sl<EntryPointCubit>().hideSplash();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                RouteName.bottomNavigation,
+                (route) => false,
+              );
+            });
           },
-        ));
+        ),
+      ),
+    );
   }
 }

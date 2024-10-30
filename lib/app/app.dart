@@ -204,7 +204,7 @@ class AppWidgetState extends State<AppWidget> {
             // Active locale
             supportedLocales: translator.locals(),
             // Locals list
-            initialRoute: RouteName.bottomNavigation,
+            initialRoute: RouteName.splashScreen,
             routes: Routes.routes(),
           ),
         ),
