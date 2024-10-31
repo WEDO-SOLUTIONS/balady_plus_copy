@@ -8,6 +8,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -29,8 +30,15 @@ class RouteTabBar extends ConsumerStatefulWidget {
 
 class _RouteTabBarState extends ConsumerState<RouteTabBar> {
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+  Widget build(BuildContext context) {
+    final carConnected = ref.watch(carConnectionProvider).maybeWhen(
+          data: (connected) => connected,
+          orElse: () => false,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: ChipsSize.medium.verticalSize),
         child: Row(
           children: [
             AppButton(
@@ -39,10 +47,13 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
               size: ButtonSize.small,
               primaryIcon: SystemIcons.tuning,
             ),
-            ..._getRouteSearchOptionsWidgets(context),
+            // when car connected, choice of route search options shouldn't be available to user
+            if (!carConnected) ..._getRouteSearchOptionsWidgets(context),
           ].insertBetween(Spacing.$2x.widthBox).toList(),
         ),
-      );
+      ),
+    );
+  }
 
   List<Widget> _getRouteSearchOptionsWidgets(BuildContext context) {
     final routes = ref

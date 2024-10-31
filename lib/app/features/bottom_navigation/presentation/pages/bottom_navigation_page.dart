@@ -1,9 +1,8 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
-import 'package:balady_plus/app/features/splash/splash_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocBuilder, BlocProvider, MultiBlocProvider;
+    show  BlocProvider, MultiBlocProvider;
 
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
@@ -19,74 +18,57 @@ import 'mapness_page.dart';
 
 import 'package:balady_authorization/auth_package.dart';
 
-class BottomNavigationPage extends StatefulWidget {
+class BottomNavigationPage extends StatelessWidget {
   const BottomNavigationPage({super.key});
 
   @override
-  State<BottomNavigationPage> createState() => _BottomNavigationPageState();
-}
-
-class _BottomNavigationPageState extends State<BottomNavigationPage> {
-  @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        MultiBlocProvider(
-          providers: [
-            BlocProvider<BottomNavBarCubit>(
-              create: (_) =>
-                  BottomNavBarCubit(initialNavBar: BottomNavBar.home),
-            ),
-            BlocProvider<PrayerTimesCubit>(
-              create: (_) => sl<PrayerTimesCubit>(),
-            ),
-            BlocProvider<ServicesCubit>(
-              create: (_) => ServicesCubit(
-                islamicServices: sl(),
-                businessLicenseServices: sl(),
-                municipalServices: sl(),
-                ekramServices: sl(),
-                //healthCertificatesServices: sl(),
-                helpServices: sl(),
-              ),
-            ),
-            BlocProvider<DelegatorsCubit>(
-              create: (_) => sl<DelegatorsCubit>(),
-            ),
-            BlocProvider<PrayerTimesCubit>(
-              create: (_) => sl<PrayerTimesCubit>(),
-            ),
-            BlocProvider<WeatherBloc>(
-              create: (_) => sl<WeatherBloc>(),
-            ),
-          ],
-          child: BaladyAuthorizationWidget(
-            authenticated: (LoginDataModel data) {
-              // sl<EntryPointCubit>().onLoadingApp();
-              sl<EntryPointCubit>().onLoginV2(data: data);
-              Navigator.of(context).popUntil(
-                ModalRoute.withName(
-                  RouteName.bottomNavigation,
-                ),
-              );
-            },
-            unAuthenticatedState: (data) {
-              sl<EntryPointCubit>().clearAuth();
-            },
-            linkWithNafaz: () {
-              sl<EntryPointCubit>().onLoginNfaaz();
-            },
-            child: const MapnessPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<BottomNavBarCubit>(
+          create: (_) => BottomNavBarCubit(initialNavBar: BottomNavBar.home),
+        ),
+        BlocProvider<PrayerTimesCubit>(
+          create: (_) => sl<PrayerTimesCubit>(),
+        ),
+        BlocProvider<ServicesCubit>(
+          create: (_) => ServicesCubit(
+            islamicServices: sl(),
+            businessLicenseServices: sl(),
+            municipalServices: sl(),
+            ekramServices: sl(),
+            //healthCertificatesServices: sl(),
+            helpServices: sl(),
           ),
         ),
-        BlocBuilder<EntryPointCubit, EntryPointState>(
-          builder: (BuildContext context, EntryPointState state) {
-            if (!state.showSplash) return SizedBox.shrink();
-
-            return SplashPage();
-          },
+        BlocProvider<DelegatorsCubit>(
+          create: (_) => sl<DelegatorsCubit>(),
+        ),
+        BlocProvider<PrayerTimesCubit>(
+          create: (_) => sl<PrayerTimesCubit>(),
+        ),
+        BlocProvider<WeatherBloc>(
+          create: (_) => sl<WeatherBloc>(),
         ),
       ],
+      child: BaladyAuthorizationWidget(
+        authenticated: (LoginDataModel data) {
+          // sl<EntryPointCubit>().onLoadingApp();
+          sl<EntryPointCubit>().onLoginV2(data: data);
+          Navigator.of(context).popUntil(
+            ModalRoute.withName(
+              RouteName.bottomNavigation,
+            ),
+          );
+        },
+        unAuthenticatedState: (data) {
+          sl<EntryPointCubit>().clearAuth();
+        },
+        linkWithNafaz: () {
+          sl<EntryPointCubit>().onLoginNfaaz();
+        },
+        child: const MapnessPage(),
+      ),
     );
   }
 }

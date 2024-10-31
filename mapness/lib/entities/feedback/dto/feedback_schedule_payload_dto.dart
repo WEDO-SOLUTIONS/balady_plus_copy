@@ -32,6 +32,10 @@ class FeedbackSchedulePayloadDto {
     this.sun,
   });
 
+  bool isNotEmpty() {
+    return [mon, tue, wed, thu, fri, sat, sun].every((element) => element != null);
+  }
+
   factory FeedbackSchedulePayloadDto.fromDomain(
     IList<FeedbackScheduleWorkingHoursEntity> entities,
   ) {
