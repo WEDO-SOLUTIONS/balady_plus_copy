@@ -14,6 +14,14 @@ import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/events.dart';
+import 'package:mapness/app/routes/kiblah.dart';
+import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -22,6 +30,7 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/ui/loading/service_not_available_sheet.dart';
 
 @RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
@@ -62,6 +71,21 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
 
     _calculatePadding();
+  }
+
+  void _showServiceNotAvilibleSheet() {
+    // Show not available sheet if service is not available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (rootNavigatorKey.currentContext?.mounted ?? false) {
+        showModalBottomSheet(
+          context: rootNavigatorKey.currentContext!,
+          backgroundColor: Colors.transparent,
+          builder: (_) => Builder(
+            builder: (ctx) => const ServiceNotAvailableSheet(),
+          ),
+        );
+      }
+    });
   }
 
   void _calculatePadding() {
@@ -119,6 +143,20 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     ref
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
+      ..listen(currentRouteProvider, (_, next) {
+        if (next?.currentPath == KiblahRoute.path) {
+          bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+        }
+      })
+      ..listen(serviceNotAvailableProvider, (prev, isAvailible) {
+        final isPrevIsAvailible = prev?.valueOrNull ?? true;
+        final isAvailibleValue = isAvailible.valueOrNull;
+
+        // Show only if service is not available
+        if (isPrevIsAvailible == true && isAvailibleValue == false) {
+          _showServiceNotAvilibleSheet();
+        }
+      })
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)

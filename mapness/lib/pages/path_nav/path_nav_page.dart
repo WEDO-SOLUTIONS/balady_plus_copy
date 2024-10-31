@@ -29,6 +29,7 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -165,12 +166,22 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(
-      betterRouteProvider,
-      (_, next) => next == null
-          ? _betterRouteDurationProfit.value = null
-          : _betterRouteDurationProfit.value = next.durationProfit,
-    );
+    ref
+      ..listen(
+        betterRouteProvider,
+        (_, next) => next == null
+            ? _betterRouteDurationProfit.value = null
+            : _betterRouteDurationProfit.value = next.durationProfit,
+      )
+      ..listen(carConnectionProvider, (_, next) {
+        final connected = next.valueOrNull ?? false;
+        final shouldEndTrip = connected &&
+            widget.navType != RouteSearchOptionsMessage.car &&
+            _navigationState.value != PathNavState.finished;
+        if (shouldEndTrip) {
+          _endTripAndShowHome();
+        }
+      });
     final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
 
     // We use the Directionality widget to set the text direction to ltr.
@@ -344,13 +355,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       log(e.toString());
     }
 
-    action();
     if (_navigationState.value != PathNavState.finished) {
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
-      _navigationState.value = PathNavState.finished;
     }
+
     await clearNavigationState();
+    action();
 
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
@@ -418,7 +429,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           clearNavigationState(),
         );
       case NavigationEvent.disabled:
-        _endTripAndShowHome();
+        if (_navigationState.value != PathNavState.finished) {
+          _endTripAndShowHome();
+        }
     }
   }
 

@@ -85,7 +85,7 @@ class PoiPhotosRow extends ConsumerWidget {
 
                             context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index));
                           },
-                          imageUrl: photo,
+                          imageUrl: photosState.requireValue.items[index].previewUrls?.smallByWidth ?? photo,
                           fit: BoxFit.cover,
                         ),
                       ),

@@ -9,7 +9,7 @@ import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../../core/errors/exceptions.dart';
 import '../../../../../../core/remote_services/api_constants.dart';
-import '../../../../../../core/remote_services/web_service.dart';
+import '../../../../../../core/remote_services/pega_web_service.dart';
 import '../../../../../../core/services/global/web_service.dart' as webService;
 import '../../../../../../core/services/global/web_service.dart' as web;
 import '../../../../../../core/services/local/helpers.dart';
@@ -34,7 +34,7 @@ import '../../models/upload_file_resepnse.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class AppointmentRepository {
-  final webServices = locator<WebService>();
+  final webServices = locator<PegaWebService>();
 
   Future<Tuple3<bool?, String?, LookUpList?>> getLookupList(String type) async {
     String query = type;

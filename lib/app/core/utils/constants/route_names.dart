@@ -374,6 +374,7 @@ class RouteName {
   static const transferLicensePermits = 'transferLicensePermits_Screen';
   static const newOwner = 'newOwner_Screen';
   static const SucessfullScreen = 'Sucessfull_Screen';
+  static const chatHistoryDetailsRoute = 'chat_history_details';
 
 }
 
@@ -443,4 +444,6 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
+
+
 }

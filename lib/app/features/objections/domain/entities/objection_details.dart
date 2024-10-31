@@ -3,12 +3,13 @@ import 'package:intl/intl.dart';
 import '../../../../core/utils/constants/remote_config.dart';
 
 class ObjectionDetails {
-  final int? subMunicipalityId;
+
+  final String? subMunicipalityId;
   final DateTime? lastUpdatedDate;
   final CommitteeDecision? committeeDecision;
-  final int? serviceGroupName;
+  final String? serviceGroupName;
   final String? serviceGroupId;
-  final int? municipalityName;
+  final String? municipalityName;
   final String? municipalityId;
   final String? requestStatusName;
   final String? serviceId;

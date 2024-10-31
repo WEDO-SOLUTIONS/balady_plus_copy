@@ -32,6 +32,7 @@ export 'src/events/route_changed_events.dart'
         RoutesInfoChangedEvent,
         RouteInfo,
         BetterRouteInfoEvent;
+export 'src/events/android_auto_connection_event.dart';
 export 'src/events/route_options_event.dart';
 export 'src/events/traffic_state_event.dart'
     show TrafficStateEvent, TrafficControlStatus;

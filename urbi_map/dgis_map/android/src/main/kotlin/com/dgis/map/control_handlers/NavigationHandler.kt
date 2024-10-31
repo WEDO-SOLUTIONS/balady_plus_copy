@@ -369,6 +369,11 @@ class NavigationHandler(
         navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold =
             RouteDistance(settings.betterRouteLengthThreshold)
     }
+    
+    fun setBetterRouteEnabled(enabled: Boolean) {
+        navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled =
+        enabled
+    }
 
     fun calcPositionForRoute(
         options: Messages.CalcPositionOptionsMessage,

@@ -102,14 +102,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  auto_route:
-    dependency: transitive
-    description:
-      name: auto_route
-      sha256: b83e8ce46da7228cdd019b5a11205454847f0a971bca59a7529b98df9876889b
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.2.2"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -126,6 +118,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.8"
+  balady_authorization:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "4582b64417b72002f951f0e3e0a4d8b417a849cf"
+      url: "https://github.com/urbi-ae/balady_authorization.git"
+    source: git
+    version: "0.0.25"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -633,10 +634,10 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: "167bb619cdddaa10ef2907609feb8a79c16dfa479d3afaf960f8e223f754bf12"
+      sha256: aac85f20436608e01a6ffd1fdd4e746a7f33c93a2c83752e626bdfaea139b877
       url: "https://pub.dev"
     source: hosted
-    version: "8.1.2"
+    version: "8.1.3"
   file_selector_linux:
     dependency: transitive
     description:
@@ -774,18 +775,19 @@ packages:
   flutter_appauth:
     dependency: "direct main"
     description:
-      path: "packages/flutter_appauth/flutter_appauth"
-      relative: true
-    source: path
-    version: "2.2.0+1"
+      name: flutter_appauth
+      sha256: "84e8753fe20864da241892823ff7dbd252baa34f1649d6feb48118e8ae829ed1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.1"
   flutter_appauth_platform_interface:
     dependency: transitive
     description:
       name: flutter_appauth_platform_interface
-      sha256: "1abe02e3078dbd481e3823959f24c90f619186b661a3fb908d3e2e94c646c227"
+      sha256: "0959824b401f3ee209c869734252bd5d4d4aab804b019c03815c56e3b9a4bc34"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.0"
+    version: "7.0.1"
   flutter_bloc:
     dependency: "direct main"
     description:
@@ -1386,6 +1388,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  go_router:
+    dependency: transitive
+    description:
+      name: go_router
+      sha256: "4b58412b92bd7d588f904425ef6d41a017da1f097e5e9428d2c27d275777e16e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.1.1"
   google_api_headers:
     dependency: transitive
     description:
@@ -1394,6 +1404,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.0"
+  google_fonts:
+    dependency: transitive
+    description:
+      name: google_fonts
+      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.1"
   google_maps:
     dependency: transitive
     description:
@@ -1731,6 +1749,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  keyboard_actions:
+    dependency: transitive
+    description:
+      name: keyboard_actions
+      sha256: "31e0ab2a706ac8f58887efa60efc1f19aecdf37d8ab0f665a0f156d1fbeab650"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
   launch_review:
     dependency: "direct main"
     description:
@@ -1811,6 +1837,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  local_auth:
+    dependency: transitive
+    description:
+      name: local_auth
+      sha256: "434d854cf478f17f12ab29a76a02b3067f86a63a6d6c4eb8fbfdcfe4879c1b7b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  local_auth_android:
+    dependency: transitive
+    description:
+      name: local_auth_android
+      sha256: "6763aaf8965f21822624cb2fd3c03d2a8b3791037b5efb0fe4b13e110f5afc92"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.46"
+  local_auth_darwin:
+    dependency: transitive
+    description:
+      name: local_auth_darwin
+      sha256: "6d2950da311d26d492a89aeb247c72b4653ddc93601ea36a84924a396806d49c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.1"
+  local_auth_platform_interface:
+    dependency: transitive
+    description:
+      name: local_auth_platform_interface
+      sha256: "1b842ff177a7068442eae093b64abe3592f816afd2a533c0ebcdbe40f9d2075a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.10"
+  local_auth_windows:
+    dependency: transitive
+    description:
+      name: local_auth_windows
+      sha256: bc4e66a29b0fdf751aafbec923b5bed7ad6ed3614875d8151afe2578520b2ab5
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.11"
   localize_and_translate:
     dependency: "direct main"
     description:
@@ -1832,10 +1898,10 @@ packages:
     dependency: transitive
     description:
       name: logging
-      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
+      sha256: c8245ada5f1717ed44271ed1c26b8ce85ca3228fd2ffdb75468ab01979309d61
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "1.3.0"
   lottie:
     dependency: "direct main"
     description:
@@ -2006,10 +2072,12 @@ packages:
   open_file_plus:
     dependency: "direct main"
     description:
-      path: "packages/open_file_plus-3.4.1"
-      relative: true
-    source: path
-    version: "3.4.1"
+      path: "."
+      ref: HEAD
+      resolved-ref: a37394eec7d6c0928bf4031552f547b6f5b2856e
+      url: "https://github.com/urbi-ae/open_file_plus"
+    source: git
+    version: "3.4.1+1"
   package_config:
     dependency: transitive
     description:
@@ -2142,10 +2210,10 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_android
-      sha256: "76e4ab092c1b240d31177bb64d2b0bea43f43d0e23541ec866151b9f7b2490fa"
+      sha256: "71bbecfee799e65aff7c744761a57e817e73b738fedf62ab7afd5593da21f9f1"
       url: "https://pub.dev"
     source: hosted
-    version: "12.0.12"
+    version: "12.0.13"
   permission_handler_apple:
     dependency: transitive
     description:
@@ -2214,10 +2282,10 @@ packages:
     dependency: transitive
     description:
       name: platform
-      sha256: "9b71283fc13df574056616011fb138fd3b793ea47cc509c189a6c3fa5f8a1a65"
+      sha256: "5d6b1b0036a5f331ebc77c850ebc8506cbc1e9416c27e59b439f917a902a4984"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.5"
+    version: "3.1.6"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -2394,6 +2462,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.8"
+  search_highlight_text:
+    dependency: transitive
+    description:
+      name: search_highlight_text
+      sha256: "72f0784dad9c9328980a382f1c3bf9518366a444d2061ed92c6f5f482dbb21f2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+2"
   sentry:
     dependency: transitive
     description:
@@ -2422,10 +2498,10 @@ packages:
     dependency: "direct main"
     description:
       name: share_plus
-      sha256: fec12c3c39f01e4df1ec6ad92b6e85503c5ca64ffd6e28d18c9ffe53fcc4cb11
+      sha256: "334fcdf0ef9c0df0e3b428faebcac9568f35c747d59831474b2fc56e156d244e"
       url: "https://pub.dev"
     source: hosted
-    version: "10.0.3"
+    version: "10.1.0"
   share_plus_platform_interface:
     dependency: transitive
     description:
@@ -2527,6 +2603,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.12"
+  smart_advisor:
+    dependency: "direct main"
+    description:
+      path: smart_advisor
+      relative: true
+    source: path
+    version: "0.0.1"
   smart_auth:
     dependency: transitive
     description:
@@ -2672,6 +2755,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  syncfusion_flutter_core:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_core
+      sha256: "6e67726b85812afc7105725a23620b876ab7f6b04b8410e211330ffb8c2cdbe8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
+  syncfusion_flutter_datepicker:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_datepicker
+      sha256: "9d0e1db2f49cef3fde28c5a42c7ef9b64fc9a49c52557eb6961cd41af3cf8adc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
+  syncfusion_localizations:
+    dependency: "direct main"
+    description:
+      name: syncfusion_localizations
+      sha256: "99c3586b2502d2bc4b4c8286c83061b8bf2b5c9e4617433b7576f3d1409d099e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
   synchronized:
     dependency: transitive
     description:
@@ -2740,10 +2847,10 @@ packages:
     dependency: transitive
     description:
       name: typed_data
-      sha256: facc8d6582f16042dd49f2463ff1bd6e2c9ef9f3d5da3d9b087e244a7b564b3c
+      sha256: f9049c039ebfeb4cf7a7104a675823cd72dba8297f264b6637062516699fa006
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.2"
+    version: "1.4.0"
   unicode:
     dependency: transitive
     description:
@@ -2844,10 +2951,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_windows
-      sha256: "49c10f879746271804767cb45551ec5592cdab00ee105c06dddde1a98f73b185"
+      sha256: "44cf3aabcedde30f2dba119a9dea3b0f2672fbe6fa96e85536251d678216b3c4"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.3"
   uuid:
     dependency: "direct main"
     description:
@@ -3020,10 +3127,10 @@ packages:
     dependency: transitive
     description:
       name: widgetbook
-      sha256: "4db3ab02c3159dd898b362c8681b9cdabda33caae3a9d13e3fc71231a485ad33"
+      sha256: "91841d7e5cf0ba710e30c11a0ec29a632a13a275381730849fdd91bd0e7f7352"
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.0"
+    version: "3.10.0"
   widgetbook_annotation:
     dependency: transitive
     description:
@@ -3036,10 +3143,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: e5c39a90447e7c81cfec14b041cdbd0d0916bd9ebbc7fe02ab69568be703b9bd
+      sha256: "2735daae5150e8b1dfeb3eb0544b4d3af0061e9e82cef063adcd583bdae4306a"
       url: "https://pub.dev"
     source: hosted
-    version: "5.6.0"
+    version: "5.7.0"
   win32_registry:
     dependency: transitive
     description:

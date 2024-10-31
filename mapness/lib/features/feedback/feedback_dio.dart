@@ -19,8 +19,8 @@ Future<Dio> feedbackDio(AutoDisposeFutureProviderRef ref) async {
 
   return Dio(baseDio.options.copyWith(
     baseUrl: env.feedbackApi,
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(seconds: 30),
-    sendTimeout: const Duration(seconds: 30),
+    connectTimeout: const Duration(seconds: 120),
+    receiveTimeout: const Duration(seconds: 120),
+    sendTimeout: const Duration(seconds: 120),
   ));
 }
