@@ -22,7 +22,9 @@ class MapnessFunctions {
           if (startPoint?.latitude != null && startPoint?.longitude != null) RouteParamsPoint(
             latitude: startPoint!.latitude,
             longitude: startPoint.longitude,
-          ),
+            )
+          else
+            null,
           RouteParamsPoint(
             latitude: finishPoint.latitude,
             longitude: finishPoint.longitude,

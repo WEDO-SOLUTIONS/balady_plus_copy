@@ -215,6 +215,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       action: MetricAction.tap.toString(),
     );
 
-    context.back();
+    context.router.maybePop();
   }
 }

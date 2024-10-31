@@ -1,12 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+import '../../../_features/favourites/domain/favourite_item.dart';
 
 class QuickFilters extends ConsumerWidget {
   final models.QuickFilter? selectedQuickFilter;
@@ -54,6 +59,7 @@ class QuickFilters extends ConsumerWidget {
             }
 
             onFavouritesTap();
+            _showRouting(home, context);
           },
         ),
       if (favouritesState.valueOrNull?.work != null)
@@ -69,6 +75,7 @@ class QuickFilters extends ConsumerWidget {
             }
 
             onFavouritesTap();
+            _showRouting(work, context);
           },
         ),
     ];
@@ -100,6 +107,24 @@ class QuickFilters extends ConsumerWidget {
       height: height,
       id: id,
       itemScrollController: itemScrollController,
+    );
+  }
+
+  void _showRouting(
+    FavouriteItem point,
+    BuildContext context,
+  ) {
+    context.router.push(
+      RoutingRoutesRoute(
+        points: [
+          null,
+          RouteParamsPoint(
+            latitude: point.coordinates.latitude,
+            longitude: point.coordinates.longitude,
+          )
+        ],
+        labels: [context.l10n.myLocation, point.title],
+      ),
     );
   }
 }

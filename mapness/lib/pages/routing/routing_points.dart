@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -190,14 +189,18 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                   longitude: start.longitude!,
                   objectId: start.objectId,
                   entranceId: start.entranceId,
-                  levelId: start.levelId),
+                levelId: start.levelId,
+              )
+            else
+              null,
             if (finish.latitude != null && finish.longitude != null)
               RouteParamsPoint(
                   latitude: finish.latitude!,
                   longitude: finish.longitude!,
                   objectId: finish.objectId,
                   entranceId: finish.entranceId,
-                  levelId: finish.levelId)
+                levelId: finish.levelId,
+              )
           ],
           labels: [
             start.title(context.l10n) ?? '',
@@ -205,6 +208,8 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           ],
         ),
       );
+
+      points[1] = RoutePointFavouriteItem(null);
     }
   }
 

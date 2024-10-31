@@ -71,7 +71,6 @@ class RoutingHistory extends ConsumerWidget {
 
                 final point = RoutePointDirectoryObject(object);
                 updatePoint(point);
-                // ignore: avoid_catches_without_on_clauses
               } catch (e) {
                 final result = await showDialog(
                   barrierColor: Colors.transparent,

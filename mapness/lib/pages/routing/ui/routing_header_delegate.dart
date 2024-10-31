@@ -131,9 +131,7 @@ class RoutingHeader extends ConsumerWidget {
                 updatePoints(points);
               },
             ),
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
           ],
         ),
       );

@@ -418,9 +418,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
           type: MaterialType.transparency,
           child: ScrollConfiguration(
             behavior: widget.scrollBehavior,
-            child:
-                // todo(somebody): provide theme when ready
-                PopScope(
+            child: PopScope(
               onPopInvokedWithResult: onPopInvokedWithResult,
               child: Stack(
                 children: [
@@ -897,19 +895,23 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   /// Если [PopScope] есть выше по дереву, например в корне экрана,
   /// необходимо сначала вызвать этот метод для текущего [DgisBottomSheet]
   /// и только после, если метод вернул true, выполнять свою логику
-  Future<bool> onPopInvokedWithResult(didPop, Object? result) async {
+
+  bool isFirstOpen = false;
+
+  Future<void> onPopInvokedWithResult(didPop, Object? result) async {
     final lowestAvailableExpansion = _lowestAvailableExpansion();
     if (_expansion == lowestAvailableExpansion) {
       if (result != null) {
         await context.router.maybePop(result);
-        return false;
       }
-
-      return true;
     } else {
-      // ignore: unawaited_futures
-      setExpansion(lowestAvailableExpansion, byUser: true);
-      return false;
+      /// Пришлось сделать такую реализацию, на новом боттом щите Дани это уйдет.
+      /// [PopScope] вызывает метод при запуске скрина,что нарушает логику и pop срабатывает два раза, и выходит с экрана
+      if (isFirstOpen) {
+        await setExpansion(lowestAvailableExpansion, byUser: true);
+      } else {
+        isFirstOpen = true;
+      }
     }
   }
 
