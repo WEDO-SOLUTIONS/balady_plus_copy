@@ -13,14 +13,8 @@ import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/events.dart';
-import 'package:mapness/app/routes/kiblah.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/app/routes/routes.dart';
-import 'package:mapness/app/routes/routing.dart';
-import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -143,11 +137,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     ref
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
-      ..listen(currentRouteProvider, (_, next) {
-        if (next?.currentPath == KiblahRoute.path) {
-          bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-        }
-      })
       ..listen(serviceNotAvailableProvider, (prev, isAvailible) {
         final isPrevIsAvailible = prev?.valueOrNull ?? true;
         final isAvailibleValue = isAvailible.valueOrNull;

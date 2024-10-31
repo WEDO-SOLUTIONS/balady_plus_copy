@@ -102,6 +102,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  auto_route:
+    dependency: transitive
+    description:
+      name: auto_route
+      sha256: b83e8ce46da7228cdd019b5a11205454847f0a971bca59a7529b98df9876889b
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.2.2"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -122,11 +130,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: "4582b64417b72002f951f0e3e0a4d8b417a849cf"
-      url: "https://github.com/urbi-ae/balady_authorization.git"
+      ref: main
+      resolved-ref: cc6098223963df8033a85501e73fdc99575c6ed8
+      url: "git@github.com:urbi-ae/balady_authorization.git"
     source: git
-    version: "0.0.25"
+    version: "0.0.28"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -1388,14 +1396,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  go_router:
-    dependency: transitive
-    description:
-      name: go_router
-      sha256: "4b58412b92bd7d588f904425ef6d41a017da1f097e5e9428d2c27d275777e16e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.1.1"
   google_api_headers:
     dependency: transitive
     description:

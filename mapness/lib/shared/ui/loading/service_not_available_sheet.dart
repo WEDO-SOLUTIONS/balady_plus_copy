@@ -1,7 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/config/package_config.dart' as pkg;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -37,7 +37,7 @@ class ServiceNotAvailableSheet extends StatelessWidget {
                     color: context.colorsV2.foregroundDefault,
                   ),
                   customActionWidget: AppButton.close(
-                    onTap: context.pop,
+                    onTap: context.router.maybePop,
                     padding: EdgeInsets.zero,
                     textColor: context.colorsV2.neutralOnContainer,
                     color: context.colorsV2.neutralContainerDefault,
@@ -85,7 +85,7 @@ class ServiceNotAvailableSheet extends StatelessWidget {
                 width: double.infinity,
                 child: AppButton(
                   primaryLabel: context.l10n.browseBaladyServicesKey,
-                  onTap: context.pop,
+                  onTap: context.router.maybePop,
                   buttonColorScheme: ButtonColorScheme.primary,
                 ),
               ),
