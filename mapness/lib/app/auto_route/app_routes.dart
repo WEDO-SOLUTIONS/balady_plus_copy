@@ -99,7 +99,6 @@ class AppRouter extends RootStackRouter {
           page: LanguagePickSheetRoute.page,
           fullscreenDialog: true,
           opaque: false,
-          customRouteBuilder: modalSheetBuilder,
         ),
         AutoRoute(
           page: MapRoute.page,
@@ -145,6 +144,18 @@ class AppRouter extends RootStackRouter {
               page: KiblahRoute.page,
               fullscreenDialog: true,
               transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'service_available',
+              page: ServiceNotAvailableSheetRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              opaque: false,
+              customRouteBuilder: <T>(context, child, page) => modalSheetBuilder(
+                context,
+                child,
+                page,
+                isTransparent: true,
+              ),
             ),
             CustomRoute(
               path: 'request_location',
@@ -331,13 +342,14 @@ class AppRouter extends RootStackRouter {
   Route<T> modalSheetBuilder<T>(
     BuildContext context,
     Widget child,
-    AutoRoutePage<T> page,
-  ) =>
+    AutoRoutePage<T> page, {
+    bool isTransparent = false,
+  }) =>
       ModalBottomSheetRoute(
         settings: page,
         builder: (context) => child,
         isScrollControlled: true,
-        modalBarrierColor: context.staticColor.surfaceOverlayModal,
+        modalBarrierColor: isTransparent ? Colors.transparent : context.staticColor.surfaceOverlayModal,
         backgroundColor: Colors.transparent,
       );
 

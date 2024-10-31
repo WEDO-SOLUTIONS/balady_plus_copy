@@ -13,7 +13,6 @@ import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
@@ -24,7 +23,6 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
-import 'package:mapness/shared/ui/loading/service_not_available_sheet.dart';
 
 @RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
@@ -67,21 +65,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     _calculatePadding();
   }
 
-  void _showServiceNotAvilibleSheet() {
-    // Show not available sheet if service is not available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (rootNavigatorKey.currentContext?.mounted ?? false) {
-        showModalBottomSheet(
-          context: rootNavigatorKey.currentContext!,
-          backgroundColor: Colors.transparent,
-          builder: (_) => Builder(
-            builder: (ctx) => const ServiceNotAvailableSheet(),
-          ),
-        );
-      }
-    });
-  }
-
   void _calculatePadding() {
     ref.watch(cameraPaddingProvider.notifier).resetPadding(
           defaultPadding: CameraSetPaddingMessage(
@@ -105,6 +88,9 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      /// TODO('Ayat') This logic is necessary so that there is no cyclic call that occurs due to the
+      /// operation of the android life cycle with permissions https://github.com/Baseflow/flutter-permission-handler/issues/1301
+      /// I will ask you to make an implementation like in 2GIS
       if (_checkPermissionCompleter == null) {
         final completer = Completer<void>();
         _checkPermissionCompleter = completer;
@@ -143,7 +129,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
         // Show only if service is not available
         if (isPrevIsAvailible == true && isAvailibleValue == false) {
-          _showServiceNotAvilibleSheet();
+          context.router.push(const ServiceNotAvailableSheetRoute());
         }
       })
 

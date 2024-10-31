@@ -7,8 +7,9 @@ import 'package:mapness/shared/config/package_config.dart' as pkg;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 
-class ServiceNotAvailableSheet extends StatelessWidget {
-  const ServiceNotAvailableSheet({super.key});
+@RoutePage()
+class ServiceNotAvailableSheetPage extends StatelessWidget {
+  const ServiceNotAvailableSheetPage({super.key});
 
   @override
   Widget build(BuildContext context) => Container(
