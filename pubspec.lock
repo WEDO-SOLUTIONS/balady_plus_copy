@@ -122,11 +122,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: "4582b64417b72002f951f0e3e0a4d8b417a849cf"
-      url: "https://github.com/urbi-ae/balady_authorization.git"
+      ref: main
+      resolved-ref: cc6098223963df8033a85501e73fdc99575c6ed8
+      url: "git@github.com:urbi-ae/balady_authorization.git"
     source: git
-    version: "0.0.25"
+    version: "0.0.28"
   balady_uikit:
     dependency: "direct main"
     description:

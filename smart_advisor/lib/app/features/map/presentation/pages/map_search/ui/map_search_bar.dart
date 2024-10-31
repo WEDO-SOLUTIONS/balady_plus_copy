@@ -109,12 +109,14 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         textFieldHeight: 40,
         textStyle: context.textStyleV3.bodySmallRegular,
       ),
-      backButtonLabel: context.l10n.cancel,
-      onBackButtonPressed: () {
-        FocusScope.of(context).unfocus();
-        searcher.clear();
-        widget.onClose();
-      },
+      option: SearchTextBackOption(
+        text: context.l10n.cancel,
+        onPressed: () {
+          FocusScope.of(context).unfocus();
+          searcher.clear();
+          widget.onClose();
+        },
+      ),
     );
   }
 }
